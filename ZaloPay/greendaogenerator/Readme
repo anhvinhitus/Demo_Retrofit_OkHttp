@@ -1,0 +1,3 @@
+In order to use greenDAO in your Android project (usually an Eclipse project), you need to create a second project, the “generator project”. Its task is to generate code specific to your project domain. The generator project is an normal Java (not Android!) project. Make sure the greenDAO generator library (greenDAO-generator.jar) and the Freemarker library (freemarker.jar) are in its classpath. Create an executable Java class, model your entities and trigger the code generation. For details, have a look at the modelling documentation.
+
+Detail: http://greendao-orm.com/documentation/introduction/

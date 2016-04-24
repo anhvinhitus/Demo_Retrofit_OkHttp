@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--state enable-->
+    <item android:state_selected="true">
+        <shape>
+
+            <solid android:color="@color/colorPrimary" />
+
+            <corners android:radius="@dimen/border_radius" />
+
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape>
+
+            <solid android:color="@color/colorPrimary" />
+
+            <corners android:radius="@dimen/border_radius" />
+
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape>
+
+            <solid android:color="@color/colorPrimary" />
+
+            <corners android:radius="@dimen/border_radius" />
+
+        </shape>
+    </item>
+    <!--state disable-->
+    <!--<item android:drawable="@drawable/btn_border_state_disable" android:state_enabled="false" />-->
+    <!--default-->
+    <item>
+        <shape>
+            <solid android:color="@color/transparent" />
+
+            <stroke android:width="@dimen/stroke_width_button" android:color="@color/colorPrimary" />
+
+            <corners android:radius="@dimen/border_radius" />
+
+        </shape>
+    </item>
+
+</selector>

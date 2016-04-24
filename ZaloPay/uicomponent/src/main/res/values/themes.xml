@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="selector">@drawable/default_selector</item>
+        <item name="divider">@color/divider</item>
+        <item name="android:listViewStyle">@style/ListView</item>
+        <item name="background.default">@color/bg_gray</item>
+        <item name="separate">@color/separate</item>
+        <item name="separate.height">@dimen/separate</item>
+    </style>
+
+    <style name="BaseTheme.NoActionBar" parent="BaseTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/abc_text_cursor_material</item>
+    </style>
+
+    <style name="ZMTheme" parent="BaseTheme">
+
+    </style>
+
+    <style name="ZMTheme.Transparent" parent="ZMTheme.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="ZMTheme.Translucent" parent="ZMTheme.NoActionBar">
+        <item name="android:windowTranslucentStatus" tools:targetApi="21">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/black</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
+    </style>
+
+    <style name="ZMTheme.NoActionBar" parent="BaseTheme.NoActionBar"></style>
+
+    <style name="ZMTheme.NoActionBar.Splash" parent="ZMTheme.NoActionBar">
+        <item name="android:windowBackground">@color/splash_bg</item>
+    </style>
+
+    <style name="ZMTheme.NoActionBar.Grey" parent="ZMTheme.Translucent">
+        <item name="android:windowBackground">@color/windowBackground</item>
+    </style>
+
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="searchViewStyle">@style/AppTheme.SearchView</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="Toolbar_Grey" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">@android:color/black</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:background">#FAFAFA</item>
+    </style>
+
+    <style name="Toolbar_Light" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="searchViewStyle">@style/AppTheme.SearchView</item>
+        <item name="colorControlNormal">@android:color/black</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="AppTheme.SearchView" parent="@style/Widget.AppCompat.SearchView">
+        <!-- Layout for query suggestion rows -->
+        <!--<item name="suggestionRowLayout">@layout/abc_search_dropdown_item_icons_debug</item>-->
+    </style>
+
+    <style name="ListView" parent="android:Widget.ListView">
+        <item name="android:divider">@color/divider</item>
+        <item name="android:dividerHeight">1px</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:drawSelectorOnTop">false</item>
+        <item name="android:smoothScrollbar">true</item>
+        <item name="android:listSelector">@color/transparent</item>
+        <item name="android:cacheColorHint">@color/transparent</item>
+    </style>
+
+</resources>

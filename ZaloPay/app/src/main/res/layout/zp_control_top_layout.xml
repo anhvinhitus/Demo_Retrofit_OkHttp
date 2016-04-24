@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:background="@color/c.colorPrimary"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:id="@+id/btn_qr_code"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_zp_qr_code" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/scan.qr.code"
+            android:textColor="#f6f0ff"
+            android:textSize="14.5dp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:background="#44aceb" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <vn.vng.uicomponent.widget.image.BezelImageView
+            android:id="@+id/avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:borderDrawable="@drawable/circle_border_white"
+            app:maskDrawable="@drawable/circle_mask" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="10000000 đ"
+            android:textColor="#f6f0ff"
+            android:textSize="14.5dp" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:background="#44aceb" />
+
+
+    <LinearLayout
+        android:id="@+id/btn_card_bank"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_zp_card_bank" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/card.bank"
+            android:textColor="#f6f0ff"
+            android:textSize="14.5dp" />
+    </LinearLayout>
+</LinearLayout>

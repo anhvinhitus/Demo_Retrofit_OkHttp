@@ -1,0 +1,136 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.frogermcs.androiddevmetrics'
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
+    }
+}
+
+def cfg = rootProject.ext.configuration
+
+android {
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
+
+    defaultConfig {
+        applicationId "vn.com.vng.zalopay"
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+        versionCode 1
+        versionName "1.0.${versionCode}"
+        multiDexEnabled true
+
+        buildConfigField "String", "PRODUCTION_FLAVOR", "\"production\""
+        buildConfigField "String", "BETA_FLAVOR", "\"beta\""
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../../publish/zalopay-debug.jks")
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            storeFile file("../../publish/zalopay-release.jks")
+            storePassword KEYSTORE_PASSWORD
+            keyAlias 'zalo@vng'
+            keyPassword KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            debuggable false
+            shrinkResources true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+        debug {
+            minifyEnabled false
+            // applicationIdSuffix ".debug"
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    productFlavors {
+        production {
+        }
+
+        beta {
+        }
+    }
+
+    lintOptions {
+
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        disable 'InvalidPackage'            //Some libraries have issues with this.
+        disable 'OldTargetApi'
+        //Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'IconDensities'             //For testing purpose. This is safe to remove.
+        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/ASL2.0'
+
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    def tests = rootProject.ext.testingLibraries
+    def libs = rootProject.ext.libraries
+    def devel = rootProject.ext.developmentDependencies;
+
+    def cfgAndroid = rootProject.ext.configurationAndroid;
+
+    testCompile tests.junit
+
+    compile cfgAndroid.multidex
+
+    compile libs.butterKnife
+    debugCompile devel.leakCanaryDebug
+    releaseCompile devel.leakCanaryRelease
+
+    compile libs.support_annotations
+    compile libs.dagger
+    apt libs.daggerCompiler
+    provided libs.javaxAnnotation
+
+    compile project(':data')
+    compile project(':uicomponent')
+}

@@ -1,0 +1,12 @@
+<resources>
+
+    <style name="RecyclerView">
+        <!-- NOTE: clipChildren should be false on API level 11 or later -->
+        <item name="android:clipChildren">false</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:smoothScrollbar">true</item>
+        <item name="android:drawSelectorOnTop">false</item>
+    </style>
+</resources>
