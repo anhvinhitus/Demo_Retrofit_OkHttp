@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ZingPay Demo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="sku_array">
+        <item>g199</item>
+        <item>g299</item>
+        <item>g599</item>
+        <item>g1199</item>
+        <item>g2999</item>
+        <item>g5999</item>
+    </string-array>
+    
+    <string-array name="channel_option">
+        <item>Exclude:</item>
+        <item>Include:</item>
+    </string-array>
+
+    <string name="title_activity_web_bridge">Web bridge</string>
+
+</resources>
