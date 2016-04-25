@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aa000000"
+    android:padding="10dp" >
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/zalosdk_background_rectangle_corner_blue_background"
+        android:orientation="vertical" >
+
+        <include layout="@layout/payment_method_container" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/zalosdk_border_bottom_right" >
+
+            <include
+                android:id="@+id/zalosdk_header"
+                layout="@layout/zalosdk_header" />
+
+            <LinearLayout
+                android:id="@+id/view_root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/zalosdk_header"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="7dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/zalosdk_price_choosing"
+                    android:textColor="@color/zalosdk_normal_text" />
+
+                <HorizontalScrollView
+                    android:id="@+id/zalosdk_sms_pricesv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:scrollbars="none" >
+
+                    <LinearLayout
+                        android:id="@+id/zalosdk_sms_pricectn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_loading_sms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
+
+</RelativeLayout>

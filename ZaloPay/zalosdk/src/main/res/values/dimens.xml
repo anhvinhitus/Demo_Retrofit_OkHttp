@@ -1,0 +1,50 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="zalosdk_outer01">5dip</dimen>
+    <dimen name="zalosdk_outer02">2dip</dimen>
+    <dimen name="hint_y_offset">64dp</dimen>
+
+    <dimen name="crop_indicator_size">48dp</dimen>
+    
+    <dimen name="preview_margin">2dp</dimen>
+    <dimen name="shadow_margin">5dp</dimen>
+    <dimen name="crop_min_side">45dp</dimen>
+    <dimen name="crop_touch_tolerance">20dp</dimen>
+    <dimen name="wp_selector_dash_length">4dp</dimen>
+    <dimen name="wp_selector_off_length">4dp</dimen>
+    
+    <dimen name="sdk_login_channel_padding">5dp</dimen>
+    <dimen name="sdk_icon_channel_size">30dp</dimen>
+    <dimen name="sdk_title_channel_margin_left">40dp</dimen>
+    <dimen name="sdk_title_channel_size">12dp</dimen>
+    <dimen name="sdk_promotion_channel_size">14dp</dimen>
+    <dimen name="sdk_row_channel_padding">20dp</dimen>
+    
+    <dimen name="sdk_form_input_size">16dp</dimen>
+    <dimen name="payment_header_landscape_width">170dp</dimen>
+    <dimen name="payment_app_icon_size">50dp</dimen>
+    <dimen name="payment_app_icon_size_land">30dp</dimen>
+    <dimen name="payment_info_margin_left">70dp</dimen>
+    <dimen name="payment_info_row1_text_size">24dp</dimen>
+    <dimen name="payment_info_row2_text_size">15dp</dimen>
+    
+    <dimen name="payment_info_row1_text_size_land">16dp</dimen>
+    
+    
+    <dimen name="payment_channel_icon_size">50dp</dimen>
+    
+    <dimen name="payment_card_height">60dp</dimen>
+    <dimen name="payment_card_height_land">60dp</dimen>
+    
+    <dimen name="payment_icon_channel_margin_right">15dp</dimen>
+    <dimen name="payment_button_submit_height">45dp</dimen>
+    <dimen name="payment_group_button_submit_height">47dp</dimen>
+    <dimen name="payment_button_submit_text_size">18dp</dimen>
+    <dimen name="payment_displayInfo_padding">5dp</dimen>
+    <dimen name="payment_mobile_container_padding">35dp</dimen>
+    <dimen name="payment_save_card_text_size">16dp</dimen>
+    <dimen name="payment_save_card_label_width">105dp</dimen>
+</resources>
