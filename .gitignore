@@ -1,3 +1,13 @@
 .idea
 .DS_Store
 *~
+*.iml
+*.properties
+
+.gradle
+
+ZaloPay/build
+ZaloPay/app/build
+ZaloPay/uicomponents/build
+ZaloPay/domain/build
+ZaloPay/data/build
