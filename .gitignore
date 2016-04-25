@@ -1,3 +1,10 @@
 .idea
 .DS_Store
 *~
+.gradle
+*.iml
+ZaloPay/*/build/
+ZaloPay/build/
+ZaloPay/local.properties
+*.swp
+
