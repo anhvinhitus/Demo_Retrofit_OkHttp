@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
     }
 }
@@ -52,11 +52,14 @@ android {
         release {
             minifyEnabled true
             debuggable false
+
+            // removes all unused code - http://developer.android.com/tools/help/proguard.html
             shrinkResources true
+
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/tpe/gwinfo"'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
         debug {
             minifyEnabled false
@@ -64,7 +67,7 @@ android {
             debuggable true
             signingConfig signingConfigs.debug
 
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/tpe/gwinfo"'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
     }
     compileOptions {

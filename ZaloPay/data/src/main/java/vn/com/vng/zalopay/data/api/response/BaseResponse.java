@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName;
 public class BaseResponse<T> {
    /* {"err": 0, message: “No error", data: null}*/
 
-    @SerializedName("err")
+    @SerializedName("returncode")
     public int err;
 
-    @SerializedName("message")
+    @SerializedName("returnmessage")
     public String message;
 
     @SerializedName("data")

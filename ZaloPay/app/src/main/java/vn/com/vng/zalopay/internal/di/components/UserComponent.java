@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
+import vn.com.vng.zalopay.internal.di.modules.user.DomainModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
@@ -11,7 +12,7 @@ import vn.com.vng.zalopay.ui.fragment.HomeFragment;
 @Subcomponent(
         modules = {
                 UserModule.class,
-                UserControllerModule.class,
+                DomainModule.class,
                 UserPresenterModule.class
         }
 )
