@@ -62,6 +62,12 @@ public class AndroidApplication extends Application {
                 .build();
 
         appComponent.userConfig().loadConfig();
+        appComponent.threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                appComponent.bundleService().prepareInternalBundle();
+            }
+        });
     }
 
     public UserComponent createUserComponent(User user) {

@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -20,6 +21,7 @@ import vn.com.vng.zalopay.data.repository.PassportRepositoryImpl;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
+import vn.com.vng.zalopay.mdl.BundleService;
 
 
 @Module
@@ -74,6 +76,12 @@ public class ApplicationModule {
     @Singleton
     UserConfig providesUserConfig(SharedPreferences sharedPreferences) {
         return new UserConfig(sharedPreferences);
+    }
+
+    @Provides
+    @Singleton
+    BundleService providesBundleService(Context context) {
+        return new BundleService((Application) context);
     }
 
 }

@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+def cfg = rootProject.ext.configuration
+
+android {
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    def libs = rootProject.ext.libraries
+    def tests = rootProject.ext.testingLibraries
+
+    compile libs.support_annotations
+    compile libs.dagger
+    apt libs.daggerCompiler
+    provided libs.javaxAnnotation
+
+    testCompile tests.junit
+    compile libs.support_appcompat_v7
+    compile libs.timber
+    compile libs.react_native
+}

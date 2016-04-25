@@ -9,6 +9,7 @@ import dagger.Component;
 import vn.com.vng.zalopay.UserConfig;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.LoginFragment;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -31,6 +32,7 @@ public interface ApplicationComponent {
 
     UserConfig userConfig();
 
+    BundleService bundleService();
 
     /*INJECT*/
     void inject(LoginFragment f);

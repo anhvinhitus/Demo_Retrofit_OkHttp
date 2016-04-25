@@ -1,1 +1,1 @@
-include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator',':qrcodecore'
+include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator', ':qrcodecore', ':moduledynamicloading'
