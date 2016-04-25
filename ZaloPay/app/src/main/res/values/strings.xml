@@ -39,4 +39,11 @@
     <string name="transfer.to.atm.visa">Đến số thẻ ATM / VISA</string>
     <string name="transfer.to.bank.account">Đến tài khoản ngân hàng</string>
 
+    <string name="login_with">ĐĂNG NHẬP với</string>
+    <string name="login_with_zalo">Đăng nhập với zalo</string>
+
+    <string name="zalo_appid">1577725557845407485</string>
+    <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
+
+    <string name="title_activity_login">Đăng nhập</string>
 </resources>

@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/gateway_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aa000000"
+    android:padding="10dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/zalosdk_background_rectangle_corner_blue_background"
+        android:orientation="vertical" >
+
+        <include layout="@layout/payment_method_container" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <include
+                android:id="@+id/zalosdk_header"
+                layout="@layout/zalosdk_header" />
+
+            <LinearLayout
+                android:id="@+id/payment_maintance"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/zalosdk_header"
+                android:background="@drawable/zalosdk_border_bottom_right"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <TextView
+                    android:id="@+id/maintance_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="#292f33"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/sv_list_payment"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@id/zalosdk_header"
+                android:background="@drawable/zalosdk_border_bottom_right"
+                android:scrollbars="none" >
+
+                <LinearLayout
+                    android:id="@+id/list_payment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_zingcard_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_zingcard"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_cardzing" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_zingcard"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_cardzing"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thẻ cào Zing"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_zingcard_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_zingcard"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_mobile_card_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_mobile_card"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_cardphone" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_mobile_card"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_cardphone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thẻ cào điện thoại"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_mobile_card_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_mobile_card"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_merge_card_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_merge_card"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_cardphone" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_merge_card"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_merge_card"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thẻ cào"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_merge_card_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_merge_card"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_atm_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_atm"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_cardatm" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_atm"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_cardatm"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tài khoản ATM"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_atm_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_atm"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_sms_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_sms"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_sms" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_sms"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_sms"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SMS"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_sms_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_sms"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_zing_coin_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_zing_coin"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_zingxu" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_zing_coin"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_zing_coin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Zing Coin"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_zing_coin_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_zing_coin"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_google_wallet_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_google_wallet"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_cardgoogle" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_google_wallet"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_google_wallet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Google Wallet"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_google_wallet_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_google_wallet"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_credit_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_credit"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_redeem" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_credit"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_credit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Credit card"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_credit_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_credit"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/zalosdk_reddem_ctl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_redeem"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_redeem" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/zalosdk_ic_redeem"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title_redeem"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Zalo Redeem Code"
+                                android:textColor="#292f33"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/zalosdk_redeem_promotion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_below="@id/zalosdk_ic_redeem"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#d3d7e4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/choose_another_channel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/zalosdk_channel_clicked"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/zalosdk_ic_choose_another_channel"
+                            android:layout_width="@dimen/payment_channel_icon_size"
+                            android:layout_height="@dimen/payment_channel_icon_size"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ico_redeem" />
+
+                        <TextView
+                            android:id="@+id/title_choose_another_channel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="35dp"
+                            android:layout_toRightOf="@id/zalosdk_ic_choose_another_channel"
+                            android:text="Kênh thanh toán khác"
+                            android:textColor="#292f33"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/i_next" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <ProgressBar
+                android:id="@+id/progress_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="30dp"
+                android:minHeight="50dp"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

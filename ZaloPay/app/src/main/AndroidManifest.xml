@@ -49,6 +49,11 @@
         </activity>
 
         <activity
+            android:name="vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".ui.activity.ZPHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/app_name"
@@ -68,6 +73,31 @@
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule" />
+
+        <!-- ##########################Tich hop ZaloSDK START ##########################-->
+        <activity
+            android:name="com.zing.zalo.zalosdk.oauth.WebLoginActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="oauthcode"
+                    android:scheme="@string/zalo_appid" /> <!-- Thay 12345 bằng zalo app id -->
+            </intent-filter>
+        </activity>
+
+        <!--Bắt buộc-->
+        <!--App ID của app đã đăng ký với bên server ZaloPayment-->
+        <meta-data
+            android:name="appID"
+            android:value="@string/zalo_appid" />
+        <!-- ##########################Tich hop ZaloSDK END ##########################-->
 
     </application>
 

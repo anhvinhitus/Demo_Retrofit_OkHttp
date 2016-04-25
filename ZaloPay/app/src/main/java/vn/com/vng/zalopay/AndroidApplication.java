@@ -5,6 +5,7 @@ import android.os.StrictMode;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
+import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
@@ -52,7 +53,7 @@ public class AndroidApplication extends Application {
         initAppComponent();
 
         Timber.d(" onCreate " + appComponent);
-
+        ZaloSDKApplication.wrap(this);
     }
 
 

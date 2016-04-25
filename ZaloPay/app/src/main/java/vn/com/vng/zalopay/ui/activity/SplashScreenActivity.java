@@ -1,6 +1,12 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.zing.zalo.zalosdk.oauth.ValidateOAuthCodeCallback;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -9,8 +15,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
-
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.UserConfig;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -19,8 +23,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 /**
  * Created by AnhHieu on 1/29/16.
  */
-public class SplashScreenActivity extends BaseActivity {
-
+public class SplashScreenActivity extends BaseActivity implements ValidateOAuthCodeCallback {
+    private ProgressDialog mProgressDialog;
     private Timer waitTimer;
     private TimerTask timeTask;
     private boolean interstitialCanceled = false;
@@ -55,13 +59,12 @@ public class SplashScreenActivity extends BaseActivity {
             @Override
             public void run() {
                 interstitialCanceled = true;
-                startLaunchActivity();
+                showLoading("Tài khoản", "Xác minh lại quyền đăng nhập");
+                ZaloSDK.Instance.isAuthenticate(SplashScreenActivity.this);
             }
         };
 
         waitTimer.schedule(timeTask, TIME_DELAY);
-
-
     }
 
 
@@ -75,8 +78,10 @@ public class SplashScreenActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (interstitialCanceled)
-            startLaunchActivity();
+        if (interstitialCanceled) {
+            showLoading("Tài khoản", "Xác minh lại quyền đăng nhập");
+            ZaloSDK.Instance.isAuthenticate(SplashScreenActivity.this);
+        }
     }
 
     @Override
@@ -90,25 +95,64 @@ public class SplashScreenActivity extends BaseActivity {
             timeTask.cancel();
             timeTask = null;
         }
-
+        hideLoading();
         super.onDestroy();
     }
 
-    boolean isCallLaunch = false;
-
-    private void startLaunchActivity() {
-        if (isCallLaunch) return;
-        isCallLaunch = true;
-
-        if (mUserConfig.isClientActivated() || BuildConfig.DEBUG) {
+    @Override
+    public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
+        Timber.tag(TAG).d("onValidateComplete###############################isValidated:" + isValidated);
+        if(isValidated) {
+            //Authenticated
             Timber.d("isClientActivated");
             navigator.startHomeActivity(this);
         } else {
-            navigator.startLoginActivity(this);
+            //Not authenticated
             Timber.d("startLoginActivity");
+            navigator.startLoginActivity(this);
         }
         finish();
     }
 
+    public void showLoading(final String title, final String messae) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "showDialog..........progress:" + mProgressDialog);
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+                if (SplashScreenActivity.this.isFinishing()) {
+                    return;
+                }
+                Log.d(TAG, "showDialog..........hehehe");
+                mProgressDialog = ProgressDialog.show(SplashScreenActivity.this, title, messae, true, true, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        mProgressDialog.dismiss();
+                    }
+                });
+                mProgressDialog.setCanceledOnTouchOutside(false);
+            }
+        });
+    }
 
+    public void hideLoading() {
+        Log.d(TAG, "hideDialog..........mProgressDialog:" + mProgressDialog);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "hideDialog..........");
+                if (mProgressDialog == null || !mProgressDialog.isShowing())
+                    return;
+                mProgressDialog.dismiss();
+            }
+        });
+    }
+
+    public boolean isShowLoading() {
+        if (mProgressDialog == null)
+            return false;
+        return mProgressDialog.isShowing();
+    }
 }
