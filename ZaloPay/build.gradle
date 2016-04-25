@@ -4,7 +4,7 @@ apply from: 'buildsystem/dependencies.gradle'
 ext {
     configuration = [
             applicationId    : "vn.com.vng.zalopay",
-            buildToolsVersion: "23.0.2",
+            buildToolsVersion: "23.0.3",
             compileVersion   : 23,
             minSdk           : 15,
             targetSdk        : 23,
@@ -30,6 +30,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url "$projectDir/../../maven_local"
+        }
     }
 }
 
