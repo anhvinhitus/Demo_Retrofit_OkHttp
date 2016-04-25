@@ -2,11 +2,10 @@ package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
 import vn.com.vng.zalopay.internal.di.modules.user.DomainModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.ui.fragment.HomeFragment;
+import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 @UserScope
 @Subcomponent(
@@ -17,5 +16,5 @@ import vn.com.vng.zalopay.ui.fragment.HomeFragment;
         }
 )
 public interface UserComponent {
-    void inject(HomeFragment f);
+    void inject(ZaloPayFragment f);
 }
