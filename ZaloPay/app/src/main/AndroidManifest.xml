@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="vn.com.vng.zalopay">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -25,6 +26,16 @@
     <uses-permission android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- VERY IMPORTANT! Don't forget this permission, or in-app billing won't work. -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
+
+    <permission
+        android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE" />
+
     <application
         android:name=".AndroidApplication"
         android:allowBackup="true"
@@ -32,7 +43,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:name,android:icon,android:label,android:theme">
 
         <!--  <activity
               android:name=".LoginActivity"
@@ -100,6 +112,61 @@
             android:value="@string/zalo_appid" />
         <!-- ##########################Tich hop ZaloSDK END ##########################-->
 
+        <!-- ##########################Tich hop ZaloPayWalletSDK START ##########################-->
+        <!-- Application ID given by Payment Team -->
+        <meta-data
+            android:name="zmpAppID"
+            android:value="1" />
+
+        <!-- Optional -->
+        <!-- On/Off -->
+        <meta-data
+            android:name="zmpConfigOffSuccessDialog"
+            android:value="false" />
+        <!-- Tắt/mở toàn màn hình trên các Activity của Payment -->
+        <meta-data
+            android:name="zmpConfigFullScreen"
+            android:value="true" />
+        <activity
+            android:name="vn.zing.pay.zmpsdk.view.PaymentGatewayActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-cancel"
+                    android:scheme="paymentsdk-1" />
+                <data
+                    android:host="payment-complete"
+                    android:scheme="paymentsdk-1" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="vn.zing.pay.zmpsdk.view.PaymentChannelActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
+        </activity>
+
+        <activity android:name="vn.zing.pay.trivialdrivesample.DemoSDKActivity" />
+        <activity android:name="vn.zing.pay.trivialdrivesample.WebBridgeActivity"
+            android:label="@string/title_activity_web_bridge"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-cancel"
+                    android:scheme="zingpaysdk-123" />
+            </intent-filter>
+        </activity>
+        <!-- ##########################Tich hop ZaloPayWalletSDK END ##########################-->
     </application>
 
 </manifest>
