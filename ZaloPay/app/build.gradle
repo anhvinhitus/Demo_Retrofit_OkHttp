@@ -52,16 +52,22 @@ android {
         release {
             minifyEnabled true
             debuggable false
+
+            // removes all unused code - http://developer.android.com/tools/help/proguard.html
             shrinkResources true
+
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
         debug {
             minifyEnabled false
             // applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
+
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
     }
     compileOptions {
@@ -133,6 +139,9 @@ dependencies {
 
     compile project(':data')
     compile project(':uicomponent')
+
+    compile project(':qrcodecore')
+
     compile project(':zalosdk')
     compile project(':zMP_SDK')
     compile project(':zMP_SDK_Demo')

@@ -28,8 +28,6 @@ public class ZPHomeActivity extends BaseToolBarActivity {
         return null;
     }
 
-    private final String TAG = this.getClass().getSimpleName();
-
     @Bind(R.id.viewpager)
     ViewPager viewPager;
 

@@ -1,10 +1,13 @@
+/*
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.os.Bundle;
 
+*/
 /**
  * Created by AnhHieu on 3/26/16.
- */
+ *//*
+
 public class HomeFragment extends BaseFragment {
 
     public static HomeFragment newInstance() {
@@ -26,3 +29,4 @@ public class HomeFragment extends BaseFragment {
         return 0;
     }
 }
+*/

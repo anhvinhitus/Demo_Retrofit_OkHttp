@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
 @Module
 public class NetworkModule {
 
-    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse("http://dev.lizks.com/");
+    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse(BuildConfig.HOST);
 
     @Provides
     @Singleton

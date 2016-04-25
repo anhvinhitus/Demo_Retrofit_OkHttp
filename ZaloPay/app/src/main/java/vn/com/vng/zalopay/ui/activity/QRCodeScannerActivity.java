@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay.ui.activity;
 
-import android.content.Context;
+import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
 
 /**
  * Created by AnhHieu on 4/21/16.
  */
-public class QRCodeScannerActivity {
-
-    public static void startQRCode(Context ctx) {
-    }
+public class QRCodeScannerActivity extends QRScanActivity {
 }

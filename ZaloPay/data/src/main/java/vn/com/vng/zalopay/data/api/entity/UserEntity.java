@@ -1,12 +1,6 @@
-/*
 package vn.com.vng.zalopay.data.api.entity;
 
 import com.google.gson.annotations.SerializedName;
-
-*/
-/**
- * Created by AnhHieu on 3/26/16.
- *//*
 
 public class UserEntity {
 
@@ -20,4 +14,3 @@ public class UserEntity {
     public String session;
 
 }
-*/

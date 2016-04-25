@@ -10,10 +10,14 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 
 /**
@@ -33,9 +37,12 @@ public class ZaloPayFragment extends BaseMainFragment {
     protected void onScreenVisible() {
     }
 
+    @Inject
+    Navigator navigator;
+
     @Override
     protected void setupFragmentComponent() {
-
+        AndroidApplication.instance().getUserComponent().inject(this);
     }
 
     @Override
@@ -71,7 +78,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     @NonNull
     @OnClick(R.id.btn_qr_code)
     public void onClickQrCode(View v) {
-        QRCodeScannerActivity.startQRCode(getContext());
+        navigator.startQrCodeActivity(getActivity());
     }
 
 
