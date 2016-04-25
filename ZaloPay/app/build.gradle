@@ -133,4 +133,5 @@ dependencies {
 
     compile project(':data')
     compile project(':uicomponent')
+    compile project(':zalosdk')
 }

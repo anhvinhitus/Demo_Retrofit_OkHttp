@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root_container"
+    android:background="#00000000" >
+
+    <com.zing.zalo.zalosdk.payment.direct.DynamicLayout
+        android:id="@+id/sms_root_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="0dip"
+            android:layout_marginRight="0dip"
+            android:layout_marginTop="0dip"
+            android:background="#00000000" >
+
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:scrollbars="none" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                   <RelativeLayout
+                       android:background="#00a4e0"
+        android:id="@+id/payment_method_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="37dp" >
+
+        <ImageView
+            android:id="@+id/channel_back"
+            android:layout_width="22dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_close" />
+
+        
+    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/view_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="7dip" >
+
+                        <ToggleButton
+                            android:id="@+id/zalosdk_share_zalo"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dip"
+                            android:background="@drawable/zalosdk_togglebutton_background"
+                            android:paddingBottom="10dip"
+                            android:paddingTop="10dip"
+                            android:textColor="#fff"
+                            android:textOff="@string/z_share_zalo"
+                            android:textOn="@string/z_share_zalo"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textSize="20sp" />
+
+                        <ToggleButton
+                            android:id="@+id/zalosdk_share_feed"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dip"
+                            android:background="@drawable/zalosdk_togglebutton_background"
+                            android:paddingBottom="10dip"
+                            android:paddingTop="10dip"
+                             android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textColor="#fff"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:textOff="@string/z_share_feed"
+                            android:textOn="@string/z_share_feed"
+                            android:textSize="20sp"
+                            android:visibility="visible" />
+                    </LinearLayout>
+
+                    
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
+    </com.zing.zalo.zalosdk.payment.direct.DynamicLayout>
+
+</RelativeLayout>
