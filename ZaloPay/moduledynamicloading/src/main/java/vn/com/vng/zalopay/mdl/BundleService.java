@@ -40,6 +40,10 @@ public class BundleService {
         mApplication = application;
     }
 
+    public ReactInstanceManager getInternalBundleInstanceManager() {
+        return mInternalBundleInstanceManager;
+    }
+
     public boolean checkForInternalBundleUpdate() {
         return false;
     }
@@ -49,17 +53,17 @@ public class BundleService {
 
     public void prepareInternalBundle() {
         Timber.d("Hello from bundle Service");
-        copyAssets("zalopay_v1.zip", "zalopay");
-//        mInternalBundleInstanceManager = ReactInstanceManager.builder()
-//                .setApplication(mApplication)
-//                .setBundleAssetName("index.android.bundle")
-//                .setJSMainModuleName("index.android")
-//                .addPackage(new MainReactPackage())
-//                .addPackage(new ReactInternalPackage())
-////                .setUseDeveloperSupport(BuildConfig.DEBUG)
-//                .setUseDeveloperSupport(false)
-//                .setInitialLifecycleState(LifecycleState.RESUMED)
-//                .build();
+        String folder = copyAssets("zalopay_v1.zip", "zalopay");
+        mInternalBundleInstanceManager = ReactInstanceManager.builder()
+                .setApplication(mApplication)
+                .setJSBundleFile(folder + "/index.android.js")
+                .setJSMainModuleName("index.android")
+                .addPackage(new MainReactPackage())
+                .addPackage(new ReactInternalPackage())
+//                .setUseDeveloperSupport(BuildConfig.DEBUG)
+                .setUseDeveloperSupport(false)
+                .setInitialLifecycleState(LifecycleState.RESUMED)
+                .build();
         Timber.d("Done");
     }
 
@@ -67,7 +71,7 @@ public class BundleService {
 
     }
 
-    private void copyAssets(String assetName, String destinationFolder) {
+    private String copyAssets(String assetName, String destinationFolder) {
         AssetManager assetManager = mApplication.getAssets();
         String packageName = mApplication.getPackageName();
         InputStream in = null;
@@ -94,8 +98,11 @@ public class BundleService {
             out = null;
 
             unzip(outFile.getPath(), outFolder);
+
+            return outFolder;
         } catch (IOException e) {
             Timber.e(e, "Failed to copy asset file: %s", assetName);
+            return null;
         }
     }
 
