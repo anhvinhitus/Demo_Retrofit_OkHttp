@@ -5,12 +5,21 @@ import android.content.Intent;
 
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
 import vn.com.vng.vmpay.account.network.listener.LoginListener;
 import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.interactor.UseCase;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
 /**
@@ -22,12 +31,13 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private ILoginView mView;
 
-//    private UseCase loginUseCase;
+    private UseCase loginUseCase;
+
     private ZaloProfilePreferences zaloProfilePreferences;
 
     @Inject
-    public LoginPresenter(/*@Named("Login") UseCase login,*/ ZaloProfilePreferences zaloProfilePreferences) {
-//        this.loginUseCase = login;
+    public LoginPresenter(@Named("loginUseCase") UseCase login, ZaloProfilePreferences zaloProfilePreferences) {
+        this.loginUseCase = login;
         this.zaloProfilePreferences = zaloProfilePreferences;
     }
 
@@ -52,6 +62,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     @Override
     public void destroy() {
         this.destroyView();
+        loginUseCase.unsubscribe();
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -68,12 +79,10 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     @Override
     public void onAuthenError(int errorCode, String message) {
-        Timber.tag("LoginPresenter").d("onAuthenError................errorCode:" + errorCode);
-        Timber.tag("LoginPresenter").d("onAuthenError................message:" + message);
+        Timber.tag("LoginPresenter").d("onAuthenError................message %s error %:", message, errorCode);
         zaloProfilePreferences.setUserId(0);
         zaloProfilePreferences.setAuthCode("");
-        mView.hideLoading();
-        mView.showError(message);
+        showErrorView(message);
     }
 
     @Override
@@ -81,7 +90,78 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         Timber.tag("LoginPresenter").d("onGetOAuthComplete................authCode:" + authCode);
         zaloProfilePreferences.setUserId(uId);
         zaloProfilePreferences.setAuthCode(authCode);
+
+        //Fixme :  dang test
+        HashMap map = AndroidApplication.instance().getAppComponent().paramsRequestProvider().getParamsZalo();
+        map.put("appid", String.valueOf(3));
+        map.put("userid", String.valueOf(uId));
+        map.put("zalooauthcode", authCode);
+
+        this.showLoadingView();
+        this.loginPayment();
+
+    }
+
+
+    private void showLoadingView() {
+        mView.showLoading();
+    }
+
+    private void hideLoadingView() {
         mView.hideLoading();
+    }
+
+    private void loginPayment() {
+        loginUseCase.execute(new LoginPaymentSubscriber());
+    }
+
+    private void showErrorView(String message) {
+        mView.showError(message);
+    }
+
+    private void gotoHomeScreen() {
         mView.gotoMainActivity();
     }
+
+    private final void onLoginSuccess(User user) {
+        Timber.d("session " + user.accesstoken);
+
+
+        // khởi tạo user component
+        AndroidApplication.instance().getAppComponent().plus(new UserModule(user));
+
+        this.hideLoadingView();
+        this.gotoHomeScreen();
+    }
+
+
+    private final void onLoginError(Throwable e) {
+        hideLoadingView();
+        String message = ErrorMessageFactory.create(mView.getContext(), e);
+        showErrorView(message);
+    }
+
+
+    private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
+        public LoginPaymentSubscriber() {
+        }
+
+        @Override
+        public void onNext(User user) {
+            Timber.d("login success " + user);
+            LoginPresenter.this.onLoginSuccess(user);
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e(e, "login success " + e);
+            LoginPresenter.this.onLoginError(e);
+        }
+    }
+
+
 }

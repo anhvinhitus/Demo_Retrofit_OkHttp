@@ -9,6 +9,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Observable;
+import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.PassportService;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
@@ -30,10 +31,12 @@ public class PassportFactory {
 
     private UserConfig userConfig;
 
+
+    private ParamRequestProvider paramRequestProvider;
+
     @Inject
     public PassportFactory(Context context, PassportService passportService,
-                           @Named("zalo_params") HashMap<String, String> authZaloParams,
-                           @Named("request_params") HashMap<String, String> params,
+                           ParamRequestProvider paramRequestProvider,
                            UserConfig userConfig) {
         if (context == null || passportService == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -41,8 +44,8 @@ public class PassportFactory {
 
         this.context = context;
         this.passportService = passportService;
-        this.params = params;
-        this.authZaloParams = authZaloParams;
+        this.params = paramRequestProvider.paramsDefault;
+        this.authZaloParams = paramRequestProvider.paramsZalo;
 
         this.userConfig = userConfig;
     }
@@ -53,7 +56,7 @@ public class PassportFactory {
     }
 
     public Observable<LogoutResponse> logout() {
-        return passportService.logout(authZaloParams, userConfig.getCurrentUser().session, params)
+        return passportService.logout(userConfig.getCurrentUser().session, authZaloParams, params)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
     }
 }

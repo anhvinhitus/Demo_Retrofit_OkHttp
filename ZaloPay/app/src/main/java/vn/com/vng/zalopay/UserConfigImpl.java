@@ -43,12 +43,12 @@ public class UserConfigImpl implements UserConfig {
     }
 
     public void saveConfig(User user) {
-        if (user == null || TextUtils.isEmpty(user.session)) return;
+        if (user == null || TextUtils.isEmpty(user.accesstoken)) return;
 
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putString(Constants.PREF_USER_EMAIL, user.email);
-        editor.putString(Constants.PREF_USER_SESSION, user.session);
+        editor.putString(Constants.PREF_USER_SESSION, user.accesstoken);
         editor.putLong(Constants.PREF_USER_ID, user.uid);
         editor.putString(Constants.PREF_USER_NAME, user.dname);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
@@ -65,7 +65,7 @@ public class UserConfigImpl implements UserConfig {
 
 
             currentUser = new User(uid);
-            currentUser.session = session;
+            currentUser.accesstoken = session;
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
@@ -86,18 +86,23 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveConfig(UserEntity user) {
-
+        //empty
     }
 
     @Override
     public void saveConfig(LoginResponse response) {
+        if (response == null || !response.isSuccessfulResponse()) return;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);
+        editor.putLong(Constants.PREF_USER_EXPIREIN, response.expirein);
 
+        editor.apply();
     }
 
     @Override
     public String getSession() {
         if (isClientActivated()) {
-            return getCurrentUser().session;
+            return getCurrentUser().accesstoken;
         }
         return null;
     }

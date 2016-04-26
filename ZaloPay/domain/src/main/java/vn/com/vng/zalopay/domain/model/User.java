@@ -13,10 +13,10 @@ import android.os.Parcelable;
 * */
 public final class User extends Person {
 
-    public String session;
-    public String email;
-
+    public String accesstoken;
     public long expirein;
+
+    public String email;
 
     public User() {
     }
@@ -29,7 +29,7 @@ public final class User extends Person {
     }
 
     public String getSession() {
-        return session;
+        return accesstoken;
     }
 
     public User(long uid) {

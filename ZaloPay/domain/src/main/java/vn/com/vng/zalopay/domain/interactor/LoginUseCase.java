@@ -13,8 +13,9 @@ public class LoginUseCase extends UseCase {
     private PassportRepository passportRepository;
 
     @Inject
-    public LoginUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+    public LoginUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, PassportRepository passportRepository) {
         super(threadExecutor, postExecutionThread);
+        this.passportRepository = passportRepository;
     }
 
     @Override
