@@ -14,6 +14,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 
 /**
@@ -102,6 +103,8 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_lixi)
     public void onClickLixi(View v) {
         Timber.d("Lixi");
+        Intent intent = new Intent(this.getContext(), MiniApplicationActivity.class);
+        this.getActivity().startActivity(intent);
     }
 
 }
