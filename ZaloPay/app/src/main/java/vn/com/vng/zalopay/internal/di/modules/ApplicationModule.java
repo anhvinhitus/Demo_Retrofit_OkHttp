@@ -14,7 +14,8 @@ import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.UIThread;
-import vn.com.vng.zalopay.UserConfig;
+import vn.com.vng.zalopay.UserConfigImpl;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.data.repository.PassportRepositoryImpl;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -65,15 +66,27 @@ public class ApplicationModule {
     @Singleton
     @Named("request_params")
     HashMap<String, String> provideParamsDefault() {
-        HashMap<String, String> ret = new HashMap<>();
-        ret.put("device", Build.MODEL);
-        return ret;
+        HashMap<String, String> requestParams = new HashMap<>();
+        requestParams.put("device", Build.MODEL);
+        return requestParams;
     }
+
+
+    @Provides
+    @Singleton
+    @Named("zalo_params")
+    HashMap<String, String> provideZaloParamsDefault() {
+        return mZaloParams;
+    }
+
+
+    public static HashMap<String, String> mZaloParams = new HashMap<>();
+
 
     @Provides
     @Singleton
     UserConfig providesUserConfig(SharedPreferences sharedPreferences) {
-        return new UserConfig(sharedPreferences);
+        return new UserConfigImpl(sharedPreferences);
     }
 
 }

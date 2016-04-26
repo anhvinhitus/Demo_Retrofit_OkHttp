@@ -16,6 +16,8 @@ public final class User extends Person {
     public String session;
     public String email;
 
+    public long expirein;
+
     public User() {
     }
 
@@ -24,6 +26,10 @@ public final class User extends Person {
     }
 
     public User(SharedPreferences preferences) {
+    }
+
+    public String getSession() {
+        return session;
     }
 
     public User(long uid) {

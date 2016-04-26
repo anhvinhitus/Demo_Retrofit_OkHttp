@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.os.Bundle;
@@ -12,9 +13,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
+*/
 /**
  * Created by AnhHieu on 3/26/16.
- */
+ *//*
+
 public class LoginFragment extends BaseFragment implements ILoginView {
 
 
@@ -110,3 +113,4 @@ public class LoginFragment extends BaseFragment implements ILoginView {
     }
 
 }
+*/

@@ -5,9 +5,14 @@ import android.content.Context;
 import java.util.HashMap;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
+import rx.Observable;
 import vn.com.vng.zalopay.data.api.PassportService;
+import vn.com.vng.zalopay.data.api.response.LoginResponse;
+import vn.com.vng.zalopay.data.api.response.LogoutResponse;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 
 /**
  * Created by AnhHieu on 3/30/16.
@@ -21,8 +26,15 @@ public class PassportFactory {
 
     private HashMap<String, String> params;
 
+    private HashMap<String, String> authZaloParams;
+
+    private UserConfig userConfig;
+
     @Inject
-    public PassportFactory(Context context, PassportService passportService, HashMap<String, String> params) {
+    public PassportFactory(Context context, PassportService passportService,
+                           @Named("zalo_params") HashMap<String, String> authZaloParams,
+                           @Named("request_params") HashMap<String, String> params,
+                           UserConfig userConfig) {
         if (context == null || passportService == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
         }
@@ -30,15 +42,18 @@ public class PassportFactory {
         this.context = context;
         this.passportService = passportService;
         this.params = params;
-    }
-/*
-    public Observable<UserEntity> loginByEmail(String email, String pass) {
-        return passportService.loginByEmail(email, pass, params)
-                .flatMap(response -> Observable.just(response.data));
+        this.authZaloParams = authZaloParams;
+
+        this.userConfig = userConfig;
     }
 
-    public Observable<UserEntity> registerByEmail(String email, String pass) {
-        return passportService.registerByEmail(email, pass, params)
-                .flatMap(response -> Observable.just(response.data));
-    }*/
+    public Observable<LoginResponse> login() {
+        return passportService.login(authZaloParams, params)
+                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
+    }
+
+    public Observable<LogoutResponse> logout() {
+        return passportService.logout(authZaloParams, userConfig.getCurrentUser().session, params)
+                .doOnNext(logoutResponse -> userConfig.clearConfig());
+    }
 }
