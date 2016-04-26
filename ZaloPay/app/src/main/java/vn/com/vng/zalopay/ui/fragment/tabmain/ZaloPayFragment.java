@@ -7,18 +7,19 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
-
 import com.bumptech.glide.Glide;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -40,9 +41,13 @@ public class ZaloPayFragment extends BaseMainFragment {
     @Inject
     Navigator navigator;
 
+    @Inject
+    User user;
+
     @Override
     protected void setupFragmentComponent() {
         AndroidApplication.instance().getUserComponent().inject(this);
+
     }
 
     @Override
@@ -100,10 +105,10 @@ public class ZaloPayFragment extends BaseMainFragment {
         Timber.d("Recharge.Game");
     }
 
-
     @OnClick(R.id.btn_recharge_phone)
     public void onClickRechargePhone(View view) {
         Timber.d("Recharge.Phone");
+        gotoRechargePhoneActivity();
     }
 
     @OnClick(R.id.btn_lixi)
@@ -111,4 +116,47 @@ public class ZaloPayFragment extends BaseMainFragment {
         Timber.d("Lixi");
     }
 
+    @OnClick(R.id.btn_transfer)
+    public void onTransferMoneyClick(View view) {
+        gotoTransferActivity();
+    }
+
+    @OnClick(R.id.profile)
+    public void onProfileClick(View view) {
+        signout();
+    }
+
+    private void gotoTransferActivity() {
+    }
+
+    private void gotoRechargePhoneActivity() {
+//        Intent intent = new Intent(getActivity(), BuyTelCardActivity.class);
+//        intent.putExtra(vn.com.vng.zalopay.scratchcard.network.Constants.TEL_CARD_TYPE, TelCardUtil.VIETTEL);
+//        startActivity(intent);
+    }
+
+    @OnClick(R.id.others)
+    public void onLayoutOthersClick() {
+//        ShaUtils.getSha();
+        startZMPSDKDemo();
+    }
+
+    private void startZMPSDKDemo() {
+        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
+        startActivity(intent);
+    }
+
+    private void signout() {
+        ZaloSDK.Instance.unauthenticate();
+        gotoLoginActivity();
+    }
+
+    private void gotoLoginActivity() {
+        if (getActivity() == null) {
+            return;
+        }
+        Intent intent = new Intent(getActivity(), LoginZaloActivity.class);
+        getActivity().startActivity(intent);
+        getActivity().finish();
+    }
 }

@@ -1,0 +1,694 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_zingcard_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_zingcard"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_cardzing" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_zingcard_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_zingcard"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_cardzing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thẻ cào Zing"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_zingcard_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_zingcard"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_mobile_card_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_mobile_card"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_cardphone" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_mobile_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_mobile_card"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_cardphone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thẻ cào"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_mobile_card_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_mobile_card"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_merge_card_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_merge_card"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_cardphone" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_merge_card_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_merge_card"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_merge_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thẻ cào"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_merge_card_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_merge_card"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_atm_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_atm"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_cardatm" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_atm_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_atm"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_cardatm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tài khoản ATM"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_atm_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_atm"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_sms_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_sms"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_sms" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_sms_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_sms"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_sms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SMS"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_sms_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_sms"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_zing_coin_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_zing_coin"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_zingxu" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_zing_coin_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_zing_coin"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_zing_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zing Coin"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_zing_coin_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_zing_coin"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_google_wallet_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_google_wallet"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_cardgoogle" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_google_wallet_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_google_wallet"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_google_wallet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Google Wallet"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_google_wallet_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_google_wallet"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_credit_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_cardcredit"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_cardcredit" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_cardcredit_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_cardcredit"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_credit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Credit card"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zalosdk_credit_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_cardcredit"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_123pay_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_123pay"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_123pay_promotion"
+            android:layout_width="@dimen/payment_channel_promotion_icon_size"
+            android:layout_height="@dimen/payment_channel_promotion_icon_size"
+            android:scaleType="fitCenter"
+            android:tag="promotion"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_123pay"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_123pay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ví 123Pay"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zpsdk_123pay_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sdk_promotion_channel_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_123pay"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/zpsdk_choose_another_channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpsdk_channel_clicked"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/zpsdk_ic_choose_another_channel"
+            android:layout_width="@dimen/payment_channel_icon_size"
+            android:layout_height="@dimen/payment_channel_icon_size"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginRight="@dimen/payment_icon_channel_margin_right"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/zpsdk_ic_choose_another_channel"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/title_choose_another_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kênh thanh toán khác"
+                android:textColor="#292f33"
+                android:textSize="@dimen/sdk_title_channel_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/i_next" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/zpsdk_ic_choose_another_channel"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#d3d7e4" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/zpsdk_method_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardSerialNo"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:lines="2"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:singleLine="false"
+        android:textColor="#333333"
+        android:textSize="15dp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+</LinearLayout>

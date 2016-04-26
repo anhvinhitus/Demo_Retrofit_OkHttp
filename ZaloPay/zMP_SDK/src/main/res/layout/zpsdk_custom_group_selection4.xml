@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <vn.zing.pay.zmpsdk.view.custom.VPaymentChannelButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        custom:pmcID="1"
+        custom:pmcName=""
+        custom:srcOff="@drawable/zing_grayscale"
+        custom:srcOn="@drawable/zing" />
+
+    <vn.zing.pay.zmpsdk.view.custom.VPaymentChannelButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        custom:pmcID="1"
+        custom:pmcName=""
+        custom:srcOff="@drawable/viettel_grayscale"
+        custom:srcOn="@drawable/viettel" />
+
+    <vn.zing.pay.zmpsdk.view.custom.VPaymentChannelButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        custom:pmcID="1"
+        custom:pmcName=""
+        custom:srcOff="@drawable/mobiphone_grayscale"
+        custom:srcOn="@drawable/mobiphone" />
+
+    <vn.zing.pay.zmpsdk.view.custom.VPaymentChannelButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        custom:pmcID="1"
+        custom:pmcName=""
+        custom:srcOff="@drawable/zing_grayscale"
+        custom:srcOn="@drawable/zing" />
+
+</LinearLayout>

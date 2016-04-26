@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="zpsdk_white">#fff</color>
+   
+    <color name="channel_unpressed">#00000000</color>
+    <color name="channel_pressed">#e0e4e9</color>
+    
+</resources>
