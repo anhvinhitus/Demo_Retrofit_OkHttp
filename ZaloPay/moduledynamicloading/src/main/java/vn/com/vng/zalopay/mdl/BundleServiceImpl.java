@@ -8,9 +8,13 @@ import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.shell.MainReactPackage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,9 +39,13 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 public class BundleServiceImpl implements BundleService {
     ReactInstanceManager mInternalBundleInstanceManager;
     Application mApplication;
+    String mCurrentInternalBundleFolder;
+    String mCurrentInternalBundleVersion;
+    String mExpectedInternalBundleVersion;
 
     public BundleServiceImpl(Application application) {
         mApplication = application;
+        prepareBundleEnvironment();
     }
 
     @Override
@@ -57,10 +65,43 @@ public class BundleServiceImpl implements BundleService {
     @Override
     public void prepareInternalBundle() {
         Timber.d("Hello from bundle Service");
-        String folder = copyAssets("zalopay_v1.zip", "zalopay");
+
+        String currentVersion = getCurrentInternalBundleVersion();
+        if (currentVersion != null && currentVersion.compareTo(mExpectedInternalBundleVersion) >= 0) {
+            Timber.d("Internal version is updated");
+            return;
+        }
+        String fileName = String.format("zalopay_v%s.zip", mExpectedInternalBundleVersion);
+        String bundleFolder = String.format("%s/zalopay_v%s", getInternalBundleRoot(), mExpectedInternalBundleVersion);
+
+        String folder = copyAssets(fileName, bundleFolder);
+
+        mCurrentInternalBundleFolder = folder;
+        setCurrentInternalBundleVersion(mExpectedInternalBundleVersion);
+
+        initializeInternalBundleInstanceManager();
+        Timber.d("Done");
+    }
+
+    private void setCurrentInternalBundleVersion(String bundleVersion) {
+        try {
+            File currentVersionFile = new File(getInternalBundleRoot(), "VERSION");
+            FileOutputStream out = new FileOutputStream(currentVersionFile);
+            out.write(bundleVersion.getBytes());
+            out.close();
+        } catch (IOException e) {
+            Timber.e(e, "Cannot update internal bundle version");
+        }
+    }
+
+    void prepareExternalBundle() {
+
+    }
+
+    private void initializeInternalBundleInstanceManager() {
         mInternalBundleInstanceManager = ReactInstanceManager.builder()
                 .setApplication(mApplication)
-                .setJSBundleFile(folder + "/index.android.js")
+                .setJSBundleFile(mCurrentInternalBundleFolder + "/index.android.js")
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
                 .addPackage(new ReactInternalPackage())
@@ -68,45 +109,111 @@ public class BundleServiceImpl implements BundleService {
                 .setUseDeveloperSupport(false)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
-        Timber.d("Done");
     }
 
-    void prepareExternalBundle() {
+    String getCurrentInternalBundleVersion() {
+        File currentVersionFile = new File(getInternalBundleRoot(), "VERSION");
+        if (!currentVersionFile.exists()) {
+            return null;
+        }
 
+        return loadStringFromFile(currentVersionFile);
+    }
+
+    private void prepareBundleEnvironment() {
+        Timber.d("prepareBundleEnvironment");
+        // create root bundle folder
+        String root = getBundleRoot();
+        ensureDirectory(root);
+        String internalRoot = getInternalBundleRoot();
+        ensureDirectory(internalRoot);
+
+        File metadataFile = new File(root, "bundle.info");
+        if (!metadataFile.exists()) {
+            copyAssetToDirectory("bundle.json", metadataFile.getPath());
+        }
+
+        try {
+            JSONObject jsonObject = new JSONObject(loadStringFromFile(metadataFile));
+
+            JSONObject internalBundle = jsonObject.getJSONObject("internal_bundle");
+
+            mExpectedInternalBundleVersion = internalBundle.getString("version");
+            Timber.d("Internal bundle version: %s", mExpectedInternalBundleVersion);
+        } catch (JSONException e) {
+            Timber.e(e, "Error loading bundle info");
+        }
+    }
+
+    private String getBundleRoot() {
+        String packageName = mApplication.getPackageName();
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + packageName + "/bundles";
+    }
+
+    private String getInternalBundleRoot() {
+        return getBundleRoot() + "/modules/zalopay";
+    }
+
+    public String loadStringFromFile(File file) {
+        String json = null;
+        try {
+            InputStream is = new FileInputStream(file);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     private String copyAssets(String assetName, String destinationFolder) {
-        AssetManager assetManager = mApplication.getAssets();
         String packageName = mApplication.getPackageName();
-        InputStream in = null;
-        OutputStream out = null;
         try {
-            in = assetManager.open(assetName);
+            ensureDirectory(destinationFolder);
+            deleteContents(new File(destinationFolder));
 
-            String outFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + packageName + "/bundles/modules/" + destinationFolder;
+            copyAssetToDirectory(assetName, destinationFolder + "/" + assetName);
 
-            File outFile = new File(outFolder, assetName);
-            File dir = outFile.getParentFile();
-            if (dir.exists()) {
-                deleteContents(dir);
-            } else {
-                dir.mkdirs();
-            }
+            unzip(destinationFolder + "/" + assetName, destinationFolder);
 
-            out = new FileOutputStream(outFile);
+            File outFile = new File(destinationFolder, assetName);
+            outFile.delete();
+
+            return destinationFolder;
+        } catch (Exception e) {
+            Timber.e(e, "Failed to copy asset file: %s", assetName);
+            return null;
+        }
+    }
+
+    private void ensureDirectory(String path) {
+        File file = new File(path);
+        ensureDirectory(file);
+    }
+
+    private void ensureDirectory(File dir) {
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+
+    private void copyAssetToDirectory(String assetName, String destinationPath) {
+        AssetManager assetManager = mApplication.getAssets();
+        try {
+            InputStream in = assetManager.open(assetName);
+            OutputStream out = new FileOutputStream(destinationPath);
             copyFile(in, out);
             in.close();
             in = null;
             out.flush();
             out.close();
             out = null;
-
-            unzip(outFile.getPath(), outFolder);
-
-            return outFolder;
         } catch (IOException e) {
             Timber.e(e, "Failed to copy asset file: %s", assetName);
-            return null;
         }
     }
 

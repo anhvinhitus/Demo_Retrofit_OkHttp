@@ -8,8 +8,6 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
-import javax.inject.Inject;
-
 /**
  * Created by huuhoa on 4/26/16.
  * Load react native view
