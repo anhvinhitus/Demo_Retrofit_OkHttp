@@ -20,9 +20,13 @@ public abstract class MiniApplicationBaseActivity extends Activity implements De
     public MiniApplicationBaseActivity() {
     }
 
-    protected abstract ReactInstanceManager reactInstanceManager();
+    protected abstract BundleService bundleService();
     protected abstract void doInjection();
-    
+
+    private ReactInstanceManager reactInstanceManager() {
+        return bundleService().getInternalBundleInstanceManager();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.os.Bundle;
 
-import com.facebook.react.ReactInstanceManager;
-
 import javax.inject.Inject;
 
 import vn.com.vng.zalopay.AndroidApplication;
@@ -24,8 +22,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    protected ReactInstanceManager reactInstanceManager() {
-        return mBundleService.getInternalBundleInstanceManager();
+    protected BundleService bundleService() {
+        return mBundleService;
     }
 
     @Override
