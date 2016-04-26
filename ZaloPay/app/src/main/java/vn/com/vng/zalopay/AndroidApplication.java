@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 
 
 /**
@@ -54,6 +55,7 @@ public class AndroidApplication extends Application {
 
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
+        ZingMobilePayApplication.wrap(this);
     }
 
 
