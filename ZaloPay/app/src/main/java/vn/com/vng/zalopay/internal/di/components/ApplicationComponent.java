@@ -9,12 +9,12 @@ import dagger.Component;
 import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.UserConfig;
+import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
+import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.LoginFragment;
-import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
-import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
 
 @Singleton

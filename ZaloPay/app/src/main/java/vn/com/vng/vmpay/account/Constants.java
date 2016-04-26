@@ -23,6 +23,7 @@ public class Constants {
     /* ZaloProfile Preferences start */
     public static final String ZALO_PROFILE_PREFERENCES = "ZALO_PROFILE_PREFERENCES";
     public static final String STORAGE_KEY_ZALO_AUTHCODE = "STORAGE_KEY_ZALO_AUTHCODE";
+    public static final String STORAGE_KEY_ZALO_CHANNEL = "STORAGE_KEY_ZALO_CHANNEL";
     public static final String STORAGE_KEY_ZALO_USERID = "STORAGE_KEY_ZALO_USERID";
     public static final String STORAGE_KEY_ZALO_USERNAME = "STORAGE_KEY_ZALO_USERNAME";
     public static final String STORAGE_KEY_ZALO_DISPLAYNAME = "STORAGE_KEY_ZALO_DISPLAYNAME";

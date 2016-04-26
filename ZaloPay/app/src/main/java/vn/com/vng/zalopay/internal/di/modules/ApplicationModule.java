@@ -60,7 +60,6 @@ public class ApplicationModule {
         return passportRepository;
     }
 
-
     @Provides
     @Singleton
     @Named("request_params")
