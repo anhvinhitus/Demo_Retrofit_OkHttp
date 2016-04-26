@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 
 import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
 
-import vn.com.vng.zalopay.ui.activity.LoginActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.activity.ZPHomeActivity;
 
@@ -27,7 +26,7 @@ public class Navigator {
 
 
     public void startLoginActivity(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
+        Intent intent = new Intent(context, LoginZaloActivity.class);
         context.startActivity(intent);
     }
 
