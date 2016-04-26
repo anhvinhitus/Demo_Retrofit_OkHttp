@@ -9,7 +9,9 @@ import android.view.View;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -55,14 +57,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void createUserComponent() {
-       /* if (AndroidApplication.getInstance().getUserComponent() != null)
+        if (AndroidApplication.instance().getUserComponent() != null)
             return;
-        com.meplay.app.Runtime runtime = ZingMobileApplication.getInstance().getAppComponent().runtime();
-        if (runtime.isUserRegistered()) {
-            DatabaseAppScope databaseHelper = ZingMobileApplication.getInstance().getAppComponent().databaseAppScope();
-            User user = databaseHelper.getUser();
-            ZingMobileApplication.getInstance().createUserComponent(user);
-        }*/
+//        Runtime runtime = AndroidApplication.instance().getAppComponent().runtime();
+//        if (runtime.isUserRegistered()) {
+//            DatabaseAppScope databaseHelper = ZingMobileApplication.getInstance().getAppComponent().databaseAppScope();
+//            User user = databaseHelper.getUser();
+//            ZingMobileApplication.getInstance().createUserComponent(user);
+//        }
+        AndroidApplication.instance().createUserComponent(new User());
     }
 
     @Override

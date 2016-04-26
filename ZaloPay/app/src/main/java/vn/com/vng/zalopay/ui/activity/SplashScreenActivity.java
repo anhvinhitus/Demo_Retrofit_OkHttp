@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.ui.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.zing.zalo.zalosdk.oauth.ValidateOAuthCodeCallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -60,7 +59,12 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
             @Override
             public void run() {
                 interstitialCanceled = true;
-                showLoading("Tài khoản", "Xác minh lại quyền đăng nhập");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showLoading("Tài khoản", "Xác minh lại quyền đăng nhập");
+                    }
+                });
                 ZaloSDK.Instance.isAuthenticate(SplashScreenActivity.this);
             }
         };
@@ -103,6 +107,7 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
     @Override
     public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
         Timber.tag(TAG).d("onValidateComplete###############################isValidated:" + isValidated);
+
         if(isValidated) {
             //Authenticated
             Timber.d("isClientActivated");
@@ -116,39 +121,29 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
     }
 
     public void showLoading(final String title, final String messae) {
-        runOnUiThread(new Runnable() {
+        Timber.tag(TAG).d("showDialog..........progress:" + mProgressDialog);
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        if (SplashScreenActivity.this.isFinishing()) {
+            return;
+        }
+        Timber.tag(TAG).d("showDialog..........hehehe");
+        mProgressDialog = ProgressDialog.show(SplashScreenActivity.this, title, messae, true, true, new DialogInterface.OnCancelListener() {
             @Override
-            public void run() {
-                Log.d(TAG, "showDialog..........progress:" + mProgressDialog);
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-                if (SplashScreenActivity.this.isFinishing()) {
-                    return;
-                }
-                Log.d(TAG, "showDialog..........hehehe");
-                mProgressDialog = ProgressDialog.show(SplashScreenActivity.this, title, messae, true, true, new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        mProgressDialog.dismiss();
-                    }
-                });
-                mProgressDialog.setCanceledOnTouchOutside(false);
-            }
-        });
-    }
-
-    public void hideLoading() {
-        Log.d(TAG, "hideDialog..........mProgressDialog:" + mProgressDialog);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "hideDialog..........");
-                if (mProgressDialog == null || !mProgressDialog.isShowing())
-                    return;
+            public void onCancel(DialogInterface dialog) {
                 mProgressDialog.dismiss();
             }
         });
+        mProgressDialog.setCanceledOnTouchOutside(false);
+    }
+
+    public void hideLoading() {
+        Timber.tag(TAG).d("hideDialog..........");
+        Timber.tag(TAG).d("hideDialog..........mProgressDialog:" + mProgressDialog);
+        if (mProgressDialog == null || !mProgressDialog.isShowing())
+            return;
+        mProgressDialog.dismiss();
     }
 
     public boolean isShowLoading() {

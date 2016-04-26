@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.ui.view.ILoginView;
 
 public class LoginFragment extends BaseFragment implements ILoginView {
 
-
     public static LoginFragment newInstance() {
         Bundle args = new Bundle();
 
@@ -112,5 +111,9 @@ public class LoginFragment extends BaseFragment implements ILoginView {
 
     }
 
+    @Override
+    public void gotoMainActivity() {
+
+    }
 }
 */

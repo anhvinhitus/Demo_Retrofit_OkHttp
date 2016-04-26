@@ -1,1 +1,1 @@
-include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator',':qrcodecore', ':zalosdk'
+include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator',':qrcodecore', ':zalosdk', ':zMP_SDK', ':zMP_SDK_Demo'

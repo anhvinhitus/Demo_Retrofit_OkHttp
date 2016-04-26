@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aa000000"
+    android:padding="10dp" >
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/zpsdk_round_corner" >
+
+        <include
+            android:id="@+id/payment_method_container"
+            layout="@layout/zpsdk_payment_method_container" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/payment_method_container"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/payment_group_button_submit_height"
+            android:fillViewport="true"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/view_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="7dp"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp" >
+
+                    <vn.zing.pay.zmpsdk.view.custom.VPaymentChannelGroup
+                        android:id="@+id/payment_channel_adapter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1px"
+                            android:layout_weight="1"
+                            android:background="#d3d7e4" />
+
+                        <TextView
+                            android:id="@+id/holder_name_card"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="chưa chọn loại thẻ"
+                            android:textColor="#23A5C9" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1px"
+                            android:layout_weight="1"
+                            android:background="#d3d7e4" />
+                    </LinearLayout>
+
+                    <vn.zing.pay.zmpsdk.view.custom.VPaymentEditText
+                        android:id="@+id/cardCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/payment_channel_adapter"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/zpsdk_border06"
+                        android:hint="Mã cào"
+                        android:imeOptions="actionNext"
+                        android:maxLength="20"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textSize="@dimen/sdk_form_input_size" />
+
+                    <vn.zing.pay.zmpsdk.view.custom.VPaymentEditText
+                        android:id="@+id/cardSerialNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/cardCode"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/zpsdk_border06"
+                        android:hint="Số seri thẻ"
+                        android:imeOptions="actionDone"
+                        android:maxLength="20"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textSize="@dimen/sdk_form_input_size" />
+
+                    <TextView
+                        android:id="@+id/zpsdk_method_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/cardSerialNo"
+                        android:layout_marginTop="10dp"
+                        android:ellipsize="end"
+                        android:maxLength="50"
+                        android:maxLines="2"
+                        android:paddingLeft="@dimen/payment_displayInfo_padding"
+                        android:paddingRight="@dimen/payment_displayInfo_padding"
+                        android:singleLine="false"
+                        android:textColor="#333333"
+                        android:textSize="15dp"
+                        android:textStyle="italic" />
+
+                    <ImageButton
+                        android:id="@+id/take_photo"
+                        android:layout_width="54dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/payment_channel_adapter"
+                        android:layout_marginTop="11dp"
+                        android:background="@null"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/i_capture"
+                        android:visibility="gone" />
+
+                    <ToggleButton
+                        android:id="@+id/zpsdk_ok_ctl"
+                        android:layout_width="fill_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="15dip"
+                        android:background="@drawable/zpsdk_togglebutton_background"
+                        android:paddingBottom="10dip"
+                        android:paddingTop="10dip"
+                        android:textColor="#fff"
+                        android:textOff="@string/zingpaysdk_submit"
+                        android:textOn="@string/zingpaysdk_submit"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/payment_group_button_submit_height"
+            android:layout_alignParentBottom="true"
+            layout="@layout/zpsdk_submit" />
+    </RelativeLayout>
+
+</RelativeLayout>
