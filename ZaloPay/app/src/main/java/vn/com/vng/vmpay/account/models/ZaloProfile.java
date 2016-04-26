@@ -13,7 +13,7 @@ import vn.com.vng.zalopay.domain.model.AbstractData;
 /**
  * Created by longlv on 22/04/2016.
  */
-public class Profile extends AbstractData {
+public class ZaloProfile extends AbstractData {
 
     private long userId;
     private String userName;
@@ -27,7 +27,7 @@ public class Profile extends AbstractData {
     private String twitterId;
     private String googleId;
 
-    public Profile() {
+    public ZaloProfile() {
         this.userId = -1;
         this.userName = "";
         this.displayName = "";
@@ -41,7 +41,7 @@ public class Profile extends AbstractData {
         this.googleId = "";
     }
 
-    public Profile(long userId, String userName, String displayName, String avatar, String userGender, String birthday, String yahooId, String zingMeId, String facebookId, String twitterId, String googleId) {
+    public ZaloProfile(long userId, String userName, String displayName, String avatar, String userGender, String birthday, String yahooId, String zingMeId, String facebookId, String twitterId, String googleId) {
         this.userId = userId;
         this.userName = userName;
         this.displayName = displayName;
@@ -55,7 +55,7 @@ public class Profile extends AbstractData {
         this.googleId = googleId;
     }
 
-    public Profile(JSONObject jsonObject) throws JSONException {
+    public ZaloProfile(JSONObject jsonObject) throws JSONException {
         super();
         if (jsonObject == null) {
             return;
@@ -74,10 +74,10 @@ public class Profile extends AbstractData {
         googleId = jsonObject.getString(Constants.GOOGLEID);
     }
 
-    public static final Parcelable.Creator<Profile> CREATOR = new Parcelable.Creator<Profile>() {
+    public static final Parcelable.Creator<ZaloProfile> CREATOR = new Parcelable.Creator<ZaloProfile>() {
 
         @Override
-        public Profile createFromParcel(Parcel parcelSource) {
+        public ZaloProfile createFromParcel(Parcel parcelSource) {
             // Must read values in the same order as they were placed in
             long userId = parcelSource.readLong();
             String userName = parcelSource.readString();
@@ -90,13 +90,13 @@ public class Profile extends AbstractData {
             String facebookId = parcelSource.readString();
             String twitterId = parcelSource.readString();
             String googleId = parcelSource.readString();
-            Profile user = new Profile(userId, userName, displayName, avatar, userGender, birthday, yahooId, zingMeId, facebookId, twitterId, googleId);
+            ZaloProfile user = new ZaloProfile(userId, userName, displayName, avatar, userGender, birthday, yahooId, zingMeId, facebookId, twitterId, googleId);
             return user;
         }
 
         @Override
-        public Profile[] newArray(int size) {
-            return new Profile[size];
+        public ZaloProfile[] newArray(int size) {
+            return new ZaloProfile[size];
         }
 
     };

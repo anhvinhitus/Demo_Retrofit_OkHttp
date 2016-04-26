@@ -4,13 +4,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 import vn.com.vng.vmpay.account.network.listener.LoginListener;
+import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
@@ -23,6 +26,9 @@ public class LoginZaloActivity extends BaseActivity implements View.OnClickListe
     protected ProgressDialog mProgressDialog;
     private View mLayoutLoginZalo;
     private LoginListener mLoginListener;
+
+    @Inject
+    ZaloProfilePreferences zaloProfilePreferences;
 
     @Override
     protected int getResLayoutId() {
@@ -37,6 +43,7 @@ public class LoginZaloActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidApplication.instance().getAppComponent().inject(this);
         findView();
         mLoginListener = new LoginListener(this);
     }
@@ -77,13 +84,17 @@ public class LoginZaloActivity extends BaseActivity implements View.OnClickListe
     public void onAuthenError(int errorCode, String message) {
         Timber.tag(TAG).d("onAuthenError................errorCode:" + errorCode);
         Timber.tag(TAG).d("onAuthenError................message:" + message);
+        zaloProfilePreferences.setUserId(0);
+        zaloProfilePreferences.setAuthCode("");
         hideLoading();
         ToastUtil.showToast(this, message);
     }
 
     @Override
-    public void onGetOAuthComplete(long uId, String oauthCode, String channel) {
-        Timber.tag(TAG).d("onGetOAuthComplete................oauthCode:" + oauthCode);
+    public void onGetOAuthComplete(long uId, String authCode, String channel) {
+        Timber.tag(TAG).d("onGetOAuthComplete................authCode:" + authCode);
+        zaloProfilePreferences.setUserId(uId);
+        zaloProfilePreferences.setAuthCode(authCode);
         hideLoading();
         gotoMainActivity();
     }
@@ -95,45 +106,30 @@ public class LoginZaloActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void showLoading(final String title, final String messae) {
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                hideLoading();
-//            }
-//        }, SCAN_PERIOD);
-        runOnUiThread(new Runnable() {
+        Timber.tag(TAG).d("showDialog..........progress:" + mProgressDialog);
+        if (isFinishing()) {
+            return;
+        }
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        Timber.tag(TAG).d("showDialog..........hehehe");
+        mProgressDialog = ProgressDialog.show(LoginZaloActivity.this, title, messae, true, true, new DialogInterface.OnCancelListener() {
             @Override
-            public void run() {
-                Log.d(TAG, "showDialog..........progress:" + mProgressDialog);
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-                if (LoginZaloActivity.this.isFinishing()) {
-                    return;
-                }
-                Log.d(TAG, "showDialog..........hehehe");
-                mProgressDialog = ProgressDialog.show(LoginZaloActivity.this, title, messae, true, true, new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        mProgressDialog.dismiss();
-                    }
-                });
-                mProgressDialog.setCanceledOnTouchOutside(false);
-            }
-        });
-    }
-
-    public void hideLoading() {
-        Log.d(TAG, "hideDialog..........mProgressDialog:" + mProgressDialog);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "hideDialog..........");
-                if (mProgressDialog == null || !mProgressDialog.isShowing())
-                    return;
+            public void onCancel(DialogInterface dialog) {
                 mProgressDialog.dismiss();
             }
         });
+        mProgressDialog.setCanceledOnTouchOutside(false);
+    }
+
+    public void hideLoading() {
+        Timber.tag(TAG).d("hideDialog..........");
+        Timber.tag(TAG).d("hideDialog..........mProgressDialog:" + mProgressDialog);
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.dismiss();
     }
 
     public boolean isShowLoading() {
