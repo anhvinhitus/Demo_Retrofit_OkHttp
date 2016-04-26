@@ -18,6 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -103,6 +104,12 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_recharge_game)
     public void onClickRechargeGame(View v) {
         Timber.d("Recharge.Game");
+        gotoRechargeGame();
+    }
+
+    private void gotoRechargeGame() {
+        Intent intent = new Intent(getActivity(), BalanceTopupActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.btn_recharge_phone)
@@ -142,8 +149,8 @@ public class ZaloPayFragment extends BaseMainFragment {
     }
 
     private void startZMPSDKDemo() {
-        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
+//        startActivity(intent);
     }
 
     private void signout() {

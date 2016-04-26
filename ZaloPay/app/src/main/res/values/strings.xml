@@ -46,4 +46,15 @@
     <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
 
     <string name="title_activity_login">Đăng nhập</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="cards">Cards</string>
+    <string name="amount">Số tiền (VNĐ)</string>
+
+    <string name="btn_continue">Tiếp tục</string>
+
+    <!--Activity lable START-->
+    <string name="title_activity_balance_topup">Nạp tiền</string>
+
+    <!--Activity lable END-->
 </resources>
