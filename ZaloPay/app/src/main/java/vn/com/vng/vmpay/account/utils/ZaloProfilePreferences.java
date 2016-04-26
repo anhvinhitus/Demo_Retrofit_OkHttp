@@ -1,6 +1,5 @@
 package vn.com.vng.vmpay.account.utils;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import javax.inject.Inject;
@@ -12,19 +11,31 @@ import vn.com.vng.vmpay.account.models.ZaloProfile;
 /**
  * Created by longlv on 22/04/2016.
  */
-
 @Singleton
 public class ZaloProfilePreferences {
 
     private SharedPreferences mPreferences;
 
     @Inject
-    public ZaloProfilePreferences(Context context) {
-        mPreferences = context.getSharedPreferences(Constants.ZALO_PROFILE_PREFERENCES, Context.MODE_PRIVATE);
+    public ZaloProfilePreferences(SharedPreferences sharedPreferences) {
+        mPreferences = sharedPreferences;
     }
 
     private void clearProfile() {
-        mPreferences.edit().clear().commit();
+        setUserId(0);
+        setUserName("");
+        setDisplayName("");
+        setAvatar("");
+        setUserGender("");
+        setBirthday("");
+        setYahooId("");
+        setZingMeId("");
+        setFacebookId("");
+        setTwitterId("");
+        setGoogleId("");
+        //clear auth zalo
+        setAuthCode("");
+        setChannel("");
     }
 
     public ZaloProfile getZaloProfile() {
@@ -65,6 +76,14 @@ public class ZaloProfilePreferences {
 
     public String getAuthCode() {
         return mPreferences.getString(Constants.STORAGE_KEY_ZALO_AUTHCODE, "");
+    }
+
+    public void setChannel(String channel) {
+        mPreferences.edit().putString(Constants.STORAGE_KEY_ZALO_CHANNEL, channel).apply();
+    }
+
+    public String getChannel() {
+        return mPreferences.getString(Constants.STORAGE_KEY_ZALO_CHANNEL, "");
     }
 
     public void setUserId(long uid) {
