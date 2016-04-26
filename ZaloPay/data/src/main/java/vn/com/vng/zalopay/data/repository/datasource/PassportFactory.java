@@ -56,7 +56,7 @@ public class PassportFactory {
     }
 
     public Observable<LogoutResponse> logout() {
-        return passportService.logout(userConfig.getCurrentUser().session, authZaloParams, params)
+        return passportService.logout(userConfig.getCurrentUser().accesstoken, authZaloParams, params)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
     }
 }

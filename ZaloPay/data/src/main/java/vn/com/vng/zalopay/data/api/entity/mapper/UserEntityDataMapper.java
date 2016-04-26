@@ -17,7 +17,7 @@ public class UserEntityDataMapper {
         User user = null;
         if (response != null) {
             user = new User();
-            user.session = response.accesstoken;
+            user.accesstoken = response.accesstoken;
             user.expirein = response.expirein;
         }
 

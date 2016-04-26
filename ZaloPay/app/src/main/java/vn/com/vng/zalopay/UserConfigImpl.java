@@ -60,12 +60,14 @@ public class UserConfigImpl implements UserConfig {
     public void loadConfig() {
         if (preferences.contains(Constants.PREF_USER_SESSION)) {
             String session = preferences.getString(Constants.PREF_USER_SESSION, "");
-            long uid = preferences.getLong(Constants.PREF_USER_ID, 0);
-            if (TextUtils.isEmpty(session) || uid <= 0) return;
+            //   long uid = preferences.getLong(Constants.PREF_USER_ID, 0);
+            if (TextUtils.isEmpty(session)) return;
 
 
-            currentUser = new User(uid);
+            currentUser = new User();
             currentUser.accesstoken = session;
+            currentUser.expirein = preferences.getLong(Constants.PREF_USER_EXPIREIN, -1);
+
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");

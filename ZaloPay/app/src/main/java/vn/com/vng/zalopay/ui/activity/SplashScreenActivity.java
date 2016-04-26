@@ -108,7 +108,7 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
     public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
         Timber.tag(TAG).d("onValidateComplete###############################isValidated:" + isValidated);
 
-        if(isValidated) {
+        if (isValidated && mUserConfig.isClientActivated()) {
             //Authenticated
             Timber.d("isClientActivated");
             navigator.startHomeActivity(this);
