@@ -89,12 +89,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
         loginPresenter.onActivityResult(this, requestCode, resultCode, data);
     }
 
-    public void onAuthenError(int errorCode, String message) {
-
-        hideLoading();
-        ToastUtil.showToast(this, message);
-    }
-
     @Override
     public void gotoMainActivity() {
         Intent intent = new Intent(this, ZPHomeActivity.class);
