@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="selector">@drawable/default_selector</item>
+        <item name="divider">@color/divider</item>
+        <item name="android:listViewStyle">@style/ListView</item>
+        <item name="separate">@color/separate</item>
+        <item name="separate.height">@dimen/separate</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/splash_bg</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Account.Login.Button" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text.login</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Button.Normal" parent="AppTheme.Button">
+        <item name="android:textSize">@dimen/textsize.normal</item>
+        <item name="android:padding">@dimen/spacing.medium.l</item>
+    </style>
+
+    <style name="PrimaryButtonColor" parent="AppTheme">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+    </style>
+
+    <style name="BorderlessButtonColor" parent="AppTheme">
+        <item name="colorControlHighlight">@color/colorPrimaryHightlight</item>
+    </style>
+
+    <style name="SupportMoneyBorderlessButtonColor" parent="AppTheme">
+        <item name="colorControlHighlight">#b0bec5</item>
+    </style>
+
+    <style name="DialogNoBackground" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+
+    <!--<style name="AppTheme.NoActionBar.FullScreen">-->
+    <!--</style>-->
+
+    <!--<style name="AppTheme.Translucent.NoTitle" parent="AppTheme">-->
+    <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+    <!--<item name="android:colorBackgroundCacheHint">@null</item>-->
+    <!--<item name="android:windowIsTranslucent">true</item>-->
+    <!--<item name="windowNoTitle">true</item>-->
+    <!--<item name="windowActionBar">false</item>-->
+    <!--<item name="android:windowContentOverlay">@null</item>-->
+    <!--</style>-->
+
+</resources>

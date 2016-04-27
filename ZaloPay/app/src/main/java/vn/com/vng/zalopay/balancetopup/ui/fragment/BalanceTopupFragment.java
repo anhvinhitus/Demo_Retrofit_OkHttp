@@ -8,14 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.widget.BankSpinner;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.vng.uicomponent.widget.edittext.ClearableEditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +35,7 @@ public class BalanceTopupFragment extends BaseFragment {
     BankSpinner bankSpinner;
 
     @Bind(R.id.edtAmount)
-    ClearableEditText edtAmount;
+    EditText edtAmount;
 
     @Bind(R.id.btnContinue)
     Button btnContinue;
@@ -50,6 +51,7 @@ public class BalanceTopupFragment extends BaseFragment {
 
     @OnClick(R.id.btnContinue)
     public void onBtnContinueClick(View view) {
+        Timber.tag(TAG).d("onBtnContinueClick............");
 
     }
 

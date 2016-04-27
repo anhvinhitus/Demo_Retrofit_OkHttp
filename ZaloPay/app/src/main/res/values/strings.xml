@@ -49,7 +49,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="cards">Cards</string>
-    <string name="amount">Số tiền (VNĐ)</string>
+    <string name="amount">Số tiền (VND)</string>
+    <string name="currency_unit">VND</string>
 
     <string name="btn_continue">Tiếp tục</string>
 
