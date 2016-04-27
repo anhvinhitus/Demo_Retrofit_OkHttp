@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.presenter;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     }
 
     public void loginZalo(Activity activity) {
-        ZaloSDK.Instance.authenticate(activity, new LoginListener(this));
+        ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, new LoginListener(this));
     }
 
     @Override

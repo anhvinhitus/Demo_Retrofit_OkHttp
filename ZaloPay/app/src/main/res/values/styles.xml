@@ -27,4 +27,13 @@
         <item name="android:textSize">@dimen/text.login</item>
     </style>
 
+    <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Button.Normal" parent="AppTheme.Button">
+        <item name="android:textSize">@dimen/textsize.normal</item>
+        <item name="android:padding">@dimen/spacing.medium.l</item>
+    </style>
 </resources>

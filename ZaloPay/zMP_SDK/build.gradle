@@ -34,8 +34,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
     compile files('libs/httpclient-4.1.jar')
     compile files('libs/httpcore-4.1.jar')
-    compile files('libs/zxing-android-core-3.2.1.jar')
-    compile files('libs/zxing-core-3.2.1.jar')
+    compile libs.zxing_android_core
+    compile libs.zxing
     compile libs.support_support_v4
     compile libs.play_services_analytics
     compile libs.play_services

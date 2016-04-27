@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay;
 
+import android.content.Context;
+import android.os.StrictMode;
+import android.support.multidex.MultiDex;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.multidex.MultiDexApplication;
@@ -18,6 +21,7 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 
 
 /**
@@ -62,6 +66,7 @@ public class AndroidApplication extends MultiDexApplication {
 
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
+        ZingMobilePayApplication.wrap(this);
     }
 
 
@@ -90,7 +95,11 @@ public class AndroidApplication extends MultiDexApplication {
         return userComponent;
     }
 
-
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+	}
+	
     private void initializeFileFolder() {
         if (Environment.MEDIA_MOUNTED.equals(Environment
                 .getExternalStorageState())) {
