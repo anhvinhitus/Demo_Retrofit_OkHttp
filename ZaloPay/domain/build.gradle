@@ -31,4 +31,10 @@ dependencies {
     compile libs.rxAndroid
     compile libs.timber
     compile libs.gson
+
+    compile libs.support_annotations
+    compile libs.dagger
+
+    provided libs.daggerCompiler
+    provided libs.javaxAnnotation
 }

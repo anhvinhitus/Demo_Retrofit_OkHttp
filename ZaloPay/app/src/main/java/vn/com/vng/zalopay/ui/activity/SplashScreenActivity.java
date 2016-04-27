@@ -15,7 +15,8 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.UserConfig;
+
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -107,7 +108,7 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
     public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
         Timber.tag(TAG).d("onValidateComplete###############################isValidated:" + isValidated);
 
-        if(isValidated) {
+        if (isValidated && mUserConfig.isClientActivated()) {
             //Authenticated
             Timber.d("isClientActivated");
             navigator.startHomeActivity(this);

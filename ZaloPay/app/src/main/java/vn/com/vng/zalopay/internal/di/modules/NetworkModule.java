@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -40,7 +41,6 @@ public class NetworkModule {
 
     public NetworkModule() {
     }
-
 
     @Provides
     @Singleton
@@ -87,7 +87,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Named("Retrofit")
+    @Named("retrofit")
     Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))

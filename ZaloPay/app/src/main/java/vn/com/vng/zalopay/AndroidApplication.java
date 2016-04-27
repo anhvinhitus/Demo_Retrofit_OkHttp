@@ -3,11 +3,15 @@ package vn.com.vng.zalopay;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.multidex.MultiDex;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.support.multidex.MultiDexApplication;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
+
+import java.io.File;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
@@ -26,6 +30,10 @@ import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 public class AndroidApplication extends MultiDexApplication {
 
     public static final String TAG = "AndroidApplication";
+
+    public static File extStorageAppBasePath;
+    public static File extStorageAppCachePath;
+
 
     private ApplicationComponent appComponent;
     private UserComponent userComponent;
@@ -54,6 +62,7 @@ public class AndroidApplication extends MultiDexApplication {
         }
 
         initAppComponent();
+        initializeFileFolder();
 
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
@@ -89,5 +98,36 @@ public class AndroidApplication extends MultiDexApplication {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+	}
+	
+    private void initializeFileFolder() {
+        if (Environment.MEDIA_MOUNTED.equals(Environment
+                .getExternalStorageState())) {
+            File externalStorageDir = Environment.getExternalStorageDirectory();
+
+            if (externalStorageDir != null) {
+                extStorageAppBasePath = new File(
+                        externalStorageDir.getAbsolutePath() + File.separator
+                                + "Android" + File.separator + "data"
+                                + File.separator + getPackageName());
+            }
+
+            if (extStorageAppBasePath != null) {
+                extStorageAppCachePath = new File(
+                        extStorageAppBasePath.getAbsolutePath()
+                                + File.separator + "cache");
+
+                boolean isCachePathAvailable = true;
+
+                if (!extStorageAppCachePath.exists()) {
+                    isCachePathAvailable = extStorageAppCachePath.mkdirs();
+                }
+
+                if (!isCachePathAvailable) {
+                    extStorageAppCachePath = null;
+                }
+            }
+
+        }
     }
 }

@@ -2,10 +2,7 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
-
-import java.util.HashMap;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -14,7 +11,9 @@ import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.UIThread;
-import vn.com.vng.zalopay.UserConfig;
+import vn.com.vng.zalopay.UserConfigImpl;
+import vn.com.vng.zalopay.data.api.ParamRequestProvider;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.data.repository.PassportRepositoryImpl;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -62,17 +61,15 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    @Named("request_params")
-    HashMap<String, String> provideParamsDefault() {
-        HashMap<String, String> ret = new HashMap<>();
-        ret.put("device", Build.MODEL);
-        return ret;
+    @Named("param_provider")
+    ParamRequestProvider provideParamRequestProvider() {
+        return new ParamRequestProvider();
     }
 
     @Provides
     @Singleton
     UserConfig providesUserConfig(SharedPreferences sharedPreferences) {
-        return new UserConfig(sharedPreferences);
+        return new UserConfigImpl(sharedPreferences);
     }
 
 }

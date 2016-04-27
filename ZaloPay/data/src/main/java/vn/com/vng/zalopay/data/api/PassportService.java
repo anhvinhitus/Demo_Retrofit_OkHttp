@@ -4,6 +4,7 @@ package vn.com.vng.zalopay.data.api;
 import java.util.HashMap;
 
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
@@ -16,12 +17,12 @@ import vn.com.vng.zalopay.data.api.response.LogoutResponse;
  */
 public interface PassportService {
 
+
     @FormUrlEncoded
     @POST("um/createaccesstoken")
-    Observable<LoginResponse> login(@Field("appid") String appid, @Field("userid") String userid, @Field("zalooauthcode") String zalooauthcode, @QueryMap HashMap<String, String> params);
-    
+    Observable<LoginResponse> login(@FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);
+
     @FormUrlEncoded
     @POST("um/removeaccesstoken")
-    Observable<LogoutResponse> logout(@Field("appid") String appid, @Field("userid") String userid, @Field("accesstoken") String accesstoken, @QueryMap HashMap<String, String> params);
-
+    Observable<LogoutResponse> logout(@Field("accesstoken") String accesstoken, @FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);
 }
