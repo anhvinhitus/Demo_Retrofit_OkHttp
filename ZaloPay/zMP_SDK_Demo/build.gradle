@@ -27,6 +27,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile libs.support_appcompat_v7
-    compile project (':zMP_SDK')
-
+    compile project(':zMP_SDK')
 }

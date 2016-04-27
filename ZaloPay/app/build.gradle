@@ -121,6 +121,13 @@ android {
         exclude 'META-INF/ASL2.0'
 
     }
+
+    dexOptions {
+        jumboMode = true
+
+        preDexLibraries = false
+        javaMaxHeapSize "2g"
+    }
 }
 
 dependencies {
@@ -151,6 +158,6 @@ dependencies {
     compile project(':qrcodecore')
 
     compile project(':zalosdk')
-    compile project(':zMP_SDK')
+//    compile project(':zMP_SDK')
     compile project(':zMP_SDK_Demo')
 }

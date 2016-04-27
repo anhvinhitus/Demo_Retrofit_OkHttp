@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay;
 
-import android.app.Application;
+import android.content.Context;
 import android.os.StrictMode;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
@@ -21,7 +23,7 @@ import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 /**
  * Created by AnhHieu on 3/24/16.
  */
-public class AndroidApplication extends Application {
+public class AndroidApplication extends MultiDexApplication {
 
     public static final String TAG = "AndroidApplication";
 
@@ -84,5 +86,8 @@ public class AndroidApplication extends Application {
         return userComponent;
     }
 
-
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

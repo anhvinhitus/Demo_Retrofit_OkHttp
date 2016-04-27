@@ -145,7 +145,7 @@
             android:name="vn.zing.pay.zmpsdk.view.PaymentChannelActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden"></activity>
-       <!-- <activity android:name="vn.zing.pay.trivialdrivesample.DemoSDKActivity" />
+        <activity android:name="vn.zing.pay.trivialdrivesample.DemoSDKActivity" />
         <activity
             android:name="vn.zing.pay.trivialdrivesample.WebBridgeActivity"
             android:label="@string/title_activity_web_bridge"
@@ -160,7 +160,7 @@
                     android:host="payment-cancel"
                     android:scheme="zingpaysdk-123" />
             </intent-filter>
-        </activity>-->
+        </activity>
         <!-- ##########################Tich hop ZaloPayWalletSDK END ########################## -->
 
         <activity

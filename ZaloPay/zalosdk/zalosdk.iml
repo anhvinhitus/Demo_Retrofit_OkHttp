@@ -101,7 +101,6 @@
     <orderEntry type="library" exported="" name="dom4j-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="za-mobile-v1.1.0328" level="project" />
-    <orderEntry type="library" exported="" name="IInAppBillingService" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="jaxen-1.1.6" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.2.1" level="project" />

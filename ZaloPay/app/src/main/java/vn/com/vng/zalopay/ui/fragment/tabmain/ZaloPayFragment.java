@@ -149,8 +149,8 @@ public class ZaloPayFragment extends BaseMainFragment {
     }
 
     private void startZMPSDKDemo() {
-//        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
+        startActivity(intent);
     }
 
     private void signout() {
