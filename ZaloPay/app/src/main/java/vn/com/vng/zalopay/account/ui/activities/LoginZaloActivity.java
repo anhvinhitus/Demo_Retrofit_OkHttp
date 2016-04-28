@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
-import vn.com.vng.zalopay.ui.activity.ZPHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
@@ -91,7 +91,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void gotoMainActivity() {
-        Intent intent = new Intent(this, ZPHomeActivity.class);
+//        Intent intent = new Intent(this,  ZPHomeActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }

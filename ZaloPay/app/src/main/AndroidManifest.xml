@@ -62,6 +62,13 @@
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+            android:name=".home.ui.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".ui.activity.ZPHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/app_name"
@@ -166,7 +173,8 @@
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
             android:label="@string/title_activity_balance_topup"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
+        <activity
+            android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

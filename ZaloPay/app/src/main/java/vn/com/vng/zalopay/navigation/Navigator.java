@@ -9,9 +9,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
-
+import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
-import vn.com.vng.zalopay.ui.activity.ZPHomeActivity;
 
 /*
 * Navigator
@@ -31,7 +30,7 @@ public class Navigator {
     }
 
     public void startHomeActivity(Context context) {
-        Intent intent = new Intent(context, ZPHomeActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
 
