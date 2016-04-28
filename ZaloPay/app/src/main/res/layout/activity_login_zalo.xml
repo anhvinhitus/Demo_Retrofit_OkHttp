@@ -8,6 +8,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/spacing.medium"
         android:layout_weight="0.30">
 
         <FrameLayout
@@ -25,6 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:paddingTop="@dimen/spacing.tiny"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_zalopay" />
@@ -48,9 +50,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginTop="1dp"
                 android:adjustViewBounds="true"
-                android:padding="@dimen/spacing.small"
+                android:paddingLeft="@dimen/login_button_merge"
+                android:paddingRight="@dimen/login_button_merge"
+                android:paddingTop="@dimen/login_button_merge"
+                android:paddingBottom="@dimen/login_button_merge_bottom"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_zalo" />
 
