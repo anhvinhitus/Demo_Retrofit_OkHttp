@@ -26,4 +26,6 @@ public interface UserConfig {
     void clearConfig();
 
     String getSession();
+
+    long getUserId();
 }

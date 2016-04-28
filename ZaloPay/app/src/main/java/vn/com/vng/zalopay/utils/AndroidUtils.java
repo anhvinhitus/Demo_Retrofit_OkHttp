@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
@@ -31,6 +32,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.vng.uicomponent.widget.util.DebugLog;
 
 /**
  * Created by AnhHieu on 9/14/15.
@@ -244,7 +246,7 @@ public class AndroidUtils {
     public static Notification getBigTextNotification(Context context, int reqCode, Intent target, String title, String content, String bigTitle, String bigText, int iconResource) {
 
 //        Intent intent = new Intent(context, WelcomeActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode , target,
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, target,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.BigTextStyle notiStyle = new
@@ -269,7 +271,7 @@ public class AndroidUtils {
     public static Notification getDefaultNotification(Context context, String title, String content, int iconResource, Activity activity) {
 
         Intent intent = new Intent(context, activity.getClass());
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 , intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -359,6 +361,23 @@ public class AndroidUtils {
         } catch (Exception ex) {
             ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_playstore)");
         }
+    }
+
+    public static boolean isMainThead() {
+        boolean ret = false;
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            ret = true;
+        }
+        Timber.d(ret ? " Current Thread is Main Thread " : " Current Thread is Background Thread ");
+        return ret;
+    }
+
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

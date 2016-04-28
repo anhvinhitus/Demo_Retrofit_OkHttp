@@ -17,7 +17,6 @@ import vn.com.vng.zalopay.data.api.response.LogoutResponse;
  */
 public interface PassportService {
 
-
     @FormUrlEncoded
     @POST("um/createaccesstoken")
     Observable<LoginResponse> login(@FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);

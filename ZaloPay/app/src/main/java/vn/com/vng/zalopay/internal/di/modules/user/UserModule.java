@@ -20,47 +20,5 @@ public class UserModule {
         return user;
     }
 
-  /*  @Singleton
-    @Provides
-    VideoRepository provideVideoRepository(VideoRepositoryImpl videoRepository) {
-        return videoRepository;
-    }*/
-
-  /*  @Provides
-    @UserScope
-    RepositoriesManager provideRepositoriesManager(User user, GithubApiService githubApiService) {
-        return new RepositoriesManager(user, githubApiService);
-    }*/
-
-
-    /*@Provides
-    @PerActivity
-    @Named("userList")
-    UseCase provideGetUserListUseCase(
-            GetUserList getUserList) {
-        return getUserList;
-    }
-
-    @Provides
-    @PerActivity
-    @Named("userDetails")
-    UseCase provideGetUserDetailsUseCase(
-            UserRepository userRepository, ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread) {
-        return new GetUserDetails(userId, userRepository, threadExecutor, postExecutionThread);
-    }*/
-
-   /* @Provides   @UserScope @Named("userList")
-    UseCase provideGetUserListUseCase(
-            GetUserList getUserList) {
-        return getUserList;
-    }
-
-    @Provides @PerActivity @Named("userDetails") UseCase provideGetUserDetailsUseCase(
-            UserRepository userRepository, ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread) {
-        return new GetUserDetails(userId, userRepository, threadExecutor, postExecutionThread);
-    }
-*/
 
 }

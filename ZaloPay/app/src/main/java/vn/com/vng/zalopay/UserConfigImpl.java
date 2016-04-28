@@ -108,4 +108,12 @@ public class UserConfigImpl implements UserConfig {
         }
         return null;
     }
+
+    @Override
+    public long getUserId() {
+        if (isClientActivated()) {
+            return getCurrentUser().uid;
+        }
+        return -1;
+    }
 }
