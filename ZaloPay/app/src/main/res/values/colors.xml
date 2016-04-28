@@ -20,4 +20,6 @@
 
     <color name="number_color">#222222</color>
     <color name="accent">#FF4081</color>
+
+    <color name="separate.login">#0c7dc1</color>
 </resources>
