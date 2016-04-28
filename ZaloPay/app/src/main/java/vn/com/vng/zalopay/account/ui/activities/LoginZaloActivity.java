@@ -1,4 +1,4 @@
-package vn.com.vng.vmpay.account.ui.activities;
+package vn.com.vng.zalopay.account.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;

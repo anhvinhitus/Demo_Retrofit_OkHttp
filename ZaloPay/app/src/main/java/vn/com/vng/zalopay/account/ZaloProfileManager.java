@@ -7,7 +7,7 @@
 //
 //import vn.com.vng.vmpay.account.listener.IProfileListener;
 //import vn.com.vng.vmpay.account.models.ZaloProfile;
-//import vn.com.vng.vmpay.account.network.listener.ReqGetProfileListener;
+//import vn.com.vng.zalopay.account.network.listener.ReqGetProfileListener;
 //import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
 //import vn.com.vng.zalopay.AndroidApplication;
 //

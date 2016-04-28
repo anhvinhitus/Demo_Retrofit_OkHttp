@@ -58,7 +58,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity"
+            android:name=".account.ui.activities.LoginZaloActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity

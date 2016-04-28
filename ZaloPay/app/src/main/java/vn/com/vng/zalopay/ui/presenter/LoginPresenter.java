@@ -13,8 +13,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.vmpay.account.network.listener.LoginListener;
-import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.account.network.listener.LoginListener;
+import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.interactor.UseCase;
@@ -94,7 +94,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
         //Fixme :  dang test
         HashMap map = AndroidApplication.instance().getAppComponent().paramsRequestProvider().getParamsZalo();
-        map.put("appid", String.valueOf(3));
+        map.put("appid", String.valueOf(1));
         map.put("userid", String.valueOf(uId));
         map.put("zalooauthcode", authCode);
 

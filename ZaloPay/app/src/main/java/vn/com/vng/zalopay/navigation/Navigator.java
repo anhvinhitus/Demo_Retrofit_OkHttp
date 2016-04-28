@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.activity.ZPHomeActivity;

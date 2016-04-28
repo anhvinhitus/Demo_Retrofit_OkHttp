@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;

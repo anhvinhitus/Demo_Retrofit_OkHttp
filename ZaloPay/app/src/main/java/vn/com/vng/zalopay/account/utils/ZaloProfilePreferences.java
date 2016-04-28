@@ -1,12 +1,12 @@
-package vn.com.vng.vmpay.account.utils;
+package vn.com.vng.zalopay.account.utils;
 
 import android.content.SharedPreferences;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import vn.com.vng.vmpay.account.Constants;
-import vn.com.vng.vmpay.account.models.ZaloProfile;
+import vn.com.vng.zalopay.account.Constants;
+import vn.com.vng.zalopay.account.models.ZaloProfile;
 
 /**
  * Created by longlv on 22/04/2016.
