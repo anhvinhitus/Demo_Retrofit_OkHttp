@@ -13,22 +13,40 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/cards" />
 
-    <TextView
-        android:id="@+id/tvAmount"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/number_color"
-        android:textSize="@dimen/moneytext.normal.l"
-        tools:text="10.000" />
+        android:layout_marginTop="@dimen/spacing.medium.s"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/number_color"
+            android:textSize="@dimen/moneytext.normal.l"
+            tools:text="10.000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text=" VND"
+            android:textColor="@color/number_color"
+            android:textSize="@dimen/moneytext.normal.l" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginTop="@dimen/spacing.medium"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/spacing.medium">
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium">
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,7 +57,10 @@
             android:id="@+id/tvBankSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing.medium.l" />
+            android:gravity="right|center_vertical"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            tools:text="Vi dien tu" />
     </LinearLayout>
 
     <Button
@@ -47,7 +68,7 @@
         style="@style/AppTheme.Button.Normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing.medium.l"
+        android:layout_margin="@dimen/spacing.medium"
         android:text="@string/btn_pay_now"
         android:theme="@style/PrimaryButtonColor" />
 </LinearLayout>

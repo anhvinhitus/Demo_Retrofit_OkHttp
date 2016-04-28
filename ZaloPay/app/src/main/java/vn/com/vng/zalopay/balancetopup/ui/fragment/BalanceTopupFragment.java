@@ -63,6 +63,7 @@ public class BalanceTopupFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putLong(Constants.ARG_AMOUNT, Long.valueOf(edtAmount.getText().toString()));
         bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

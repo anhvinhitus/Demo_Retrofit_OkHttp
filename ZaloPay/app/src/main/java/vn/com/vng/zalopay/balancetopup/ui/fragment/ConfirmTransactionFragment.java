@@ -7,7 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -26,6 +30,18 @@ public class ConfirmTransactionFragment extends BaseFragment {
     private String mPayee;
 
     private OnFragmentInteractionListener mListener;
+
+    @Bind(R.id.tvAmount)
+    TextView tvAmount;
+
+    @Bind(R.id.tvBankSpinner)
+    TextView tvBankSpinner;
+
+    @OnClick(R.id.btnContinue)
+    public void onBtnContinueClick(View view) {
+        Timber.tag(TAG).d("onBtnContinueClick............");
+
+    }
 
     public ConfirmTransactionFragment() {
         // Required empty public constructor
@@ -52,7 +68,7 @@ public class ConfirmTransactionFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return 0;
+        return R.layout.fragment_confirm_transaction;
     }
 
     @Override
@@ -68,7 +84,14 @@ public class ConfirmTransactionFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_confirm_transaction, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        updateView();
+        return view;
+    }
+
+    private void updateView() {
+        tvAmount.setText(String.valueOf(mAmount));
+        tvBankSpinner.setText(mPayee);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -84,8 +107,8 @@ public class ConfirmTransactionFragment extends BaseFragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
