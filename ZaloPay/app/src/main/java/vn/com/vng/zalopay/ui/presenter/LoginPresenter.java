@@ -9,15 +9,14 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import java.util.HashMap;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.interactor.UseCase;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
@@ -32,13 +31,12 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private ILoginView mView;
 
-    private UseCase loginUseCase;
-
     private ZaloProfilePreferences zaloProfilePreferences;
 
+    private Subscription subscriptionLogin;
+
     @Inject
-    public LoginPresenter(@Named("loginUseCase") UseCase login, ZaloProfilePreferences zaloProfilePreferences) {
-        this.loginUseCase = login;
+    public LoginPresenter(ZaloProfilePreferences zaloProfilePreferences) {
         this.zaloProfilePreferences = zaloProfilePreferences;
     }
 
@@ -63,7 +61,11 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     @Override
     public void destroy() {
         this.destroyView();
-        loginUseCase.unsubscribe();
+        this.unsubscribe();
+    }
+
+    private void unsubscribe() {
+        unsubscribeIfNotNull(subscriptionLogin);
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -75,15 +77,17 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     }
 
     public void loginZalo(Activity activity) {
+        showLoadingView();
         ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, new LoginListener(this));
     }
 
     @Override
     public void onAuthenError(int errorCode, String message) {
-        Timber.tag("LoginPresenter").d("onAuthenError................message %s error %:", message, errorCode);
+        Timber.tag("LoginPresenter").d("onAuthenError................message %s error %s", message, errorCode);
         zaloProfilePreferences.setUserId(0);
         zaloProfilePreferences.setAuthCode("");
         showErrorView(message);
+        hideLoadingView();
     }
 
     @Override
@@ -98,7 +102,6 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         map.put("userid", String.valueOf(uId));
         map.put("zalooauthcode", authCode);
 
-        this.showLoadingView();
         this.loginPayment();
 
     }
@@ -112,8 +115,11 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         mView.hideLoading();
     }
 
+
+
     private void loginPayment() {
-        loginUseCase.execute(new LoginPaymentSubscriber());
+        subscriptionLogin = passportRepository.login()
+                .subscribe(new LoginPaymentSubscriber());
     }
 
     private void showErrorView(String message) {
@@ -126,10 +132,9 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private final void onLoginSuccess(User user) {
         Timber.d("session " + user.accesstoken);
-
-
-        // khởi tạo user component
-        AndroidApplication.instance().getAppComponent().plus(new UserModule(user));
+        // Khởi tạo user component
+        AndroidApplication.instance()
+                .getAppComponent().plus(new UserModule(user));
 
         this.hideLoadingView();
         this.gotoHomeScreen();
@@ -159,7 +164,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "login success " + e);
+            Timber.e(e, "onError " + e);
             LoginPresenter.this.onLoginError(e);
         }
     }
