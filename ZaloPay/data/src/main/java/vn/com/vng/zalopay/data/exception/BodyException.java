@@ -6,13 +6,19 @@ package vn.com.vng.zalopay.data.exception;
 public class BodyException extends Throwable {
 
     public final int errorCode;
+    public String message = "Oops";
 
     public BodyException(int error) {
         this.errorCode = error;
     }
 
+    public BodyException(int error, String message) {
+        this.errorCode = error;
+        this.message = message;
+    }
+
     @Override
     public String getMessage() {
-        return super.getMessage();
+        return message;
     }
 }

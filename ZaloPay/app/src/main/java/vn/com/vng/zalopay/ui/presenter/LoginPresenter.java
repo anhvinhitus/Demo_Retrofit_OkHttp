@@ -85,7 +85,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     @Override
     public void onAuthenError(int errorCode, String message) {
-        Timber.tag("LoginPresenter").d("onAuthenError................message %s error %:", message, errorCode);
+        Timber.tag("LoginPresenter").d("onAuthenError................message %s error %s", message, errorCode);
         zaloProfilePreferences.setUserId(0);
         zaloProfilePreferences.setAuthCode("");
         showErrorView(message);
@@ -166,7 +166,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "login success " + e);
+            Timber.e(e, "onError " + e);
             LoginPresenter.this.onLoginError(e);
         }
     }

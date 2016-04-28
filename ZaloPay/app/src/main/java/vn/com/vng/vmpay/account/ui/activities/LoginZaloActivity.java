@@ -141,7 +141,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public Context getContext() {
-        return null;
+        return this;
     }
 
     public boolean isShowLoading() {

@@ -85,7 +85,10 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
             } catch (Throwable t) {
                 Exceptions.throwIfFatal(t);
                 if (!subscriber.isUnsubscribed()) {
-                    subscriber.onError(t);
+                    try {
+                        subscriber.onError(t);
+                    } catch (Exception ex) {
+                    }
                 }
                 return;
             }
@@ -124,7 +127,7 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                                 if (((BaseResponse) body).isSuccessfulResponse()) {
                                     return Observable.just(body);
                                 } else {
-                                    return Observable.error(new BodyException(((BaseResponse) body).err));
+                                    return Observable.error(new BodyException(((BaseResponse) body).err, ((BaseResponse) body).message));
                                 }
                             } else {
                                 return Observable.just(body);
