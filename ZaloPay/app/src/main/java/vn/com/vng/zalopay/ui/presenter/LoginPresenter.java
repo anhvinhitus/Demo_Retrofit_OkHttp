@@ -13,8 +13,8 @@ import javax.inject.Singleton;
 
 import rx.Subscription;
 import timber.log.Timber;
-import vn.com.vng.vmpay.account.network.listener.LoginListener;
-import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.account.network.listener.LoginListener;
+import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;

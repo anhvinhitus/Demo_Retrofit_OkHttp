@@ -101,10 +101,6 @@
         @color/vpi__bright_foreground_holo_dark
     </color>
 
-
-    <color name="c.colorPrimary">#008fe5</color>
-    <color name="c.background">#f0f4f6</color>
-
     <!--TEXTVIEW-->
     <color name="c.text.title.grey">#727177</color>
     <color name="c.text.title">#24272c</color>

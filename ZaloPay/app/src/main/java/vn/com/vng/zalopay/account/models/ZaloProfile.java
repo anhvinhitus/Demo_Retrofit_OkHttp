@@ -1,4 +1,4 @@
-package vn.com.vng.vmpay.account.models;
+package vn.com.vng.zalopay.account.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import timber.log.Timber;
-import vn.com.vng.vmpay.account.Constants;
+import vn.com.vng.zalopay.account.Constants;
 import vn.com.vng.zalopay.domain.model.AbstractData;
 
 /**

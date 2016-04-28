@@ -1,4 +1,4 @@
-package vn.com.vng.vmpay.account.utils;
+package vn.com.vng.zalopay.account.utils;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

@@ -83,4 +83,8 @@
 
     <dimen name="separate">1px</dimen>
     <dimen name="button_conner_radius">30dp</dimen>
+
+    <dimen name="login_button_conner_radius">5dp</dimen>
+    <dimen name="login_button_merge">8dp</dimen>
+    <dimen name="login_button_merge_bottom">5dp</dimen>
 </resources>

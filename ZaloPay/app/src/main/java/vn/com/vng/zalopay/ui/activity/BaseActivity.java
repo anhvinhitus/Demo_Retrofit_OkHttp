@@ -1,11 +1,14 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -30,7 +33,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.tag(TAG);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.setStatusBarColor(getColor(R.color.colorPrimaryDark));
+                return;
+            }
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
         createUserComponent();
         setupActivityComponent();
         setContentView(getResLayoutId());

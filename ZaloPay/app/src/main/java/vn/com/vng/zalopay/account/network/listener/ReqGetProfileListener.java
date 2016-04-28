@@ -1,4 +1,4 @@
-package vn.com.vng.vmpay.account.network.listener;
+package vn.com.vng.zalopay.account.network.listener;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 
@@ -6,11 +6,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import timber.log.Timber;
-import vn.com.vng.vmpay.account.Constants;
-import vn.com.vng.vmpay.account.models.ZaloProfile;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.Constants;
+import vn.com.vng.zalopay.account.models.ZaloProfile;
 
 /**
  * Created by longlv on 22/04/2016.

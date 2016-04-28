@@ -1,9 +1,27 @@
-<resources>>
+<resources>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+    <style name="CardViewStyle.Selectable" parent="CardViewStyle">
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:elevation">@dimen/cardview_elevation</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Button.Borderless.Colored" parent="Base.Widget.AppCompat.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- The default category looks bad, so overriding its appearance now -->
+    <style name="AppTheme.ListSeparatorTextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
     </style>
 </resources>

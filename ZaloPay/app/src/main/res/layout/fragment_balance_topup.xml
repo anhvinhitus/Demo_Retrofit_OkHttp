@@ -2,14 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_chip"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing.medium"
     tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/spacing.medium">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,7 +21,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cards" />
 
@@ -32,8 +35,6 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/spacing.medium"
-            android:layout_marginRight="@dimen/spacing.medium"
             android:background="@color/separate" />
 
         <LinearLayout
@@ -43,7 +44,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/amount" />
 
@@ -52,7 +53,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium.l"
-                android:hint="1.000.000" />
+                android:background="@color/transparent"
+                android:hint="0"
+                android:inputType="number"
+                android:maxLength="17"
+                android:textColor="@color/number_color"
+                android:textSize="@dimen/moneytext.normal.l"
+                tools:text="10.000" />
         </LinearLayout>
     </LinearLayout>
 
@@ -63,5 +70,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing.medium.l"
         android:text="@string/btn_continue"
-         />
+        android:theme="@style/PrimaryButtonColor" />
 </LinearLayout>
