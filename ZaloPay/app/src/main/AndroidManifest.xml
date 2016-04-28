@@ -143,7 +143,7 @@
         <activity
             android:name="vn.zing.pay.zmpsdk.view.PaymentChannelActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
         <activity android:name="vn.zing.pay.trivialdrivesample.DemoSDKActivity" />
         <activity
             android:name="vn.zing.pay.trivialdrivesample.WebBridgeActivity"
@@ -164,8 +164,9 @@
 
         <activity
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/title_activity_balance_topup" />
+            android:label="@string/title_activity_balance_topup"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"></activity>
     </application>
 
 </manifest>

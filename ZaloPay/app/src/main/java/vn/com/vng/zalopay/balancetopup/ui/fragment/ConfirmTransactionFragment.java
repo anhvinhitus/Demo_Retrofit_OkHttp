@@ -1,87 +1,47 @@
 package vn.com.vng.zalopay.balancetopup.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
-import butterknife.Bind;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
-import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
-import vn.com.vng.zalopay.balancetopup.ui.widget.BankSpinner;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BalanceTopupFragment.OnFragmentInteractionListener} interface
+ * {@link ConfirmTransactionFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BalanceTopupFragment#newInstance} factory method to
+ * Use the {@link ConfirmTransactionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BalanceTopupFragment extends BaseFragment {
-    // TODO: Rename parameter arguments, choose names that match
+public class ConfirmTransactionFragment extends BaseFragment {
+    // TODO: Rename and change types of parameters
+    private long mAmount;
+    private String mPayee;
 
     private OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.bankSpinner)
-    BankSpinner bankSpinner;
-
-    @Bind(R.id.edtAmount)
-    EditText edtAmount;
-
-    @Bind(R.id.btnContinue)
-    Button btnContinue;
-
-    @OnTextChanged(R.id.edtAmount)
-    public void onEdtAmountTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        if (text!= null && text.length() > 0) {
-            btnContinue.setEnabled(true);
-        } else {
-            btnContinue.setEnabled(false);
-        }
-    }
-
-    @OnClick(R.id.btnContinue)
-    public void onBtnContinueClick(View view) {
-        Timber.tag(TAG).d("onBtnContinueClick............");
-        gotoConfirmTransaction();
-    }
-
-    private void gotoConfirmTransaction() {
-        Intent intent = new Intent(getContext(), ConfirmTransactionActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong(Constants.ARG_AMOUNT, Long.valueOf(edtAmount.getText().toString()));
-        bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
-        startActivity(intent);
-    }
-
-    public BalanceTopupFragment() {
+    public ConfirmTransactionFragment() {
         // Required empty public constructor
-
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment BalanceTopupFragment.
+     * @param bundle Parameter 1.
+     * @return A new instance of fragment ConfirmTransactionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BalanceTopupFragment newInstance() {
-        BalanceTopupFragment fragment = new BalanceTopupFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+    public static ConfirmTransactionFragment newInstance(Bundle bundle) {
+        ConfirmTransactionFragment fragment = new ConfirmTransactionFragment();
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -92,13 +52,15 @@ public class BalanceTopupFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_balance_topup;
+        return 0;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mAmount = getArguments().getLong(Constants.ARG_AMOUNT);
+            mPayee = getArguments().getString(Constants.ARG_PAYEE);
         }
     }
 
@@ -106,9 +68,7 @@ public class BalanceTopupFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        btnContinue.setEnabled(false);
-        return view;
+        return inflater.inflate(R.layout.fragment_confirm_transaction, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -124,8 +84,8 @@ public class BalanceTopupFragment extends BaseFragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
