@@ -54,19 +54,6 @@ public class NetworkModule {
         return cache;
     }
 
-  /*  @Provides @Named("cached")
-    @Singleton
-    OkHttpClient provideOkHttpClient(Cache cache) {
-        OkHttpClient client = new OkHttpClient();
-        client.setCache(cache);
-    }
-
-    @Provides @Named("non_cached") @Singleton
-    OkHttpClient provideOkHttpClient() {
-        OkHttpClient client = new OkHttpClient();
-        return client;
-    }*/
-
     @Provides
     @Singleton
     Gson provideGson() {
@@ -87,6 +74,7 @@ public class NetworkModule {
         builder.cache(cache);
         builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.KEEP_ALIVE_DURATION_MS, TimeUnit.MILLISECONDS));
         builder.connectTimeout(10, TimeUnit.SECONDS);
+        builder.readTimeout(10, TimeUnit.SECONDS);
         return builder.build();
     }
 
