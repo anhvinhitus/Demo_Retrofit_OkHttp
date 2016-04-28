@@ -35,6 +35,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private ZaloProfilePreferences zaloProfilePreferences;
 
+    private Subscription subscriptionLogin;
+
     @Inject
     public LoginPresenter(ZaloProfilePreferences zaloProfilePreferences) {
         this.zaloProfilePreferences = zaloProfilePreferences;
@@ -77,6 +79,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     }
 
     public void loginZalo(Activity activity) {
+        showLoadingView();
         ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, new LoginListener(this));
     }
 
@@ -86,6 +89,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         zaloProfilePreferences.setUserId(0);
         zaloProfilePreferences.setAuthCode("");
         showErrorView(message);
+        hideLoadingView();
     }
 
     @Override
@@ -100,7 +104,6 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         map.put("userid", String.valueOf(uId));
         map.put("zalooauthcode", authCode);
 
-        this.showLoadingView();
         this.loginPayment();
 
     }
@@ -114,7 +117,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         mView.hideLoading();
     }
 
-    private Subscription subscriptionLogin;
+
 
     private void loginPayment() {
         subscriptionLogin = passportRepository.login()
