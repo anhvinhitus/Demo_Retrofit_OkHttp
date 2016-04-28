@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.domain.interactor;
 
 import javax.inject.Inject;
@@ -23,3 +24,4 @@ public class LoginUseCase extends UseCase {
         return passportRepository.login();
     }
 }
+*/

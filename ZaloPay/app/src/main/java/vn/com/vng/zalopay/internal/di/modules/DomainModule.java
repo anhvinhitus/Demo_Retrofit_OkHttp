@@ -7,8 +7,6 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.api.PassportService;
-import vn.com.vng.zalopay.domain.interactor.LoginUseCase;
-import vn.com.vng.zalopay.domain.interactor.UseCase;
 
 @Module
 public class DomainModule {
@@ -19,11 +17,11 @@ public class DomainModule {
         return retrofit.create(PassportService.class);
     }
 
-    @Provides
+   /* @Provides
     @Singleton
     @Named("loginUseCase")
     UseCase provideLoginUseCase(LoginUseCase loginUseCase) {
         return loginUseCase;
     }
-
+*/
 }

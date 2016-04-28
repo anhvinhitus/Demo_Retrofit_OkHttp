@@ -9,7 +9,6 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import java.util.HashMap;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Subscription;
@@ -18,7 +17,6 @@ import vn.com.vng.vmpay.account.network.listener.LoginListener;
 import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.interactor.UseCase;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;

@@ -1,3 +1,4 @@
+/*
 
 package vn.com.vng.zalopay.domain.interactor;
 
@@ -16,7 +17,7 @@ public abstract class UseCase {
     private final ThreadExecutor threadExecutor;
     private final PostExecutionThread postExecutionThread;
 
-   // private Subscription subscription = Subscriptions.empty();
+    // private Subscription subscription = Subscriptions.empty();
     private final CompositeSubscription subscription = new CompositeSubscription();
 
     protected UseCase(ThreadExecutor threadExecutor,
@@ -28,7 +29,7 @@ public abstract class UseCase {
 
     protected abstract Observable buildUseCaseObservable();
 
-  //  protected abstract Observable buildUseCaseObservable(@Nullable T... params);
+    //  protected abstract Observable buildUseCaseObservable(@Nullable T... params);
 
     @SuppressWarnings("unchecked")
     public void execute(Subscriber UseCaseSubscriber) {
@@ -45,3 +46,4 @@ public abstract class UseCase {
         }
     }
 }
+*/
