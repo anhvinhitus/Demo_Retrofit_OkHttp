@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
@@ -78,7 +78,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     private String avatarUrl = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
 
     private void loadAvatarImage(ImageView imageView, String url) {
-        Glide.with(this).load(url).placeholder(R.color.c_background).into(imageView);
+        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
     }
 
     @NonNull

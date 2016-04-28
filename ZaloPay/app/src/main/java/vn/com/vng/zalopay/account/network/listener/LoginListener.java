@@ -1,4 +1,4 @@
-package vn.com.vng.vmpay.account.network.listener;
+package vn.com.vng.zalopay.account.network.listener;
 
 import android.app.Dialog;
 

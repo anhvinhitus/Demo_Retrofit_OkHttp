@@ -1,6 +1,6 @@
-package vn.com.vng.vmpay.account.listener;
+package vn.com.vng.zalopay.account.listener;
 
-import vn.com.vng.vmpay.account.models.ZaloProfile;
+import vn.com.vng.zalopay.account.models.ZaloProfile;
 
 /**
  * Created by longlv on 22/04/2016.

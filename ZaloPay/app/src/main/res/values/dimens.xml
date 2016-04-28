@@ -14,4 +14,26 @@
     <dimen name="height.control.zalo.pay">86dp</dimen>
 
     <dimen name="text.login">14sp</dimen>
+
+    <dimen name="moneytext.small">14sp</dimen>
+    <dimen name="moneytext.normal.xs">18sp</dimen>
+    <dimen name="moneytext.normal.s">20sp</dimen>
+    <dimen name="moneytext.normal">22sp</dimen>
+    <dimen name="moneytext.normal.l">26sp</dimen>
+    <dimen name="moneytext.normal.xl">28sp</dimen>
+    <dimen name="moneytext.large.xs">30sp</dimen>
+    <dimen name="moneytext.large.s">32sp</dimen>
+    <dimen name="moneytext.large">42sp</dimen>
+
+    <dimen name="currency_padding">48dp</dimen>
+    <dimen name="currency_padding_large">72dp</dimen>
+
+    <!-- card view support -->
+    <dimen name="cardview_corner_radius">2dp</dimen>
+    <dimen name="cardview_elevation">2dp</dimen>
+    <dimen name="cardview_vertical_margin">2dp</dimen>
+    <dimen name="cardview_horizontal_margin">1dp</dimen>
+    <dimen name="higher_than_cardview_elevation">4dp</dimen>
+
+    <dimen name="cardview_corner_radius_more">16dp</dimen>
 </resources>

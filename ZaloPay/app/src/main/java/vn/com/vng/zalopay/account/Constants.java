@@ -1,4 +1,4 @@
-package vn.com.vng.vmpay.account;
+package vn.com.vng.zalopay.account;
 
 /**
  * Created by longlv on 22/04/2016.

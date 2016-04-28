@@ -16,4 +16,7 @@ public class Constants {
     public static final String PREF_USER_NAME = "pref_user_name";
     public static final String PREF_USER_AVATAR = "pref_user_avatar";
     public static final String PREF_USER_EMAIL = "pref_user_email";
+
+    public static final String ARG_AMOUNT = "AMOUNT";
+    public static final String ARG_PAYEE = "Payee";
 }

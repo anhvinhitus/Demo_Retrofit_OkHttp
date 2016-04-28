@@ -11,8 +11,8 @@ import dagger.Component;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 
-import vn.com.vng.vmpay.account.ui.activities.LoginZaloActivity;
-import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 
 
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
