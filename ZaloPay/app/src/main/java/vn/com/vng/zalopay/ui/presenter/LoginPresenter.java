@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.vmpay.account.network.listener.LoginListener;
 import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
@@ -32,13 +33,10 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private ILoginView mView;
 
-    private UseCase loginUseCase;
-
     private ZaloProfilePreferences zaloProfilePreferences;
 
     @Inject
-    public LoginPresenter(@Named("loginUseCase") UseCase login, ZaloProfilePreferences zaloProfilePreferences) {
-        this.loginUseCase = login;
+    public LoginPresenter(ZaloProfilePreferences zaloProfilePreferences) {
         this.zaloProfilePreferences = zaloProfilePreferences;
     }
 
@@ -63,7 +61,11 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     @Override
     public void destroy() {
         this.destroyView();
-        loginUseCase.unsubscribe();
+        this.unsubscribe();
+    }
+
+    private void unsubscribe() {
+        unsubscribeIfNotNull(subscriptionLogin);
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -112,8 +114,11 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         mView.hideLoading();
     }
 
+    private Subscription subscriptionLogin;
+
     private void loginPayment() {
-        loginUseCase.execute(new LoginPaymentSubscriber());
+        subscriptionLogin = passportRepository.login()
+                .subscribe(new LoginPaymentSubscriber());
     }
 
     private void showErrorView(String message) {
@@ -126,10 +131,9 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private final void onLoginSuccess(User user) {
         Timber.d("session " + user.accesstoken);
-
-
-        // khởi tạo user component
-        AndroidApplication.instance().getAppComponent().plus(new UserModule(user));
+        // Khởi tạo user component
+        AndroidApplication.instance()
+                .getAppComponent().plus(new UserModule(user));
 
         this.hideLoadingView();
         this.gotoHomeScreen();

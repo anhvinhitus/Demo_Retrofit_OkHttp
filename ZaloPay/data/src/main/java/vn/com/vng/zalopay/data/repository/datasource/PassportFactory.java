@@ -31,9 +31,6 @@ public class PassportFactory {
 
     private UserConfig userConfig;
 
-
-    private ParamRequestProvider paramRequestProvider;
-
     @Inject
     public PassportFactory(Context context, PassportService passportService,
                            ParamRequestProvider paramRequestProvider,

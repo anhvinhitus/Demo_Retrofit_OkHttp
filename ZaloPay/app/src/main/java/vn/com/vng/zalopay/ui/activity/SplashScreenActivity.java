@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -110,11 +111,15 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
 
         if (isValidated && mUserConfig.isClientActivated()) {
             //Authenticated
-            Timber.d("isClientActivated");
+            if (AndroidApplication.instance().getUserComponent() == null) {
+                AndroidApplication.instance()
+                        .getAppComponent()
+                        .plus(new UserModule(mUserConfig.getCurrentUser()));
+            }
+
             navigator.startHomeActivity(this);
         } else {
             //Not authenticated
-            Timber.d("startLoginActivity");
             navigator.startLoginActivity(this);
         }
         finish();

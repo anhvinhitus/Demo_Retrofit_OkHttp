@@ -17,6 +17,7 @@ import vn.com.vng.vmpay.account.utils.ZaloProfilePreferences;
 
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.DomainModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
@@ -42,6 +43,8 @@ public interface ApplicationComponent {
     ZaloProfilePreferences profilePreferences();
 
     ParamRequestProvider paramsRequestProvider();
+
+    PassportRepository passportRepository();
 
     /*INJECT*/
     void inject(SplashScreenActivity f);
