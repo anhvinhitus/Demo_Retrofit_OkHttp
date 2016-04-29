@@ -16,19 +16,12 @@ public interface ResourceHandlerService {
      * @param url File URL
      * @param destinationPath Path to destination file
      */
-    void downloadFile(String url, String destinationPath);
-
-    /**
-     * Update the latest miniapplication resource path. Call this method after updating new app version
-     * @param appId application id, use 'internal' for internal RN app
-     * @param path new resource path
-     */
-    void setLatestMiniApplicationPath(String appId, String path);
+    void downloadFile(String url, String destinationPath) throws MiniApplicationException;
 
     /**
      * Unzip file to destination path
      * @param zipPathName Zip path name
      * @param destinationPath destination path that hold unzip content
      */
-    void unzipFile(String zipPathName, String destinationPath);
+    void unzipFile(String zipPathName, String destinationPath) throws MiniApplicationException;
 }
