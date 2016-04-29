@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.mdl.BundleServiceImpl;
+import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
 
 
 @Module

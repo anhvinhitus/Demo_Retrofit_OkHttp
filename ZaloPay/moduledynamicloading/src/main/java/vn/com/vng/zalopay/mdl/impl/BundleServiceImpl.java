@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl;
+package vn.com.vng.zalopay.mdl.impl;
 
 import android.app.Application;
 import android.content.res.AssetManager;
@@ -24,6 +24,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 
 /**

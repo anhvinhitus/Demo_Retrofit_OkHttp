@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl;
+package vn.com.vng.zalopay.mdl.impl;
 
 import android.content.Context;
 import android.os.Environment;
@@ -22,6 +22,8 @@ import java.util.zip.ZipFile;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.mdl.MiniApplicationException;
+import vn.com.vng.zalopay.mdl.ResourceHandlerService;
 import vn.com.vng.zalopay.mdl.internal.FileUtils;
 
 /**
