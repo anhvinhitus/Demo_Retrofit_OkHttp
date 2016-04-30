@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -20,9 +21,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
+import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
+import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
 /**
  * Created by AnhHieu on 3/25/16.
@@ -30,7 +35,7 @@ import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
 @Module
 public class NetworkModule {
 
-    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse("http://dev.lizks.com/");
+    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse(BuildConfig.HOST);
 
     @Provides
     @Singleton
@@ -41,7 +46,6 @@ public class NetworkModule {
     public NetworkModule() {
     }
 
-
     @Provides
     @Singleton
     Cache provideOkHttpCache(Context application) {
@@ -49,19 +53,6 @@ public class NetworkModule {
         Cache cache = new Cache(application.getCacheDir(), cacheSize);
         return cache;
     }
-
-  /*  @Provides @Named("cached")
-    @Singleton
-    OkHttpClient provideOkHttpClient(Cache cache) {
-        OkHttpClient client = new OkHttpClient();
-        client.setCache(cache);
-    }
-
-    @Provides @Named("non_cached") @Singleton
-    OkHttpClient provideOkHttpClient() {
-        OkHttpClient client = new OkHttpClient();
-        return client;
-    }*/
 
     @Provides
     @Singleton
@@ -82,16 +73,19 @@ public class NetworkModule {
         }
         builder.cache(cache);
         builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.KEEP_ALIVE_DURATION_MS, TimeUnit.MILLISECONDS));
+        builder.connectTimeout(10, TimeUnit.SECONDS);
+        builder.readTimeout(10, TimeUnit.SECONDS);
         return builder.build();
     }
 
+
     @Provides
     @Singleton
-    @Named("Retrofit")
-    Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient) {
+    @Named("retrofit")
+    Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(CustomRxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(new CustomRxJavaCallAdapterFactory(Schedulers.from(threadExecutor), postExecutionThread.getScheduler()))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)

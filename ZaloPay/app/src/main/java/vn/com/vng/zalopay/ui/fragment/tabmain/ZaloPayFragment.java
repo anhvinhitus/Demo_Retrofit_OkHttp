@@ -7,15 +7,21 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
-
 import com.bumptech.glide.Glide;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
-import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -34,8 +40,15 @@ public class ZaloPayFragment extends BaseMainFragment {
     protected void onScreenVisible() {
     }
 
+    @Inject
+    Navigator navigator;
+
+    @Inject
+    User user;
+
     @Override
     protected void setupFragmentComponent() {
+        AndroidApplication.instance().getUserComponent().inject(this);
 
     }
 
@@ -66,13 +79,13 @@ public class ZaloPayFragment extends BaseMainFragment {
     private String avatarUrl = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
 
     private void loadAvatarImage(ImageView imageView, String url) {
-        Glide.with(this).load(url).placeholder(R.color.c_background).into(imageView);
+        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
     }
 
     @NonNull
     @OnClick(R.id.btn_qr_code)
     public void onClickQrCode(View v) {
-        QRCodeScannerActivity.startQRCode(getContext());
+        navigator.startQrCodeActivity(getActivity());
     }
 
 
@@ -92,12 +105,18 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_recharge_game)
     public void onClickRechargeGame(View v) {
         Timber.d("Recharge.Game");
+        gotoRechargeGame();
     }
 
+    private void gotoRechargeGame() {
+        Intent intent = new Intent(getActivity(), BalanceTopupActivity.class);
+        startActivity(intent);
+    }
 
     @OnClick(R.id.btn_recharge_phone)
     public void onClickRechargePhone(View view) {
         Timber.d("Recharge.Phone");
+        gotoRechargePhoneActivity();
     }
 
     @OnClick(R.id.btn_lixi)
@@ -107,4 +126,47 @@ public class ZaloPayFragment extends BaseMainFragment {
         this.getActivity().startActivity(intent);
     }
 
+    @OnClick(R.id.btn_transfer)
+    public void onTransferMoneyClick(View view) {
+        gotoTransferActivity();
+    }
+
+    @OnClick(R.id.profile)
+    public void onProfileClick(View view) {
+        signout();
+    }
+
+    private void gotoTransferActivity() {
+    }
+
+    private void gotoRechargePhoneActivity() {
+//        Intent intent = new Intent(getActivity(), BuyTelCardActivity.class);
+//        intent.putExtra(vn.com.vng.zalopay.scratchcard.network.Constants.TEL_CARD_TYPE, TelCardUtil.VIETTEL);
+//        startActivity(intent);
+    }
+
+    @OnClick(R.id.others)
+    public void onLayoutOthersClick() {
+//        ShaUtils.getSha();
+        startZMPSDKDemo();
+    }
+
+    private void startZMPSDKDemo() {
+        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
+        startActivity(intent);
+    }
+
+    private void signout() {
+        ZaloSDK.Instance.unauthenticate();
+        gotoLoginActivity();
+    }
+
+    private void gotoLoginActivity() {
+        if (getActivity() == null) {
+            return;
+        }
+        Intent intent = new Intent(getActivity(), LoginZaloActivity.class);
+        getActivity().startActivity(intent);
+        getActivity().finish();
+    }
 }

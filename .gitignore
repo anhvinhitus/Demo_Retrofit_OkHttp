@@ -3,8 +3,8 @@
 *~
 .gradle
 *.iml
+*.properties
 ZaloPay/*/build/
 ZaloPay/build/
 ZaloPay/local.properties
 *.swp
-

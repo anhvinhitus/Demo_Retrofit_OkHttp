@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="selector">@drawable/default_selector</item>
         <item name="divider">@color/divider</item>
         <item name="android:listViewStyle">@style/ListView</item>
@@ -19,7 +18,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
 
     <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
         <item name="android:textCursorDrawable">@drawable/abc_text_cursor_material</item>

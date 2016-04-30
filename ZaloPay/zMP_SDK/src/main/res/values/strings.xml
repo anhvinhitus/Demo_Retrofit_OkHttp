@@ -1,0 +1,122 @@
+<resources>
+
+    <string name="zingpaysdk_notification">Thông báo</string>
+    <string name="zingpaysdk_card_password">Mật mã thẻ</string>
+    <string name="zingpaysdk_card_password_ex">Mật khẩu</string>
+    <string name="zingpaysdk_captchar_inputing">Mã xác thực</string>
+    <string name="zingpaysdk_otp">Nhập mã OTP</string>
+    <string name="zingpaysdk_submit">Thanh toán ngay</string>
+ 
+    
+    <string name="zingpaysdk_app_name">ZingPaySDK</string>
+    <string name="zingpaysdk_close">Đồng ý</string>
+    <string name="zingpaysdk_cancel">Trở lại</string>
+    
+    <string name="zingpaysdk_pmc_name_atm">Thanh Toán ATM</string>
+    <string name="zingpaysdk_atm_issue_date">Ngày phát hành: </string>
+    <string name="zingpaysdk_atm_expire_date">Ngày hết hạn: </string>
+    
+    <string name="zingpaysdk_alert_transaction_success">Thanh toán thành công</string>
+    <string name="zingpaysdk_alert_maintance">Hệ thống đang bảo trì, bạn vui lòng thử lại sau</string>
+    <string name="zingpaysdk_alert_processing">Đang xử lý</string>
+    <string name="zingpaysdk_alert_continue_processing">Giao dịch vẫn còn đang xử lý</string>
+    <string name="zingpaysdk_alert_processing_ask_to_retry">Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp tục chờ?</string>
+    <string name="zingpaysdk_alert_processing_get_status_fail">Giao dịch chưa hoàn tất, vui lòng truy cập http://hotro.zing.vn để được hỗ trợ.</string>
+    <string name="zingpaysdk_alert_bad_processing">Hãy chắc rằng bạn có kết nối internet!</string>
+    <string name="zingpaysdk_alert_no_connection">Không có kết nối internet, vui lòng thử lại sau</string>
+   	<string name="zingpaysdk_alert_network_error">Mạng không ổn định, vui lòng thử lại sau!</string>
+   	<string name="zingpaysdk_alert_network_error_get_status_fail">Mạng không ổn định, vui lòng thử lại sau! Hoặc vui lòng truy cập http://hotro.zing.vn để được giúp đỡ.</string>
+   	<string name="zingpaysdk_alert_network_error_verify_iab">Mạng không ổn định, giao dịch chưa được xác minh, vui lòng kiểm tra lại kết nối internet!</string>
+    <string name="zingpaysdk_alert_amount_not_support">Không có kênh nào hỗ trợ mệnh giá trên. Số tiền tối thiểu là: %s.</string>
+    <string name="zingpaysdk_alert_all_excluded">Tất cả các kênh đều đã bị loại trừ!</string>
+    <string name="zingpaysdk_alert_sent_sms">Hệ thống sẽ tự động cập nhật ngay khi nhận tin nhắn của bạn!</string>
+    <string name="zingpaysdk_alert_resume_cc">Hệ thống sẽ tự động cập nhật khi giao dịch thành công!</string>
+    <string name="zingpaysdk_alert_not_support_device">Thiết bị của bạn không được hỗ trợ!</string>
+    <string name="zingpaysdk_alert_processing_bank">Đang kết nối với ngân hàng</string>
+    <string name="zingpaysdk_alert_atm_wrong_4last_digits">4 số cuối mã thẻ không chính xác</string>
+    <string name="zingpaysdk_alert_atm_wrong_4last_digits_more">Bạn đã nhập sai quá số lần cho phép. Thông tin thẻ cũ sẽ bị hủy.</string>
+    <string name="zingpaysdk_alert_atm_expired">Giao dịch đã quá hạn, bạn vui lòng thực hiện lại thanh toán.</string>
+    <string name="zingpaysdk_alert_atm_incomplete_captcha">Mã captcha tối thiểu phải đủ 6 kí tự.</string>
+    <string name="zingpaysdk_alert_atm_incomplete_otp">Mã OTP tối thiểu phải đủ 4 kí tự.</string>
+    <string name="zingpaysdk_alert_credit_card_cancel">Giao dịch đã bị hủy</string>
+    <string name="zingpaysdk_alert_google_iab_item_not_found">Vật phẩm chưa được đăng ký với Google In-app Billing</string>
+    <string name="zingpaysdk_alert_lower_min_value">Số tiền thanh toán tối thiểu là: %s VNĐ</string>
+    <string name="zingpaysdk_alert_higher_max_value">Số tiền thanh toán tối đa là: %s VNĐ</string>
+    <string name="zingpaysdk_alert_price_multiple">Số tiền thanh toán phải là bội số của %s VNĐ</string>
+    
+
+   	<string name="zingpaysdk_missing_app_pmt_info">Thiếu thông tin đơn hàng.</string>
+   	<string name="zingpaysdk_missing_app_user">Thiếu app user trong paymen info.</string>
+   	<string name="zingpaysdk_invalid_app_trans">Thiếu app user trong paymen info.</string>
+   	<string name="zingpaysdk_invalid_app_time">AppTime không hợp lệ.</string>
+   	<string name="zingpaysdk_invalid_app_amount">Amount không hợp lệ.</string>
+   	<string name="zingpaysdk_invalid_app_items_vs_amount">Amount với danh sách item không hợp lệ</string>
+   	<string name="zingpaysdk_invalid_app_itemID">ItemID không hợp lệ</string>
+   	<string name="zingpaysdk_invalid_app_itemName">ItemName không hợp lệ</string>
+   	<string name="zingpaysdk_invalid_app_itemPrice">ItemPrice không hợp lệ</string>
+   	<string name="zingpaysdk_invalid_app_itemQuantity">ItemQuantity không hợp lệ</string>
+   	
+   	
+   	<string name="zingpaysdk_conf_gwinfo_expired_time">gwinfo_expired_time</string>
+   	<string name="zingpaysdk_conf_gwinfo_sdk_checksum">checksum_sdk</string>
+   	<string name="zingpaysdk_conf_gwinfo_sdk_ver">checksum_sdk_ver</string>
+   	<string name="zingpaysdk_conf_gwinfo_unzip_path">unzip_path</string>
+   	<string name="zingpaysdk_conf_gwinfo_res_ver">resource_version</string>
+   	<string name="zingpaysdk_conf_gwinfo_app_logo">zpsdk_app_logo.png</string>
+   	<string name="zingpaysdk_conf_gwinfo_app_name">app_name</string>
+   	<string name="zingpaysdk_conf_gwinfo_app_distr">app_distr</string>
+   	<string name="zingpaysdk_conf_gwinfo_unzip_folder">zingpay</string>
+   	<string name="zingpaysdk_conf_gwinfo_udid">unit_device_id</string>
+   	
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_list">channel_group_list</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_prefix">channel_group_</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_atm">6</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_credit_card">19</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_google_wallet">33</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_sms">5</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_merge_card">2</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_telco">0</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_zing_card">1</string>
+   	<string name="zingpaysdk_conf_gwinfo_gchannel_123pay">37</string>
+   	
+   	<string name="zingpaysdk_conf_gwinfo_channel_list">channel_list</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_prefix">channel_</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_atm">6</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card_visa">19</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card_master">20</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card_jcb">21</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_google_wallet">33</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_sms">5</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_telco_mobi">2</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_telco_vina">3</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_telco_viettel">4</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_zing_card">1</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_123pay">37</string>
+   	
+   	<string name="zingpaysdk_conf_atm_api_num_of_captcha">6</string>
+   	<string name="zingpaysdk_conf_atm_api_num_of_otp">4</string>
+   	<string name="zingpaysdk_conf_last_success_pmc_id">last_success_pmc_id</string>
+   	<string name="zingpaysdk_conf_last_success_atm_card">last_success_atm_card</string>
+   	<string name="zingpaysdk_conf_num_of_wrong_4_last_digits">num_of_wrong_4_last_digits</string>
+   	<string name="zingpaysdk_conf_promotion_img">hover_discount_%spercent.png</string>
+   	
+   	<string name="zingpaysdk_conf_price_multiple">10000</string>
+   	
+   	<string name="zingpaysdk_conf_error_code_invalid_hmac">-53</string>
+   	<string name="zingpaysdk_conf_error_code_expired_hmac">-54</string>
+   	
+   	<string name="zingpaysdk_activity_small_title">Chọn kênh thanh toán</string>
+   	
+   	
+   	<string name="zingpaysdk_intent_key_payment_info">zpsdk_payment_info</string>
+   	<string name="zingpaysdk_intent_key_channel">zpsdk_channel</string>
+   	
+   	
+   	<string name="zingpaysdk_custom_ui_gray">gray_button</string>
+   	<string name="zingpaysdk_custom_ui_normal">normal_button</string>
+   	
+   	<string name="gcm_defaultSenderId">282009334352</string>
+   	<string name="global_tracker_id">UA-74785353-4</string>
+   	
+</resources>

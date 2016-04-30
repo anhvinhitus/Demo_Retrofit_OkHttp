@@ -1,10 +1,17 @@
 package vn.com.vng.zalopay;
 
-import android.app.Application;
+import android.content.Context;
 import android.os.StrictMode;
+import android.support.multidex.MultiDex;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.support.multidex.MultiDexApplication;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
+import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
+
+import java.io.File;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
@@ -14,14 +21,19 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 
 
 /**
  * Created by AnhHieu on 3/24/16.
  */
-public class AndroidApplication extends Application {
+public class AndroidApplication extends MultiDexApplication {
 
     public static final String TAG = "AndroidApplication";
+
+    public static File extStorageAppBasePath;
+    public static File extStorageAppCachePath;
+
 
     private ApplicationComponent appComponent;
     private UserComponent userComponent;
@@ -50,9 +62,11 @@ public class AndroidApplication extends Application {
         }
 
         initAppComponent();
+        initializeFileFolder();
 
         Timber.d(" onCreate " + appComponent);
-
+        ZaloSDKApplication.wrap(this);
+        ZingMobilePayApplication.wrap(this);
     }
 
 
@@ -87,5 +101,39 @@ public class AndroidApplication extends Application {
         return userComponent;
     }
 
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+	}
+	
+    private void initializeFileFolder() {
+        if (Environment.MEDIA_MOUNTED.equals(Environment
+                .getExternalStorageState())) {
+            File externalStorageDir = Environment.getExternalStorageDirectory();
 
+            if (externalStorageDir != null) {
+                extStorageAppBasePath = new File(
+                        externalStorageDir.getAbsolutePath() + File.separator
+                                + "Android" + File.separator + "data"
+                                + File.separator + getPackageName());
+            }
+
+            if (extStorageAppBasePath != null) {
+                extStorageAppCachePath = new File(
+                        extStorageAppBasePath.getAbsolutePath()
+                                + File.separator + "cache");
+
+                boolean isCachePathAvailable = true;
+
+                if (!extStorageAppCachePath.exists()) {
+                    isCachePathAvailable = extStorageAppCachePath.mkdirs();
+                }
+
+                if (!isCachePathAvailable) {
+                    extStorageAppCachePath = null;
+                }
+            }
+
+        }
+    }
 }

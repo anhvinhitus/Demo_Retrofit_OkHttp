@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="spacing.tiny.s">2dp</dimen>
+    <dimen name="spacing.tiny">4dp</dimen>
+    <dimen name="spacing.small">8dp</dimen>
+    <dimen name="spacing.medium.s">12dp</dimen>
+    <dimen name="spacing.medium">16dp</dimen>
+    <dimen name="spacing.medium.l">20dp</dimen>
+    <dimen name="spacing.large">32dp</dimen>
+    <dimen name="spacing.large.l">48dp</dimen>
+    <dimen name="spacing.huge">64dp</dimen>
+    <dimen name="spacing.huge.l">72dp</dimen>
+    <dimen name="spacing.giant">96dp</dimen>
+
+    <dimen name="textsize.tiny">12sp</dimen>
+    <dimen name="textsize.small">14sp</dimen>
+    <dimen name="textsize.normal.s">16sp</dimen>
+    <dimen name="textsize.normal">18sp</dimen>
+    <dimen name="textsize.normal.l">20sp</dimen>
+    <dimen name="textsize.large">22sp</dimen>
+    <dimen name="textsize.large.l">24sp</dimen>
+    <dimen name="textsize.large.xl">32sp</dimen>
+    <dimen name="textsize.huge.s">40sp</dimen>
+    <dimen name="textsize.huge">48sp</dimen>
+    <dimen name="textsize.huge.l">56sp</dimen>
+
     <dimen name="border_radius">10dp</dimen>
     <dimen name="stroke_width_button">2dp</dimen>
 
@@ -58,4 +82,9 @@
 
 
     <dimen name="separate">1px</dimen>
+    <dimen name="button_conner_radius">30dp</dimen>
+
+    <dimen name="login_button_conner_radius">5dp</dimen>
+    <dimen name="login_button_merge">8dp</dimen>
+    <dimen name="login_button_merge_bottom">5dp</dimen>
 </resources>

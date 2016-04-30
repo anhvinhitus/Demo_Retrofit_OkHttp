@@ -29,7 +29,6 @@ import rx.Scheduler;
 import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
-import rx.functions.Func1;
 import rx.subscriptions.Subscriptions;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -38,37 +37,24 @@ import vn.com.vng.zalopay.data.exception.BodyException;
  * TODO docs
  */
 public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
-    /**
-     * TODO
-     */
-    public static CustomRxJavaCallAdapterFactory create() {
-        return new CustomRxJavaCallAdapterFactory(null);
-    }
+    private Scheduler subscribeScheduler;
+    private Scheduler observerScheduler;
 
-    /**
-     * TODO
-     */
-    public static CustomRxJavaCallAdapterFactory createWithScheduler(Scheduler scheduler) {
-        if (scheduler == null) throw new NullPointerException("scheduler == null");
-        return new CustomRxJavaCallAdapterFactory(scheduler);
-    }
-
-    private final Scheduler scheduler;
-
-    private CustomRxJavaCallAdapterFactory(Scheduler scheduler) {
-        this.scheduler = scheduler;
+    public CustomRxJavaCallAdapterFactory(Scheduler subscribeScheduler, Scheduler observerScheduler) {
+        this.subscribeScheduler = subscribeScheduler;
+        this.observerScheduler = observerScheduler;
     }
 
     @Override
     public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        CallAdapter<Observable<?>> callAdapter = getCallAdapter(returnType, scheduler);
+        CallAdapter<Observable<?>> callAdapter = getCallAdapter(returnType, subscribeScheduler, observerScheduler);
         return callAdapter;
     }
 
-    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler) {
+    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, Scheduler observerScheduler) {
         Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
 
-        return new SimpleCallAdapter(observableType, scheduler);
+        return new SimpleCallAdapter(observableType, scheduler, observerScheduler);
     }
 
     static final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
@@ -99,7 +85,10 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
             } catch (Throwable t) {
                 Exceptions.throwIfFatal(t);
                 if (!subscriber.isUnsubscribed()) {
-                    subscriber.onError(t);
+                    try {
+                        subscriber.onError(t);
+                    } catch (Exception ex) {
+                    }
                 }
                 return;
             }
@@ -114,10 +103,13 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
     static final class SimpleCallAdapter implements CallAdapter<Observable<?>> {
         private final Type responseType;
         private final Scheduler scheduler;
+        private final Scheduler observerScheduler;
 
-        SimpleCallAdapter(Type responseType, Scheduler scheduler) {
+
+        SimpleCallAdapter(Type responseType, Scheduler scheduler, Scheduler observerScheduler) {
             this.responseType = responseType;
             this.scheduler = scheduler;
+            this.observerScheduler = observerScheduler;
         }
 
         @Override
@@ -135,7 +127,7 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                                 if (((BaseResponse) body).isSuccessfulResponse()) {
                                     return Observable.just(body);
                                 } else {
-                                    return Observable.error(new BodyException(((BaseResponse) body).err));
+                                    return Observable.error(new BodyException(((BaseResponse) body).err, ((BaseResponse) body).message));
                                 }
                             } else {
                                 return Observable.just(body);
@@ -145,7 +137,8 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                     });
 
             if (scheduler != null) {
-                return observable.subscribeOn(scheduler);
+                return observable.subscribeOn(scheduler)
+                        .observeOn(observerScheduler);
             }
             return observable;
         }
