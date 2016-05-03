@@ -23,4 +23,16 @@ public class UserEntityDataMapper {
 
         return user;
     }
+
+    public User transform(LoginResponse response, long zuid) {
+        User user = null;
+        if (response != null) {
+            user = new User();
+            user.accesstoken = response.accesstoken;
+            user.expirein = response.expirein;
+            user.uid = zuid;
+        }
+
+        return user;
+    }
 }

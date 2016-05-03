@@ -21,6 +21,12 @@ public interface PassportService {
     @POST("um/createaccesstoken")
     Observable<LoginResponse> login(@FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);
 
+
+    @FormUrlEncoded
+    @POST("um/createaccesstoken")
+    Observable<LoginResponse> login(@Field("appid") long appid, @Field("userid") long zuid, @Field("zalooauthcode") String zAuthCode, @QueryMap HashMap<String, String> params);
+
+
     @FormUrlEncoded
     @POST("um/removeaccesstoken")
     Observable<LogoutResponse> logout(@Field("accesstoken") String accesstoken, @FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);

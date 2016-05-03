@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.repository;
 
+import rx.Observable;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 
@@ -15,7 +16,8 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
     }
 
     @Override
-    public void getPlatformInfo() {
-
+    public Observable<Boolean> getPlatformInfo() {
+        return appConfigFactory.getPlatformInfo()
+                .map(platformInfoResponse -> Boolean.TRUE);
     }
 }

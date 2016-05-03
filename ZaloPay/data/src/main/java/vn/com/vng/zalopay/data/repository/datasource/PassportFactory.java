@@ -52,6 +52,11 @@ public class PassportFactory {
                 .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
     }
 
+    public Observable<LoginResponse> login(long zuid, String zAuthCode) {
+        return passportService.login(1, zuid, zAuthCode, params)
+                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
+    }
+
     public Observable<LogoutResponse> logout() {
         return passportService.logout(userConfig.getCurrentUser().accesstoken, authZaloParams, params)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());

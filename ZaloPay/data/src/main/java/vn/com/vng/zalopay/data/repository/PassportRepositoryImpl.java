@@ -33,6 +33,15 @@ public class PassportRepositoryImpl implements PassportRepository {
                 .map(userEntity -> userEntityDataMapper.transform(userEntity));
     }
 
+
+    @Override
+    public Observable<User> login(final long zuid, String zAuthCode) {
+        return passportFactory.login(zuid, zAuthCode).map(userEntity -> {
+            User user = userEntityDataMapper.transform(userEntity, zuid);
+            return user;
+        });
+    }
+
     @Override
     public Observable<Boolean> logout() {
         return passportFactory.logout().map(logoutResponse -> Boolean.TRUE);

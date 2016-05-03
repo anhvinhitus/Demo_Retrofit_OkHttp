@@ -8,7 +8,8 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
-import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
+import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -24,10 +25,12 @@ public class AppConfigFactory {
 
     private HashMap<String, String> authZaloParams;
 
-    private UserConfig userConfig;
+    private User user;
+
+    private SqlitePlatformScope sqlitePlatformScope;
 
     public AppConfigFactory(Context context, AppConfigService service, ParamRequestProvider paramRequestProvider,
-                            UserConfig userConfig) {
+                            User user, SqlitePlatformScope sqlitePlatformScope) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -37,8 +40,8 @@ public class AppConfigFactory {
         this.appConfigService = service;
         this.params = paramRequestProvider.paramsDefault;
         this.authZaloParams = paramRequestProvider.paramsZalo;
-
-        this.userConfig = userConfig;
+        this.user = user;
+        this.sqlitePlatformScope = sqlitePlatformScope;
 
     }
 
@@ -53,7 +56,7 @@ public class AppConfigFactory {
 
         return appConfigService.platforminfo(platformcode, dscreentype,
                 platformcode, resourceversion, mno,
-                userConfig.getUserId(), userConfig.getSession(), params);
+                user.uid, user.accesstoken, params);
 
     }
 

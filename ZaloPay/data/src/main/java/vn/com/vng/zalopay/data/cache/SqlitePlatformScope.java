@@ -16,4 +16,8 @@ public interface SqlitePlatformScope {
     void writeApplications(List<AppEntity> list);
 
     void write(AppEntity appEntity);
+
+    List<AppEntity> getAllAppEntity();
+
+    List<List<CardEntity>> getAllCardEntity();
 }
