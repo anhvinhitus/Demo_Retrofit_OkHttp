@@ -13,7 +13,10 @@
             android:icon="@drawable/ic_launcher"
             android:title="@string/txt_leftmenu_notification" />
     </group>
-    <group android:id="@+id/grp2">
+    <group android:id="@+id/grp2"
+        android:checkableBehavior="single"
+        android:menuCategory="container"
+        android:visible="true">
         <item
             android:id="@+id/nav_scanQRcode"
             android:icon="@drawable/ic_launcher"

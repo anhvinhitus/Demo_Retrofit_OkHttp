@@ -1,9 +1,7 @@
 package vn.com.vng.zalopay.home.ui.activity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -13,8 +11,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +33,10 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
+import vn.com.vng.zalopay.menu.model.MenuItem;
+import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
+import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -41,7 +44,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService;
 
-public class MainActivity extends BaseToolBarActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+public class MainActivity extends BaseToolBarActivity implements MenuItemClickListener {
 
     @Override
     protected int getResLayoutId() {
@@ -62,6 +66,8 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
 
     ZaloPayFragment homeFragment;
     NavigationView navigationView;
+    RecyclerView recyclerView;
+    MenuItemAdapter menuItemAdapter;
 
     @Inject
     Navigator navigator;
@@ -162,11 +168,14 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
         hideDefaultTitle();
         showLogo();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        recyclerView = (RecyclerView) findViewById(R.id.list);
+        menuItemAdapter = new MenuItemAdapter(this, MenuItemUtil.getMenuItems(), this);
 
-        header = new HeaderHolder();
-        navigationView.addHeaderView(header.root);
+        header = new HeaderHolder(this);
+//        navigationView.addHeaderView(header.root);
 
-        navigationView.setNavigationItemSelectedListener(this);
+        recyclerView.setAdapter(menuItemAdapter);
+        //navigationView.setNavigationItemSelectedListener(this);
 
         String versionName = BuildConfig.VERSION_NAME;
 //        int versionCode = BuildConfig.VERSION_CODE;
@@ -244,7 +253,7 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
 
     protected void selectMenu(int id){
         try {
-            navigationView.getMenu().findItem(id).setChecked(true);
+            //navigationView.getMenu().findItem(id).setChecked(true);
             setSelectedDrawerMenuItem(id);
         } catch (Exception ex){
             Timber.tag(TAG).d("Cannot select id: " + id, ex);
@@ -257,7 +266,7 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
             currentSelected = R.id.nav_home;
         }
         setSelectedDrawerMenuItem(R.id.nav_home);
-        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        //navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
     }
 
     private static long back_pressed;
@@ -300,7 +309,7 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
         } else {
             int prevId = currentSelected;
             currentSelected = itemId;
-            if (itemId == R.id.nav_home) {
+            if (itemId == MenuItemUtil.HOME_ID) {
                 showLogo();
                 if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)){
                     homeFragment = ZaloPayFragment.newInstance();
@@ -312,11 +321,11 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
                     mAppBarLayout.setExpanded(true, true);
                 }
                 return true;
-            } else if (itemId == R.id.nav_transfer) {
+            } else if (itemId == MenuItemUtil.TRANSFER_ID) {
                 startZMPSDKDemo();
                 selectHome(false);
                 return true;
-            } else if (itemId == R.id.nav_sigout) {
+            } else if (itemId == MenuItemUtil.SIGOUT_ID) {
                 ZaloSDK.Instance.unauthenticate();
                 navigator.startLoginActivity(this);
             }/*  else if (itemId == R.id.nav_cards) {
@@ -336,21 +345,22 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
         return false;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    public void onMenuItemClick(MenuItem menuItem) {
+        if (menuItem == null) {
+            return;
+        }
+        int id = menuItem.getId();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        if (setSelectedDrawerMenuItem(id)) {
-            return true;
-        }
+        setSelectedDrawerMenuItem(id);
+    }
 
-        return true;
+    @Override
+    public void onMenuCategoryClick(vn.com.vng.zalopay.menu.model.MenuItem menuItem) {
+
     }
 
     class HeaderHolder {
@@ -395,8 +405,8 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
 //            popupMenu.show();
 //        }
 
-        public HeaderHolder(){
-            root = getLayoutInflater().inflate(R.layout.nav_header_main,null);
+        public HeaderHolder(AppCompatActivity activity){
+            root = activity.findViewById(R.id.nav_header_main);
             ButterKnife.bind(this,root);
         }
 

@@ -23,7 +23,6 @@ public class Navigator {
         //empty
     }
 
-
     public void startLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginZaloActivity.class);
         context.startActivity(intent);
