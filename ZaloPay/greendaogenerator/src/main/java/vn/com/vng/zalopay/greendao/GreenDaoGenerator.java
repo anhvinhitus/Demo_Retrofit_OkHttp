@@ -5,7 +5,7 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 1;
+    private static final int APP_DB_VERSION = 2;
 
 
     public static void main(String[] args) throws Exception {
@@ -13,6 +13,9 @@ public class GreenDaoGenerator {
 
         //ADD TABLE
         addApplicationInfo(appSchema);
+
+        addTransactionLog(appSchema);
+        addDataManifest(appSchema);
 
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
@@ -31,5 +34,29 @@ public class GreenDaoGenerator {
         appInfoEntity.addStringProperty("app_local_url");
 
     }
+
+
+    private static void addTransactionLog(Schema schema) {
+        Entity transHistoryData = schema.addEntity("TransactionLogs");
+        transHistoryData.addLongProperty("transid").notNull().unique().primaryKey();
+        transHistoryData.addLongProperty("appid")
+                .notNull()
+        //.unique() //Todo: xem có cần thiết không
+        ;
+        transHistoryData.addStringProperty("platform");
+        transHistoryData.addStringProperty("description");
+        transHistoryData.addIntProperty("pmcid");
+        transHistoryData.addLongProperty("reqdate");
+        transHistoryData.addIntProperty("grossamount");
+        transHistoryData.addIntProperty("netamount");
+        transHistoryData.addIntProperty("type");
+    }
+
+    private static void addDataManifest(Schema schema) {
+        Entity dataManifest = schema.addEntity("DataManifest");
+        dataManifest.addStringProperty("key").notNull().unique().primaryKey();
+        dataManifest.addStringProperty("value");
+    }
+
 
 }

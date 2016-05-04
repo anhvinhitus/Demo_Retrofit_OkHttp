@@ -7,6 +7,7 @@ import vn.com.vng.zalopay.domain.model.AppInfo;
 
 /**
  * Created by AnhHieu on 5/3/16.
+ * Danh sách ứng dưng react-natvie
  */
 public interface ApplicationRepository {
     Observable<List<AppInfo>> getApplicationInfos();
