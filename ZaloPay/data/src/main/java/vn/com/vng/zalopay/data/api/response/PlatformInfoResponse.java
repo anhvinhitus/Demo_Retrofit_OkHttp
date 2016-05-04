@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.data.api.response;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.data.api.entity.AppEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.api.entity.PCMEntity;
 
@@ -28,7 +27,6 @@ public class PlatformInfoResponse extends BaseResponse {
 
 
     public static class PlatformInfoEntity {
-        public List<AppEntity> applist;
         public List<PCMEntity> pmclist;
     }
 
