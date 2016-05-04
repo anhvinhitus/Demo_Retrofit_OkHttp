@@ -48,7 +48,7 @@
     </group>
     <group android:id="@+id/grp4">
         <item
-            android:id="@+id/nav_logout"
+            android:id="@+id/nav_sigout"
             android:icon="@drawable/ic_launcher"
             android:title="@string/txt_leftmenu_sigout" />
     </group>

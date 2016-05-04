@@ -19,14 +19,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
@@ -55,6 +63,9 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
     ZaloPayFragment homeFragment;
     NavigationView navigationView;
 
+    @Inject
+    Navigator navigator;
+
     @Bind(R.id.im_logo)
     ImageView mImLogo;
 
@@ -63,6 +74,27 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
 
     @Bind(R.id.appBarLayout)
     AppBarLayout mAppBarLayout;
+
+    @Bind(R.id.btn_qr_code)
+    View mBtnQrCode;
+
+    @Bind(R.id.btn_deposit)
+    View mBtnDeposit;
+
+    @OnClick(R.id.btn_qr_code)
+    public void onBtnQrCodeClick(View view) {
+        navigator.startQrCodeActivity(this);
+    }
+
+    @OnClick(R.id.btn_deposit)
+    public void onBtnDepositClick(View view) {
+        gotoDepositActivity();
+    }
+
+    private void gotoDepositActivity() {
+        Intent intent = new Intent(this, BalanceTopupActivity.class);
+        startActivity(intent);
+    }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -120,6 +152,7 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.tag(TAG).d("onCreate....................");
+        AndroidApplication.instance().getUserComponent().inject(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -142,10 +175,10 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
         strVersion.append(versionName);
         header.tvVersion.setText(strVersion.toString());
 
-        String phone = "";
-        String name = "";//AppCommon.instance().getUserConfigs().getName();
-        String email = "";//AppCommon.instance().getUserConfigs().getEmail();
-        String avatar = "";//AppCommon.instance().getUserConfigs().getEmail(); //"http://img.news.zing.vn/img/39/t39790.jpg";
+        String phone = "0988888888";
+        String name = "Nguyen Van A";
+        String email = "vng.zalopay@gmail.com";//AppCommon.instance().getUserConfigs().getEmail();
+        String avatar = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
         if (!TextUtils.isEmpty(name)){
             header.tvName.setText(name);
             header.tvName.setVisibility(View.VISIBLE);
@@ -170,23 +203,7 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
         } else {
             header.tvEmail.setVisibility(View.GONE);
         }
-
-//        if (header.imageAvatar != null && !TextUtils.isEmpty(avatar)) {
-//            Picasso.with(this)
-//                    .load(avatar)
-//                    .resize(240, 240)
-//                    .centerCrop()
-//                    .error(R.drawable.ic_logo_leftmenu)
-//                    .placeholder(R.drawable.ic_logo_leftmenu)
-//                    .into(header.imageAvatar);
-//        } else {
-//            Picasso.with(this)
-//                    .load(R.drawable.ic_logo_leftmenu)
-//                    .resize(240, 240)
-//                    .centerCrop()
-//                    .placeholder(R.drawable.ic_logo_leftmenu)
-//                    .into(header.imageAvatar);
-//        }
+        loadAvatarImage(header.imageAvatar, avatar);
 
         if (savedInstanceState != null) {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.root);
@@ -299,6 +316,9 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
                 startZMPSDKDemo();
                 selectHome(false);
                 return true;
+            } else if (itemId == R.id.nav_sigout) {
+                ZaloSDK.Instance.unauthenticate();
+                navigator.startLoginActivity(this);
             }/*  else if (itemId == R.id.nav_cards) {
                 hideBalanceAllView();
                 showTitle(getString(R.string.title_activity_cards));
@@ -463,5 +483,9 @@ public class MainActivity extends BaseToolBarActivity implements NavigationView.
         if (mAppBarLayout != null) {
             mAppBarLayout.setExpanded(expanded);
         }
+    }
+
+    private void loadAvatarImage(ImageView imageView, String url) {
+        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
     }
 }

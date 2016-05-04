@@ -8,17 +8,15 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -33,7 +31,6 @@ public class ZaloPayFragment extends BaseMainFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     protected void onScreenVisible() {
@@ -64,34 +61,11 @@ public class ZaloPayFragment extends BaseMainFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadAvatarImage(mAvatarView, avatarUrl);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Bind(R.id.avatar)
-    ImageView mAvatarView;
-
-    private String avatarUrl = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
-
-    private void loadAvatarImage(ImageView imageView, String url) {
-        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
-    }
-
-    @NonNull
-    @OnClick(R.id.btn_qr_code)
-    public void onClickQrCode(View v) {
-        navigator.startQrCodeActivity(getActivity());
-    }
-
-
-    @NonNull
-    @OnClick(R.id.btn_card_bank)
-    public void onClickCardBank(View v) {
-        Timber.d("CardBank");
     }
 
     @NonNull
@@ -104,13 +78,13 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_recharge_game)
     public void onClickRechargeGame(View v) {
         Timber.d("Recharge.Game");
-        gotoRechargeGame();
+//        gotoRechargeGame();
     }
 
-    private void gotoRechargeGame() {
-        Intent intent = new Intent(getActivity(), BalanceTopupActivity.class);
-        startActivity(intent);
-    }
+//    private void gotoRechargeGame() {
+//        Intent intent = new Intent(getActivity(), BalanceTopupActivity.class);
+//        startActivity(intent);
+//    }
 
     @OnClick(R.id.btn_recharge_phone)
     public void onClickRechargePhone(View view) {
@@ -126,11 +100,6 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_transfer)
     public void onTransferMoneyClick(View view) {
         gotoTransferActivity();
-    }
-
-    @OnClick(R.id.profile)
-    public void onProfileClick(View view) {
-        signout();
     }
 
     private void gotoTransferActivity() {
@@ -151,11 +120,6 @@ public class ZaloPayFragment extends BaseMainFragment {
     private void startZMPSDKDemo() {
         Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
         startActivity(intent);
-    }
-
-    private void signout() {
-        ZaloSDK.Instance.unauthenticate();
-        gotoLoginActivity();
     }
 
     private void gotoLoginActivity() {
