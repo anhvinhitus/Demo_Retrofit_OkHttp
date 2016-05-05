@@ -8,12 +8,10 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 /**
  * Created by AnhHieu on 4/28/16.
  */
-public class SqlitePlatformScopeImpl implements SqlitePlatformScope {
-
-    private final DaoSession daoSession;
+public class SqlitePlatformScopeImpl extends SqlBaseScope implements SqlitePlatformScope {
 
     public SqlitePlatformScopeImpl(DaoSession daoSession) {
-        this.daoSession = daoSession;
+        super(daoSession);
     }
 
     @Override

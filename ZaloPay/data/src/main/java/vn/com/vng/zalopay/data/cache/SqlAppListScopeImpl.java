@@ -8,12 +8,11 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 /**
  * Created by AnhHieu on 5/4/16.
  */
-public class SqlAppListScopeImpl implements SqlAppListScope {
+public class SqlAppListScopeImpl extends SqlBaseScope implements SqlAppListScope {
 
-    private final DaoSession daoSession;
 
     public SqlAppListScopeImpl(DaoSession daoSession) {
-        this.daoSession = daoSession;
+        super(daoSession);
     }
 
     @Override
