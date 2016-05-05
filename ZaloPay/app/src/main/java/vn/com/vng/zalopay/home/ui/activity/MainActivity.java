@@ -12,10 +12,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -66,7 +66,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
     ZaloPayFragment homeFragment;
     NavigationView navigationView;
-    RecyclerView recyclerView;
+    ListView menuItemListView;
     MenuItemAdapter menuItemAdapter;
 
     @Inject
@@ -168,13 +168,13 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         hideDefaultTitle();
         showLogo();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        recyclerView = (RecyclerView) findViewById(R.id.list);
+        menuItemListView = (ListView) findViewById(R.id.list);
         menuItemAdapter = new MenuItemAdapter(this, MenuItemUtil.getMenuItems(), this);
 
         header = new HeaderHolder(this);
 //        navigationView.addHeaderView(header.root);
-
-        recyclerView.setAdapter(menuItemAdapter);
+        menuItemListView.addHeaderView(header.root);
+        menuItemListView.setAdapter(menuItemAdapter);
         //navigationView.setNavigationItemSelectedListener(this);
 
         String versionName = BuildConfig.VERSION_NAME;
@@ -406,7 +406,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 //        }
 
         public HeaderHolder(AppCompatActivity activity){
-            root = activity.findViewById(R.id.nav_header_main);
+//            root = activity.findViewById(R.id.nav_header_main);
+            root = getLayoutInflater().inflate(R.layout.nav_header_main,null);
             ButterKnife.bind(this,root);
         }
 
