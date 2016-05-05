@@ -88,4 +88,6 @@
     <dimen name="login_button_conner_radius">5dp</dimen>
     <dimen name="login_button_merge">8dp</dimen>
     <dimen name="login_button_merge_bottom">5dp</dimen>
+
+    <dimen name="leftmenu.textsize.currencyunit">8sp</dimen>
 </resources>

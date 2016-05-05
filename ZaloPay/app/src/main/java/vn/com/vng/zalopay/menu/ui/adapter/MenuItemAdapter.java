@@ -68,11 +68,11 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     }
 
     private void onMenuItemClick(View view, MenuItem menuItem) {
-        if (currentView != null) {
-            currentView.setBackgroundResource(R.color.transparent);
-        }
-        currentView = view;
-        currentView.setBackgroundResource(R.color.blue);
+//        if (currentView != null) {
+//            currentView.setBackgroundResource(R.color.transparent);
+//        }
+//        currentView = view;
+//        currentView.setBackgroundResource(R.color.separate_transparent);
         if (mListener!= null) {
             mListener.onMenuItemClick(menuItem);
         }
@@ -92,6 +92,12 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
             viewHolder.viewSeparate.setVisibility(View.VISIBLE);
         } else {
             viewHolder.viewSeparate.setVisibility(View.INVISIBLE);
+        }
+        if (menuItem.getSubIconResource() != null) {
+            viewHolder.mImageSubIcon.setImageResource(menuItem.getSubIconResource());
+            viewHolder.mImageSubIcon.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mImageSubIcon.setVisibility(View.GONE);
         }
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,11 +136,13 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     public class ItemViewHolder extends ViewHolder{
         public final ImageView mImageView;
+        public final ImageView mImageSubIcon;
         public final View viewSeparate;
 
         public ItemViewHolder(View view) {
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.imgIcon);
+            mImageSubIcon = (ImageView) view.findViewById(R.id.imgArrowRight);
             viewSeparate = view.findViewById(R.id.viewSeparate);
         }
 

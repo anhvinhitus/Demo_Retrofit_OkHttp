@@ -30,7 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
@@ -41,6 +40,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService;
 
@@ -177,41 +177,17 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         menuItemListView.setAdapter(menuItemAdapter);
         //navigationView.setNavigationItemSelectedListener(this);
 
-        String versionName = BuildConfig.VERSION_NAME;
-//        int versionCode = BuildConfig.VERSION_CODE;
-        StringBuilder strVersion = new StringBuilder();
-        strVersion.append("Phiên bản ");
-        strVersion.append(versionName);
-        header.tvVersion.setText(strVersion.toString());
-
-        String phone = "0988888888";
         String name = "Nguyen Van A";
-        String email = "vng.zalopay@gmail.com";//AppCommon.instance().getUserConfigs().getEmail();
+        long balance = 1232425;
         String avatar = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
         if (!TextUtils.isEmpty(name)){
             header.tvName.setText(name);
             header.tvName.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(phone)){
-                header.tvPhone.setText(name);
-                header.tvPhone.setVisibility(View.VISIBLE);
-            } else {
-                header.tvPhone.setVisibility(View.GONE);
-            }
         } else {
-            header.tvPhone.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(phone)){
-                header.tvName.setText(phone);
-                header.tvName.setVisibility(View.VISIBLE);
-            } else {
-                header.tvName.setVisibility(View.GONE);
-            }
+            header.tvName.setVisibility(View.INVISIBLE);
         }
-        if (!TextUtils.isEmpty(email)){
-            header.tvEmail.setText(email);
-            header.tvEmail.setVisibility(View.VISIBLE);
-        } else {
-            header.tvEmail.setVisibility(View.GONE);
-        }
+        header.tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
+
         loadAvatarImage(header.imageAvatar, avatar);
 
         if (savedInstanceState != null) {
@@ -304,46 +280,48 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     }
 
     protected boolean setSelectedDrawerMenuItem(int itemId) {
-        if (itemId == currentSelected) {
-            return true;
-        } else {
-            int prevId = currentSelected;
-            currentSelected = itemId;
-            if (itemId == MenuItemUtil.HOME_ID) {
-                showLogo();
-                if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)){
-                    homeFragment = ZaloPayFragment.newInstance();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.root, homeFragment).commit();
-                }
+//        if (itemId == currentSelected) {
+//            return true;
+//        } else {
+        int prevId = currentSelected;
+        currentSelected = itemId;
+        if (itemId == MenuItemUtil.HOME_ID) {
+            showLogo();
+            if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)){
+                homeFragment = ZaloPayFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.root, homeFragment).commit();
+            }
 //                Fragment fragment = HomeFragment.newInstance();
 //                getSupportFragmentManager().beginTransaction().replace(R.id.root, fragment).addToBackStack(fragment.getClass().getSimpleName()).commit();
-                if (mAppBarLayout != null) {
-                    mAppBarLayout.setExpanded(true, true);
-                }
-                return true;
-            } else if (itemId == MenuItemUtil.TRANSFER_ID) {
-                startZMPSDKDemo();
-                selectHome(false);
-                return true;
-            } else if (itemId == MenuItemUtil.SCAN_QR_ID) {
-                navigator.startQrCodeActivity(this);
-            } else if (itemId == MenuItemUtil.SIGOUT_ID) {
-                ZaloSDK.Instance.unauthenticate();
-                navigator.startLoginActivity(this);
-            }/*  else if (itemId == R.id.nav_cards) {
-                hideBalanceAllView();
-                showTitle(getString(R.string.title_activity_cards));
-                Fragment fragment = CardsFragment.newInstance(1);
-                if (prevId != R.id.nav_home){
-                    getSupportFragmentManager().popBackStack(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.root, fragment).addToBackStack(REPLACE_HOME_TRANSACTION).commit();
-                if (mAppBarLayout != null) {
-                    mAppBarLayout.setExpanded(true, false);
-                }
-                return true;
-            }*/
-        }
+            if (mAppBarLayout != null) {
+                mAppBarLayout.setExpanded(true, true);
+            }
+            return true;
+        } else if (itemId == MenuItemUtil.TRANSFER_ID) {
+            startZMPSDKDemo();
+            selectHome(false);
+            return true;
+        } else if (itemId == MenuItemUtil.DEPOSIT_ID) {
+            navigator.startDepositActivity(this);
+        } else if (itemId == MenuItemUtil.SCAN_QR_ID) {
+            navigator.startQrCodeActivity(this);
+        } else if (itemId == MenuItemUtil.SIGOUT_ID) {
+            ZaloSDK.Instance.unauthenticate();
+            navigator.startLoginActivity(this);
+        }/*  else if (itemId == R.id.nav_cards) {
+            hideBalanceAllView();
+            showTitle(getString(R.string.title_activity_cards));
+            Fragment fragment = CardsFragment.newInstance(1);
+            if (prevId != R.id.nav_home){
+                getSupportFragmentManager().popBackStack(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.root, fragment).addToBackStack(REPLACE_HOME_TRANSACTION).commit();
+            if (mAppBarLayout != null) {
+                mAppBarLayout.setExpanded(true, false);
+            }
+            return true;
+        }*/
+//        }
         return false;
     }
 
@@ -372,12 +350,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         public ImageView imageAvatar;
         @Bind(R.id.tv_name)
         public TextView tvName;
-        @Bind(R.id.tv_phone)
-        public TextView tvPhone;
-        @Bind(R.id.tv_email)
-        public TextView tvEmail;
-        @Bind(R.id.tvVersion)
-        public TextView tvVersion;
+        @Bind(R.id.tv_balance)
+        public TextView tvBalance;
 
 //        @OnClick(R.id.btn_friends)
 //        void onFriendsClicked(View v){
