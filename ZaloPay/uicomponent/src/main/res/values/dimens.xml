@@ -82,6 +82,7 @@
 
 
     <dimen name="separate">1px</dimen>
+    <dimen name="left_menu_icon">48dp</dimen>
     <dimen name="button_conner_radius">30dp</dimen>
 
     <dimen name="login_button_conner_radius">5dp</dimen>

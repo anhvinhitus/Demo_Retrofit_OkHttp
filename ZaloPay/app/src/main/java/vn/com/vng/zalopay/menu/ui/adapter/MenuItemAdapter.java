@@ -66,27 +66,42 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         return convertView;
     }
 
-    private void onItemClick(View view, MenuItem menuItem) {
+    private void onMenuItemClick(View view, MenuItem menuItem) {
+        if (mListener!= null) {
+            mListener.onMenuItemClick(menuItem);
+        }
+    }
 
+    private void onHeaderClick(View view, MenuItem menuItem) {
+        if (mListener!= null) {
+            mListener.onMenuItemClick(menuItem);
+        }
     }
 
     private void bindMenuItemView(ViewHolder holder, final MenuItem menuItem) {
-        ((ItemViewHolder)holder).mTvTitle.setText(menuItem.getTitle());
-        ((ItemViewHolder)holder).mImageView.setImageResource(menuItem.getResource());
-        ((ItemViewHolder)holder).mView.setOnClickListener(new View.OnClickListener() {
+        ItemViewHolder viewHolder = (ItemViewHolder)holder;
+        viewHolder.mTvTitle.setText(menuItem.getTitle());
+        viewHolder.mImageView.setImageResource(menuItem.getIconResource());
+        if (menuItem.isShowDivider()) {
+            viewHolder.viewSeparate.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.viewSeparate.setVisibility(View.INVISIBLE);
+        }
+        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick(v, menuItem);
+                onMenuItemClick(v, menuItem);
             }
         });
     }
 
     private void bindHeaderView(ViewHolder holder, final MenuItem menuItem) {
-        ((ViewHolder)holder).mTvTitle.setText(menuItem.getTitle());
-        ((ViewHolder)holder).mView.setOnClickListener(new View.OnClickListener() {
+        ViewHolder viewHolder = (ViewHolder)holder;
+        viewHolder.mTvTitle.setText(menuItem.getTitle());
+        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClick(v, menuItem);
+                onHeaderClick(v, menuItem);
             }
         });
     }
@@ -109,10 +124,12 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     public class ItemViewHolder extends ViewHolder{
         public final ImageView mImageView;
+        public final View viewSeparate;
 
         public ItemViewHolder(View view) {
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.imgIcon);
+            viewSeparate = view.findViewById(R.id.viewSeparate);
         }
 
         @Override

@@ -32,6 +32,8 @@
                 android:layout_height="0dp"
                 android:clipToPadding="false"
                 android:padding="0dp"
+                android:dividerHeight="0dp"
+                android:divider="@color/transparent"
                 android:layout_weight="1"
                 android:scrollbarStyle="insideOverlay" />
         </LinearLayout>
