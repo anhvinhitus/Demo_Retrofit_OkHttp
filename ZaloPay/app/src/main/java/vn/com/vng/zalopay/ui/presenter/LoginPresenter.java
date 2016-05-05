@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;

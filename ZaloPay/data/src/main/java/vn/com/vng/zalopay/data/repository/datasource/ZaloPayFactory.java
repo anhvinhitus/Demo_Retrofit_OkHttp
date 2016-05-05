@@ -52,15 +52,19 @@ public class ZaloPayFactory {
     }
 
 
-    public Observable<Long> balanceServer() {
+    private Observable<Long> balanceServer() {
         return appConfigService.balance(user.uid, user.accesstoken)
-                .doOnNext(balanceResponse -> sqlZaloPayScope.writeBalance(balanceResponse.zpwbalance))
+                .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance);
     }
 
-    public Observable<Long> balanceLocal() {
+    private Observable<Long> balanceLocal() {
         return sqlZaloPayScope.balance();
     }
 
+
+    public Observable<Long> balance() {
+        return Observable.merge(balanceLocal(), balanceServer());
+    }
 
 }
