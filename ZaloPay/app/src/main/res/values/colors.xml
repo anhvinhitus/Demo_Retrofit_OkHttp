@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008fe5</color>
+    <color name="colorPrimary">#018fe5</color>
     <color name="colorPrimaryDark">#006fb2</color>
     <color name="colorAccent">#FF4081</color>
 
@@ -22,4 +22,10 @@
     <color name="accent">#FF4081</color>
 
     <color name="separate.login">#0c7dc1</color>
+
+    <color name="leftmenu.title">#24272b</color>
+    <color name="leftmenu.group.title">#727f8c</color>
+    <color name="leftmenu.group.bg">#e5eff1</color>
+
+    <color name="leftmenu.avatar.bg">#35a7eb</color>
 </resources>

@@ -106,6 +106,12 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+//        super.onBackPressed();
+    }
+
+    @Override
     public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
         Timber.tag(TAG).d("onValidateComplete###############################isValidated:" + isValidated);
 
