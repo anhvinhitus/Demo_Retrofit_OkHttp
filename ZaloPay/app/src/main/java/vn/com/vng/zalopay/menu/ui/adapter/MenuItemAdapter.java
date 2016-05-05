@@ -22,6 +22,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     private final MenuItemClickListener mListener;
     private final LayoutInflater mLayoutInflater;
+    private View currentView;
 
     public MenuItemAdapter(Context context, List<MenuItem> items, MenuItemClickListener listener) {
         super(context, R.layout.layout_item_drawer, items);
@@ -67,6 +68,11 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     }
 
     private void onMenuItemClick(View view, MenuItem menuItem) {
+        if (currentView != null) {
+            currentView.setBackgroundResource(R.color.transparent);
+        }
+        currentView = view;
+        currentView.setBackgroundResource(R.color.blue);
         if (mListener!= null) {
             mListener.onMenuItemClick(menuItem);
         }
@@ -74,7 +80,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     private void onHeaderClick(View view, MenuItem menuItem) {
         if (mListener!= null) {
-            mListener.onMenuItemClick(menuItem);
+            mListener.onMenuHeaderClick(menuItem);
         }
     }
 

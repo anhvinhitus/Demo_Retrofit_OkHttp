@@ -35,7 +35,7 @@
                 android:dividerHeight="0dp"
                 android:divider="@color/transparent"
                 android:layout_weight="1"
-                android:scrollbarStyle="insideOverlay" />
+                android:scrollbarStyle="outsideOverlay" />
         </LinearLayout>
     </android.support.design.widget.NavigationView>
 

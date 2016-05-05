@@ -35,6 +35,15 @@ public class MenuItem extends AbstractData {
         this.showDivider = true;
     }
 
+    public MenuItem(int id, MenuItemType itemType, Integer iconResource, String title, boolean showDivider) {
+        this.id = id;
+        this.itemType = itemType;
+        this.title = title;
+        this.iconResource = iconResource;
+        this.subIconResource = null;
+        this.showDivider = showDivider;
+    }
+
     public MenuItem(int id, MenuItemType itemType, Integer iconResource,String title) {
         this.id = id;
         this.itemType = itemType;

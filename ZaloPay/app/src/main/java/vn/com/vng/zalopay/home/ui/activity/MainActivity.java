@@ -359,7 +359,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     }
 
     @Override
-    public void onMenuCategoryClick(vn.com.vng.zalopay.menu.model.MenuItem menuItem) {
+    public void onMenuHeaderClick(vn.com.vng.zalopay.menu.model.MenuItem menuItem) {
 
     }
 
