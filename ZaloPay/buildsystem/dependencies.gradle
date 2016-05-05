@@ -14,7 +14,7 @@ ext {
     supportVersion = '23.2.1'
     playService = "8.3.0"
     //Libraries Version
-    daggerVersion = '2.0.2'
+    daggerVersion = '2.2'
     butterKnifeVersion = '7.0.1'
     recyclerViewVersion = '21.0.3'
     rxJavaVersion = '1.1.3'
@@ -35,7 +35,7 @@ ext {
     glideVersion = "3.7.0"
     glideOkhttp3IntegrationVersion = "1.4.0@aar"
     eventBusVersion = "3.0.0"
-    greendaoVersion = "2.1.0"
+    greendaoVersion = "2.2.0"
 
     //Testing
     robolectricVersion = '3.0'
@@ -68,14 +68,14 @@ ext {
             rxJava                 : "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid              : "io.reactivex:rxandroid:${rxAndroidVersion}",
             okHttp                 : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
-            greenDao               : "de.greenrobot:greendao:${greendaoVersion}",
-            greenDaoGenerator      : "de.greenrobot:greendao-generator:${greendaoVersion}",
+            greenDao               : "org.greenrobot:greendao:${greendaoVersion}",
+            greenDaoGenerator      : "org.greenrobot:greendao-generator:${greendaoVersion}",
             eventbus               : "org.greenrobot:eventbus:${eventBusVersion}",
             glide                  : "com.github.bumptech.glide:glide:${glideVersion}",
             glideIntegration       : "com.github.bumptech.glide:okhttp3-integration:${glideOkhttp3IntegrationVersion}",
             gson                   : "com.google.code.gson:gson:${gsonVersion}",
             zxing                  : "com.google.zxing:core:${zxingVersion}",
-	    zxing_android_core	   : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
+            zxing_android_core     : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
 
             support_support_v4     : "com.android.support:support-v4:${supportVersion}",
             support_appcompat_v7   : "com.android.support:appcompat-v7:${supportVersion}",

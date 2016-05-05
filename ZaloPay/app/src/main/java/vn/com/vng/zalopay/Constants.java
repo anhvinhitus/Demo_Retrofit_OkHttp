@@ -19,4 +19,7 @@ public class Constants {
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";
+
+    //DATA MANIFESTS DATABASE
+    public static final String MANIF_BALANCE = "manif_balance";
 }

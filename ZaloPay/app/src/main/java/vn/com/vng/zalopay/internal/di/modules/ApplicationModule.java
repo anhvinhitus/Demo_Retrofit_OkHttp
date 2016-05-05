@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
 import javax.inject.Named;
@@ -14,6 +15,9 @@ import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
+import vn.com.vng.zalopay.data.cache.model.DaoMaster;
+import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.data.repository.PassportRepositoryImpl;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -71,5 +75,16 @@ public class ApplicationModule {
     UserConfig providesUserConfig(SharedPreferences sharedPreferences) {
         return new UserConfigImpl(sharedPreferences);
     }
+
+    @Provides
+    @Singleton
+    @Named("daosession")
+    DaoSession provideDaoSession(Context context) {
+        DaoMaster.OpenHelper helper = new DBOpenHelper(context, "zalopay.db");
+        SQLiteDatabase db = helper.getWritableDatabase();
+        DaoMaster daoMaster = new DaoMaster(db);
+        return daoMaster.newSession();
+    }
+
 
 }

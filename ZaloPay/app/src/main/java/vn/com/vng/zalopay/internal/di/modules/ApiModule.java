@@ -9,7 +9,7 @@ import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.api.PassportService;
 
 @Module
-public class DomainModule {
+public class ApiModule {
 
     @Provides
     @Singleton

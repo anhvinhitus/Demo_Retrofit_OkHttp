@@ -102,10 +102,28 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
+    public void saveConfig(LoginResponse response, long zuid) {
+        if (response == null || !response.isSuccessfulResponse()) return;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);
+        editor.putLong(Constants.PREF_USER_EXPIREIN, response.expirein);
+        editor.putLong(Constants.PREF_USER_ID, zuid);
+        editor.apply();
+    }
+
+    @Override
     public String getSession() {
         if (isClientActivated()) {
             return getCurrentUser().accesstoken;
         }
         return null;
+    }
+
+    @Override
+    public long getUserId() {
+        if (isClientActivated()) {
+            return getCurrentUser().uid;
+        }
+        return -1;
     }
 }

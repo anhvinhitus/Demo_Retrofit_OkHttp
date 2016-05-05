@@ -1,79 +1,62 @@
 package vn.com.vng.zalopay.greendao;
 
 import de.greenrobot.daogenerator.DaoGenerator;
+import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 1023;
+    private static final int APP_DB_VERSION = 2;
 
-    private static Schema appSchema;
 
     public static void main(String[] args) throws Exception {
-        appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.db.model");
-        genApplicationTable();
+        Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
+
+        //ADD TABLE
+        addApplicationInfo(appSchema);
+
+        addTransactionLog(appSchema);
+        addDataManifest(appSchema);
+
+
+        new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
-    private static void genApplicationTable() throws Exception{
-//        addFriendTable(appSchema);
+    private static void addApplicationInfo(Schema schema) {
+        Entity appInfoEntity = schema.addEntity("AppInfo");
+        appInfoEntity.addStringProperty("app_id").notNull().unique().primaryKey();
+        appInfoEntity.addStringProperty("app_name");
+        appInfoEntity.addStringProperty("app_icon_url");
+        appInfoEntity.addStringProperty("js_url");
+        appInfoEntity.addStringProperty("resource_url");
+        appInfoEntity.addStringProperty("base_url");
+        appInfoEntity.addStringProperty("app_checksum");
+        appInfoEntity.addIntProperty("status");
+        appInfoEntity.addStringProperty("app_local_url");
 
-        String path = "./app/src/main/java";
-        new DaoGenerator().generateAll(appSchema, path);
     }
 
-//    private static void addSuggestTransferTable(Schema schema) {
-//        Entity suggestTransferMoney = schema.addEntity("SuggestTransferMoney");
-//        suggestTransferMoney.addIdProperty();
-//        suggestTransferMoney.addStringProperty("text").notNull();
-//        suggestTransferMoney.addStringProperty("alias");
-//        suggestTransferMoney.addIntProperty("frequency");
-//        //0: auto generator; 1: individual
-//        suggestTransferMoney.addIntProperty("type");
-//        suggestTransferMoney.addDateProperty("updateTime");
-//    }
-//
-//    private static void addRecentContactTransferTable(Schema schema) {
-//        Entity entity = schema.addEntity("MoneyTransferRecentContact");
-////        entity.addIdProperty();
-//        entity.addStringProperty("phoneNumber").notNull().unique().primaryKey();
-//        entity.addStringProperty("contactId");
-//        entity.addStringProperty("displayName");
-//        entity.addStringProperty("thumbnail");
-//        entity.addIntProperty("frequency");
-//        entity.addDateProperty("updateTime");
-//    }
 
-//    private static void addTelCardTable(Schema schema) {
-//        Entity telCardEntity = schema.addEntity("TelCard");
-//        telCardEntity.addIdProperty();
-//        Property propertyCardCode = telCardEntity.addStringProperty("CardCode").getProperty();
-//        Property propertySerialNo = telCardEntity.addStringProperty("SerialNo").getProperty();
-//        telCardEntity.addStringProperty("CardTypeId");
-//        telCardEntity.addLongProperty("CardValue");
-//        telCardEntity.addStringProperty("ExpireDateFormat");
-//        telCardEntity.addDateProperty("updateTime");
-//
-//        Index indexUnique = new Index();
-//        indexUnique.addProperty(propertyCardCode);
-//        indexUnique.addProperty(propertySerialNo);
-//        indexUnique.makeUnique();
-//        telCardEntity.addIndex(indexUnique);
-//    }
+    private static void addTransactionLog(Schema schema) {
+        Entity transHistoryData = schema.addEntity("TransactionLog");
+        transHistoryData.addLongProperty("transid").notNull().unique().primaryKey();
+        transHistoryData.addLongProperty("appid")
+                .notNull()
+        //.unique() //Todo: xem có cần thiết không
+        ;
+        transHistoryData.addStringProperty("platform");
+        transHistoryData.addStringProperty("description");
+        transHistoryData.addIntProperty("pmcid");
+        transHistoryData.addLongProperty("reqdate");
+        transHistoryData.addIntProperty("grossamount");
+        transHistoryData.addIntProperty("netamount");
+        transHistoryData.addIntProperty("type");
+    }
 
-//    private static void addFriendTable(Schema schema) {
-//        Entity entity = schema.addEntity("Friend");
-//        entity.addIdProperty();
-//        entity.addStringProperty("rowId");
-//        entity.addStringProperty("accountId").notNull();
-//        entity.addStringProperty("groupId");
-//        entity.addStringProperty("status");
-//        entity.addStringProperty("createdDate");
-//        entity.addStringProperty("modifiedDate");
-//        entity.addStringProperty("userPhoneNumber").unique().notNull();
-//        entity.addStringProperty("fullName");
-//        entity.addStringProperty("email");
-//        entity.addStringProperty("search");
-//        entity.addIntProperty("serverOrder");
-//        entity.addContentProvider();
-//    }
+    private static void addDataManifest(Schema schema) {
+        Entity dataManifest = schema.addEntity("DataManifest");
+        dataManifest.addStringProperty("key").notNull().unique().primaryKey();
+        dataManifest.addStringProperty("value");
+    }
+
 
 }

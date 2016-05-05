@@ -26,7 +26,7 @@ public class ParamRequestProvider {
 
     private HashMap buildParamDefault() {
         HashMap<String, String> param = new HashMap<>();
-        param.put("deviceName", Build.MODEL);
+        param.put("devicemodel", Build.MODEL);
         return param;
     }
 

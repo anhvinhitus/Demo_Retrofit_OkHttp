@@ -102,7 +102,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         map.put("userid", String.valueOf(uId));
         map.put("zalooauthcode", authCode);
 
-        this.loginPayment();
+        this.loginPayment(uId, authCode);
 
     }
 
@@ -116,9 +116,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     }
 
 
-
-    private void loginPayment() {
-        subscriptionLogin = passportRepository.login()
+    private void loginPayment(long zuid, String zalooauthcode) {
+        subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
                 .subscribe(new LoginPaymentSubscriber());
     }
 

@@ -21,9 +21,13 @@ public interface UserConfig {
 
     void saveConfig(LoginResponse response);
 
+    void saveConfig(LoginResponse response, long zuid);
+
     void loadConfig();
 
     void clearConfig();
 
     String getSession();
+
+    long getUserId();
 }
