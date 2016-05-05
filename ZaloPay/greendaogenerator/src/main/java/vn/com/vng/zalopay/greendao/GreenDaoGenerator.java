@@ -37,7 +37,7 @@ public class GreenDaoGenerator {
 
 
     private static void addTransactionLog(Schema schema) {
-        Entity transHistoryData = schema.addEntity("TransactionLogs");
+        Entity transHistoryData = schema.addEntity("TransactionLog");
         transHistoryData.addLongProperty("transid").notNull().unique().primaryKey();
         transHistoryData.addLongProperty("appid")
                 .notNull()
