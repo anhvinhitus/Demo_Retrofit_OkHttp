@@ -325,6 +325,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
                 startZMPSDKDemo();
                 selectHome(false);
                 return true;
+            } else if (itemId == MenuItemUtil.SCAN_QR_ID) {
+                navigator.startQrCodeActivity(this);
             } else if (itemId == MenuItemUtil.SIGOUT_ID) {
                 ZaloSDK.Instance.unauthenticate();
                 navigator.startLoginActivity(this);

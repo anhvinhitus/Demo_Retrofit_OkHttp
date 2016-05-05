@@ -177,6 +177,7 @@
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.activity.ProductDetailActivity"></activity>
     </application>
 
 </manifest>
