@@ -48,19 +48,18 @@ public class ZaloPayFactory {
 
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal() {
-
         return null;
     }
-
-
 
 
     public Observable<Long> balanceServer() {
-        return null;
+        return appConfigService.balance(user.uid, user.accesstoken)
+                .doOnNext(balanceResponse -> sqlZaloPayScope.writeBalance(balanceResponse.zpwbalance))
+                .map(balanceResponse1 -> balanceResponse1.zpwbalance);
     }
 
     public Observable<Long> balanceLocal() {
-        return null;
+        return sqlZaloPayScope.balance();
     }
 
 
