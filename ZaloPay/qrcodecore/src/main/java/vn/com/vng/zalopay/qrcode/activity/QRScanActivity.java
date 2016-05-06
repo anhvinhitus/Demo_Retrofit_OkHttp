@@ -27,12 +27,12 @@ public class QRScanActivity extends AppCompatActivity implements QRCodeView.Resu
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.tag(TAG);
-        setContentView(getResLayout());
+        setContentView(getResLayoutId());
         mQRCodeView = (ZXingView) findViewById(R.id.zxingview);
         mQRCodeView.setResultHandler(this);
     }
 
-    public int getResLayout() {
+    public int getResLayoutId() {
         return R.layout.activity_scan;
     }
 
