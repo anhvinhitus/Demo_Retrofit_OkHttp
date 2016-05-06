@@ -90,7 +90,7 @@ public class QRScanActivity extends AppCompatActivity implements QRCodeView.Resu
         Timber.i(TAG, "result:" + result);
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
         vibrate();
-        mQRCodeView.startSpot();
+   //     mQRCodeView.startSpot();
     }
 
     @Override

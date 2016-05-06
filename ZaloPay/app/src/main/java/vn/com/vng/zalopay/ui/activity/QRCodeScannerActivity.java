@@ -41,9 +41,9 @@ public class QRCodeScannerActivity extends QRScanActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        //  mQRCodeView.startSpot();
+    protected void onStart() {
+        super.onStart();
+        mQRCodeView.startSpot();
     }
 
     @Override
@@ -61,6 +61,7 @@ public class QRCodeScannerActivity extends QRScanActivity {
         Timber.tag(TAG).i("result:" + result);
         super.handleResult(result);
         navigator.startProductDetailActivity(this);
+        finish();
     }
 
     protected void setupActivityComponent() {
