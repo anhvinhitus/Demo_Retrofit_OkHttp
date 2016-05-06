@@ -18,7 +18,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_zp_qr_code" />
+            android:src="@drawable/ic_qrcode" />
 
         <TextView
             style="@style/TextView.Default"
@@ -85,7 +85,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_zp_card_bank" />
+            android:src="@drawable/ic_lienketthe" />
 
         <TextView
             style="@style/TextView.Default"
