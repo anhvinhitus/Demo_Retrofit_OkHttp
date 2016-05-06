@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.facebook.react</groupId>
   <artifactId>react-native</artifactId>
-  <version>0.24.1</version>
+  <version>0.25.1</version>
   <packaging>aar</packaging>
   <name>ReactNative</name>
   <description>A framework for building native apps with React</description>

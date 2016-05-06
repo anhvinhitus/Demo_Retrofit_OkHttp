@@ -49,7 +49,7 @@ ext {
     zxingVersion = "3.2.1"
     zxingAndroidCoreVersion = "3.2.1"
 
-    reactNative = "0.24.1"
+    reactNative = "0.25.1"
 
     roundedimageview = "2.2.1"
 
