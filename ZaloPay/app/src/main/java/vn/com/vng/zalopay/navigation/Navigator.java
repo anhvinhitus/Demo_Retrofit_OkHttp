@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
+import vn.com.vng.zalopay.ui.activity.ProductDetailActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 
 /*
@@ -36,6 +37,11 @@ public class Navigator {
 
     public void startQrCodeActivity(Context context) {
         Intent intent = new Intent(context, QRCodeScannerActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startProductDetailActivity(Context context) {
+        Intent intent = new Intent(context, ProductDetailActivity.class);
         context.startActivity(intent);
     }
 
