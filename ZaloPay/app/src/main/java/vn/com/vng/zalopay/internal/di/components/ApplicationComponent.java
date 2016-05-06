@@ -22,6 +22,8 @@ import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
 
 @Singleton
@@ -40,6 +42,7 @@ public interface ApplicationComponent {
 
     UserConfig userConfig();
 
+    BundleService bundleService();
     ZaloProfilePreferences profilePreferences();
 
     ParamRequestProvider paramsRequestProvider();
@@ -48,6 +51,6 @@ public interface ApplicationComponent {
 
     /*INJECT*/
     void inject(SplashScreenActivity f);
-
+    void inject(MiniApplicationActivity a);
     void inject(LoginZaloActivity a);
 }

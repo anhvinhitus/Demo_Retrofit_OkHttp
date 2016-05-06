@@ -17,6 +17,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
+import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -95,6 +97,8 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_lixi)
     public void onClickLixi(View v) {
         Timber.d("Lixi");
+        Intent intent = new Intent(this.getContext(), MiniApplicationActivity.class);
+        this.getActivity().startActivity(intent);
     }
 
     @OnClick(R.id.btn_transfer)

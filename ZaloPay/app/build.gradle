@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -156,7 +155,7 @@ dependencies {
 
     compile project(':data')
     compile project(':uicomponent')
-
+    compile project(':moduledynamicloading')
     compile project(':qrcodecore')
 
     compile project(':zalosdk')

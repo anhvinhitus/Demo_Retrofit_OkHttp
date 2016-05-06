@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,6 +24,8 @@ import vn.com.vng.zalopay.data.repository.PassportRepositoryImpl;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
+import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
 
 
 @Module
@@ -87,4 +90,9 @@ public class ApplicationModule {
     }
 
 
+    @Provides
+    @Singleton
+    BundleService providesBundleService(Context context) {
+        return new BundleServiceImpl((Application) context);
+    }
 }
