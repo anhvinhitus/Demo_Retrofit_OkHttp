@@ -32,7 +32,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.vng.uicomponent.widget.util.DebugLog;
 
 /**
  * Created by AnhHieu on 9/14/15.

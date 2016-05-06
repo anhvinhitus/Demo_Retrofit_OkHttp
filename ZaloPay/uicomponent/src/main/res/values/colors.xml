@@ -130,4 +130,5 @@
     <color name="navy">#000080</color>
 
     <color name="circle_background">#35a7eb</color>
+    <color name="bg_circle_notification">#ff3823</color>
 </resources>

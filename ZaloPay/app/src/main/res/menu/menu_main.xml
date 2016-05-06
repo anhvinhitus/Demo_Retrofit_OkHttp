@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.activity.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_notifications"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_thongbao"
+        android:title="@string/action_notifications"
+        app:actionLayout="@layout/notification_menu_item"
+        app:showAsAction="always" />
 </menu>

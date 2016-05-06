@@ -34,28 +34,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/spacing.medium.s"
                 app:layout_collapseMode="parallax">
 
                 <TextView
                     android:id="@+id/btn_qr_code"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.0"
-                    android:drawablePadding="@dimen/spacing.medium"
-                    android:drawableTop="@mipmap/ic_zp_qr_code"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawablePadding="@dimen/spacing.medium.s"
+                    android:drawableTop="@drawable/ic_qrcode"
                     android:gravity="center"
-                    android:text="@string/txt_leftmenu_scan_qrcode" />
+                    android:padding="@dimen/app_padding"
+                    android:text="@string/txt_home_qrcode"
+                    android:textSize="@dimen/textsize.tiny" />
 
                 <TextView
                     android:id="@+id/btn_deposit"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.0"
-                    android:drawablePadding="@dimen/spacing.medium"
-                    android:drawableTop="@mipmap/ic_zp_card_bank"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawablePadding="@dimen/spacing.medium.s"
+                    android:drawableTop="@drawable/ic_naptien"
                     android:gravity="center"
-                    android:text="@string/txt_leftmenu_deposit" />
+                    android:padding="@dimen/app_padding"
+                    android:text="@string/txt_home_deposit"
+                    android:textSize="@dimen/textsize.tiny" />
+
+                <TextView
+                    android:id="@+id/btn_link_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:background="?attr/selectableItemBackground"
+                    android:drawablePadding="@dimen/spacing.medium.s"
+                    android:drawableTop="@drawable/ic_lienketthe"
+                    android:gravity="center"
+                    android:padding="@dimen/app_padding"
+                    android:text="@string/txt_leftmenu_deposit"
+                    android:textSize="@dimen/textsize.tiny" />
             </LinearLayout>
         </LinearLayout>
 

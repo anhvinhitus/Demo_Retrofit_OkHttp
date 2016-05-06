@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <!--<TextView
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/content_horizontal_padding"
         android:paddingRight="@dimen/content_horizontal_padding"
-        android:text="@string/authorized.services.by.vng" />
+        android:text="@string/authorized.services.by.vng" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
