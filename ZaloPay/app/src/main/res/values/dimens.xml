@@ -5,6 +5,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
+    <dimen name="app_padding">10dp</dimen>
+
     <dimen name="content_horizontal_padding">16dp</dimen>
     <dimen name="content_vertical_padding">16dp</dimen>
 
@@ -34,6 +36,8 @@
     <dimen name="cardview_vertical_margin">2dp</dimen>
     <dimen name="cardview_horizontal_margin">1dp</dimen>
     <dimen name="higher_than_cardview_elevation">4dp</dimen>
-
     <dimen name="cardview_corner_radius_more">16dp</dimen>
+
+    <dimen name="toolbar_shadow">4dp</dimen>
+    <dimen name="toolbar_elevation">8dp</dimen>
 </resources>

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
+import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ApplicationRepository;
@@ -23,6 +24,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 )
 public interface UserComponent {
     void inject(ZaloPayFragment f);
+    void inject(MainActivity a);
 
     User currentUser();
 

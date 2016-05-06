@@ -57,14 +57,34 @@
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
     <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
+
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Activity lable END-->
-    
+
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
 
+    <!--Left Menu lable START-->
+    <string name="txt_leftmenu_home">Trang Chủ</string>
+    <string name="txt_leftmenu_notification">Thông Báo</string>
+    <string name="txt_leftmenu_scan_qrcode">Quét Mã QR</string>
+    <string name="txt_leftmenu_deposit">Nạp Tiền</string>
+    <string name="txt_leftmenu_transfer">Chuyển Tiền</string>
+    <string name="txt_leftmenu_transaction_history">Lịch Sử Giao Dịch</string>
+    <string name="txt_leftmenu_faq">FAQ</string>
+    <string name="txt_leftmenu_contact">Liên Hệ Hỗ Trợ</string>
+    <string name="txt_leftmenu_app_info">Thông Tin Ứng Dụng</string>
+    <string name="txt_leftmenu_sigout">Đăng Xuất</string>
+    <!--Left Menu lable END-->
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="vnd">VND</string>
+    <string name="three_zero">.000</string>
 
 </resources>
