@@ -2,7 +2,6 @@
 <resources>
     <color name="border_item">#ecc</color>
 
-
     <!--app theme-->
     <color name="colorPrimary">#FD7727</color>
     <color name="colorPrimaryDark">#e95c05</color>
@@ -130,4 +129,5 @@
     <color name="blue">#0000FF</color>
     <color name="navy">#000080</color>
 
+    <color name="circle_background">#35a7eb</color>
 </resources>

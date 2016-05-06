@@ -152,7 +152,7 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile "com.makeramen:roundedimageview:2.2.1"
+    compile libs.rounded_imageview
 
     compile project(':data')
     compile project(':uicomponent')

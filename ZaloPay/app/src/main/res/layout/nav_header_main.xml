@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_header_main"
     android:layout_width="match_parent"
@@ -9,18 +10,37 @@
     android:orientation="horizontal"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <!--<vn.vng.uicomponent.widget.image.BezelImageView
         android:id="@+id/im_avatar"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="@dimen/leftmenu.avatar"
+        android:layout_height="@dimen/leftmenu.avatar"
         android:layout_marginBottom="21dp"
         android:layout_marginLeft="@dimen/app_padding"
         android:layout_marginTop="21dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/circle_shape_avatar"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher"
         android:visibility="visible"
+        app:borderDrawable="@drawable/circle_border"
+        app:maskDrawable="@drawable/circle_mask" />-->
+
+    <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/im_avatar"
+        android:layout_width="@dimen/leftmenu.avatar"
+        android:layout_height="@dimen/leftmenu.avatar"
+        android:layout_marginBottom="21dp"
+        android:layout_marginLeft="@dimen/app_padding"
+        android:layout_marginTop="21dp"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_launcher"
         app:riv_border_color="@color/leftmenu.avatar.bg"
         app:riv_border_width="3dp"
-        app:riv_oval="true" />
+        app:riv_corner_radius="5dp"
+        app:riv_mutate_background="true"
+        app:riv_oval="true"
+        app:riv_tile_mode="repeat" />
 
     <LinearLayout
         android:layout_width="wrap_content"

@@ -2,11 +2,14 @@ package vn.com.vng.zalopay.home.ui.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -19,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -472,7 +476,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         }
     }
 
-    private void loadAvatarImage(ImageView imageView, String url) {
-        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
+    private void loadAvatarImage(final ImageView imageView, String url) {
+//        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
+        Glide.with(this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(MainActivity.this.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                imageView.setImageDrawable(circularBitmapDrawable);
+            }
+        });
     }
 }
