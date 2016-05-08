@@ -151,7 +151,7 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile libs.rounded_imageview
+    compile libs.roundedimageview
 
     compile project(':data')
     compile project(':uicomponent')
