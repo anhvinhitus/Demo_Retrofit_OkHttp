@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <TextView
+    <!--<TextView
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/content_horizontal_padding"
         android:paddingRight="@dimen/content_horizontal_padding"
-        android:text="@string/authorized.services.by.vng" />
+        android:text="@string/authorized.services.by.vng" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,10 +20,10 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/btn_transfer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/btn_transfer"
             android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
@@ -31,7 +32,7 @@
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:scaleType="centerInside"
-                android:src="@mipmap/ic_zp_tranfer" />
+                android:src="@drawable/ic_chuyentien" />
 
             <TextView
                 style="@style/TextView.Title.Grey"
@@ -47,26 +48,26 @@
             android:background="@color/c.separate" />
 
         <LinearLayout
+            android:id="@+id/btn_recharge_phone"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:clickable="true"
             android:gravity="center"
-            android:id="@+id/btn_recharge_game"
             android:orientation="vertical">
 
             <ImageView
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:scaleType="centerInside"
-                android:src="@mipmap/ic_zp_napgame" />
+                android:src="@drawable/ic_naptiendt" />
 
             <TextView
                 style="@style/TextView.Title.Grey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/recharge.game" />
+                android:text="Nạp Tiền ĐT" />
         </LinearLayout>
 
         <View
@@ -75,10 +76,10 @@
             android:background="@color/c.separate" />
 
         <LinearLayout
+            android:id="@+id/btn_recharge_game"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/btn_recharge_phone"
             android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
@@ -87,14 +88,14 @@
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:scaleType="centerInside"
-                android:src="@mipmap/ic_zp_napdt" />
+                android:src="@drawable/ic_tiendien" />
 
             <TextView
                 style="@style/TextView.Title.Grey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/recharge.phone" />
+                android:text="Tiền Điện" />
         </LinearLayout>
 
     </LinearLayout>
@@ -114,7 +115,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/btn_lixi"
             android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
@@ -123,7 +123,35 @@
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:scaleType="centerInside"
-                android:src="@mipmap/ic_zp_lixi" />
+                android:src="@drawable/ic_internet" />
+
+            <TextView
+                style="@style/TextView.Title.Grey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Internet/TV" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/c.separate" />
+
+        <LinearLayout
+            android:id="@+id/btn_lixi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_lixi" />
 
             <TextView
                 style="@style/TextView.Title.Grey"
@@ -139,10 +167,11 @@
             android:background="@color/c.separate" />
 
         <LinearLayout
+            android:id="@+id/others"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+
             android:layout_weight="1"
-            
             android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
@@ -151,46 +180,17 @@
                 android:layout_width="33dp"
                 android:layout_height="33dp"
                 android:scaleType="centerInside"
-                android:src="@mipmap/ic_zp_gomtien" />
+                android:src="@drawable/ic_tiennuoc" />
 
             <TextView
                 style="@style/TextView.Title.Grey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/collect.money" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/c.separate" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:id="@+id/others">
-
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:scaleType="centerInside"
-                android:src="@mipmap/ic_zp_other" />
-
-            <TextView
-                style="@style/TextView.Title.Grey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/other" />
+                android:text="Tiền nước" />
         </LinearLayout>
 
     </LinearLayout>
 
 
-</merge>
+</LinearLayout>

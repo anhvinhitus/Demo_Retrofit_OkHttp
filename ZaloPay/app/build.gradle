@@ -62,7 +62,7 @@ android {
         }
         debug {
             minifyEnabled false
-            applicationIdSuffix ".debug"
+            //applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
 
@@ -151,7 +151,7 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile "com.makeramen:roundedimageview:2.2.1"
+    compile libs.rounded_imageview
 
     compile project(':data')
     compile project(':uicomponent')

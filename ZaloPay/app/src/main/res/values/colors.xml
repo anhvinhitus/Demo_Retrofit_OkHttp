@@ -28,4 +28,5 @@
     <color name="leftmenu.group.bg">#e5eff1</color>
 
     <color name="leftmenu.avatar.bg">#35a7eb</color>
+    <color name="ads.text.content">#24272b</color>
 </resources>

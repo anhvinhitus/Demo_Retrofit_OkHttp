@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ZaloPay</string>
 
+    <string name="loremipsum"></string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -41,7 +43,8 @@
 
     <string name="login_with_zalo">Đăng nhập với Zalo</string>
 
-    <string name="zalo_appid">3343252921678317356</string>
+    <string name="appid">19240466928203470</string>
+    <string name="zalo_appid">zalo-19240466928203470</string>
     <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
 
     <string name="title_activity_login">Đăng nhập</string>
@@ -79,6 +82,10 @@
     <string name="txt_leftmenu_sigout">Đăng Xuất</string>
     <!--Left Menu lable END-->
 
+    <string name="txt_home_qrcode">QUÉT MÃ QR</string>
+    <string name="txt_home_deposit">NẠP TIỀN</string>
+    <string name="txt_home_link_card">THẺ LIÊN KẾT</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -87,4 +94,5 @@
     <string name="vnd">VND</string>
     <string name="three_zero">.000</string>
 
+    <string name="action_notifications">Thông báo</string>
 </resources>
