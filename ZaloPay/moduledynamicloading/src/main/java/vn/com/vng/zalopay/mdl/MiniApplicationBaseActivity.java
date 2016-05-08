@@ -8,6 +8,8 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
+import timber.log.Timber;
+
 /**
  * Created by huuhoa on 4/26/16.
  * Load react native view
@@ -28,11 +30,13 @@ public abstract class MiniApplicationBaseActivity extends Activity implements De
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String moduleName = getIntent().getStringExtra("moduleName");
+
 
         doInjection();
 
         mReactRootView = new ReactRootView(this);
-        mReactRootView.startReactApplication(reactInstanceManager(), "helloworld", null);
+        mReactRootView.startReactApplication(reactInstanceManager(), moduleName, null);
 
         setContentView(mReactRootView);
     }

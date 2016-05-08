@@ -106,8 +106,8 @@ public class BundleServiceImpl implements BundleService {
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
                 .addPackage(new ReactInternalPackage())
-//                .setUseDeveloperSupport(BuildConfig.DEBUG)
-                .setUseDeveloperSupport(false)
+                .setUseDeveloperSupport(true)
+//                .setUseDeveloperSupport(false)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
     }

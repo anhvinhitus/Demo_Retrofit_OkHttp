@@ -348,6 +348,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             navigator.startDepositActivity(this);
         } else if (itemId == MenuItemUtil.SCAN_QR_ID) {
             navigator.startQrCodeActivity(this);
+        } else if (itemId == MenuItemUtil.FAQ_ID) {
+            navigator.startMiniAppActivity(this, "FAQ");
+        } else if (itemId == MenuItemUtil.NOTIFICATION_ID) {
+            navigator.startMiniAppActivity(this, "Notifications");
+        } else if (itemId == MenuItemUtil.APPLICATION_INFO_ID) {
+            navigator.startMiniAppActivity(this, "About");
+        } else if (itemId == MenuItemUtil.CONTACT_SUPPORT_ID) {
+            navigator.startMiniAppActivity(this, "Help");
+        } else if (itemId == MenuItemUtil.TRANSACTION_HISTORY_ID) {
+            navigator.startMiniAppActivity(this, "TransactionLogs");
         } else if (itemId == MenuItemUtil.SIGOUT_ID) {
             ZaloSDK.Instance.unauthenticate();
             navigator.startLoginActivity(this);
