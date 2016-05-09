@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
  */
 public class QRCodeScannerActivity extends QRScanActivity {
 
-
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
 

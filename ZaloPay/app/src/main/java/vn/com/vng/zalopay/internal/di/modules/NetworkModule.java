@@ -19,6 +19,7 @@ import okhttp3.ConnectionPool;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
@@ -81,11 +82,17 @@ public class NetworkModule {
 
     @Provides
     @Singleton
+    CallAdapter.Factory provideCallAdapter(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+        return CustomRxJavaCallAdapterFactory.createWithScheduler(Schedulers.from(threadExecutor));
+    }
+
+    @Provides
+    @Singleton
     @Named("retrofit")
-    Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+    Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(new CustomRxJavaCallAdapterFactory(Schedulers.from(threadExecutor), postExecutionThread.getScheduler()))
+                .addCallAdapterFactory(callAdapter)
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)

@@ -120,6 +120,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private void loginPayment(long zuid, String zalooauthcode) {
         subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
     }
 

@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-import vn.com.vng.zalopay.utils.ToastUtil;
+
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView, View.OnClickListener {
     private final String TAG = this.getClass().getSimpleName();
@@ -137,7 +137,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void showError(String message) {
-        ToastUtil.showToast(this, message);
+       showToast(message);
     }
 
     @Override

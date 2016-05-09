@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.domain.repository;
 
 import rx.Observable;
+import vn.com.vng.zalopay.domain.model.TransHistory;
 
 /**
  * Created by AnhHieu on 5/4/16.
@@ -10,4 +11,10 @@ import rx.Observable;
 public interface ZaloPayRepository {
 
     Observable<Long> balance();
+
+    Observable<TransHistory> initializeTransHistory();
+
+    Observable<TransHistory> loadMoreTransHistory();
+
+    Observable<TransHistory> refreshTransHistory();
 }

@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.repository;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.mapper.ApplicationEntityDataMapper;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
+import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
 /**
@@ -21,5 +22,20 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
     @Override
     public Observable<Long> balance() {
         return zaloPayFactory.balance();
+    }
+
+    @Override
+    public Observable<TransHistory> initializeTransHistory() {
+        return null;
+    }
+
+    @Override
+    public Observable<TransHistory> loadMoreTransHistory() {
+        return null;
+    }
+
+    @Override
+    public Observable<TransHistory> refreshTransHistory() {
+        return null;
     }
 }

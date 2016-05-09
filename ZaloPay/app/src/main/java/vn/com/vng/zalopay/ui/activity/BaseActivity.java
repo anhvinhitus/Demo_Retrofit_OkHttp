@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -129,5 +130,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    public void showToast(String message) {
+        ToastUtil.showToast(this, message);
+    }
+
+    public void showToast(int message) {
+        ToastUtil.showToast(this, message);
     }
 }
