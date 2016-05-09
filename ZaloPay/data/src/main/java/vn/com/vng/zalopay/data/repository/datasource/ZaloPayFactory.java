@@ -6,13 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Named;
+
 import rx.Observable;
-import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
-import vn.com.vng.zalopay.data.api.entity.BalanceEntity;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -32,10 +31,10 @@ public class ZaloPayFactory {
 
     private final int LENGTH_TRANS_HISTORY = 25;
 
-    private final int PAYAPPID = BuildConfig.PAYAPPID;
+    private final int payAppId;
 
     public ZaloPayFactory(Context context, ZaloPayService service,
-                          User user, SqlZaloPayScope sqlZaloPayScope) {
+                          User user, SqlZaloPayScope sqlZaloPayScope, int payAppId) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -45,6 +44,7 @@ public class ZaloPayFactory {
         this.appConfigService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
+        this.payAppId = payAppId;
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {

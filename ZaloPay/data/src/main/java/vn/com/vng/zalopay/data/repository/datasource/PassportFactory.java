@@ -32,12 +32,12 @@ public class PassportFactory {
 
     private UserConfig userConfig;
 
-    private final int PAYAPPID = BuildConfig.PAYAPPID;
+    private final int payAppId;
 
     @Inject
     public PassportFactory(Context context, PassportService passportService,
                            ParamRequestProvider paramRequestProvider,
-                           UserConfig userConfig) {
+                           UserConfig userConfig, @Named("payAppId") int payAppId) {
         if (context == null || passportService == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
         }
@@ -48,6 +48,8 @@ public class PassportFactory {
         this.authZaloParams = paramRequestProvider.paramsZalo;
 
         this.userConfig = userConfig;
+
+        this.payAppId = payAppId;
     }
 
     public Observable<LoginResponse> login() {
@@ -56,7 +58,7 @@ public class PassportFactory {
     }
 
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
-        return passportService.login(PAYAPPID, zuid, zAuthCode, params)
+        return passportService.login(payAppId, zuid, zAuthCode, params)
                 .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
     }
 

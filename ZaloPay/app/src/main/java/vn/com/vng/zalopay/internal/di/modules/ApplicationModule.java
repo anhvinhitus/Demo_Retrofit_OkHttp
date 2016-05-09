@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
@@ -94,5 +95,12 @@ public class ApplicationModule {
     @Singleton
     BundleService providesBundleService(Context context) {
         return new BundleServiceImpl((Application) context);
+    }
+
+    @Provides
+    @Singleton
+    @Named("payAppId")
+    int providesPayAppId() {
+        return BuildConfig.PAYAPPID;
     }
 }

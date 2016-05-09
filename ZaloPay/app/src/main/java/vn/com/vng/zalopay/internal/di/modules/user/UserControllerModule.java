@@ -87,8 +87,8 @@ public class UserControllerModule {
     @UserScope
     @Provides
     ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service,
-                                         User user, SqlZaloPayScope sqlZaloPayScope) {
-        return new ZaloPayFactory(context, service, user, sqlZaloPayScope);
+                                         User user, SqlZaloPayScope sqlZaloPayScope, @Named("payAppId") int payAppId) {
+        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, payAppId);
     }
 
     @UserScope
