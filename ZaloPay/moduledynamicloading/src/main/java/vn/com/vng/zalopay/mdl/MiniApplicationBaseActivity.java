@@ -32,6 +32,7 @@ public abstract class MiniApplicationBaseActivity extends Activity implements De
         super.onCreate(savedInstanceState);
         String moduleName = getIntent().getStringExtra("moduleName");
 
+        Timber.e("Starting module: %s", moduleName);
 
         doInjection();
 

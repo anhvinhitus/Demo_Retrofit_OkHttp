@@ -21,6 +21,7 @@ public class ReactInternalPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new ReactInternalNativeModule(reactContext));
+        modules.add(new ReactTransactionLogsNativeModule(reactContext));
 
         return modules;
     }

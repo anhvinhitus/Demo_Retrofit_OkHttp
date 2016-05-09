@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,15 +71,16 @@ public class BundleServiceImpl implements BundleService {
         String currentVersion = getCurrentInternalBundleVersion();
         if (currentVersion != null && currentVersion.compareTo(mExpectedInternalBundleVersion) >= 0) {
             Timber.d("Internal version is updated");
-            return;
+            mCurrentInternalBundleFolder = String.format("%s/zalopay_v%s", getInternalBundleRoot(), mExpectedInternalBundleVersion);
+        } else {
+            String fileName = String.format("zalopay_v%s.zip", mExpectedInternalBundleVersion);
+            String bundleFolder = String.format("%s/zalopay_v%s", getInternalBundleRoot(), mExpectedInternalBundleVersion);
+
+            String folder = copyAssets(fileName, bundleFolder);
+
+            mCurrentInternalBundleFolder = folder;
+            setCurrentInternalBundleVersion(mExpectedInternalBundleVersion);
         }
-        String fileName = String.format("zalopay_v%s.zip", mExpectedInternalBundleVersion);
-        String bundleFolder = String.format("%s/zalopay_v%s", getInternalBundleRoot(), mExpectedInternalBundleVersion);
-
-        String folder = copyAssets(fileName, bundleFolder);
-
-        mCurrentInternalBundleFolder = folder;
-        setCurrentInternalBundleVersion(mExpectedInternalBundleVersion);
 
         initializeInternalBundleInstanceManager();
         Timber.d("Done");
@@ -100,14 +102,24 @@ public class BundleServiceImpl implements BundleService {
     }
 
     private void initializeInternalBundleInstanceManager() {
+//        mInternalBundleInstanceManager = ReactInstanceManager.builder()
+//                .setApplication(mApplication)
+//                .setBundleAssetName("index.android.js")
+//                .setJSMainModuleName("index.android")
+//                .addPackage(new MainReactPackage())
+//                .addPackage(new ReactInternalPackage())
+////                .setUseDeveloperSupport(true)
+//                .setUseDeveloperSupport(false)
+//                .setInitialLifecycleState(LifecycleState.RESUMED)
+//                .build();
         mInternalBundleInstanceManager = ReactInstanceManager.builder()
                 .setApplication(mApplication)
-                .setJSBundleFile(mCurrentInternalBundleFolder + "/index.android.js")
+                .setJSBundleFile(mCurrentInternalBundleFolder + "/main.jsbundle")
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
                 .addPackage(new ReactInternalPackage())
-                .setUseDeveloperSupport(true)
-//                .setUseDeveloperSupport(false)
+//                .setUseDeveloperSupport(true)
+                .setUseDeveloperSupport(false)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
     }
@@ -129,20 +141,74 @@ public class BundleServiceImpl implements BundleService {
         String internalRoot = getInternalBundleRoot();
         ensureDirectory(internalRoot);
 
-        File metadataFile = new File(root, "bundle.info");
-        if (!metadataFile.exists()) {
-            copyAssetToDirectory("bundle.json", metadataFile.getPath());
-        }
-
         try {
-            JSONObject jsonObject = new JSONObject(loadStringFromFile(metadataFile));
+            File metadataFile = new File(root, "bundle.info");
+            if (!metadataFile.exists()) {
+                copyAssetToDirectory("bundle.json", metadataFile.getPath());
+                mExpectedInternalBundleVersion = extractVersionFromStream(new FileInputStream(metadataFile));
+            } else {
+                // if shipped version is newer, then copy
+                String shipVersion = getShippedInternalBundleVersion();
+                String currentVersion = extractVersionFromStream(new FileInputStream(metadataFile));
+                Timber.d("Shipped version: %s", shipVersion);
+                Timber.d("Current version: %s", currentVersion);
+                if (compareVersion(shipVersion, currentVersion) > 0) {
+                    copyAssetToDirectory("bundle.json", metadataFile.getPath());
+                    currentVersion = shipVersion;
+                }
+
+                mExpectedInternalBundleVersion = currentVersion;
+            }
+
+            Timber.d("Internal bundle version: %s", mExpectedInternalBundleVersion);
+        } catch (IOException e) {
+            Timber.e(e, "Error loading bundle info");
+        }
+    }
+
+    private int compareVersion(String version1, String version2) {
+        String[] vals1 = version1.split("\\.");
+        String[] vals2 = version2.split("\\.");
+        int i = 0;
+        // set index to first non-equal ordinal or length of shortest version string
+        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+            i++;
+        }
+        // compare first non-equal ordinal number
+        if (i < vals1.length && i < vals2.length) {
+            int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
+            return Integer.signum(diff);
+        }
+        // the strings are equal or one string is a substring of the other
+        // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
+        return Integer.signum(vals1.length - vals2.length);
+    }
+
+    String getShippedInternalBundleVersion() {
+        AssetManager assetManager = mApplication.getAssets();
+        try {
+            InputStream in = assetManager.open("bundle.json");
+            return extractVersionFromStream(in);
+        } catch (IOException e) {
+            Timber.e(e, "Error loading bundle info");
+            return null;
+        }
+    }
+
+    private String extractVersionFromStream(InputStream stream) {
+        try {
+            JSONObject jsonObject = new JSONObject(loadStringFromStream(stream));
 
             JSONObject internalBundle = jsonObject.getJSONObject("internal_bundle");
 
-            mExpectedInternalBundleVersion = internalBundle.getString("version");
-            Timber.d("Internal bundle version: %s", mExpectedInternalBundleVersion);
+            String version = internalBundle.getString("version");
+            Timber.d("Internal bundle version: %s", version);
+
+            return version;
         } catch (JSONException e) {
             Timber.e(e, "Error loading bundle info");
+
+            return null;
         }
     }
 
@@ -156,12 +222,23 @@ public class BundleServiceImpl implements BundleService {
     }
 
     public String loadStringFromFile(File file) {
-        String json = null;
         try {
             InputStream is = new FileInputStream(file);
+            return loadStringFromStream(is);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String loadStringFromStream(InputStream is) {
+        String json = null;
+        try {
             int size = is.available();
             byte[] buffer = new byte[size];
-            is.read(buffer);
+            if (is.read(buffer) < 0) {
+                buffer[0] = 0;
+            }
             is.close();
             json = new String(buffer, "UTF-8");
         } catch (IOException ex) {
