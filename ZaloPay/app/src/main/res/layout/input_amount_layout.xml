@@ -15,6 +15,7 @@
         android:layout_marginLeft="@dimen/spacing.medium"
         android:layout_weight="1.0"
         android:text="@string/input_amount"
+        android:clickable="false"
         android:textColor="@color/hint"
         android:textSize="@dimen/textsize.normal" />
 

@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.Bind;
-import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
@@ -41,12 +39,6 @@ public class BalanceTopupFragment extends BaseFragment {
 
     @Bind(R.id.inputAmountLayout)
     InputAmountLayout inputAmountLayout;
-
-    @OnClick(R.id.btnContinue)
-    public void onBtnContinueClick(View view) {
-        Timber.tag(TAG).d("onBtnContinueClick............");
-        gotoConfirmTransaction();
-    }
 
     private void gotoConfirmTransaction() {
         Intent intent = new Intent(getContext(), ConfirmTransactionActivity.class);
