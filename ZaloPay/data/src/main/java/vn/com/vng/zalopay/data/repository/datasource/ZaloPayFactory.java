@@ -2,14 +2,17 @@ package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
+import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.BalanceEntity;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -27,6 +30,10 @@ public class ZaloPayFactory {
 
     private SqlZaloPayScope sqlZaloPayScope;
 
+    private final int LENGTH_TRANS_HISTORY = 25;
+
+    private final int PAYAPPID = BuildConfig.PAYAPPID;
+
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope) {
 
@@ -40,10 +47,8 @@ public class ZaloPayFactory {
         this.sqlZaloPayScope = sqlZaloPayScope;
     }
 
-    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int count, boolean order) {
-        //  return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, order).doOnNext(transactionHistoryResponse ->);
-
-        return null;
+    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
+        return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order).map(transactionHistoryResponse -> Collections.emptyList());
     }
 
 

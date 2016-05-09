@@ -8,6 +8,8 @@ public class TransactionLog {
 
     private long transid;
     private long appid;
+    private String userid;
+    private String appuser;
     private String platform;
     private String description;
     private Integer pmcid;
@@ -23,9 +25,11 @@ public class TransactionLog {
         this.transid = transid;
     }
 
-    public TransactionLog(long transid, long appid, String platform, String description, Integer pmcid, Long reqdate, Integer grossamount, Integer netamount, Integer type) {
+    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer grossamount, Integer netamount, Integer type) {
         this.transid = transid;
         this.appid = appid;
+        this.userid = userid;
+        this.appuser = appuser;
         this.platform = platform;
         this.description = description;
         this.pmcid = pmcid;
@@ -49,6 +53,22 @@ public class TransactionLog {
 
     public void setAppid(long appid) {
         this.appid = appid;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getAppuser() {
+        return appuser;
+    }
+
+    public void setAppuser(String appuser) {
+        this.appuser = appuser;
     }
 
     public String getPlatform() {

@@ -7,6 +7,8 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import timber.log.Timber;
+
 /**
  * Created by AnhHieu on 3/23/16.
  */
@@ -63,7 +65,7 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     private short mLastState;
 
     private void applicationStatus() {
-        Log.d("ApplicationStatus", "Is application background" + isBackGround());
+        Timber.tag("ApplicationStatus").i("Is application background " + isBackGround());
         if (isBackGround()) {
             //Do something if the application is in background
             if (mLastState == 0) {

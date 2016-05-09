@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.domain.repository;
 
+import java.util.List;
+
 import rx.Observable;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 
@@ -12,9 +14,9 @@ public interface ZaloPayRepository {
 
     Observable<Long> balance();
 
-    Observable<TransHistory> initializeTransHistory();
+    Observable<List<TransHistory>> initializeTransHistory();
 
-    Observable<TransHistory> loadMoreTransHistory();
+    Observable<List<TransHistory>> loadMoreTransHistory();
 
-    Observable<TransHistory> refreshTransHistory();
+    Observable<List<TransHistory>> refreshTransHistory();
 }

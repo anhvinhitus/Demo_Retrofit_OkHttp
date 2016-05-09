@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.data.repository;
 
+import java.util.List;
+
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.entity.mapper.ApplicationEntityDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -12,11 +14,11 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     private ZaloPayFactory zaloPayFactory;
-    private ApplicationEntityDataMapper userEntityDataMapper;
+    private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
 
-    public ZaloPayRepositoryImpl(ZaloPayFactory zaloPayFactory, ApplicationEntityDataMapper userEntityDataMapper) {
+    public ZaloPayRepositoryImpl(ZaloPayFactory zaloPayFactory, ZaloPayEntityDataMapper zaloPayEntityDataMapper) {
         this.zaloPayFactory = zaloPayFactory;
-        this.userEntityDataMapper = userEntityDataMapper;
+        this.zaloPayEntityDataMapper = zaloPayEntityDataMapper;
     }
 
     @Override
@@ -25,17 +27,18 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
     }
 
     @Override
-    public Observable<TransHistory> initializeTransHistory() {
+    public Observable<List<TransHistory>> initializeTransHistory() {
+        return zaloPayFactory.transactionHistorysServer(0, 1)
+                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
+    }
+
+    @Override
+    public Observable<List<TransHistory>> loadMoreTransHistory() {
         return null;
     }
 
     @Override
-    public Observable<TransHistory> loadMoreTransHistory() {
-        return null;
-    }
-
-    @Override
-    public Observable<TransHistory> refreshTransHistory() {
+    public Observable<List<TransHistory>> refreshTransHistory() {
         return null;
     }
 }

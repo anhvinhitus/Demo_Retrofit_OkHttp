@@ -1,15 +1,14 @@
 package vn.com.vng.zalopay.data.cache;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.cache.mapper.ZaloPayCacheMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.cache.model.DataManifest;
-import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -18,27 +17,37 @@ import vn.com.vng.zalopay.domain.model.User;
 public class SqlZaloPayScopeImpl extends SqlBaseScope implements SqlZaloPayScope {
 
     private final User user;
+    private ZaloPayCacheMapper zaloCacheMapper;
+    private final int LENGTH_TRANSITION = 30;
 
-    public SqlZaloPayScopeImpl(User user, DaoSession daoSession) {
+    public SqlZaloPayScopeImpl(User user, DaoSession daoSession, ZaloPayCacheMapper zaloCacheMapper) {
         super(daoSession);
         this.user = user;
+        this.zaloCacheMapper = zaloCacheMapper;
     }
 
     @Override
     public void write(List<TransHistoryEntity> val) {
+        getDaoSession().getTransactionLogDao().insertOrReplaceInTx(zaloCacheMapper.transform(val));
     }
 
     @Override
     public void write(TransHistoryEntity val) {
+        getDaoSession().getTransactionLogDao().insertOrReplace(zaloCacheMapper.transform(val));
     }
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistorys() {
-        return null;
+        return makeObservable(() -> zaloCacheMapper.transform2Entity(
+                getDaoSession()
+                        .getTransactionLogDao()
+                        .queryBuilder()
+                        .limit(LENGTH_TRANSITION).list()));
     }
 
     @Override
     public Observable<TransHistoryEntity> transactionHistory() {
+        //return makeObservable(() -> zaloCacheMapper.transform(getDaoSession().getTransactionLogDao().queryBuilder().w));
         return null;
     }
 
@@ -59,20 +68,6 @@ public class SqlZaloPayScopeImpl extends SqlBaseScope implements SqlZaloPayScope
     @Override
     public void writeBalance(long balance) {
         this.insertDataManifest(Constants.MANIF_BALANCE, String.valueOf(balance));
-    }
-
-
-    private void insertDataManifest(String key, String values) {
-        daoSession.getDataManifestDao().insertOrReplace(new DataManifest(key, values));
-    }
-
-    private String getDataManifest(String key) {
-        List<DataManifest> dataManifests = daoSession.getDataManifestDao().queryBuilder()
-                .where(DataManifestDao.Properties.Key.eq(key))
-                .limit(1)
-                .list();
-        if (Lists.isEmptyOrNull(dataManifests)) return null;
-        return dataManifests.get(0).getValue();
     }
 
 }

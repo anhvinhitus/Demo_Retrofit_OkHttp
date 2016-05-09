@@ -59,14 +59,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+
         }
         debug {
             minifyEnabled false
-            //applicationIdSuffix ".debug"
+          //  applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
 
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
         }
     }
 
