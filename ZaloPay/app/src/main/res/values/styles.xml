@@ -28,4 +28,16 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/textsize.tiny.s</item>
     </style>
+
+    <style name="Deposit.CardInfo.Title" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/textsize.normal.l</item>
+        <item name="android:textColor">@color/leftmenu.title</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Deposit.CardInfo.Tax" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/textsize.small</item>
+        <item name="android:textColor">@color/leftmenu.title</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 </resources>

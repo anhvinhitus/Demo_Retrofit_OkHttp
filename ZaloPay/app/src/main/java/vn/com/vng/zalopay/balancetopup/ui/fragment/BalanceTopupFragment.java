@@ -5,20 +5,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
-import vn.com.vng.zalopay.balancetopup.ui.widget.BankSpinner;
+import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -34,23 +33,14 @@ public class BalanceTopupFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.bankSpinner)
-    BankSpinner bankSpinner;
+    @Bind(R.id.list)
+    RecyclerView recyclerView;
 
-    @Bind(R.id.edtAmount)
-    EditText edtAmount;
+    @Bind(R.id.tvResourceMoney)
+    TextView tvResourceMoney;
 
-    @Bind(R.id.btnContinue)
-    Button btnContinue;
-
-    @OnTextChanged(R.id.edtAmount)
-    public void onEdtAmountTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        if (text!= null && text.length() > 0) {
-            btnContinue.setEnabled(true);
-        } else {
-            btnContinue.setEnabled(false);
-        }
-    }
+    @Bind(R.id.inputAmountLayout)
+    InputAmountLayout inputAmountLayout;
 
     @OnClick(R.id.btnContinue)
     public void onBtnContinueClick(View view) {
@@ -61,8 +51,8 @@ public class BalanceTopupFragment extends BaseFragment {
     private void gotoConfirmTransaction() {
         Intent intent = new Intent(getContext(), ConfirmTransactionActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(Constants.ARG_AMOUNT, Long.valueOf(edtAmount.getText().toString()));
-        bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
+        bundle.putLong(Constants.ARG_AMOUNT, Long.valueOf(inputAmountLayout.getText().toString()));
+//        bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -108,7 +98,7 @@ public class BalanceTopupFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        btnContinue.setEnabled(false);
+
         return view;
     }
 
