@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
@@ -118,6 +120,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private void loginPayment(long zuid, String zalooauthcode) {
         subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
     }
 

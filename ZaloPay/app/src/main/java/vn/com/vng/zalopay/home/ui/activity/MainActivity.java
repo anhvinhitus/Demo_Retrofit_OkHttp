@@ -47,9 +47,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService;
 
 
@@ -196,7 +194,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         String name = "Nguyen Van A";
         long balance = 1232425;
         String avatar = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
-        if (!TextUtils.isEmpty(name)){
+        if (!TextUtils.isEmpty(name)) {
             header.tvName.setText(name);
             header.tvName.setVisibility(View.VISIBLE);
         } else {
@@ -255,7 +253,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(MainActivity.this, "Thông báo");
+                showToast(R.string.action_notifications);
             }
         });
         return super.onCreateOptionsMenu(menu);
@@ -270,16 +268,17 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         return super.onOptionsItemSelected(item);
     }
 
-    protected void selectMenu(int id){
+    protected void selectMenu(int id) {
         try {
             //navigationView.getMenu().findItem(id).setChecked(true);
             setSelectedDrawerMenuItem(id);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             Timber.tag(TAG).d("Cannot select id: " + id, ex);
         }
 
     }
-    public void selectHome(boolean onStart){
+
+    public void selectHome(boolean onStart) {
         Timber.tag(TAG).d("selectHome onStart: " + onStart);
         if (onStart) {
             currentSelected = R.id.nav_home;
@@ -288,8 +287,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         //navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
     }
 
-    private static long back_pressed;
-    private static final long TIME_BETWEEN_DOUBLE_BACK= 2000;//2s
+    private long back_pressed;
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -297,23 +296,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
-        if (currentSelected != R.id.nav_home){
-//                super.onBackPressed();
+        if (currentSelected != R.id.nav_home) {
             selectHome(false);
         } else {
-            if (back_pressed + TIME_BETWEEN_DOUBLE_BACK > System.currentTimeMillis()) {
-                super.onBackPressed();
+            if (back_pressed + 2000 > System.currentTimeMillis()) {
+                finish();
+                System.exit(0);
             } else {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        ToastUtil.showToast(MainActivity.this, "Bấm một lần nữa để thoát!");
-                    }
-                });
+                showToast(R.string.pressed_back_to_exit);
+                back_pressed = System.currentTimeMillis();
             }
-            back_pressed = System.currentTimeMillis();
         }
     }
 
@@ -330,7 +322,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         currentSelected = itemId;
         if (itemId == MenuItemUtil.HOME_ID) {
             showLogo();
-            if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)){
+            if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)) {
                 homeFragment = ZaloPayFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.root, homeFragment).commit();
             }
@@ -348,6 +340,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             navigator.startDepositActivity(this);
         } else if (itemId == MenuItemUtil.SCAN_QR_ID) {
             navigator.startQrCodeActivity(this);
+        } else if (itemId == MenuItemUtil.FAQ_ID) {
+            navigator.startMiniAppActivity(this, "FAQ");
+        } else if (itemId == MenuItemUtil.NOTIFICATION_ID) {
+            navigator.startMiniAppActivity(this, "Notifications");
+        } else if (itemId == MenuItemUtil.APPLICATION_INFO_ID) {
+            navigator.startMiniAppActivity(this, "About");
+        } else if (itemId == MenuItemUtil.CONTACT_SUPPORT_ID) {
+            navigator.startMiniAppActivity(this, "Help");
+        } else if (itemId == MenuItemUtil.TRANSACTION_HISTORY_ID) {
+            navigator.startMiniAppActivity(this, "TransactionLogs");
         } else if (itemId == MenuItemUtil.SIGOUT_ID) {
             ZaloSDK.Instance.unauthenticate();
             navigator.startLoginActivity(this);
@@ -424,10 +426,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 //            popupMenu.show();
 //        }
 
-        public HeaderHolder(AppCompatActivity activity){
+        public HeaderHolder(AppCompatActivity activity) {
 //            root = activity.findViewById(R.id.nav_header_main);
-            root = getLayoutInflater().inflate(R.layout.nav_header_main,null);
-            ButterKnife.bind(this,root);
+            root = getLayoutInflater().inflate(R.layout.nav_header_main, null);
+            ButterKnife.bind(this, root);
         }
 
     }
@@ -462,23 +464,23 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000 * 30, pendingIntent);
 //    }
 
-    public void hideDefaultTitle(){
+    public void hideDefaultTitle() {
         ActionBar actionbar = getSupportActionBar();
-        if (actionbar!= null) {
+        if (actionbar != null) {
             actionbar.setDisplayShowTitleEnabled(false);
         }
     }
 
-    public void showTitle(CharSequence title){
-        if (mImLogo != null && mTvTitle != null){
+    public void showTitle(CharSequence title) {
+        if (mImLogo != null && mTvTitle != null) {
             mImLogo.setVisibility(View.GONE);
             mTvTitle.setVisibility(View.VISIBLE);
             mTvTitle.setText(title);
         }
     }
 
-    public void showLogo(){
-        if (mImLogo != null){
+    public void showLogo() {
+        if (mImLogo != null) {
             mImLogo.setVisibility(View.VISIBLE);
             mTvTitle.setVisibility(View.GONE);
             mTvTitle.setText(getString(R.string.app_name));
@@ -529,6 +531,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     }
 
     protected int currentNotificationCount = 2;
+
     public synchronized void updateNotificationCount(final int count) {
         currentNotificationCount = count;
         if (mTvNotificationCount == null) {

@@ -1,8 +1,18 @@
 package vn.com.vng.zalopay.ui.activity;
 
-import android.content.Intent;
 
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
 
 /**
@@ -10,15 +20,51 @@ import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
  */
 public class QRCodeScannerActivity extends QRScanActivity {
 
+    @Bind(R.id.toolbar)
+    protected Toolbar mToolbar;
+
+    @Inject
+    Navigator navigator;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupActivityComponent();
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    public int getResLayoutId() {
+        return R.layout.activity_qr_scaner;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mQRCodeView.startSpot();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void handleResult(String result) {
         Timber.tag(TAG).i("result:" + result);
         super.handleResult(result);
-        gotoProductDetailActivity();
+        navigator.startProductDetailActivity(this);
+        finish();
     }
 
-    private void gotoProductDetailActivity() {
-        Intent intent = new Intent(this, ProductDetailActivity.class);
-        startActivity(intent);
+    protected void setupActivityComponent() {
+        AndroidApplication.instance().getUserComponent().inject(this);
     }
+
 }

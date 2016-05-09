@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -152,11 +151,11 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile libs.rounded_imageview
+    compile libs.roundedimageview
 
     compile project(':data')
     compile project(':uicomponent')
-
+    compile project(':moduledynamicloading')
     compile project(':qrcodecore')
 
     compile project(':zalosdk')

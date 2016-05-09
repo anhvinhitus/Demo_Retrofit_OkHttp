@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ApplicationRepositoryImpl;
-import vn.com.vng.zalopay.data.repository.ZaloPayRespositoryImpl;
+import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
 import vn.com.vng.zalopay.data.repository.datasource.AppListFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
@@ -92,7 +92,7 @@ public class UserControllerModule {
     @UserScope
     @Provides
     ZaloPayRepository provideZaloPayRepository(ZaloPayFactory zaloPayFactory, ApplicationEntityDataMapper mapper) {
-        return new ZaloPayRespositoryImpl(zaloPayFactory, mapper);
+        return new ZaloPayRepositoryImpl(zaloPayFactory, mapper);
     }
 
 }
