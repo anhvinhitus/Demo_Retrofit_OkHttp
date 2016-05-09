@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.repository;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.mapper.ApplicationEntityDataMapper;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
@@ -37,5 +38,10 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
     @Override
     public Observable<TransHistory> refreshTransHistory() {
         return null;
+    }
+
+    @Override
+    public Observable<Order> getOrder(String zptranstoken) {
+        return zaloPayFactory.getOrder(zptranstoken).map(getOrderResponse -> userEntityDataMapper.transform(getOrderResponse));
     }
 }

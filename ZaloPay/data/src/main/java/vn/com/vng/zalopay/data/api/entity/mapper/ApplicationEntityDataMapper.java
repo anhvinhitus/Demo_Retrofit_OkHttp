@@ -8,8 +8,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.AppInfoEntity;
+import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppInfo;
+import vn.com.vng.zalopay.domain.model.Order;
 
 import static java.util.Collections.emptyList;
 
@@ -54,6 +56,12 @@ public class ApplicationEntityDataMapper {
             }
         }
         return appInfos;
+    }
+
+    public Order transform(GetOrderResponse getOrderResponse) {
+        Order.Mac mac = new Order.Mac(getOrderResponse.mac.orderinfo, getOrderResponse.mac.mac);
+        Order.AppInfo appInfo = new Order.AppInfo(getOrderResponse.appinfo.appname,getOrderResponse.appinfo.logourl, getOrderResponse.appinfo.status);
+        return new Order(getOrderResponse.apptransid, getOrderResponse.appuser, getOrderResponse.item, getOrderResponse.amount, getOrderResponse.description, getOrderResponse.payoption, mac, appInfo);
     }
 
 }

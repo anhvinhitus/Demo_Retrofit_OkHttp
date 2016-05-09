@@ -7,8 +7,8 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
-import vn.com.vng.zalopay.data.api.entity.BalanceEntity;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -62,9 +62,12 @@ public class ZaloPayFactory {
         return sqlZaloPayScope.balance();
     }
 
-
     public Observable<Long> balance() {
         return Observable.merge(balanceLocal(), balanceServer());
+    }
+
+    public Observable<GetOrderResponse> getOrder(String zptranstoken) {
+        return appConfigService.getorder(zptranstoken);
     }
 
 }
