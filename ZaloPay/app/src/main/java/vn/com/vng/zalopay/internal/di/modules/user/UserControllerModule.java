@@ -10,12 +10,14 @@ import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.ApplicationEntityDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlAppListScope;
 import vn.com.vng.zalopay.data.cache.SqlAppListScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
+import vn.com.vng.zalopay.data.cache.mapper.ZaloPayCacheMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ApplicationRepositoryImpl;
@@ -78,8 +80,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session) {
-        return new SqlZaloPayScopeImpl(user, session);
+    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayCacheMapper zaloPayCacheMapper) {
+        return new SqlZaloPayScopeImpl(user, session, zaloPayCacheMapper);
     }
 
     @UserScope
@@ -91,7 +93,7 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloPayRepository provideZaloPayRepository(ZaloPayFactory zaloPayFactory, ApplicationEntityDataMapper mapper) {
+    ZaloPayRepository provideZaloPayRepository(ZaloPayFactory zaloPayFactory, ZaloPayEntityDataMapper mapper) {
         return new ZaloPayRepositoryImpl(zaloPayFactory, mapper);
     }
 
