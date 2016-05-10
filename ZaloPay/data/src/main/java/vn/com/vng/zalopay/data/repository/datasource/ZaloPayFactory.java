@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.inject.Named;
-
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
@@ -72,8 +70,8 @@ public class ZaloPayFactory {
         return Observable.merge(balanceLocal(), balanceServer());
     }
 
-    public Observable<GetOrderResponse> getOrder(String zptranstoken) {
-        return appConfigService.getorder(zptranstoken);
+    public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {
+        return appConfigService.getorder(appId, zptranstoken);
     }
 
 }

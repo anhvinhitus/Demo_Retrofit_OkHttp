@@ -44,7 +44,7 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
     }
 
     @Override
-    public Observable<Order> getOrder(String zptranstoken) {
-        return zaloPayFactory.getOrder(zptranstoken).map(getOrderResponse -> zaloPayEntityDataMapper.transform(getOrderResponse));
+    public Observable<Order> getOrder(long appId, String zptranstoken) {
+        return zaloPayFactory.getOrder(appId, zptranstoken).map(getOrderResponse -> zaloPayEntityDataMapper.transform(getOrderResponse));
     }
 }

@@ -69,8 +69,8 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
         mView.showError(message);
     }
 
-    public void getOrder(String zalooauthcode) {
-        subscriptionGetOrder = zaloPayRepository.getOrder(zalooauthcode)
+    public void getOrder(long appId, String zalooauthcode) {
+        subscriptionGetOrder = zaloPayRepository.getOrder(appId, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());

@@ -9,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
@@ -30,6 +34,7 @@ import vn.com.vng.zalopay.ui.view.IProductDetailView;
  */
 public class ProductDetailFragment extends BaseFragment implements IProductDetailView {
     private OnFragmentInteractionListener mListener;
+    private long appId;
     private String zptranstoken;
 
     @Inject
@@ -69,8 +74,22 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            zptranstoken = getArguments().getString(Constants.ZPTRANSTOKEN);
+        initData();
+    }
+
+    private void initData() {
+        if (getArguments() == null) {
+            return;
+        }
+        String jsonStr= getArguments().getString(Constants.ZPTRANSTOKEN);
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            appId = jsonObject.getLong(Constants.APPID);
+            zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+        } catch (JSONException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -110,9 +129,9 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     }
 
     private void getOrder() {
-        Timber.tag(TAG).d("getOrder................");
+        Timber.tag(TAG).d("getOrder................zptranstoken:" + zptranstoken);
         showLoading();
-        productPresenter.getOrder(zptranstoken);
+        productPresenter.getOrder(appId, zptranstoken);
     }
 
     @Override
