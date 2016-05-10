@@ -44,7 +44,7 @@
 
     <style name="TextView.Title.Default">
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/text</item>
+        <item name="android:textColor">@color/c_text_black</item>
         <item name="android:textSize">@dimen/font_size_medium</item>
     </style>
 </resources>

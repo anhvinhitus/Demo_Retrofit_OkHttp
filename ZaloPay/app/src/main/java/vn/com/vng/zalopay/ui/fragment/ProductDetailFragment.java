@@ -7,10 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
@@ -26,9 +30,13 @@ import vn.com.vng.zalopay.ui.view.IProductDetailView;
  */
 public class ProductDetailFragment extends BaseFragment implements IProductDetailView {
     private OnFragmentInteractionListener mListener;
-    private String zalooauthcode;
+    private String zptranstoken;
+
     @Inject
     ProductPresenter productPresenter;
+
+    @Bind(R.id.tvResult)
+    TextView tvResult;
 
     public ProductDetailFragment() {
         // Required empty public constructor
@@ -62,7 +70,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
+            zptranstoken = getArguments().getString(Constants.ZPTRANSTOKEN);
         }
     }
 
@@ -71,7 +79,9 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        AndroidApplication.instance().getUserComponent().inject(this);
         productPresenter.setView(this);
+        getOrder();
         return view;
     }
 
@@ -88,8 +98,8 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -102,7 +112,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     private void getOrder() {
         Timber.tag(TAG).d("getOrder................");
         showLoading();
-        productPresenter.getOrder(zalooauthcode);
+        productPresenter.getOrder(zptranstoken);
     }
 
     @Override
@@ -132,7 +142,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
 
     @Override
     public void showOrderDetail(Order order) {
-
+        tvResult.setText(order.toString());
     }
 
     /**

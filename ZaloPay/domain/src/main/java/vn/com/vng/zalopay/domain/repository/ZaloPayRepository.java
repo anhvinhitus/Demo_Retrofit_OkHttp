@@ -21,7 +21,5 @@ public interface ZaloPayRepository {
 
     Observable<List<TransHistory>> refreshTransHistory();
 
-    Observable<TransHistory> refreshTransHistory();
-
     Observable<Order> getOrder(String zptranstoken);
 }

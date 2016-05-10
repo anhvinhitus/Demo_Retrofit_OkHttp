@@ -111,6 +111,15 @@ public class Order extends AbstractData {
         public void setMac(String mac) {
             this.mac = mac;
         }
+
+        @Override
+        public String toString() {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(orderinfo);
+            stringBuilder.append(", ");
+            stringBuilder.append(mac);
+            return stringBuilder.toString();
+        }
     }
 
     public static class AppInfo extends AbstractData {
@@ -171,6 +180,17 @@ public class Order extends AbstractData {
 
         public void setStatus(String status) {
             this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(appname);
+            stringBuilder.append(", ");
+            stringBuilder.append(logourl);
+            stringBuilder.append(", ");
+            stringBuilder.append(status);
+            return stringBuilder.toString();
         }
     }
 
@@ -236,5 +256,27 @@ public class Order extends AbstractData {
 
     public void setAppinfo(AppInfo appinfo) {
         this.appinfo = appinfo;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(apptransid);
+        stringBuilder.append(", ");
+        stringBuilder.append(appuser);
+        stringBuilder.append(", ");
+        stringBuilder.append(item);
+        stringBuilder.append(", ");
+        stringBuilder.append(amount);
+        stringBuilder.append(", ");;
+        stringBuilder.append(description);
+        stringBuilder.append(", ");
+        stringBuilder.append(payoption);
+        stringBuilder.append(", ");
+        stringBuilder.append(mac.toString());
+        stringBuilder.append(", ");
+        stringBuilder.append(appinfo.toString());
+        stringBuilder.append(", ");
+        return stringBuilder.toString();
     }
 }
