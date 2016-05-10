@@ -78,12 +78,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     @Inject
     Navigator navigator;
 
-    @Bind(R.id.im_logo)
-    ImageView mImLogo;
-
-    @Bind(R.id.tv_title)
-    TextView mTvTitle;
-
     @Bind(R.id.appBarLayout)
     AppBarLayout mAppBarLayout;
 
@@ -180,7 +174,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         hideDefaultTitle();
-        showLogo();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         menuItemListView = (ListView) findViewById(R.id.list);
         menuItemAdapter = new MenuItemAdapter(this, MenuItemUtil.getMenuItems(), this);
@@ -321,7 +314,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         int prevId = currentSelected;
         currentSelected = itemId;
         if (itemId == MenuItemUtil.HOME_ID) {
-            showLogo();
             if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)) {
                 homeFragment = ZaloPayFragment.newInstance();
                 getSupportFragmentManager().beginTransaction().replace(R.id.root, homeFragment).commit();
@@ -468,22 +460,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayShowTitleEnabled(false);
-        }
-    }
-
-    public void showTitle(CharSequence title) {
-        if (mImLogo != null && mTvTitle != null) {
-            mImLogo.setVisibility(View.GONE);
-            mTvTitle.setVisibility(View.VISIBLE);
-            mTvTitle.setText(title);
-        }
-    }
-
-    public void showLogo() {
-        if (mImLogo != null) {
-            mImLogo.setVisibility(View.VISIBLE);
-            mTvTitle.setVisibility(View.GONE);
-            mTvTitle.setText(getString(R.string.app_name));
         }
     }
 
