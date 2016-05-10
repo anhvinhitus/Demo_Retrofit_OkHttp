@@ -33,6 +33,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private ILoginView mView;
 
+
     private ZaloProfilePreferences zaloProfilePreferences;
 
     private Subscription subscriptionLogin;
@@ -98,13 +99,17 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         zaloProfilePreferences.setUserId(uId);
         zaloProfilePreferences.setAuthCode(authCode);
 
-        //Fixme :  dang test
+        this.loginPayment(uId, authCode);
+
+
+
+
+        /*
         HashMap map = AndroidApplication.instance().getAppComponent().paramsRequestProvider().getParamsZalo();
         map.put("appid", String.valueOf(1));
         map.put("userid", String.valueOf(uId));
-        map.put("zalooauthcode", authCode);
+        map.put("zalooauthcode", authCode);*/
 
-        this.loginPayment(uId, authCode);
 
     }
 
@@ -137,8 +142,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         Timber.d("session " + user.accesstoken);
         Timber.d("uid " + user.uid);
         // Khởi tạo user component
-        AndroidApplication.instance()
-                .getAppComponent().plus(new UserModule(user));
+        AndroidApplication.instance().createUserComponent(user);
+
         this.hideLoadingView();
         this.gotoHomeScreen();
     }

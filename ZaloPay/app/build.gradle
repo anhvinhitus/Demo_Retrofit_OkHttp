@@ -164,5 +164,4 @@ dependencies {
     compile project(':zalosdk')
 //    compile project(':zMP_SDK')
     compile project(':zMP_SDK_Demo')
-    compile 'com.android.support:support-v4:23.3.0'
 }
