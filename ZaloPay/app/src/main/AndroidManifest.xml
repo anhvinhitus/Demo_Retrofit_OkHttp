@@ -164,6 +164,53 @@
                     android:scheme="zingpaysdk-1" />
             </intent-filter>
         </activity>-->
+        <activity
+            android:name="vn.zing.pay.zmpsdk.view.PaymentChannelActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity
+            android:name="vn.zing.pay.zmpsdk.view.PaymentGatewayActivity"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation"
+            android:hardwareAccelerated="true"/>
+        <activity android:name="io.card.payment.DataEntryActivity" android:screenOrientation="portrait"/>
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="vn.zing.pay.zmpsdk.helper.gcm" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService"
+            android:exported="false" />
+        <service
+            android:name="vn.zing.pay.zmpsdk.helper.gms.MyInstanceIDListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
         <!-- ##########################Tich hop ZaloPayWalletSDK END ########################## -->
 
         <activity

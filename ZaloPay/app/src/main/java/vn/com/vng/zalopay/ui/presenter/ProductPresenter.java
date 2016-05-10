@@ -1,15 +1,22 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import java.util.ArrayList;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
+import vn.zing.pay.zmpsdk.ZingMobilePayService;
+import vn.zing.pay.zmpsdk.entity.ZPPaymentItem;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
+import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
+import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentChannel;
 import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 
 /**
@@ -88,9 +95,9 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
     }
 
     private final void onGetOrderSuccess(Order order) {
-        Timber.d("session " + order.getItem());
+        Timber.d("session =========" + order.getItem());
 
-        this.hideLoadingView();
+//        this.hideLoadingView();
 //        this.showOrderDetail(order);
         pay(order);
     }
@@ -119,52 +126,57 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
 
     //Zalo payment sdk
     private void pay(Order order) {
-//        if (order == null) {
-//            showErrorView("Item not found!");
+        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.==============");
+        if (order == null) {
+            showErrorView("Order not found!");
+            return;
+        }
+        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................2");
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (user.uid <= 0) {
+            showErrorView("User info not found!");
+            return;
+        }
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+
+        EPaymentChannel forcedPaymentChannel = null;
+        paymentInfo.appID= order.getAppid();
+        paymentInfo.zaloUserID = String.valueOf(user.uid);
+        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        paymentInfo.appTime = System.currentTimeMillis();
+        paymentInfo.appTransID = order.getApptransid();
+        paymentInfo.items = new ArrayList<ZPPaymentItem>();
+
+        String item = order.getItem();
+        String[] items = item.split(",");
+//        if (items.length <= 0) {
+//            showErrorView("Items not found!");
 //            return;
 //        }
-//
-//        User user = AndroidApplication.instance().getUserComponent().currentUser();
-//        if (user.uid <= 0) {
-//            showErrorView("User info not found!");
-//            return;
+//        for (String str: items) {
+//            ZPPaymentItem paymentItem= new ZPPaymentItem();
+//            paymentItem.itemID = str;
+//            paymentItem.itemName = str;
+//            paymentInfo.items.add(paymentItem);
 //        }
-//         paymentInfo = new ZPPaymentInfo();
-//
-//        EPaymentChannel forcedPaymentChannel = null;
-//
-//        paymentInfo.appID= order.getAppid();
-////        paymentInfo.zaloUserID = user.uid;
-//
-//
-////        paymentInfo.zaloPayAccessToken
-//
-//        paymentInfo.appTime = System.currentTimeMillis();
-//
-//        paymentInfo.appTransID
-//        paymentInfo.items = new ArrayList<ZPPaymentItem>();
-//
-//        ZPPaymentItem item = new ZPPaymentItem();
-//        item.itemID
-//        item.itemName
-//        item.itemPrice
-//        item.itemQuantity
-//
-//        paymentInfo.items.add(item);
-//        paymentInfo.amount = item.itemPrice * item.itemQuantity;
-//
-//        paymentInfo.description
-//        paymentInfo.displayInfo
-//        paymentInfo.displayName
-//        paymentInfo.embedData
-//
-//        paymentInfo.appUser
-//
-//        String keyMac : will send later.
-//
-//                paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-//
-//        ZingMobilePayService.pay(this, forcedPaymentChannel, paymentInfo, this);
+        ZPPaymentItem paymentItem= new ZPPaymentItem();
+        paymentItem.itemID = "1";
+        paymentItem.itemName = "item123456";
+        paymentItem.itemQuantity = 1;
+        paymentItem.itemPrice = 1;
+        paymentInfo.items.add(paymentItem);
+
+        paymentInfo.amount = Long.parseLong(order.getAmount());
+        paymentInfo.description = order.getDescription();
+        paymentInfo.embedData = order.getEmbeddata();
+        //lap vao ví appId = appUser = 1
+        paymentInfo.appUser = order.getAppuser();
+        paymentInfo.mac = order.getMac();
+
+
+        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
+//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
+        ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
     }
 
     @Override

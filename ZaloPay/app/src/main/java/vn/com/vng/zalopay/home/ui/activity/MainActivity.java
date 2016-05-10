@@ -39,6 +39,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
@@ -48,7 +49,10 @@ import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
+import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
 import vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService;
+import vn.zing.pay.zmpsdk.listener.ZPWGatewayInfoCallback;
 
 
 public class MainActivity extends BaseToolBarActivity implements MenuItemClickListener {
@@ -74,6 +78,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     NavigationView navigationView;
     ListView menuItemListView;
     MenuItemAdapter menuItemAdapter;
+    private int mRetryDownloadPaySDK = 0;
 
     @Inject
     Navigator navigator;
@@ -140,6 +145,42 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
+    }
+
+    private void loginPaymentSDK() {
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (user == null) {
+            return;
+        }
+
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.zaloUserID = String.valueOf(user.uid);
+        paymentInfo.zaloPayAccessToken = user.accesstoken;
+
+        ZingMobilePayApplication.loadGatewayInfo(this, paymentInfo, new ZPWGatewayInfoCallback() {
+            @Override
+            public void onFinish()
+            {
+                Timber.tag("LoginPresenter").d("loadGatewayInfo onSuccess");
+                mRetryDownloadPaySDK = 0;
+            }
+
+            @Override
+            public void onProcessing()
+            {
+                Timber.tag("LoginPresenter").d("loadGatewayInfo onProcessing");
+            }
+
+            @Override
+            public void onError(String pMessage)
+            {
+                Timber.tag("LoginPresenter").d("loadGatewayInfo onError:%s", pMessage);
+                mRetryDownloadPaySDK++;
+                if (mRetryDownloadPaySDK < 5) {
+                    loginPaymentSDK();
+                }
+            }
+        });
     }
 
     @Override
@@ -210,6 +251,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             getSupportFragmentManager().beginTransaction().add(R.id.root, homeFragment).commit();
         }
         selectHome(true);
+        mRetryDownloadPaySDK = 0;
+        loginPaymentSDK();
     }
 
     @Override
