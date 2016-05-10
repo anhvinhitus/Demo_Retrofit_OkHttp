@@ -30,6 +30,9 @@ android {
 
         buildConfigField "String", "PRODUCTION_FLAVOR", "\"production\""
         buildConfigField "String", "BETA_FLAVOR", "\"beta\""
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
 
     signingConfigs {
