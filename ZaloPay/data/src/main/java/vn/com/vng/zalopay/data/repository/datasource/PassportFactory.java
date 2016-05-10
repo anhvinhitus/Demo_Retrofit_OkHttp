@@ -59,7 +59,7 @@ public class PassportFactory {
 
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
         return passportService.login(payAppId, zuid, zAuthCode, params)
-                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
+                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse, zuid));
     }
 
     public Observable<LogoutResponse> logout() {

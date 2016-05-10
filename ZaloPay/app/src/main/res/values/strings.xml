@@ -64,6 +64,7 @@
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title.activity.link.card">Liên kết thẻ</string>
 
     <!--Activity lable END-->
 
@@ -93,6 +94,7 @@
 
     <string name="vnd">VND</string>
     <string name="three_zero">.000</string>
+    <string name="link.card">Liên kết thẻ</string>
 
     <string name="action_notifications">Thông báo</string>
     <string name="pressed_back_to_exit">Click back again to exit.</string>

@@ -134,10 +134,10 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     }
 
     private final void onLoginSuccess(User user) {
-        Timber.d("session " + user.accesstoken);
+        Timber.d("session " + user.accesstoken + " user " + user.uid);
         // Khởi tạo user component
-        AndroidApplication.instance()
-                .getAppComponent().plus(new UserModule(user));
+        AndroidApplication.instance().createUserComponent(user);
+
 
         this.hideLoadingView();
         this.gotoHomeScreen();

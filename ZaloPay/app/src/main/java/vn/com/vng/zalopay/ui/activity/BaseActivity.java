@@ -77,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //            User user = databaseHelper.getUser();
 //            ZingMobileApplication.getInstance().createUserComponent(user);
 //        }
-        AndroidApplication.instance().createUserComponent(new User());
+        // AndroidApplication.instance().createUserComponent(new User());
     }
 
     @Override

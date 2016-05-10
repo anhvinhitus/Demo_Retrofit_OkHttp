@@ -1,10 +1,9 @@
 package vn.com.vng.zalopay;
 
 import android.content.Context;
-import android.os.StrictMode;
-import android.support.multidex.MultiDex;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
