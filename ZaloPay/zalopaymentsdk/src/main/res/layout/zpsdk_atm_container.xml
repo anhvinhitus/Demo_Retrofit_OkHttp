@@ -266,27 +266,42 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/zpw_card_password_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/zpw_padding_5"
-        android:theme="@style/TextLabelHint"
-        android:visibility="gone" >
+	 <LinearLayout
+	     android:id="@+id/zpw_card_password_container"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:orientation="vertical"
+	     android:padding="@dimen/zpw_padding_5"
+	     android:visibility="gone" >
 
-        <EditText
-            android:id="@+id/zpsdk_card_password_ctl"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/zpw_edittext_noborder"
-            android:imeOptions="actionDone|flagNoExtractUi"
-            android:inputType="textPassword"
-            android:letterSpacing="0.1"
-            android:maxLength="50"
-            android:padding="@dimen/zpw_padding_10"
-            android:singleLine="true"
-            android:textSize="@dimen/sdk_form_input_size" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/zpw_padding_5"
+            android:background="@color/dark_transparent" />
+        
+        <android.support.design.widget.TextInputLayout
+	        android:id="@+id/zpw_card_password_input"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:padding="@dimen/zpw_padding_5"
+	        android:theme="@style/TextLabelHint"
+	        android:visibility="gone" >
+
+	        <EditText
+	            android:id="@+id/zpsdk_card_password_ctl"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:background="@drawable/zpw_edittext_noborder"
+	            android:imeOptions="actionDone|flagNoExtractUi"
+	            android:inputType="textPassword"
+	            android:letterSpacing="0.1"
+	            android:maxLength="50"
+	            android:padding="@dimen/zpw_padding_10"
+	            android:singleLine="true"
+	            android:textSize="@dimen/sdk_form_input_size" />
+   		 </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/zpw_acc_name_input"

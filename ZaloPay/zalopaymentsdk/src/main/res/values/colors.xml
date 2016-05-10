@@ -8,8 +8,9 @@
     <color name="background_zalopay">#f0f4f6</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dark_transparent">#80f0f0f0</color>
-
+    
     <color name="color_primary">#008fe5</color>
+    <color name="color_primary_transparent">#30008fe5</color>
     <color name="color_primary_disable">#7fc7f2</color>
      
     <color name="background">#f0f4f6</color>

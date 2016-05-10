@@ -132,7 +132,7 @@
    	<string name="zingpaysdk_custom_ui_normal">normal_button</string>
    	
    	<string name="gcm_defaultSenderId">282009334352</string>
-   	<string name="global_tracker_id">UA-74785353-4</string>
+   	<string name="global_tracker_id">UA-77526623-1</string>
    	    <!-- review -->
      <string name="zingpaysdk_pmc_name_zalopay">Ví ZaloPay</string>
     <string name="zingpaysdk_zalopay_title">Xác nhận giao dịch</string>
