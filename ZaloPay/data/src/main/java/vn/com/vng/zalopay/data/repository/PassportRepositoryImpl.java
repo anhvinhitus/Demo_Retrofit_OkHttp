@@ -4,9 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
-import rx.functions.Func1;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
-import vn.com.vng.zalopay.data.api.response.LogoutResponse;
 import vn.com.vng.zalopay.data.repository.datasource.PassportFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -32,7 +30,6 @@ public class PassportRepositoryImpl implements PassportRepository {
         return passportFactory.login()
                 .map(userEntity -> userEntityDataMapper.transform(userEntity));
     }
-
 
     @Override
     public Observable<User> login(final long zuid, String zAuthCode) {

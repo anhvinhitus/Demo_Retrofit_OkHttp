@@ -9,7 +9,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.PassportService;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
@@ -59,7 +58,7 @@ public class PassportFactory {
 
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
         return passportService.login(payAppId, zuid, zAuthCode, params)
-                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
+                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse, zuid));
     }
 
     public Observable<LogoutResponse> logout() {

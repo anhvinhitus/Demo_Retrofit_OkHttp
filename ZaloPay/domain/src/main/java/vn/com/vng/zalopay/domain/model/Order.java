@@ -9,47 +9,59 @@ import android.os.Parcelable;
  */
 public class Order extends AbstractData {
 
+    private long appid;
+    private String zptranstoken;
     private String apptransid;
     private String appuser;
+    public String apptime;
+    public String embeddata;
     private String item;
     private String amount;
     private String description;
     private String payoption;
-    private Mac mac;
-    private AppInfo appinfo;
+    private String mac;
 
-    public Order(String apptransid, String appuser, String item, String amount, String description, String payoption, Mac mac, AppInfo appinfo) {
+    public Order(long appid, String zptranstoken, String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac) {
+        this.appid = appid;
+        this.zptranstoken = zptranstoken;
         this.apptransid = apptransid;
         this.appuser = appuser;
+        this.apptime = apptime;
+        this.embeddata = embeddata;
         this.item = item;
         this.amount = amount;
         this.description = description;
         this.payoption = payoption;
         this.mac = mac;
-        this.appinfo = appinfo;
     }
 
     public Order(Parcel in) {
+        appid = in.readLong();
+        zptranstoken = in.readString();
         apptransid = in.readString();
         appuser = in.readString();
+        apptime = in.readString();
+        embeddata = in.readString();
         item = in.readString();
         amount = in.readString();
         description = in.readString();
         payoption = in.readString();
-        mac = in.readParcelable(Mac.class.getClassLoader());
-        appinfo = in.readParcelable(AppInfo.class.getClassLoader());
+        mac = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(appid);
+        dest.writeString(zptranstoken);
         dest.writeString(apptransid);
         dest.writeString(appuser);
+        dest.writeString(apptime);
+        dest.writeString(embeddata);
         dest.writeString(item);
         dest.writeString(amount);
         dest.writeString(description);
         dest.writeString(payoption);
-        dest.writeParcelable(mac, flags);
-        dest.writeParcelable(appinfo, flags);
+        dest.writeString(mac);
     }
 
     public final Parcelable.Creator<Order> CREATOR = new Parcelable.Creator<Order>() {
@@ -64,134 +76,12 @@ public class Order extends AbstractData {
         }
     };
 
-    public static class Mac extends AbstractData {
-        private String orderinfo;
-        private String mac;
-
-        public Mac(String orderinfo, String mac) {
-            this.orderinfo = orderinfo;
-            this.mac = mac;
-        }
-
-        public Mac(Parcel in) {
-            orderinfo = in.readString();
-            mac = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(orderinfo);
-            dest.writeString(mac);
-        }
-
-        public final Parcelable.Creator<Mac> CREATOR = new Parcelable.Creator<Mac>() {
-            @Override
-            public Mac createFromParcel(Parcel source) {
-                return new Mac(source);
-            }
-
-            @Override
-            public Mac[] newArray(int size) {
-                return new Mac[size];
-            }
-        };
-
-        public String getOrderinfo() {
-            return orderinfo;
-        }
-
-        public String getMac() {
-            return mac;
-        }
-
-        public void setOrderinfo(String orderinfo) {
-            this.orderinfo = orderinfo;
-        }
-
-        public void setMac(String mac) {
-            this.mac = mac;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(orderinfo);
-            stringBuilder.append(", ");
-            stringBuilder.append(mac);
-            return stringBuilder.toString();
-        }
+    public long getAppid() {
+        return appid;
     }
 
-    public static class AppInfo extends AbstractData {
-        private String appname;
-        private String logourl;
-        private String status;
-
-        public AppInfo(String appname, String logourl, String status) {
-            this.appname = appname;
-            this.logourl = logourl;
-            this.status = status;
-        }
-
-        public AppInfo(Parcel in) {
-            appname = in.readString();
-            logourl = in.readString();
-            status = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(appname);
-            dest.writeString(logourl);
-            dest.writeString(status);
-        }
-
-        public final Parcelable.Creator<AppInfo> CREATOR = new Parcelable.Creator<AppInfo>() {
-            @Override
-            public AppInfo createFromParcel(Parcel source) {
-                return new AppInfo(source);
-            }
-
-            @Override
-            public AppInfo[] newArray(int size) {
-                return new AppInfo[size];
-            }
-        };
-
-        public String getAppname() {
-            return appname;
-        }
-
-        public String getLogourl() {
-            return logourl;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setAppname(String appname) {
-            this.appname = appname;
-        }
-
-        public void setLogourl(String logourl) {
-            this.logourl = logourl;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(appname);
-            stringBuilder.append(", ");
-            stringBuilder.append(logourl);
-            stringBuilder.append(", ");
-            stringBuilder.append(status);
-            return stringBuilder.toString();
-        }
+    public String getZptranstoken() {
+        return zptranstoken;
     }
 
     public String getApptransid() {
@@ -218,12 +108,16 @@ public class Order extends AbstractData {
         return payoption;
     }
 
-    public Mac getMac() {
+    public String getMac() {
         return mac;
     }
 
-    public AppInfo getAppinfo() {
-        return appinfo;
+    public void setAppid(long appid) {
+        this.appid = appid;
+    }
+
+    public void setZptranstoken(String zptranstoken) {
+        this.zptranstoken = zptranstoken;
     }
 
     public void setApptransid(String apptransid) {
@@ -250,20 +144,40 @@ public class Order extends AbstractData {
         this.payoption = payoption;
     }
 
-    public void setMac(Mac mac) {
-        this.mac = mac;
+    public String getApptime() {
+        return apptime;
     }
 
-    public void setAppinfo(AppInfo appinfo) {
-        this.appinfo = appinfo;
+    public String getEmbeddata() {
+        return embeddata;
+    }
+
+    public void setApptime(String apptime) {
+        this.apptime = apptime;
+    }
+
+    public void setEmbeddata(String embeddata) {
+        this.embeddata = embeddata;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(appid);
+        stringBuilder.append(", ");
+        stringBuilder.append(zptranstoken);
+        stringBuilder.append(", ");
         stringBuilder.append(apptransid);
         stringBuilder.append(", ");
         stringBuilder.append(appuser);
+        stringBuilder.append(", ");
+        stringBuilder.append(apptime);
+        stringBuilder.append(", ");
+        stringBuilder.append(embeddata);
         stringBuilder.append(", ");
         stringBuilder.append(item);
         stringBuilder.append(", ");
@@ -273,9 +187,7 @@ public class Order extends AbstractData {
         stringBuilder.append(", ");
         stringBuilder.append(payoption);
         stringBuilder.append(", ");
-        stringBuilder.append(mac.toString());
-        stringBuilder.append(", ");
-        stringBuilder.append(appinfo.toString());
+        stringBuilder.append(mac);
         stringBuilder.append(", ");
         return stringBuilder.toString();
     }

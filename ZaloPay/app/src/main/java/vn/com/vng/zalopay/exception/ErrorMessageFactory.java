@@ -15,6 +15,9 @@ public class ErrorMessageFactory {
     }
 
     public static String create(Context context, Throwable exception) {
+        if (context == null) {
+            return null;
+        }
         String message = context.getString(R.string.exception_generic);
 
         if (exception instanceof NetworkConnectionException) {

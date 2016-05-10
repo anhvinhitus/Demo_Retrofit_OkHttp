@@ -1,30 +1,31 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
+import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
+import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 
 /**
  * Created by longlv on 09/05/2016.
  */
-@Singleton
-public final class ProductPresenter  extends BaseZaloPayPresenter implements Presenter<IProductDetailView> {
+
+public final class ProductPresenter  extends BaseZaloPayPresenter implements Presenter<IProductDetailView>, ZPPaymentListener {
 
     private IProductDetailView mView;
 
     private Subscription subscriptionGetOrder;
 
-    @Inject
-    public ProductPresenter() {
+    private User user;
 
+    public ProductPresenter(User user) {
+        this.user = user;
     }
 
     @Override
@@ -69,8 +70,8 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
         mView.showError(message);
     }
 
-    public void getOrder(String zalooauthcode) {
-        subscriptionGetOrder = zaloPayRepository.getOrder(zalooauthcode)
+    public void getOrder(long appId, String zalooauthcode) {
+        subscriptionGetOrder = zaloPayRepository.getOrder(appId, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());
@@ -90,8 +91,10 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
         Timber.d("session " + order.getItem());
 
         this.hideLoadingView();
-        this.showOrderDetail(order);
+//        this.showOrderDetail(order);
+        pay(order);
     }
+
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
         public GetOrderSubscriber() {
@@ -112,5 +115,70 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
             Timber.e(e, "onError " + e);
             ProductPresenter.this.onGetOrderError(e);
         }
+    }
+
+    //Zalo payment sdk
+    private void pay(Order order) {
+//        if (order == null) {
+//            showErrorView("Item not found!");
+//            return;
+//        }
+//
+//        User user = AndroidApplication.instance().getUserComponent().currentUser();
+//        if (user.uid <= 0) {
+//            showErrorView("User info not found!");
+//            return;
+//        }
+//         paymentInfo = new ZPPaymentInfo();
+//
+//        EPaymentChannel forcedPaymentChannel = null;
+//
+//        paymentInfo.appID= order.getAppid();
+////        paymentInfo.zaloUserID = user.uid;
+//
+//
+////        paymentInfo.zaloPayAccessToken
+//
+//        paymentInfo.appTime = System.currentTimeMillis();
+//
+//        paymentInfo.appTransID
+//        paymentInfo.items = new ArrayList<ZPPaymentItem>();
+//
+//        ZPPaymentItem item = new ZPPaymentItem();
+//        item.itemID
+//        item.itemName
+//        item.itemPrice
+//        item.itemQuantity
+//
+//        paymentInfo.items.add(item);
+//        paymentInfo.amount = item.itemPrice * item.itemQuantity;
+//
+//        paymentInfo.description
+//        paymentInfo.displayInfo
+//        paymentInfo.displayName
+//        paymentInfo.embedData
+//
+//        paymentInfo.appUser
+//
+//        String keyMac : will send later.
+//
+//                paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
+//
+//        ZingMobilePayService.pay(this, forcedPaymentChannel, paymentInfo, this);
+    }
+
+    @Override
+    public void onComplete(ZPPaymentResult pPaymentResult) {
+
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Override
+    public void onSMSCallBack(String appTransID) {
+
     }
 }

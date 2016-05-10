@@ -3,19 +3,22 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
@@ -30,6 +33,7 @@ import vn.com.vng.zalopay.ui.view.IProductDetailView;
  */
 public class ProductDetailFragment extends BaseFragment implements IProductDetailView {
     private OnFragmentInteractionListener mListener;
+    private long appId;
     private String zptranstoken;
 
     @Inject
@@ -58,7 +62,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
 
     @Override
     protected void setupFragmentComponent() {
-
+        AndroidApplication.instance().getUserComponent().inject(this);
     }
 
     @Override
@@ -69,20 +73,35 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            zptranstoken = getArguments().getString(Constants.ZPTRANSTOKEN);
+        initData();
+    }
+
+    private void initData() {
+        if (getArguments() == null) {
+            return;
+        }
+        String jsonStr = getArguments().getString(Constants.ZPTRANSTOKEN);
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            appId = jsonObject.getLong(Constants.APPID);
+            zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+        } catch (JSONException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        AndroidApplication.instance().getUserComponent().inject(this);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         productPresenter.setView(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getOrder();
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -110,9 +129,9 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     }
 
     private void getOrder() {
-        Timber.tag(TAG).d("getOrder................");
+        Timber.tag(TAG).d("getOrder................zptranstoken:" + zptranstoken);
         showLoading();
-        productPresenter.getOrder(zptranstoken);
+        productPresenter.getOrder(appId, zptranstoken);
     }
 
     @Override

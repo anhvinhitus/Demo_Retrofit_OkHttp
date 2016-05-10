@@ -3,6 +3,7 @@ package vn.com.vng.zalopay;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -93,6 +94,7 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveConfig(LoginResponse response) {
+        Timber.tag("##########################@@@@@@@@").d("saveConfig.............");
         if (response == null || !response.isSuccessfulResponse()) return;
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);
@@ -103,6 +105,7 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveConfig(LoginResponse response, long zuid) {
+        Timber.tag("##########################@@@@@@@@").d("saveConfig.............zuid:"+ zuid);
         if (response == null || !response.isSuccessfulResponse()) return;
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);

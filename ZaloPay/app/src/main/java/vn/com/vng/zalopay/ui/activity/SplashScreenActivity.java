@@ -118,9 +118,7 @@ public class SplashScreenActivity extends BaseActivity implements ValidateOAuthC
         if (isValidated && mUserConfig.isClientActivated()) {
             //Authenticated
             if (AndroidApplication.instance().getUserComponent() == null) {
-                AndroidApplication.instance()
-                        .getAppComponent()
-                        .plus(new UserModule(mUserConfig.getCurrentUser()));
+                AndroidApplication.instance().createUserComponent(mUserConfig.getCurrentUser());
             }
 
             navigator.startHomeActivity(this);
