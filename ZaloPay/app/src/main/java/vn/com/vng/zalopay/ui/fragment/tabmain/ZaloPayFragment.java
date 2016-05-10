@@ -20,7 +20,6 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
@@ -137,14 +136,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.others)
     public void onLayoutOthersClick() {
 //        ShaUtils.getSha();
-        startZMPSDKDemo();
     }
-
-    private void startZMPSDKDemo() {
-        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
-        startActivity(intent);
-    }
-
 
     /* Show|Hide Banner START */
     public void showAdsBanner(String url) {

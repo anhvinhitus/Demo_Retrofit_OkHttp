@@ -309,11 +309,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         }
     }
 
-    private void startZMPSDKDemo() {
-        Intent intent = new Intent(this, vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
-        startActivity(intent);
-    }
-
     protected boolean setSelectedDrawerMenuItem(int itemId) {
 //        if (itemId == currentSelected) {
 //            return true;
@@ -333,7 +328,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             }
             return true;
         } else if (itemId == MenuItemUtil.TRANSFER_ID) {
-            startZMPSDKDemo();
             selectHome(false);
             return true;
         } else if (itemId == MenuItemUtil.DEPOSIT_ID) {

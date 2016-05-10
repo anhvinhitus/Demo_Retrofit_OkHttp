@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="zpsdk_white">#fff</color>
+    <color name="channel_unpressed">#00000000</color>
+    <color name="channel_pressed">#e0e4e9</color>
+    <!-- COLOR NEW -->
+    <color name="background_zalopay">#f0f4f6</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="dark_transparent">#80f0f0f0</color>
+
+    <color name="color_primary">#008fe5</color>
+    <color name="color_primary_disable">#7fc7f2</color>
+     
+    <color name="background">#f0f4f6</color>
+    
+    <color name="text_color">#acb3ba</color>
+    <color name="text_color_bold">#24272b</color>
+    <color name="text_color_primary">#008fe5</color>
+    <color name="text_color_grey">#727f8c</color>
+    
+    <color name="grey">#e1e1e1</color>
+    <color name="grey_transparent">#40e1e1e1</color>
+    <color name="xgrey">#cccccc</color>
+    
+    <color name="button_disable">#c7c7cc</color>
+    
+    <color name="button_green">#06bf04</color>
+    
+    <color name="border">#40e1e1e1</color>
+    
+   <color name="holo_red_light">#ffff4444</color>
+
+</resources>

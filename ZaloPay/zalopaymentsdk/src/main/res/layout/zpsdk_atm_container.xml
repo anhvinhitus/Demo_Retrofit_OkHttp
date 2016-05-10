@@ -1,0 +1,448 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/zpw_bg_top_bottom_side_border"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/autofill_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/zpw_padding_left_right"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:id="@+id/autofill_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/zpsdk_autofill_top_left"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/payment_save_card_label_width"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:text="Mã thẻ"
+                    android:textColor="#292f33"
+                    android:textSize="@dimen/payment_save_card_text_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="#d3d7e4" />
+
+                <TextView
+                    android:id="@+id/card_serial_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:ellipsize="end"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textColor="#292f33"
+                    android:textSize="@dimen/payment_save_card_text_size" />
+
+                <View
+                    android:id="@+id/card_date_info_seperator"
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#d3d7e4"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/card_date_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textColor="#292f33"
+                    android:textSize="@dimen/payment_save_card_text_size"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#d3d7e4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="@dimen/payment_save_card_label_width"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:text="Tên chủ thẻ"
+                    android:textColor="#292f33"
+                    android:textSize="@dimen/payment_save_card_text_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="#d3d7e4" />
+
+                <TextView
+                    android:id="@+id/card_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:ellipsize="end"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textColor="#292f33"
+                    android:textSize="@dimen/payment_save_card_text_size" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/edit_card_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/autofill_info"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/zpw_bg_button"
+            android:text="Thay đổi"
+            android:textColor="@color/white"
+            android:textSize="@dimen/payment_save_card_text_size" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/zpw_fill_4_last_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_card_manual"
+            android:layout_marginTop="@dimen/zpw_padding_top_bottom"
+            android:theme="@style/TextLabelHint"
+            android:visibility="visible" >
+
+            <EditText
+                android:id="@+id/fill_4_last_digit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="4 số cuối mã thẻ"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:inputType="number"
+                android:letterSpacing="0.1"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/fill_4_last_digit"
+                android:padding="@dimen/zpw_padding_10"
+                android:singleLine="true"
+                android:textSize="@dimen/sdk_form_input_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/payment_method_description_save_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_password"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:maxLength="50"
+            android:maxLines="2"
+            android:paddingLeft="@dimen/payment_displayInfo_padding"
+            android:paddingRight="@dimen/payment_displayInfo_padding"
+            android:singleLine="false"
+            android:textColor="#333333"
+            android:textSize="15dp"
+            android:textStyle="italic" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/normal_form_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/zpw_row_start_padding"
+        android:visibility="visible" >
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/cardNumber_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/zpw_row_padding"
+            android:paddingTop="@dimen/zpw_row_padding"
+            android:theme="@style/TextLabelHint"
+            android:visibility="visible" >
+
+            <vn.zing.pay.zmpsdk.view.custom.VPaymentDrawableEditText
+                android:id="@+id/cardNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_card_number_hint"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="number"
+                android:letterSpacing="0.1"
+                android:maxLength="@integer/maximum_character_field_card_number"
+                android:padding="@dimen/zpw_padding_5"
+                android:singleLine="true"
+                android:textColorHighlight="@color/text_color_primary"
+                android:textSize="@dimen/sdk_form_input_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_transparent" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/zpw_row_padding"
+            android:paddingTop="@dimen/zpw_row_padding"
+            android:theme="@style/TextLabelHint" >
+
+            <vn.zing.pay.zmpsdk.view.custom.VPaymentDrawableEditText
+                android:id="@+id/cardHolderName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_card_name_hint"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="textCapCharacters"
+                android:letterSpacing="0.1"
+                android:maxLength="@integer/maximum_character_field_card_nameholder"
+                android:padding="@dimen/zpw_padding_5"
+                android:singleLine="true"
+                android:textColorHint="@color/text_color_primary"
+                android:textSize="@dimen/sdk_form_input_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <RelativeLayout
+            android:id="@+id/date_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" >
+
+            <View
+                android:id="@+id/date_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/dark_transparent" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/zpw_issue_date_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/date_line"
+                android:paddingBottom="@dimen/zpw_row_padding"
+                android:paddingTop="@dimen/zpw_row_padding"
+                android:theme="@style/TextLabelHint" >
+
+                <vn.zing.pay.zmpsdk.view.custom.VPaymentValidDateEditText
+                    android:id="@+id/zpw_issue_date_edittext"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/zpw_edittext_noborder"
+                    android:gravity="center"
+                    android:hint="@string/zpw_string_issue_date_hint"
+                    android:imeOptions="actionDone|flagNoExtractUi"
+                    android:inputType="number"
+                    android:letterSpacing="0.1"
+                    android:maxLength="@integer/maximum_character_field_visa_valid_date"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textSize="@dimen/sdk_form_input_size" />
+            </android.support.design.widget.TextInputLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/zpw_card_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/zpw_padding_5"
+        android:theme="@style/TextLabelHint"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/zpsdk_card_password_ctl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/zpw_edittext_noborder"
+            android:imeOptions="actionDone|flagNoExtractUi"
+            android:inputType="textPassword"
+            android:letterSpacing="0.1"
+            android:maxLength="50"
+            android:padding="@dimen/zpw_padding_10"
+            android:singleLine="true"
+            android:textSize="@dimen/sdk_form_input_size" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/zpw_acc_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/zpw_padding_5"
+        android:theme="@style/TextLabelHint"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/zpsdk_acc_name_ctl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/zpw_edittext_noborder"
+            android:hint="@string/zpw_string_acc_name_hint"
+            android:imeOptions="actionNext|flagNoExtractUi"
+            android:inputType="textCapCharacters"
+            android:letterSpacing="0.1"
+            android:maxLength="@integer/maximum_character_field_acc_name_length"
+            android:padding="@dimen/zpw_padding_10"
+            android:singleLine="true"
+            android:textSize="@dimen/sdk_form_input_size" />
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/zpw_acc_password_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/zpw_padding_5"
+        android:visibility="gone" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/zpw_padding_5"
+            android:background="@color/dark_transparent" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/zpw_acc_password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabelHint" >
+
+            <EditText
+                android:id="@+id/zpsdk_acc_password_ctl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/zpsdk_card_account_password_lb"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_acc_password_hint"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="textPassword"
+                android:letterSpacing="0.1"
+                android:maxLength="@integer/maximum_character_field_acc_name_length"
+                android:padding="@dimen/zpw_padding_10"
+                android:singleLine="true"
+                android:textSize="@dimen/sdk_form_input_size" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/zpsdk_acc_list_ctl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:padding="10dip"
+        android:textColor="#292f33"
+        android:textSize="@dimen/sdk_form_input_size"
+        android:visibility="gone" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/zpw_opt_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/TextLabelHint"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/zpsdk_otp_ctl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/zpw_edittext_noborder"
+            android:hint="@string/zpw_string_opt_hint"
+            android:imeOptions="actionNext|flagNoExtractUi"
+            android:inputType="textNoSuggestions"
+            android:letterSpacing="0.1"
+            android:maxLength="@integer/maximum_character_field_opt_length"
+            android:padding="@dimen/zpw_padding_10"
+            android:singleLine="true"
+            android:textSize="@dimen/sdk_form_input_size" />
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/captcha_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/zpw_padding_5"
+        android:visibility="gone" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/zpw_padding_5"
+            android:background="@color/dark_transparent" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/zpw_capcha_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabelHint" >
+
+            <EditText
+                android:id="@+id/zpsdk_captchar_ctl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_capcha_hint"
+                android:imeOptions="actionGo|flagNoExtractUi"
+                android:inputType="textNoSuggestions"
+                android:letterSpacing="0.1"
+                android:maxLength="@integer/maximum_character_field_capcha_length"
+                android:padding="@dimen/zpw_padding_5"
+                android:singleLine="true"
+                android:textSize="@dimen/sdk_form_input_size" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/zpsdk_captchar_img_ctl"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zpw_capcha_height"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_left_right"
+            android:layout_marginTop="@dimen/zpw_padding_top_bottom"
+            android:scaleType="fitXY" />
+
+        <FrameLayout
+            android:id="@+id/zpsdk_captchar_wv_frame"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone" >
+
+            <WebView
+                android:id="@+id/zpsdk_captchar_wv_ctl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/zingpaysdk_app_name"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:scrollbars="none" />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

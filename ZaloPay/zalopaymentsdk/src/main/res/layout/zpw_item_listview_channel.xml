@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/zpw_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/zpw_ripple_effect">
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/zpw_channel_next_icon"
+        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+        android:layout_marginTop="@dimen/zpw_item_listview_padding_top_bottom"
+        android:layout_marginBottom="@dimen/zpw_item_listview_padding_top_bottom"
+        android:orientation="vertical">
+        <ImageView
+	        android:id="@+id/zpw_channel_icon"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true"/>
+        <TextView 
+	        android:id="@+id/zpw_channel_name_textview"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/text_color_bold"
+	        android:layout_toRightOf="@+id/zpw_channel_icon"
+	        android:layout_alignParentTop="true"
+	        android:singleLine="true"
+	        android:ellipsize="end"
+	        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+	        android:textSize="@dimen/zpw_text_size_medium"/>
+       
+        <LinearLayout 
+            android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/zpw_channel_icon"
+		    android:layout_below="@+id/zpw_channel_name_textview"
+		    android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right">
+            
+            <TextView 
+		        android:id="@+id/zpw_channel_fee"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/text_color_grey"
+		        android:textSize="@dimen/zpw_text_size_medium_small"/>
+	         
+	         <TextView 
+	            android:id="@+id/zpw_title_vnd"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/text_color_grey"
+		        android:textSize="@dimen/text_size_vnd"
+		        android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
+		        android:text="VND"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+     <ImageView
+        android:id="@+id/zpw_channel_next_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/zpw_item_listview_padding_left_right"
+        android:layout_centerVertical="true"/>
+    <View 
+        android:id="@+id/zpw_line_view"
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="@color/dark_transparent"
+         android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+         android:layout_alignParentBottom="true"/>
+</RelativeLayout>

@@ -112,16 +112,16 @@
 
         <!-- ##########################Tich hop ZaloPayWalletSDK START ########################## -->
         <!-- Application ID given by Payment Team -->
-        <meta-data
+        <!--<meta-data
             android:name="zmpAppID"
             android:value="1" />
 
-        <!-- Optional -->
-        <!-- On/Off -->
+        &lt;!&ndash; Optional &ndash;&gt;
+        &lt;!&ndash; On/Off &ndash;&gt;
         <meta-data
             android:name="zmpConfigOffSuccessDialog"
             android:value="false" />
-        <!-- Tắt/mở toàn màn hình trên các Activity của Payment -->
+        &lt;!&ndash; Tắt/mở toàn màn hình trên các Activity của Payment &ndash;&gt;
         <meta-data
             android:name="zmpConfigFullScreen"
             android:value="true" />
@@ -163,7 +163,7 @@
                     android:host="payment-cancel"
                     android:scheme="zingpaysdk-1" />
             </intent-filter>
-        </activity>
+        </activity>-->
         <!-- ##########################Tich hop ZaloPayWalletSDK END ########################## -->
 
         <activity
