@@ -11,14 +11,11 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 

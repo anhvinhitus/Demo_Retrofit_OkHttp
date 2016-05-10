@@ -3,6 +3,7 @@
     <dimen name="spacing.tiny.s">2dp</dimen>
     <dimen name="spacing.tiny">4dp</dimen>
     <dimen name="spacing.small">8dp</dimen>
+    <dimen name="spacing.medium.t">10dp</dimen>
     <dimen name="spacing.medium.s">12dp</dimen>
     <dimen name="spacing.medium">16dp</dimen>
     <dimen name="spacing.medium.l">20dp</dimen>
@@ -12,6 +13,7 @@
     <dimen name="spacing.huge.l">72dp</dimen>
     <dimen name="spacing.giant">96dp</dimen>
 
+    <dimen name="textsize.tiny.t">8sp</dimen>
     <dimen name="textsize.tiny.s">10sp</dimen>
     <dimen name="textsize.tiny">12sp</dimen>
     <dimen name="textsize.small">14sp</dimen>

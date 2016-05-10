@@ -21,10 +21,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
-import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
-import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -65,7 +64,6 @@ public class ZaloPayFragment extends BaseMainFragment {
     @Override
     protected void setupFragmentComponent() {
         AndroidApplication.instance().getUserComponent().inject(this);
-
     }
 
     @Override

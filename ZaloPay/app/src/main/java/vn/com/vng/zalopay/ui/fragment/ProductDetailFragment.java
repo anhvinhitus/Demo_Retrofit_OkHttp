@@ -1,70 +1,58 @@
-package vn.com.vng.zalopay.balancetopup.ui.fragment;
+package vn.com.vng.zalopay.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
-import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
+import vn.com.vng.zalopay.ui.view.IProductDetailView;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BalanceTopupFragment.OnFragmentInteractionListener} interface
+ * {@link ProductDetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BalanceTopupFragment#newInstance} factory method to
+ * Use the {@link ProductDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BalanceTopupFragment extends BaseFragment {
-    // TODO: Rename parameter arguments, choose names that match
-
+public class ProductDetailFragment extends BaseFragment implements IProductDetailView {
     private OnFragmentInteractionListener mListener;
+    private String zptranstoken;
 
-    @Bind(R.id.list)
-    RecyclerView recyclerView;
+    @Inject
+    ProductPresenter productPresenter;
 
-    @Bind(R.id.tvResourceMoney)
-    TextView tvResourceMoney;
+    @Bind(R.id.tvResult)
+    TextView tvResult;
 
-    @Bind(R.id.inputAmountLayout)
-    InputAmountLayout inputAmountLayout;
-
-    private void gotoConfirmTransaction() {
-        Intent intent = new Intent(getContext(), ConfirmTransactionActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong(Constants.ARG_AMOUNT, Long.valueOf(inputAmountLayout.getText().toString()));
-//        bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    public BalanceTopupFragment() {
+    public ProductDetailFragment() {
         // Required empty public constructor
-
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment BalanceTopupFragment.
+     * @param bundle bundle.
+     * @return A new instance of fragment ProductDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BalanceTopupFragment newInstance() {
-        BalanceTopupFragment fragment = new BalanceTopupFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+    public static ProductDetailFragment newInstance(Bundle bundle) {
+        ProductDetailFragment fragment = new ProductDetailFragment();
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -75,13 +63,14 @@ public class BalanceTopupFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_balance_topup;
+        return R.layout.fragment_product_detail;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            zptranstoken = getArguments().getString(Constants.ZPTRANSTOKEN);
         }
     }
 
@@ -90,7 +79,9 @@ public class BalanceTopupFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
+        AndroidApplication.instance().getUserComponent().inject(this);
+        productPresenter.setView(this);
+        getOrder();
         return view;
     }
 
@@ -116,6 +107,42 @@ public class BalanceTopupFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void getOrder() {
+        Timber.tag(TAG).d("getOrder................");
+        showLoading();
+        productPresenter.getOrder(zptranstoken);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    @Override
+    public void showOrderDetail(Order order) {
+        tvResult.setText(order.toString());
     }
 
     /**

@@ -30,5 +30,9 @@
     <color name="leftmenu.avatar.bg">#35a7eb</color>
     <color name="ads.text.content">#24272b</color>
 
+    <color name="amount_edt">#333333</color>
+    <color name="deposit.title">#727f8c</color>
+    <color name="hint">#acb3ba</color>
+
     <color name="c_text_black">#24272b</color>
 </resources>
