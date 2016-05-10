@@ -139,7 +139,6 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         // Khởi tạo user component
         AndroidApplication.instance()
                 .getAppComponent().plus(new UserModule(user));
-
         this.hideLoadingView();
         this.gotoHomeScreen();
     }

@@ -6,21 +6,12 @@ package vn.com.vng.zalopay.data.api.response;
 public class GetOrderResponse extends BaseResponse {
     public String apptransid;
     public String appuser;
+    public String apptime;
+    public String embeddata;
     public String item;
     public String amount;
     public String description;
     public String payoption;
-    public Mac mac;
-    public AppInfo appinfo;
+    public String mac;
 
-    public class Mac {
-        public String orderinfo;
-        public String mac;
-    }
-
-    public  class  AppInfo {
-        public String appname;
-        public String logourl;
-        public String status;
-    }
 }
