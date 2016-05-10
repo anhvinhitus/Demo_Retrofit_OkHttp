@@ -3,7 +3,9 @@ package vn.com.vng.zalopay.data.repository;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
+import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -45,6 +47,13 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     @Override
     public Observable<Order> getOrder(long appId, String zptranstoken) {
-        return zaloPayFactory.getOrder(appId, zptranstoken).map(getOrderResponse -> zaloPayEntityDataMapper.transform(getOrderResponse));
+        return zaloPayFactory.getOrder(appId, zptranstoken).map(new Func1<GetOrderResponse, Order>() {
+            @Override
+            public Order call(GetOrderResponse getOrderResponse) {
+                getOrderResponse.setAppid(appId);
+                getOrderResponse.setZptranstoken(zptranstoken);
+                return zaloPayEntityDataMapper.transform(getOrderResponse);
+            }
+        });
     }
 }

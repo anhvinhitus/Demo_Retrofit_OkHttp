@@ -61,6 +61,6 @@ public class ZaloPayEntityDataMapper {
 
 
     public Order transform(GetOrderResponse getOrderResponse) {
-        return new Order(getOrderResponse.apptransid, getOrderResponse.appuser, getOrderResponse.apptime, getOrderResponse.embeddata, getOrderResponse.item, getOrderResponse.amount, getOrderResponse.description, getOrderResponse.payoption, getOrderResponse.mac);
+        return new Order(getOrderResponse.getAppid(), getOrderResponse.getZptranstoken(), getOrderResponse.apptransid, getOrderResponse.appuser, getOrderResponse.apptime, getOrderResponse.embeddata, getOrderResponse.item, getOrderResponse.amount, getOrderResponse.description, getOrderResponse.payoption, getOrderResponse.mac);
     }
 }

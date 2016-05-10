@@ -9,6 +9,8 @@ import android.os.Parcelable;
  */
 public class Order extends AbstractData {
 
+    private long appid;
+    private String zptranstoken;
     private String apptransid;
     private String appuser;
     public String apptime;
@@ -19,7 +21,9 @@ public class Order extends AbstractData {
     private String payoption;
     private String mac;
 
-    public Order(String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac) {
+    public Order(long appid, String zptranstoken, String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac) {
+        this.appid = appid;
+        this.zptranstoken = zptranstoken;
         this.apptransid = apptransid;
         this.appuser = appuser;
         this.apptime = apptime;
@@ -32,6 +36,8 @@ public class Order extends AbstractData {
     }
 
     public Order(Parcel in) {
+        appid = in.readLong();
+        zptranstoken = in.readString();
         apptransid = in.readString();
         appuser = in.readString();
         apptime = in.readString();
@@ -45,6 +51,8 @@ public class Order extends AbstractData {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(appid);
+        dest.writeString(zptranstoken);
         dest.writeString(apptransid);
         dest.writeString(appuser);
         dest.writeString(apptime);
@@ -67,6 +75,14 @@ public class Order extends AbstractData {
             return new Order[size];
         }
     };
+
+    public long getAppid() {
+        return appid;
+    }
+
+    public String getZptranstoken() {
+        return zptranstoken;
+    }
 
     public String getApptransid() {
         return apptransid;
@@ -94,6 +110,14 @@ public class Order extends AbstractData {
 
     public String getMac() {
         return mac;
+    }
+
+    public void setAppid(long appid) {
+        this.appid = appid;
+    }
+
+    public void setZptranstoken(String zptranstoken) {
+        this.zptranstoken = zptranstoken;
     }
 
     public void setApptransid(String apptransid) {
@@ -143,6 +167,10 @@ public class Order extends AbstractData {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(appid);
+        stringBuilder.append(", ");
+        stringBuilder.append(zptranstoken);
+        stringBuilder.append(", ");
         stringBuilder.append(apptransid);
         stringBuilder.append(", ");
         stringBuilder.append(appuser);

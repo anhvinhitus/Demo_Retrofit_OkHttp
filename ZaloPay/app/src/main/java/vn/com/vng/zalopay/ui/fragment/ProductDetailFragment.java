@@ -3,10 +3,9 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -63,7 +62,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
 
     @Override
     protected void setupFragmentComponent() {
-
+        AndroidApplication.instance().getUserComponent().inject(this);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
         if (getArguments() == null) {
             return;
         }
-        String jsonStr= getArguments().getString(Constants.ZPTRANSTOKEN);
+        String jsonStr = getArguments().getString(Constants.ZPTRANSTOKEN);
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
             appId = jsonObject.getLong(Constants.APPID);
@@ -94,14 +93,15 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        AndroidApplication.instance().getUserComponent().inject(this);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         productPresenter.setView(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getOrder();
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
