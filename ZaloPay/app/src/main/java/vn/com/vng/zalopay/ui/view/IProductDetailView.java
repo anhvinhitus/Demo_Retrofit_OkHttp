@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.view;
 
+import android.app.Activity;
+
 import vn.com.vng.zalopay.domain.model.Order;
 
 /**
@@ -7,4 +9,5 @@ import vn.com.vng.zalopay.domain.model.Order;
  */
 public interface IProductDetailView extends LoadDataView {
     public void showOrderDetail(Order order);
+    Activity getActivity();
 }

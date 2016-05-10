@@ -1,0 +1,30 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="sdk_login_channel_padding">4dp</dimen>
+    <dimen name="sdk_icon_channel_size">25dp</dimen>
+    <dimen name="sdk_title_channel_margin_left">33dp</dimen>
+    <dimen name="sdk_title_channel_size">14sp</dimen>
+    <dimen name="sdk_row_channel_padding">15dp</dimen>
+    <dimen name="payment_info_row1_text_size">18dp</dimen>
+    <dimen name="payment_header_landscape_width">140dp</dimen>
+    <dimen name="payment_displayInfo_padding">10dp</dimen>
+    <dimen name="payment_channel_icon_size">40dp</dimen>
+    <dimen name="payment_channel_promotion_icon_size">60dp</dimen>
+    <dimen name="payment_card_height">50dp</dimen>
+    <dimen name="payment_icon_channel_margin_right">10dp</dimen>
+    <dimen name="payment_button_submit_height">48dp</dimen>
+    <dimen name="payment_group_button_submit_height">50dp</dimen>
+    <dimen name="payment_button_submit_text_size">18dp</dimen>
+    <dimen name="payment_mobile_container_padding">20dp</dimen>
+    <dimen name="payment_save_card_text_size">14dp</dimen>
+    <dimen name="payment_save_card_label_width">105dp</dimen>
+    <!-- screen zalopay success -->
+    <dimen name="zpw_margin_top_supper_supper_label">20dp</dimen>
+    <dimen name="zpw_img_size_success">60dp</dimen>
+    <dimen name="zpw_padding_button">5dp</dimen>
+    <dimen name="zpw_checkbox_size">30dp</dimen>
+    <dimen name="zpw_text_size_medium_m">14sp</dimen>
+    <dimen name="sdk_form_input_size">17dp</dimen>
+    <dimen name="payment_app_icon_size">70dp</dimen>
+</resources>

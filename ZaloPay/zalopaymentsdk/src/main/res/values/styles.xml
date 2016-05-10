@@ -1,0 +1,38 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+    
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary</item>
+    </style>
+    
+    <style name="TextLabelHint" parent="ThemeOverlay.AppCompat.Light">
+	    <!-- Hint color and label color in FALSE state -->
+	    <item name="android:textColorHint">@color/text_color</item> 
+	    <item name="android:textSize">13sp</item>
+	    <item name="android:bottomOffset">15dp</item>
+	    <item name="android:topOffset">15dp</item>
+	    <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+	    <item name="colorAccent">@color/color_primary_disable</item>
+	    <item name="colorControlNormal">@color/color_primary_disable</item>
+	    <item name="colorControlActivated">@color/color_primary</item>
+ 	</style>
+ 	
+     <declare-styleable name="VPaymentCheckBox">
+        <attr name="stroke_thind" format="dimension"/>
+        <attr name="stroke_color" format="color"/>
+        <attr name="circle_color" format="color"/>
+    </declare-styleable>
+
+</resources>

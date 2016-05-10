@@ -136,14 +136,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.others)
     public void onLayoutOthersClick() {
 //        ShaUtils.getSha();
-        startZMPSDKDemo();
     }
-
-    private void startZMPSDKDemo() {
-        Intent intent = new Intent(getActivity(), vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
-        startActivity(intent);
-    }
-
 
     /* Show|Hide Banner START */
     public void showAdsBanner(String url) {

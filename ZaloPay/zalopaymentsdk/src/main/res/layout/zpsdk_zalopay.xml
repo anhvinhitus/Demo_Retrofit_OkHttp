@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/zpw_zalopay_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:elevation="4dp"  >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true" >
+        
+	     <include
+	         android:id="@+id/zpsdk_header"
+	         layout="@layout/zpsdk_header" 
+	         android:layout_width="match_parent"
+	     	 android:layout_height="wrap_content" />
+	
+	       <include
+	         android:id="@+id/zpsdk_app_info"
+	         layout="@layout/zpsdk_app_info" 
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content"/>
+	       
+	       <include
+	           android:id="@+id/zpsdk_pay_success"
+	           layout="@layout/zpsdk_pay_success" 
+	           android:layout_width="match_parent"
+	           android:layout_height="wrap_content"/>
+	        <include
+	           android:id="@+id/zpsdk_pay_fail"
+	           layout="@layout/zpsdk_zalopay_fail" 
+	           android:layout_width="match_parent"
+	           android:layout_height="wrap_content"
+	           android:layout_marginTop="@dimen/zpw_padding_to_app_info"/>
+        
+    </LinearLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/zpsdk_submit" />
+
+</RelativeLayout>

@@ -1,9 +1,8 @@
 package vn.com.vng.zalopay.ui.activity;
 
-import android.content.SharedPreferences;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +14,7 @@ import android.view.WindowManager;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -32,6 +29,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract BaseFragment getFragmentToHost();
 
     protected final String TAG = getClass().getSimpleName();
+
+    public Activity getActivity() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 //        user.accesstoken = sharedPreferences.getString(Constants.PREF_USER_SESSION, "");
 //        user.uid = sharedPreferences.getLong(Constants.PREF_USER_ID, 0);
+//        user.uid = 8808474179545805942l;
 //        AndroidApplication.instance().createUserComponent(user);
     }
 
