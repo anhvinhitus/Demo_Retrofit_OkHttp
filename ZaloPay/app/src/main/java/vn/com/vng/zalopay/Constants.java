@@ -24,4 +24,6 @@ public class Constants {
     public static final String MANIF_BALANCE = "manif_balance";
 
     public static final String ORDER_INFO = "order_info";
+
+    public static final String ZPTRANSTOKEN = "zptranstoken";
 }

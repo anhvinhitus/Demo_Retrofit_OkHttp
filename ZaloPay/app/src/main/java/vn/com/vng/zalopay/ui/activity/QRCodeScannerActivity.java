@@ -61,7 +61,7 @@ public class QRCodeScannerActivity extends QRScanActivity {
         Timber.tag(TAG).i("result:" + result);
         super.handleResult(result);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.ORDER_INFO, result);
+        bundle.putString(Constants.ZPTRANSTOKEN, result);
         navigator.startProductDetailActivity(this, bundle);
     }
 
