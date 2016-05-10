@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -39,6 +40,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
@@ -48,7 +50,10 @@ import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
+import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
 import vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService;
+import vn.zing.pay.zmpsdk.listener.ZPWGatewayInfoCallback;
 
 
 public class MainActivity extends BaseToolBarActivity implements MenuItemClickListener {
@@ -63,17 +68,22 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         return null;
     }
 
+
+    @Override
+    protected void setupActivityComponent() {
+        Log.d("SetupComponent", " AndroidApplication.instance().getUserComponent()" + AndroidApplication.instance().getUserComponent());
+        AndroidApplication.instance().getUserComponent().inject(this);
+    }
+
     private final String REPLACE_HOME_TRANSACTION = "REPLACE_HOME_TRANSACTION";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     int currentSelected = -1;
 
-    HeaderHolder header;
     private TextView mTvNotificationCount;
 
     ZaloPayFragment homeFragment;
-    NavigationView navigationView;
-    ListView menuItemListView;
-    MenuItemAdapter menuItemAdapter;
+
+    private int mRetryDownloadPaySDK = 0;
 
     @Inject
     Navigator navigator;
@@ -142,6 +152,42 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         }
     }
 
+    private void loginPaymentSDK() {
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (user == null) {
+            return;
+        }
+
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.zaloUserID = String.valueOf(user.uid);
+        paymentInfo.zaloPayAccessToken = user.accesstoken;
+
+        ZingMobilePayApplication.loadGatewayInfo(this, paymentInfo, new ZPWGatewayInfoCallback() {
+            @Override
+            public void onFinish()
+            {
+                Timber.tag("LoginPresenter").d("loadGatewayInfo onSuccess");
+                mRetryDownloadPaySDK = 0;
+            }
+
+            @Override
+            public void onProcessing()
+            {
+                Timber.tag("LoginPresenter").d("loadGatewayInfo onProcessing");
+            }
+
+            @Override
+            public void onError(String pMessage)
+            {
+                Timber.tag("LoginPresenter").d("loadGatewayInfo onError:%s", pMessage);
+                mRetryDownloadPaySDK++;
+                if (mRetryDownloadPaySDK < 5) {
+                    loginPaymentSDK();
+                }
+            }
+        });
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -166,36 +212,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.tag(TAG).d("onCreate....................");
-        AndroidApplication.instance().getUserComponent().inject(this);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        hideDefaultTitle();
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        menuItemListView = (ListView) findViewById(R.id.list);
-        menuItemAdapter = new MenuItemAdapter(this, MenuItemUtil.getMenuItems(), this);
-
-        header = new HeaderHolder(this);
-//        navigationView.addHeaderView(header.root);
-        menuItemListView.addHeaderView(header.root);
-        menuItemListView.setAdapter(menuItemAdapter);
-        //navigationView.setNavigationItemSelectedListener(this);
-
-        String name = "Nguyen Van A";
-        long balance = 1232425;
-        String avatar = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
-        if (!TextUtils.isEmpty(name)) {
-            header.tvName.setText(name);
-            header.tvName.setVisibility(View.VISIBLE);
-        } else {
-            header.tvName.setVisibility(View.INVISIBLE);
-        }
-        header.tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
-
-        loadAvatarImage(header.imageAvatar, avatar);
 
         if (savedInstanceState != null) {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.root);
@@ -210,14 +234,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             getSupportFragmentManager().beginTransaction().add(R.id.root, homeFragment).commit();
         }
         selectHome(true);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-//        if (homeFragment != null){
-//            homeFragment.updateListLayout(newConfig);
-//        }
+        mRetryDownloadPaySDK = 0;
+        loginPaymentSDK();
     }
 
     @Override
@@ -302,11 +320,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         }
     }
 
-    private void startZMPSDKDemo() {
-        Intent intent = new Intent(this, vn.zing.pay.trivialdrivesample.DemoSDKActivity.class);
-        startActivity(intent);
-    }
-
     protected boolean setSelectedDrawerMenuItem(int itemId) {
 //        if (itemId == currentSelected) {
 //            return true;
@@ -325,7 +338,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             }
             return true;
         } else if (itemId == MenuItemUtil.TRANSFER_ID) {
-            startZMPSDKDemo();
             selectHome(false);
             return true;
         } else if (itemId == MenuItemUtil.DEPOSIT_ID) {
@@ -380,52 +392,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
     }
 
-    class HeaderHolder {
-        public View root;
-
-        @Bind(R.id.im_avatar)
-        public ImageView imageAvatar;
-        @Bind(R.id.tv_name)
-        public TextView tvName;
-        @Bind(R.id.tv_balance)
-        public TextView tvBalance;
-
-//        @OnClick(R.id.btn_friends)
-//        void onFriendsClicked(View v){
-//            startFriendsActivity();
-//        }
-
-//        @OnClick(R.id.btn_popup)
-//        void onOpenPopup(View v){
-//            PopupMenu popupMenu = new PopupMenu(getActivity(), v, Gravity.BOTTOM);
-//            popupMenu.inflate(R.menu.menu_profile_popup);
-//            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//                    //TODO
-//                    int itemId = item.getItemId();
-//                    if (itemId == R.id.action_friend_list) {
-//                        startFriendsActivity();
-//                    } else if (itemId == R.id.action_group_list) {
-//                        startGroupActivity();
-//                    } else {
-//                        return false;
-//                    }
-//
-//                    return true;
-//                }
-//            });
-//            popupMenu.show();
-//        }
-
-        public HeaderHolder(AppCompatActivity activity) {
-//            root = activity.findViewById(R.id.nav_header_main);
-            root = getLayoutInflater().inflate(R.layout.nav_header_main, null);
-            ButterKnife.bind(this, root);
-        }
-
-    }
-
 //    private ServiceConnection mServiceConnection = new ServiceConnection() {
 //        @Override
 //        public void onServiceConnected(ComponentName name, IBinder service) {
@@ -456,31 +422,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 //        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000 * 30, pendingIntent);
 //    }
 
-    public void hideDefaultTitle() {
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.setDisplayShowTitleEnabled(false);
-        }
-    }
-
-//    public void showBalanceOnly(){
-//        if (mBalanceFragment != null){
-//            mBalanceFragment.showLayout(true, false);
-//        }
-//    }
-//
-//    public void showBalanceAndButtons(){
-//        if (mBalanceFragment != null){
-//            mBalanceFragment.showLayout(true, true);
-//        }
-//    }
-//
-//    public void hideBalanceAllView(){
-//        if (mBalanceFragment != null){
-//            mBalanceFragment.showLayout(false, false);
-//        }
-//    }
-
     private void setExpanded(boolean expand, boolean animate) {
         if (mAppBarLayout != null) {
             mAppBarLayout.setExpanded(expand, animate);
@@ -491,19 +432,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         if (mAppBarLayout != null) {
             mAppBarLayout.setExpanded(expanded);
         }
-    }
-
-    private void loadAvatarImage(final ImageView imageView, String url) {
-//        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
-        Glide.with(this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(MainActivity.this.getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                imageView.setImageDrawable(circularBitmapDrawable);
-            }
-        });
     }
 
     protected int currentNotificationCount = 2;

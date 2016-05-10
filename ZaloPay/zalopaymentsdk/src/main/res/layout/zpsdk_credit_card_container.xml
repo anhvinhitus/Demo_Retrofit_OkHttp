@@ -1,0 +1,96 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/zpw_bg_top_bottom_side_border"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/zpw_row_start_padding" >
+
+    <LinearLayout
+        android:id="@+id/credit_card_holder_nomal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible" >
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/CreditCardNumber_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/zpw_row_padding"
+            android:paddingTop="@dimen/zpw_row_padding"
+            android:theme="@style/TextLabelHint" >
+
+            <vn.zing.pay.zmpsdk.view.custom.VPaymentDrawableEditText
+                android:id="@+id/CreditCardNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_card_number_hint"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="number"
+              
+                android:maxLength="@integer/maximum_character_field_card_number"
+                android:padding="@dimen/zpw_padding_5"
+                android:singleLine="true"
+                  android:letterSpacing="0.1"
+                android:textSize="@dimen/sdk_form_input_size"
+                android:textStyle="normal" />
+        </android.support.design.widget.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_transparent" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/zpw_row_padding"
+            android:paddingTop="@dimen/zpw_row_padding"
+            android:theme="@style/TextLabelHint" >
+
+            <vn.zing.pay.zmpsdk.view.custom.VPaymentValidDateEditText
+                android:id="@+id/CreditCardExpiredDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_credit_card_expired_date_hint"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="number"
+                android:letterSpacing="0.1"
+                android:maxLength="@integer/maximum_character_field_visa_valid_date"
+                android:padding="@dimen/zpw_padding_5"
+                android:singleLine="true"
+                android:textSize="@dimen/sdk_form_input_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dark_transparent" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/zpw_row_padding"
+            android:paddingTop="@dimen/zpw_row_padding"
+            android:theme="@style/TextLabelHint" >
+
+            <vn.zing.pay.zmpsdk.view.custom.VPaymentDrawableEditText
+                android:id="@+id/CreditCardCVV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_edittext_noborder"
+                android:hint="@string/zpw_string_credit_card_cvv_hint"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:inputType="number"
+                android:letterSpacing="0.1"
+                android:maxLength="@integer/maximum_character_field_visa_cvv"
+                android:padding="5dp"
+                android:singleLine="true"
+                android:textSize="@dimen/sdk_form_input_size" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+</LinearLayout>

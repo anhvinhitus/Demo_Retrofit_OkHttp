@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    <vn.zing.pay.zmpsdk.view.custom.ZPWRippleButton
+        android:id="@+id/zpsdk_btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@drawable/zpw_bg_button"
+        android:paddingTop="@dimen/zpw_padding_button"
+        android:paddingBottom="@dimen/zpw_padding_button"
+        android:enabled="false"
+        android:text="@string/zpw_button_submit_text"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</FrameLayout>

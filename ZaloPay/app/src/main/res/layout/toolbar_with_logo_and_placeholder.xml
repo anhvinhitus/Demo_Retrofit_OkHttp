@@ -72,7 +72,8 @@
                 android:drawableTop="@drawable/ic_lienketthe"
                 android:gravity="center"
                 android:padding="@dimen/app_padding"
-                android:text="@string/txt_leftmenu_deposit"
+                android:text="@string/link.card"
+                android:textAllCaps="true"
                 android:textSize="@dimen/textsize.tiny" />
         </LinearLayout>
         <!--  </LinearLayout>-->

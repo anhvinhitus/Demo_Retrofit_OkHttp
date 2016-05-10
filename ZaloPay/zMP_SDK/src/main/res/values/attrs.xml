@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="VPaymentChannelButton">
-        <attr name="pmcID" format="string" />
-        <attr name="pmcName" format="string" />
-        <attr name="srcOn" format="reference" />
-        <attr name="srcOff" format="reference" />
-    </declare-styleable>
-</resources>

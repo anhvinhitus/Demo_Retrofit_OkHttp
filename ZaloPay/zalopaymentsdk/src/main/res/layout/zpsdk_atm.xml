@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:elevation="4dp"
+    android:fillViewport="true"
+    android:scrollbars="none" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:orientation="vertical" >
+
+            <include
+                android:id="@+id/zpsdk_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/zpsdk_header" />
+
+            <include
+                android:id="@+id/zpsdk_app_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/zpsdk_app_info" />
+
+            <include
+                android:id="@+id/zpsdk_pay_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/zpsdk_pay_success" />
+
+            <include
+                android:id="@+id/view_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/payment_group_button_submit_height"
+                android:layout_marginTop="@dimen/zpw_padding_to_app_info"
+                layout="@layout/zpsdk_atm_container" />
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            layout="@layout/zpsdk_submit" />
+
+        <RelativeLayout
+            android:id="@+id/popup_atm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/background"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_margin="10dp"
+                android:background="#fff"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="10dip"
+                    android:paddingTop="10dip"
+                    android:text="Lựa chọn ngân hàng"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/zpw_text_size_medium"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/dark_transparent" />
+
+                <ScrollView
+                    android:id="@+id/atm_listsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/background"
+                    android:fadingEdgeLength="100dp"
+                    android:fillViewport="true"
+                    android:scrollbars="none" >
+
+                    <vn.zing.pay.zmpsdk.view.custom.VPaymentChannelGroup
+                        android:id="@+id/payment_channel_adapter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" />
+                </ScrollView>
+
+                <vn.zing.pay.zmpsdk.view.custom.ZPWRippleButton
+                    android:id="@+id/atm_select_ok"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/zpw_bg_button"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/zpw_padding_button"
+                    android:paddingTop="@dimen/zpw_padding_button"
+                    android:text="Chọn"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+</ScrollView>

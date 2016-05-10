@@ -15,9 +15,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.ui.view.ILoginView;
 public final class LoginPresenter extends BaseAppPresenter implements Presenter<ILoginView>, LoginListener.ILoginZaloListener {
 
     private ILoginView mView;
+
 
     private ZaloProfilePreferences zaloProfilePreferences;
 
@@ -98,13 +99,17 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         zaloProfilePreferences.setUserId(uId);
         zaloProfilePreferences.setAuthCode(authCode);
 
-        //Fixme :  dang test
+        this.loginPayment(uId, authCode);
+
+
+
+
+        /*
         HashMap map = AndroidApplication.instance().getAppComponent().paramsRequestProvider().getParamsZalo();
         map.put("appid", String.valueOf(1));
         map.put("userid", String.valueOf(uId));
-        map.put("zalooauthcode", authCode);
+        map.put("zalooauthcode", authCode);*/
 
-        this.loginPayment(uId, authCode);
 
     }
 
@@ -137,8 +142,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         Timber.d("session " + user.accesstoken);
         Timber.d("uid " + user.uid);
         // Khởi tạo user component
-        AndroidApplication.instance()
-                .getAppComponent().plus(new UserModule(user));
+        AndroidApplication.instance().createUserComponent(user);
+
         this.hideLoadingView();
         this.gotoHomeScreen();
     }

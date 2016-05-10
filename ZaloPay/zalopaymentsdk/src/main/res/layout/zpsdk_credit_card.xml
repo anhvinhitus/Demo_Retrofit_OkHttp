@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:elevation="4dp"
+    android:fillViewport="true"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <include
+            android:id="@+id/zpsdk_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/zpsdk_header" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:orientation="vertical" >
+
+                <include
+                    android:id="@+id/zpsdk_app_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    layout="@layout/zpsdk_app_info" />
+
+                <include
+                    android:id="@+id/zpsdk_pay_success"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    layout="@layout/zpsdk_pay_success" />
+
+                <include
+                    android:id="@+id/view_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/payment_group_button_submit_height"
+                    android:layout_marginTop="@dimen/zpw_padding_to_app_info"
+                    layout="@layout/zpsdk_credit_card_container" />
+            </LinearLayout>
+
+            <include
+                android:id="@+id/zpw_submit_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                layout="@layout/zpsdk_submit" />
+
+            <WebView
+                android:id="@+id/zpw_threesecurity_webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
+</ScrollView>

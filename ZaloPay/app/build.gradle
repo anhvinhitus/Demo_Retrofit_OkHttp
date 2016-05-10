@@ -159,13 +159,14 @@ dependencies {
 
     compile libs.roundedimageview
 
+    compile libs.play_services
+    compile libs.play_services_analytics
+
     compile project(':data')
     compile project(':uicomponent')
     compile project(':moduledynamicloading')
     compile project(':qrcodecore')
 
     compile project(':zalosdk')
-//    compile project(':zMP_SDK')
-    compile project(':zMP_SDK_Demo')
-    compile 'com.android.support:support-v4:23.3.0'
+    compile project(':zalopaymentsdk')
 }
