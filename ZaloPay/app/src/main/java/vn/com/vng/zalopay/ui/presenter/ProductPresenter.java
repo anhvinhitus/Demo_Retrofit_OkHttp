@@ -160,7 +160,7 @@ public final class ProductPresenter  extends BaseZaloPayPresenter implements Pre
 //            paymentInfo.items.add(paymentItem);
 //        }
         ZPPaymentItem paymentItem= new ZPPaymentItem();
-        paymentItem.itemID = "1";
+        paymentItem.itemID = "111";
         paymentItem.itemName = "item123456";
         paymentItem.itemQuantity = 1;
         paymentItem.itemPrice = 1;

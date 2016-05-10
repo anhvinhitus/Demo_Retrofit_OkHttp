@@ -20,12 +20,11 @@ import vn.com.vng.zalopay.menu.model.MenuItemType;
  */
 public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
-    private final MenuItemClickListener mListener;
     private final LayoutInflater mLayoutInflater;
 
-    public MenuItemAdapter(Context context, List<MenuItem> items, MenuItemClickListener listener) {
+    public MenuItemAdapter(Context context, List<MenuItem> items) {
         super(context, R.layout.layout_item_drawer, items);
-        mListener = listener;
+
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -44,7 +43,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         if (viewType == MenuItemType.HEADER.getValue()) {
             ViewHolder viewHolder = null;
             if (convertView == null || !(convertView.getTag() instanceof ViewHolder)) {
-                convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer_header, null);
+                convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer_header, parent, false);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
@@ -54,7 +53,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         } else if (viewType == MenuItemType.ITEM.getValue()) {
             ItemViewHolder viewHolder = null;
             if (convertView == null || !(convertView.getTag() instanceof ItemViewHolder)) {
-                convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer, null);
+                convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer, parent, false);
                 viewHolder = new ItemViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
@@ -66,25 +65,8 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         return convertView;
     }
 
-    private void onMenuItemClick(View view, MenuItem menuItem) {
-//        if (currentView != null) {
-//            currentView.setBackgroundResource(R.color.transparent);
-//        }
-//        currentView = view;
-//        currentView.setBackgroundResource(R.color.separate_transparent);
-        if (mListener!= null) {
-            mListener.onMenuItemClick(menuItem);
-        }
-    }
-
-    private void onHeaderClick(View view, MenuItem menuItem) {
-        if (mListener!= null) {
-            mListener.onMenuHeaderClick(menuItem);
-        }
-    }
-
     private void bindMenuItemView(ViewHolder holder, final MenuItem menuItem) {
-        ItemViewHolder viewHolder = (ItemViewHolder)holder;
+        ItemViewHolder viewHolder = (ItemViewHolder) holder;
         viewHolder.mTvTitle.setText(menuItem.getTitle());
         viewHolder.mImageView.setImageResource(menuItem.getIconResource());
         if (menuItem.isShowDivider()) {
@@ -98,23 +80,11 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         } else {
             viewHolder.mImageSubIcon.setVisibility(View.GONE);
         }
-        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onMenuItemClick(v, menuItem);
-            }
-        });
     }
 
     private void bindHeaderView(ViewHolder holder, final MenuItem menuItem) {
-        ViewHolder viewHolder = (ViewHolder)holder;
+        ViewHolder viewHolder = holder;
         viewHolder.mTvTitle.setText(menuItem.getTitle());
-        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onHeaderClick(v, menuItem);
-            }
-        });
     }
 
     public class ViewHolder {
@@ -133,7 +103,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         }
     }
 
-    public class ItemViewHolder extends ViewHolder{
+    public class ItemViewHolder extends ViewHolder {
         public final ImageView mImageView;
         public final ImageView mImageSubIcon;
         public final View viewSeparate;

@@ -12,13 +12,13 @@
     </style>
 
     <style name="LeftMenu.Title" parent="android:Widget.TextView">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/leftmenu.title</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="LeftMenu.Group.Title" parent="android:Widget.TextView">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/leftmenu.group.title</item>
         <item name="android:gravity">center_vertical</item>
     </style>

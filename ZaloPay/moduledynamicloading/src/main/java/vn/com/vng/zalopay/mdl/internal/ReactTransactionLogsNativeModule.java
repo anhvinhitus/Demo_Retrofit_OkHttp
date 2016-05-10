@@ -31,8 +31,24 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
             item.putInt("transid", pageIndex * count + i);
             item.putDouble("reqdate", Math.random()%10000000 + 1000000 + 1460366347);
             item.putString("description", Math.floor(Math.random() % 2) == 0 ? "Thanh toán mua thẻ điện thoại Vinaphone": "Nhận chuyển tiền từ Nguyễn Văn Nam");
-            item.putInt("grossamount", (int)Math.floor(Math.random()+100)*100);
-            item.putInt("netamount", (int)Math.floor(Math.random()+100)*100);
+            item.putInt("amount", (int)Math.floor(Math.random()+100)*100);
+            item.putInt("type", (int)Math.floor(Math.random() % 2));
+
+            result.pushMap(item);
+        }
+
+        promise.resolve(result);
+    }
+
+    @ReactMethod
+    public void reloadListTransaction(int count, Promise promise) {
+        WritableArray result = Arguments.createArray();
+        for (int i = 0; i < count; i ++) {
+            WritableMap item = Arguments.createMap();
+            item.putInt("transid", i);
+            item.putDouble("reqdate", Math.random()%10000000 + 1000000 + 1460366347);
+            item.putString("description", Math.floor(Math.random() % 2) == 0 ? "Thanh toán mua thẻ điện thoại Vinaphone": "Nhận chuyển tiền từ Nguyễn Văn Nam");
+            item.putInt("amount", (int)Math.floor(Math.random()+100)*100);
             item.putInt("type", (int)Math.floor(Math.random() % 2));
 
             result.pushMap(item);
