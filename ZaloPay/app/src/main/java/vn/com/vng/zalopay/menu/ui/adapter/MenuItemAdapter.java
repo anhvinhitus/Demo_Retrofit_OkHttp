@@ -22,7 +22,6 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     private final MenuItemClickListener mListener;
     private final LayoutInflater mLayoutInflater;
-    private View currentView;
 
     public MenuItemAdapter(Context context, List<MenuItem> items, MenuItemClickListener listener) {
         super(context, R.layout.layout_item_drawer, items);

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="48dp"
     android:background="?selector">
 
     <LinearLayout
@@ -45,6 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="42dp"
+        android:layout_marginLeft="48dp"
         android:background="@color/separate" />
 </FrameLayout>

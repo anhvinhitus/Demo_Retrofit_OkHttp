@@ -1,27 +1,15 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import com.google.android.gms.wallet.Wallet;
-
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
-import vn.zing.pay.zmpsdk.ZingMobilePayService;
-import vn.zing.pay.zmpsdk.entity.ZPPaymentInfo;
-import vn.zing.pay.zmpsdk.entity.ZPPaymentItem;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
-import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentChannel;
 import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 
 /**

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -16,7 +17,7 @@ import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 public interface AppConfigService {
 
     @FormUrlEncoded
-    @GET("tpe/platforminfo")
+    @POST("tpe/platforminfo")
     Observable<PlatformInfoResponse> platforminfo(@Query("platformcode") String platformcode,
                                                   @Query("dscreentype") String dscreentype,
                                                   @Query("platforminfochecksum") String platforminfochecksum,
