@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import android.view.WindowManager;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -77,7 +80,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 //            User user = databaseHelper.getUser();
 //            ZingMobileApplication.getInstance().createUserComponent(user);
 //        }
-        AndroidApplication.instance().createUserComponent(new User());
+		//longlv: todo test only
+        User user = new User();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        user.accesstoken = sharedPreferences.getString(Constants.PREF_USER_SESSION, "");
+        user.uid = sharedPreferences.getLong(Constants.PREF_USER_ID, 0);
+//        user.uid = 8768363769458337252l;
+//        user.accesstoken = "884b213ef73f0bb17f73bafebd613b55ca04a85b85f3d1c6dbd0f08c297071c51462873367823";
+        AndroidApplication.instance().createUserComponent(user);
     }
 
     @Override
