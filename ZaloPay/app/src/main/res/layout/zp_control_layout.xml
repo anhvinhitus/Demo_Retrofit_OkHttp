@@ -19,7 +19,6 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-
         <LinearLayout
             android:id="@+id/btn_transfer"
             android:layout_width="0dp"
@@ -36,7 +35,7 @@
                 android:src="@drawable/ic_chuyentien" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -64,7 +63,7 @@
                 android:src="@drawable/ic_naptiendt" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -92,7 +91,7 @@
                 android:src="@drawable/ic_tiendien" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -127,7 +126,7 @@
                 android:src="@drawable/ic_internet" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -155,7 +154,7 @@
                 android:src="@drawable/ic_lixi" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -184,7 +183,7 @@
                 android:src="@drawable/ic_tiennuoc" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

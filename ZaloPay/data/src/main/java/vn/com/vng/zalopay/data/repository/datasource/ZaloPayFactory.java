@@ -6,11 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.inject.Named;
-
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -67,9 +66,12 @@ public class ZaloPayFactory {
         return sqlZaloPayScope.balance();
     }
 
-
     public Observable<Long> balance() {
         return Observable.merge(balanceLocal(), balanceServer());
+    }
+
+    public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {
+        return appConfigService.getorder(appId, zptranstoken);
     }
 
 }

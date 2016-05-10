@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
 
@@ -59,8 +60,9 @@ public class QRCodeScannerActivity extends QRScanActivity {
     public void handleResult(String result) {
         Timber.tag(TAG).i("result:" + result);
         super.handleResult(result);
-        navigator.startProductDetailActivity(this);
-        finish();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ZPTRANSTOKEN, result);
+        navigator.startProductDetailActivity(this, bundle);
     }
 
     protected void setupActivityComponent() {

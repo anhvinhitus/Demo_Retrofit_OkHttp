@@ -379,4 +379,14 @@ public class AndroidUtils {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    public static int getColor(Context context, int colorResource) {
+        if (context == null) {
+            return -1;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return context.getResources().getColor(colorResource);
+        } else {
+            return context.getColor(colorResource);
+        }
+    }
 }

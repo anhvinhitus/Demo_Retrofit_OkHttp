@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.domain.repository;
 import java.util.List;
 
 import rx.Observable;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 
 /**
@@ -19,4 +20,6 @@ public interface ZaloPayRepository {
     Observable<List<TransHistory>> loadMoreTransHistory();
 
     Observable<List<TransHistory>> refreshTransHistory();
+
+    Observable<Order> getOrder(long appId, String zptranstoken);
 }

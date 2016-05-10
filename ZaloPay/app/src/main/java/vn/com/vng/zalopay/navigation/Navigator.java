@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.navigation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
@@ -41,8 +42,9 @@ public class Navigator {
         context.startActivity(intent);
     }
 
-    public void startProductDetailActivity(Context context) {
+    public void startProductDetailActivity(Context context, Bundle bundle) {
         Intent intent = new Intent(context, ProductDetailActivity.class);
+        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 

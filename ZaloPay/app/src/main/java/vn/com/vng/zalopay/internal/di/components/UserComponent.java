@@ -11,8 +11,10 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.ui.activity.ProductDetailActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
+import vn.com.vng.zalopay.ui.fragment.ProductDetailFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 @UserScope
@@ -34,11 +36,19 @@ public interface UserComponent {
 
     ApplicationRepository applicationRepository();
 
+    /* inject Fragment */
     void inject(ZaloPayFragment f);
 
-    void inject(MainActivity a);
+    void inject(LinkCardFragment link);
+
+    void inject(ProductDetailFragment f);
+
+    /* inject activity */
 
     void inject(QRCodeScannerActivity activity);
 
-    void inject(LinkCardFragment link);
+    void inject(MainActivity a);
+
+
+    void inject(ProductDetailActivity activity);
 }

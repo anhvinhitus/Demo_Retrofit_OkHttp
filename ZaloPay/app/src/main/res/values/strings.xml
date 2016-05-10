@@ -51,8 +51,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="cards">Nguồn nạp</string>
-    <string name="amount">Số tiền (VND)</string>
-    <string name="currency_unit">VND</string>
+    <string name="amount">Số tiền</string>
+    <string name="amount_vnd">(VNĐ)</string>
+    <string name="vnd">VND</string>
 
     <string name="btn_continue">Tiếp tục</string>
     <string name="btn_pay_now">Thanh toán</string>
@@ -92,10 +93,15 @@
 
     <!-- TODO: Remove or change this placeholder text -->
 
-    <string name="vnd">VND</string>
     <string name="three_zero">.000</string>
     <string name="link.card">Liên kết thẻ</string>
 
     <string name="action_notifications">Thông báo</string>
+
+    <string name="min_money">Số tiền tối thiểu %s</string>
+    <string name="select_resource_money">CHỌN NGUỒN TIỀN</string>
+    <string name="tax_chart">Biểu phí</string>
+    <string name="input_amount">Nhập số tiền</string>
+
     <string name="pressed_back_to_exit">Click back again to exit.</string>
 </resources>

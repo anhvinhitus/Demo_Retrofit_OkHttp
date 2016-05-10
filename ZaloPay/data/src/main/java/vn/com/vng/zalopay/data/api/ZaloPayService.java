@@ -3,7 +3,9 @@ package vn.com.vng.zalopay.data.api;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BalanceResponse;
+import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 
 /**
@@ -18,4 +20,7 @@ public interface ZaloPayService {
 
     @GET("/tpe/getbalance")
     Observable<BalanceResponse> balance(@Query("userid") long uid, @Query("accesstoken") String accesstoken);
+
+    @GET("/tpe/createorder")
+    Observable<GetOrderResponse> getorder(@Query(Constants.APPID) long appId, @Query(Constants.ZPTRANSTOKEN) String apptransid);
 }
