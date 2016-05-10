@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing.medium"
         android:layout_weight="1.0"
-        android:text="@string/input_amount"
         android:clickable="false"
+        android:text="@string/input_amount"
         android:textColor="@color/hint"
         android:textSize="@dimen/textsize.normal" />
 
@@ -38,28 +38,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/amount"
-                android:textColor="@color/green"
-                android:textSize="@dimen/textsize.tiny.s" />
+                android:textColor="@color/text_green"
+                android:textSize="@dimen/textsize.small" />
 
             <TextView
                 android:id="@+id/tvCurrency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.tiny"
                 android:text="@string/amount_vnd"
-                android:textColor="@color/green"
-                android:textSize="@dimen/textsize.tiny.t" />
+                android:textColor="@color/text_green"
+                android:textSize="@dimen/textsize.tiny" />
         </LinearLayout>
 
         <EditText
             android:id="@+id/edtAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing.tiny.s"
             android:background="@color/transparent"
             android:hint="0"
             android:inputType="number"
             android:maxLength="17"
             android:textColor="@color/amount_edt"
-            android:textSize="@dimen/textsize.small"
+            android:textSize="@dimen/textsize.normal"
             tools:text="10.000" />
     </LinearLayout>
 

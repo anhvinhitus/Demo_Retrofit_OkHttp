@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,67 +7,57 @@
     android:orientation="vertical"
     tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing.medium">
+        android:layout_alignParentTop="true">
 
-        <TextView
-            android:id="@+id/tvResourceMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="@string/min_money"
-            android:textColor="@color/deposit.title"
-            android:textSize="@dimen/textsize.tiny" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing.tiny.s"
-            android:gravity="right"
-            android:text="@string/vnd"
-            android:textColor="@color/deposit.title"
-            android:textSize="@dimen/textsize.tiny.t" />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing.medium">
 
-    <vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout
-        android:id="@+id/inputAmountLayout"
+                <TextView
+                    android:id="@+id/tvResourceMoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/min_money"
+                    android:textColor="@color/deposit.title"
+                    android:textSize="@dimen/textsize.small" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.tiny"
+                    android:gravity="right"
+                    android:text="@string/vnd"
+                    android:textColor="@color/deposit.title"
+                    android:textSize="@dimen/textsize.tiny.s" />
+            </LinearLayout>
+
+            <vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout
+                android:id="@+id/inputAmountLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnDeposit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/app_padding"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|bottom"
-            android:text="@string/select_resource_money"
-            android:textColor="@color/deposit.title"
-            android:textSize="@dimen/spacing.medium.s" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:text="@string/tax_chart"
-            android:textColor="@color/green"
-            android:textSize="@dimen/spacing.medium.s" />
-    </FrameLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/row_card_info" />
-</LinearLayout>
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_btn_green"
+        android:text="@string/txt_home_deposit"
+        android:textColor="@color/white" />
+</RelativeLayout>

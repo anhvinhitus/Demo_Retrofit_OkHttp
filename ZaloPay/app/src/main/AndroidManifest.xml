@@ -216,6 +216,7 @@
         <activity
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
             android:label="@string/title_activity_balance_topup"
+            android:windowSoftInputMode="adjustResize|stateVisible"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
