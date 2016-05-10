@@ -9,6 +9,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Observable;
+import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.PassportService;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
@@ -31,10 +32,12 @@ public class PassportFactory {
 
     private UserConfig userConfig;
 
+    private final int payAppId;
+
     @Inject
     public PassportFactory(Context context, PassportService passportService,
                            ParamRequestProvider paramRequestProvider,
-                           UserConfig userConfig) {
+                           UserConfig userConfig, @Named("payAppId") int payAppId) {
         if (context == null || passportService == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
         }
@@ -45,6 +48,8 @@ public class PassportFactory {
         this.authZaloParams = paramRequestProvider.paramsZalo;
 
         this.userConfig = userConfig;
+
+        this.payAppId = payAppId;
     }
 
     public Observable<LoginResponse> login() {
@@ -53,7 +58,7 @@ public class PassportFactory {
     }
 
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
-        return passportService.login(1, zuid, zAuthCode, params)
+        return passportService.login(payAppId, zuid, zAuthCode, params)
                 .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
     }
 

@@ -5,6 +5,8 @@ import java.util.concurrent.Callable;
 import rx.Observable;
 import rx.Subscriber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.DataManifest;
+import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
 
 /**
  * Created by AnhHieu on 5/5/16.
@@ -37,5 +39,18 @@ public class SqlBaseScope {
                         }
                     }
                 });
+    }
+
+    protected void insertDataManifest(String key, String values) {
+        daoSession.getDataManifestDao().insertOrReplace(new DataManifest(key, values));
+    }
+
+    protected String getDataManifest(String key) {
+        DataManifest dataManifest = daoSession.getDataManifestDao().queryBuilder()
+                .where(DataManifestDao.Properties.Key.eq(key)).unique();
+        if (dataManifest != null) {
+            return dataManifest.getValue();
+        }
+        return null;
     }
 }

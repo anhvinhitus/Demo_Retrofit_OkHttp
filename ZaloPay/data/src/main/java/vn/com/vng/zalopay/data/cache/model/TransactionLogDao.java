@@ -25,13 +25,15 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
     public static class Properties {
         public final static Property Transid = new Property(0, long.class, "transid", true, "TRANSID");
         public final static Property Appid = new Property(1, long.class, "appid", false, "APPID");
-        public final static Property Platform = new Property(2, String.class, "platform", false, "PLATFORM");
-        public final static Property Description = new Property(3, String.class, "description", false, "DESCRIPTION");
-        public final static Property Pmcid = new Property(4, Integer.class, "pmcid", false, "PMCID");
-        public final static Property Reqdate = new Property(5, Long.class, "reqdate", false, "REQDATE");
-        public final static Property Grossamount = new Property(6, Integer.class, "grossamount", false, "GROSSAMOUNT");
-        public final static Property Netamount = new Property(7, Integer.class, "netamount", false, "NETAMOUNT");
-        public final static Property Type = new Property(8, Integer.class, "type", false, "TYPE");
+        public final static Property Userid = new Property(2, String.class, "userid", false, "USERID");
+        public final static Property Appuser = new Property(3, String.class, "appuser", false, "APPUSER");
+        public final static Property Platform = new Property(4, String.class, "platform", false, "PLATFORM");
+        public final static Property Description = new Property(5, String.class, "description", false, "DESCRIPTION");
+        public final static Property Pmcid = new Property(6, Integer.class, "pmcid", false, "PMCID");
+        public final static Property Reqdate = new Property(7, Long.class, "reqdate", false, "REQDATE");
+        public final static Property Grossamount = new Property(8, Integer.class, "grossamount", false, "GROSSAMOUNT");
+        public final static Property Netamount = new Property(9, Integer.class, "netamount", false, "NETAMOUNT");
+        public final static Property Type = new Property(10, Integer.class, "type", false, "TYPE");
     };
 
 
@@ -49,13 +51,15 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"TRANSACTION_LOG\" (" + //
                 "\"TRANSID\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: transid
                 "\"APPID\" INTEGER NOT NULL ," + // 1: appid
-                "\"PLATFORM\" TEXT," + // 2: platform
-                "\"DESCRIPTION\" TEXT," + // 3: description
-                "\"PMCID\" INTEGER," + // 4: pmcid
-                "\"REQDATE\" INTEGER," + // 5: reqdate
-                "\"GROSSAMOUNT\" INTEGER," + // 6: grossamount
-                "\"NETAMOUNT\" INTEGER," + // 7: netamount
-                "\"TYPE\" INTEGER);"); // 8: type
+                "\"USERID\" TEXT," + // 2: userid
+                "\"APPUSER\" TEXT," + // 3: appuser
+                "\"PLATFORM\" TEXT," + // 4: platform
+                "\"DESCRIPTION\" TEXT," + // 5: description
+                "\"PMCID\" INTEGER," + // 6: pmcid
+                "\"REQDATE\" INTEGER," + // 7: reqdate
+                "\"GROSSAMOUNT\" INTEGER," + // 8: grossamount
+                "\"NETAMOUNT\" INTEGER," + // 9: netamount
+                "\"TYPE\" INTEGER);"); // 10: type
     }
 
     /** Drops the underlying database table. */
@@ -71,39 +75,49 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         stmt.bindLong(1, entity.getTransid());
         stmt.bindLong(2, entity.getAppid());
  
+        String userid = entity.getUserid();
+        if (userid != null) {
+            stmt.bindString(3, userid);
+        }
+ 
+        String appuser = entity.getAppuser();
+        if (appuser != null) {
+            stmt.bindString(4, appuser);
+        }
+ 
         String platform = entity.getPlatform();
         if (platform != null) {
-            stmt.bindString(3, platform);
+            stmt.bindString(5, platform);
         }
  
         String description = entity.getDescription();
         if (description != null) {
-            stmt.bindString(4, description);
+            stmt.bindString(6, description);
         }
  
         Integer pmcid = entity.getPmcid();
         if (pmcid != null) {
-            stmt.bindLong(5, pmcid);
+            stmt.bindLong(7, pmcid);
         }
  
         Long reqdate = entity.getReqdate();
         if (reqdate != null) {
-            stmt.bindLong(6, reqdate);
+            stmt.bindLong(8, reqdate);
         }
  
         Integer grossamount = entity.getGrossamount();
         if (grossamount != null) {
-            stmt.bindLong(7, grossamount);
+            stmt.bindLong(9, grossamount);
         }
  
         Integer netamount = entity.getNetamount();
         if (netamount != null) {
-            stmt.bindLong(8, netamount);
+            stmt.bindLong(10, netamount);
         }
  
         Integer type = entity.getType();
         if (type != null) {
-            stmt.bindLong(9, type);
+            stmt.bindLong(11, type);
         }
     }
 
@@ -119,13 +133,15 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         TransactionLog entity = new TransactionLog( //
             cursor.getLong(offset + 0), // transid
             cursor.getLong(offset + 1), // appid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // platform
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // description
-            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // pmcid
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // reqdate
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // grossamount
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // netamount
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8) // type
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // userid
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // appuser
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // platform
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // description
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // pmcid
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // reqdate
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // grossamount
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // netamount
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10) // type
         );
         return entity;
     }
@@ -135,13 +151,15 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
     public void readEntity(Cursor cursor, TransactionLog entity, int offset) {
         entity.setTransid(cursor.getLong(offset + 0));
         entity.setAppid(cursor.getLong(offset + 1));
-        entity.setPlatform(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setDescription(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setPmcid(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
-        entity.setReqdate(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setGrossamount(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setNetamount(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setType(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setUserid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setAppuser(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setPlatform(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setDescription(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setPmcid(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setReqdate(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setGrossamount(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setNetamount(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setType(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
      }
     
     /** @inheritdoc */

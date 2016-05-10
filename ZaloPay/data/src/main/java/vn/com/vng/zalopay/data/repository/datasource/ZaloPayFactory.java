@@ -2,8 +2,11 @@ package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Named;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -27,8 +30,12 @@ public class ZaloPayFactory {
 
     private SqlZaloPayScope sqlZaloPayScope;
 
+    private final int LENGTH_TRANS_HISTORY = 25;
+
+    private final int payAppId;
+
     public ZaloPayFactory(Context context, ZaloPayService service,
-                          User user, SqlZaloPayScope sqlZaloPayScope) {
+                          User user, SqlZaloPayScope sqlZaloPayScope, int payAppId) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -38,12 +45,11 @@ public class ZaloPayFactory {
         this.appConfigService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
+        this.payAppId = payAppId;
     }
 
-    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int count, boolean order) {
-        //  return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, order).doOnNext(transactionHistoryResponse ->);
-
-        return null;
+    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
+        return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order).map(transactionHistoryResponse -> Collections.emptyList());
     }
 
 

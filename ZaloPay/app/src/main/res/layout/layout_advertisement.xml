@@ -29,10 +29,10 @@
 
         <TextView
             android:id="@+id/tvAdsSubContent"
+            style="@style/TextView.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/ads.text.content"
             android:textSize="12sp"
             tools:text="Mobi khuyen mai 50%...." />
 

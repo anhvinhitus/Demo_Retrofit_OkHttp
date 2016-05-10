@@ -1,30 +1,43 @@
 package vn.com.vng.zalopay.data.api.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by AnhHieu on 5/4/16.
  */
 public class TransHistoryEntity {
 
+    @SerializedName("userid")
+    public String userid;
+
+    @SerializedName("transid")
     public long transid;
+
+    @SerializedName("appid")
     public long appid;
+
+    @SerializedName("appuser")
+    public String appuser;
+
+    @SerializedName("platform")
     public String platform;
+
+    @SerializedName("description")
     public String description;
-    public Integer pmcid;
-    public Long reqdate;
-    public Integer grossamount;
-    public Integer netamount;
-    public Integer type;
 
+    @SerializedName("pmcid")
+    public int pmcid;
 
-    /*"userid": "5252536377851275673",
-            "transid": 160504000004102,
-            "appid": 1,
-            "appuser": "5252536377851275673",
-            "platform": "android",
-            "description": "description123",
-            "pmcid": 36,
-            "reqdate": 1462348768213,
-            "grossamount": 19000,
-            "netamount": 20000,
-            "type": 1*/
+    @SerializedName("reqdate")
+    public long reqdate;
+
+    @SerializedName("grossamount")
+    public int grossamount;
+
+    @SerializedName("netamount")
+    public int netamount;
+
+    @SerializedName("type")
+    public int type;
+    
 }

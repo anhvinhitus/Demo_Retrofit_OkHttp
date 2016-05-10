@@ -5,7 +5,7 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 2;
+    private static final int APP_DB_VERSION = 3;
 
 
     public static void main(String[] args) throws Exception {
@@ -43,6 +43,10 @@ public class GreenDaoGenerator {
                 .notNull()
         //.unique() //Todo: xem có cần thiết không
         ;
+
+        transHistoryData.addStringProperty("userid");
+        transHistoryData.addStringProperty("appuser");
+
         transHistoryData.addStringProperty("platform");
         transHistoryData.addStringProperty("description");
         transHistoryData.addIntProperty("pmcid");

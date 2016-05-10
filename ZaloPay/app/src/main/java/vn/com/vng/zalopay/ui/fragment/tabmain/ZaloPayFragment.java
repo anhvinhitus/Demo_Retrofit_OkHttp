@@ -145,15 +145,6 @@ public class ZaloPayFragment extends BaseMainFragment {
         startActivity(intent);
     }
 
-    private void gotoLoginActivity() {
-        if (getActivity() == null) {
-            return;
-        }
-        Intent intent = new Intent(getActivity(), LoginZaloActivity.class);
-        getActivity().startActivity(intent);
-        getActivity().finish();
-    }
-
 
     /* Show|Hide Banner START */
     public void showAdsBanner(String url) {
