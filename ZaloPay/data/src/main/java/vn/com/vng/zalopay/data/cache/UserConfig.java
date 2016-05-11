@@ -30,4 +30,10 @@ public interface UserConfig {
     String getSession();
 
     long getUserId();
+
+    void saveUserInfo(long uid, String avatar, String displayName);
+
+    String getAvatar();
+
+    String getDisPlayName();
 }

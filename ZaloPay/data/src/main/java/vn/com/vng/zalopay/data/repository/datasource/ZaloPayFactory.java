@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
@@ -57,8 +58,13 @@ public class ZaloPayFactory {
 
 
     private Observable<Long> balanceServer() {
+
+        Timber.d("balanceServer call");
+
         return appConfigService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
+
+                .doOnNext(response1 -> Timber.d("nhay vao day nhe balanceServer"))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance);
     }
 

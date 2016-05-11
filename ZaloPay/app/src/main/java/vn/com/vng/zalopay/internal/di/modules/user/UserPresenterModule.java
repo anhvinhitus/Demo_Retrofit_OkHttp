@@ -7,6 +7,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
+import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 
 @Module
 public class UserPresenterModule {
@@ -21,6 +22,12 @@ public class UserPresenterModule {
     @Provides
     QRCodePresenter provideProductPresenter(User user) {
         return new QRCodePresenter(user);
+    }
+
+    @UserScope
+    @Provides
+    LeftMenuPresenter provideLeftMenuPresenter() {
+        return new LeftMenuPresenter();
     }
 
     @UserScope
