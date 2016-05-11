@@ -229,9 +229,6 @@
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".ui.activity.ProductDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

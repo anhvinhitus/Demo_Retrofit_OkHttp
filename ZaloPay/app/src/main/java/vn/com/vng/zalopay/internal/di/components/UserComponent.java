@@ -13,11 +13,9 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.ui.activity.ProductDetailActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
-import vn.com.vng.zalopay.ui.fragment.ProductDetailFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 @UserScope
@@ -44,8 +42,6 @@ public interface UserComponent {
 
     void inject(LinkCardFragment link);
 
-    void inject(ProductDetailFragment f);
-
     void inject(BalanceTopupFragment f);
 
     void inject(LeftMenuFragment f);
@@ -55,8 +51,6 @@ public interface UserComponent {
     void inject(QRCodeScannerActivity activity);
 
     void inject(MainActivity a);
-
-    void inject(ProductDetailActivity activity);
 
     void inject(BalanceTopupActivity activity);
 }
