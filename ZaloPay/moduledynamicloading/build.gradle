@@ -46,4 +46,7 @@ dependencies {
     compile libs.support_appcompat_v7
     compile libs.timber
     compile libs.react_native
+
+    compile project(':data')
+
 }

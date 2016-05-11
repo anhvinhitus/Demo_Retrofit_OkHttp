@@ -53,20 +53,25 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         return null;
     }
 
-
     @Override
     protected void setupActivityComponent() {
-        Log.d("SetupComponent", " AndroidApplication.instance().getUserComponent()" + AndroidApplication.instance().getUserComponent());
-        AndroidApplication.instance().getUserComponent().inject(this);
+        Timber.d(TAG, " UserComponent " + getUserComponent());
+
+        if (getUserComponent() == null) {
+            Timber.e(TAG, "*** NULL USER COMPONENT ****");
+        }
+
+        getUserComponent().inject(this);
     }
 
-    private final String REPLACE_HOME_TRANSACTION = "REPLACE_HOME_TRANSACTION";
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+/*    private final String REPLACE_HOME_TRANSACTION = "REPLACE_HOME_TRANSACTION";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;*/
+
     int currentSelected = -1;
 
     private TextView mTvNotificationCount;
 
-    ZaloPayFragment homeFragment;
+    private BaseFragment mCurrentFragment;
 
     private int mRetryDownloadPaySDK = 0;
 
@@ -76,15 +81,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     @Bind(R.id.appBarLayout)
     AppBarLayout mAppBarLayout;
 
-    @Bind(R.id.btn_qr_code)
-    View mBtnQrCode;
-
-    @Bind(R.id.btn_deposit)
-    View mBtnDeposit;
-
-    @Bind(R.id.btn_link_card)
-    View mBtnLinkCard;
-
     @OnClick(R.id.btn_qr_code)
     public void onBtnQrCodeClick(View view) {
         navigator.startQrCodeActivity(this);
@@ -92,24 +88,21 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
     @OnClick(R.id.btn_deposit)
     public void onBtnDepositClick(View view) {
-        gotoDepositActivity();
+        navigator.startDepositActivity(this);
     }
 
     @OnClick(R.id.btn_link_card)
     public void onBtnLinkCardClick(View view) {
-
+        navigator.startLinkCardActivity(getActivity());
     }
 
-    private void gotoDepositActivity() {
-        Intent intent = new Intent(this, BalanceTopupActivity.class);
-        startActivity(intent);
-    }
+  /*  */
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
      * the Google Play Store or enable it in the device's system settings.
-     */
+     *//*
     private boolean checkPlayServices() {
         Timber.tag(TAG).d("checkPlayServices.........");
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
@@ -135,8 +128,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
-    }
-
+    }*/
     private void loginPaymentSDK() {
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (user == null) {
@@ -149,21 +141,18 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
         ZingMobilePayApplication.loadGatewayInfo(this, paymentInfo, new ZPWGatewayInfoCallback() {
             @Override
-            public void onFinish()
-            {
+            public void onFinish() {
                 Timber.tag("LoginPresenter").d("loadGatewayInfo onSuccess");
                 mRetryDownloadPaySDK = 0;
             }
 
             @Override
-            public void onProcessing()
-            {
+            public void onProcessing() {
                 Timber.tag("LoginPresenter").d("loadGatewayInfo onProcessing");
             }
 
             @Override
-            public void onError(String pMessage)
-            {
+            public void onError(String pMessage) {
                 Timber.tag("LoginPresenter").d("loadGatewayInfo onError:%s", pMessage);
                 mRetryDownloadPaySDK++;
                 if (mRetryDownloadPaySDK < 5) {
@@ -206,18 +195,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        if (savedInstanceState != null) {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.root);
-            if (fragment instanceof ZaloPayFragment) {
-                homeFragment = (ZaloPayFragment) fragment;
-            }
-//            mBalanceFragment = (BalanceFragment)getSupportFragmentManager().findFragmentById(R.id.toolbar_fragment);
-        } else {
-            homeFragment = ZaloPayFragment.newInstance();
-//            mBalanceFragment = BalanceFragment.newInstance();
-//            getSupportFragmentManager().beginTransaction().add(R.id.root, homeFragment).add(R.id.toolbar_fragment, mBalanceFragment).commit();
-            getSupportFragmentManager().beginTransaction().add(R.id.root, homeFragment).commit();
+        if (savedInstanceState == null) {
+            addFragment(ZaloPayFragment.newInstance());
         }
+
         selectHome(true);
         mRetryDownloadPaySDK = 0;
         loginPaymentSDK();
@@ -245,7 +226,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 //        MenuItemCompat.setActionView(item, R.layout.notification_menu_item);
         FrameLayout notifications = (FrameLayout) MenuItemCompat.getActionView(item);
         mTvNotificationCount = (TextView) notifications.findViewById(R.id.tvNotificationCount);
-        updateNotificationCount(currentNotificationCount);
+        updateNotificationCount(0);
         notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,18 +236,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-//        int itemId = item.getItemId();
-//        if (itemId == R.id.action_notifications) {
-//            ToastUtil.showToast(this, "Thông báo ------------");
-//        }
-        return super.onOptionsItemSelected(item);
-    }
-
     protected void selectMenu(int id) {
         try {
-            //navigationView.getMenu().findItem(id).setChecked(true);
             setSelectedDrawerMenuItem(id);
         } catch (Exception ex) {
             Timber.tag(TAG).d("Cannot select id: " + id, ex);
@@ -280,7 +251,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             currentSelected = R.id.nav_home;
         }
         setSelectedDrawerMenuItem(R.id.nav_home);
-        //navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
     }
 
     private long back_pressed;
@@ -305,6 +275,22 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         }
     }
 
+
+    private void addFragment(Fragment fragment) {
+        if (fragment == null) return;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment current = fragmentManager.findFragmentById(R.id.container);
+        if (current != null && current.equals(fragment)) {
+            return;
+        }
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment).commit();
+
+    }
+
     protected boolean setSelectedDrawerMenuItem(int itemId) {
 //        if (itemId == currentSelected) {
 //            return true;
@@ -312,12 +298,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         int prevId = currentSelected;
         currentSelected = itemId;
         if (itemId == MenuItemUtil.HOME_ID) {
-            if (!getSupportFragmentManager().popBackStackImmediate(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE)) {
-                homeFragment = ZaloPayFragment.newInstance();
-                getSupportFragmentManager().beginTransaction().replace(R.id.root, homeFragment).commit();
-            }
-//                Fragment fragment = HomeFragment.newInstance();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.root, fragment).addToBackStack(fragment.getClass().getSimpleName()).commit();
+            addFragment(ZaloPayFragment.newInstance());
+
             if (mAppBarLayout != null) {
                 mAppBarLayout.setExpanded(true, true);
             }
@@ -362,70 +344,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     }
 
     @Override
-    public void onMenuHeaderClick(vn.com.vng.zalopay.menu.model.MenuItem menuItem) {
-
+    public void onMenuHeaderClick(MenuItem menuItem) {
     }
 
-//    private ServiceConnection mServiceConnection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName name, IBinder service) {
-//            Timber.tag(TAG).d("onServiceConnected..............name:" + name);
-//            Timber.tag(TAG).d("onServiceConnected..............service:" + service);
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName name) {
-//            Timber.tag(TAG).d("onServiceDisconnected..............name:" + name);
-//        }
-//    };
-
-//    private void startBroadcastReceiver() {
-//        Timber.tag(TAG).d("startBroadcastReceiver..................");
-//        // Bind to the service
-//        //startService(new Intent(this, MonitorService.class));//, mServiceConnection, Context.BIND_AUTO_CREATE);
-//        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        Intent i = new Intent(this, ScheduleReceiver.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-//        Calendar cal = Calendar.getInstance();
-//        // Start 30 seconds after boot completed
-//        cal.add(Calendar.SECOND, 1);
-//        //
-//        // Fetch every 30 seconds
-//        // InexactRepeating allows Android to optimize the energy consumption
-//        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), REPEAT_TIME, pendingIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000 * 30, pendingIntent);
-//    }
-
-    private void setExpanded(boolean expand, boolean animate) {
-        if (mAppBarLayout != null) {
-            mAppBarLayout.setExpanded(expand, animate);
+    public void updateNotificationCount(final int count) {
+        if (count <= 0) {
+            mTvNotificationCount.setText("");
+            mTvNotificationCount.setVisibility(View.GONE);
+        } else {
+            mTvNotificationCount.setText("" + count);
+            mTvNotificationCount.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void setExpanded(boolean expanded) {
-        if (mAppBarLayout != null) {
-            mAppBarLayout.setExpanded(expanded);
-        }
-    }
-
-    protected int currentNotificationCount = 0;
-
-    public synchronized void updateNotificationCount(final int count) {
-        currentNotificationCount = count;
-        if (mTvNotificationCount == null) {
-            return;
-        }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (count <= 0) {
-                    mTvNotificationCount.setText("");
-                    mTvNotificationCount.setVisibility(View.GONE);
-                } else {
-                    mTvNotificationCount.setText("" + count);
-                    mTvNotificationCount.setVisibility(View.VISIBLE);
-                }
-            }
-        });
     }
 }

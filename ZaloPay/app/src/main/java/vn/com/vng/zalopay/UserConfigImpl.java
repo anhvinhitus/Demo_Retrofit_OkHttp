@@ -23,11 +23,8 @@ public class UserConfigImpl implements UserConfig {
 
     private final static Object sync = new Object();
 
-    private EventBus eventBus;
-
-    public UserConfigImpl(SharedPreferences pref, EventBus eventBus) {
+    public UserConfigImpl(SharedPreferences pref) {
         this.preferences = pref;
-        this.eventBus = eventBus;
     }
 
 
@@ -122,14 +119,6 @@ public class UserConfigImpl implements UserConfig {
 
 
     @Override
-    public String getSession() {
-        if (isClientActivated()) {
-            return getCurrentUser().accesstoken;
-        }
-        return null;
-    }
-
-    @Override
     public long getUserId() {
         if (isClientActivated()) {
             return getCurrentUser().uid;
@@ -146,11 +135,25 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_USER_ID, uid);
         editor.apply();
 
+        Timber.d("save UserInfo ");
+
         if (isClientActivated()) {
             currentUser.avatar = avatar;
             currentUser.dname = displayName;
-            eventBus.post(new ZaloProfileInfoEvent(uid, displayName, avatar));
+            Timber.d("save EventBus post ");
+            EventBus.getDefault().post(new ZaloProfileInfoEvent(uid, displayName, avatar));
         }
+    }
+
+    @Override
+    public boolean isSignIn() {
+        return !TextUtils.isEmpty(getSession());
+    }
+
+
+    @Override
+    public String getSession() {
+        return preferences.getString(Constants.PREF_USER_SESSION, "");
     }
 
     @Override
@@ -162,4 +165,6 @@ public class UserConfigImpl implements UserConfig {
     public String getDisPlayName() {
         return preferences.getString(Constants.PREF_USER_NAME, "");
     }
+
+
 }

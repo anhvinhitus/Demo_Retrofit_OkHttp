@@ -31,6 +31,11 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, LinkCardAdapte
         }
     }
 
+    @Override
+    public int getItemCount() {
+        return 3;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
