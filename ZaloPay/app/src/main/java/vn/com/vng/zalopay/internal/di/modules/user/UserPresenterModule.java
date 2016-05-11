@@ -6,7 +6,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
-import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
+import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 
 @Module
 public class UserPresenterModule {
@@ -19,8 +19,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    ProductPresenter provideProductPresenter(User user) {
-        return new ProductPresenter(user);
+    QRCodePresenter provideProductPresenter(User user) {
+        return new QRCodePresenter(user);
     }
 
     @UserScope

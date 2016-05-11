@@ -22,7 +22,7 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
  * Created by longlv on 09/05/2016.
  */
 
-public final class ProductPresenter extends BaseZaloPayPresenter implements Presenter<IProductDetailView>, ZPPaymentListener {
+public final class QRCodePresenter extends BaseZaloPayPresenter implements Presenter<IProductDetailView>, ZPPaymentListener {
 
     private IProductDetailView mView;
 
@@ -30,7 +30,7 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
 
     private User user;
 
-    public ProductPresenter(User user) {
+    public QRCodePresenter(User user) {
         this.user = user;
     }
 
@@ -95,9 +95,6 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
 
     private final void onGetOrderSuccess(Order order) {
         Timber.d("session =========" + order.getItem());
-
-//        this.hideLoadingView();
-//        this.showOrderDetail(order);
         pay(order);
     }
 
@@ -109,7 +106,7 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         @Override
         public void onNext(Order order) {
             Timber.d("login success " + order);
-            ProductPresenter.this.onGetOrderSuccess(order);
+            QRCodePresenter.this.onGetOrderSuccess(order);
         }
 
         @Override
@@ -119,7 +116,7 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "onError " + e);
-            ProductPresenter.this.onGetOrderError(e);
+            QRCodePresenter.this.onGetOrderError(e);
         }
     }
 
@@ -165,9 +162,15 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         }
         int resultStatus = pPaymentResult.paymentStatus.getNum();
         if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-            ToastUtil.showToast(mView.getActivity(), "Success!");
+//            ToastUtil.showToast(mView.getActivity(), "Success!");
+            if (mView != null && mView.getActivity() != null) {
+                mView.getActivity().finish();
+            }
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
-            ToastUtil.showToast(mView.getActivity(), "Processing!");
+//            ToastUtil.showToast(mView.getActivity(), "Processing!");
+            if (mView != null && mView.getActivity() != null) {
+                mView.getActivity().finish();
+            }
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
             ToastUtil.showToast(mView.getActivity(), "Fail!");
         }
@@ -175,7 +178,7 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
 
     @Override
     public void onCancel() {
-
+        this.hideLoadingView();
     }
 
     @Override
