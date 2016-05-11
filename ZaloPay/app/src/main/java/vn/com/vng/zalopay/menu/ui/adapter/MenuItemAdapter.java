@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 
@@ -42,7 +41,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         int viewType = getItemViewType(position);
         if (viewType == MenuItemType.HEADER.getValue()) {
             ViewHolder viewHolder = null;
-            if (convertView == null || !(convertView.getTag() instanceof ViewHolder)) {
+            if (convertView == null || convertView.getTag() instanceof ItemViewHolder) {
                 convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer_header, parent, false);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);

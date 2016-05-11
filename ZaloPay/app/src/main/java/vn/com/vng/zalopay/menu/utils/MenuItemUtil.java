@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.menu.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
@@ -48,7 +49,9 @@ public class MenuItemUtil {
         mMenuItems.add(new MenuItem(CONTACT_SUPPORT_ID, MenuItemType.ITEM, R.drawable.ic_lienhe_menu, "Liên Hệ Hỗ Trợ"));
         mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, R.drawable.ic_thongtin_menu, "Thông Tin ứng Dụng"));
 
-//        mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
-//        mMenuItems.add(new MenuItem(SIGOUT_ID, MenuItemType.ITEM, R.drawable.ic_launcher, "Đăng Xuất", false));
+        if (BuildConfig.DEBUG) {
+            mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
+            mMenuItems.add(new MenuItem(SIGOUT_ID, MenuItemType.ITEM, R.drawable.ic_launcher, "Đăng Xuất", false));
+        }
     }
 }
