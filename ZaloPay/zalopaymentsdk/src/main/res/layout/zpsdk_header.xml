@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" 
+    android:layout_height="wrap_content"
     android:background="@drawable/zpw_bg_primary_color" >
-    
+
     <vn.zing.pay.zmpsdk.view.custom.VRippleView
         android:id="@+id/zpsdk_exit_ctl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/back"
         android:layout_alignParentLeft="true"
-       	android:padding="@dimen/zpw_topbar_padding" />
-    
-     <TextView
+        android:padding="@dimen/zpw_topbar_padding"
+        android:src="@drawable/back" />
+
+    <TextView
         android:id="@+id/payment_method_name"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/zpw_topbar_padding"
         android:textColor="@color/white"
-        android:textSize="@dimen/zpw_text_size_medium" />
+        android:textSize="@dimen/zpw_text_size_medium_l" />
+
 </RelativeLayout>

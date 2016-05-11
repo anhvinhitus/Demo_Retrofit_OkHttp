@@ -73,5 +73,8 @@ public class ZaloPayFactory {
     public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {
         return appConfigService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
     }
+    public Observable<GetOrderResponse> createwalletorder(long appId, long amount, int transtype) {
+        return appConfigService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype);
+    }
 
 }

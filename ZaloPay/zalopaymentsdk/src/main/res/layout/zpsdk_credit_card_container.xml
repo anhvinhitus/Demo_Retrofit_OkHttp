@@ -29,7 +29,6 @@
                 android:hint="@string/zpw_string_card_number_hint"
                 android:imeOptions="actionNext|flagNoExtractUi"
                 android:inputType="number"
-              
                 android:maxLength="@integer/maximum_character_field_card_number"
                 android:padding="@dimen/zpw_padding_5"
                 android:singleLine="true"

@@ -1,11 +1,13 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
-import vn.com.vng.zalopay.home.ui.activity.MainActivity;
+import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ApplicationRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
@@ -44,6 +46,8 @@ public interface UserComponent {
 
     void inject(ProductDetailFragment f);
 
+    void inject(BalanceTopupFragment f);
+
     void inject(LeftMenuFragment f);
 
     /* inject activity */
@@ -52,6 +56,7 @@ public interface UserComponent {
 
     void inject(MainActivity a);
 
-
     void inject(ProductDetailActivity activity);
+
+    void inject(BalanceTopupActivity activity);
 }
