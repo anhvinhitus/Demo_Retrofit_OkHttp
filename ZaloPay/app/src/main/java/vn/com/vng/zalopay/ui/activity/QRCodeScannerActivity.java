@@ -67,6 +67,24 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        qrCodePresenter.pause();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        qrCodePresenter.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        qrCodePresenter.destroy();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
