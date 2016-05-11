@@ -147,7 +147,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
         MenuItem item = mAdapter.getItem(position - 1);
         if (item != null) {
-            mMenuListener.onMenuHeaderClick(item);
+            mMenuListener.onMenuItemClick(item);
         }
     }
 
@@ -157,26 +157,20 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         setDisplayName(user.dname);
     }
 
-    private void loadAvatarImage(final ImageView imageView, String url) {
-//        Glide.with(this).load(url).placeholder(R.color.background).into(imageView);
-        Glide.with(this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                imageView.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+    private void loadImage(final ImageView imageView, String url) {
+        Glide.with(this).load(url)
+                .placeholder(R.color.silver)
+                .centerCrop()
+                .into(imageView);
     }
 
     public void setBalance(long balance) {
-        tvBalance.setText(CurrencyUtil.formatCurrency(balance));
+        tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     @Override
     public void setAvatar(String avatar) {
-        loadAvatarImage(imageAvatar, avatar);
+        loadImage(imageAvatar, avatar);
     }
 
     @Override

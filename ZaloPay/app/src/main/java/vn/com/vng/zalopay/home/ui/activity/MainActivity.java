@@ -357,20 +357,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         } else if (itemId == MenuItemUtil.SIGOUT_ID) {
             ZaloSDK.Instance.unauthenticate();
             navigator.startLoginActivity(this);
-        }/*  else if (itemId == R.id.nav_cards) {
-            hideBalanceAllView();
-            showTitle(getString(R.string.title_activity_cards));
-            Fragment fragment = CardsFragment.newInstance(1);
-            if (prevId != R.id.nav_home){
-                getSupportFragmentManager().popBackStack(REPLACE_HOME_TRANSACTION, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-            getSupportFragmentManager().beginTransaction().replace(R.id.root, fragment).addToBackStack(REPLACE_HOME_TRANSACTION).commit();
-            if (mAppBarLayout != null) {
-                mAppBarLayout.setExpanded(true, false);
-            }
-            return true;
-        }*/
-//        }
+        }
+
+
         return false;
     }
 

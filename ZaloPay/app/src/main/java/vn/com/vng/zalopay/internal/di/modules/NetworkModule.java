@@ -83,7 +83,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     CallAdapter.Factory provideCallAdapter(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
-        return CustomRxJavaCallAdapterFactory.createWithScheduler(Schedulers.from(threadExecutor));
+        return CustomRxJavaCallAdapterFactory.create();
     }
 
     @Provides

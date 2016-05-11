@@ -142,7 +142,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
                     long userId = data.getLong("userId");
                     String displayName = data.getString("displayName");
-                    String avatar = data.getString("avatar");
+                    String avatar = data.getString("largeAvatar");
 
                     userConfig.saveUserInfo(userId, avatar, displayName);
 
