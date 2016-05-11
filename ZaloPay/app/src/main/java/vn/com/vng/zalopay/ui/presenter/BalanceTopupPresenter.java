@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.text.TextUtils;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -116,6 +114,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.tag("onCreateWalletOrderSuccess").d("session =========" + order.getItem());
         pay(order);
+        hideLoadingView();
     }
 
     //Zalo payment sdk
@@ -154,20 +153,12 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
     }
 
 
-    public void deposit(String strAmount) {
-        if (TextUtils.isEmpty(strAmount)) {
-            showErrorView("Nhập vào số tiền là bội số của 10.000 VNĐ");
+    public void deposit(long amount) {
+        if (amount <= 0) {
+            showErrorView("Số tiền phải là bội của 10.000 VNĐ");
             return;
         }
-        long amount = 0;
-        try {
-            amount = Long.valueOf(strAmount);
-            createWalletorder(amount);
-        } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
+        createWalletorder(amount);
     }
 
     @Override

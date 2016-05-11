@@ -47,13 +47,13 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @OnClick(R.id.btnDeposit)
     public void onClickDeposit() {
         showProgressDialog();
-        balanceTopupPresenter.deposit(inputAmountLayout.getText().toString());
+        balanceTopupPresenter.deposit(inputAmountLayout.getAmount());
     }
 
     private void gotoConfirmTransaction() {
         Intent intent = new Intent(getContext(), ConfirmTransactionActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(Constants.ARG_AMOUNT, Long.valueOf(inputAmountLayout.getText().toString()));
+        bundle.putLong(Constants.ARG_AMOUNT, inputAmountLayout.getAmount());
 //        bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
         intent.putExtras(bundle);
         startActivity(intent);

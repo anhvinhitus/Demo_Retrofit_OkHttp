@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
+import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -164,11 +165,11 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         }
         int resultStatus = pPaymentResult.paymentStatus.getNum();
         if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-
+            ToastUtil.showToast(mView.getActivity(), "Success!");
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
-
+            ToastUtil.showToast(mView.getActivity(), "Processing!");
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
-
+            ToastUtil.showToast(mView.getActivity(), "Fail!");
         }
     }
 

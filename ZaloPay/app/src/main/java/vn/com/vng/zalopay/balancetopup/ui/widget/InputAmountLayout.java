@@ -103,6 +103,10 @@ public class InputAmountLayout extends LinearLayout {
         edtAmount.requestFocus();
     }
 
+    public long getAmount() {
+        return mAmount;
+    }
+
     public String getText() {
         return edtAmount.getText().toString();
     }
