@@ -34,7 +34,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/text_color_bold"
-                android:textSize="@dimen/zpw_text_size_medium" />
+                android:textSize="@dimen/zpw_text_size_medium_l" />
 
             <TextView
                 android:layout_width="wrap_content"

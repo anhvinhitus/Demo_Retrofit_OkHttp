@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -98,6 +97,10 @@ public class InputAmountLayout extends LinearLayout {
                 layoutInputAmount.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public void requestFocusEdittext() {
+        edtAmount.requestFocus();
     }
 
     public String getText() {

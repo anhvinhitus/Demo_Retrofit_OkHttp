@@ -19,7 +19,7 @@
     <dimen name="sdk_title_channel_size">18sp</dimen>
     <dimen name="sdk_promotion_channel_size">14sp</dimen>
     <dimen name="sdk_row_channel_padding">20dp</dimen>
-    <dimen name="sdk_form_input_size">15dp</dimen>
+    <dimen name="sdk_form_input_size">18dp</dimen>
     <dimen name="payment_header_landscape_width">170dp</dimen>
     <dimen name="payment_app_icon_size">60dp</dimen>
     <dimen name="payment_app_icon_size_land">30dp</dimen>
@@ -81,7 +81,7 @@
     <dimen name="zpw_text_size_supper_big">20sp</dimen>
     <dimen name="zpw_padding_left_right">15dp</dimen>
     <dimen name="zpw_padding_top_bottom">10dp</dimen>
-    <dimen name="text_size_vnd">12dp</dimen>
+    <dimen name="text_size_vnd">14dp</dimen>
         <dimen name="zpw_text_size_medium_small">14dp</dimen>
 
 </resources>

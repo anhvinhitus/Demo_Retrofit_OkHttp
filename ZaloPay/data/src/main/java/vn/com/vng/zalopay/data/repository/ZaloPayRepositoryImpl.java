@@ -56,4 +56,16 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
             }
         });
     }
+
+    @Override
+    public Observable<Order> createwalletorder(long appId, long amount, int transtype) {
+        return zaloPayFactory.createwalletorder(appId, amount, transtype).map(new Func1<GetOrderResponse, Order>() {
+            @Override
+            public Order call(GetOrderResponse getOrderResponse) {
+                getOrderResponse.setAppid(appId);
+                getOrderResponse.amount = String.valueOf(amount);
+                return zaloPayEntityDataMapper.transform(getOrderResponse);
+            }
+        });
+    }
 }
