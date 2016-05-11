@@ -423,7 +423,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         }
     }
 
-    protected int currentNotificationCount = 2;
+    protected int currentNotificationCount = 0;
 
     public synchronized void updateNotificationCount(final int count) {
         currentNotificationCount = count;
