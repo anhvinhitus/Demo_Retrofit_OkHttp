@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
+import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IProductDetailView;
 
 /**
@@ -37,7 +37,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     private String zptranstoken;
 
     @Inject
-    ProductPresenter productPresenter;
+    QRCodePresenter qrCodePresenter;
 
     @Bind(R.id.tvResult)
     TextView tvResult;
@@ -95,7 +95,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        productPresenter.setView(this);
+        qrCodePresenter.setView(this);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ProductDetailFragment extends BaseFragment implements IProductDetai
     private void getOrder() {
         Timber.tag(TAG).d("getOrder................zptranstoken:" + zptranstoken);
         showLoading();
-        productPresenter.getOrder(appId, zptranstoken);
+        qrCodePresenter.getOrder(appId, zptranstoken);
     }
 
     @Override

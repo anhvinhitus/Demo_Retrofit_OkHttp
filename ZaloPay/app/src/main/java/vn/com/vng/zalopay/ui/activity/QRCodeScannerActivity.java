@@ -1,9 +1,15 @@
 package vn.com.vng.zalopay.ui.activity;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.inject.Inject;
 
@@ -11,21 +17,34 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
+import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
+import vn.com.vng.zalopay.ui.view.IProductDetailView;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by AnhHieu on 4/21/16.
  */
-public class QRCodeScannerActivity extends QRScanActivity {
+public class QRCodeScannerActivity extends QRScanActivity implements IProductDetailView {
+
+    private long appId;
+    private String zptranstoken;
+
+    private ProgressDialog mProgressDialog;
 
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
 
     @Inject
     Navigator navigator;
+
+    @Inject
+    QRCodePresenter qrCodePresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +53,7 @@ public class QRCodeScannerActivity extends QRScanActivity {
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        qrCodePresenter.setView(this);
     }
 
     public int getResLayoutId() {
@@ -60,13 +80,71 @@ public class QRCodeScannerActivity extends QRScanActivity {
     public void handleResult(String result) {
         Timber.tag(TAG).i("result:" + result);
         super.handleResult(result);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.ZPTRANSTOKEN, result);
-        navigator.startProductDetailActivity(this, bundle);
+        getOrder(result);
     }
 
     protected void setupActivityComponent() {
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 
+    private void getOrder(String jsonOrder) {
+        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonOrder);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(jsonOrder);
+            appId = jsonObject.getLong(Constants.APPID);
+            zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+            showLoading();
+            qrCodePresenter.getOrder(appId, zptranstoken);
+        } catch (JSONException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void showOrderDetail(Order order) {
+
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void showLoading() {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+        }
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        ToastUtil.showToast(this, message);
+        hideLoading();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

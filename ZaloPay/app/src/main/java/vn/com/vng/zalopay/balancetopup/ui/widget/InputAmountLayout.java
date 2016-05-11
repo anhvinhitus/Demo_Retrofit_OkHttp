@@ -82,8 +82,8 @@ public class InputAmountLayout extends LinearLayout {
     public void onFocusChangeEdtAmount(View v, boolean hasFocus) {
         String amount = edtAmount.getText().toString();
         if (hasFocus) {
-                tvAmountTitle.setTextColor(AndroidUtils.getColor(getContext(), R.color.green));
-                tvCurrency.setTextColor(AndroidUtils.getColor(getContext(), R.color.green));
+                tvAmountTitle.setTextColor(AndroidUtils.getColor(getContext(), R.color.text_green));
+                tvCurrency.setTextColor(AndroidUtils.getColor(getContext(), R.color.text_green));
                 tvHintInputAmount.setVisibility(View.GONE);
                 layoutInputAmount.setVisibility(View.VISIBLE);
         } else {
@@ -101,6 +101,10 @@ public class InputAmountLayout extends LinearLayout {
 
     public void requestFocusEdittext() {
         edtAmount.requestFocus();
+    }
+
+    public long getAmount() {
+        return mAmount;
     }
 
     public String getText() {
