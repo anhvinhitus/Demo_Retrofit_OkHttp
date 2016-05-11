@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/splash_bg"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/app_name"
-        android:textAllCaps="true"
-        android:textAppearance="@color/colorPrimary"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
-    <TextView
-        style="@style/TextView.Default"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="@dimen/default_margin_normal"
-        android:gravity="center"
-        android:text="@string/copyright"
-        android:textColor="@color/c_text_grey"
-        android:textSize="12sp" />
-</RelativeLayout>
+        android:layout_gravity="center"
+        android:layout_marginBottom="36dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:src="@drawable/ic_bg" />
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_zalopay" />
+    </FrameLayout>
+
+
+</FrameLayout>
