@@ -7,6 +7,7 @@ import vn.com.vng.zalopay.menu.model.MenuItem;
  */
 public interface MenuItemClickListener {
 
-    public void onMenuItemClick(MenuItem menuItem);
-    public void onMenuHeaderClick(MenuItem menuItem);
+    void onMenuItemClick(MenuItem menuItem);
+
+    void onMenuHeaderClick(MenuItem menuItem);
 }
