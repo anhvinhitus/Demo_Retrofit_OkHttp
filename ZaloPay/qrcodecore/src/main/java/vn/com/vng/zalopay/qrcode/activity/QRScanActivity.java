@@ -6,7 +6,6 @@ import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.qrcode.QRCodeView;
@@ -88,7 +87,7 @@ public class QRScanActivity extends AppCompatActivity implements QRCodeView.Resu
     @Override
     public void handleResult(String result) {
         Timber.i(TAG, "result:" + result);
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
         vibrate();
 //        mQRCodeView.startSpot();
     }
