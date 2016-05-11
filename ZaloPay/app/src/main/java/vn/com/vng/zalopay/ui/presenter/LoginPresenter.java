@@ -1,10 +1,14 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import com.zing.zalo.zalosdk.oauth.LoginVia;
+import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -18,6 +22,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -38,9 +43,15 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private Subscription subscriptionLogin;
 
+    private Context context;
+
+    private UserConfig userConfig;
+
     @Inject
-    public LoginPresenter(ZaloProfilePreferences zaloProfilePreferences) {
+    public LoginPresenter(Context context, ZaloProfilePreferences zaloProfilePreferences, UserConfig userConfig) {
         this.zaloProfilePreferences = zaloProfilePreferences;
+        this.context = context;
+        this.userConfig = userConfig;
     }
 
     @Override
@@ -100,17 +111,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         zaloProfilePreferences.setAuthCode(authCode);
 
         this.loginPayment(uId, authCode);
-
-
-
-
-        /*
-        HashMap map = AndroidApplication.instance().getAppComponent().paramsRequestProvider().getParamsZalo();
-        map.put("appid", String.valueOf(1));
-        map.put("userid", String.valueOf(uId));
-        map.put("zalooauthcode", authCode);*/
-
-
+        this.getZaloProfileInfo();
     }
 
 
@@ -128,6 +129,28 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
+    }
+
+    private void getZaloProfileInfo() {
+        ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
+            @Override
+            public void onResult(JSONObject profile) {
+                try {
+                    JSONObject data = profile.getJSONObject("result");
+
+                    Timber.tag(TAG).d(data.toString());
+
+                    long userId = data.getLong("userId");
+                    String displayName = data.getString("displayName");
+                    String avatar = data.getString("avatar");
+
+                    userConfig.saveUserInfo(userId, avatar, displayName);
+
+                } catch (Exception ex) {
+                    Timber.tag(TAG).e(ex, " Exception :");
+                }
+            }
+        });
     }
 
     private void showErrorView(String message) {

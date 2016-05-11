@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -57,6 +59,12 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
+    EventBus providesEventBus() {
+        return EventBus.getDefault();
+    }
+
+    @Provides
+    @Singleton
     SharedPreferences providesSharedPreferences(Context application) {
         return PreferenceManager.getDefaultSharedPreferences(application);
     }
@@ -76,8 +84,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    UserConfig providesUserConfig(SharedPreferences sharedPreferences) {
-        return new UserConfigImpl(sharedPreferences);
+    UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
+        return new UserConfigImpl(sharedPreferences, eventBus);
     }
 
     @Provides
@@ -103,4 +111,6 @@ public class ApplicationModule {
     int providesPayAppId() {
         return BuildConfig.PAYAPPID;
     }
+
+
 }

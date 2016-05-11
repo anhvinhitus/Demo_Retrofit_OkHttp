@@ -16,19 +16,28 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import javax.inject.Inject;
+
 import butterknife.Bind;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
+import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
+import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 
 /**
  * Created by AnhHieu on 5/10/16.
  */
-public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItemClickListener, ILeftMenuView {
 
     public LeftMenuFragment() {
     }
@@ -56,6 +65,12 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     private MenuItemClickListener mMenuListener;
 
+    @Inject
+    User user;
+
+    @Inject
+    LeftMenuPresenter presenter;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -77,16 +92,30 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        presenter.setView(this);
         addHeader(listView);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
+
+        setUserInfo(user);
     }
 
     private void addHeader(ListView listView) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
         imageAvatar = (ImageView) view.findViewById(R.id.im_avatar);
         tvName = (TextView) view.findViewById(R.id.tv_name);
         tvBalance = (TextView) view.findViewById(R.id.tv_balance);
@@ -96,11 +125,13 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        presenter.getBalance();
     }
 
 
     @Override
     public void onDestroyView() {
+        presenter.destroyView();
         super.onDestroyView();
     }
 
@@ -112,6 +143,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position == 0) return; // Header
+
         MenuItem item = mAdapter.getItem(position - 1);
         if (item != null) {
             mMenuListener.onMenuHeaderClick(item);
@@ -120,8 +153,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
 
     public void setUserInfo(User user) {
-        tvName.setText(user.dname);
-        loadAvatarImage(imageAvatar, user.avatar);
+        setAvatar(user.avatar);
+        setDisplayName(user.dname);
     }
 
     private void loadAvatarImage(final ImageView imageView, String url) {
@@ -138,20 +171,23 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     }
 
     public void setBalance(long balance) {
-        tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
+        tvBalance.setText(CurrencyUtil.formatCurrency(balance));
     }
 
-   /* String name = "Nguyen Van A";
-    long balance = 1232425;
-    String avatar = "https://plus.google.com/u/0/_/focus/photos/public/AIbEiAIAAABECI7LguvYhZ7MuAEiC3ZjYXJkX3Bob3RvKig0MDE5NGQ2ODRhNjU5ODJiYTgxNjkwNWU3Njk3MWI5MDA1MGJjZmRhMAGGAaoGCMD24SAz49-T4-e-nZAtIA?sz=96";
-    if (!TextUtils.isEmpty(name)) {
-        header.tvName.setText(name);
-        header.tvName.setVisibility(View.VISIBLE);
-    } else {
-        header.tvName.setVisibility(View.INVISIBLE);
+    @Override
+    public void setAvatar(String avatar) {
+        loadAvatarImage(imageAvatar, avatar);
     }
-    header.tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
 
-    loadAvatarImage(header.imageAvatar, avatar);*/
+    @Override
+    public void setDisplayName(String displayName) {
+        tvName.setText(displayName);
+    }
 
+    @Subscribe
+    public void onEventMainThread(ZaloProfileInfoEvent event) {
+        Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
+        setAvatar(event.avatar);
+        setDisplayName(event.displayName);
+    }
 }

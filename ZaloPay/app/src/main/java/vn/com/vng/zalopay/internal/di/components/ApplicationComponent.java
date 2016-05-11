@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -43,6 +45,7 @@ public interface ApplicationComponent {
     UserConfig userConfig();
 
     BundleService bundleService();
+
     ZaloProfilePreferences profilePreferences();
 
     ParamRequestProvider paramsRequestProvider();
@@ -51,6 +54,8 @@ public interface ApplicationComponent {
 
     /*INJECT*/
     void inject(SplashScreenActivity f);
+
     void inject(MiniApplicationActivity a);
+
     void inject(LoginZaloActivity a);
 }

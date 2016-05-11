@@ -59,7 +59,6 @@ public class SqlZaloPayScopeImpl extends SqlBaseScope implements SqlZaloPayScope
             try {
                 ret = Long.parseLong(balance);
             } catch (Exception e) {
-                Timber.e(e, " parse error " + balance);
             }
             return ret;
         });

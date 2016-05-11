@@ -5,6 +5,7 @@ import dagger.Provides;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
+import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.presenter.ProductPresenter;
 
 @Module
@@ -20,5 +21,11 @@ public class UserPresenterModule {
     @Provides
     ProductPresenter provideProductPresenter(User user) {
         return new ProductPresenter(user);
+    }
+
+    @UserScope
+    @Provides
+    LeftMenuPresenter provideLeftMenuPresenter() {
+        return new LeftMenuPresenter();
     }
 }

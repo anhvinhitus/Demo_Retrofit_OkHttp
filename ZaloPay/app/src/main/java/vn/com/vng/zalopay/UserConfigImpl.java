@@ -3,11 +3,14 @@ package vn.com.vng.zalopay;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 
 /**
  * Created by AnhHieu on 4/26/16.
@@ -20,8 +23,11 @@ public class UserConfigImpl implements UserConfig {
 
     private final static Object sync = new Object();
 
-    public UserConfigImpl(SharedPreferences pref) {
+    private EventBus eventBus;
+
+    public UserConfigImpl(SharedPreferences pref, EventBus eventBus) {
         this.preferences = pref;
+        this.eventBus = eventBus;
     }
 
 
@@ -68,7 +74,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser = new User();
             currentUser.accesstoken = session;
             currentUser.expirein = preferences.getLong(Constants.PREF_USER_EXPIREIN, -1);
-
+            currentUser.uid = preferences.getLong(Constants.PREF_USER_ID, -1);
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
@@ -105,7 +111,7 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveConfig(LoginResponse response, long zuid) {
-        Timber.tag("##########################@@@@@@@@").d("saveConfig.............zuid:"+ zuid);
+        Timber.tag("##########################@@@@@@@@").d("saveConfig.............zuid:" + zuid);
         if (response == null || !response.isSuccessfulResponse()) return;
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);
@@ -113,6 +119,7 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_USER_ID, zuid);
         editor.apply();
     }
+
 
     @Override
     public String getSession() {
@@ -128,5 +135,31 @@ public class UserConfigImpl implements UserConfig {
             return getCurrentUser().uid;
         }
         return -1;
+    }
+
+    @Override
+    public void saveUserInfo(long uid, String avatar, String displayName) {
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_NAME, displayName);
+        editor.putString(Constants.PREF_USER_AVATAR, avatar);
+        editor.putLong(Constants.PREF_USER_ID, uid);
+        editor.apply();
+
+        if (isClientActivated()) {
+            currentUser.avatar = avatar;
+            currentUser.dname = displayName;
+            eventBus.post(new ZaloProfileInfoEvent(uid, displayName, avatar));
+        }
+    }
+
+    @Override
+    public String getAvatar() {
+        return preferences.getString(Constants.PREF_USER_AVATAR, "");
+    }
+
+    @Override
+    public String getDisPlayName() {
+        return preferences.getString(Constants.PREF_USER_NAME, "");
     }
 }
