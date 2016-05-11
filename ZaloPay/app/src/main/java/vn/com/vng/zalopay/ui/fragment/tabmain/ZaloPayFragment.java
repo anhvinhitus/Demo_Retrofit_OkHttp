@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -114,14 +113,14 @@ public class ZaloPayFragment extends BaseMainFragment {
 
     @OnClick(R.id.btn_lixi)
     public void onClickLixi(View v) {
-        Timber.d("Lixi");
-        Intent intent = new Intent(this.getContext(), MiniApplicationActivity.class);
-        this.getActivity().startActivity(intent);
+//        Timber.d("Lixi");
+//        Intent intent = new Intent(this.getContext(), MiniApplicationActivity.class);
+//        this.getActivity().startActivity(intent);
     }
 
     @OnClick(R.id.btn_transfer)
     public void onTransferMoneyClick(View view) {
-        gotoTransferActivity();
+//        gotoTransferActivity();
     }
 
     private void gotoTransferActivity() {

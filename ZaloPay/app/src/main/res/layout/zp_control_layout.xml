@@ -75,29 +75,41 @@
             android:layout_height="match_parent"
             android:background="@color/c.separate" />
 
-        <LinearLayout
-            android:id="@+id/btn_recharge_game"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_tiendien" />
+            <LinearLayout
+                android:id="@+id/btn_recharge_game"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/TextView.Title.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Tiền Điện" />
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_tiendien" />
 
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Tiền Điện" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:clickable="false"
+                android:gravity="center" />
+        </FrameLayout>
     </LinearLayout>
 
     <View
@@ -111,85 +123,121 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_internet" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/TextView.Title.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Internet/TV" />
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_internet" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Internet/TV" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:clickable="false"
+                android:gravity="center" />
+        </FrameLayout>
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
             android:background="@color/c.separate" />
 
-        <LinearLayout
-            android:id="@+id/btn_lixi"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_lixi" />
+            <LinearLayout
+                android:id="@+id/btn_lixi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/TextView.Title.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/red.envelope" />
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_lixi" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/red.envelope" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:clickable="false"
+                android:gravity="center" />
+        </FrameLayout>
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
             android:background="@color/c.separate" />
 
-        <LinearLayout
-            android:id="@+id/others"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1">
 
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/others"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_tiennuoc" />
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_tiennuoc" />
 
-            <TextView
-                style="@style/TextView.Title.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Tiền nước" />
-        </LinearLayout>
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Tiền nước" />
+            </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:gravity="center" />
+        </FrameLayout>
     </LinearLayout>
 
 
