@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -171,7 +172,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @Override
     public void showError(String message) {
-        showError(message);
+        ToastUtil.showToast(getActivity(), message);
     }
 
     @Override
