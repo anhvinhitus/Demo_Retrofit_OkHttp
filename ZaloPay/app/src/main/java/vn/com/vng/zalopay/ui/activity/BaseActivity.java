@@ -15,6 +15,9 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -73,22 +76,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void createUserComponent() {
-        if (AndroidApplication.instance().getUserComponent() != null)
+        if (getUserComponent() != null)
             return;
-//        Runtime runtime = AndroidApplication.instance().getAppComponent().runtime();
-//        if (runtime.isUserRegistered()) {
-//            DatabaseAppScope databaseHelper = ZingMobileApplication.getInstance().getAppComponent().databaseAppScope();
-//            User user = databaseHelper.getUser();
-//            ZingMobileApplication.getInstance().createUserComponent(user);
-//        }
 
-		//longlv: todo test only
-//        User user = new User();
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        user.accesstoken = sharedPreferences.getString(Constants.PREF_USER_SESSION, "");
-//        user.uid = sharedPreferences.getLong(Constants.PREF_USER_ID, 0);
-//        user.uid = 8808474179545805942l;
-//        AndroidApplication.instance().createUserComponent(user);
+        UserConfig userConfig = getAppComponent().userConfig();
+        if (userConfig.isSignIn()) {
+            userConfig.loadConfig();
+            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+        }
     }
 
     @Override
@@ -149,5 +144,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showToast(int message) {
         ToastUtil.showToast(this, message);
+    }
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
+    }
+
+    public UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
     }
 }

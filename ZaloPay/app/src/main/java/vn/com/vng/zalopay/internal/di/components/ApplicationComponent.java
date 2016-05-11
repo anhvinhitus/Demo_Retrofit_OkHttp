@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
+import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
@@ -29,7 +30,7 @@ import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();

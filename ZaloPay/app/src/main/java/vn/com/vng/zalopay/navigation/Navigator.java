@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
+import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 
@@ -60,6 +61,11 @@ public class Navigator {
     public void startMiniAppActivity(Activity activity, String moduleName) {
         Intent intent = new Intent(activity, MiniApplicationActivity.class);
         intent.putExtra("moduleName", moduleName);
+        activity.startActivity(intent);
+    }
+
+    public void startLinkCardActivity(Activity activity) {
+        Intent intent = new Intent(activity, LinkCardActivity.class);
         activity.startActivity(intent);
     }
 }

@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,12 +22,8 @@ import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
-import vn.com.vng.zalopay.data.repository.PassportRepositoryImpl;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
-import vn.com.vng.zalopay.domain.repository.PassportRepository;
-import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
 
 
 @Module
@@ -69,11 +64,6 @@ public class ApplicationModule {
         return PreferenceManager.getDefaultSharedPreferences(application);
     }
 
-    @Provides
-    @Singleton
-    PassportRepository providePassportRepository(PassportRepositoryImpl passportRepository) {
-        return passportRepository;
-    }
 
     @Provides
     @Singleton
@@ -85,7 +75,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
-        return new UserConfigImpl(sharedPreferences, eventBus);
+        return new UserConfigImpl(sharedPreferences);
     }
 
     @Provides
@@ -98,12 +88,6 @@ public class ApplicationModule {
         return daoMaster.newSession();
     }
 
-
-    @Provides
-    @Singleton
-    BundleService providesBundleService(Context context) {
-        return new BundleServiceImpl((Application) context);
-    }
 
     @Provides
     @Singleton

@@ -6,6 +6,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
+import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 
@@ -32,7 +33,13 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    BalanceTopupPresenter provideBalanceTopupPresenterr(User user) {
+    BalanceTopupPresenter provideBalanceTopupPresenter(User user) {
         return new BalanceTopupPresenter(user);
+    }
+
+    @UserScope
+    @Provides
+    LinkCardPresenter provideLinkCardPresenter() {
+        return new LinkCardPresenter();
     }
 }

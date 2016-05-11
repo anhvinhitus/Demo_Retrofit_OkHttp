@@ -36,4 +36,6 @@ public interface UserConfig {
     String getAvatar();
 
     String getDisPlayName();
+
+    boolean isSignIn();
 }
