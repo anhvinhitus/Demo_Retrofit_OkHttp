@@ -78,8 +78,9 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".ui.activity.MiniApplicationActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ui.activity.MiniApplicationActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
@@ -167,21 +168,27 @@
         </activity>-->
         <activity
             android:name="vn.zing.pay.zmpsdk.view.PaymentChannelActivity"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="vn.zing.pay.zmpsdk.view.PaymentGatewayActivity"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation"
-            android:hardwareAccelerated="true"/>
-        <activity android:name="io.card.payment.DataEntryActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name="io.card.payment.CardIOActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name="io.card.payment.DataEntryActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -195,14 +202,15 @@
             android:exported="false" />
         <service
             android:name="vn.zing.pay.zmpsdk.helper.gms.MyInstanceIDListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
+
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>
@@ -217,8 +225,8 @@
         <activity
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
             android:label="@string/title_activity_balance_topup"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
@@ -229,9 +237,6 @@
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".ui.activity.ProductDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

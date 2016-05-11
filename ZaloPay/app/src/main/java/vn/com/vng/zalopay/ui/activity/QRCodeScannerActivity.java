@@ -24,13 +24,13 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
-import vn.com.vng.zalopay.ui.view.IProductDetailView;
+import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by AnhHieu on 4/21/16.
  */
-public class QRCodeScannerActivity extends QRScanActivity implements IProductDetailView {
+public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView {
 
     private long appId;
     private String zptranstoken;

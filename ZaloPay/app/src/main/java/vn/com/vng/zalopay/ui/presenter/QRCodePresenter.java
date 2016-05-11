@@ -9,8 +9,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.ui.view.IProductDetailView;
-import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -22,9 +21,9 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
  * Created by longlv on 09/05/2016.
  */
 
-public final class QRCodePresenter extends BaseZaloPayPresenter implements Presenter<IProductDetailView>, ZPPaymentListener {
+public final class QRCodePresenter extends BaseZaloPayPresenter implements Presenter<IQRScanView>, ZPPaymentListener {
 
-    private IProductDetailView mView;
+    private IQRScanView mView;
 
     private Subscription subscriptionGetOrder;
 
@@ -35,7 +34,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
     }
 
     @Override
-    public void setView(IProductDetailView view) {
+    public void setView(IQRScanView view) {
         this.mView = view;
     }
 
@@ -157,7 +156,10 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
 
     @Override
     public void onComplete(ZPPaymentResult pPaymentResult) {
+        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("onComplete.................pPaymentResult:" + pPaymentResult);
+        this.hideLoadingView();
         if (pPaymentResult == null) {
+//            ToastUtil.showToast(mView.getActivity(), "Fail!");
             return;
         }
         int resultStatus = pPaymentResult.paymentStatus.getNum();
@@ -172,7 +174,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
                 mView.getActivity().finish();
             }
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
-            ToastUtil.showToast(mView.getActivity(), "Fail!");
+//            ToastUtil.showToast(mView.getActivity(), "Fail!");
         }
     }
 
