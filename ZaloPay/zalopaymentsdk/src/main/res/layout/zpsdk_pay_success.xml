@@ -79,7 +79,7 @@
             android:padding="2dp"
             app:circle_color="@color/color_primary"
             app:stroke_color="@color/white"
-            app:stroke_thind="2dp" />
+            app:stroke__border_width="2dp" />
 
         <TextView
             android:id="@+id/credit_card_info_save_label"

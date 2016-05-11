@@ -1,15 +1,19 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.text.TextUtils;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.ui.view.IProductDetailView;
+import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -18,24 +22,23 @@ import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentStatus;
 import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 
 /**
- * Created by longlv on 09/05/2016.
+ * Created by longlv on 10/05/2016.
  */
+public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Presenter<IBalanceTopupView>, ZPPaymentListener {
 
-public final class ProductPresenter extends BaseZaloPayPresenter implements Presenter<IProductDetailView>, ZPPaymentListener {
-
-    private IProductDetailView mView;
+    private IBalanceTopupView mView;
 
     private Subscription subscriptionGetOrder;
 
     private User user;
 
-    public ProductPresenter(User user) {
+    public BalanceTopupPresenter(User user) {
         this.user = user;
     }
 
     @Override
-    public void setView(IProductDetailView view) {
-        this.mView = view;
+    public void setView(IBalanceTopupView iBalanceTopupView) {
+        this.mView = iBalanceTopupView;
     }
 
     @Override
@@ -75,40 +78,21 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         mView.showError(message);
     }
 
-    public void getOrder(long appId, String zalooauthcode) {
-        subscriptionGetOrder = zaloPayRepository.getOrder(appId, zalooauthcode)
+    private void createWalletorder(long amount) {
+        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, 2)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetOrderSubscriber());
+                .subscribe(new CreateWalletOrderSubscriber());
     }
 
-    private void showOrderDetail(Order order) {
-        mView.showOrderDetail(order);
-    }
-
-    private final void onGetOrderError(Throwable e) {
-        hideLoadingView();
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
-        showErrorView(message);
-    }
-
-    private final void onGetOrderSuccess(Order order) {
-        Timber.d("session =========" + order.getItem());
-
-//        this.hideLoadingView();
-//        this.showOrderDetail(order);
-        pay(order);
-    }
-
-
-    private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
-        public GetOrderSubscriber() {
+    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+        public CreateWalletOrderSubscriber() {
         }
 
         @Override
         public void onNext(Order order) {
             Timber.d("login success " + order);
-            ProductPresenter.this.onGetOrderSuccess(order);
+            BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
         @Override
@@ -118,8 +102,20 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "onError " + e);
-            ProductPresenter.this.onGetOrderError(e);
+            BalanceTopupPresenter.this.onCreateWalletOrderError(e);
         }
+    }
+
+    private void onCreateWalletOrderError(Throwable e) {
+        Timber.tag("onCreateWalletOrderError").d("session =========" + e);
+        hideLoadingView();
+        String message = ErrorMessageFactory.create(mView.getContext(), e);
+        showErrorView(message);
+    }
+
+    private void onCreateWalletOrderSuccess(Order order) {
+        Timber.tag("onCreateWalletOrderSuccess").d("session =========" + order.getItem());
+        pay(order);
     }
 
     //Zalo payment sdk
@@ -157,6 +153,23 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
     }
 
+
+    public void deposit(String strAmount) {
+        if (TextUtils.isEmpty(strAmount)) {
+            showErrorView("Nhập vào số tiền là bội số của 10.000 VNĐ");
+            return;
+        }
+        long amount = 0;
+        try {
+            amount = Long.valueOf(strAmount);
+            createWalletorder(amount);
+        } catch (NumberFormatException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onComplete(ZPPaymentResult pPaymentResult) {
         if (pPaymentResult == null) {
@@ -164,11 +177,11 @@ public final class ProductPresenter extends BaseZaloPayPresenter implements Pres
         }
         int resultStatus = pPaymentResult.paymentStatus.getNum();
         if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-
+            ToastUtil.showToast(mView.getActivity(), "Success!");
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
-
+            ToastUtil.showToast(mView.getActivity(), "Processing!");
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
-
+            ToastUtil.showToast(mView.getActivity(), "Fail!");
         }
     }
 

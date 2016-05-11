@@ -78,7 +78,8 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".ui.activity.MiniApplicationActivity" />
+        <activity android:name=".ui.activity.MiniApplicationActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
@@ -216,6 +217,7 @@
         <activity
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
             android:label="@string/title_activity_balance_topup"
+            android:windowSoftInputMode="adjustResize|stateVisible"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"

@@ -216,7 +216,7 @@
                 android:background="@drawable/zpw_edittext_noborder"
                 android:hint="@string/zpw_string_card_name_hint"
                 android:imeOptions="actionNext|flagNoExtractUi"
-                android:inputType="textCapCharacters"
+                android:inputType="textCapCharacters|textVisiblePassword"
                 android:letterSpacing="0.1"
                 android:maxLength="@integer/maximum_character_field_card_nameholder"
                 android:padding="@dimen/zpw_padding_5"
@@ -240,7 +240,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/zpw_issue_date_input"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/date_line"
@@ -250,10 +250,9 @@
 
                 <vn.zing.pay.zmpsdk.view.custom.VPaymentValidDateEditText
                     android:id="@+id/zpw_issue_date_edittext"
-                    android:layout_width="280dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/zpw_edittext_noborder"
-                    android:gravity="center"
                     android:hint="@string/zpw_string_issue_date_hint"
                     android:imeOptions="actionDone|flagNoExtractUi"
                     android:inputType="number"
@@ -318,7 +317,7 @@
             android:background="@drawable/zpw_edittext_noborder"
             android:hint="@string/zpw_string_acc_name_hint"
             android:imeOptions="actionNext|flagNoExtractUi"
-            android:inputType="textCapCharacters"
+            android:inputType="textCapCharacters|textVisiblePassword"
             android:letterSpacing="0.1"
             android:maxLength="@integer/maximum_character_field_acc_name_length"
             android:padding="@dimen/zpw_padding_10"
@@ -370,7 +369,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:padding="10dip"
-        android:textColor="#292f33"
+        android:textColor="@color/text_color_bold"
         android:textSize="@dimen/sdk_form_input_size"
         android:visibility="gone" />
 

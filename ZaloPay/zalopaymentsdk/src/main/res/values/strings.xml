@@ -57,11 +57,7 @@
    	<string name="zingpaysdk_invalid_app_trans">Thiếu app user trong paymen info.</string>
    	<string name="zingpaysdk_invalid_app_time">AppTime không hợp lệ.</string>
    	<string name="zingpaysdk_invalid_app_amount">Amount không hợp lệ.</string>
-   	<string name="zingpaysdk_invalid_app_items_vs_amount">Amount với danh sách item không hợp lệ</string>
-   	<string name="zingpaysdk_invalid_app_itemID">ItemID không hợp lệ</string>
-   	<string name="zingpaysdk_invalid_app_itemName">ItemName không hợp lệ</string>
-   	<string name="zingpaysdk_invalid_app_itemPrice">ItemPrice không hợp lệ</string>
-   	<string name="zingpaysdk_invalid_app_itemQuantity">ItemQuantity không hợp lệ</string>
+   	<string name="zingpaysdk_invalid_user_id_user_name">Thông tin nạp tiền vào ví không hợp lệ</string>
    	
    	<string name="zpw_conf_gwinfo_app_list">gwinfo_app_list_id</string>
    	<string name="zingpaysdk_conf_gwinfo_expired_time">gwinfo_expired_time</string>

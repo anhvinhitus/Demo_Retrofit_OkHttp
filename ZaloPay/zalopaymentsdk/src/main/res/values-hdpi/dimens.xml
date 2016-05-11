@@ -22,9 +22,8 @@
     <!-- screen zalopay success -->
     <dimen name="zpw_margin_top_supper_supper_label">20dp</dimen>
     <dimen name="zpw_img_size_success">60dp</dimen>
-    <dimen name="zpw_padding_button">5dp</dimen>
+    <dimen name="zpw_padding_button">12dp</dimen>
     <dimen name="zpw_checkbox_size">30dp</dimen>
     <dimen name="zpw_text_size_medium_m">14sp</dimen>
-    <dimen name="sdk_form_input_size">17dp</dimen>
     <dimen name="payment_app_icon_size">70dp</dimen>
 </resources>

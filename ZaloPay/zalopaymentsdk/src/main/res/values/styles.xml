@@ -30,9 +30,16 @@
  	</style>
  	
      <declare-styleable name="VPaymentCheckBox">
-        <attr name="stroke_thind" format="dimension"/>
+        <attr name="stroke__border_width" format="dimension"/>
         <attr name="stroke_color" format="color"/>
         <attr name="circle_color" format="color"/>
     </declare-styleable>
+    
+   <style name="DialogTheme" parent="android:Theme.Dialog">
+
+    <!-- No backgrounds, titles or window float -->
+    <item name="android:windowBackground">@null</item>
+    <item name="android:windowIsTranslucent">true</item>
+</style>
 
 </resources>

@@ -8,4 +8,8 @@ public class Constants {
 
     public static final String ZPTRANSTOKEN = "zptranstoken";
     public static final String APPID = "appid";
+
+    public static final String AMOUNT = "amount";
+    public static final String TRANSTYPE = "transtype";
+
 }
