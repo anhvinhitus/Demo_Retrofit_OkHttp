@@ -17,6 +17,7 @@
           android:layout_height="wrap_content"
           android:ellipsize="end"
           android:singleLine="true"
+          android:textAllCaps="true"
           android:textColor="@color/text_color_bold"
           android:textSize="@dimen/zpw_text_size_big" />
    	

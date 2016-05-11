@@ -5,7 +5,7 @@
     <dimen name="zpw_margin_top_supper_supper_label">40dp</dimen>
     <dimen name="zpw_img_size_success">90dp</dimen>
     <dimen name="zpw_padding_button">16dp</dimen>
-    <dimen name="zpw_checkbox_size">35dp</dimen>
+    <dimen name="zpw_checkbox_size">40dp</dimen>
     <dimen name="payment_app_icon_size">70dp</dimen>
     <dimen name="zpw_topbar_padding">16dp</dimen>
 

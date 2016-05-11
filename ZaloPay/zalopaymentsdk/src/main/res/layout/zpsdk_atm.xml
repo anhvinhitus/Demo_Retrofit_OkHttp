@@ -63,8 +63,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_margin="10dp"
-                android:background="#fff"
                 android:orientation="vertical" >
 
                 <TextView
@@ -73,9 +71,10 @@
                     android:gravity="center"
                     android:paddingBottom="10dip"
                     android:paddingTop="10dip"
-                    android:text="Lựa chọn ngân hàng"
-                    android:textColor="@color/text_color"
-                    android:textSize="@dimen/zpw_text_size_medium"
+                    android:text="@string/zpw_string_title_select_back"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/zpw_text_size_big"
+                    android:background="@color/color_primary"
                     android:textStyle="bold" />
 
                 <View
@@ -88,7 +87,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/background"
                     android:fadingEdgeLength="100dp"
                     android:fillViewport="true"
                     android:scrollbars="none" >
@@ -108,11 +106,11 @@
                     android:id="@+id/atm_select_ok"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/zpw_padding_button"
+        			android:paddingBottom="@dimen/zpw_padding_button"
                     android:background="@drawable/zpw_bg_button"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/zpw_padding_button"
-                    android:paddingTop="@dimen/zpw_padding_button"
-                    android:text="Chọn"
+                    android:text="@string/zpw_string_select_bank"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white" />
             </LinearLayout>

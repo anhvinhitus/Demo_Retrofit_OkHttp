@@ -9,62 +9,69 @@
     app:mrl_rippleColor="@color/color_primary_transparent"
     app:mrl_rippleHover="true"
     app:mrl_rippleOverlay="true"    >
+	
 	<RelativeLayout 
-		 android:layout_width="match_parent"
-	     android:layout_height="wrap_content">
-		 <RelativeLayout
-	        android:layout_width="match_parent"
+		 	android:layout_width="wrap_content"
+	     	android:layout_height="match_parent">
+		 
+		 <LinearLayout
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentLeft="true"
-	        android:layout_marginBottom="@dimen/zpw_item_listview_padding_top_bottom"
+	        android:layout_centerVertical="true"
+	        android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom"
 	        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
-	        android:layout_marginTop="@dimen/zpw_item_listview_padding_top_bottom"
-	        android:layout_toLeftOf="@+id/zpw_channel_next_icon"
-	        android:orientation="vertical" >
+	        android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom" 
+	        android:layout_toLeftOf="@+id/zpw_channel_next_icon">
 	
 	        <ImageView
 	            android:id="@+id/zpw_channel_icon"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_alignParentLeft="true"
-	            android:layout_centerVertical="true" />
-	
-	        <TextView
+	            android:layout_gravity="left|center_vertical"
+	            android:scaleType="fitXY"/>
+			<LinearLayout 
+			    android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:gravity="center_vertical"
+	            android:layout_gravity="center_horizontal">
+			    
+			    <TextView
 	            android:id="@+id/zpw_channel_name_textview"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_alignParentTop="true"
 	            android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
-	            android:layout_toRightOf="@+id/zpw_channel_icon"
 	            android:ellipsize="end"
 	            android:singleLine="true"
 	            android:textColor="@color/text_color_bold"
 	            android:textSize="@dimen/zpw_text_size_medium" />
 	
-	        <LinearLayout
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_below="@+id/zpw_channel_name_textview"
-	            android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
-	            android:layout_toRightOf="@+id/zpw_channel_icon" >
-	
-	            <TextView
-	                android:id="@+id/zpw_channel_fee"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:textColor="@color/text_color_grey"
-	                android:textSize="@dimen/zpw_text_size_medium_small" />
-	
-	            <TextView
-	                android:id="@+id/zpw_title_vnd"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
-	                android:text="VND"
-	                android:textColor="@color/text_color_grey"
-	                android:textSize="@dimen/text_size_vnd" />
-	        </LinearLayout>
-	    </RelativeLayout>
+		        <LinearLayout
+		            android:layout_width="wrap_content"
+		            android:layout_height="match_parent"
+		            android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right" >
+		
+		            <TextView
+		                android:id="@+id/zpw_channel_fee"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:textColor="@color/text_color_grey"
+		                android:textSize="@dimen/zpw_text_size_medium_small" />
+		
+		            <TextView
+		                android:id="@+id/zpw_title_vnd"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
+		                android:text="@string/zpw_string_vnd"
+		                android:textColor="@color/text_color_grey"
+		                android:textSize="@dimen/text_size_vnd" />
+		        </LinearLayout>
+	        
+			</LinearLayout>
+	        
+	    </LinearLayout>
 	
 	    <ImageView
 	        android:id="@+id/zpw_channel_next_icon"
@@ -80,7 +87,8 @@
 	        android:layout_height="1dp"
 	        android:layout_alignParentBottom="true"
 	        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
-	        android:background="@color/dark_transparent" />
+	        android:background="@color/dark_transparent"/>
+	    
 	</RelativeLayout>
    
 

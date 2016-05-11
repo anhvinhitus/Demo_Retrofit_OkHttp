@@ -60,7 +60,7 @@
             android:layout_gravity="bottom"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text=" VND."
+            android:text=" VNĐ."
             android:textColor="@color/text_color_bold"
             android:textSize="@dimen/text_size_vnd" />
     </LinearLayout>

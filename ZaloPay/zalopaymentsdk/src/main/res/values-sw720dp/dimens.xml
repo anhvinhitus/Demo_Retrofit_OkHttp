@@ -4,7 +4,7 @@
     <!-- screen zalopay success -->
     <dimen name="zpw_margin_top_supper_supper_label">40dp</dimen>
     <dimen name="zpw_padding_button">16dp</dimen>
-    <dimen name="zpw_checkbox_size">35dp</dimen>
+    <dimen name="zpw_checkbox_size">50dp</dimen>
     <dimen name="payment_app_icon_size">70dp</dimen>
     <dimen name="zpw_padding_text_vnd">5dp</dimen>
     <dimen name="zpw_padding_app_info_top_bottom">10dp</dimen>

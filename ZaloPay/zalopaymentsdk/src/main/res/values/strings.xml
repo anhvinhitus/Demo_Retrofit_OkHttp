@@ -180,5 +180,10 @@
 	
    	<string name="zpw_string_title_fee">Phí thanh toán</string>
    	<string name="zpw_string_title_total_pay">Thanh toán</string>
+   	
+   	<string name="zpw_string_vnd">VNĐ</string>
+   	
+   	<string name="zpw_string_select_bank">Chọn</string>
+   	<string name="zpw_string_title_select_back">Lựa chọn ngân hàng</string>
 
 </resources>
