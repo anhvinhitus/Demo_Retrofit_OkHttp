@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
 
-    <!-- Để làm background-->
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="109dp" />
-
+    <!--   &lt;!&ndash; Để làm background&ndash;&gt;
+       <android.support.v7.widget.CardView
+           android:layout_width="match_parent"
+           android:layout_height="109dp" />
+   -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,9 +35,11 @@
                 android:src="@drawable/ic_lc_visa_card" />
 
             <ImageView
+                android:id="@+id/btn_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical|right"
+                android:src="@drawable/ic_more_horiz" />
         </FrameLayout>
 
         <LinearLayout

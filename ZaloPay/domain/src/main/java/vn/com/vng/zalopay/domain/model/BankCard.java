@@ -16,4 +16,7 @@ public class BankCard {
         this.subAccNumber = subAccNumber;
         this.userName = userName;
     }
+
+    public BankCard() {
+    }
 }

@@ -56,6 +56,12 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        mItems.clear();
+    }
+
+
     public void insertItems(Collection<T> items) {
         if (items == null || items.isEmpty()) return;
 

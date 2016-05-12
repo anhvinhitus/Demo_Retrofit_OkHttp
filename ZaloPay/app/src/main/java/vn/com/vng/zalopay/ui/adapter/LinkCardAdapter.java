@@ -16,23 +16,59 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
+import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
 
 /**
  * Created by AnhHieu on 5/10/16.
  */
 public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
 
-    public LinkCardAdapter(Context context) {
+    private OnClickBankCardListener listener;
+
+    public LinkCardAdapter(Context context, OnClickBankCardListener listener) {
         super(context);
+        this.listener = listener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 1) {
-            return new BottomHolder(mInflater.inflate(R.layout.row_bank_card_bottom_layout, parent, false));
+            return new BottomHolder(mInflater.inflate(R.layout.row_bank_card_bottom_layout, parent, false), onItemClickListener);
         } else {
-            return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false));
+            return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
         }
+    }
+
+
+    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onListItemClick(View anchor, int position) {
+            if (listener == null) return;
+            int id = anchor.getId();
+
+            if (id == R.id.btn_add_card) {
+                listener.onClickAddBankCard();
+            } else if (id == R.id.btn_more) {
+                BankCard bankCard = getItem(position);
+                if (bankCard != null) {
+                    listener.onClickMenu(bankCard);
+                }
+            }
+
+        }
+
+        @Override
+        public boolean onListItemLongClick(View anchor, int position) {
+            return false;
+        }
+    };
+
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        onItemClickListener = null;
+        listener = null;
     }
 
     @Override
@@ -74,10 +110,21 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
         @Bind(R.id.tv_username)
         TextView mUserName;
 
-        public ViewHolder(View itemView) {
+        OnItemClickListener listener;
+
+        public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
+            this.listener = listener;
             ButterKnife.bind(this, itemView);
         }
+
+        @OnClick(R.id.btn_more)
+        public void onClickMore(View v) {
+            if (listener != null) {
+                listener.onListItemClick(v, getAdapterPosition());
+            }
+        }
+
         //ef9825 master card
 
         // 0f7ecd visa
@@ -102,14 +149,26 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     }
 
     public class BottomHolder extends RecyclerView.ViewHolder {
-        public BottomHolder(View itemView) {
+
+        private OnItemClickListener listener;
+
+        public BottomHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.listener = listener;
         }
 
         @OnClick(R.id.btn_add_card)
         public void onClickAdd(View v) {
-
+            if (listener != null) {
+                listener.onListItemClick(v, getAdapterPosition());
+            }
         }
+    }
+
+    public interface OnClickBankCardListener {
+        void onClickAddBankCard();
+
+        void onClickMenu(BankCard bankCard);
     }
 }

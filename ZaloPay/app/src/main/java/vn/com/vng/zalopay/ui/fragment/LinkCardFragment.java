@@ -10,6 +10,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,7 +26,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 /**
  * Created by AnhHieu on 5/10/16.
  */
-public class LinkCardFragment extends BaseFragment implements ILinkCardView {
+public class LinkCardFragment extends BaseFragment implements ILinkCardView, LinkCardAdapter.OnClickBankCardListener {
 
 
     public static LinkCardFragment newInstance() {
@@ -55,11 +56,14 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView {
     @Inject
     LinkCardPresenter presenter;
 
+    @Bind(R.id.progressContainer)
+    View mLoadingView;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAdapter = new LinkCardAdapter(getContext());
+        mAdapter = new LinkCardAdapter(getContext(), this);
     }
 
     @Override
@@ -75,22 +79,49 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView {
         recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         recyclerView.setAdapter(mAdapter);
 
-        ArrayList list = new ArrayList();
-        list.add(new BankCard(Enums.BankCard.JCB, "1234", "Vu Manh Hieu"));
-        list.add(new BankCard(Enums.BankCard.MASTERCARD, "1234", "Vu Manh Hieu"));
-        list.add(new BankCard(Enums.BankCard.VISA, "1234", "Vu Manh Hieu"));
-        mAdapter.setData(list);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        presenter.getListCard();
     }
 
     @Override
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void setData(List<BankCard> bankCards) {
+        mAdapter.setData(bankCards);
+    }
+
+
+    @Override
+    public void updateData(BankCard bankCard) {
+        mAdapter.insert(bankCard);
+    }
+
+    @Override
+    public void showLoading() {
+        mLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        mLoadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onClickAddBankCard() {
+
+    }
+
+    @Override
+    public void onClickMenu(BankCard bankCard) {
+
     }
 
     private static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
