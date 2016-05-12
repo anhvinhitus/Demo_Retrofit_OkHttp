@@ -21,9 +21,10 @@ public abstract class MiniApplicationBaseActivity extends Activity implements De
     }
 
     protected abstract BundleService bundleService();
+
     protected abstract void doInjection();
 
-    private ReactInstanceManager reactInstanceManager() {
+    protected ReactInstanceManager reactInstanceManager() {
         return bundleService().getInternalBundleInstanceManager();
     }
 

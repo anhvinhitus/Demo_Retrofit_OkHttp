@@ -41,7 +41,7 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 public class BundleServiceImpl implements BundleService {
     ReactInstanceManager mInternalBundleInstanceManager;
     Application mApplication;
-    String mCurrentInternalBundleFolder;
+    public String mCurrentInternalBundleFolder;
     String mCurrentInternalBundleVersion;
     String mExpectedInternalBundleVersion;
 
@@ -82,7 +82,7 @@ public class BundleServiceImpl implements BundleService {
             setCurrentInternalBundleVersion(mExpectedInternalBundleVersion);
         }
 
-        initializeInternalBundleInstanceManager();
+        //initializeInternalBundleInstanceManager();
         Timber.d("Done");
     }
 
@@ -112,7 +112,7 @@ public class BundleServiceImpl implements BundleService {
 //                .setUseDeveloperSupport(false)
 //                .setInitialLifecycleState(LifecycleState.RESUMED)
 //                .build();
-        mInternalBundleInstanceManager = ReactInstanceManager.builder()
+    /*    mInternalBundleInstanceManager = ReactInstanceManager.builder()
                 .setApplication(mApplication)
                 .setJSBundleFile(mCurrentInternalBundleFolder + "/main.jsbundle")
                 .setJSMainModuleName("index.android")
@@ -121,7 +121,7 @@ public class BundleServiceImpl implements BundleService {
 //                .setUseDeveloperSupport(true)
                 .setUseDeveloperSupport(false)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();
+                .build();*/
     }
 
     String getCurrentInternalBundleVersion() {

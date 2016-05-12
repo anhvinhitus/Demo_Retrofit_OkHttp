@@ -75,12 +75,12 @@ public class AndroidApplication extends MultiDexApplication {
                 .build();
 
         appComponent.userConfig().loadConfig();
-        appComponent.threadExecutor().execute(new Runnable() {
+       /* appComponent.threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 appComponent.bundleService().prepareInternalBundle();
             }
-        });
+        });*/
     }
 
     public UserComponent createUserComponent(User user) {

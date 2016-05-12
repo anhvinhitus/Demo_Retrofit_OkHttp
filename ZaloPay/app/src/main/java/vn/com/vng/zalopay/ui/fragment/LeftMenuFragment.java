@@ -143,8 +143,11 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (position == 0) return; // Header
+        if (position == 0) {
+            EventBus.getDefault().post(new ZaloProfileInfoEvent(1l, "hieuvm", "http://24h-img.24hstatic.com/upload/2-2016/images/2016-05-11/1462934235-mu-1.jpg"));
 
+            return; // Header
+        }
         MenuItem item = mAdapter.getItem(position - 1);
         if (item != null) {
             mMenuListener.onMenuItemClick(item);
@@ -180,6 +183,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     @Subscribe
     public void onEventMainThread(ZaloProfileInfoEvent event) {
+
         Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
         setAvatar(event.avatar);
         setDisplayName(event.displayName);

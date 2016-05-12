@@ -1,22 +1,20 @@
 /*
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import javax.inject.Inject;
 
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-
-*/
-/**
- * Created by AnhHieu on 3/26/16.
- *//*
 
 public class LoginFragment extends BaseFragment implements ILoginView {
 
@@ -28,6 +26,7 @@ public class LoginFragment extends BaseFragment implements ILoginView {
         return fragment;
     }
 
+
     @Override
     protected void setupFragmentComponent() {
         AndroidApplication.instance().getAppComponent().inject(this);
@@ -35,8 +34,12 @@ public class LoginFragment extends BaseFragment implements ILoginView {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_login;
+        return R.layout.activity_login_zalo;
     }
+
+
+    @Inject
+    Navigator navigator;
 
     @Inject
     LoginPresenter mPresenter;
@@ -58,6 +61,11 @@ public class LoginFragment extends BaseFragment implements ILoginView {
         super.onActivityCreated(savedInstanceState);
 
         Timber.d("onActivityCreated " + mPresenter);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -84,6 +92,11 @@ public class LoginFragment extends BaseFragment implements ILoginView {
     public void onDestroy() {
         super.onDestroy();
         mPresenter.destroy();
+    }
+
+    @OnClick(R.id.layoutLoginZalo)
+    public void onClickLogin(View v) {
+
     }
 
     @Override

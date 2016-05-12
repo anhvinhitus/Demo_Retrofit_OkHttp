@@ -17,7 +17,6 @@ public interface ZaloPayService {
     @GET("/tpe/transhistory")
     Observable<TransactionHistoryResponse> transactionHistorys(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order);
 
-
     @GET("/tpe/getbalance")
     Observable<BalanceResponse> balance(@Query("userid") long uid, @Query("accesstoken") String accesstoken);
 

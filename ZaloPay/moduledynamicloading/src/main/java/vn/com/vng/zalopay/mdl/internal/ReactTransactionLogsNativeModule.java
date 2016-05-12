@@ -5,17 +5,28 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+
+import java.util.List;
+
+import rx.functions.Func1;
+import rx.internal.operators.OperatorToMultimap;
+import timber.log.Timber;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.TransHistory;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
 /**
  * Created by huuhoa on 5/8/16.
  */
 public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule {
 
-    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext) {
+    private ZaloPayRepository repository;
+
+    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, ZaloPayRepository repository) {
         super(reactContext);
+        this.repository = repository;
     }
 
     @Override
@@ -23,38 +34,80 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         return "ZaloPayTransactionLogs";
     }
 
-    /// Request ZaloPayIAP API
     @ReactMethod
     public void getTransactions(int pageIndex, int count, Promise promise) {
-        WritableArray result = Arguments.createArray();
-        for (int i = 0; i < count; i++) {
-            WritableMap item = Arguments.createMap();
-            item.putInt("transid", pageIndex * count + i);
-            item.putDouble("reqdate", Math.random() % 10000000 + 1000000 + 1460366347);
-            item.putString("description", Math.floor(Math.random() % 2) == 0 ? "Thanh toán mua thẻ điện thoại Vinaphone" : "Nhận chuyển tiền từ Nguyễn Văn Nam");
-            item.putInt("amount", (int) Math.floor(Math.random() + 100) * 100);
-            item.putInt("type", (int) Math.floor(Math.random() % 2));
 
-            result.pushMap(item);
-        }
+        Timber.d("get transaction index %s count %s", pageIndex, count);
 
-        promise.resolve(result);
+        repository.getTransactions(pageIndex, count)
+                .map(new Func1<List<TransHistory>, WritableArray>() {
+                    @Override
+                    public WritableArray call(List<TransHistory> transHistories) {
+                        return transform(transHistories);
+                    }
+                })
+                .subscribe(new TransactionLogSubscriber(promise));
     }
 
     @ReactMethod
     public void reloadListTransaction(int count, Promise promise) {
-        WritableArray result = Arguments.createArray();
-        for (int i = 0; i < count; i++) {
-            WritableMap item = Arguments.createMap();
-            item.putInt("transid", i);
-            item.putDouble("reqdate", Math.random() % 10000000 + 1000000 + 1460366347);
-            item.putString("description", Math.floor(Math.random() % 2) == 0 ? "Thanh toán mua thẻ điện thoại Vinaphone" : "Nhận chuyển tiền từ Nguyễn Văn Nam");
-            item.putInt("amount", (int) Math.floor(Math.random() + 100) * 100);
-            item.putInt("type", (int) Math.floor(Math.random() % 2));
+        Timber.d("reload transaction count %s", count);
+        repository.reloadListTransaction(count)
+                .map(new Func1<List<TransHistory>, WritableArray>() {
+                    @Override
+                    public WritableArray call(List<TransHistory> transHistories) {
+                        return transform(transHistories);
+                    }
+                })
+                .subscribe(new TransactionLogSubscriber(promise));
+    }
 
+    private WritableArray transform(List<TransHistory> historys) {
+        WritableArray result = Arguments.createArray();
+        for (TransHistory history : historys) {
+            WritableMap item = transform(history);
+            if (item == null) continue;
             result.pushMap(item);
         }
+        return result;
+    }
 
-        promise.resolve(result);
+    private WritableMap transform(TransHistory history) {
+        if (history == null) return null;
+        WritableMap item = Arguments.createMap();
+        item.putDouble("transid", history.transid);
+        item.putDouble("reqdate", history.reqdate);
+        item.putString("description", history.description);
+        item.putInt("amount", history.netamount);
+        item.putInt("type", (int) Math.floor(Math.random() % 2));
+        return item;
+    }
+
+
+    private class TransactionLogSubscriber extends DefaultSubscriber<WritableArray> {
+
+        private Promise promise;
+
+        public TransactionLogSubscriber(Promise promise) {
+            this.promise = promise;
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e(e, " onError ");
+        }
+
+        @Override
+        public void onNext(WritableArray writableArray) {
+
+            Timber.d(" transaction log %s", writableArray);
+
+            promise.resolve(writableArray);
+        }
     }
 }

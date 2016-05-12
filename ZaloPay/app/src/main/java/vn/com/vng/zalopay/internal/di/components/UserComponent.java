@@ -9,10 +9,12 @@ import vn.com.vng.zalopay.domain.repository.ApplicationRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
+import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
@@ -24,7 +26,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 UserModule.class,
                 ApiUserModule.class,
                 UserControllerModule.class,
-                UserPresenterModule.class
+                UserPresenterModule.class,
+                ReactNativeModule.class
         }
 )
 public interface UserComponent {
@@ -53,4 +56,6 @@ public interface UserComponent {
     void inject(MainActivity a);
 
     void inject(BalanceTopupActivity activity);
+
+    void inject(MiniApplicationActivity activity);
 }

@@ -68,4 +68,16 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
             }
         });
     }
+
+    @Override
+    public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
+        return zaloPayFactory.transactionHistorysServer(0, 1)
+                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
+    }
+
+    @Override
+    public Observable<List<TransHistory>> reloadListTransaction(int count) {
+        return zaloPayFactory.transactionHistorysServer(0, 1)
+                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
+    }
 }

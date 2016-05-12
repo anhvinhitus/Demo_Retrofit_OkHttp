@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
@@ -20,12 +22,12 @@ import vn.com.vng.zalopay.ui.view.ILoginView;
 
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView, View.OnClickListener {
-    private final String TAG = this.getClass().getSimpleName();
-    protected ProgressDialog mProgressDialog;
-    private View mLayoutLoginZalo;
 
-    @Inject
-    LoginPresenter loginPresenter;
+
+    @Override
+    protected void setupActivityComponent() {
+        getAppComponent().inject(this);
+    }
 
     @Override
     protected int getResLayoutId() {
@@ -37,17 +39,24 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
         return null;
     }
 
+    protected ProgressDialog mProgressDialog;
+
+    @Inject
+    LoginPresenter loginPresenter;
+
+    @Inject
+    Navigator navigator;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AndroidApplication.instance().getAppComponent().inject(this);
-        findView();
         loginPresenter.setView(this);
-    }
-
-    private void findView() {
-        mLayoutLoginZalo = findViewById(R.id.layoutLoginZalo);
-        mLayoutLoginZalo.setOnClickListener(this);
+        findViewById(R.id.layoutLoginZalo).setOnClickListener(this);
     }
 
     @Override
@@ -59,7 +68,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
     }
 
     private void startLoginZalo() {
-        Timber.tag(TAG).d("startLoginZalo................");
         showLoading();
         loginPresenter.loginZalo(this);
     }
@@ -91,63 +99,42 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void gotoMainActivity() {
-//        Intent intent = new Intent(this,  ZPHomeActivity.class);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        navigator.startHomeActivity(this);
         finish();
     }
 
     @Override
     public void showLoading() {
-        Timber.tag(TAG).d("showDialog..........progress:" + mProgressDialog);
         if (isFinishing()) {
             return;
         }
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-        Timber.tag(TAG).d("showDialog..........hehehe");
-        mProgressDialog = ProgressDialog.show(LoginZaloActivity.this, "", "Loading", true, true, new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mProgressDialog.dismiss();
-            }
-        });
+        hideLoading();
+        mProgressDialog = ProgressDialog.show(this, getString(R.string.login), getString(R.string.loading));
         mProgressDialog.setCanceledOnTouchOutside(false);
     }
 
     public void hideLoading() {
-        Timber.tag(TAG).d("hideDialog..........");
-        Timber.tag(TAG).d("hideDialog..........mProgressDialog:" + mProgressDialog);
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            return;
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
         }
-        mProgressDialog.dismiss();
     }
 
     @Override
     public void showRetry() {
-
     }
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override
     public void showError(String message) {
-       showToast(message);
+        showToast(message);
     }
 
     @Override
     public Context getContext() {
         return this;
-    }
-
-    public boolean isShowLoading() {
-        if (mProgressDialog == null)
-            return false;
-        return mProgressDialog.isShowing();
     }
 }
