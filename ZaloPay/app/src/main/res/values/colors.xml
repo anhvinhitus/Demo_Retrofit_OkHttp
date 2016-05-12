@@ -43,4 +43,7 @@
 
     <color name="bg_translucence_white">#88ffffff</color>
     <color name="text_green">#008fe5</color>
+
+    <color name="icon_enabled">#FFFFFFFF</color>
+    <color name="icon_disabled">#FF63727B</color>
 </resources>

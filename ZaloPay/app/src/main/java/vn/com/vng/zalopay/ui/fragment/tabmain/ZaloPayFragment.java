@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,6 +25,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -46,8 +50,15 @@ public class ZaloPayFragment extends BaseMainFragment {
     User user;
 
     /* Advertisement START */
-    @Bind(R.id.imgAdsBanner)
-    ImageView mImgAdsBanner;
+    @Bind(R.id.layoutBannerFullScreen)
+    View mLayoutBannerFullScreen;
+
+    @Bind(R.id.viewpager)
+    ViewPager mBannerViewpager;
+    BannerPagerAdapter mBannerPagerAdapter;
+
+    @Bind(R.id.indicator)
+    SmartTabLayout mBannerIndicator;
 
     @Bind(R.id.layoutAdsSub)
     View mLayoutAdsSub;
@@ -77,7 +88,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showAdsBanner("http://dangky3g.com.vn/wp-content/uploads/2015/09/vinaphone-khuyen-mai-25-9.png");
+        showAdsBanner();
         showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!");
         initReactNativeApps();
     }
@@ -138,18 +149,22 @@ public class ZaloPayFragment extends BaseMainFragment {
     }
 
     /* Show|Hide Banner START */
-    public void showAdsBanner(String url) {
-        if (TextUtils.isEmpty(url)) {
-            hideAdsBanner();
-        } else {
-            Glide.with(this).load(url).asBitmap().into(mImgAdsBanner);
-            mImgAdsBanner.setVisibility(View.VISIBLE);
+    public void showAdsBanner() {
+        //Glide.with(this).load(url).asBitmap().into(mImgAdsBanner);
+        List<Integer> bannerResource = new ArrayList<>();
+        bannerResource.add(R.drawable.ic_banner_full_screen1);
+        bannerResource.add(R.drawable.ic_banner_full_screen2);
+        mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource);
+        mBannerViewpager.setAdapter(mBannerPagerAdapter);
+        mBannerIndicator.setViewPager(mBannerViewpager);
+        if (mLayoutBannerFullScreen!=null) {
+            mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
         }
     }
 
     public void hideAdsBanner() {
-        if (mImgAdsBanner!=null) {
-            mImgAdsBanner.setVisibility(View.GONE);
+        if (mLayoutBannerFullScreen !=null) {
+            mLayoutBannerFullScreen.setVisibility(View.GONE);
         }
     }
 
