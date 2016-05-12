@@ -68,6 +68,7 @@
     <dimen name="zpw_text_size_big">18sp</dimen>
     <dimen name="zpw_text_size_small">12sp</dimen>
     <dimen name="zpw_margin_top_supper_label">10dp</dimen>
+      <dimen name="zpw_margin_top">20dp</dimen>
     <dimen name="zpw_margin_top_medium_label">5dp</dimen>
     <dimen name="zpw_margin_left">5dp</dimen>
     <dimen name="zpw_row_padding">5dp</dimen>
