@@ -5,6 +5,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -132,26 +133,32 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
             showErrorView("User info not found!");
             return;
         }
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        try {
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
-        EPaymentChannel forcedPaymentChannel = null;
-        paymentInfo.appID= order.getAppid();
-        paymentInfo.zaloUserID = String.valueOf(user.uid);
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
-        paymentInfo.appTime = System.currentTimeMillis();
-        paymentInfo.appTransID = order.getApptransid();
-        Timber.tag("_____________________").d("paymentInfo.appTransID:" + paymentInfo.appTransID);
-        paymentInfo.itemName = order.getItem();
-        paymentInfo.amount = Long.parseLong(order.getAmount());
-        paymentInfo.description = order.getDescription();
-        paymentInfo.embedData = order.getEmbeddata();
-        //lap vao ví appId = appUser = 1
-        paymentInfo.appUser = order.getAppuser();
-        paymentInfo.mac = order.getMac();
+            EPaymentChannel forcedPaymentChannel = null;
+            paymentInfo.appID = order.getAppid();
+            paymentInfo.zaloUserID = String.valueOf(user.uid);
+            paymentInfo.zaloPayAccessToken = user.accesstoken;
+            paymentInfo.appTime = Long.valueOf(order.getApptime());
+            paymentInfo.appTransID = order.getApptransid();
+            Timber.tag("_____________________").d("paymentInfo.appTransID:" + paymentInfo.appTransID);
+            paymentInfo.itemName = order.getItem();
+            paymentInfo.amount = Long.parseLong(order.getAmount());
+            paymentInfo.description = order.getDescription();
+            paymentInfo.embedData = order.getEmbeddata();
+            //lap vao ví appId = appUser = 1
+            paymentInfo.appUser = order.getAppuser();
+            paymentInfo.mac = order.getMac();
 
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
+            Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-        ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
+            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
+        } catch (NumberFormatException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

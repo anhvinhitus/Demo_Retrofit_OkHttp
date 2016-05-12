@@ -42,7 +42,7 @@
     <string name="zingpaysdk_alert_processing_bank">Đang kết nối với ngân hàng</string>
     <string name="zingpaysdk_alert_atm_wrong_4last_digits">4 số cuối mã thẻ không chính xác</string>
     <string name="zingpaysdk_alert_atm_wrong_4last_digits_more">Bạn đã nhập sai quá số lần cho phép. Thông tin thẻ cũ sẽ bị hủy.</string>
-    <string name="zingpaysdk_alert_atm_expired">Giao dịch đã quá hạn, bạn vui lòng thực hiện lại thanh toán.</string>
+    <string name="zingpaysdk_alert_atm_expired">Giao dịch đã quá hạn\n.Vui lòng thực hiện lại thanh toán.</string>
     <string name="zingpaysdk_alert_atm_incomplete_captcha">Mã captcha tối thiểu phải đủ 6 kí tự.</string>
     <string name="zingpaysdk_alert_atm_incomplete_otp">Mã OTP tối thiểu phải đủ 4 kí tự.</string>
     <string name="zingpaysdk_alert_credit_card_cancel">Giao dịch đã bị hủy</string>
@@ -74,15 +74,11 @@
    	
    	<string name="zingpaysdk_conf_gwinfo_gchannel_list">channel_group_list</string>
    	<string name="zingpaysdk_conf_gwinfo_gchannel_prefix">channel_group_</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_atm">6</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_credit_card">36</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_google_wallet">33</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_sms">5</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_zalopay">38</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_merge_card">2</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_telco">0</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_zing_card">1</string>
-   	<string name="zingpaysdk_conf_gwinfo_gchannel_123pay">37</string>
+   	
+   	<string name="zingpaysdk_conf_gwinfo_channel_link_card">1000</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_atm">6</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
+   	<string name="zingpaysdk_conf_gwinfo_channel_zalopay">38</string>
    	
    	<string name="zingpaysdk_conf_gwinfo_channel_list">channel_list_</string>
    	<string name="zingpaysdk_conf_gwinfo_channel_prefix">channel_</string>
@@ -91,19 +87,6 @@
    	
    	<string name="zpw_conf_gwinfo_mapped_card_list">mapped_card_</string>
    	<string name="zpw_conf_gwinfo_mapped_card_info">mapped_card_list_</string>
-   	
-   	<string name="zingpaysdk_conf_gwinfo_channel_atm">6</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card_visa">19</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card_master">20</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_credit_card_jcb">21</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_google_wallet">33</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_sms">5</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_telco_mobi">2</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_telco_vina">3</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_telco_viettel">4</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_zing_card">1</string>
-   	<string name="zingpaysdk_conf_gwinfo_channel_123pay">37</string>
    	
    	<string name="zingpaysdk_conf_atm_api_num_of_captcha">6</string>
    	<string name="zingpaysdk_conf_atm_api_num_of_otp">4</string>
@@ -155,10 +138,11 @@
    	<string name="zpw_string_acc_name_hint">10 số tài khoản thẻ đã năng</string>
    	<string name="zpw_string_acc_password_hint">06-16 số mật mã</string>
    	
-   	<string name="zpw_string_credit_card_expired_date_hint">Ngày hết hạn</string>
+   	<string name="zpw_string_credit_card_expired_date_hint">Ngày hết hạn (mm/yy)</string>
    	<string name="zpw_string_credit_card_cvv_hint">CVV</string>
    	
    	<string name="zpw_string_payment_success_label">THANH TOÁN THÀNH CÔNG!</string>
+   	   	<string name="zpw_string_payment_error_label">NẠP TIỀN KHÔNG THÀNH CÔNG!</string>
    	<string name="zpw_string_credit_card_save_label">Lưu thông tin</string>
    	<string name="zpw_string_credit_card_save_label_01">mã thẻ</string>
    	<string name="zpw_string_hidden_character">***</string>
@@ -180,6 +164,7 @@
 	
    	<string name="zpw_string_title_fee">Phí thanh toán</string>
    	<string name="zpw_string_title_total_pay">Thanh toán</string>
+   	<string name = "ic_unsuccess">ic_unsuccess.png</string>
    	
    	<string name="zpw_string_vnd">VNĐ</string>
    	
