@@ -10,6 +10,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
@@ -54,7 +55,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
         if (card != null) {
             bankCard = new BankCard();
             bankCard.subAccNumber = card.last4cardno;
-
+            bankCard.type = Enums.BankCard.VISA;
+            bankCard.userName = "Vu Manh Hieu";
         }
         return bankCard;
     }
