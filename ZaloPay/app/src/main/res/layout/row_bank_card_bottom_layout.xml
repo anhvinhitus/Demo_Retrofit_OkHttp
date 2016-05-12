@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btn_add_card"
+        style="@style/Button.Default"
+        android:layout_width="208dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/ic_lc_card_add"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:text="@string/link_card_other"
+        android:textAllCaps="false"
+        android:textSize="@dimen/textsize.small" />
+
+
+</FrameLayout>
+

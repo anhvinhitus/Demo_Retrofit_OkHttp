@@ -42,5 +42,6 @@
     <dimen name="toolbar_elevation">8dp</dimen>
 
     <dimen name="leftmenu.avatar">72dp</dimen>
+    <dimen name="border_radius">8dp</dimen>
     <dimen name="leftmenu.avatar.radius">35dp</dimen>
 </resources>

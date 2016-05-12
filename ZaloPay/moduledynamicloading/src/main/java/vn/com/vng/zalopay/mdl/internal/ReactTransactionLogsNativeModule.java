@@ -13,6 +13,7 @@ import com.facebook.react.bridge.WritableMap;
  * Created by huuhoa on 5/8/16.
  */
 public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule {
+
     public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
