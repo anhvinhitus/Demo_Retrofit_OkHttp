@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
+import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 
@@ -66,6 +67,11 @@ public class Navigator {
 
     public void startLinkCardActivity(Activity activity) {
         Intent intent = new Intent(activity, LinkCardActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startLinkCardProducedureActivity(Activity activity) {
+        Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
         activity.startActivity(intent);
     }
 }
