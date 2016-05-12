@@ -6,12 +6,17 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.Enums;
+import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
@@ -63,8 +68,18 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView {
         presenter.setView(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
         recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         recyclerView.setAdapter(mAdapter);
+
+        ArrayList list = new ArrayList();
+        list.add(new BankCard(Enums.BankCard.JCB, "1234", "Vu Manh Hieu"));
+        list.add(new BankCard(Enums.BankCard.MASTERCARD, "1234", "Vu Manh Hieu"));
+        list.add(new BankCard(Enums.BankCard.VISA, "1234", "Vu Manh Hieu"));
+        mAdapter.setData(list);
     }
 
     @Override
