@@ -67,7 +67,7 @@ android {
         }
         debug {
             minifyEnabled false
-          //  applicationIdSuffix ".debug"
+            //  applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
 
@@ -169,4 +169,5 @@ dependencies {
 
     compile project(':zalosdk')
     compile project(':zalopaymentsdk')
+    compile 'com.android.support:support-v4:23.3.0'
 }

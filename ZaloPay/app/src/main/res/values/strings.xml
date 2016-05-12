@@ -105,4 +105,12 @@
 
     <string name="pressed_back_to_exit">Click back again to exit.</string>
     <string name="link_card_other">Liên kết thẻ khác</string>
+
+    <!-- Link CARDS START-->
+    <string name="link_card_title">Quy trình liên kết thẻ Visa/Master/JCB</string>
+    <string name="link_card_step_one">+ <u><b>Bước 1</b></u>: Khai báo thông tin thẻ &amp; chủ thẻ theo yêu cầu.</string>
+    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: ZaloPay sẽ trừ một số tiền ngẫu nhiên (dưới 10.000 VND) để kiểm tra tính hợp lệ của thẻ. Nếu giả định thành công, thẻ của bạn được liên kết và có thể dùng để thanh toán.</string>
+    <string name="link_card_step_three">+ <u><b>Bước 3</b></u> (không bắt buộc): Xác minh chủ thẻ theo hướng dẫn (nếu được ZaloPay yêu cầu) bằng cách kiểm tra với ngân hàng rồi nhập đúng số tiền đã trừ ở bước 2.</string>
+    <string name="link_card_step_note"><u><b>Lưu ý</b></u>: Thẻ chưa xác minh chỉ được thanh toán tối đa 500.000 VND.</string>
+    <!-- Link CARDS END-->
 </resources>
