@@ -7,8 +7,11 @@ import com.facebook.react.ReactInstanceManager;
 import javax.inject.Inject;
 
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
+import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 
 /**
  * Created by huuhoa on 4/26/16.
@@ -17,8 +20,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
  /*   @Inject
     BundleService mBundleService;
 */
-    @Inject
-    ReactInstanceManager reactInstanceManager;
+//    @Inject
+//    ReactInstanceManager reactInstanceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +38,18 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 
+//    @Override
+//    protected ReactInstanceManager reactInstanceManager() {
+//        return reactInstanceManager;
+//    }
+
     @Override
-    protected ReactInstanceManager reactInstanceManager() {
-        return reactInstanceManager;
+    protected boolean getUseDeveloperSupport() {
+        return BuildConfig.DEBUG;
+    }
+
+    @Override
+    protected ReactInternalPackage reactInternalPackage() {
+        return new ReactInternalPackage(AndroidApplication.instance().getUserComponent().zaloPayRepository());
     }
 }
