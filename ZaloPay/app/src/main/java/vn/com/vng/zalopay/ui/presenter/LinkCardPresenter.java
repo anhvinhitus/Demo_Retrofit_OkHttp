@@ -133,7 +133,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Override
     public void onSuccess(DMappedCard mapCard) {
-        Timber.tag("LinkCardPresenter").d("removed map card", mapCard.toJsonString());
+        Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard.toJsonString());
         linkCardView.hideLoading();
         if (mapCard == null) {
             BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
@@ -143,11 +143,14 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Override
     public void onError(DBaseResponse pMessage) {
+        Timber.tag("LinkCardPresenter").e("onError: " + pMessage.toJsonString());
         if (pMessage == null) {
+            linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
             return;
+        } else {
+            Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.toJsonString());
+            linkCardView.showError(pMessage.returnmessage);
         }
-        Timber.tag("LinkCardPresenter").e("err removed map card", pMessage.toJsonString());
-        linkCardView.showError(pMessage.returnmessage);
     }
 
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
