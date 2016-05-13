@@ -18,10 +18,10 @@ import static java.util.Collections.emptyList;
  */
 
 @Singleton
-public class AppInfoCacheMapper {
+public class AppInfoDaoMapper {
 
     @Inject
-    public AppInfoCacheMapper() {
+    public AppInfoDaoMapper() {
     }
 
     public AppInfo transform(AppInfoEntity appInfoEntity) {
