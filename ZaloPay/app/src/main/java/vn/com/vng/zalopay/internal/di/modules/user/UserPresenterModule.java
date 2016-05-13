@@ -41,8 +41,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    LinkCardPresenter provideLinkCardPresenter() {
-        return new LinkCardPresenter();
+    LinkCardPresenter provideLinkCardPresenter(UserConfig userConfig) {
+        return new LinkCardPresenter(userConfig);
     }
 
     @UserScope

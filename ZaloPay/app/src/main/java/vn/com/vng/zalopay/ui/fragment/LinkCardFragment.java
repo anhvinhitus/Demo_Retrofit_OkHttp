@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -29,8 +31,11 @@ import vn.zing.pay.zmpsdk.merchant.CShareData;
 /**
  * Created by AnhHieu on 5/10/16.
  */
-public class LinkCardFragment extends BaseFragment implements ILinkCardView, LinkCardAdapter.OnClickBankCardListener {
+public class LinkCardFragment extends BaseFragment implements ILinkCardView, LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
 
+    private BottomSheetDialog mBottomSheetDialog;
+    private BottomSheetBehavior mDialogBehavior;
+    private BankCard mCurrentBankCard;
 
     public static LinkCardFragment newInstance() {
 
@@ -85,6 +90,29 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         recyclerView.setAdapter(mAdapter);
 
+        initBottomSheet();
+    }
+
+    private void initBottomSheet() {
+        View view = View.inflate(getContext(), R.layout.bottom_sheet_link_card_layout, null);
+        View layoutMoneySource = view.findViewById(R.id.layoutMoneySource);
+        View layoutDetail = view.findViewById(R.id.layoutDetail);
+        View layoutRemoveLink = view.findViewById(R.id.layoutRemoveLink);
+
+        layoutMoneySource.setOnClickListener(this);
+        layoutDetail.setOnClickListener(this);
+        layoutRemoveLink.setOnClickListener(this);
+
+        mBottomSheetDialog = new BottomSheetDialog(getContext());
+        mBottomSheetDialog.setContentView(view);
+        mDialogBehavior = BottomSheetBehavior.from((View) view.getParent());
+
+//        mBottomSheetDialog.show();
+//        mBottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialog) {
+//            }
+//        });
     }
 
     @Override
@@ -111,6 +139,11 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
     @Override
+    public void removeData(BankCard bankCard) {
+        mAdapter.remove(bankCard);
+    }
+
+    @Override
     public void showLoading() {
         mLoadingView.setVisibility(View.VISIBLE);
     }
@@ -121,13 +154,30 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
     @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
     public void onClickAddBankCard() {
         navigator.startLinkCardProducedureActivity(this);
     }
 
     @Override
     public void onClickMenu(BankCard bankCard) {
+        mCurrentBankCard = bankCard;
 
+        showBottomSheetDialog();
     }
 
     @Override
@@ -152,6 +202,21 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onClick(View v) {
+        int itemId = v.getId();
+        if (itemId == R.id.layoutMoneySource) {
+
+            mDialogBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        } else if (itemId == R.id.layoutDetail) {
+
+            mDialogBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        } else if (itemId == R.id.layoutRemoveLink) {
+            presenter.removeLinkCard(mCurrentBankCard);
+            mDialogBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+    }
+
     private static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int spaceHorizontal;
         private int spaceVertical;
@@ -171,45 +236,11 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.top = 2 * spaceVertical;
             }
-
         }
     }
 
-
-  /*  public static class BottomSheetLinkCard extends BottomSheetDialogFragment {
-
-        public BottomSheetLinkCard() {
-        }
-
-        private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
-
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    dismiss();
-                }
-
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        };
-
-        @Override
-        public void setupDialog(Dialog dialog, int style) {
-            super.setupDialog(dialog, style);
-            View contentView = View.inflate(getContext(), R.layout.bottom_sheet_link_card_layout, null);
-            dialog.setContentView(contentView);
-
-            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
-            CoordinatorLayout.Behavior behavior = params.getBehavior();
-
-            if (behavior != null && behavior instanceof BottomSheetBehavior) {
-                ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
-            }
-        }
-
-    }*/
+    private void showBottomSheetDialog() {
+        mBottomSheetDialog.show();
+    }
 
 }

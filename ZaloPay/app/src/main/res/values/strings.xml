@@ -84,6 +84,10 @@
     <string name="txt_leftmenu_sigout">Đăng Xuất</string>
     <!--Left Menu lable END-->
 
+    <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
+    <string name="txt_link_card_view_detail">Xem chi tiết</string>
+    <string name="txt_link_card_remove_link">Hủy liên kết</string>
+
     <string name="txt_home_qrcode">QUÉT MÃ QR</string>
     <string name="txt_home_deposit">NẠP TIỀN</string>
     <string name="txt_home_link_card">THẺ LIÊN KẾT</string>
