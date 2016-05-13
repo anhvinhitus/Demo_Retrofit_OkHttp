@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +12,11 @@ import android.view.View;
 import javax.inject.Inject;
 
 import butterknife.OnClick;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
+import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +35,7 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnContinute(View view) {
-
+        linkCardProdurePresenter.addLinkCard();
     }
 
     public LinkCardProcedureFragment() {
@@ -109,6 +113,34 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
     @Override
     public void hideLoading() {
         hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void onAddCardSuccess(DMappedCard card) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.CARDNAME, card.cardname);
+        bundle.putString(Constants.FIRST6CARDNO, card.first6cardno);
+        bundle.putString(Constants.LAST4CARDNO, card.last4cardno);
+        bundle.putString(Constants.BANKCODE, card.bankcode);
+        bundle.putLong(Constants.EXPIRETIME, card.expiretime);
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     /**

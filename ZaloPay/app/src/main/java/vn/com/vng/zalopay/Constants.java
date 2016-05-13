@@ -25,4 +25,11 @@ public class Constants {
 
     public static final String ORDER_INFO = "order_info";
 
+    //DMappedCard: model of zalo payment sdk
+    public static final String CARDNAME = "cardname";
+    public static final String FIRST6CARDNO = "first6cardno";
+    public static final String LAST4CARDNO = "last4cardno";
+    public static final String BANKCODE = "bankcode";
+    public static final String EXPIRETIME = "expiretime";
+
 }

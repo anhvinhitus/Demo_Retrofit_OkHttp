@@ -72,6 +72,6 @@ public class Navigator {
 
     public void startLinkCardProducedureActivity(Activity activity) {
         Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
 }
