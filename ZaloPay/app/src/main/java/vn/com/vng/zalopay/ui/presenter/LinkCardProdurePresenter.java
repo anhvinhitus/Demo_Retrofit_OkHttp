@@ -71,11 +71,11 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
             ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
             EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
-            paymentInfo.appID = BuildConfig.PAYAPPID;
             paymentInfo.zaloUserID = String.valueOf(userConfig.getUserId());
+            if (userConfig.getCurrentUser() == null) {
+                return;
+            }
             paymentInfo.zaloPayAccessToken = userConfig.getCurrentUser().accesstoken;
-//            //lap vao ví appId = appUser = 1
-            paymentInfo.appUser = String.valueOf(BuildConfig.PAYAPPID);
 
             Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
             ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);

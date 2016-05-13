@@ -141,6 +141,7 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
         bundle.putLong(Constants.EXPIRETIME, card.expiretime);
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     /**

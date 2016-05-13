@@ -5,23 +5,38 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
+import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
+import vn.zing.pay.zmpsdk.entity.DBaseResponse;
+import vn.zing.pay.zmpsdk.entity.ZPWRemoveMapCardParams;
 import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
+import vn.zing.pay.zmpsdk.listener.ZPWRemoveMapCardListener;
 import vn.zing.pay.zmpsdk.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
  */
-public class LinkCardPresenter extends BaseUserPresenter implements Presenter<ILinkCardView> {
+public class LinkCardPresenter extends BaseUserPresenter implements Presenter<ILinkCardView>, ZPWRemoveMapCardListener {
 
     private ILinkCardView linkCardView;
+
+    @Inject
+    UserConfig userConfig;
+
+    public LinkCardPresenter(UserConfig userConfig) {
+        this.userConfig = userConfig;
+    }
 
     @Override
     public void setView(ILinkCardView iLinkCardView) {
@@ -95,6 +110,46 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
         linkCardView.hideLoading();
     }
 
+    public void removeLinkCard(BankCard bankCard) {
+        linkCardView.showLoading();
+
+        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
+        DMappedCard mapCard = new DMappedCard();
+        mapCard.cardname = bankCard.cardname;
+        mapCard.first6cardno = bankCard.first6cardno;
+        mapCard.last4cardno = bankCard.last4cardno;
+        mapCard.bankcode   = bankCard.bankcode;
+
+        User user = userConfig.getCurrentUser();
+        if (user == null) {
+            linkCardView.showError("Thông tin người dùng không hợp lệ.");
+        }
+        params.accessToken = user.accesstoken;;
+        params.userID = String.valueOf(userConfig.getUserId());
+        params.mapCard = mapCard;
+
+        ZingMobilePayApplication.removeCardMap(params, this);
+    }
+
+    @Override
+    public void onSuccess(DMappedCard mapCard) {
+        Timber.tag("LinkCardPresenter").d("removed map card", mapCard.toJsonString());
+        linkCardView.hideLoading();
+        if (mapCard == null) {
+            BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
+            linkCardView.removeData(bankCard);
+        }
+    }
+
+    @Override
+    public void onError(DBaseResponse pMessage) {
+        if (pMessage == null) {
+            return;
+        }
+        Timber.tag("LinkCardPresenter").e("err removed map card", pMessage.toJsonString());
+        linkCardView.showError(pMessage.returnmessage);
+    }
+
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
         public LinkCardSubscriber() {
         }
@@ -109,4 +164,5 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
     }
+
 }

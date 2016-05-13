@@ -80,6 +80,10 @@
    	<string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
    	<string name="zingpaysdk_conf_gwinfo_channel_zalopay">38</string>
    	
+   	<string name="zpw_conf_wallet_amount">10000</string>
+   	<string name="zpw_conf_wallet_desc">Nạp 10.000 VNĐ vào ví.</string>
+   	<string name="zpw_conf_wallet_id">1</string>
+   	
    	<string name="zingpaysdk_conf_gwinfo_channel_list">channel_list_</string>
    	<string name="zingpaysdk_conf_gwinfo_channel_prefix">channel_</string>
    	

@@ -7,12 +7,10 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 /**
  * Created by AnhHieu on 5/11/16.
  */
-public interface ILinkCardView {
+public interface ILinkCardView extends LoadDataView {
     void setData(List<BankCard> bankCards);
 
     void updateData(BankCard bankCard);
 
-    void showLoading();
-
-    void hideLoading();
+    void removeData(BankCard bankCard);
 }
