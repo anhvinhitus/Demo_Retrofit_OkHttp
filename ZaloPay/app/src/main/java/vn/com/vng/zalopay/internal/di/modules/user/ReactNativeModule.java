@@ -6,6 +6,7 @@ import android.content.Context;
 import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
 import com.facebook.react.shell.MainReactPackage;
 
 import javax.inject.Named;
@@ -13,6 +14,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
@@ -57,15 +59,22 @@ public class ReactNativeModule {
     ReactInstanceManager providesReactInstanceManager(Context context, @Named("internalBundle") String internalBundle,
                                                       @Named("reactInternalPackage") ReactPackage internal,
                                                       @Named("reactMainPackage") ReactPackage main) {
-        Timber.d("providesReactInstanceManager %s", internalBundle);
+        Timber.d("providesReactInstanceManager %s, %s", internalBundle, BuildConfig.DEBUG);
         return ReactInstanceManager.builder()
                 .setApplication((Application) context)
-                .setJSBundleFile(internalBundle + "/main.jsbundle")
+//                .setJSBundleFile(internalBundle + "/main.jsbundle")
+//                .setBundleAssetName("index.android.bundle")
                 .setJSMainModuleName("index.android")
                 .addPackage(main)
                 .addPackage(internal)
-                .setUseDeveloperSupport(false)
+                .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
+                .setNativeModuleCallExceptionHandler(new NativeModuleCallExceptionHandler() {
+                    @Override
+                    public void handleException(Exception e) {
+                        Timber.e(e, "Error from React Native module");
+                    }
+                })
                 .build();
     }
 
