@@ -96,7 +96,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
         linkCardView.hideLoading();
     }
 
-
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
         public LinkCardSubscriber() {
         }

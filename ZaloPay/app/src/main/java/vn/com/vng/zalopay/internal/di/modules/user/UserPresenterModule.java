@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
-import vn.com.vng.zalopay.ui.presenter.LinkCardProcedurePresenter;
+import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 
@@ -46,7 +46,7 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    LinkCardProcedurePresenter provideLinkCardProcedurePresenter() {
-        return new LinkCardProcedurePresenter();
+    LinkCardProdurePresenter provideLinkCardProcedurePresenter() {
+        return new LinkCardProdurePresenter();
     }
 }

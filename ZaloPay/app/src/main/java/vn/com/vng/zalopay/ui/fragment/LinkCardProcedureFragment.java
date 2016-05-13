@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.presenter.LinkCardProcedurePresenter;
+import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 
 /**
@@ -27,7 +27,7 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
     private OnFragmentInteractionListener mListener;
 
     @Inject
-    LinkCardProcedurePresenter linkCardProcedurePresenter;
+    LinkCardProdurePresenter linkCardProdurePresenter;
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnContinute(View view) {
@@ -68,7 +68,7 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        linkCardProcedurePresenter.setView(this);
+        linkCardProdurePresenter.setView(this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -97,7 +97,7 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
 
     @Override
     public void onDestroyView() {
-        linkCardProcedurePresenter.destroyView();
+        linkCardProdurePresenter.destroyView();
         super.onDestroyView();
     }
 

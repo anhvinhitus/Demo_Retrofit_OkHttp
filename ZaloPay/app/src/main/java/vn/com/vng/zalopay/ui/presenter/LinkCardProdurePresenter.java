@@ -6,7 +6,7 @@ import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 /**
  * Created by longlv on 12/05/2016.
  */
-public class LinkCardProcedurePresenter extends BaseUserPresenter implements Presenter<ILinkCardProduceView> {
+public class LinkCardProdurePresenter extends BaseUserPresenter implements Presenter<ILinkCardProduceView> {
 
     private ILinkCardProduceView linkCardProduceView;
     private Subscription subscription;
