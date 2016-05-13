@@ -82,8 +82,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.activity.MiniApplicationActivity"/>
+        <activity android:name=".ui.activity.MiniApplicationActivity" />
 
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
@@ -182,7 +181,15 @@
         <activity
             android:name="io.card.payment.CardIOActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:hardwareAccelerated="true" />
+            android:hardwareAccelerated="true"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:hardwareAccelerated="true"
+            android:theme="@style/AppTheme" />
+
         <activity
             android:name="io.card.payment.DataEntryActivity"
             android:screenOrientation="portrait"  />
