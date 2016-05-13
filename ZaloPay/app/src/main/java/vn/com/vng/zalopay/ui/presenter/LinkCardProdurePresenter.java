@@ -1,11 +1,12 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -26,6 +27,13 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     private ILinkCardProduceView mView;
     private Subscription subscription;
     private Subscription subscriptionGetOrder;
+
+    @Inject
+    UserConfig userConfig;
+
+    public LinkCardProdurePresenter(UserConfig userConfig) {
+        this.userConfig = userConfig;
+    }
 
     @Override
     public void setView(ILinkCardProduceView iLinkCardProduceView) {
@@ -55,10 +63,27 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
 
     public void addLinkCard() {
         showLoadingView();
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, 100000, 2)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CreateWalletOrderSubscriber());
+//        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, 100000, 2)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new CreateWalletOrderSubscriber());
+        try {
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+
+            EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
+            paymentInfo.appID = BuildConfig.PAYAPPID;
+            paymentInfo.zaloUserID = String.valueOf(userConfig.getUserId());
+            paymentInfo.zaloPayAccessToken = userConfig.getCurrentUser().accesstoken;
+//            //lap vao ví appId = appUser = 1
+            paymentInfo.appUser = String.valueOf(BuildConfig.PAYAPPID);
+
+            Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
+            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
+        } catch (NumberFormatException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //Zalo payment sdk

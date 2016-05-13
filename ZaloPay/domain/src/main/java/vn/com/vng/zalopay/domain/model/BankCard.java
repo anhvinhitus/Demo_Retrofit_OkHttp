@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay.domain.model;
 
-import vn.com.vng.zalopay.domain.Enums;
-
 /**
  * Created by AnhHieu on 5/10/16.
  */
 public class BankCard {
-
 
     public String cardname;
     public String first6cardno;
@@ -14,7 +11,7 @@ public class BankCard {
     public String bankcode;
     public long expiretime;
 
-    public Enums.BankCard type;
+    public String type;
 
     public BankCard(String cardname, String first6cardno, String last4cardno, String bankcode, long expiretime) {
         this.cardname = cardname;

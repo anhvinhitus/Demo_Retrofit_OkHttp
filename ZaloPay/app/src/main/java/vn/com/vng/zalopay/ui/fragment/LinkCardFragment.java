@@ -1,15 +1,10 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.Dialog;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -20,13 +15,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.zing.pay.zmpsdk.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -124,12 +122,34 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void onClickAddBankCard() {
-        navigator.startLinkCardProducedureActivity(getActivity());
+        navigator.startLinkCardProducedureActivity(this);
     }
 
     @Override
     public void onClickMenu(BankCard bankCard) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == LinkCardActivity.REQUEST_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                String carname = bundle.getString(Constants.CARDNAME);
+                String first6CardNo = bundle.getString(Constants.FIRST6CARDNO);
+                String last4CardNo = bundle.getString(Constants.LAST4CARDNO);
+                String bankcode =  bundle.getString(Constants.BANKCODE);
+                long expiretime  = bundle.getLong(Constants.EXPIRETIME);
+                BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
+                bankCard.type = CShareData.getInstance().detectCardType(first6CardNo).toString();
+                updateData(bankCard);
+                return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private static class SpacesItemDecoration extends RecyclerView.ItemDecoration {

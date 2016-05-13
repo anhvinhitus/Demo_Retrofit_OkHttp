@@ -18,20 +18,4 @@ public class Enums {
             return mId;
         }
     }
-
-    public enum BankCard {
-        MASTERCARD((short) 1),
-        VISA((short) 2),
-        JCB((short) 3);
-
-        private final short id;
-
-        BankCard(short id) {
-            this.id = id;
-        }
-
-        public short getId() {
-            return id;
-        }
-    }
 }
