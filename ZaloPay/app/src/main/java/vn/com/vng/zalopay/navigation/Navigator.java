@@ -27,14 +27,38 @@ public class Navigator {
     }
 
     public void startLoginActivity(Context context) {
+        startLoginActivity(context, false);
+    }
+
+    public void startLoginActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, LoginZaloActivity.class);
+        if (clearTop) {
+            intent.putExtra("finish", true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        }
+
         context.startActivity(intent);
     }
 
     public void startHomeActivity(Context context) {
+        startHomeActivity(context, false);
+    }
+
+    public void startHomeActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, MainActivity.class);
+
+        if (clearTop) {
+            intent.putExtra("finish", true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        }
+
         context.startActivity(intent);
     }
+
 
     public void startQrCodeActivity(Context context) {
         Intent intent = new Intent(context, QRCodeScannerActivity.class);

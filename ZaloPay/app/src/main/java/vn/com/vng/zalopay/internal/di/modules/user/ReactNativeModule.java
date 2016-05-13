@@ -48,8 +48,6 @@ public class ReactNativeModule {
     @Provides
     @Named("reactInternalPackage")
     ReactPackage provideReactInternalPackage(ZaloPayRepository repository) {
-
-
         return new ReactInternalPackage(repository);
     }
 
@@ -59,10 +57,7 @@ public class ReactNativeModule {
     ReactInstanceManager providesReactInstanceManager(Context context, @Named("internalBundle") String internalBundle,
                                                       @Named("reactInternalPackage") ReactPackage internal,
                                                       @Named("reactMainPackage") ReactPackage main) {
-
-
         Timber.d("providesReactInstanceManager %s", internalBundle);
-
         return ReactInstanceManager.builder()
                 .setApplication((Application) context)
                 .setJSBundleFile(internalBundle + "/main.jsbundle")

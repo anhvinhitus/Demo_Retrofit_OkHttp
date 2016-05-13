@@ -52,12 +52,12 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
 
     private BankCard transform(DMappedCard card) {
         BankCard bankCard = null;
+
         if (card != null) {
-            bankCard = new BankCard();
-            bankCard.subAccNumber = card.last4cardno;
+            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, card.expiretime);
             bankCard.type = Enums.BankCard.VISA;
-            bankCard.userName = "Vu Manh Hieu";
         }
+
         return bankCard;
     }
 

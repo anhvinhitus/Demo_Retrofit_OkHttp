@@ -1,9 +1,13 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.app.Dialog;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -45,7 +49,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_recycleview;
+        return R.layout.fragment_link_card;
     }
 
     @Bind(R.id.listview)
@@ -136,7 +140,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-
             outRect.left = spaceHorizontal;
             outRect.right = spaceHorizontal;
             outRect.bottom = spaceVertical;
@@ -146,6 +149,43 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             }
 
         }
+    }
+
+
+    public static class BottomSheetLinkCard extends BottomSheetDialogFragment {
+
+        public BottomSheetLinkCard() {
+        }
+
+        private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
+
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    dismiss();
+                }
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        };
+
+        @Override
+        public void setupDialog(Dialog dialog, int style) {
+            super.setupDialog(dialog, style);
+            View contentView = View.inflate(getContext(), R.layout.bottom_sheet_link_card_layout, null);
+            dialog.setContentView(contentView);
+
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
+            CoordinatorLayout.Behavior behavior = params.getBehavior();
+
+            if (behavior != null && behavior instanceof BottomSheetBehavior) {
+                ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
+            }
+        }
+
     }
 
 }

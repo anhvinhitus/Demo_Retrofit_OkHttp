@@ -143,8 +143,8 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
                 bgShape.setColor(Color.parseColor("#ef9825"));
                 mLogo.setImageResource(R.drawable.ic_lc_master_card);
             }
-            mUserName.setText(bankCard.userName);
-            mSubAccNumber.setText("*** " + bankCard.subAccNumber);
+            mUserName.setText(bankCard.cardname);
+            mSubAccNumber.setText("*** " + bankCard.last4cardno);
         }
     }
 
