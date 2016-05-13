@@ -13,6 +13,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:scaleType="center"
             android:src="@drawable/ic_bg" />
 
@@ -24,6 +25,13 @@
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
             android:src="@drawable/ic_zalopay" />
+
+       <!--  <include
+                layout="@layout/progress"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="45dp" />-->
     </FrameLayout>
 
 

@@ -13,4 +13,6 @@ public interface PassportRepository {
     Observable<User> login(long zuid, String zAuthCode);
 
     Observable<Boolean> logout();
+
+    Observable<Boolean> verifyAccessToken(long userId, String token);
 }

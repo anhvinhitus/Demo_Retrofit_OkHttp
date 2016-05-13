@@ -72,7 +72,10 @@ public class ZaloPayFragment extends BaseMainFragment {
 
     @Override
     protected void setupFragmentComponent() {
-        AndroidApplication.instance().getUserComponent().inject(this);
+
+        Timber.d("User Component : %s", getUserComponent());
+
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -157,13 +160,13 @@ public class ZaloPayFragment extends BaseMainFragment {
         mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource);
         mBannerViewpager.setAdapter(mBannerPagerAdapter);
         mBannerIndicator.setViewPager(mBannerViewpager);
-        if (mLayoutBannerFullScreen!=null) {
+        if (mLayoutBannerFullScreen != null) {
             mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
         }
     }
 
     public void hideAdsBanner() {
-        if (mLayoutBannerFullScreen !=null) {
+        if (mLayoutBannerFullScreen != null) {
             mLayoutBannerFullScreen.setVisibility(View.GONE);
         }
     }
@@ -178,7 +181,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     }
 
     public void hideAdsSub() {
-        if (mLayoutAdsSub!=null) {
+        if (mLayoutAdsSub != null) {
             mLayoutAdsSub.setVisibility(View.GONE);
         }
     }

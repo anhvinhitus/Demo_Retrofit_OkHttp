@@ -149,7 +149,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
                 try {
                     JSONObject data = profile.getJSONObject("result");
 
-                    Timber.tag(TAG).d(data.toString());
+                    Timber.tag(TAG).d("zalo profile %s", data.toString());
 
                     long userId = data.getLong("userId");
                     String displayName = data.getString("displayName");

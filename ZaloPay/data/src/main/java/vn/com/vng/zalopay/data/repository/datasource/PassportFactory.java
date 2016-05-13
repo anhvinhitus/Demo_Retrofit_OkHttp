@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.PassportService;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -64,5 +65,9 @@ public class PassportFactory {
     public Observable<LogoutResponse> logout() {
         return passportService.logout(userConfig.getCurrentUser().accesstoken, authZaloParams, params)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
+    }
+
+    public Observable<BaseResponse> verifyAccessToken(long uid, String token) {
+        return passportService.verifyAccessToken(payAppId, uid, token);
     }
 }
