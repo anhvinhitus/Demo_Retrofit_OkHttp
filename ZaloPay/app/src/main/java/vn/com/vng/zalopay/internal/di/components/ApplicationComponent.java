@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
+import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class})
@@ -47,7 +48,7 @@ public interface ApplicationComponent {
 
     /*INJECT*/
 
-    void inject(SplashScreenActivity f);
+    void inject(SplashScreenFragment f);
 
     void inject(LoginZaloActivity a);
 }

@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
-import vn.com.vng.zalopay.data.cache.mapper.ZaloPayCacheMapper;
+import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ApplicationRepositoryImpl;
@@ -80,7 +80,7 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayCacheMapper zaloPayCacheMapper) {
+    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
         return new SqlZaloPayScopeImpl(user, session, zaloPayCacheMapper);
     }
 

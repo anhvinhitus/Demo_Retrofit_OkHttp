@@ -17,10 +17,10 @@ import static java.util.Collections.emptyList;
  * Created by AnhHieu on 5/9/16.
  */
 @Singleton
-public class ZaloPayCacheMapper {
+public class ZaloPayDaoMapper {
 
     @Inject
-    public ZaloPayCacheMapper() {
+    public ZaloPayDaoMapper() {
     }
 
     public TransactionLog transform(TransHistoryEntity transEntity) {

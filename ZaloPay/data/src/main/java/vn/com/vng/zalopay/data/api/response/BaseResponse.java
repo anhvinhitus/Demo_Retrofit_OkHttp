@@ -13,7 +13,6 @@ public class BaseResponse {
     @SerializedName("returnmessage")
     public String message;
 
-
     public boolean isSuccessfulResponse() {
         return err == 1;
     }
