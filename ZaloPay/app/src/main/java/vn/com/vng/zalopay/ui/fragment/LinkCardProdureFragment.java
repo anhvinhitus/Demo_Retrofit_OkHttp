@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,19 +12,21 @@ import android.view.View;
 import javax.inject.Inject;
 
 import butterknife.OnClick;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
+import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LinkCardProcedureFragment.OnFragmentInteractionListener} interface
+ * {@link LinkCardProdureFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LinkCardProcedureFragment#newInstance} factory method to
+ * Use the {@link LinkCardProdureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkCardProcedureFragment extends BaseFragment implements ILinkCardProduceView {
+public class LinkCardProdureFragment extends BaseFragment implements ILinkCardProduceView {
 
     private OnFragmentInteractionListener mListener;
 
@@ -31,10 +35,10 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnContinute(View view) {
-
+        linkCardProdurePresenter.addLinkCard();
     }
 
-    public LinkCardProcedureFragment() {
+    public LinkCardProdureFragment() {
         // Required empty public constructor
     }
 
@@ -42,11 +46,11 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment LinkCardProcedureFragment.
+     * @return A new instance of fragment LinkCardProdureFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LinkCardProcedureFragment newInstance() {
-        LinkCardProcedureFragment fragment = new LinkCardProcedureFragment();
+    public static LinkCardProdureFragment newInstance() {
+        LinkCardProdureFragment fragment = new LinkCardProdureFragment();
         return fragment;
     }
 
@@ -109,6 +113,34 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
     @Override
     public void hideLoading() {
         hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void onAddCardSuccess(DMappedCard card) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.CARDNAME, card.cardname);
+        bundle.putString(Constants.FIRST6CARDNO, card.first6cardno);
+        bundle.putString(Constants.LAST4CARDNO, card.last4cardno);
+        bundle.putString(Constants.BANKCODE, card.bankcode);
+        bundle.putLong(Constants.EXPIRETIME, card.expiretime);
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     /**

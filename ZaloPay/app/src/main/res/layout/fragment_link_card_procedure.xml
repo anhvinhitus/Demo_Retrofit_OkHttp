@@ -6,7 +6,7 @@
     android:clipToPadding="false"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="vn.com.vng.zalopay.ui.fragment.LinkCardProcedureFragment">
+    tools:context=".ui.fragment.LinkCardProdureFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

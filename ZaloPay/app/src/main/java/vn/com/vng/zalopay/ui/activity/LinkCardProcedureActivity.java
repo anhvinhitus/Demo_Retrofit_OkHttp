@@ -3,13 +3,13 @@ package vn.com.vng.zalopay.ui.activity;
 import android.os.Bundle;
 
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.fragment.LinkCardProcedureFragment;
+import vn.com.vng.zalopay.ui.fragment.LinkCardProdureFragment;
 
 public class LinkCardProcedureActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return LinkCardProcedureFragment.newInstance();
+        return LinkCardProdureFragment.newInstance();
     }
 
     @Override
