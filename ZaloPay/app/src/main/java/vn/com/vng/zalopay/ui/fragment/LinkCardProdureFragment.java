@@ -21,12 +21,12 @@ import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LinkCardProcedureFragment.OnFragmentInteractionListener} interface
+ * {@link LinkCardProdureFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LinkCardProcedureFragment#newInstance} factory method to
+ * Use the {@link LinkCardProdureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkCardProcedureFragment extends BaseFragment implements ILinkCardProduceView {
+public class LinkCardProdureFragment extends BaseFragment implements ILinkCardProduceView {
 
     private OnFragmentInteractionListener mListener;
 
@@ -38,7 +38,7 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
         linkCardProdurePresenter.addLinkCard();
     }
 
-    public LinkCardProcedureFragment() {
+    public LinkCardProdureFragment() {
         // Required empty public constructor
     }
 
@@ -46,11 +46,11 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment LinkCardProcedureFragment.
+     * @return A new instance of fragment LinkCardProdureFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LinkCardProcedureFragment newInstance() {
-        LinkCardProcedureFragment fragment = new LinkCardProcedureFragment();
+    public static LinkCardProdureFragment newInstance() {
+        LinkCardProdureFragment fragment = new LinkCardProdureFragment();
         return fragment;
     }
 
