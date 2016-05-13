@@ -5,23 +5,24 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
@@ -51,6 +52,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     protected int getResLayoutId() {
         return R.layout.fragment_link_card;
     }
+
+    @Inject
+    Navigator navigator;
 
     @Bind(R.id.listview)
     RecyclerView recyclerView;
@@ -120,7 +124,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void onClickAddBankCard() {
-
+        navigator.startLinkCardProducedureActivity(getActivity());
     }
 
     @Override
@@ -152,7 +156,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
 
-    public static class BottomSheetLinkCard extends BottomSheetDialogFragment {
+  /*  public static class BottomSheetLinkCard extends BottomSheetDialogFragment {
 
         public BottomSheetLinkCard() {
         }
@@ -186,6 +190,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             }
         }
 
-    }
+    }*/
 
 }

@@ -7,8 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import javax.inject.Inject;
+
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
+import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,9 +22,12 @@ import vn.com.vng.zalopay.R;
  * Use the {@link LinkCardProcedureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkCardProcedureFragment extends BaseFragment {
+public class LinkCardProcedureFragment extends BaseFragment implements ILinkCardProduceView {
 
     private OnFragmentInteractionListener mListener;
+
+    @Inject
+    LinkCardProdurePresenter linkCardProdurePresenter;
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnContinute(View view) {
@@ -45,7 +52,7 @@ public class LinkCardProcedureFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
-
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -61,7 +68,7 @@ public class LinkCardProcedureFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        linkCardProdurePresenter.setView(this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -86,6 +93,22 @@ public class LinkCardProcedureFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        linkCardProdurePresenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
     }
 
     /**

@@ -1,10 +1,10 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:fitsSystemWindows="true"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="vn.com.vng.zalopay.ui.fragment.LinkCardProcedureFragment">
 
@@ -30,21 +30,27 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="56dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_link_card"
+                    android:scaleType="centerInside"
                     android:src="@drawable/ic_lc_visa_card_blue" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="56dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="14dp"
-                    android:src="@drawable/ic_lc_visa_card_blue" />
+                    android:background="@drawable/ic_link_card"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_lc_master_card" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="56dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="14dp"
-                    android:src="@drawable/ic_lc_visa_card_blue" />
+                    android:background="@drawable/ic_link_card"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_lc_jcb_card" />
             </LinearLayout>
 
 
@@ -88,4 +94,4 @@
             android:textColor="@color/white" />
 
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>
