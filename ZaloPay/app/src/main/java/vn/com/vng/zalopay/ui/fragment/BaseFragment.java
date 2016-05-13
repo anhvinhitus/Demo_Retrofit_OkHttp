@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -37,7 +38,6 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.tag(TAG);
-        setupFragmentComponent();
     }
 
     @Nullable
@@ -45,9 +45,9 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(getResLayoutId(), container, false);
         ButterKnife.bind(this, view);
+        setupFragmentComponent();
         return view;
     }
-
 
     @Override
     public void onDestroyView() {
