@@ -7,16 +7,20 @@ import vn.com.vng.zalopay.domain.Enums;
  */
 public class BankCard {
 
+
+    public String cardname;
+    public String first6cardno;
+    public String last4cardno;
+    public String bankcode;
+    public long expiretime;
+
     public Enums.BankCard type;
-    public String subAccNumber;
-    public String userName;
 
-    public BankCard(Enums.BankCard type, String subAccNumber, String userName) {
-        this.type = type;
-        this.subAccNumber = subAccNumber;
-        this.userName = userName;
-    }
-
-    public BankCard() {
+    public BankCard(String cardname, String first6cardno, String last4cardno, String bankcode, long expiretime) {
+        this.cardname = cardname;
+        this.first6cardno = first6cardno;
+        this.last4cardno = last4cardno;
+        this.bankcode = bankcode;
+        this.expiretime = expiretime;
     }
 }
