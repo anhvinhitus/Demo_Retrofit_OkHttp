@@ -94,8 +94,8 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardProducedureActivity(Activity activity) {
-        Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
+    public void startLinkCardProducedureActivity(Fragment activity) {
+        Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
         activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
 }

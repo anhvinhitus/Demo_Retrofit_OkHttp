@@ -13,10 +13,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
 import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
+import vn.zing.pay.zmpsdk.entity.enumeration.ECardType;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -133,15 +133,17 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
         public void bindView(BankCard bankCard) {
             GradientDrawable bgShape = (GradientDrawable) mHeaderView.getBackground();
-            if (bankCard.type.equals(Enums.BankCard.JCB)) {
+            if (bankCard.type.equals(ECardType.JCB.toString())) {
                 mLogo.setImageResource(R.drawable.ic_lc_jcb_card);
                 bgShape.setColor(Color.parseColor("#1e3368"));
-            } else if (bankCard.type.equals(Enums.BankCard.VISA)) {
+            } else if (bankCard.type.equals(ECardType.VISA.toString())) {
                 bgShape.setColor(Color.parseColor("#0f7ecd"));
                 mLogo.setImageResource(R.drawable.ic_lc_visa_card);
-            } else if (bankCard.type.equals(Enums.BankCard.MASTERCARD)) {
+            } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
                 bgShape.setColor(Color.parseColor("#ef9825"));
                 mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
+                mLogo.setImageResource(R.color.transparent);
             }
             mUserName.setText(bankCard.cardname);
             mSubAccNumber.setText("*** " + bankCard.last4cardno);
