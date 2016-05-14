@@ -47,7 +47,7 @@
     <dimen name="zpw_padding_10">10dp</dimen>
     <dimen name="zpw_padding_15">15dp</dimen>
     <dimen name="zpw_text_size_medium">15sp</dimen>
-       <dimen name="zpw_text_size_medium_l">18sp</dimen>
+    <dimen name="zpw_text_size_medium_l">18sp</dimen>
     <dimen name="zpw_text_size_medium_m">13sp</dimen>
     <dimen name="zpw_padding_20">20dp</dimen>
     <dimen name="zpw_margin_top_supper_supper_label">25dp</dimen>
@@ -68,7 +68,7 @@
     <dimen name="zpw_text_size_big">18sp</dimen>
     <dimen name="zpw_text_size_small">12sp</dimen>
     <dimen name="zpw_margin_top_supper_label">10dp</dimen>
-      <dimen name="zpw_margin_top">20dp</dimen>
+    <dimen name="zpw_margin_top">20dp</dimen>
     <dimen name="zpw_margin_top_medium_label">5dp</dimen>
     <dimen name="zpw_margin_left">5dp</dimen>
     <dimen name="zpw_row_padding">5dp</dimen>
@@ -83,6 +83,10 @@
     <dimen name="zpw_padding_left_right">15dp</dimen>
     <dimen name="zpw_padding_top_bottom">10dp</dimen>
     <dimen name="text_size_vnd">14dp</dimen>
-        <dimen name="zpw_text_size_medium_small">14dp</dimen>
+    <dimen name="zpw_text_size_medium_small">14dp</dimen>
+    <!-- dimens dialog -->
+       <dimen name="alert_width">290dp</dimen>
+    <dimen name="common_circle_width">3dp</dimen>
+    <dimen name="progress_circle_radius">34dp</dimen>
 
 </resources>

@@ -15,7 +15,7 @@
      
     <color name="background">#f0f4f6</color>
     
-    <color name="text_color">#acb3ba</color>
+     <color name="text_color">#acb3ba</color> 
     <color name="text_color_bold">#24272b</color>
     <color name="text_color_primary">#008fe5</color>
     <color name="text_color_grey">#727f8c</color>
@@ -31,5 +31,24 @@
     <color name="border">#40e1e1e1</color>
     
    <color name="holo_red_light">#ffff4444</color>
-
+<!-- Color dialog -->
+<color name="float_transparent">#00000000</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="gray_btn_bg_color">#D0D0D0</color>
+    <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+    <color name="blue_btn_bg_color">#AEDEF4</color>
+    <color name="blue_btn_bg_pressed_color">#96BFD2</color>
+    <color name="red_btn_bg_color">#DD6B55</color>
+    <color name="red_btn_bg_pressed_color">#CD5B55</color>
+    <color name="error_stroke_color">#F27474</color>
+    <color name="success_stroke_color">#A5DC86</color>
+    <color name="trans_success_stroke_color">#33A5DC86</color>
+    <color name="warning_stroke_color">#F8BB86</color>
+    <color name="text_color_dl">#575757</color>
+    <color name="material_blue_grey_80">#ff37474f</color>
+    <color name="material_blue_grey_90">#ff263238</color>
+    <color name="material_blue_grey_95">#ff21272b</color>
+    <color name="material_deep_teal_20">#ff80cbc4</color>
+    <color name="material_deep_teal_50">#ff009688</color>
 </resources>

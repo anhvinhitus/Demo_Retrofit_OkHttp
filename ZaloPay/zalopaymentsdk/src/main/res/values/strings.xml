@@ -1,5 +1,5 @@
 <resources>
-
+	<string name="zpw_string_merchant_creditcard_3ds_url_prefix">0eafstag.cardinalcommerce.com/EAFService/</string>
     <!-- font name locally -->
     <string name="zpw_font_regular">Roboto-Regular</string>
     <string name="zpw_font_medium">Roboto-Medium</string>
@@ -174,5 +174,9 @@
    	
    	<string name="zpw_string_select_bank">Chọn</string>
    	<string name="zpw_string_title_select_back">Lựa chọn ngân hàng</string>
-
-</resources>
+ <string name="app_name">SweetAlertDialog</string>
+    <string name="dialog_default_title">Here\'s a message!</string>
+    <string name="dialog_ok">  OK  </string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="LOADING">Loading...</string></resources>
+    
