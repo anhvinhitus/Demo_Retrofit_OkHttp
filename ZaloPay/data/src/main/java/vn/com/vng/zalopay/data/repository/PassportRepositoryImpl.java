@@ -30,24 +30,19 @@ public class PassportRepositoryImpl implements PassportRepository {
     }
 
     @Override
-    public Observable<User> login() {
-        return passportFactory.login()
-                .map(userEntity -> userEntityDataMapper.transform(userEntity));
-    }
-
-    @Override
     public Observable<User> login(final long zuid, String zAuthCode) {
-        return passportFactory.login(zuid, zAuthCode).map(userEntity -> {
-            User user = userEntityDataMapper.transform(userEntity, zuid);
+        return passportFactory.login(zuid, zAuthCode)
+                .map(userEntity -> {
+            User user = userEntityDataMapper.transform(userEntity);
             user.dname = userConfig.getDisPlayName();
             user.avatar = userConfig.getAvatar();
             return user;
-        });
+        }).doOnNext(user -> userConfig.saveConfig(user));
     }
 
     @Override
-    public Observable<Boolean> logout() {
-        return passportFactory.logout().map(logoutResponse -> Boolean.TRUE);
+    public Observable<Boolean> logout(long uid, String token) {
+        return passportFactory.logout(uid, token).map(logoutResponse -> Boolean.TRUE);
     }
 
     @Override

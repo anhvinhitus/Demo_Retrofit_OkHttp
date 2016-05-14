@@ -8,11 +8,10 @@ import vn.com.vng.zalopay.domain.model.User;
  * Phần login, logout của ứng dụng.
  */
 public interface PassportRepository {
-    Observable<User> login();
 
     Observable<User> login(long zuid, String zAuthCode);
 
-    Observable<Boolean> logout();
+    Observable<Boolean> logout(long uid, String token);
 
     Observable<Boolean> verifyAccessToken(long userId, String token);
 }

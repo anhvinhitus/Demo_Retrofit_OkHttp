@@ -52,18 +52,14 @@ public class PassportFactory {
         this.payAppId = payAppId;
     }
 
-    public Observable<LoginResponse> login() {
-        return passportService.login(authZaloParams, params)
-                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse));
-    }
-
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
-        return passportService.login(payAppId, zuid, zAuthCode, params)
-                .doOnNext(loginResponse -> userConfig.saveConfig(loginResponse, zuid));
+        return passportService.login(payAppId, zuid, zAuthCode);
     }
 
-    public Observable<LogoutResponse> logout() {
-        return passportService.logout(userConfig.getCurrentUser().accesstoken, authZaloParams, params)
+    public Observable<LogoutResponse> logout(long uid, String accesstoken) {
+
+        //K nen lay uid,accesstoken  tu userconfig.
+        return passportService.logout(payAppId, uid, accesstoken)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
     }
 
