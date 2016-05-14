@@ -206,14 +206,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     public void onClick(View v) {
         int itemId = v.getId();
         if (itemId == R.id.layoutMoneySource) {
-
-            mDialogBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutDetail) {
-
-            mDialogBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
             presenter.removeLinkCard(mCurrentBankCard);
-            mDialogBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            mBottomSheetDialog.dismiss();
         }
     }
 
