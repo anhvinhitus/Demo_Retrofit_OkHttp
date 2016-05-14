@@ -16,7 +16,7 @@ public interface PassportService {
 
     @FormUrlEncoded
     @POST("um/createaccesstoken")
-    Observable<LoginResponse> login(@Field("appid") long appid, @Field("loginuid") long zuid, @Field("zalooauthcode") String zAuthCode);
+    Observable<LoginResponse> login(@Field("appid") long appid, @Field("loginuid") long zuid, @Field("oauthcode") String zAuthCode);
 
 
     @FormUrlEncoded
