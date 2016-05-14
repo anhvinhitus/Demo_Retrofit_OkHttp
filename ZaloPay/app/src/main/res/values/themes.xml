@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -10,6 +11,12 @@
         <item name="android:listViewStyle">@style/ListView</item>
         <item name="separate">@color/separate</item>
         <item name="separate.height">@dimen/separate</item>
+
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

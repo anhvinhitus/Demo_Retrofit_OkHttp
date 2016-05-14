@@ -1,13 +1,9 @@
 package vn.com.vng.zalopay.data.api;
 
 
-import java.util.HashMap;
-
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.QueryMap;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
@@ -20,21 +16,16 @@ public interface PassportService {
 
     @FormUrlEncoded
     @POST("um/createaccesstoken")
-    Observable<LoginResponse> login(@FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);
-
-
-    @FormUrlEncoded
-    @POST("um/createaccesstoken")
-    Observable<LoginResponse> login(@Field("appid") long appid, @Field("userid") long zuid, @Field("zalooauthcode") String zAuthCode, @QueryMap HashMap<String, String> params);
+    Observable<LoginResponse> login(@Field("appid") long appid, @Field("loginuid") long zuid, @Field("zalooauthcode") String zAuthCode);
 
 
     @FormUrlEncoded
     @POST("um/removeaccesstoken")
-    Observable<LogoutResponse> logout(@Field("accesstoken") String accesstoken, @FieldMap HashMap<String, String> authParams, @QueryMap HashMap<String, String> params);
+    Observable<LogoutResponse> logout(@Field("appid") long appid, @Field("userid") long uid, @Field("accesstoken") String accesstoken);
 
 
     @FormUrlEncoded
     @POST("um/verifyaccesstoken")
-    Observable<BaseResponse> verifyAccessToken(@Field("appid") long appid, @Field("userid") long userid, @Field("accesstoken") String accesstoken);
+    Observable<BaseResponse> verifyAccessToken(@Field("appid") long appid, @Field("userid") long uid, @Field("accesstoken") String accesstoken);
 
 }
