@@ -10,4 +10,5 @@ import vn.com.vng.zalopay.domain.model.Order;
 public interface IQRScanView extends LoadDataView {
     public void showOrderDetail(Order order);
     Activity getActivity();
+    void onTokenInvalid();
 }

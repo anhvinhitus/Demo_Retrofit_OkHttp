@@ -9,4 +9,5 @@ import vn.com.vng.zalopay.ui.view.LoadDataView;
  */
 public interface IBalanceTopupView  extends LoadDataView {
     Activity getActivity();
+    void onTokenInvalid();
 }

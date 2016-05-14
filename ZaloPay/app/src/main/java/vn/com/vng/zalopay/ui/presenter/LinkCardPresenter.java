@@ -11,12 +11,12 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 import vn.zing.pay.zmpsdk.entity.DBaseResponse;
 import vn.zing.pay.zmpsdk.entity.ZPWRemoveMapCardParams;
@@ -32,10 +32,10 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
     private ILinkCardView linkCardView;
 
     @Inject
-    UserConfig userConfig;
+    User user;
 
-    public LinkCardPresenter(UserConfig userConfig) {
-        this.userConfig = userConfig;
+    public LinkCardPresenter(User user) {
+        this.user = user;
     }
 
     @Override
@@ -120,12 +120,13 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
         mapCard.last4cardno = bankCard.last4cardno;
         mapCard.bankcode   = bankCard.bankcode;
 
-        User user = userConfig.getCurrentUser();
         if (user == null) {
             linkCardView.showError("Thông tin người dùng không hợp lệ.");
+            linkCardView.hideLoading();
+            return;
         }
         params.accessToken = user.accesstoken;;
-        params.userID = String.valueOf(userConfig.getUserId());
+        params.userID = String.valueOf(user.uid);
         params.mapCard = mapCard;
 
         ZingMobilePayApplication.removeCardMap(params, this);
@@ -135,7 +136,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
     public void onSuccess(DMappedCard mapCard) {
         Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard.toJsonString());
         linkCardView.hideLoading();
-        if (mapCard == null) {
+        if (mapCard != null) {
             BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
             linkCardView.removeData(bankCard);
         }
@@ -145,8 +146,11 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
     public void onError(DBaseResponse pMessage) {
         Timber.tag("LinkCardPresenter").e("onError: " + pMessage.toJsonString());
         if (pMessage == null) {
-            linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-            return;
+            if (!AndroidUtils.isNetworkAvailable(linkCardView.getContext())) {
+                linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+            } else {
+                linkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+            }
         } else {
             Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.toJsonString());
             linkCardView.showError(pMessage.returnmessage);

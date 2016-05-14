@@ -79,6 +79,7 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
             mItems.remove(values);
         }
         //notifyItemRemoved();
+        notifyDataSetChanged();
     }
 
     public void remove(int location) {

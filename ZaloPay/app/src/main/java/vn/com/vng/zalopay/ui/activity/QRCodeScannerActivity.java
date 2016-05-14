@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -69,7 +71,7 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
     @Override
     protected void onResume() {
         super.onResume();
-        qrCodePresenter.pause();
+        qrCodePresenter.resume();
     }
 
     @Override
@@ -129,6 +131,13 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+    @Override
+    public void onTokenInvalid() {
+        ZaloSDK.Instance.unauthenticate();
+        navigator.startLoginActivity(mQRCodeView.getContext());
+        finish();
     }
 
     @Override

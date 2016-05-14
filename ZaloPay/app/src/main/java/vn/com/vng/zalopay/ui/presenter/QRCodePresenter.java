@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -166,22 +167,21 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
         Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("onComplete.................pPaymentResult:" + pPaymentResult);
         this.hideLoadingView();
         if (pPaymentResult == null) {
-//            ToastUtil.showToast(mView.getActivity(), "Fail!");
-            return;
-        }
-        int resultStatus = pPaymentResult.paymentStatus.getNum();
-        if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-//            ToastUtil.showToast(mView.getActivity(), "Success!");
-            if (mView != null && mView.getActivity() != null) {
-                mView.getActivity().finish();
+            if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
+                mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+            } else {
+                mView.showError("Lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.");
             }
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
-//            ToastUtil.showToast(mView.getActivity(), "Processing!");
-            if (mView != null && mView.getActivity() != null) {
-                mView.getActivity().finish();
+        } else {
+            int resultStatus = pPaymentResult.paymentStatus.getNum();
+            if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                //            ToastUtil.showToast(mView.getActivity(), "Success!");
+                if (mView != null && mView.getActivity() != null) {
+                    mView.getActivity().finish();
+                }
+            } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                mView.onTokenInvalid();
             }
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
-//            ToastUtil.showToast(mView.getActivity(), "Fail!");
         }
     }
 

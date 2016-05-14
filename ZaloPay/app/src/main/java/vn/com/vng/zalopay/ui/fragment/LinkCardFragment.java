@@ -165,6 +165,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void showError(String message) {
+        hideLoading();
         showToast(message);
     }
 

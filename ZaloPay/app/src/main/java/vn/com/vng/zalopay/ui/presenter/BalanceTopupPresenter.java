@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
@@ -170,15 +171,18 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
     @Override
     public void onComplete(ZPPaymentResult pPaymentResult) {
         if (pPaymentResult == null) {
-            return;
-        }
-        int resultStatus = pPaymentResult.paymentStatus.getNum();
-        if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-            ToastUtil.showToast(mView.getActivity(), "Success!");
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
-            ToastUtil.showToast(mView.getActivity(), "Processing!");
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
-            ToastUtil.showToast(mView.getActivity(), "Fail!");
+            if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
+                mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+            } else {
+                mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+            }
+        } else {
+            int resultStatus = pPaymentResult.paymentStatus.getNum();
+            if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                ToastUtil.showToast(mView.getActivity(), "Success!");
+            } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                mView.onTokenInvalid();
+            }
         }
     }
 

@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -20,8 +22,10 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
@@ -34,8 +38,13 @@ import vn.com.vng.zalopay.utils.ToastUtil;
  */
 public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView, InputAmountLayout.IListenerAmountChanged {
     // TODO: Rename parameter arguments, choose names that match
+    private final int MIN_AMOUNT = 10000;
 
     private OnFragmentInteractionListener mListener;
+    private String mValidAmount = "";
+
+    @Inject
+    Navigator navigator;
 
     @Inject
     BalanceTopupPresenter balanceTopupPresenter;
@@ -51,6 +60,10 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @OnClick(R.id.btnDeposit)
     public void onClickDeposit() {
+        if (inputAmountLayout.getAmount() < MIN_AMOUNT) {
+            showError(mValidAmount);
+            return;
+        }
         showProgressDialog();
         balanceTopupPresenter.deposit(inputAmountLayout.getAmount());
     }
@@ -98,6 +111,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
+        mValidAmount = String.format(getResources().getString(R.string.min_money), CurrencyUtil.formatCurrency(MIN_AMOUNT, true));
     }
 
     @Override
@@ -106,6 +120,8 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         balanceTopupPresenter.setView(this);
         inputAmountLayout.requestFocusEdittext();
         inputAmountLayout.setListener(this);
+        String validAmount = String.format(getResources().getString(R.string.min_money), CurrencyUtil.formatCurrency(MIN_AMOUNT, false));
+        tvResourceMoney.setText(validAmount);
     }
 
     @Override
@@ -182,6 +198,13 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         } else {
             btnDeposit.setBackgroundResource(R.drawable.bg_btn_green);
         }
+    }
+
+    @Override
+    public void onTokenInvalid() {
+        ZaloSDK.Instance.unauthenticate();
+        navigator.startLoginActivity(getContext());
+        getActivity().finish();
     }
 
     /**

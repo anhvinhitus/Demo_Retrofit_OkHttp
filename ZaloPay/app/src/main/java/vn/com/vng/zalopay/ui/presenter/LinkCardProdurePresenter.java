@@ -1,17 +1,9 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import javax.inject.Inject;
-
 import rx.Subscription;
-import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -28,11 +20,10 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     private Subscription subscription;
     private Subscription subscriptionGetOrder;
 
-    @Inject
-    UserConfig userConfig;
+    User user;
 
-    public LinkCardProdurePresenter(UserConfig userConfig) {
-        this.userConfig = userConfig;
+    public LinkCardProdurePresenter(User user) {
+        this.user = user;
     }
 
     @Override
@@ -63,87 +54,42 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
 
     public void addLinkCard() {
         showLoadingView();
-//        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, 100000, 2)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new CreateWalletOrderSubscriber());
-        try {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
-            EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
-            paymentInfo.zaloUserID = String.valueOf(userConfig.getUserId());
-            if (userConfig.getCurrentUser() == null) {
-                return;
-            }
-            paymentInfo.zaloPayAccessToken = userConfig.getCurrentUser().accesstoken;
+        EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
 
-            Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
-            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
-        } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //Zalo payment sdk
-    private void pay(Order order) {
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.==============");
-        if (order == null) {
-            showErrorView("Order not found!");
+        if (user == null) {
+            hideLoadingView();
+            mView.showError("Thông tin người dùng không hợp lệ.");
             return;
         }
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................2");
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user.uid <= 0) {
-            showErrorView("User info not found!");
-            return;
-        }
-        try {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
-            EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
-            paymentInfo.appID = order.getAppid();
-            paymentInfo.zaloUserID = String.valueOf(user.uid);
-            paymentInfo.zaloPayAccessToken = user.accesstoken;
-            paymentInfo.appTime = Long.valueOf(order.getApptime());
-            paymentInfo.appTransID = order.getApptransid();
-            Timber.tag("_____________________").d("paymentInfo.appTransID:" + paymentInfo.appTransID);
-            paymentInfo.itemName = order.getItem();
-            paymentInfo.amount = Long.parseLong(order.getAmount());
-            paymentInfo.description = order.getDescription();
-            paymentInfo.embedData = order.getEmbeddata();
-            //lap vao ví appId = appUser = 1
-            paymentInfo.appUser = order.getAppuser();
-            paymentInfo.mac = order.getMac();
+        paymentInfo.zaloUserID = String.valueOf(user.uid);
+        paymentInfo.zaloPayAccessToken = user.accesstoken;
 
-            Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
-//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
-        } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
+        ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
     }
 
     @Override
     public void onComplete(ZPPaymentResult zpPaymentResult) {
         hideLoadingView();
         if (zpPaymentResult == null) {
-            return;
-        }
-        EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-        if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-            ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-            if (paymentInfo==null) {
-                return;
+            if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
+                mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+            } else {
+                mView.showError("Lỗi xảy ra trong quá trình liên kết thẻ. Vui lòng thử lại sau.");
             }
-            mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
-        } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
-            mView.showError("Giao dịch đang xử lý.");
-        } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
-            mView.showError("Giao dịch thất bại.");
+        } else {
+            EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
+            if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+                if (paymentInfo == null) {
+                    return;
+                }
+                mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
+            } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                mView.onTokenInvalid();
+            }
         }
     }
 
@@ -168,37 +114,5 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     private void showErrorView(String message) {
         mView.hideLoading();
         mView.showError(message);
-    }
-
-    private void onCreateWalletOrderError(Throwable e) {
-        Timber.tag("LinkCardProdurePresenter").d("onCreateWalletOrderError session =========" + e);
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
-        showErrorView(message);
-    }
-
-    private void onCreateWalletOrderSuccess(Order order) {
-        Timber.tag("LinkCardProdurePresenter").d("onCreateWalletOrderSuccess session =========" + order.getItem());
-        pay(order);
-    }
-
-    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        public CreateWalletOrderSubscriber() {
-        }
-
-        @Override
-        public void onNext(Order order) {
-            Timber.tag("LinkCardProdurePresenter").d("login success " + order);
-            LinkCardProdurePresenter.this.onCreateWalletOrderSuccess(order);
-        }
-
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.tag("LinkCardProdurePresenter").e(e, "onError " + e);
-            LinkCardProdurePresenter.this.onCreateWalletOrderError(e);
-        }
     }
 }
