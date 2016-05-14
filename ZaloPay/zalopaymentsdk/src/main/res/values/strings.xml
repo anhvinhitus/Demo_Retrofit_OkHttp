@@ -58,6 +58,7 @@
    	<string name="zingpaysdk_invalid_app_time">AppTime không hợp lệ.</string>
    	<string name="zingpaysdk_invalid_app_amount">Amount không hợp lệ.</string>
    	<string name="zingpaysdk_invalid_user_id_user_name">Thông tin nạp tiền vào ví không hợp lệ</string>
+   	<string name="zingpaysdk_invalid_token">Token không hợp lệ</string>
    	
    	<string name="zpw_conf_gwinfo_app_list">gwinfo_app_list_id</string>
    	<string name="zingpaysdk_conf_gwinfo_expired_time">gwinfo_expired_time</string>
@@ -174,9 +175,9 @@
    	
    	<string name="zpw_string_select_bank">Chọn</string>
    	<string name="zpw_string_title_select_back">Lựa chọn ngân hàng</string>
- <string name="app_name">SweetAlertDialog</string>
-    <string name="dialog_default_title">Here\'s a message!</string>
-    <string name="dialog_ok">  OK  </string>
-    <string name="dialog_cancel">Cancel</string>
-    <string name="LOADING">Loading...</string></resources>
+ 	<string name="app_name">ZALOWALLET_DIALOG</string>
+    <string name="dialog_default_title"> </string>
+    <string name="dialog_ok">  Đóng  </string>
+    <string name="dialog_cancel">Hủy</string>
+    <string name="LOADING">Đang tải</string></resources>
     
