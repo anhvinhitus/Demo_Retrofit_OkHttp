@@ -29,4 +29,5 @@ dependencies {
     compile libs.support_appcompat_v7
     compile libs.zxing
     compile libs.timber
+    compile libs.zxingAndroidEmbedded
 }
