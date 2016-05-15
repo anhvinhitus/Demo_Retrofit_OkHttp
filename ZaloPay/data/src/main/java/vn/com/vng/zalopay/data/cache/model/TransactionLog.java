@@ -14,8 +14,9 @@ public class TransactionLog {
     private String description;
     private Integer pmcid;
     private Long reqdate;
-    private Integer grossamount;
-    private Integer netamount;
+    private Integer userchargeamt;
+    private Integer userfeeamt;
+    private Integer amount;
     private Integer type;
 
     public TransactionLog() {
@@ -25,7 +26,7 @@ public class TransactionLog {
         this.transid = transid;
     }
 
-    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer grossamount, Integer netamount, Integer type) {
+    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer userchargeamt, Integer userfeeamt, Integer amount, Integer type) {
         this.transid = transid;
         this.appid = appid;
         this.userid = userid;
@@ -34,8 +35,9 @@ public class TransactionLog {
         this.description = description;
         this.pmcid = pmcid;
         this.reqdate = reqdate;
-        this.grossamount = grossamount;
-        this.netamount = netamount;
+        this.userchargeamt = userchargeamt;
+        this.userfeeamt = userfeeamt;
+        this.amount = amount;
         this.type = type;
     }
 
@@ -103,20 +105,28 @@ public class TransactionLog {
         this.reqdate = reqdate;
     }
 
-    public Integer getGrossamount() {
-        return grossamount;
+    public Integer getUserchargeamt() {
+        return userchargeamt;
     }
 
-    public void setGrossamount(Integer grossamount) {
-        this.grossamount = grossamount;
+    public void setUserchargeamt(Integer userchargeamt) {
+        this.userchargeamt = userchargeamt;
     }
 
-    public Integer getNetamount() {
-        return netamount;
+    public Integer getUserfeeamt() {
+        return userfeeamt;
     }
 
-    public void setNetamount(Integer netamount) {
-        this.netamount = netamount;
+    public void setUserfeeamt(Integer userfeeamt) {
+        this.userfeeamt = userfeeamt;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 
     public Integer getType() {

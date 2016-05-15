@@ -30,12 +30,13 @@ public class ZaloPayDaoMapper {
             transDao.setAppuser(transEntity.appuser);
             transDao.setAppid(transEntity.appid);
             transDao.setDescription(transEntity.description);
-            transDao.setGrossamount(transEntity.grossamount);
+            transDao.setUserchargeamt(transEntity.userchargeamt);
+            transDao.setUserfeeamt(transEntity.userfeeamt);
+            transDao.setAmount(transEntity.amount);
             transDao.setPlatform(transEntity.platform);
             transDao.setPmcid(transEntity.pmcid);
             transDao.setType(transEntity.type);
             transDao.setReqdate(transEntity.reqdate);
-            transDao.setNetamount(transEntity.netamount);
             transDao.setUserid(transEntity.userid);
         }
         return transDao;
@@ -48,8 +49,9 @@ public class ZaloPayDaoMapper {
             transHistoryEntity.appid = transDao.getAppid();
             transHistoryEntity.appuser = transDao.getAppuser();
             transHistoryEntity.description = transDao.getDescription();
-            transHistoryEntity.grossamount = transDao.getGrossamount();
-            transHistoryEntity.netamount = transDao.getNetamount();
+            transHistoryEntity.userchargeamt = transDao.getUserchargeamt();
+            transHistoryEntity.userfeeamt = transDao.getUserfeeamt();
+            transHistoryEntity.amount = transDao.getAmount();
             transHistoryEntity.platform = transDao.getPlatform();
             transHistoryEntity.pmcid = transDao.getPmcid();
             transHistoryEntity.reqdate = transDao.getReqdate();

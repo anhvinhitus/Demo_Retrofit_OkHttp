@@ -31,9 +31,10 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         public final static Property Description = new Property(5, String.class, "description", false, "DESCRIPTION");
         public final static Property Pmcid = new Property(6, Integer.class, "pmcid", false, "PMCID");
         public final static Property Reqdate = new Property(7, Long.class, "reqdate", false, "REQDATE");
-        public final static Property Grossamount = new Property(8, Integer.class, "grossamount", false, "GROSSAMOUNT");
-        public final static Property Netamount = new Property(9, Integer.class, "netamount", false, "NETAMOUNT");
-        public final static Property Type = new Property(10, Integer.class, "type", false, "TYPE");
+        public final static Property Userchargeamt = new Property(8, Integer.class, "userchargeamt", false, "USERCHARGEAMT");
+        public final static Property Userfeeamt = new Property(9, Integer.class, "userfeeamt", false, "USERFEEAMT");
+        public final static Property Amount = new Property(10, Integer.class, "amount", false, "AMOUNT");
+        public final static Property Type = new Property(11, Integer.class, "type", false, "TYPE");
     };
 
 
@@ -57,9 +58,10 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
                 "\"DESCRIPTION\" TEXT," + // 5: description
                 "\"PMCID\" INTEGER," + // 6: pmcid
                 "\"REQDATE\" INTEGER," + // 7: reqdate
-                "\"GROSSAMOUNT\" INTEGER," + // 8: grossamount
-                "\"NETAMOUNT\" INTEGER," + // 9: netamount
-                "\"TYPE\" INTEGER);"); // 10: type
+                "\"USERCHARGEAMT\" INTEGER," + // 8: userchargeamt
+                "\"USERFEEAMT\" INTEGER," + // 9: userfeeamt
+                "\"AMOUNT\" INTEGER," + // 10: amount
+                "\"TYPE\" INTEGER);"); // 11: type
     }
 
     /** Drops the underlying database table. */
@@ -105,19 +107,24 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindLong(8, reqdate);
         }
  
-        Integer grossamount = entity.getGrossamount();
-        if (grossamount != null) {
-            stmt.bindLong(9, grossamount);
+        Integer userchargeamt = entity.getUserchargeamt();
+        if (userchargeamt != null) {
+            stmt.bindLong(9, userchargeamt);
         }
  
-        Integer netamount = entity.getNetamount();
-        if (netamount != null) {
-            stmt.bindLong(10, netamount);
+        Integer userfeeamt = entity.getUserfeeamt();
+        if (userfeeamt != null) {
+            stmt.bindLong(10, userfeeamt);
+        }
+ 
+        Integer amount = entity.getAmount();
+        if (amount != null) {
+            stmt.bindLong(11, amount);
         }
  
         Integer type = entity.getType();
         if (type != null) {
-            stmt.bindLong(11, type);
+            stmt.bindLong(12, type);
         }
     }
 
@@ -139,9 +146,10 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // description
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // pmcid
             cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // reqdate
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // grossamount
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // netamount
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10) // type
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // userchargeamt
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // userfeeamt
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // amount
+            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11) // type
         );
         return entity;
     }
@@ -157,9 +165,10 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         entity.setDescription(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setPmcid(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setReqdate(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setGrossamount(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setNetamount(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setType(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setUserchargeamt(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setUserfeeamt(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setAmount(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setType(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
      }
     
     /** @inheritdoc */

@@ -5,7 +5,7 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 3;
+    private static final int APP_DB_VERSION = 4;
 
 
     public static void main(String[] args) throws Exception {
@@ -51,8 +51,9 @@ public class GreenDaoGenerator {
         transHistoryData.addStringProperty("description");
         transHistoryData.addIntProperty("pmcid");
         transHistoryData.addLongProperty("reqdate");
-        transHistoryData.addIntProperty("grossamount");
-        transHistoryData.addIntProperty("netamount");
+        transHistoryData.addIntProperty("userchargeamt");
+        transHistoryData.addIntProperty("userfeeamt");
+        transHistoryData.addIntProperty("amount");
         transHistoryData.addIntProperty("type");
     }
 

@@ -80,8 +80,8 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         item.putDouble("transid", history.transid);
         item.putDouble("reqdate", history.reqdate);
         item.putString("description", history.description);
-        item.putInt("amount", history.netamount);
-        item.putInt("type", (int) Math.floor(Math.random() % 2));
+        item.putInt("amount", history.amount);
+        item.putInt("type", history.type);
         return item;
     }
 

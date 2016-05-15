@@ -31,11 +31,14 @@ public class TransHistoryEntity {
     @SerializedName("reqdate")
     public long reqdate;
 
-    @SerializedName("grossamount")
-    public int grossamount;
+    @SerializedName("userchargeamt")
+    public int userchargeamt;
 
-    @SerializedName("netamount")
-    public int netamount;
+    @SerializedName("amount")
+    public int amount;
+
+    @SerializedName("userfeeamt")
+    public int userfeeamt;
 
     @SerializedName("type")
     public int type;
