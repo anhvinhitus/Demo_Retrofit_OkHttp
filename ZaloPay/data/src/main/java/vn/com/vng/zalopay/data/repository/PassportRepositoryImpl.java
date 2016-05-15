@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.repository.datasource.PassportFactory;
@@ -33,11 +34,17 @@ public class PassportRepositoryImpl implements PassportRepository {
     public Observable<User> login(final long zuid, String zAuthCode) {
         return passportFactory.login(zuid, zAuthCode)
                 .map(userEntity -> {
-            User user = userEntityDataMapper.transform(userEntity);
-            user.dname = userConfig.getDisPlayName();
-            user.avatar = userConfig.getAvatar();
-            return user;
-        }).doOnNext(user -> userConfig.saveConfig(user));
+                    User user = userEntityDataMapper.transform(userEntity);
+                    user.dname = userConfig.getDisPlayName();
+                    user.avatar = userConfig.getAvatar();
+                    return user;
+                }).doOnNext(user -> {
+
+                            Timber.d("save User");
+                            userConfig.setCurrentUser(user);
+                            userConfig.saveConfig(user);
+                        }
+                );
     }
 
     @Override

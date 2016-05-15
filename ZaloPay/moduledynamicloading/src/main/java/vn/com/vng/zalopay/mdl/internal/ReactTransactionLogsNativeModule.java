@@ -56,6 +56,8 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
                 .map(new Func1<List<TransHistory>, WritableArray>() {
                     @Override
                     public WritableArray call(List<TransHistory> transHistories) {
+                        Timber.d("list transaction : %s", transHistories);
+
                         return transform(transHistories);
                     }
                 })

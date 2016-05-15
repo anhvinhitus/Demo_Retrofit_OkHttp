@@ -135,7 +135,7 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_USER_ID, uid);
         editor.apply();
 
-        Timber.d("save UserInfo ");
+        Timber.d("save UserInfo isClientActivated %s", isClientActivated());
 
         if (isClientActivated()) {
             currentUser.avatar = avatar;
