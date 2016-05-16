@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules.user;
 
+import org.greenrobot.eventbus.EventBus;
+
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.domain.model.User;
@@ -28,8 +30,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    LeftMenuPresenter provideLeftMenuPresenter() {
-        return new LeftMenuPresenter();
+    LeftMenuPresenter provideLeftMenuPresenter(EventBus eventBus, User user) {
+        return new LeftMenuPresenter(eventBus, user);
     }
 
     @UserScope

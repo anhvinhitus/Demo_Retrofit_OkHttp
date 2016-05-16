@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission  android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -192,7 +193,7 @@
 
         <activity
             android:name="io.card.payment.DataEntryActivity"
-            android:screenOrientation="portrait"  />
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

@@ -1,11 +1,19 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import javax.inject.Singleton;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.interactor.event.ChangeBalanceEvent;
+import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
 /**
@@ -16,17 +24,30 @@ import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<ILeftMenuView> {
     private ILeftMenuView menuView;
 
-    public LeftMenuPresenter() {
+    private EventBus eventBus;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private User user;
+
+    public LeftMenuPresenter(EventBus eventBus, User user) {
+        this.eventBus = eventBus;
+        this.user = user;
     }
 
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
+        eventBus.register(this);
         menuView = iLeftMenuView;
     }
 
     @Override
     public void destroyView() {
+        eventBus.unregister(this);
+        unsubscribeIfNotNull(compositeSubscription);
         menuView = null;
+    }
+
+    public void initialize() {
+        menuView.setUserInfo(user);
     }
 
     @Override
@@ -45,14 +66,15 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
     }
 
     public void getBalance() {
-        zaloPayRepository.balance()
+        Subscription subscription = zaloPayRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
+
+        compositeSubscription.add(subscription);
     }
 
     private final void onGetBalanceSuccess(Long balance) {
-
         Timber.tag(TAG).d("onGetBalanceSuccess %s", balance);
         menuView.setBalance(balance);
     }
@@ -75,5 +97,18 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
         public void onNext(Long aLong) {
             LeftMenuPresenter.this.onGetBalanceSuccess(aLong);
         }
+    }
+
+    @Subscribe
+    public void onEventMainThread(ZaloProfileInfoEvent event) {
+
+        Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
+        menuView.setAvatar(event.avatar);
+        menuView.setDisplayName(event.displayName);
+    }
+
+    @Subscribe
+    public void onEventMainThread(ChangeBalanceEvent event) {
+        menuView.setBalance(event.balance);
     }
 }
