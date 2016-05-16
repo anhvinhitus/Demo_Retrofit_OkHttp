@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.mdl;
 
+import android.content.Intent;
+
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -7,6 +11,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
 import dagger.Module;
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
@@ -15,7 +20,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
  */
 
 
-public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule {
+public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
 
     ZaloPayRepository zaloPayRepository;
@@ -25,6 +30,9 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule {
         super(reactContext);
         this.zaloPayRepository = zaloPayRepository;
         this.user = user;
+
+        getReactApplicationContext().addActivityEventListener(this);
+        getReactApplicationContext().addLifecycleEventListener(this);
 
     }
 
@@ -46,5 +54,26 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule {
         // call payment SDK
 
         // return result
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
+    }
+
+    @Override
+    public void onHostResume() {
+        Timber.d(" Actvity `onResume`");
+    }
+
+    @Override
+    public void onHostPause() {
+        Timber.d(" Actvity `onPause`");
+    }
+
+    @Override
+    public void onHostDestroy() {
+        Timber.d("Actvity `onDestroy");
     }
 }

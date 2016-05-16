@@ -1,6 +1,10 @@
 package vn.com.vng.zalopay.mdl.internal;
 
+import android.content.Intent;
+
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -20,13 +24,15 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 /**
  * Created by huuhoa on 5/8/16.
  */
-public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule {
+public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private ZaloPayRepository repository;
 
     public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, ZaloPayRepository repository) {
         super(reactContext);
         this.repository = repository;
+        getReactApplicationContext().addLifecycleEventListener(this);
+        getReactApplicationContext().addActivityEventListener(this);
     }
 
     @Override
@@ -111,5 +117,24 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
             promise.resolve(writableArray);
         }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
+    }
+
+    @Override
+    public void onHostResume() {
+        Timber.d(" Actvity `onResume`");
+    }
+
+    @Override
+    public void onHostPause() {
+        Timber.d(" Actvity `onPause`");
+    }
+
+    @Override
+    public void onHostDestroy() {
+        Timber.d("Actvity `onDestroy");
     }
 }
