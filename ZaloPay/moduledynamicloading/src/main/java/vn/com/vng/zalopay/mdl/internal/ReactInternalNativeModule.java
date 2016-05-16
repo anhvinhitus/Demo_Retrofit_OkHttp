@@ -19,11 +19,11 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     /// The purpose of this method is to return the string name of the NativeModule
-    /// which represents this class in JavaScript. So here we will call this ZaloPayIAP
-    /// so that we can access it through React.NativeModules.ZaloPayIAP in JavaScript.
+    /// which represents this class in JavaScript. So here we will call this ZaloPayInternal
+    /// so that we can access it through React.NativeModules.ZaloPayInternal in JavaScript.
     @Override
     public String getName() {
-        return "ZaloPayIAP";
+        return "ZaloPayInternal";
     }
 
     /// To expose a method to JavaScript a Java method must be annotated using @ReactMethod.
@@ -35,7 +35,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    /// Request ZaloPayIAP API
+    /// Request ZaloPayInternal API
     @ReactMethod
     public void request(String methodName, ReadableMap parameters, Promise promise) {
         WritableMap result = Arguments.createMap();
