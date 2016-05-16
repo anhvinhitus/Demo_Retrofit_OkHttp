@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.mdl;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -7,6 +11,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -17,9 +25,18 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 /**
  * Created by huuhoa on 5/16/16.
  */
+
+
 public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule {
-    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext) {
+    ZaloPayRepository zaloPayRepository;
+    User user;
+    private PaymentListener paymentListener;
+
+    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext, ZaloPayRepository zaloPayRepository, User user) {
         super(reactContext);
+        this.zaloPayRepository = zaloPayRepository;
+        this.user = user;
+
     }
 
     @Override
@@ -27,61 +44,123 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule {
         return "ZaloPayIAP";
     }
 
+
+    private void destroyVariable() {
+        paymentListener = null;
+    }
+
     /**
      * Tham khảo tài liệu: https://docs.google.com/a/vng.com.vn/document/d/1dYKPBXLF9JRwExXkc5XlQJiQKRxp19Gf8x8cbXvGSvA/edit?usp=sharing
-     * @param params Chứa danh sách các thuộc tính cần thiết để gọi hàm thanh toán của SDK
+     *
+     * @param params  Chứa danh sách các thuộc tính cần thiết để gọi hàm thanh toán của SDK
      * @param promise Trả về kết quả thanh toán
      */
     @ReactMethod
     public void payOrder(ReadableMap params, Promise promise) {
+        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................1");
         // verify params parameters
-        params.getString()
+        long appID = (long)params.getDouble(Constants.APPID);
+        String appTransID = params.getString(Constants.APPTRANSID);
+        String appUser = params.getString(Constants.APPUSER);
+        long appTime = (long)params.getDouble(Constants.APPTIME);
+        long amount = (long)params.getDouble(Constants.AMOUNT);
+        String itemName = params.getString(Constants.ITEMNAME);
+        String description = params.getString(Constants.DESCRIPTION);
+        String embedData = params.getString(Constants.EMBEDDATA);
+        String mac = params.getString(Constants.MAC);
+        String chargeInfo = params.getString(Constants.CHARGEINFO);
 
+        if (user == null || user.uid <= 0) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_USER_INFO);
+            }
+            return;
+        }
 
-        // call payment SDK
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
+        EPaymentChannel forcedPaymentChannel = null;
+        paymentInfo.appID = appID;
         paymentInfo.zaloUserID = String.valueOf(user.uid);
         paymentInfo.zaloPayAccessToken = user.accesstoken;
+        paymentInfo.appTime = appTime;
+        paymentInfo.appTransID = appTransID;
+        paymentInfo.itemName = itemName;
+        paymentInfo.amount = amount;
+        paymentInfo.description = description;
+        paymentInfo.embedData = embedData;
+        //lap vao ví appId = appUser = 1
+        paymentInfo.appUser = appUser;
+        paymentInfo.mac = mac;
 
-        ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
-
-        // return result
-//        zpPaymentListener
+        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
+        paymentListener = new PaymentListener(promise);
+        ZingMobilePayService.pay(getCurrentActivity(), forcedPaymentChannel, paymentInfo, paymentListener);
     }
 
-    ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
+    class PaymentListener implements ZPPaymentListener {
+
+        private Promise promise;
+
+        public PaymentListener(Promise promise) {
+            this.promise = promise;
+        }
+
         @Override
         public void onComplete(ZPPaymentResult zpPaymentResult) {
             if (zpPaymentResult == null) {
-//                if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
-//                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-//                } else {
-//                    mView.showError("Lỗi xảy ra trong quá trình liên kết thẻ. Vui lòng thử lại sau.");
-//                }
+                if (!isNetworkAvailable(getReactApplicationContext())) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INTERNET);
+                } else {
+                    handleResultError(promise, PaymentError.ERR_CODE_SYSTEM);
+                }
             } else {
                 EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
                 if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-//                    getBalance();
-//                    ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-//                    if (paymentInfo == null) {
-//                        return;
-//                    }
-//                    mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
-                } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-//                    mView.onTokenInvalid();
+                    handleResultSucess(promise, zpPaymentResult.paymentInfo);
+                } else {
+                    handleResultError(promise, String.valueOf(EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()), EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.toString());
                 }
             }
+            destroyVariable();
         }
 
         @Override
         public void onCancel() {
-//            hideLoadingView();
+            handleResultError(promise, 0);
+            destroyVariable();
         }
 
         @Override
         public void onSMSCallBack(String s) {
-
+            //not use
         }
-    };
+    }
+
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void handleResultSucess(Promise promise, Object object) {
+        if (promise == null) {
+            return;
+        }
+        promise.resolve(object);
+    }
+
+    private void handleResultError(Promise promise, int errorCode) {
+        if (promise == null) {
+            return;
+        }
+        promise.reject(String.valueOf(errorCode), PaymentError.getErrorMessage(errorCode));
+    }
+
+    private void handleResultError(Promise promise, String error, String message) {
+        if (promise == null) {
+            return;
+        }
+        promise.reject(error, message);
+    }
 }
