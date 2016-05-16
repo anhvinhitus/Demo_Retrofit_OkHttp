@@ -7,8 +7,6 @@ import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.shell.MainReactPackage;
 
 import javax.inject.Named;
@@ -17,10 +15,11 @@ import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.BundleReactConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
+import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
@@ -31,18 +30,23 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 @Module
 public class ReactNativeModule {
 
-
     //Todo : heavy process
     @UserScope
     @Provides
-    @Named("internalBundle")
-    String providesInternalBundleFolder(Context context) {
+    @Named("bundleservice")
+    BundleService providesBundleService(Context context) {
         BundleServiceImpl bundleService = new BundleServiceImpl((Application) context);
         bundleService.prepareInternalBundle();
-
         Timber.d("internalBundle %s", bundleService.mCurrentInternalBundleFolder);
+        return bundleService;
+    }
 
-        return bundleService.mCurrentInternalBundleFolder;
+
+    @UserScope
+    @Provides
+    @Named("internalBundle")
+    String providesInternalBundleFolder(@Named("bundleservice") BundleService service) {
+        return service.getInternalBundleFolder();
     }
 
 
@@ -65,6 +69,12 @@ public class ReactNativeModule {
     @Named("reactIAPPackage")
     ReactPackage provideReactIAPPackage(ZaloPayRepository repository, User user) {
         return new ReactIAPPackage(repository, user);
+    }
+
+    @UserScope
+    @Provides
+    BundleReactConfig provideBundleReactConfig(Context context, @Named("bundleservice") BundleService service) {
+        return new BundleReactConfig((Application) context, service);
     }
 
     @UserScope

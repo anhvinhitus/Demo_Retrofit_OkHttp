@@ -29,7 +29,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 ApiUserModule.class,
                 UserControllerModule.class,
                 UserPresenterModule.class,
-                ReactNativeModule.class
+                ReactNativeModule.class,
+
         }
 )
 public interface UserComponent {

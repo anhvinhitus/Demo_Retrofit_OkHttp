@@ -25,6 +25,7 @@ import butterknife.Bind;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.interactor.event.ChangeBalanceEvent;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
@@ -66,9 +67,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     private MenuItemClickListener mMenuListener;
 
     @Inject
-    User user;
-
-    @Inject
     LeftMenuPresenter presenter;
 
     @Override
@@ -87,20 +85,35 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mAdapter = new MenuItemAdapter(getContext(), MenuItemUtil.getMenuItems());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.pause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -111,7 +124,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
 
-        setUserInfo(user);
+        presenter.initialize();
     }
 
     private void addHeader(ListView listView) {
@@ -144,18 +157,22 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
-            EventBus.getDefault().post(new ZaloProfileInfoEvent(1l, "hieuvm", "http://24h-img.24hstatic.com/upload/2-2016/images/2016-05-11/1462934235-mu-1.jpg"));
-
             return; // Header
         }
+
         MenuItem item = mAdapter.getItem(position - 1);
-        if (item != null) {
+        if (item == null) return;
+
+        if (mMenuListener != null) {
             mMenuListener.onMenuItemClick(item);
         }
+
     }
 
 
     public void setUserInfo(User user) {
+        if (user == null) return;
+
         setAvatar(user.avatar);
         setDisplayName(user.dname);
     }
@@ -181,11 +198,5 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         tvName.setText(displayName);
     }
 
-    @Subscribe
-    public void onEventMainThread(ZaloProfileInfoEvent event) {
 
-        Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
-        setAvatar(event.avatar);
-        setDisplayName(event.displayName);
-    }
 }

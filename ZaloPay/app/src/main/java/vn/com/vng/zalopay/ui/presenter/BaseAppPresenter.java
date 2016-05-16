@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 
@@ -26,6 +27,12 @@ public abstract class BaseAppPresenter {
     protected void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
             subscription.unsubscribe();
+        }
+    }
+
+    public void unsubscribeIfNotNull(CompositeSubscription subscription) {
+        if (subscription != null) {
+            subscription.clear();
         }
     }
 

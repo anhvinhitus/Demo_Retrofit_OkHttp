@@ -21,10 +21,13 @@ public class UserConfigImpl implements UserConfig {
 
     User currentUser;
 
+    EventBus eventBus;
+
     private final static Object sync = new Object();
 
-    public UserConfigImpl(SharedPreferences pref) {
+    public UserConfigImpl(SharedPreferences pref, EventBus eventBus) {
         this.preferences = pref;
+        this.eventBus = eventBus;
     }
 
 
@@ -141,7 +144,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser.avatar = avatar;
             currentUser.dname = displayName;
             Timber.d("save EventBus post ");
-            EventBus.getDefault().post(new ZaloProfileInfoEvent(uid, displayName, avatar));
+            eventBus.post(new ZaloProfileInfoEvent(uid, displayName, avatar));
         }
     }
 

@@ -75,7 +75,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
-        return new UserConfigImpl(sharedPreferences);
+        return new UserConfigImpl(sharedPreferences, eventBus);
     }
 
     @Provides
