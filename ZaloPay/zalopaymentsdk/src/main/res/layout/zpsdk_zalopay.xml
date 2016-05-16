@@ -36,13 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/zpw_padding_to_app_info"
             layout="@layout/zpsdk_zalopay_fail" />
-
-        <include
-            android:id="@+id/zpsdk_pay_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/zpw_padding_to_app_info"
-            layout="@layout/zpsdk_zalopay_error" />
     </LinearLayout>
 
     <include

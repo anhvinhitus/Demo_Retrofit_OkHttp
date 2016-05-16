@@ -1,5 +1,5 @@
 <resources>
-	<string name="zpw_string_merchant_creditcard_3ds_url_prefix">0eafstag.cardinalcommerce.com/EAFService/</string>
+	<string name="zpw_string_merchant_creditcard_3ds_url_prefix">pay/success?orderNo</string>
     <!-- font name locally -->
     <string name="zpw_font_regular">Roboto-Regular</string>
     <string name="zpw_font_medium">Roboto-Medium</string>
@@ -26,7 +26,12 @@
     <string name="zingpaysdk_alert_transaction_success">Thanh toán thành công</string>
     <string name="zingpaysdk_alert_maintance">Hệ thống đang bảo trì, bạn vui lòng thử lại sau</string>
     <string name="zingpaysdk_alert_processing">Đang xử lý</string>
+    <string name="zingpaysdk_alert_get_status">Đang nhận kết quả  giao dịch</string>
     <string name="zingpaysdk_alert_continue_processing">Giao dịch vẫn còn đang xử lý</string>
+    <string name="zingpaysdk_confirm_quit">Giao dịch sẽ bị hủy.\nBạn thật sự muốn thoát ?</string>
+    <string name="zingpaysdk_confirm_continue_channel01"><![CDATA[ Sử dụng kênh %s để thực hiện giao dịch ? ]]></string>
+    <string name="zingpaysdk_confirm_continue_channel02"><![CDATA[ Sử dụng thẻ  %s để thực hiện giao dịch ? ]]></string>
+    
     <string name="zingpaysdk_alert_processing_ask_to_retry">Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp tục chờ?</string>
     <string name="zingpaysdk_alert_processing_get_status_fail">Giao dịch chưa hoàn tất, vui lòng truy cập http://hotro.zing.vn để được hỗ trợ.</string>
     <string name="zingpaysdk_alert_bad_processing">Hãy chắc rằng bạn có kết nối internet!</string>
@@ -177,7 +182,11 @@
    	<string name="zpw_string_title_select_back">Lựa chọn ngân hàng</string>
  	<string name="app_name">ZALOWALLET_DIALOG</string>
     <string name="dialog_default_title"> </string>
-    <string name="dialog_ok">  Đóng  </string>
-    <string name="dialog_cancel">Hủy</string>
+    <string name="dialog_close_button">  Đóng  </string>
+    
+    <string name="dialog_cancel_button">Thoát</string>
+    
+    <string name="dialog_continue_button">Tiếp tục</string>
+    
     <string name="LOADING">Đang tải</string></resources>
     
