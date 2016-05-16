@@ -180,6 +180,10 @@
         <item name="android:paddingRight">10dp</item>
     </style>
 
+    <style name="Button.Default.Borderless">
+        <item name="android:background">@drawable/default_selector</item>
+    </style>
+
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:ems">10</item>
         <item name="android:layout_width">match_parent</item>
