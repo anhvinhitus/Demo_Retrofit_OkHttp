@@ -182,6 +182,8 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
                 }
             } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                 mView.onTokenInvalid();
+            } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
+                mView.getActivity().finish();
             }
         }
     }
