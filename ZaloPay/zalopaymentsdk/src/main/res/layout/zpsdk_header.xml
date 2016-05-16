@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
         android:padding="@dimen/zpw_topbar_padding"
         android:textColor="@color/white"
         android:textSize="@dimen/zpw_text_size_medium_l" />
