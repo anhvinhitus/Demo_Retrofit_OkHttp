@@ -37,6 +37,7 @@
     <string name="zingpaysdk_alert_bad_processing">Hãy chắc rằng bạn có kết nối internet!</string>
     <string name="zingpaysdk_alert_no_connection">Không có kết nối internet, vui lòng thử lại sau</string>
    	<string name="zingpaysdk_alert_network_error">Mạng không ổn định, vui lòng thử lại sau!</string>
+   	<string name="zingpaysdk_alert_input_error">Dữ liệu không hợp lệ</string>
    	<string name="zingpaysdk_alert_network_error_get_status_fail">Mạng không ổn định, vui lòng thử lại sau! Hoặc vui lòng truy cập http://hotro.zing.vn để được giúp đỡ.</string>
    	<string name="zingpaysdk_alert_network_error_verify_iab">Mạng không ổn định, giao dịch chưa được xác minh, vui lòng kiểm tra lại kết nối internet!</string>
     <string name="zingpaysdk_alert_amount_not_support">Không có kênh nào hỗ trợ mệnh giá trên. Số tiền tối thiểu là: %s.</string>
@@ -87,7 +88,7 @@
    	<string name="zingpaysdk_conf_gwinfo_channel_zalopay">38</string>
    	
    	<string name="zpw_conf_wallet_amount">10000</string>
-   	<string name="zpw_conf_wallet_desc">Nạp 10.000 VNĐ vào ví.</string>
+   	<string name="zpw_conf_wallet_desc">Nạp 10.000 VNĐ vào Ví.</string>
    	<string name="zpw_conf_wallet_id">1</string>
    	
    	<string name="zingpaysdk_conf_gwinfo_channel_list">channel_list_</string>
@@ -133,6 +134,7 @@
     
     <string name="zpw_string_atm_method_name">Thanh toán bằng thẻ nội địa</string>
     <string name="zpw_string_credit_card_method_name">Thanh toán bằng thẻ tín dụng VISA</string>
+    <string name="zpw_string_credit_card_link">Liên kết thẻ</string>
       
     <string name="zpw_button_submit_text">Tiếp tục</string>
     <string name="zpw_string_card_number_hint">Số thẻ</string>

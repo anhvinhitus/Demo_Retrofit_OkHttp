@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 
 /**
@@ -144,6 +145,9 @@ public class ZaloPayFragment extends BaseMainFragment {
 //        Intent intent = new Intent(getActivity(), BuyTelCardActivity.class);
 //        intent.putExtra(vn.com.vng.zalopay.scratchcard.network.Constants.TEL_CARD_TYPE, TelCardUtil.VIETTEL);
 //        startActivity(intent);
+        Intent intent = new Intent(this.getContext(), PaymentApplicationActivity.class);
+        intent.putExtra("moduleName", "PaymentMain");
+        this.getActivity().startActivity(intent);
     }
 
     @OnClick(R.id.others)
