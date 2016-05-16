@@ -144,6 +144,7 @@ public class ZaloPayFragment extends BaseMainFragment {
 //        Intent intent = new Intent(getActivity(), BuyTelCardActivity.class);
 //        intent.putExtra(vn.com.vng.zalopay.scratchcard.network.Constants.TEL_CARD_TYPE, TelCardUtil.VIETTEL);
 //        startActivity(intent);
+
     }
 
     @OnClick(R.id.others)
