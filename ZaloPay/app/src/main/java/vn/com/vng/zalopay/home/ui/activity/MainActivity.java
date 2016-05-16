@@ -318,6 +318,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
         } else if (itemId == MenuItemUtil.SIGOUT_ID) {
             ZaloSDK.Instance.unauthenticate();
             navigator.startLoginActivity(this);
+            finish();
         }
 
 
