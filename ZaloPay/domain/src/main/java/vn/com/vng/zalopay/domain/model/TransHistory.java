@@ -30,9 +30,11 @@ public class TransHistory extends AbstractData {
 
     public long reqdate;
 
-    public int grossamount;
+    public int userchargeamt;
 
-    public int netamount;
+    public int userfeeamt;
+
+    public int amount;
 
     public int type;
 

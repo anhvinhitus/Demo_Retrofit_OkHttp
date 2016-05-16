@@ -120,8 +120,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
         Timber.tag(TAG).d("OAuthComplete uid %s authCode %s", uId, authCode);
         if (mView != null) {
-            this.loginPayment(uId, authCode);
             this.getZaloProfileInfo();
+            this.loginPayment(uId, authCode);
         }
     }
 
@@ -154,6 +154,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
                     long userId = data.getLong("userId");
                     String displayName = data.getString("displayName");
                     String avatar = data.getString("largeAvatar");
+
 
                     userConfig.saveUserInfo(userId, avatar, displayName);
 

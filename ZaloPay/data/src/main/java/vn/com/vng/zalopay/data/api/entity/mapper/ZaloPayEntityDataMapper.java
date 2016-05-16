@@ -33,8 +33,9 @@ public class ZaloPayEntityDataMapper {
             transHistory.appid = val.appid;
             transHistory.appuser = val.appuser;
             transHistory.description = val.description;
-            transHistory.grossamount = val.grossamount;
-            transHistory.netamount = val.netamount;
+            transHistory.userchargeamt = val.userchargeamt;
+            transHistory.userfeeamt = val.userfeeamt;
+            transHistory.amount = val.amount;
             transHistory.platform = val.platform;
             transHistory.pmcid = val.pmcid;
             transHistory.type = val.type;

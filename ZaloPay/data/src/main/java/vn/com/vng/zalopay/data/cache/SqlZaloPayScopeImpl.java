@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.domain.model.User;
 /**
  * Created by AnhHieu on 5/4/16.
  */
-public class SqlZaloPayScopeImpl extends SqlBaseScope implements SqlZaloPayScope {
+public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayScope {
 
     private final User user;
     private ZaloPayDaoMapper zaloCacheMapper;
@@ -40,7 +40,8 @@ public class SqlZaloPayScopeImpl extends SqlBaseScope implements SqlZaloPayScope
                 getDaoSession()
                         .getTransactionLogDao()
                         .queryBuilder()
-                        .limit(LENGTH_TRANSITION).list()));
+                       // .limit(LENGTH_TRANSITION)
+                        .list()));
     }
 
     @Override
@@ -67,4 +68,8 @@ public class SqlZaloPayScopeImpl extends SqlBaseScope implements SqlZaloPayScope
         this.insertDataManifest(Constants.MANIF_BALANCE, String.valueOf(balance));
     }
 
+    @Override
+    public boolean isHaveTransactionInDb() {
+        return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
+    }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
@@ -48,23 +49,31 @@ public class ZaloPayFactory {
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
-        return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order).map(transactionHistoryResponse -> Collections.emptyList());
+        return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
+                .map(transactionHistoryResponse -> transactionHistoryResponse.data)
+
+
+                .doOnNext(transHistoryEntities -> {
+                    //(4)
+                    if (transHistoryEntities.size() > 0) {
+                        sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(transHistoryEntities.get(0).transid));
+                        sqlZaloPayScope.write(transHistoryEntities);
+                    }
+                })
+                ;
     }
 
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal() {
-        return null;
+        return sqlZaloPayScope.transactionHistorys();
     }
 
 
     private Observable<Long> balanceServer() {
-
-        Timber.d("balanceServer call");
-
+        //Timber.d("balanceServer call");
         return appConfigService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
-
-                .doOnNext(response1 -> Timber.d("nhay vao day nhe balanceServer"))
+                //  .doOnNext(response1 -> Timber.d("nhay vao day nhe balanceServer"))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance);
     }
 
@@ -79,8 +88,25 @@ public class ZaloPayFactory {
     public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {
         return appConfigService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
     }
+
     public Observable<GetOrderResponse> createwalletorder(long appId, long amount, int transtype) {
         return appConfigService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype);
     }
 
+    public Observable<List<TransHistoryEntity>> reloadListTransaction(int count) {
+        //(1)
+        if (sqlZaloPayScope.isHaveTransactionInDb()) {
+            long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
+            //(3)
+
+            Timber.d(" lasttime %s", lasttime);
+
+            return transactionHistorysServer(lasttime, count)
+
+                    ;
+        } else {
+            //(2)
+            return transactionHistorysServer(0, count);
+        }
+    }
 }

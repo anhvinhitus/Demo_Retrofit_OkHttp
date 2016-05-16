@@ -2,4 +2,5 @@
 <resources>
     <color name="green_normal">#179641</color>
     <color name="green_pressed">#CC179641</color>
+    <color name="colorPrimary">#FD7727</color>
 </resources>

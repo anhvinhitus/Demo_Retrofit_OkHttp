@@ -8,13 +8,15 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 /**
  * Created by AnhHieu on 5/4/16.
  */
-public interface SqlZaloPayScope {
+public interface SqlZaloPayScope extends SqlBaseScope {
 
     void write(List<TransHistoryEntity> val);
 
     void write(TransHistoryEntity val);
 
     Observable<List<TransHistoryEntity>> transactionHistorys();
+
+    boolean isHaveTransactionInDb();
 
     Observable<TransHistoryEntity> transactionHistory();
 
