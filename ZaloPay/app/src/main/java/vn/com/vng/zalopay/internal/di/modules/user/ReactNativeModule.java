@@ -7,6 +7,8 @@ import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.shell.MainReactPackage;
 
 import javax.inject.Named;
@@ -17,7 +19,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
 import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
+import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 
 /**
@@ -28,7 +32,6 @@ public class ReactNativeModule {
 
 
     //Todo : heavy process
-
     @UserScope
     @Provides
     @Named("internalBundle")
@@ -56,12 +59,19 @@ public class ReactNativeModule {
         return new ReactInternalPackage(repository);
     }
 
+    @UserScope
+    @Provides
+    @Named("reactIAPPackage")
+    ReactPackage provideReactIAPPackage() {
+        return new ReactIAPPackage();
+    }
 
     @UserScope
     @Provides
     ReactInstanceManager providesReactInstanceManager(Context context, @Named("internalBundle") String internalBundle,
                                                       @Named("reactInternalPackage") ReactPackage internal,
-                                                      @Named("reactMainPackage") ReactPackage main) {
+                                                      @Named("reactMainPackage") ReactPackage main,
+                                                      @Named("reactIAPPackage") ReactPackage iapPackage) {
         Timber.d("providesReactInstanceManager %s, %s", internalBundle, BuildConfig.DEBUG);
         return ReactInstanceManager.builder()
                 .setApplication((Application) context)
@@ -70,6 +80,7 @@ public class ReactNativeModule {
                 .setJSMainModuleName("index.android")
                 .addPackage(main)
                 .addPackage(internal)
+                .addPackage(iapPackage)
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .setNativeModuleCallExceptionHandler(new NativeModuleCallExceptionHandler() {
