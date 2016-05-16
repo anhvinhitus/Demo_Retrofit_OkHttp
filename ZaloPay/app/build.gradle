@@ -130,7 +130,7 @@ android {
     dexOptions {
         jumboMode = true
 
-        preDexLibraries = false
+//        preDexLibraries = false
         javaMaxHeapSize "2g"
     }
 }
