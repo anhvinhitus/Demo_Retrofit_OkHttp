@@ -9,14 +9,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
@@ -26,7 +23,6 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
