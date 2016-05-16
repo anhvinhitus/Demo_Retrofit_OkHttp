@@ -13,4 +13,16 @@ public class Constants {
     public static final String AMOUNT = "amount";
     public static final String TRANSTYPE = "transtype";
 
+//    public static final String APPID = "appID";
+    public static final String APPTRANSID = "appTransID";
+    public static final String APPUSER = "appUser";
+    public static final String ZALOPAYACCESSTOKEN = "zaloPayAccessToken";
+    public static final String ZALOUSERID = "zaloUserID";
+    public static final String APPTIME = "appTime";
+//    public static final String AMOUNT = "amount";
+    public static final String ITEMNAME = "itemName";
+    public static final String DESCRIPTION = "description";
+    public static final String EMBEDDATA = "embedData";
+    public static final String MAC = "mac";
+    public static final String CHARGEINFO = "chargeInfo";
 }
