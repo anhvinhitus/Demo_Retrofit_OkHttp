@@ -11,6 +11,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -18,7 +19,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
-import vn.zing.pay.zmpsdk.entity.DBaseResponse;
+import vn.zing.pay.zmpsdk.entity.BaseResponse;
 import vn.zing.pay.zmpsdk.entity.ZPWRemoveMapCardParams;
 import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
 import vn.zing.pay.zmpsdk.listener.ZPWRemoveMapCardListener;
@@ -69,7 +70,13 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
 
         if (card != null) {
             bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, card.expiretime);
-            bankCard.type = CShareData.getInstance().detectCardType(card.first6cardno).toString();
+            try {
+                bankCard.type = CShareData.getInstance().detectCardType(card.first6cardno).toString();
+            } catch (Exception e) {
+                if (BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return bankCard;
@@ -143,8 +150,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
     }
 
     @Override
-    public void onError(DBaseResponse pMessage) {
-        Timber.tag("LinkCardPresenter").e("onError: " + pMessage.toJsonString());
+    public void onError(BaseResponse pMessage) {
+        Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
         if (pMessage == null) {
             if (!AndroidUtils.isNetworkAvailable(linkCardView.getContext())) {
                 linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
@@ -152,7 +159,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
                 linkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
             }
         } else {
-            Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.toJsonString());
+            Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
             linkCardView.showError(pMessage.returnmessage);
         }
     }

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -195,7 +196,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
                 String bankcode =  bundle.getString(Constants.BANKCODE);
                 long expiretime  = bundle.getLong(Constants.EXPIRETIME);
                 BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
-                bankCard.type = CShareData.getInstance().detectCardType(first6CardNo).toString();
+                try {
+                    bankCard.type = CShareData.getInstance().detectCardType(first6CardNo).toString();
+                } catch (Exception e) {
+                    if (BuildConfig.DEBUG) {
+                        e.printStackTrace();
+                    }
+                }
                 updateData(bankCard);
                 return;
             }

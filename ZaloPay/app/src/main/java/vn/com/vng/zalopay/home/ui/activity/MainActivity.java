@@ -37,9 +37,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
-import vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService;
 import vn.zing.pay.zmpsdk.listener.ZPWGatewayInfoCallback;
-
 
 public class MainActivity extends BaseToolBarActivity implements MenuItemClickListener {
 
