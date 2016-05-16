@@ -28,9 +28,10 @@ import vn.zing.pay.zmpsdk.merchant.CShareData;
 /**
  * Created by AnhHieu on 5/11/16.
  */
-public class LinkCardPresenter extends BaseUserPresenter implements Presenter<ILinkCardView>, ZPWRemoveMapCardListener {
+public class LinkCardPresenter extends BaseUserPresenter implements Presenter<ILinkCardView> {
 
     private ILinkCardView linkCardView;
+    private Subscription subscription;
 
     @Inject
     User user;
@@ -47,10 +48,9 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
     @Override
     public void destroyView() {
         linkCardView = null;
+        this.zpwRemoveMapCardListener = null;
         unsubscribeIfNotNull(subscription);
     }
-
-    private Subscription subscription;
 
     public void getListCard() {
         linkCardView.showLoading();
@@ -136,33 +136,35 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
         params.userID = String.valueOf(user.uid);
         params.mapCard = mapCard;
 
-        ZingMobilePayApplication.removeCardMap(params, this);
+        ZingMobilePayApplication.removeCardMap(params, zpwRemoveMapCardListener);
     }
 
-    @Override
-    public void onSuccess(DMappedCard mapCard) {
-        Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard.toJsonString());
-        linkCardView.hideLoading();
-        if (mapCard != null) {
-            BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
-            linkCardView.removeData(bankCard);
-        }
-    }
-
-    @Override
-    public void onError(BaseResponse pMessage) {
-        Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
-        if (pMessage == null) {
-            if (!AndroidUtils.isNetworkAvailable(linkCardView.getContext())) {
-                linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-            } else {
-                linkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+    ZPWRemoveMapCardListener zpwRemoveMapCardListener = new ZPWRemoveMapCardListener() {
+        @Override
+        public void onSuccess(DMappedCard mapCard) {
+            Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard.toJsonString());
+            linkCardView.hideLoading();
+            if (mapCard != null) {
+                BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
+                linkCardView.removeData(bankCard);
             }
-        } else {
-            Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
-            linkCardView.showError(pMessage.returnmessage);
         }
-    }
+
+        @Override
+        public void onError(BaseResponse pMessage) {
+            Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
+            if (pMessage == null) {
+                if (!AndroidUtils.isNetworkAvailable(linkCardView.getContext())) {
+                    linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                } else {
+                    linkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+                }
+            } else {
+                Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
+                linkCardView.showError(pMessage.returnmessage);
+            }
+        }
+    };
 
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
         public LinkCardSubscriber() {

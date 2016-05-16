@@ -176,6 +176,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
             int resultStatus = pPaymentResult.paymentStatus.getNum();
             if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
                 //            ToastUtil.showToast(mView.getActivity(), "Success!");
+                getBalance();
                 if (mView != null && mView.getActivity() != null) {
                     mView.getActivity().finish();
                 }
@@ -193,5 +194,11 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
     @Override
     public void onSMSCallBack(String appTransID) {
 
+    }
+
+    private void getBalance() {
+        zaloPayRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

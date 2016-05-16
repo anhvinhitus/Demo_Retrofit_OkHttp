@@ -23,7 +23,7 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 /**
  * Created by longlv on 10/05/2016.
  */
-public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Presenter<IBalanceTopupView>, ZPPaymentListener {
+public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Presenter<IBalanceTopupView> {
 
     private IBalanceTopupView mView;
 
@@ -43,6 +43,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
     @Override
     public void destroyView() {
         this.mView = null;
+        this.zpPaymentListener = null;
     }
 
     @Override
@@ -151,7 +152,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
 
             Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
+            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
         } catch (NumberFormatException e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -168,31 +169,40 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
         createWalletorder(amount);
     }
 
-    @Override
-    public void onComplete(ZPPaymentResult pPaymentResult) {
-        if (pPaymentResult == null) {
-            if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
-                mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+    ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
+        @Override
+        public void onComplete(ZPPaymentResult pPaymentResult) {
+            if (pPaymentResult == null) {
+                if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
+                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                } else {
+                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+                }
             } else {
-                mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
-            }
-        } else {
-            int resultStatus = pPaymentResult.paymentStatus.getNum();
-            if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                ToastUtil.showToast(mView.getActivity(), "Success!");
-            } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-                mView.onTokenInvalid();
+                int resultStatus = pPaymentResult.paymentStatus.getNum();
+                if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                    ToastUtil.showToast(mView.getActivity(), "Success!");
+                    getBalance();
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                    mView.onTokenInvalid();
+                }
             }
         }
-    }
 
-    @Override
-    public void onCancel() {
+        @Override
+        public void onCancel() {
 
-    }
+        }
 
-    @Override
-    public void onSMSCallBack(String appTransID) {
+        @Override
+        public void onSMSCallBack(String appTransID) {
 
+        }
+    };
+
+    private void getBalance() {
+        zaloPayRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

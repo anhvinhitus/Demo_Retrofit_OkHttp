@@ -1,6 +1,9 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -14,11 +17,10 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 /**
  * Created by longlv on 12/05/2016.
  */
-public class LinkCardProdurePresenter extends BaseUserPresenter implements Presenter<ILinkCardProduceView>, ZPPaymentListener {
+public class LinkCardProdurePresenter extends BaseUserPresenter implements Presenter<ILinkCardProduceView> {
 
     private ILinkCardProduceView mView;
     private Subscription subscription;
-    private Subscription subscriptionGetOrder;
 
     User user;
 
@@ -34,6 +36,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     @Override
     public void destroyView() {
         mView = null;
+        zpPaymentListener = null;
         unsubscribeIfNotNull(subscription);
     }
 
@@ -67,41 +70,45 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
         paymentInfo.zaloUserID = String.valueOf(user.uid);
         paymentInfo.zaloPayAccessToken = user.accesstoken;
 
-        ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
+        Timber.tag(TAG).d("addLinkCard..............activity=====================" +  mView.getActivity());
+        ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
     }
 
-    @Override
-    public void onComplete(ZPPaymentResult zpPaymentResult) {
-        hideLoadingView();
-        if (zpPaymentResult == null) {
-            if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
-                mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-            } else {
-                mView.showError("Lỗi xảy ra trong quá trình liên kết thẻ. Vui lòng thử lại sau.");
-            }
-        } else {
-            EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-            if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-                if (paymentInfo == null) {
-                    return;
+    ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
+        @Override
+        public void onComplete(ZPPaymentResult zpPaymentResult) {
+            hideLoadingView();
+            if (zpPaymentResult == null) {
+                if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
+                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                } else {
+                    mView.showError("Lỗi xảy ra trong quá trình liên kết thẻ. Vui lòng thử lại sau.");
                 }
-                mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
-            } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-                mView.onTokenInvalid();
+            } else {
+                EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
+                if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                    getBalance();
+                    ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+                    if (paymentInfo == null) {
+                        return;
+                    }
+                    mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
+                } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                    mView.onTokenInvalid();
+                }
             }
         }
-    }
 
-    @Override
-    public void onCancel() {
-        hideLoadingView();
-    }
+        @Override
+        public void onCancel() {
+            hideLoadingView();
+        }
 
-    @Override
-    public void onSMSCallBack(String s) {
+        @Override
+        public void onSMSCallBack(String s) {
 
-    }
+        }
+    };
 
     private void showLoadingView() {
         mView.showLoading();
@@ -114,5 +121,11 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     private void showErrorView(String message) {
         mView.hideLoading();
         mView.showError(message);
+    }
+
+    private void getBalance() {
+        zaloPayRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }
