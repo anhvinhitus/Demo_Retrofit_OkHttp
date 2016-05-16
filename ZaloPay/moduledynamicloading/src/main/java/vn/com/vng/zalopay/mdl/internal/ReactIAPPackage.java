@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
 
 /**
@@ -17,13 +19,18 @@ import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
  */
 public class ReactIAPPackage implements ReactPackage {
 
-    public ReactIAPPackage() {
+    ZaloPayRepository zaloPayRepository;
+    User user;
+
+    public ReactIAPPackage(ZaloPayRepository repository, User user) {
+        this.zaloPayRepository = repository;
+        this.user = user;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayIAPNativeModule(reactContext));
+        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayRepository, user));
         return modules;
     }
 

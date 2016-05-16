@@ -17,6 +17,7 @@ import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
@@ -62,8 +63,8 @@ public class ReactNativeModule {
     @UserScope
     @Provides
     @Named("reactIAPPackage")
-    ReactPackage provideReactIAPPackage() {
-        return new ReactIAPPackage();
+    ReactPackage provideReactIAPPackage(ZaloPayRepository repository, User user) {
+        return new ReactIAPPackage(repository, user);
     }
 
     @UserScope
