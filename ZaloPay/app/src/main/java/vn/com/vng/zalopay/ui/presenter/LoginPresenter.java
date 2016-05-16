@@ -10,8 +10,6 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -26,7 +24,6 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
 /**
@@ -61,6 +58,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     @Override
     public void destroyView() {
+        hideLoadingView();
         this.mView = null;
     }
 
@@ -99,11 +97,7 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
     public void onAuthenError(int errorCode, String message) {
 
      /*   zaloProfilePreferences.setUserId(0);
-        zaloProfilePreferences.setAuthCode("");
-
-        //
-
-*/
+        zaloProfilePreferences.setAuthCode("");*/
         Timber.tag(TAG).d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
             showErrorView(message);
@@ -179,7 +173,6 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         // Khởi tạo user component
         AndroidApplication.instance().createUserComponent(user);
 
-        this.hideLoadingView();
         this.gotoHomeScreen();
     }
 
