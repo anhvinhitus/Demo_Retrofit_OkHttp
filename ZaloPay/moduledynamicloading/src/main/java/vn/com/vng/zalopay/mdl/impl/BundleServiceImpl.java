@@ -65,6 +65,11 @@ public class BundleServiceImpl implements BundleService {
     }
 
     @Override
+    public String getInternalBundleFolder() {
+        return mCurrentInternalBundleFolder;
+    }
+
+    @Override
     public void prepareInternalBundle() {
         Timber.d("Hello from bundle Service");
 

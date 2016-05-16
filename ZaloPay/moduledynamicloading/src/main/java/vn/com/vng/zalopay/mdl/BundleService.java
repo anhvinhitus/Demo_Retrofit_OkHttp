@@ -14,4 +14,6 @@ public interface BundleService {
     void downloadInternalBundle();
 
     void prepareInternalBundle();
+
+    String getInternalBundleFolder();
 }
