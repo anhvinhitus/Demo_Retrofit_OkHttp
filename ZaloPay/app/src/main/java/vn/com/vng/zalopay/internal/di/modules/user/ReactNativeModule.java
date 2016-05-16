@@ -26,6 +26,9 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 @Module
 public class ReactNativeModule {
 
+
+    //Todo : heavy process
+
     @UserScope
     @Provides
     @Named("internalBundle")

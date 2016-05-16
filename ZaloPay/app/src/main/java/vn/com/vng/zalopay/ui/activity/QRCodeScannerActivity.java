@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
@@ -24,15 +25,14 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.qrcode.activity.QRScanActivity;
+import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
-import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by AnhHieu on 4/21/16.
  */
-public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView {
+public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanView {
 
     private long appId;
     private String zptranstoken;
@@ -65,7 +65,6 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
     @Override
     protected void onStart() {
         super.onStart();
-        mQRCodeView.startSpot();
     }
 
     @Override
@@ -99,7 +98,7 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
     @Override
     public void handleResult(String result) {
         Timber.tag(TAG).i("result:" + result);
-        super.handleResult(result);
+        vibrate();
         getOrder(result);
     }
 
@@ -136,7 +135,7 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
     @Override
     public void onTokenInvalid() {
         ZaloSDK.Instance.unauthenticate();
-        navigator.startLoginActivity(mQRCodeView.getContext());
+        navigator.startLoginActivity(this);
         finish();
     }
 
@@ -166,7 +165,7 @@ public class QRCodeScannerActivity extends QRScanActivity implements IQRScanView
 
     @Override
     public void showError(String message) {
-        ToastUtil.showToast(this, message);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         hideLoading();
     }
 
