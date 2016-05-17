@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
@@ -61,7 +60,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @OnClick(R.id.btnDeposit)
     public void onClickDeposit() {
-        if (inputAmountLayout.getAmount() < MIN_AMOUNT) {
+        if (inputAmountLayout.getAmount() < MIN_AMOUNT || inputAmountLayout.getAmount()%10000 != 0) {
             showError(mValidAmount);
             return;
         }
@@ -206,7 +205,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         ZaloSDK.Instance.unauthenticate();
         if (AndroidApplication.instance().getAppComponent()!=null && AndroidApplication.instance().getAppComponent().userConfig()!=null) {
             AndroidApplication.instance().getAppComponent().userConfig().clearConfig();
-            AndroidApplication.instance().getUserComponent().
         }
         navigator.startLoginActivity(getContext());
         getActivity().finish();
