@@ -160,7 +160,6 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
         }
     }
 
-
     public void deposit(long amount) {
         if (amount <= 0) {
             showErrorView("Số tiền phải là bội của 10.000 VNĐ");
@@ -181,7 +180,6 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
             } else {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                    ToastUtil.showToast(mView.getActivity(), "Success!");
                     getBalance();
                     mView.getActivity().finish();
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
