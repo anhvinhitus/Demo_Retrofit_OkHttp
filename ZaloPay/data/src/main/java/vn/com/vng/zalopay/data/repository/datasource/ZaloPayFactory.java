@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,7 +69,7 @@ public class ZaloPayFactory {
 
 
     private Observable<Long> balanceServer() {
-        //Timber.d("balanceServer call");
+        Timber.tag("ZaloPayFactory").d("balanceServer call");
         return appConfigService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
                 //  .doOnNext(response1 -> Timber.d("nhay vao day nhe balanceServer"))

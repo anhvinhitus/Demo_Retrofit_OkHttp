@@ -51,6 +51,10 @@ public class UserControllerModule {
         return new AppConfigFactory(context, service, paramRequestProvider, user, sqlitePlatformScope);
     }
 
+//    @UserScope
+//    @Provides
+//    UserConfigFactory provideUserConfigFactory(Context context, UserConfig userConfig, )
+
     @UserScope
     @Provides
     AppConfigRepository provideAppConfigRepository(AppConfigFactory appConfigFactory) {
