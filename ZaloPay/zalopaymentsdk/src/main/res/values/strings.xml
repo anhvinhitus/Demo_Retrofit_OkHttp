@@ -43,7 +43,7 @@
    	<string name="zingpaysdk_alert_network_error_get_status_fail">Mạng không ổn định, vui lòng thử lại sau! Hoặc vui lòng truy cập http://hotro.zing.vn để được giúp đỡ.</string>
    	<string name="zingpaysdk_alert_network_error_verify_iab">Mạng không ổn định, giao dịch chưa được xác minh, vui lòng kiểm tra lại kết nối internet!</string>
     <string name="zingpaysdk_alert_amount_not_support">Không có kênh nào hỗ trợ mệnh giá trên. Số tiền tối thiểu là: %s.</string>
-    <string name="zingpaysdk_alert_all_excluded">Tất cả các kênh đều đã bị loại trừ!</string>
+    <string name="zingpaysdk_alert_all_excluded">Không có kênh nào hỗ trợ cho giao dịch của !</string>
     <string name="zingpaysdk_alert_sent_sms">Hệ thống sẽ tự động cập nhật ngay khi nhận tin nhắn của bạn!</string>
     <string name="zingpaysdk_alert_resume_cc">Hệ thống sẽ tự động cập nhật khi giao dịch thành công!</string>
     <string name="zingpaysdk_alert_not_support_device">Thiết bị của bạn không được hỗ trợ!</string>
@@ -138,7 +138,7 @@
     <string name="zpw_string_credit_card_method_name">Thanh toán bằng thẻ tín dụng VISA</string>
     <string name="zpw_string_credit_card_link">Liên kết thẻ</string>
       
-    <string name="zpw_button_submit_text">Tiếp ục</string>
+    <string name="zpw_button_submit_text">Tiếp Tục</string>
     <string name="zpw_string_card_number_hint">Số thẻ</string>
     <string name="zpw_string_card_name_hint">Chủ thẻ</string>
     <string name="zpw_string_issue_date_hint">Ngày phát hành (tháng/năm)</string>
@@ -174,7 +174,7 @@
    	
    	<string name="zpw_string_fee_free">Miễn phí</string>
    	
-   	<string name="zpw_app_info_exclude_channel">Hiện không có kênh nào hỗ trợ thanh toán cho sản phẩm đã chọn.</string>
+   	<string name="zpw_app_info_exclude_channel">Hiện không có kênh nào hỗ trợ cho giao dịch của bạn.</string>
 	
    	<string name="zpw_string_title_fee">Phí thanh toán</string>
    	<string name="zpw_string_title_total_pay">Thanh toán</string>
