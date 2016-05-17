@@ -44,6 +44,12 @@ public abstract class AbsQRScanActivity extends AppCompatActivity {
         }
     };
 
+    public void resumeScanner() {
+        if (barcodeScannerView != null) {
+            barcodeScannerView.resume();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +61,7 @@ public abstract class AbsQRScanActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (barcodeScannerView != null) {
-            barcodeScannerView.resume();
-        }
-
+        resumeScanner();
     }
 
     public int getResLayoutId() {

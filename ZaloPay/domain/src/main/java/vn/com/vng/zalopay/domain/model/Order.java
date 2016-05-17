@@ -3,6 +3,11 @@ package vn.com.vng.zalopay.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import vn.com.vng.zalopay.domain.Constants;
+
 
 /**
  * Created by longlv on 09/05/2016.
@@ -33,6 +38,25 @@ public class Order extends AbstractData {
         this.description = description;
         this.payoption = payoption;
         this.mac = mac;
+    }
+
+    public Order(String jsonString) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        appid = (long)jsonObject.getDouble(Constants.APPID);
+        if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
+            zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+        }
+        apptransid = jsonObject.getString(Constants.APPTRANSID);
+        appuser = jsonObject.getString(Constants.APPUSER);
+        apptime = jsonObject.getString(Constants.APPTIME);
+        amount = jsonObject.getString(Constants.AMOUNT);
+        item = jsonObject.getString(Constants.ITEM);
+        description = jsonObject.getString(Constants.DESCRIPTION);
+        embeddata = jsonObject.getString(Constants.EMBEDDATA);
+        mac = jsonObject.getString(Constants.MAC);
+        if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
+            payoption = jsonObject.getString(Constants.CHARGEINFO);
+        }
     }
 
     public Order(Parcel in) {

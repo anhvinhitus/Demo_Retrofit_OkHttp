@@ -16,7 +16,7 @@ import com.facebook.react.bridge.ReadableMap;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -76,7 +76,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         String appUser = params.getString(Constants.APPUSER);
         long appTime = (long)params.getDouble(Constants.APPTIME);
         long amount = (long)params.getDouble(Constants.AMOUNT);
-        String itemName = params.getString(Constants.ITEMNAME);
+        String itemName = params.getString(Constants.ITEM);
         String description = params.getString(Constants.DESCRIPTION);
         String embedData = params.getString(Constants.EMBEDDATA);
         String mac = params.getString(Constants.MAC);
