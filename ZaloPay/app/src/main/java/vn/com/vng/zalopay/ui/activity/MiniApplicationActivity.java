@@ -9,11 +9,13 @@ import com.facebook.react.shell.MainReactPackage;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
@@ -25,6 +27,10 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 //    @Inject
 //    ReactInstanceManager reactInstanceManager;
+
+
+    @Inject
+    BundleReactConfig bundleReactConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,13 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Override
     protected boolean getUseDeveloperSupport() {
-        return BuildConfig.DEBUG;
+        return bundleReactConfig.isInternalDevSupport();
+    }
+
+    @Nullable
+    @Override
+    protected String getJSBundleFile() {
+        return bundleReactConfig.getInternalJsBundle();
     }
 
     @Override
