@@ -13,6 +13,9 @@ public class PaymentError {
     //thông tin user thiếu hoặc không hợp lệ.
     public static int ERR_CODE_USER_INFO = 6001;
 
+    //data thiếu hoặc không hợp lệ.
+    public static int ERR_CODE_DATA = 7000;
+
     //lỗi mang
     public static int ERR_CODE_INTERNET = 4000;
 
@@ -35,6 +38,8 @@ public class PaymentError {
             errorMessage = "Lỗi kết nối mạng.";
         } else if (errorCode == ERR_CODE_SYSTEM) {
             errorMessage = "Lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.";
+        } else if (errorCode == ERR_CODE_DATA) {
+            errorMessage = "Dữ liệu đầu vào thiếu hoặc không hợp lệ.";
         } else if (errorCode == ERR_CODE_NONE) {
             errorMessage = "";
         } else if (errorCode == ERR_CODE_INTERNAL_TIMEOUT) {

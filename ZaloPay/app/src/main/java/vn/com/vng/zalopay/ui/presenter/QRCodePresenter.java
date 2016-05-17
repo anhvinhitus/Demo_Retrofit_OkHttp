@@ -133,6 +133,10 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
             if (TextUtils.isEmpty(order.getItem())) {
                 return false;
             }
+            if (TextUtils.isEmpty(order.getAmount())) {
+                return false;
+            }
+            long amount = Long.parseLong(order.getAmount());
             if (TextUtils.isEmpty(order.getEmbeddata())) {
                 return false;
             }
@@ -142,6 +146,10 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
             pay(order);
             return true;
         } catch (JSONException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        } catch (NumberFormatException e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
             }

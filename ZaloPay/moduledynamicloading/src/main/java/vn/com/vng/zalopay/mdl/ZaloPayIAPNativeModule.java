@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -81,6 +82,51 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         String embedData = params.getString(Constants.EMBEDDATA);
         String mac = params.getString(Constants.MAC);
         String chargeInfo = params.getString(Constants.CHARGEINFO);
+
+        if (appID < 0) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            }
+            return;
+        }
+        if (TextUtils.isEmpty(appTransID)) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            }
+            return;
+        }
+        if (TextUtils.isEmpty(appUser)) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            }
+            return;
+        }
+        if (appTime <= 0) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            }
+            return;
+        }
+        if (amount <= 0) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            }
+            return;
+        }
+        if (TextUtils.isEmpty(itemName)) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            }
+            return;
+        }
+        if (TextUtils.isEmpty(embedData)) {
+            handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            return;
+        }
+        if (TextUtils.isEmpty(mac)) {
+            handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            return;
+        }
 
         if (user == null || user.uid <= 0) {
             if (promise!=null) {
