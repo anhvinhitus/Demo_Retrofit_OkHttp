@@ -84,12 +84,13 @@
                 android:text="@string/link_card_step_note" />
         </LinearLayout>
 
-        <Button
+        <TextView
             android:id="@+id/btnContinue"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_weight="0.0"
-            android:background="@drawable/bg_btn_green"
+            android:background="@drawable/bg_btn_blue"
+            android:gravity="center"
             android:text="@string/btn_continue"
             android:textColor="@color/white" />
 
