@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.activity;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,15 +17,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
-import vn.zing.pay.zmpsdk.utils.Log;
-import vn.zing.pay.zmpsdk.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 4/21/16.
@@ -33,7 +31,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
 
     private long appId;
     private String zptranstoken;
-    private SweetAlertDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
 
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
@@ -121,7 +119,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         finish();
     }
 
-    @Override
+    /*@Override
     public void showLoading() {
         if(mProgressDialog == null) {
             mProgressDialog = new SweetAlertDialog(getContext(), 5);
@@ -150,6 +148,20 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
             return;
         }
         mProgressDialog.hide();
+    }*/
+
+    @Override
+    public void showLoading() {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+        }
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
     }
 
     @Override
