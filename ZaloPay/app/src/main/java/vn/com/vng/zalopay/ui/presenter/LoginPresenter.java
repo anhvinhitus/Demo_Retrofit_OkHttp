@@ -35,7 +35,6 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
     private ILoginView mView;
 
-
     private ZaloProfilePreferences zaloProfilePreferences;
 
     private Subscription subscriptionLogin;

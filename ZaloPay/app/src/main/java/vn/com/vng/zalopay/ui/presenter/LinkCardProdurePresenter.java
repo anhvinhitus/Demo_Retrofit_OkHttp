@@ -126,6 +126,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     private void getBalance() {
         zaloPayRepository.balance()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

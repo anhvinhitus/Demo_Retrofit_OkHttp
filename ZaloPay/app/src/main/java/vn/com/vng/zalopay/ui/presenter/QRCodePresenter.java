@@ -1,17 +1,24 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.text.TextUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
@@ -77,7 +84,84 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
         mView.showError(message);
     }
 
-    public void getOrder(long appId, String zalooauthcode) {
+    public void pay(String jsonString) {
+        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonString);
+        if (zpTransaction(jsonString)) {
+            return;
+        }
+        if (orderTransaction(jsonString)) {
+            return;
+        }
+        qrDataInvalid();
+        mView.resumeScanner();
+    }
+
+    private boolean zpTransaction(String jsonOrder) {
+        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonOrder);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(jsonOrder);
+            long appId = jsonObject.getLong(Constants.APPID);
+            String zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+            mView.showLoading();
+            getOrder(appId, zptranstoken);
+            return true;
+        } catch (JSONException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private boolean orderTransaction(String jsonOrder) {
+        JSONObject jsonObject = null;
+        try {
+            Order order = new Order(jsonOrder);
+            if (order == null || order.getAppid() < 0) {
+                return false;
+            }
+            if (TextUtils.isEmpty(order.getApptransid())) {
+                return false;
+            }
+            if (TextUtils.isEmpty(order.getAppuser())) {
+                return false;
+            }
+            if (TextUtils.isEmpty(order.getApptime())) {
+                return false;
+            }
+            if (TextUtils.isEmpty(order.getItem())) {
+                return false;
+            }
+            if (TextUtils.isEmpty(order.getAmount())) {
+                return false;
+            }
+            long amount = Long.parseLong(order.getAmount());
+            if (TextUtils.isEmpty(order.getEmbeddata())) {
+                return false;
+            }
+            if (TextUtils.isEmpty(order.getMac())) {
+                return false;
+            }
+            pay(order);
+            return true;
+        } catch (JSONException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        } catch (NumberFormatException e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private void qrDataInvalid() {
+        ToastUtil.showToast(mView.getActivity(), "Dữ liệu không hợp lệ.");
+    }
+
+    private void getOrder(long appId, String zalooauthcode) {
         subscriptionGetOrder = zaloPayRepository.getOrder(appId, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -201,6 +285,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
     private void getBalance() {
         zaloPayRepository.balance()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

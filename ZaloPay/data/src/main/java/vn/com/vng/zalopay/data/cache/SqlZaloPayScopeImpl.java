@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.cache;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
@@ -75,6 +76,7 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
 
     @Override
     public void writeBalance(long balance) {
+        Timber.tag("SqlZaloPayScopeImpl").d("writeBalance, balance:" + balance);
         this.insertDataManifest(Constants.MANIF_BALANCE, String.valueOf(balance));
     }
 
