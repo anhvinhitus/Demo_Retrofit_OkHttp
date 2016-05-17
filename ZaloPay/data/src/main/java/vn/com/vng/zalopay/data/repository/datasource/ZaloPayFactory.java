@@ -2,17 +2,25 @@ package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Call;
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
+import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -22,7 +30,7 @@ public class ZaloPayFactory {
 
     private Context context;
 
-    private ZaloPayService appConfigService;
+    private ZaloPayService zaloPayService;
 
     private HashMap<String, String> params;
 
@@ -42,14 +50,14 @@ public class ZaloPayFactory {
         }
 
         this.context = context;
-        this.appConfigService = service;
+        this.zaloPayService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
         this.payAppId = payAppId;
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
-        return appConfigService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
+        return zaloPayService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
                 .map(transactionHistoryResponse -> transactionHistoryResponse.data)
 
 
@@ -68,10 +76,14 @@ public class ZaloPayFactory {
         return sqlZaloPayScope.transactionHistorys();
     }
 
+    public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int limit) {
+        return sqlZaloPayScope.transactionHistorys(limit);
+    }
+
 
     private Observable<Long> balanceServer() {
         //Timber.d("balanceServer call");
-        return appConfigService.balance(user.uid, user.accesstoken)
+        return zaloPayService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
                 //  .doOnNext(response1 -> Timber.d("nhay vao day nhe balanceServer"))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance);
@@ -86,27 +98,67 @@ public class ZaloPayFactory {
     }
 
     public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {
-        return appConfigService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
+        return zaloPayService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
     }
 
     public Observable<GetOrderResponse> createwalletorder(long appId, long amount, int transtype) {
-        return appConfigService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype);
+        return zaloPayService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype);
     }
 
-    public Observable<List<TransHistoryEntity>> reloadListTransaction(int count) {
-        //(1)
+    public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {
         if (sqlZaloPayScope.isHaveTransactionInDb()) {
             long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
-            //(3)
-
             Timber.d(" lasttime %s", lasttime);
-
-            return transactionHistorysServer(lasttime, count)
-
-                    ;
+        /*    if (subscriber != null && !subscriber.isUnsubscribed()) {
+                subscriber.onNext(zaloPayEntityDataMapper.transform(sqlZaloPayScope.listTransHistorys()));
+            }*/
+            transactionHistoryServer(lasttime, count, 1, subscriber);
         } else {
-            //(2)
-            return transactionHistorysServer(0, count);
+            transactionHistoryServer(0, count, 1, subscriber);
         }
     }
+
+    private void transactionHistoryServer(final long timestamp, final int count, final int odder, final Subscriber<List<TransHistory>> subscriber) {
+        zaloPayService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, odder)
+                .doOnNext(new Action1<TransactionHistoryResponse>() {
+                    @Override
+                    public void call(TransactionHistoryResponse response) {
+                        List<TransHistoryEntity> list = response.data;
+                        int size = list.size();
+                        if (size > 0) {
+                            sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
+                            sqlZaloPayScope.write(response.data);
+                        }
+                    }
+                })
+                .doOnNext(new Action1<TransactionHistoryResponse>() {
+                    @Override
+                    public void call(TransactionHistoryResponse response) {
+                        List<TransHistoryEntity> list = response.data;
+                        int size = list.size();
+
+                        if (size >= count) {
+                            /*if (subscriber != null && !subscriber.isUnsubscribed()) {
+                                // subscriber.onNext(list);
+                            }*/
+
+                            transactionHistoryServer(list.get(0).reqdate, count, odder, subscriber);
+
+                        } else {
+                           /* if (subscriber != null && !subscriber.isUnsubscribed()) {
+                                subscriber.onNext(zaloPayEntityDataMapper.transform(sqlZaloPayScope.listTransHistorys()));
+                                subscriber.onCompleted();
+                            }*/
+                        }
+                    }
+                })
+                .doOnError(throwable -> {
+                    if (subscriber != null && !subscriber.isUnsubscribed()) {
+                        subscriber.onError(throwable);
+                    }
+                })
+                .subscribe(new DefaultSubscriber<>());
+    }
+
+
 }
