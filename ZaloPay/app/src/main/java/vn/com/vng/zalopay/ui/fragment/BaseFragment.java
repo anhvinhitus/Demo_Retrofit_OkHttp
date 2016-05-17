@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -14,10 +13,12 @@ import com.bumptech.glide.Glide;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.zing.pay.zmpsdk.utils.Log;
+import vn.zing.pay.zmpsdk.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -32,7 +33,7 @@ public abstract class BaseFragment extends Fragment {
     public final String TAG = getClass().getSimpleName();
 
     private Snackbar mSnackBar;
-    private ProgressDialog mProgressDialog;
+    private SweetAlertDialog mProgressDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         hideProgressDialog();
+        mProgressDialog = null;
         ButterKnife.unbind(this);
     }
 
@@ -96,16 +98,32 @@ public abstract class BaseFragment extends Fragment {
 
 
     public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+        if(mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), 5);
         }
-        mProgressDialog.show();
+
+        if(!mProgressDialog.isShowing()) {
+            try {
+                mProgressDialog.getProgressHelper().setBarColor(this.getResources().getColor(R.color.color_primary));
+                mProgressDialog.setTitle("");
+                mProgressDialog.setContentText(getContext().getResources().getString(R.string.alert_processing));
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+            } catch (Exception e) {
+                if (BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Log.e("DIALOG_MANAGER", "There is a showing process dialog!");
+        }
     }
 
-
     public void hideProgressDialog() {
-        if (mProgressDialog != null)
-            mProgressDialog.dismiss();
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.hide();
     }
 
     public UserComponent getUserComponent() {
