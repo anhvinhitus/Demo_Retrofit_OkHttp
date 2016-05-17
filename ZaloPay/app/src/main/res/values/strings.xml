@@ -55,8 +55,8 @@
     <string name="amount_vnd"> (VNĐ)</string>
     <string name="vnd"> VNĐ</string>
 
-    <string name="btn_continue">Tiếp tục</string>
-    <string name="btn_pay_now">Thanh toán</string>
+    <string name="btn_continue">Tiếp Tục</string>
+    <string name="btn_pay_now">Thanh Toán</string>
 
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
