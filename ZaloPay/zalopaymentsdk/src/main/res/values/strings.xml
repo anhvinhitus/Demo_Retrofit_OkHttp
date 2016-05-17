@@ -28,6 +28,8 @@
     <string name="zingpaysdk_alert_processing">Đang xử lý</string>
     <string name="zingpaysdk_alert_get_status">Đang nhận kết quả  giao dịch</string>
     <string name="zingpaysdk_alert_continue_processing">Giao dịch vẫn còn đang xử lý</string>
+    <string name="zingpaysdk_alert_processing_check_app_info">Đang kiểm tra thông tin ứng dụng</string>
+    <string name="zingpaysdk_alert_processing_loading_resource">Đang khởi tạo dữ liệu ứng dụng</string>
     <string name="zingpaysdk_confirm_quit">Giao dịch sẽ bị hủy.\nBạn thật sự muốn thoát ?</string>
     <string name="zingpaysdk_confirm_continue_channel01"><![CDATA[ Sử dụng kênh %s để thực hiện giao dịch ? ]]></string>
     <string name="zingpaysdk_confirm_continue_channel02"><![CDATA[ Sử dụng thẻ  %s để thực hiện giao dịch ? ]]></string>
@@ -136,7 +138,7 @@
     <string name="zpw_string_credit_card_method_name">Thanh toán bằng thẻ tín dụng VISA</string>
     <string name="zpw_string_credit_card_link">Liên kết thẻ</string>
       
-    <string name="zpw_button_submit_text">Tiếp tục</string>
+    <string name="zpw_button_submit_text">Tiếp ục</string>
     <string name="zpw_string_card_number_hint">Số thẻ</string>
     <string name="zpw_string_card_name_hint">Chủ thẻ</string>
     <string name="zpw_string_issue_date_hint">Ngày phát hành (tháng/năm)</string>
@@ -183,12 +185,16 @@
    	<string name="zpw_string_select_bank">Chọn</string>
    	<string name="zpw_string_title_select_back">Lựa chọn ngân hàng</string>
  	<string name="app_name">ZALOWALLET_DIALOG</string>
-    <string name="dialog_default_title"> </string>
+ 	
+ 	<string name="dialog_retry_button">Thử lại</string>
     <string name="dialog_close_button">  Đóng  </string>
     
     <string name="dialog_cancel_button">Thoát</string>
     
     <string name="dialog_continue_button">Tiếp tục</string>
     
-    <string name="LOADING">Đang tải</string></resources>
+    <string name="LOADING">Đang tải</string>
+    
+    <string name="zpw_string_saving_credit_card">Đang lưu thông tin thẻ</string>
+</resources>
     
