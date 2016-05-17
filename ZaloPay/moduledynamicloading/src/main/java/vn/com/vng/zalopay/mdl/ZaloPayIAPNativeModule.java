@@ -1,31 +1,22 @@
 package vn.com.vng.zalopay.mdl;
 
-import timber.log.Timber;
-
-
-import android.content.Intent;
-
-import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.LifecycleEventListener;
-
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
-
-import dagger.Module;
-import timber.log.Timber;
-
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
-
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -165,6 +156,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     }
 
     private void handleResultSucess(Promise promise, Object object) {
+        getBalance();
         if (promise == null) {
             return;
         }
@@ -185,6 +177,12 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         promise.reject(error, message);
     }
 
+    private void getBalance() {
+        zaloPayRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

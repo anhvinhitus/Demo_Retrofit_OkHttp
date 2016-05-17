@@ -1,11 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,19 +11,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.interactor.event.ChangeBalanceEvent;
-import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;

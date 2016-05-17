@@ -10,6 +10,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.interactor.event.ChangeBalanceEvent;
@@ -27,10 +29,12 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
     private EventBus eventBus;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private User user;
+    private SqlZaloPayScope sqlZaloPayScope;
 
-    public LeftMenuPresenter(EventBus eventBus, User user) {
+    public LeftMenuPresenter(EventBus eventBus, User user, SqlZaloPayScope sqlZaloPayScope) {
         this.eventBus = eventBus;
         this.user = user;
+        this.sqlZaloPayScope = sqlZaloPayScope;
     }
 
     @Override
@@ -52,7 +56,8 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Override
     public void resume() {
-
+        long balance = sqlZaloPayScope.getDataManifest(Constants.MANIF_BALANCE, 0);
+        menuView.setBalance(balance);
     }
 
     @Override

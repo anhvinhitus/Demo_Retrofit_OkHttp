@@ -201,6 +201,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
     private void getBalance() {
         zaloPayRepository.balance()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }
