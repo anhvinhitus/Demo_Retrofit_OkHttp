@@ -14,10 +14,9 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.BundleReactConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 
@@ -69,7 +68,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     String getJSBundleFile() {
-        return bundleReactConfig.getJSBundleFile();
+        return bundleReactConfig.getExternalJsBundle();
     }
 
     /**
@@ -108,7 +107,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * Returns whether dev mode should be enabled. This enables e.g. the dev menu.
      */
     protected boolean getUseDeveloperSupport() {
-        return bundleReactConfig.getUseDeveloperSupport();
+        return bundleReactConfig.isExternalDevSupport();
     }
 
     @Override

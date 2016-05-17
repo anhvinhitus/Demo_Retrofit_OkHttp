@@ -90,9 +90,11 @@ android {
 
     productFlavors {
         production {
+            buildConfigField "boolean", "REACT_DEVELOP_SUPPORT", 'false'
         }
 
         beta {
+            buildConfigField "boolean", "REACT_DEVELOP_SUPPORT", 'true'
         }
     }
 

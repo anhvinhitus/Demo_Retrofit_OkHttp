@@ -15,11 +15,13 @@ import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.BundleReactConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.mdl.impl.BundleReactConfigDevel;
+import vn.com.vng.zalopay.mdl.impl.BundleReactConfigImpl;
 import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
@@ -40,15 +42,6 @@ public class ReactNativeModule {
         Timber.d("internalBundle %s", bundleService.mCurrentInternalBundleFolder);
         return bundleService;
     }
-
-
-    @UserScope
-    @Provides
-    @Named("internalBundle")
-    String providesInternalBundleFolder(@Named("bundleservice") BundleService service) {
-        return service.getInternalBundleFolder();
-    }
-
 
     @UserScope
     @Provides
@@ -74,25 +67,29 @@ public class ReactNativeModule {
     @UserScope
     @Provides
     BundleReactConfig provideBundleReactConfig(Context context, @Named("bundleservice") BundleService service) {
-        return new BundleReactConfig((Application) context, service);
+        if (BuildConfig.REACT_DEVELOP_SUPPORT) {
+            return new BundleReactConfigDevel();
+        } else {
+            return new BundleReactConfigImpl(service);
+        }
     }
 
     @UserScope
     @Provides
-    ReactInstanceManager providesReactInstanceManager(Context context, @Named("internalBundle") String internalBundle,
+    ReactInstanceManager providesReactInstanceManager(Context context, BundleReactConfig internalBundle,
                                                       @Named("reactInternalPackage") ReactPackage internal,
                                                       @Named("reactMainPackage") ReactPackage main,
                                                       @Named("reactIAPPackage") ReactPackage iapPackage) {
-        Timber.d("providesReactInstanceManager %s, %s", internalBundle, BuildConfig.DEBUG);
+        Timber.d("providesReactInstanceManager %s, %s", internalBundle.getInternalJsBundle(), BuildConfig.DEBUG);
         return ReactInstanceManager.builder()
                 .setApplication((Application) context)
-//                .setJSBundleFile(internalBundle + "/main.jsbundle")
+                .setJSBundleFile(internalBundle.getInternalJsBundle())
 //                .setBundleAssetName("index.android.bundle")
                 .setJSMainModuleName("index.android")
                 .addPackage(main)
                 .addPackage(internal)
                 .addPackage(iapPackage)
-                .setUseDeveloperSupport(BuildConfig.DEBUG)
+                .setUseDeveloperSupport(internalBundle.isInternalDevSupport())
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .setNativeModuleCallExceptionHandler(new NativeModuleCallExceptionHandler() {
                     @Override
@@ -102,13 +99,5 @@ public class ReactNativeModule {
                 })
                 .build();
     }
-
-
-   /* @UserScope
-    @Provides
-    BundleWrapper providesBundleWrapper(Context context) {
-        return new BundleWrapper((Application) context);
-    }*/
-
 
 }
