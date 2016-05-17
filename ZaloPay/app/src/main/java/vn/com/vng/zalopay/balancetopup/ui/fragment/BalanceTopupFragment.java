@@ -203,6 +203,9 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onTokenInvalid() {
         ZaloSDK.Instance.unauthenticate();
+        if (AndroidApplication.instance().getAppComponent()!=null && AndroidApplication.instance().getAppComponent().userConfig()!=null) {
+            AndroidApplication.instance().getAppComponent().userConfig().clearConfig();
+        }
         navigator.startLoginActivity(getContext());
         getActivity().finish();
     }

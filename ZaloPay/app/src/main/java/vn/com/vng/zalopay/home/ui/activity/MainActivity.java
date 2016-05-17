@@ -317,10 +317,12 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             navigator.startMiniAppActivity(this, "TransactionLogs");
         } else if (itemId == MenuItemUtil.SIGOUT_ID) {
             ZaloSDK.Instance.unauthenticate();
+            if (getAppComponent()!=null && getAppComponent().userConfig()!=null) {
+                getAppComponent().userConfig().clearConfig();
+            }
             navigator.startLoginActivity(this);
             finish();
         }
-
 
         return false;
     }

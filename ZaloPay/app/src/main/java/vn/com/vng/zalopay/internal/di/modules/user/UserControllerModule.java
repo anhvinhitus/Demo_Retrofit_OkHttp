@@ -77,7 +77,6 @@ public class UserControllerModule {
         return new ApplicationRepositoryImpl(appConfigFactory, mapper);
     }
 
-
     @UserScope
     @Provides
     SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
