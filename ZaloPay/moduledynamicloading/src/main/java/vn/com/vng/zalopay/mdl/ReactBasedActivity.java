@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 
 /**
  * Created by huuhoa on 5/16/16.
+ * Based activity for hosting react native components
  */
 public abstract class ReactBasedActivity extends Activity implements DefaultHardwareBackBtnHandler {
     public ReactBasedActivity() {
@@ -40,6 +41,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 
     private @Nullable
     ReactInstanceManager mReactInstanceManager;
+    private ReactRootView mReactRootView;
     private LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
     private boolean mDoRefresh = false;
 
@@ -151,7 +153,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         }
 
         mReactInstanceManager = createReactInstanceManager();
-        ReactRootView mReactRootView = createRootView();
+        mReactRootView = createRootView();
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
         setContentView(mReactRootView);
     }
@@ -182,8 +184,14 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     protected void onDestroy() {
         super.onDestroy();
 
+        if (mReactRootView != null) {
+            mReactInstanceManager.detachRootView(mReactRootView);
+            mReactRootView = null;
+        }
+
         if (mReactInstanceManager != null) {
             mReactInstanceManager.destroy();
+            mReactInstanceManager = null;
         }
     }
 
