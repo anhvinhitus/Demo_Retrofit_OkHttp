@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
@@ -38,8 +41,10 @@ public class ZaloPayFactory {
 
     private final int payAppId;
 
+    private EventBus eventBus;
+
     public ZaloPayFactory(Context context, ZaloPayService service,
-                          User user, SqlZaloPayScope sqlZaloPayScope, int payAppId) {
+                          User user, SqlZaloPayScope sqlZaloPayScope, int payAppId, EventBus eventBus) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -50,6 +55,8 @@ public class ZaloPayFactory {
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
         this.payAppId = payAppId;
+
+        this.eventBus = eventBus;
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
@@ -80,8 +87,9 @@ public class ZaloPayFactory {
     private Observable<Long> balanceServer() {
         return zaloPayService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
-                //  .doOnNext(response1 -> Timber.d("nhay vao day nhe balanceServer"))
-                .map(balanceResponse1 -> balanceResponse1.zpwbalance);
+                .map(balanceResponse1 -> balanceResponse1.zpwbalance)
+                .doOnNext(aLong -> eventBus.post(new ChangeBalanceEvent(aLong)))
+                ;
     }
 
     private Observable<Long> balanceLocal() {

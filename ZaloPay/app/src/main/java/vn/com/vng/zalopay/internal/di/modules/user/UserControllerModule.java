@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 
 import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -90,8 +92,8 @@ public class UserControllerModule {
     @UserScope
     @Provides
     ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service,
-                                         User user, SqlZaloPayScope sqlZaloPayScope, @Named("payAppId") int payAppId) {
-        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, payAppId);
+                                         User user, SqlZaloPayScope sqlZaloPayScope, @Named("payAppId") int payAppId, EventBus eventBus) {
+        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, payAppId, eventBus);
     }
 
     @UserScope
