@@ -10,6 +10,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -84,7 +85,7 @@ public class ZaloPayFactory {
     }
 
 
-    private Observable<Long> balanceServer() {
+    public Observable<Long> balanceServer() {
         return zaloPayService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance)
@@ -111,7 +112,6 @@ public class ZaloPayFactory {
     public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {
         if (sqlZaloPayScope.isHaveTransactionInDb()) {
             long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
-            Timber.d(" lasttime %s", lasttime);
             transactionHistoryServer(lasttime, count, 1, subscriber);
         } else {
             transactionHistoryServer(0, count, 1, subscriber);
@@ -119,6 +119,7 @@ public class ZaloPayFactory {
     }
 
     private void transactionHistoryServer(final long timestamp, final int count, final int odder, final Subscriber<List<TransHistory>> subscriber) {
+        Timber.d("transactionHistoryServer %s ", timestamp);
         zaloPayService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, odder)
                 .doOnNext(response -> writeTransactionResp(response))
                 .doOnNext(new Action1<TransactionHistoryResponse>() {
@@ -126,7 +127,6 @@ public class ZaloPayFactory {
                     public void call(TransactionHistoryResponse response) {
                         if (response.data.size() >= count) {
                             transactionHistoryServer(response.data.get(0).reqdate, count, odder, subscriber);
-
                         }
                     }
                 })
@@ -134,14 +134,17 @@ public class ZaloPayFactory {
     }
 
 
+
+
     private void writeTransactionResp(TransactionHistoryResponse response) {
         List<TransHistoryEntity> list = response.data;
         int size = list.size();
+
+
+        Timber.d("writeTransactionResp %s %s", response.data, Thread.currentThread().getName());
         if (size > 0) {
             sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
             sqlZaloPayScope.write(response.data);
         }
     }
-
-
 }

@@ -30,9 +30,18 @@ public interface ZaloPayRepository {
 
     Observable<Order> createwalletorder(long appId, long amount, int transtype);
 
+    //thread react-native
     void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber);
 
+    //thread react-native
     void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber);
 
+    //thread react-native
     void requestTransactionsHistory();
+
+    /*Gọi khi một giao dịch thành công*/
+    Observable<Boolean> transactionUpdate();
+
+    /* Gọi lần mới run app */
+    Observable<Boolean> initialize();
 }

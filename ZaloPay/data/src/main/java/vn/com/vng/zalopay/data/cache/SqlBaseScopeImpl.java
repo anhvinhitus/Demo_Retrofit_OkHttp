@@ -4,9 +4,12 @@ import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
+import vn.com.vng.zalopay.data.cache.model.AppInfoDao;
+import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 
 /**
  * Created by AnhHieu on 5/5/16.
@@ -63,5 +66,22 @@ public class SqlBaseScopeImpl {
 
         return def;
     }
+
+    public AppInfoDao getAppInfoDao() {
+        return daoSession.getAppInfoDao();
+    }
+
+    public TransactionLogDao getTransactionLogDao() {
+        return daoSession.getTransactionLogDao();
+    }
+
+    public DataManifestDao getDataManifestDao() {
+        return daoSession.getDataManifestDao();
+    }
+
+    public BankCardGDDao getBankCardDao() {
+        return daoSession.getBankCardGDDao();
+    }
+
 
 }

@@ -2,7 +2,9 @@ package vn.com.vng.zalopay.data.cache;
 
 import java.util.List;
 
+import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
+import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 
 /**
@@ -10,12 +12,16 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
  */
 public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqlitePlatformScope {
 
-    public SqlitePlatformScopeImpl(DaoSession daoSession) {
+    private PlatformDaoMapper platformDaoMapper;
+
+    public SqlitePlatformScopeImpl(DaoSession daoSession, PlatformDaoMapper mapper) {
         super(daoSession);
+        this.platformDaoMapper = mapper;
     }
 
     @Override
     public void writeCards(List<CardEntity> listCard) {
+        getBankCardDao().insertOrReplaceInTx(platformDaoMapper.transformCardGreenDao(listCard));
     }
 
     @Override
@@ -25,7 +31,11 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
 
     @Override
-    public List<List<CardEntity>> getAllCardEntity() {
-        return null;
+    public Observable<List<CardEntity>> listCard() {
+        return makeObservable(() -> listCardEntity());
+    }
+
+    private List<CardEntity> listCardEntity() {
+        return platformDaoMapper.transformCardEntity(getBankCardDao().queryBuilder().list());
     }
 }

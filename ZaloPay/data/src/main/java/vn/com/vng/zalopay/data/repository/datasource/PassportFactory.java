@@ -9,7 +9,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.PassportService;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
@@ -36,7 +35,6 @@ public class PassportFactory {
 
     @Inject
     public PassportFactory(Context context, PassportService passportService,
-                           ParamRequestProvider paramRequestProvider,
                            UserConfig userConfig, @Named("payAppId") int payAppId) {
         if (context == null || passportService == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -44,11 +42,7 @@ public class PassportFactory {
 
         this.context = context;
         this.passportService = passportService;
-        this.params = paramRequestProvider.paramsDefault;
-        this.authZaloParams = paramRequestProvider.paramsZalo;
-
         this.userConfig = userConfig;
-
         this.payAppId = payAppId;
     }
 

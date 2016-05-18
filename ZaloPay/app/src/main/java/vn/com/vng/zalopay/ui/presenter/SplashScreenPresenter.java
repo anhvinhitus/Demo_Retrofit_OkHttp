@@ -22,12 +22,9 @@ import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 @Singleton
 public class SplashScreenPresenter extends BaseAppPresenter implements Presenter<ISplashScreenView> {
 
-    @Inject
-    UserConfig userConfig;
 
     @Inject
-    public SplashScreenPresenter(UserConfig userConfig) {
-        this.userConfig = userConfig;
+    public SplashScreenPresenter() {
     }
 
     private ISplashScreenView mView;
@@ -107,13 +104,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements Presenter
         }
     }
 
-    private void clearData() {
-        userConfig.clearConfig();
-        userConfig.setCurrentUser(null);
-        if (AndroidApplication.instance().getUserComponent() != null) {
-            AndroidApplication.instance().releaseUserComponent();
-        }
-    }
+
 
     private final class VerifySubscriber extends DefaultSubscriber<Boolean> {
         @Override

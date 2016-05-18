@@ -5,7 +5,7 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 4;
+    private static final int APP_DB_VERSION = 5;
 
 
     public static void main(String[] args) throws Exception {
@@ -16,7 +16,7 @@ public class GreenDaoGenerator {
 
         addTransactionLog(appSchema);
         addDataManifest(appSchema);
-
+        addCardList(appSchema);
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
@@ -61,6 +61,15 @@ public class GreenDaoGenerator {
         Entity dataManifest = schema.addEntity("DataManifest");
         dataManifest.addStringProperty("key").notNull().unique().primaryKey();
         dataManifest.addStringProperty("value");
+    }
+
+    private static void addCardList(Schema schema) {
+        Entity bankCard = schema.addEntity("BankCardGD");
+        bankCard.addStringProperty("cardhash").primaryKey().notNull();
+        bankCard.addStringProperty("cardname").notNull();
+        bankCard.addStringProperty("first6cardno").notNull();
+        bankCard.addStringProperty("last4cardno").notNull();
+        bankCard.addStringProperty("bankcode").notNull();
     }
 
 

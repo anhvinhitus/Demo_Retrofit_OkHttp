@@ -6,6 +6,9 @@ package vn.com.vng.zalopay.data;
 public class Constants {
     public static final String MANIF_BALANCE = "manif_balance";
     public static final String MANIF_LASTTIME_UPDATE_TRANSACTION = "manif_lt_trans";
+    public static final String MANIF_PLATFORM_INFO_CHECKSUM = "manif_pfinfochecksum";
+    public static final String MANIF_RESOURCE_VERSION = "manif_resource_version";
+
 
     public static final String ZPTRANSTOKEN = "zptranstoken";
     public static final String APPID = "appid";

@@ -28,6 +28,8 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     @Override
     public void write(List<TransHistoryEntity> val) {
         getDaoSession().getTransactionLogDao().insertOrReplaceInTx(zaloCacheMapper.transform(val));
+
+        Timber.d("write list transaction %s", val.size(), listTransHistorys(10));
     }
 
     @Override
@@ -37,7 +39,9 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistorys() {
-        return makeObservable(() -> listTransHistorys(Integer.MAX_VALUE));
+        return makeObservable(() -> listTransHistorys(Integer.MAX_VALUE))
+                .doOnNext(transHistoryEntities -> Timber.d("transactionHistorys %s", transHistoryEntities.size()))
+                ;
     }
 
     @Override

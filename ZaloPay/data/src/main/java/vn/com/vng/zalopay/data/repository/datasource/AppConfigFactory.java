@@ -5,8 +5,8 @@ import android.content.Context;
 import java.util.HashMap;
 
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.AppConfigService;
-import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 import vn.com.vng.zalopay.domain.model.User;
@@ -23,13 +23,17 @@ public class AppConfigFactory {
 
     private HashMap<String, String> params;
 
-    private HashMap<String, String> authZaloParams;
-
     private User user;
 
     private SqlitePlatformScope sqlitePlatformScope;
 
-    public AppConfigFactory(Context context, AppConfigService service, ParamRequestProvider paramRequestProvider,
+    private String platformcode = "android";
+    private String dscreentype = "xhigh";
+    private String appversion = "appversion";
+    private String mno = "mno";
+    private String devicemodel = "devicemodel";
+
+    public AppConfigFactory(Context context, AppConfigService service,
                             User user, SqlitePlatformScope sqlitePlatformScope) {
 
         if (context == null || service == null) {
@@ -38,8 +42,7 @@ public class AppConfigFactory {
 
         this.context = context;
         this.appConfigService = service;
-        this.params = paramRequestProvider.paramsDefault;
-        this.authZaloParams = paramRequestProvider.paramsZalo;
+        ;
         this.user = user;
         this.sqlitePlatformScope = sqlitePlatformScope;
 
@@ -47,17 +50,20 @@ public class AppConfigFactory {
 
 
     public Observable<PlatformInfoResponse> getPlatformInfo() {
-        //Todo: đang test
-        String platformcode = null;
-        String dscreentype = null;
-        String platforminfochecksum = null;
-        String resourceversion = null;
-        String mno = null;
 
-        return appConfigService.platforminfo(platformcode, dscreentype,
-                platformcode, resourceversion, mno,
-                user.uid, user.accesstoken, params);
+        String platforminfochecksum = sqlitePlatformScope.getDataManifest(Constants.MANIF_PLATFORM_INFO_CHECKSUM);
+        String resourceversion = sqlitePlatformScope.getDataManifest(Constants.MANIF_RESOURCE_VERSION);
 
+        return appConfigService.platforminfo(user.uid, user.accesstoken, platformcode, dscreentype, platforminfochecksum, resourceversion, appversion, mno, devicemodel)
+                .doOnNext(response -> processPlatformResp(response))
+                ;
+
+    }
+
+    private void processPlatformResp(PlatformInfoResponse response) {
+        //  sqlitePlatformScope.put
+
+        sqlitePlatformScope.writeCards(response.cardlist);
     }
 
 }

@@ -39,7 +39,7 @@ public class UserConfigFactory {
         Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
         for (AbstractDao<?,?> dao: daoCollection) {
             if (dao != null) {
-                dao.deleteAll();;
+                dao.deleteAll();
             }
         }
     }

@@ -3,9 +3,12 @@ package vn.com.vng.zalopay.internal.di.modules;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.HashMap;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -16,7 +19,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
-import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
@@ -66,13 +68,6 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    @Named("param_provider")
-    ParamRequestProvider provideParamRequestProvider() {
-        return new ParamRequestProvider();
-    }
-
-    @Provides
-    @Singleton
     UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
         return new UserConfigImpl(sharedPreferences, eventBus);
     }
@@ -95,5 +90,27 @@ public class ApplicationModule {
         return BuildConfig.PAYAPPID;
     }
 
+    @Provides
+    @Singleton
+    @Named("devicemodel")
+    String providesDeviceModel() {
+        return Build.MODEL;
+    }
+
+    @Provides
+    @Singleton
+    @Named("platformcode")
+    String providesPlatformcode() {
+        return "android";
+    }
+
+    @Provides
+    @Singleton
+    @Named("params_request_default")
+    HashMap<String, String> providesParamsRequest() {
+        HashMap<String, String> params = new HashMap<>();
+
+        return params;
+    }
 
 }

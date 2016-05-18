@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
-import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
@@ -21,7 +20,6 @@ import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.ui.activity.SplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
@@ -45,8 +43,6 @@ public interface ApplicationComponent {
     BundleService bundleService();
 
     ZaloProfilePreferences profilePreferences();
-
-    ParamRequestProvider paramsRequestProvider();
 
     PassportRepository passportRepository();
 

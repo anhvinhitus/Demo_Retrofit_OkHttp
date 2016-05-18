@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.api;
 
 import android.os.Build;
@@ -7,9 +8,11 @@ import java.util.HashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+*/
 /**
  * Created by AnhHieu on 4/26/16.
- */
+ *//*
+
 
 @Singleton
 public class ParamRequestProvider {
@@ -47,3 +50,4 @@ public class ParamRequestProvider {
         this.paramsZalo = paramsZalo;
     }
 }
+*/

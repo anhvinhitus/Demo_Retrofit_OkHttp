@@ -7,7 +7,6 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.AppConfigService;
-import vn.com.vng.zalopay.data.api.ParamRequestProvider;
 import vn.com.vng.zalopay.data.api.entity.AppInfoEntity;
 import vn.com.vng.zalopay.data.cache.SqlAppListScope;
 import vn.com.vng.zalopay.domain.model.User;
@@ -29,7 +28,7 @@ public class AppListFactory {
 
     private SqlAppListScope sqlAppListScope;
 
-    public AppListFactory(Context context, AppConfigService service, ParamRequestProvider paramRequestProvider,
+    public AppListFactory(Context context, AppConfigService service,
                           User user, SqlAppListScope sqlAppListScope) {
 
         if (context == null || service == null) {
@@ -38,7 +37,6 @@ public class AppListFactory {
 
         this.context = context;
         this.appConfigService = service;
-        this.params = paramRequestProvider.paramsDefault;
         this.user = user;
         this.sqlAppListScope = sqlAppListScope;
 

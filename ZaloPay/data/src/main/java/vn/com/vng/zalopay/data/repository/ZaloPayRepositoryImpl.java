@@ -1,13 +1,16 @@
 package vn.com.vng.zalopay.data.repository;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -15,7 +18,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 /**
  * Created by AnhHieu on 5/4/16.
  */
-public class ZaloPayRepositoryImpl implements ZaloPayRepository {
+public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepository {
 
     private ZaloPayFactory zaloPayFactory;
     private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
@@ -94,5 +97,30 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     public void requestTransactionsHistory() {
         zaloPayFactory.reloadListTransactionSync(30, null);
+    }
+
+    @Override
+    public Observable<Boolean> transactionUpdate() {
+        return makeObservable(() -> {
+
+            // update balance
+            zaloPayFactory.balanceServer()
+                    .subscribe(new DefaultSubscriber<>());
+
+            //update transaction
+
+            requestTransactionsHistory();
+
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<Boolean> initialize() {
+        return makeObservable(() -> {
+            requestTransactionsHistory();
+
+            return Boolean.TRUE;
+        });
     }
 }

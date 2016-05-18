@@ -167,7 +167,6 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onHostResume() {
         Timber.d(" Actvity `onResume`");
-        repository.requestTransactionsHistory();
     }
 
     @Override

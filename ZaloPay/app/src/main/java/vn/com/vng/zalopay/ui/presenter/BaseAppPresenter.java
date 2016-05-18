@@ -10,6 +10,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 
 /**
@@ -19,10 +20,10 @@ public abstract class BaseAppPresenter {
 
     protected final String TAG = this.getClass().getSimpleName();
 
-    protected final EventBus eventBus = EventBus.getDefault();
+    protected final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
-    protected PassportRepository passportRepository = AndroidApplication.instance().getAppComponent().passportRepository();
-
+    protected final PassportRepository passportRepository = AndroidApplication.instance().getAppComponent().passportRepository();
+    protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
 
     protected void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
@@ -52,5 +53,14 @@ public abstract class BaseAppPresenter {
                         }
                     }
                 });
+    }
+
+
+    protected void clearData() {
+        userConfig.clearConfig();
+        userConfig.setCurrentUser(null);
+        if (AndroidApplication.instance().getUserComponent() != null) {
+            AndroidApplication.instance().releaseUserComponent();
+        }
     }
 }

@@ -9,8 +9,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -27,11 +25,9 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private User user;
-    private SqlZaloPayScope sqlZaloPayScope;
 
-    public LeftMenuPresenter(User user, SqlZaloPayScope sqlZaloPayScope) {
+    public LeftMenuPresenter(User user) {
         this.user = user;
-        this.sqlZaloPayScope = sqlZaloPayScope;
     }
 
     @Override
@@ -49,6 +45,15 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     public void initialize() {
         menuView.setUserInfo(user);
+
+        appConfigRepository.initialize()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+
+        zaloPayRepository.initialize()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+
     }
 
     @Override
