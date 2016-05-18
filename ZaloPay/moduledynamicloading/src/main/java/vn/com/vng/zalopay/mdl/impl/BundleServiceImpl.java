@@ -70,6 +70,12 @@ public class BundleServiceImpl implements BundleService {
     }
 
     @Override
+    public String getExternalBundleFolder(String paymentAppName) {
+        // TODO: 5/18/16 Return real folder of the payment app
+        return "";
+    }
+
+    @Override
     public void prepareInternalBundle() {
         Timber.d("Hello from bundle Service");
 

@@ -22,7 +22,7 @@ public class BundleReactConfigDevel implements BundleReactConfig {
     }
 
     @Override
-    public String getExternalJsBundle() {
+    public String getExternalJsBundle(String paymentAppName) {
         return null;
     }
 

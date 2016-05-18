@@ -16,4 +16,6 @@ public interface BundleService {
     void prepareInternalBundle();
 
     String getInternalBundleFolder();
+
+    String getExternalBundleFolder(String paymentAppName);
 }

@@ -90,11 +90,15 @@ android {
 
     productFlavors {
         production {
-            buildConfigField "boolean", "REACT_DEVELOP_SUPPORT", 'false'
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
         }
 
         beta {
-            buildConfigField "boolean", "REACT_DEVELOP_SUPPORT", 'true'
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
+        }
+
+        iapbeta {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
         }
     }
 
