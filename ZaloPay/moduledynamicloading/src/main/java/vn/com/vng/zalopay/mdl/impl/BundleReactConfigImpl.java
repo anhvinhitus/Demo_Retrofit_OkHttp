@@ -16,7 +16,7 @@ public class BundleReactConfigImpl implements BundleReactConfig {
 
     @Override
     public String getInternalJsBundle() {
-        return bundleService.getInternalBundleFolder();
+        return bundleService.getInternalBundleFolder() + "/main.jsbundle";
     }
 
     @Override

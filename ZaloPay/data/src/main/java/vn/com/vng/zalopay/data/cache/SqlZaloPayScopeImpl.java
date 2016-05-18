@@ -37,12 +37,22 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistorys() {
-        return makeObservable(() -> zaloCacheMapper.transform2Entity(
+        return makeObservable(() -> listTransHistorys(Integer.MAX_VALUE));
+    }
+
+    @Override
+    public Observable<List<TransHistoryEntity>> transactionHistorys(int limit) {
+        return makeObservable(() -> listTransHistorys(limit));
+    }
+
+    @Override
+    public List<TransHistoryEntity> listTransHistorys(int limit) {
+        return zaloCacheMapper.transform2Entity(
                 getDaoSession()
                         .getTransactionLogDao()
                         .queryBuilder()
-                       // .limit(LENGTH_TRANSITION)
-                        .list()));
+                        .limit(limit)
+                        .list());
     }
 
     @Override
@@ -74,4 +84,5 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     public boolean isHaveTransactionInDb() {
         return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
     }
+
 }

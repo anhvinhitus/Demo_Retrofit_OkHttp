@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.repository;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
@@ -71,13 +72,27 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        return zaloPayFactory.transactionHistorysServer(0, 1)
+        return zaloPayFactory.transactionHistorysLocal(count)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
     }
 
     @Override
     public Observable<List<TransHistory>> reloadListTransaction(int count) {
-        return zaloPayFactory.reloadListTransaction(count)
+        return zaloPayFactory.transactionHistorysLocal(count)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
+    }
+
+    @Override
+    public void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber) {
+        //   zaloPayFactory.reloadListTransactionSync(count, subscriber);
+    }
+
+    @Override
+    public void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber) {
+        // zaloPayFactory.getTransactions(pageIndex, count, subscriber);
+    }
+
+    public void requestTransactionsHistory() {
+        zaloPayFactory.reloadListTransactionSync(30, null);
     }
 }
