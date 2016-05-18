@@ -53,7 +53,7 @@
     <string name="zingpaysdk_alert_processing_bank">Đang kết nối với ngân hàng</string>
     <string name="zingpaysdk_alert_atm_wrong_4last_digits">4 số cuối mã thẻ không chính xác</string>
     <string name="zingpaysdk_alert_atm_wrong_4last_digits_more">Bạn đã nhập sai quá số lần cho phép. Thông tin thẻ cũ sẽ bị hủy.</string>
-    <string name="zingpaysdk_alert_atm_expired">Giao dịch đã quá hạn\n.Vui lòng thực hiện lại thanh toán.</string>
+    <string name="zingpaysdk_alert_atm_expired">Giao dịch đã quá hạn.\nVui lòng thực hiện lại thanh toán.</string>
     <string name="zingpaysdk_alert_atm_incomplete_captcha">Mã captcha tối thiểu phải đủ 6 kí tự.</string>
     <string name="zingpaysdk_alert_atm_incomplete_otp">Mã OTP tối thiểu phải đủ 4 kí tự.</string>
     <string name="zingpaysdk_alert_credit_card_cancel">Giao dịch đã bị hủy</string>
