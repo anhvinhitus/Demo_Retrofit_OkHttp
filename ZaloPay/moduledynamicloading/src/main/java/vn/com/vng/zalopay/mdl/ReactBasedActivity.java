@@ -19,6 +19,7 @@ import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -41,9 +42,10 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 
     private @Nullable
     ReactInstanceManager mReactInstanceManager;
-    private ReactRootView mReactRootView;
-    private LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
+    ReactRootView mReactRootView;
+    LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
     private boolean mDoRefresh = false;
+    private final ReactNativeInstanceManager mNativeInstanceManager = new ReactNativeInstanceManagerLongLife(this);
 
     /**
      * Returns the name of the bundle in assets. If this is null, and no file path is specified for
@@ -107,28 +109,6 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      */
     protected abstract List<ReactPackage> getPackages();
 
-    protected ReactInstanceManager createReactInstanceManager() {
-        ReactInstanceManager.Builder builder = ReactInstanceManager.builder()
-                .setApplication(getApplication())
-                .setJSMainModuleName(getJSMainModuleName())
-                .setUseDeveloperSupport(getUseDeveloperSupport())
-                .setInitialLifecycleState(mLifecycleState);
-
-        for (ReactPackage reactPackage : getPackages()) {
-            builder.addPackage(reactPackage);
-        }
-
-        String jsBundleFile = getJSBundleFile();
-
-        if (jsBundleFile != null) {
-            builder.setJSBundleFile(jsBundleFile);
-        } else {
-            builder.setBundleAssetName(getBundleAssetName());
-        }
-
-        return builder.build();
-    }
-
     /**
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
      */
@@ -152,7 +132,8 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
             }
         }
 
-        mReactInstanceManager = createReactInstanceManager();
+        mReactInstanceManager = mNativeInstanceManager.acquireReactInstanceManager();
+//        mReactInstanceManager.createReactContextInBackground();
         mReactRootView = createRootView();
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
         setContentView(mReactRootView);
@@ -184,14 +165,13 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mReactRootView != null) {
-            mReactInstanceManager.detachRootView(mReactRootView);
-            mReactRootView = null;
+        if (mReactInstanceManager != null) {
+            mNativeInstanceManager.releaseReactInstanceManager(mReactInstanceManager);
+            mReactInstanceManager = null;
         }
 
-        if (mReactInstanceManager != null) {
-            mReactInstanceManager.destroy();
-            mReactInstanceManager = null;
+        if (mReactRootView != null) {
+            mReactRootView = null;
         }
     }
 
@@ -243,6 +223,105 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     @Override
     public void invokeDefaultOnBackPressed() {
         super.onBackPressed();
+    }
+
+    interface ReactNativeInstanceManager {
+        ReactInstanceManager acquireReactInstanceManager();
+        void releaseReactInstanceManager(ReactInstanceManager instance);
+    }
+
+    class ReactNativeInstanceManagerShortLife implements ReactNativeInstanceManager {
+        @Override
+        public ReactInstanceManager acquireReactInstanceManager() {
+            ReactInstanceManager.Builder builder = ReactInstanceManager.builder()
+                    .setApplication(getApplication())
+                    .setJSMainModuleName(getJSMainModuleName())
+                    .setUseDeveloperSupport(getUseDeveloperSupport())
+                    .setInitialLifecycleState(mLifecycleState);
+
+            for (ReactPackage reactPackage : getPackages()) {
+                builder.addPackage(reactPackage);
+            }
+
+            String jsBundleFile = getJSBundleFile();
+
+            if (jsBundleFile != null) {
+                builder.setJSBundleFile(jsBundleFile);
+            } else {
+                builder.setBundleAssetName(getBundleAssetName());
+            }
+
+            return builder.build();
+        }
+
+        @Override
+        public void releaseReactInstanceManager(ReactInstanceManager instance) {
+            if (instance != null) {
+                instance.onHostDestroy();
+                instance.destroy();
+            }
+        }
+    }
+}
+
+class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNativeInstanceManager {
+    private static ReactInstanceManager mInstance;
+    private final WeakReference<ReactBasedActivity> activityReference;
+
+    public ReactNativeInstanceManagerLongLife(ReactBasedActivity activity) {
+        activityReference = new WeakReference<>(activity);
+    }
+
+    @Override
+    public ReactInstanceManager acquireReactInstanceManager() {
+        final ReactBasedActivity activity = activityReference.get();
+        if (activity == null) {
+            return null;
+        }
+
+        if (mInstance != null) {
+            Timber.e("reuse react instance manager");
+//            mInstance.onHostResume(activity, activity);
+            return mInstance;
+        }
+
+        Timber.e("create new react instance manager");
+
+        ReactInstanceManager.Builder builder = ReactInstanceManager.builder()
+                .setApplication(activity.getApplication())
+                .setJSMainModuleName(activity.getJSMainModuleName())
+                .setUseDeveloperSupport(activity.getUseDeveloperSupport())
+                .setInitialLifecycleState(activity.mLifecycleState);
+
+        for (ReactPackage reactPackage : activity.getPackages()) {
+            builder.addPackage(reactPackage);
+        }
+
+        String jsBundleFile = activity.getJSBundleFile();
+
+        if (jsBundleFile != null) {
+            builder.setJSBundleFile(jsBundleFile);
+        } else {
+            builder.setBundleAssetName(activity.getBundleAssetName());
+        }
+
+        mInstance = builder.build();
+        return mInstance;
+    }
+
+    @Override
+    public void releaseReactInstanceManager(ReactInstanceManager instance) {
+        if (mInstance == null) {
+            return;
+        }
+
+        Timber.e("release react instance manager");
+        final ReactBasedActivity activity = activityReference.get();
+        if (activity != null && activity.mReactRootView != null) {
+            mInstance.detachRootView(activity.mReactRootView);
+        }
+
+        mInstance.onHostDestroy();
     }
 }
 
