@@ -1,9 +1,7 @@
 package vn.com.vng.zalopay.data.cache;
 
-import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import de.greenrobot.dao.AbstractDao;
 import rx.Observable;
 import rx.Subscriber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -66,12 +64,4 @@ public class SqlBaseScopeImpl {
         return def;
     }
 
-    public void clearAllDatabase() {
-        Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
-        for (AbstractDao<?,?> dao: daoCollection) {
-            if (dao != null) {
-                dao.deleteAll();;
-            }
-        }
-    }
 }

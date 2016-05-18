@@ -14,7 +14,6 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import javax.inject.Inject;
 
 import butterknife.OnClick;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -154,9 +153,6 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
     @Override
     public void onTokenInvalid() {
         ZaloSDK.Instance.unauthenticate();
-        if (AndroidApplication.instance().getAppComponent()!=null && AndroidApplication.instance().getAppComponent().userConfig()!=null) {
-            AndroidApplication.instance().getAppComponent().userConfig().clearConfig();
-        }
         navigator.startLoginActivity(getActivity());
         getActivity().finish();
     }

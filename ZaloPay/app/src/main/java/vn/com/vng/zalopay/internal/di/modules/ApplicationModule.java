@@ -64,7 +64,6 @@ public class ApplicationModule {
         return PreferenceManager.getDefaultSharedPreferences(application);
     }
 
-
     @Provides
     @Singleton
     @Named("param_provider")

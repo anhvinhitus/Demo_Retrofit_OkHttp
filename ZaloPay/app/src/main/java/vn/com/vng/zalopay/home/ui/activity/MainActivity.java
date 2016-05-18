@@ -23,6 +23,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.repository.datasource.UserConfigFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
@@ -71,6 +72,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
     @Inject
     Navigator navigator;
+
+    @Inject
+    UserConfigFactory userConfigFactory;
 
     @Bind(R.id.appBarLayout)
     AppBarLayout mAppBarLayout;
@@ -317,9 +321,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
             navigator.startMiniAppActivity(this, "TransactionLogs");
         } else if (itemId == MenuItemUtil.SIGOUT_ID) {
             ZaloSDK.Instance.unauthenticate();
-            if (getAppComponent()!=null && getAppComponent().userConfig()!=null) {
-                getAppComponent().userConfig().clearConfig();
-            }
+            userConfigFactory.clearAllUserDB();
             navigator.startLoginActivity(this);
             finish();
         }
