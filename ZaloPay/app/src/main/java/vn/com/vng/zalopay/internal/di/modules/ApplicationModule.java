@@ -104,12 +104,15 @@ public class ApplicationModule {
         return "android";
     }
 
+
     @Provides
     @Singleton
     @Named("params_request_default")
     HashMap<String, String> providesParamsRequest() {
         HashMap<String, String> params = new HashMap<>();
-
+        params.put("platformcode", "android");
+        params.put("dscreentype", "xhdpi"); //ldpi, dpi, mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi"
+        params.put("devicemodel", Build.MODEL);
         return params;
     }
 
