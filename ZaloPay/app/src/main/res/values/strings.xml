@@ -119,4 +119,6 @@
     <!-- Link CARDS END-->
 
     <string name="alert_processing">Đang xử lý</string>
+    <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
+    <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
 </resources>

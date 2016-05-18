@@ -6,6 +6,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -106,13 +107,13 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     private void pay(Order order) {
         Timber.tag("LinkCardProdurePresenter").d("pay.==============");
         if (order == null) {
-            showErrorView("Thông tin đơn hàng không hợp lệ.");
+            showErrorView(mView.getContext().getString(R.string.order_invalid));
             return;
         }
         Timber.tag("LinkCardProdurePresenter").d("pay.................2");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (user.uid <= 0) {
-            showErrorView("Thông tin người dùng không hợp lệ.");
+            showErrorView(mView.getContext().getString(R.string.user_invalid));
             return;
         }
         try {

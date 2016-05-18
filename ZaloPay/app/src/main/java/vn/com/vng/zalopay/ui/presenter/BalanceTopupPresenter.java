@@ -6,6 +6,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -123,13 +124,13 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
     private void pay(Order order) {
         Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.==============");
         if (order == null) {
-            showErrorView("Order not found!");
+            showErrorView(mView.getContext().getString(R.string.order_invalid));
             return;
         }
         Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................2");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (user.uid <= 0) {
-            showErrorView("User info not found!");
+            showErrorView(mView.getContext().getString(R.string.user_invalid));
             return;
         }
         try {
