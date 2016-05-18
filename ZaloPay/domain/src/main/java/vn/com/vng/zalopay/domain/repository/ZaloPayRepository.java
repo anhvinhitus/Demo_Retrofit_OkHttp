@@ -28,7 +28,7 @@ public interface ZaloPayRepository {
 
     Observable<Order> getOrder(long appId, String zptranstoken);
 
-    Observable<Order> createwalletorder(long appId, long amount, int transtype);
+    Observable<Order> createwalletorder(long appId, long amount, String transtype);
 
     void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber);
 

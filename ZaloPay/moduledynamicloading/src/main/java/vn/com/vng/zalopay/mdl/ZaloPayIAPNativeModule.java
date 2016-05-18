@@ -81,7 +81,10 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         String description = params.getString(Constants.DESCRIPTION);
         String embedData = params.getString(Constants.EMBEDDATA);
         String mac = params.getString(Constants.MAC);
-        String chargeInfo = params.getString(Constants.CHARGEINFO);
+        String chargeInfo = null;
+        if (!params.isNull(Constants.CHARGEINFO)) {
+            chargeInfo = params.getString(Constants.CHARGEINFO);
+        }
 
         if (appID < 0) {
             if (promise!=null) {
@@ -173,13 +176,14 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
                 }
             } else {
                 EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-                if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                if (paymentStatus == null) {
+                    handleResultError(promise, String.valueOf(PaymentError.ERR_CODE_SYSTEM), PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
+                } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
                     handleResultSucess(promise, zpPaymentResult.paymentInfo);
                 } else {
-                    handleResultError(promise, String.valueOf(EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()), EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.toString());
+                    handleResultError(promise, String.valueOf(paymentStatus.getNum()), paymentStatus.toString());
                 }
             }
-            destroyVariable();
         }
 
         @Override
@@ -248,5 +252,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     @Override
     public void onHostDestroy() {
         Timber.d("Actvity `onDestroy");
+        destroyVariable();
     }
 }

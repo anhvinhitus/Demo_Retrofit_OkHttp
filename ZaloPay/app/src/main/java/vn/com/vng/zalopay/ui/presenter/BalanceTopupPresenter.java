@@ -12,12 +12,12 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
 import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
 import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentChannel;
 import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentStatus;
+import vn.zing.pay.zmpsdk.entity.enumeration.ETransactionType;
 import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 
 /**
@@ -79,7 +79,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
     }
 
     private void createWalletorder(long amount) {
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, 2)
+        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
