@@ -45,17 +45,12 @@ public class UserControllerModule {
         return new SqlitePlatformScopeImpl(session);
     }
 
-
     @UserScope
     @Provides
     AppConfigFactory provideAppConfigFactory(Context context, AppConfigService service, ParamRequestProvider paramRequestProvider,
                                              User user, SqlitePlatformScope sqlitePlatformScope) {
         return new AppConfigFactory(context, service, paramRequestProvider, user, sqlitePlatformScope);
     }
-
-//    @UserScope
-//    @Provides
-//    UserConfigFactory provideUserConfigFactory(Context context, UserConfig userConfig, )
 
     @UserScope
     @Provides

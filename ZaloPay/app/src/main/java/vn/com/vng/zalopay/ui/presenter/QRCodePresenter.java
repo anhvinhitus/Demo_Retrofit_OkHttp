@@ -86,12 +86,14 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
 
     public void pay(String jsonString) {
         Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonString);
+        showLoadingView();
         if (zpTransaction(jsonString)) {
             return;
         }
         if (orderTransaction(jsonString)) {
             return;
         }
+        hideLoadingView();
         qrDataInvalid();
         mView.resumeScanner();
     }
@@ -103,7 +105,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
             jsonObject = new JSONObject(jsonOrder);
             long appId = jsonObject.getLong(Constants.APPID);
             String zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
-            mView.showLoading();
             getOrder(appId, zptranstoken);
             return true;
         } catch (JSONException e) {
@@ -180,6 +181,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
 
     private final void onGetOrderSuccess(Order order) {
         Timber.d("session =========" + order.getItem());
+        hideLoadingView();
         pay(order);
     }
 
@@ -259,7 +261,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
         } else {
             int resultStatus = pPaymentResult.paymentStatus.getNum();
             if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                //            ToastUtil.showToast(mView.getActivity(), "Success!");
                 getBalance();
                 if (mView != null && mView.getActivity() != null) {
                     mView.getActivity().finish();

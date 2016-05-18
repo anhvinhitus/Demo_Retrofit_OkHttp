@@ -36,7 +36,6 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     @Override
     public void destroyView() {
         mView = null;
-        zpPaymentListener = null;
         unsubscribeIfNotNull(subscription);
     }
 
@@ -56,13 +55,13 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
     }
 
     public void addLinkCard() {
-        showLoadingView();
+//        showLoadingView();
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
 
         if (user == null) {
-            hideLoadingView();
+//            hideLoadingView();
             mView.showError("Thông tin người dùng không hợp lệ.");
             return;
         }
@@ -71,6 +70,9 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
         paymentInfo.zaloPayAccessToken = user.accesstoken;
 
         Timber.tag(TAG).d("addLinkCard..............activity=====================" +  mView.getActivity());
+//        Timber.tag(TAG).d("addLinkCard..............forcedPaymentChannel:" +  forcedPaymentChannel);
+//        Timber.tag(TAG).d("addLinkCard..............paymentInfo:" +  paymentInfo);
+//        Timber.tag(TAG).d("addLinkCard..............zpPaymentListener:" +  zpPaymentListener);
         ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
     }
 

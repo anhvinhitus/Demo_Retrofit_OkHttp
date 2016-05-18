@@ -144,12 +144,11 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 
                     Timber.tag(TAG).d("zalo profile %s", data.toString());
 
-                    long userId = data.getLong("userId");
+//                    long userId = data.getLong("userId");
                     String displayName = data.getString("displayName");
                     String avatar = data.getString("largeAvatar");
 
-
-                    userConfig.saveUserInfo(userId, avatar, displayName);
+                    userConfig.saveUserInfo(avatar, displayName);
 
                 } catch (Exception ex) {
                     Timber.tag(TAG).e(ex, " Exception :");
@@ -171,10 +170,8 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
         Timber.d("uid " + user.uid);
         // Khởi tạo user component
         AndroidApplication.instance().createUserComponent(user);
-
         this.gotoHomeScreen();
     }
-
 
     private final void onLoginError(Throwable e) {
         hideLoadingView();

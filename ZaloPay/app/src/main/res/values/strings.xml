@@ -55,8 +55,8 @@
     <string name="amount_vnd"> (VNĐ)</string>
     <string name="vnd"> VNĐ</string>
 
-    <string name="btn_continue">Tiếp tục</string>
-    <string name="btn_pay_now">Thanh toán</string>
+    <string name="btn_continue">Tiếp Tục</string>
+    <string name="btn_pay_now">Thanh Toán</string>
 
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
@@ -117,4 +117,6 @@
     <string name="link_card_step_three">+ <u><b>Bước 3</b></u> (không bắt buộc): Xác minh chủ thẻ theo hướng dẫn (nếu được ZaloPay yêu cầu) bằng cách kiểm tra với ngân hàng rồi nhập đúng số tiền đã trừ ở bước 2.</string>
     <string name="link_card_step_note"><u><b>Lưu ý</b></u>: Thẻ chưa xác minh chỉ được thanh toán tối đa 500.000 VND.</string>
     <!-- Link CARDS END-->
+
+    <string name="alert_processing">Đang xử lý</string>
 </resources>

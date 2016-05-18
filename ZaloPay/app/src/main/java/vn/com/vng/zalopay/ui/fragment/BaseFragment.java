@@ -15,7 +15,6 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -53,6 +52,7 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         hideProgressDialog();
+        mProgressDialog = null;
         ButterKnife.unbind(this);
     }
 
@@ -94,6 +94,35 @@ public abstract class BaseFragment extends Fragment {
         if (mSnackBar != null) mSnackBar.dismiss();
     }
 
+
+    /*public void showProgressDialog() {
+        if(mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), 5);
+        }
+
+        if(!mProgressDialog.isShowing()) {
+            try {
+                mProgressDialog.getProgressHelper().setBarColor(this.getResources().getColor(R.color.color_primary));
+                mProgressDialog.setTitle("");
+                mProgressDialog.setContentText(getContext().getResources().getString(R.string.alert_processing));
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+            } catch (Exception e) {
+                if (BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Log.e("DIALOG_MANAGER", "There is a showing process dialog!");
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.hide();
+    }*/
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {

@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.activity;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +23,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
-import vn.zing.pay.zmpsdk.merchant.MerchantViewHelper;
 
 /**
  * Created by AnhHieu on 4/21/16.
@@ -31,6 +31,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
 
     private long appId;
     private String zptranstoken;
+    private ProgressDialog mProgressDialog;
 
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
@@ -76,6 +77,8 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     protected void onDestroy() {
         super.onDestroy();
         qrCodePresenter.destroy();
+        hideLoading();
+        mProgressDialog = null;
     }
 
     @Override
@@ -112,21 +115,53 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     public void onTokenInvalid() {
         ZaloSDK.Instance.unauthenticate();
-        if (AndroidApplication.instance().getAppComponent() != null && AndroidApplication.instance().getAppComponent().userConfig() != null) {
-            AndroidApplication.instance().getAppComponent().userConfig().clearConfig();
-        }
         navigator.startLoginActivity(this);
         finish();
     }
 
-    @Override
+    /*@Override
     public void showLoading() {
-        MerchantViewHelper.showProgressDialog(this, "", "Loading...");
+        if(mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), 5);
+        }
+
+        if(!mProgressDialog.isShowing()) {
+            try {
+                mProgressDialog.getProgressHelper().setBarColor(getContext().getResources().getColor(R.color.color_primary));
+                mProgressDialog.setTitle("");
+                mProgressDialog.setContentText(getContext().getResources().getString(R.string.alert_processing));
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+            } catch (Exception e) {
+                if (BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Log.e("DIALOG_MANAGER", "There is a showing process dialog!");
+        }
     }
 
     @Override
     public void hideLoading() {
-        MerchantViewHelper.closeProgressDialog();
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.hide();
+    }*/
+
+    @Override
+    public void showLoading() {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+        }
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
     }
 
     @Override
