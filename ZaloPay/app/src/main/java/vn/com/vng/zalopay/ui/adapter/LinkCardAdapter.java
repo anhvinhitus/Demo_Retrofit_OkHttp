@@ -133,7 +133,9 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
         public void bindView(BankCard bankCard) {
             GradientDrawable bgShape = (GradientDrawable) mHeaderView.getBackground();
-            if (bankCard.type.equals(ECardType.JCB.toString())) {
+            if (bankCard.type == null) {
+                mLogo.setImageResource(R.color.transparent);
+            } else if (bankCard.type.equals(ECardType.JCB.toString())) {
                 mLogo.setImageResource(R.drawable.ic_lc_jcb_card);
                 bgShape.setColor(Color.parseColor("#1e3368"));
             } else if (bankCard.type.equals(ECardType.VISA.toString())) {
