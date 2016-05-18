@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Singleton;
@@ -12,9 +11,9 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.interactor.event.ChangeBalanceEvent;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
@@ -26,13 +25,11 @@ import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<ILeftMenuView> {
     private ILeftMenuView menuView;
 
-    private EventBus eventBus;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private User user;
     private SqlZaloPayScope sqlZaloPayScope;
 
-    public LeftMenuPresenter(EventBus eventBus, User user, SqlZaloPayScope sqlZaloPayScope) {
-        this.eventBus = eventBus;
+    public LeftMenuPresenter(User user, SqlZaloPayScope sqlZaloPayScope) {
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
     }
@@ -56,8 +53,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Override
     public void resume() {
-        long balance = sqlZaloPayScope.getDataManifest(Constants.MANIF_BALANCE, 0);
-        menuView.setBalance(balance);
     }
 
     @Override
@@ -114,6 +109,8 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Subscribe
     public void onEventMainThread(ChangeBalanceEvent event) {
+        Timber.d("event bus test %s", event.balance);
+
         menuView.setBalance(event.balance);
     }
 }

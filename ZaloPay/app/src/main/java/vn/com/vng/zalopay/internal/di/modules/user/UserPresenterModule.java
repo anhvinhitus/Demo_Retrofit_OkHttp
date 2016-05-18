@@ -32,7 +32,7 @@ public class UserPresenterModule {
     @UserScope
     @Provides
     LeftMenuPresenter provideLeftMenuPresenter(EventBus eventBus, User user, SqlZaloPayScope sqlZaloPayScope) {
-        return new LeftMenuPresenter(eventBus, user, sqlZaloPayScope);
+        return new LeftMenuPresenter(user, sqlZaloPayScope);
     }
 
     @UserScope
