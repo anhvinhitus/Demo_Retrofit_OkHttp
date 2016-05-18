@@ -142,12 +142,21 @@ android {
         javaMaxHeapSize "2g"
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-" + getDate() + ".apk"));
+    if (isCIBuild()) {
+        // http://stackoverflow.com/questions/31191898/android-studio-gradle-dynamic-apk-name-out-of-sync/34095961#34095961
+        // ./gradlew clean assemble -PCI_BUILD=true
+        def clientBuildDate = new Date().format('yyyyMMddHHmm')
+        def newName = defaultConfig.versionName.replace(".","_") + "-" + clientBuildDate
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-" + newName + ".apk"));
+            }
         }
     }
+}
 
+def isCIBuild() {
+    return System.getenv('CI_BUILD') != null || hasProperty('CI_BUILD');
 }
 
 def getDate() {
