@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -197,6 +198,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
                 long expiretime  = bundle.getLong(Constants.EXPIRETIME);
                 BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
                 try {
+                    Timber.tag("LinkCardFragment").d("onActivityResult first6CardNo: %s",first6CardNo);
                     bankCard.type = CShareData.getInstance().detectCardType(first6CardNo).toString();
                 } catch (Exception e) {
                     if (BuildConfig.DEBUG) {

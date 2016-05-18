@@ -153,6 +153,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
         @Override
         public void onError(BaseResponse pMessage) {
             Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
+            linkCardView.hideLoading();
             if (pMessage == null) {
                 if (!AndroidUtils.isNetworkAvailable(linkCardView.getContext())) {
                     linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
@@ -161,7 +162,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements Presenter<IL
                 }
             } else {
                 Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
-                linkCardView.showError(pMessage.returnmessage);
+//                linkCardView.showError(pMessage.returnmessage);
             }
         }
     };
