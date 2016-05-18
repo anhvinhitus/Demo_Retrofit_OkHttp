@@ -154,7 +154,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
             } else {
                 EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
                 if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                    getBalance();
+                    transactionUpdate();
                     ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
                     if (paymentInfo == null) {
                         return;
@@ -190,8 +190,8 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements Prese
         mView.showError(message);
     }
 
-    private void getBalance() {
-        zaloPayRepository.balance()
+    private void transactionUpdate() {
+        zaloPayRepository.transactionUpdate()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();

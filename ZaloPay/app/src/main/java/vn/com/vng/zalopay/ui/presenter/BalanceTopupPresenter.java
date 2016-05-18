@@ -181,7 +181,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
             } else {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                    getBalance();
+                    transactionUpdate();
                     mView.getActivity().finish();
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                     mView.onTokenInvalid();
@@ -200,8 +200,8 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Prese
         }
     };
 
-    private void getBalance() {
-        zaloPayRepository.balance()
+    private void transactionUpdate() {
+        zaloPayRepository.transactionUpdate()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();

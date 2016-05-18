@@ -206,7 +206,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     }
 
     private void handleResultSucess(Promise promise, Object object) {
-        getBalance();
+        transactionUpdate();
         if (promise == null) {
             return;
         }
@@ -227,8 +227,8 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         promise.reject(error, message);
     }
 
-    private void getBalance() {
-        zaloPayRepository.balance()
+    private void transactionUpdate() {
+        zaloPayRepository.transactionUpdate()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
