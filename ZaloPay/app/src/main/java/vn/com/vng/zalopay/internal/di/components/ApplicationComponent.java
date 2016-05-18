@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -33,6 +35,8 @@ public interface ApplicationComponent {
     PostExecutionThread postExecutionThread();
 
     UserComponent plus(UserModule userModule);
+
+    EventBus eventBus();
 
     SharedPreferences sharedPreferences();
 
