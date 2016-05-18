@@ -8,6 +8,9 @@
     <string name="zpw_save_credit_card">Thẻ đã lưu số cuối ***</string>
     <string name="zpw_string_all_channel_maintenance">Kênh thanh toán đang bảo trì.</string>
     
+    <string name="zpw_string_alert_min_amount_input">Yêu cầu số tiền tối thiểu là %s VNĐ</string>
+    <string name="zpw_string_alert_max_amount_input">Yêu cầu số tiền tối đa là %s VNĐ</string>
+    
     <string name="zingpaysdk_notification">Thông báo</string>
     <string name="zingpaysdk_card_password">Mật mã thẻ</string>
     <string name="zingpaysdk_card_password_ex">Mật khẩu</string>
