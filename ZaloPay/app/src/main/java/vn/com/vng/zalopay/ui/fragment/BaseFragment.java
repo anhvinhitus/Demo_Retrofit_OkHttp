@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -32,6 +33,7 @@ public abstract class BaseFragment extends Fragment {
 
     private Snackbar mSnackBar;
     private ProgressDialog mProgressDialog;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(getResLayoutId(), container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         setupFragmentComponent();
         return view;
     }
@@ -53,7 +55,7 @@ public abstract class BaseFragment extends Fragment {
         super.onDestroyView();
         hideProgressDialog();
         mProgressDialog = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     public boolean onBackPressed() {
@@ -94,36 +96,6 @@ public abstract class BaseFragment extends Fragment {
         if (mSnackBar != null) mSnackBar.dismiss();
     }
 
-
-    /*public void showProgressDialog() {
-        if(mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), 5);
-        }
-
-        if(!mProgressDialog.isShowing()) {
-            try {
-                mProgressDialog.getProgressHelper().setBarColor(this.getResources().getColor(R.color.color_primary));
-                mProgressDialog.setTitle("");
-                mProgressDialog.setContentText(getContext().getResources().getString(R.string.alert_processing));
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.show();
-            } catch (Exception e) {
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            Log.e("DIALOG_MANAGER", "There is a showing process dialog!");
-        }
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            return;
-        }
-        mProgressDialog.hide();
-    }*/
-
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
@@ -141,7 +113,6 @@ public abstract class BaseFragment extends Fragment {
         return AndroidApplication.instance().getUserComponent();
     }
 
-
     public void showToast(String message) {
         ToastUtil.showToast(getActivity(), message);
     }
@@ -149,4 +120,6 @@ public abstract class BaseFragment extends Fragment {
     public void showToast(int message) {
         ToastUtil.showToast(getActivity(), message);
     }
+
+
 }

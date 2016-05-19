@@ -1,1 +1,1 @@
-include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator',':qrcodecore', ':zalosdk', ':moduledynamicloading', ':zalopaymentsdk'
+include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator',':qrcodecore', ':zalosdk', ':moduledynamicloading', ':zalopaymentsdk', ':debugviewer', ':debugviewer-release'

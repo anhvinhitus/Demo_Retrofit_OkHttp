@@ -17,7 +17,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
@@ -38,13 +38,13 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
     @Inject
     PreProfilePresenter presenter;
 
-    @Bind(R.id.imgAvatar)
+    @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
 
-    @Bind(R.id.tvSex)
+    @BindView(R.id.tvSex)
     TextView tvSex;
 
-    @Bind(R.id.tvBirthday)
+    @BindView(R.id.tvBirthday)
     TextView tvBirthday;
 
     @Bind(R.id.tv_name)

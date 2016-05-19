@@ -18,7 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -51,24 +51,24 @@ public class ZaloPayFragment extends BaseMainFragment {
     User user;
 
     /* Advertisement START */
-    @Bind(R.id.layoutBannerFullScreen)
+    @BindView(R.id.layoutBannerFullScreen)
     View mLayoutBannerFullScreen;
 
-    @Bind(R.id.viewpager)
+    @BindView(R.id.viewpager)
     ViewPager mBannerViewpager;
     BannerPagerAdapter mBannerPagerAdapter;
 
-    @Bind(R.id.indicator)
+    @BindView(R.id.indicator)
     SmartTabLayout mBannerIndicator;
 
-    @Bind(R.id.layoutAdsSub)
+    @BindView(R.id.layoutAdsSub)
     View mLayoutAdsSub;
 
-    @Bind(R.id.tvAdsSubContent)
+    @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
     /* Advertisement END */
 
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
     @Override
@@ -93,7 +93,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         showAdsBanner();
-        showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!");
+        showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
         initReactNativeApps();
     }
 
@@ -142,12 +142,7 @@ public class ZaloPayFragment extends BaseMainFragment {
     }
 
     private void gotoRechargePhoneActivity() {
-//        Intent intent = new Intent(getActivity(), BuyTelCardActivity.class);
-//        intent.putExtra(vn.com.vng.zalopay.scratchcard.network.Constants.TEL_CARD_TYPE, TelCardUtil.VIETTEL);
-//        startActivity(intent);
-        Intent intent = new Intent(this.getContext(), PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", "PaymentMain");
-        this.getActivity().startActivity(intent);
+        navigator.startPaymentApplicationActivity(getActivity(), "PaymentMain");
     }
 
     @OnClick(R.id.others)

@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -32,6 +33,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract BaseFragment getFragmentToHost();
 
     protected final String TAG = getClass().getSimpleName();
+
+    private Unbinder unbinder;
 
     public Activity getActivity() {
         return this;
@@ -87,10 +90,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
+
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override
@@ -106,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
 

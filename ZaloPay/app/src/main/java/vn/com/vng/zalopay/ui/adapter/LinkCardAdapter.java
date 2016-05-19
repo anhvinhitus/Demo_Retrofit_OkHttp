@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
@@ -98,16 +98,16 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_logo)
+        @BindView(R.id.iv_logo)
         ImageView mLogo;
 
-        @Bind(R.id.vg_header)
+        @BindView(R.id.vg_header)
         ViewGroup mHeaderView;
 
-        @Bind(R.id.tv_sub_num_acc)
+        @BindView(R.id.tv_sub_num_acc)
         TextView mSubAccNumber;
 
-        @Bind(R.id.tv_username)
+        @BindView(R.id.tv_username)
         TextView mUserName;
 
         OnItemClickListener listener;

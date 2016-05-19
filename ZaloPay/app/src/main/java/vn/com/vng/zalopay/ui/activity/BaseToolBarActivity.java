@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 
 /**
@@ -13,7 +13,7 @@ import vn.com.vng.zalopay.R;
 public abstract class BaseToolBarActivity extends BaseActivity {
 
     @Nullable
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
     @Override
