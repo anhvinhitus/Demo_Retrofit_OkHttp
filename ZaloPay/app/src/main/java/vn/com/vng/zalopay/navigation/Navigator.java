@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
+import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -100,9 +101,15 @@ public class Navigator {
         activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
 
+
     public void startPaymentApplicationActivity(Context context, String name) {
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
         intent.putExtra("moduleName", name);
         context.startActivity(intent);
+    }
+    
+    public void startProfileActivity(Activity activity) {
+        Intent intent = new Intent(activity, PreProfileActivity.class);
+        activity.startActivity(intent);
     }
 }

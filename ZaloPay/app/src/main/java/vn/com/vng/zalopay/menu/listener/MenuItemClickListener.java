@@ -10,4 +10,6 @@ public interface MenuItemClickListener {
     void onMenuItemClick(MenuItem menuItem);
 
     void onMenuHeaderClick(MenuItem menuItem);
+
+    void onProfileClick();
 }

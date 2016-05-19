@@ -86,13 +86,12 @@
 
         <TextView
             android:id="@+id/btnContinue"
+            style="@style/Button.Default"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_weight="0.0"
             android:background="@drawable/bg_btn_blue"
             android:gravity="center"
-            android:text="@string/btn_continue"
-            android:textColor="@color/white" />
-
+            android:text="@string/btn_continue" />
     </LinearLayout>
 </ScrollView>

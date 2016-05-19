@@ -14,6 +14,10 @@ public class Person extends AbstractData {
 
     public String avatar;
 
+    public long birthDate = 0;
+
+    public int userGender = 1;
+
     public Person() {
     }
 
@@ -21,12 +25,26 @@ public class Person extends AbstractData {
         uid = source.readLong();
         dname = source.readString();
         avatar = source.readString();
+        birthDate = source.readLong();
+        userGender =source.readInt();
     }
 
     public Person(long uid, String dname, String avatar) {
         this.uid = uid;
         this.dname = dname;
         this.avatar = avatar;
+    }
+
+    public Person(long uid, String dname, String avatar, long birthDate, int userGender) {
+        this.uid = uid;
+        this.dname = dname;
+        this.avatar = avatar;
+        this.birthDate = birthDate;
+        this.userGender = userGender;
+    }
+
+    public String getGender() {
+        return userGender==1?"Nam":"Nữ";
     }
 
     @Override
@@ -39,6 +57,8 @@ public class Person extends AbstractData {
         dest.writeLong(uid);
         dest.writeString(dname);
         dest.writeString(avatar);
+        dest.writeLong(birthDate);
+        dest.writeInt(userGender);
     }
 
     public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {

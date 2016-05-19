@@ -48,6 +48,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @BindView(android.R.id.list)
     ListView listView;
 
+    public View viewProfile;
     public ImageView imageAvatar;
 
     public TextView tvName;
@@ -118,11 +119,19 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     }
 
     private void addHeader(ListView listView) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
-        imageAvatar = (ImageView) view.findViewById(R.id.im_avatar);
-        tvName = (TextView) view.findViewById(R.id.tv_name);
-        tvBalance = (TextView) view.findViewById(R.id.tv_balance);
-        listView.addHeaderView(view);
+        viewProfile = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
+        imageAvatar = (ImageView) viewProfile.findViewById(R.id.im_avatar);
+        tvName = (TextView) viewProfile.findViewById(R.id.tv_name);
+        tvBalance = (TextView) viewProfile.findViewById(R.id.tv_balance);
+        viewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMenuListener != null) {
+                    mMenuListener.onProfileClick();
+                }
+            }
+        });
+        listView.addHeaderView(viewProfile);
     }
 
     @Override

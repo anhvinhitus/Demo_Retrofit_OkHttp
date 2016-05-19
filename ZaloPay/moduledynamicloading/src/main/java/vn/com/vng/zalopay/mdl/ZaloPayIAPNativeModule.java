@@ -179,7 +179,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
                 if (paymentStatus == null) {
                     handleResultError(promise, String.valueOf(PaymentError.ERR_CODE_SYSTEM), PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
                 } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                    handleResultSucess(promise, zpPaymentResult.paymentInfo);
+                    handleResultSucess(promise, null);
                 } else {
                     handleResultError(promise, String.valueOf(paymentStatus.getNum()), paymentStatus.toString());
                 }

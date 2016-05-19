@@ -54,10 +54,10 @@
 
     <Button
         android:id="@+id/btnDeposit"
+        style="@style/Button.Default"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:background="@color/bg_btn_gray"
-        android:text="@string/txt_home_deposit"
-        android:textColor="@color/white" />
+        android:text="@string/btn_deposit" />
 </RelativeLayout>

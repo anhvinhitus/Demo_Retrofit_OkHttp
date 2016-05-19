@@ -114,7 +114,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ChangeBalanceEvent event) {
-        Timber.d("event bus test %s", event.balance);
+        //Timber.d("event bus test %s; ThreadName:%s", event.balance, Thread.currentThread().getName());
         menuView.setBalance(event.balance);
     }
 }
