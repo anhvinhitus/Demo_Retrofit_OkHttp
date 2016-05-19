@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,12 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
     @Bind(R.id.tvBirthday)
     TextView tvBirthday;
 
+    @Bind(R.id.tv_name)
+    TextView tvName;
+
+    @Bind(R.id.tvTermsOfUser)
+    TextView tvTermsOfUser;
+
     public PreProfileFragment() {
         // Required empty public constructor
     }
@@ -86,18 +93,27 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
         presenter.setView(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
     public void updateUserInfo(User user) {
         if (user == null) {
             return;
         }
-        Date date = new Date(user.birthDate);
+        Date date = new Date(user.birthDate*1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         tvBirthday.setText(simpleDateFormat.format(date));
+        tvName.setText(user.dname);
         tvSex.setText(user.getGender());
         Glide.with(this).load(user.avatar)
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
+        tvTermsOfUser.setClickable(true);
+        tvTermsOfUser.setMovementMethod (LinkMovementMethod.getInstance());
     }
 
     // TODO: Rename method, update argument and hook method into UI event

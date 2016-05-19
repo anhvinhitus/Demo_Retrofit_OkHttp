@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="background">#f0f4f6</color>
+    <color name="statusBar">#17b5ad</color>
 
     <color name="colorPrimaryLight">#4da4c6</color>
     <color name="colorPrimaryLight2">#99cbde</color>

@@ -24,6 +24,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.AppColor">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@color/splash_bg</item>
     </style>

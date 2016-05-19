@@ -248,7 +248,7 @@
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".account.ui.activities.PreProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
     </application>
 
 </manifest>
