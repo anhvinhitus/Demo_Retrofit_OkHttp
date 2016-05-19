@@ -346,6 +346,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     public void onMenuHeaderClick(MenuItem menuItem) {
     }
 
+    @Override
+    public void onProfileClick() {
+        navigator.startProfileActivity(this);
+    }
+
     public void updateNotificationCount(final int count) {
         if (count <= 0) {
             mTvNotificationCount.setText("");

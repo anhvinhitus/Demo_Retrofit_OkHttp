@@ -10,8 +10,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
@@ -85,8 +83,6 @@ public class SplashScreenPresenter extends BaseAppPresenter implements Presenter
             Timber.d("gotoLoginScreen");
 
         }
-
-
     }
 
     private final void onVerifyComplete(boolean isVerifySuccess, boolean clearData) {

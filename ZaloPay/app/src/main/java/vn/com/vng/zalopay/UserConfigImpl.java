@@ -130,11 +130,13 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void saveUserInfo(String avatar, String displayName) {
+    public void saveUserInfo(String avatar, String displayName, long birthData, int userGender) {
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_NAME, displayName);
         editor.putString(Constants.PREF_USER_AVATAR, avatar);
+        editor.putLong(Constants.PREF_USER_BIRTHDATE, birthData);
+        editor.putInt(Constants.PREF_USER_GENDER, userGender);
 //        editor.putLong(Constants.PREF_USER_ID, uid);
         editor.apply();
 
@@ -143,6 +145,8 @@ public class UserConfigImpl implements UserConfig {
         if (isClientActivated()) {
             currentUser.avatar = avatar;
             currentUser.dname = displayName;
+            currentUser.birthDate = birthData;
+            currentUser.userGender = userGender;
             Timber.d("save EventBus post ");
             eventBus.post(new ZaloProfileInfoEvent(currentUser.uid, displayName, avatar));
         }

@@ -147,8 +147,10 @@ public final class LoginPresenter extends BaseAppPresenter implements Presenter<
 //                    long userId = data.getLong("userId");
                     String displayName = data.getString("displayName");
                     String avatar = data.getString("largeAvatar");
+                    long birthday = data.getLong("birthDate");
+                    int userGender = data.getInt("userGender");
 
-                    userConfig.saveUserInfo(avatar, displayName);
+                    userConfig.saveUserInfo(avatar, displayName, birthday, userGender);
 
                 } catch (Exception ex) {
                     Timber.tag(TAG).e(ex, " Exception :");
