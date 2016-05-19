@@ -13,7 +13,7 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -33,7 +33,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     private String zptranstoken;
     private ProgressDialog mProgressDialog;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
     @Inject

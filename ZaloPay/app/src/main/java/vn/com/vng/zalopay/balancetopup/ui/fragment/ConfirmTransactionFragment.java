@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
@@ -31,10 +31,10 @@ public class ConfirmTransactionFragment extends BaseFragment {
 
     private OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.tvAmount)
+    @BindView(R.id.tvAmount)
     TextView tvAmount;
 
-    @Bind(R.id.tvBankSpinner)
+    @BindView(R.id.tvBankSpinner)
     TextView tvBankSpinner;
 
     @OnClick(R.id.btnContinue)

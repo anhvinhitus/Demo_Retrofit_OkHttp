@@ -16,7 +16,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
@@ -61,7 +61,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Inject
     Navigator navigator;
 
-    @Bind(R.id.listview)
+    @BindView(R.id.listview)
     RecyclerView recyclerView;
 
     private LinkCardAdapter mAdapter;
@@ -69,7 +69,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Inject
     LinkCardPresenter presenter;
 
-    @Bind(R.id.progressContainer)
+    @BindView(R.id.progressContainer)
     View mLoadingView;
 
     @Override

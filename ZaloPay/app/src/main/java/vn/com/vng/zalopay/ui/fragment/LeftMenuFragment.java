@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
@@ -45,7 +45,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     private MenuItemAdapter mAdapter;
 
-    @Bind(android.R.id.list)
+    @BindView(android.R.id.list)
     ListView listView;
 
     public ImageView imageAvatar;

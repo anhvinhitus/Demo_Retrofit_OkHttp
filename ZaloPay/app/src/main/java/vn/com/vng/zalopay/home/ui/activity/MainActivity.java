@@ -18,7 +18,7 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -76,7 +76,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     @Inject
     UserConfigFactory userConfigFactory;
 
-    @Bind(R.id.appBarLayout)
+    @BindView(R.id.appBarLayout)
     AppBarLayout mAppBarLayout;
 
     @OnClick(R.id.btn_qr_code)

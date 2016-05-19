@@ -14,7 +14,9 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
+import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
@@ -49,13 +51,13 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Inject
     BalanceTopupPresenter balanceTopupPresenter;
 
-    @Bind(R.id.tvResourceMoney)
+    @BindView(R.id.tvResourceMoney)
     TextView tvResourceMoney;
 
-    @Bind(R.id.inputAmountLayout)
+    @BindView(R.id.inputAmountLayout)
     InputAmountLayout inputAmountLayout;
 
-    @Bind(R.id.btnDeposit)
+    @BindView(R.id.btnDeposit)
     View btnDeposit;
 
     @OnClick(R.id.btnDeposit)

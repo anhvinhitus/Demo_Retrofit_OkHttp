@@ -61,7 +61,7 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
 
         }
@@ -70,8 +70,7 @@ android {
             //  applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
-
-            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
         }
     }
@@ -146,7 +145,7 @@ android {
         // http://stackoverflow.com/questions/31191898/android-studio-gradle-dynamic-apk-name-out-of-sync/34095961#34095961
         // ./gradlew clean assemble -PCI_BUILD=true
         def clientBuildDate = new Date().format('yyyyMMddHHmm')
-        def newName = defaultConfig.versionName.replace(".","_") + "-" + clientBuildDate
+        def newName = defaultConfig.versionName.replace(".", "_") + "-" + clientBuildDate
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
                 output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-" + newName + ".apk"));
@@ -191,6 +190,8 @@ dependencies {
     compile cfgAndroid.multidex
 
     compile libs.butterKnife
+    apt libs.butterKnifeCompiler
+
     debugCompile devel.leakCanaryDebug
     releaseCompile devel.leakCanaryRelease
 
@@ -199,9 +200,7 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile libs.roundedimageview
-
-    compile libs.play_services
+    //  compile libs.play_services
     compile libs.play_services_analytics
 
     compile project(':data')

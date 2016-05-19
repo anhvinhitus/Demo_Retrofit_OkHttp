@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
@@ -32,25 +32,25 @@ public class InputAmountLayout extends LinearLayout {
     private IListenerAmountChanged mListener;
     private long mAmount;
 
-    @Bind(R.id.layoutAmount)
+    @BindView(R.id.layoutAmount)
     View layoutAmount;
 
-    @Bind(R.id.tvHintInputAmount)
+    @BindView(R.id.tvHintInputAmount)
     TextView tvHintInputAmount;
 
-    @Bind(R.id.layoutInputAmount)
+    @BindView(R.id.layoutInputAmount)
     View layoutInputAmount;
 
-    @Bind(R.id.tvAmountTitle)
+    @BindView(R.id.tvAmountTitle)
     TextView tvAmountTitle;
 
-    @Bind(R.id.tvCurrency)
+    @BindView(R.id.tvCurrency)
     TextView tvCurrency;
 
-    @Bind(R.id.edtAmount)
+    @BindView(R.id.edtAmount)
     EditText edtAmount;
 
-    @Bind(R.id.imgClear)
+    @BindView(R.id.imgClear)
     ImageView imgClear;
 
     @OnClick(R.id.layoutAmount)

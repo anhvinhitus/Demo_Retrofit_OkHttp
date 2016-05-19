@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -181,7 +181,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private OnItemClickListener listener;
 
-        @Bind(R.id.image)
+        @BindView(R.id.image)
         public ImageView imageView;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
