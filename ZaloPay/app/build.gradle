@@ -204,6 +204,9 @@ dependencies {
     compile libs.play_services
     compile libs.play_services_analytics
 
+    debugCompile project(':debugviewer')
+    releaseCompile project(':debugviewer-release')
+
     compile project(':data')
     compile project(':uicomponent')
     compile project(':moduledynamicloading')
