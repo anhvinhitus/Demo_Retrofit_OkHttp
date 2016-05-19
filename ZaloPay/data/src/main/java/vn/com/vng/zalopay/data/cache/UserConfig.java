@@ -31,7 +31,7 @@ public interface UserConfig {
 
     long getUserId();
 
-    void saveUserInfo(String avatar, String displayName);
+    void saveUserInfo(String avatar, String displayName, long birthData, int userGender);
 
     String getAvatar();
 

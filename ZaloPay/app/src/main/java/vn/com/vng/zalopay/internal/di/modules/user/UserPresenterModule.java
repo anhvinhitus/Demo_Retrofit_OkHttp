@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
@@ -48,5 +50,10 @@ public class UserPresenterModule {
     @Provides
     LinkCardProdurePresenter provideLinkCardProcedurePresenter(User user) {
         return new LinkCardProdurePresenter(user);
+    }
+    @UserScope
+    @Provides
+    PreProfilePresenter providePreProfilePresenter(UserConfig userConfig) {
+        return new PreProfilePresenter(userConfig);
     }
 }

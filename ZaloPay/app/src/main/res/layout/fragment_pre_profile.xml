@@ -1,20 +1,23 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_alignParentTop="true"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
-    <ScrollView
-        android:id="@+id/ScrollView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1.0"
             android:orientation="vertical">
 
             <LinearLayout
@@ -33,7 +36,7 @@
                     android:orientation="vertical">
 
                     <vn.vng.uicomponent.widget.image.BezelImageView
-                        android:id="@+id/im_avatar"
+                        android:id="@+id/imgAvatar"
                         android:layout_width="@dimen/leftmenu.avatar"
                         android:layout_height="@dimen/leftmenu.avatar"
                         android:scaleType="centerCrop"
@@ -49,6 +52,12 @@
                         android:textSize="@dimen/textsize.normal.s"
                         tools:text="@string/app_name" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="106dp"
+                    android:layout_weight="0.0"
+                    android:background="@color/white" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -67,6 +76,7 @@
                         android:textSize="9sp" />
 
                     <TextView
+                        android:id="@+id/tvSex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing.tiny"
@@ -86,6 +96,7 @@
                         android:textSize="9sp" />
 
                     <TextView
+                        android:id="@+id/tvBirthday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing.tiny"
@@ -155,28 +166,31 @@
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing.medium"
-            android:text="@string/terms_of_use"
-            android:textColor="@color/deposit.title"
-            android:textSize="13sp" />
+            android:layout_gravity="bottom"
+            android:layout_weight="0.0"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnDeposit"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/bg_btn_blue_selected"
-            android:text="@string/txt_home_deposit"
-            android:textColor="@color/white" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing.medium"
+                android:text="@string/terms_of_use"
+                android:textColor="@color/deposit.title"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnDeposit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/bg_btn_blue_selected"
+                android:text="@string/txt_home_deposit"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
     </LinearLayout>
-</RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

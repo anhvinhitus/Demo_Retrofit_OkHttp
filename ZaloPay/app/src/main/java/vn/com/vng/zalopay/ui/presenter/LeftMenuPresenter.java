@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Singleton;
 
@@ -106,16 +107,14 @@ public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<IL
 
     @Subscribe
     public void onEventMainThread(ZaloProfileInfoEvent event) {
-
         Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
         menuView.setAvatar(event.avatar);
         menuView.setDisplayName(event.displayName);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ChangeBalanceEvent event) {
-        Timber.d("event bus test %s", event.balance);
-
+        Timber.d("event bus test %s; ThreadName:%s", event.balance, Thread.currentThread().getName());
         menuView.setBalance(event.balance);
     }
 }

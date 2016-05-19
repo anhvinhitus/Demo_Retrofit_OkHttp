@@ -6,8 +6,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
+import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -18,8 +31,20 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * Use the {@link PreProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PreProfileFragment extends BaseFragment {
+public class PreProfileFragment extends BaseFragment implements IPreProfileView {
     private OnFragmentInteractionListener mListener;
+
+    @Inject
+    PreProfilePresenter presenter;
+
+    @Bind(R.id.imgAvatar)
+    ImageView imgAvatar;
+
+    @Bind(R.id.tvSex)
+    TextView tvSex;
+
+    @Bind(R.id.tvBirthday)
+    TextView tvBirthday;
 
     public PreProfileFragment() {
         // Required empty public constructor
@@ -39,7 +64,7 @@ public class PreProfileFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
-
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -58,7 +83,21 @@ public class PreProfileFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.setView(this);
+    }
 
+    public void updateUserInfo(User user) {
+        if (user == null) {
+            return;
+        }
+        Date date = new Date(user.birthDate);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        tvBirthday.setText(simpleDateFormat.format(date));
+        tvSex.setText(user.getGender());
+        Glide.with(this).load(user.avatar)
+                .placeholder(R.color.silver)
+                .centerCrop()
+                .into(imgAvatar);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,8 +113,8 @@ public class PreProfileFragment extends BaseFragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -83,6 +122,31 @@ public class PreProfileFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void showLoading() {
+        super.showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        super.showToast(message);
     }
 
     /**
