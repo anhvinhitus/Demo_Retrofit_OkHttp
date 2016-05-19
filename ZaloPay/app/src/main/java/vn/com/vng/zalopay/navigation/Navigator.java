@@ -107,7 +107,7 @@ public class Navigator {
         intent.putExtra("moduleName", name);
         context.startActivity(intent);
     }
-    
+
     public void startProfileActivity(Activity activity) {
         Intent intent = new Intent(activity, PreProfileActivity.class);
         activity.startActivity(intent);
