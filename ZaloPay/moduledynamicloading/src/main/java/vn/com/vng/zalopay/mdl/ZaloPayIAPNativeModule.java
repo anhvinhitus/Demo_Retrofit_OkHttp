@@ -72,86 +72,92 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     public void payOrder(ReadableMap params, Promise promise) {
         Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................1");
         // verify params parameters
-        long appID = (long)params.getDouble(Constants.APPID);
-        String appTransID = params.getString(Constants.APPTRANSID);
-        String appUser = params.getString(Constants.APPUSER);
-        long appTime = (long)params.getDouble(Constants.APPTIME);
-        long amount = (long)params.getDouble(Constants.AMOUNT);
-        String itemName = params.getString(Constants.ITEM);
-        String description = params.getString(Constants.DESCRIPTION);
-        String embedData = params.getString(Constants.EMBEDDATA);
-        String mac = params.getString(Constants.MAC);
+        try {
+            long appID = (long) params.getDouble(Constants.APPID);
+            String appTransID = params.getString(Constants.APPTRANSID);
+            String appUser = params.getString(Constants.APPUSER);
+            long appTime = (long) params.getDouble(Constants.APPTIME);
+            long amount = (long) params.getDouble(Constants.AMOUNT);
+            String itemName = params.getString(Constants.ITEM);
+            String description = params.getString(Constants.DESCRIPTION);
+            String embedData = params.getString(Constants.EMBEDDATA);
+            String mac = params.getString(Constants.MAC);
 
-        if (appID < 0) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            if (appID < 0) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                }
+                return;
             }
-            return;
-        }
-        if (TextUtils.isEmpty(appTransID)) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            if (TextUtils.isEmpty(appTransID)) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                }
+                return;
             }
-            return;
-        }
-        if (TextUtils.isEmpty(appUser)) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            if (TextUtils.isEmpty(appUser)) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                }
+                return;
             }
-            return;
-        }
-        if (appTime <= 0) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            if (appTime <= 0) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                }
+                return;
             }
-            return;
-        }
-        if (amount <= 0) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            if (amount <= 0) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                }
+                return;
             }
-            return;
-        }
-        if (TextUtils.isEmpty(itemName)) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_DATA);
+            if (TextUtils.isEmpty(itemName)) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                }
+                return;
             }
-            return;
-        }
-        if (TextUtils.isEmpty(embedData)) {
-            handleResultError(promise, PaymentError.ERR_CODE_DATA);
-            return;
-        }
-        if (TextUtils.isEmpty(mac)) {
-            handleResultError(promise, PaymentError.ERR_CODE_DATA);
-            return;
-        }
+            if (TextUtils.isEmpty(embedData)) {
+                handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                return;
+            }
+            if (TextUtils.isEmpty(mac)) {
+                handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                return;
+            }
 
-        if (user == null || user.uid <= 0) {
-            if (promise!=null) {
-                handleResultError(promise, PaymentError.ERR_CODE_USER_INFO);
+            if (user == null || user.uid <= 0) {
+                if (promise!=null) {
+                    handleResultError(promise, PaymentError.ERR_CODE_USER_INFO);
+                }
+                return;
             }
-            return;
+
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            EPaymentChannel forcedPaymentChannel = null;
+            paymentInfo.appID = appID;
+            paymentInfo.zaloUserID = String.valueOf(user.uid);
+            paymentInfo.zaloPayAccessToken = user.accesstoken;
+            paymentInfo.appTime = appTime;
+            paymentInfo.appTransID = appTransID;
+            paymentInfo.itemName = itemName;
+            paymentInfo.amount = amount;
+            paymentInfo.description = description;
+            paymentInfo.embedData = embedData;
+            //lap vao ví appId = appUser = 1
+            paymentInfo.appUser = appUser;
+            paymentInfo.mac = mac;
+
+            Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
+            paymentListener = new PaymentListener(promise);
+            ZingMobilePayService.pay(getCurrentActivity(), forcedPaymentChannel, paymentInfo, paymentListener);
+        } catch (Exception e) {
+            if (promise!=null) {
+                handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+            }
         }
-
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        EPaymentChannel forcedPaymentChannel = null;
-        paymentInfo.appID = appID;
-        paymentInfo.zaloUserID = String.valueOf(user.uid);
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
-        paymentInfo.appTime = appTime;
-        paymentInfo.appTransID = appTransID;
-        paymentInfo.itemName = itemName;
-        paymentInfo.amount = amount;
-        paymentInfo.description = description;
-        paymentInfo.embedData = embedData;
-        //lap vao ví appId = appUser = 1
-        paymentInfo.appUser = appUser;
-        paymentInfo.mac = mac;
-
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
-        paymentListener = new PaymentListener(promise);
-        ZingMobilePayService.pay(getCurrentActivity(), forcedPaymentChannel, paymentInfo, paymentListener);
     }
 
     class PaymentListener implements ZPPaymentListener {
@@ -184,7 +190,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         @Override
         public void onCancel() {
-            handleResultError(promise, 0);
+            handleResultError(promise, PaymentError.ERR_CODE_USER_CANCEL);
             destroyVariable();
         }
 

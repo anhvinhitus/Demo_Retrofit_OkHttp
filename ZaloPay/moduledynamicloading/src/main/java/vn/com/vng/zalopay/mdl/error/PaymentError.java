@@ -7,43 +7,38 @@ public class PaymentError {
 
     private static final String TAG = PaymentError.class.getSimpleName();
 
+    //thành công
+    public static int ERR_CODE_SUCCESS = 1;
+
     //thông tin đầu vào thiếu hoặc không hợp lệ.
-    public static int ERR_CODE_INPUT = 6000;
-
-    //thông tin user thiếu hoặc không hợp lệ.
-    public static int ERR_CODE_USER_INFO = 6001;
-
-    //data thiếu hoặc không hợp lệ.
-    public static int ERR_CODE_DATA = 7000;
+    public static int ERR_CODE_INPUT = 2;
 
     //lỗi mang
-    public static int ERR_CODE_INTERNET = 4000;
+    public static int ERR_CODE_INTERNET = 3;
+
+    //none error
+    public static int ERR_CODE_USER_CANCEL = 4;
 
     //lỗi hệ thống
     public static int ERR_CODE_SYSTEM = 5000;
 
-    //none error
-    public static int ERR_CODE_NONE = 0;
-
-    //internal timeout
-    public static int ERR_CODE_INTERNAL_TIMEOUT = -9999;
+    //thông tin user thiếu hoặc không hợp lệ.
+    public static int ERR_CODE_USER_INFO = 5001;
 
     public static String getErrorMessage(int errorCode) {
         String errorMessage = "";
-        if (errorCode == ERR_CODE_INPUT) {
+        if (errorCode == ERR_CODE_SUCCESS) {
+            errorMessage = "Giao dịch thành công.";
+        } else if (errorCode == ERR_CODE_INPUT) {
             errorMessage = "Thông tin đầu vào thiếu hoặc không hợp lệ.";
-        } else if (errorCode == ERR_CODE_USER_INFO) {
-            errorMessage = "Thông tin người dùng không hợp lệ.";
         } else if (errorCode == ERR_CODE_INTERNET) {
             errorMessage = "Lỗi kết nối mạng.";
         } else if (errorCode == ERR_CODE_SYSTEM) {
             errorMessage = "Lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.";
-        } else if (errorCode == ERR_CODE_DATA) {
-            errorMessage = "Dữ liệu đầu vào thiếu hoặc không hợp lệ.";
-        } else if (errorCode == ERR_CODE_NONE) {
-            errorMessage = "";
-        } else if (errorCode == ERR_CODE_INTERNAL_TIMEOUT) {
-            errorMessage = "Internal timeout";
+        } else if (errorCode == ERR_CODE_USER_INFO) {
+            errorMessage = "Thông tin người dùng không hợp lệ.";
+        } else if (errorCode == ERR_CODE_USER_CANCEL) {
+            errorMessage = "Người dùng huỷ bỏ giao dịch.";
         }
         return errorMessage;
     }
