@@ -68,7 +68,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     String getJSBundleFile() {
-        return bundleReactConfig.getExternalJsBundle();
+        return bundleReactConfig.getExternalJsBundle("");
     }
 
     /**

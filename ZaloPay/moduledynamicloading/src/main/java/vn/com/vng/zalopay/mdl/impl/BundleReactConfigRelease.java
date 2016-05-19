@@ -6,11 +6,11 @@ import vn.com.vng.zalopay.mdl.BundleService;
 /**
  * Created by AnhHieu on 5/16/16.
  */
-public class BundleReactConfigImpl implements BundleReactConfig {
+public class BundleReactConfigRelease implements BundleReactConfig {
 
     private BundleService bundleService;
 
-    public BundleReactConfigImpl(BundleService service) {
+    public BundleReactConfigRelease(BundleService service) {
         this.bundleService = service;
     }
 
@@ -26,11 +26,11 @@ public class BundleReactConfigImpl implements BundleReactConfig {
 
     @Override
     public String getExternalJsBundle(String paymentAppName) {
-        return null;
+        return bundleService.getExternalBundleFolder(paymentAppName) + "/main.jsbundle";
     }
 
     @Override
     public boolean isExternalDevSupport() {
-        return true;
+        return false;
     }
 }

@@ -4,12 +4,15 @@ import android.content.Context;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
+import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ApplicationEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlAppListScope;
@@ -41,21 +44,21 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    SqlitePlatformScope provideSqlitePlatformScope(@Named("daosession") DaoSession session,PlatformDaoMapper mapper) {
+    SqlitePlatformScope provideSqlitePlatformScope(@Named("daosession") DaoSession session, PlatformDaoMapper mapper) {
         return new SqlitePlatformScopeImpl(session, mapper);
     }
 
     @UserScope
     @Provides
     AppConfigFactory provideAppConfigFactory(Context context, AppConfigService service,
-                                             User user, SqlitePlatformScope sqlitePlatformScope) {
-        return new AppConfigFactory(context, service, user, sqlitePlatformScope);
+                                             User user, SqlitePlatformScope sqlitePlatformScope, @Named("params_request_default") HashMap<String, String> params) {
+        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params);
     }
 
     @UserScope
     @Provides
-    AppConfigRepository provideAppConfigRepository(AppConfigFactory appConfigFactory) {
-        return new AppConfigRepositoryImpl(appConfigFactory);
+    AppConfigRepository provideAppConfigRepository(AppConfigFactory appConfigFactory, AppConfigEntityDataMapper mapper) {
+        return new AppConfigRepositoryImpl(appConfigFactory, mapper);
     }
 
 

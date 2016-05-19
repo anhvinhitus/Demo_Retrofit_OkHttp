@@ -9,7 +9,7 @@ public interface BundleReactConfig {
 
     boolean isInternalDevSupport();
 
-    String getExternalJsBundle();
+    String getExternalJsBundle(String paymentAppName);
 
     boolean isExternalDevSupport();
 }
