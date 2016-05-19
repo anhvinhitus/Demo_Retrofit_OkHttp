@@ -81,10 +81,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         String description = params.getString(Constants.DESCRIPTION);
         String embedData = params.getString(Constants.EMBEDDATA);
         String mac = params.getString(Constants.MAC);
-        String chargeInfo = null;
-        if (!params.isNull(Constants.CHARGEINFO)) {
-            chargeInfo = params.getString(Constants.CHARGEINFO);
-        }
 
         if (appID < 0) {
             if (promise!=null) {
