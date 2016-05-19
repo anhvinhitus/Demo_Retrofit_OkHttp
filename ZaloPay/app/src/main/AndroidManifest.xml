@@ -16,12 +16,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission  android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
@@ -185,13 +184,11 @@
             android:configChanges="keyboardHidden|orientation"
             android:hardwareAccelerated="true"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:hardwareAccelerated="true"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name="io.card.payment.DataEntryActivity"
             android:screenOrientation="portrait" />
@@ -250,6 +247,7 @@
             android:name=".ui.activity.LinkCardProcedureActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".account.ui.activities.PreProfileActivity"></activity>
     </application>
 
 </manifest>
