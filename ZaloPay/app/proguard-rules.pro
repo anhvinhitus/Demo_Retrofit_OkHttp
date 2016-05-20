@@ -16,6 +16,8 @@
 #   public *;
 #}
 
+#-ignorewarnings # ***************************** Comment lại để biết chi tiết các warning *****************************
+
 -keepclassmembers class ** {
     public void onEvent*(***);
 }
@@ -57,11 +59,38 @@
 
 -dontwarn com.facebook.react.**
 
+
+#retrolambda
+
+-dontwarn java.lang.invoke.*
+
+#Green Dao
+
+-keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
+    public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
 # okhttp
 
--dontwarn com.squareup.okhttp3.**
--keep class com.squareup.okhttp3.** { *;}
--dontwarn okio.*
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-dontwarn com.squareup.okhttp.**
+
+# okhttp 3
+
+#-dontwarn com.squareup.okhttp.**
+#-dontwarn com.squareup.okhttp3.**
+#-keep class com.squareup.okhttp3.** { *;}
+#-dontwarn okio.*
+
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn okhttp3.**
 
 # okio
 
@@ -80,7 +109,7 @@
 #-keepclasseswithmembernames class * { @butterknife.* <methods>; }
 #-keepclasseswithmembernames class * { @butterknife.* <fields>; }
 
-#retrofit
+#retrofit 2
 
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
@@ -102,6 +131,19 @@
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.google.gson.examples.android.model.** { *; }
 
+
+#Event bus
+
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
 
 #glide
 
@@ -130,3 +172,65 @@
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
+
+#play-service
+
+-keep public class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+##************OTHER**********
+
+-keep public class com.sun.msv.** { *; }
+-dontwarn com.sun.msv.**
+
+-keep public class java.beans.** { *; }
+-dontwarn java.beans.**
+
+-keep public class org.relaxng.datatype.** { *; }
+-dontwarn org.relaxng.datatype.**
+
+-keep public class javax.xml.stream.** { *; }
+-dontwarn javax.xml.stream.**
+
+-keep public class org.gjt.xpp.** { *; }
+-dontwarn org.gjt.xpp.**
+
+-keep public class javax.xml.bind.** { *; }
+-dontwarn javax.xml.bind.**
+
+-keep public class org.jdom.** { *; }
+-dontwarn org.jdom.**
+
+-keep public class nu.xom.** { *; }
+-dontwarn nu.xom.**
+
+-keep public class javax.swing.tree.** { *; }
+-dontwarn javax.swing.tree.**
+
+-keep public class javax.swing.table.** { *; }
+-dontwarn javax.swing.table.**
+
+-keep public class org.dom4j.swing.** { *; }
+-dontwarn org.dom4j.swing.**
+
+
+-keep class com.android.vending.billing.**
+-dontwarn com.android.vending.billing.**
+
+-keep public class com.zing.zalo.zalosdk.oauth.** { *; }
+-dontwarn com.zing.zalo.zalosdk.oauth.**
+
+-keep public class org.w3c.dom.** { *; }
+-dontwarn org.w3c.dom.**
+
+
+#-dontwarn android.support.v7.**
+#-keep class android.support.v7.** { *; }
+#-keep interface android.support.v7.** { *; }
+
+#-keep class android.support.v7.widget.RoundRectDrawable { *; }
+
+#-dontwarn android.support.design.**
+#-keep class android.support.design.** { *; }
+#-keep interface android.support.design.** { *; }
+#-keep public class android.support.design.R$* { *; }
