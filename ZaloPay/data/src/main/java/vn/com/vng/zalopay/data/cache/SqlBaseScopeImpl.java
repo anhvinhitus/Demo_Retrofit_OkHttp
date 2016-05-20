@@ -4,11 +4,12 @@ import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
-import vn.com.vng.zalopay.data.cache.model.AppInfoDao;
+import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
+import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 
 /**
@@ -67,8 +68,8 @@ public class SqlBaseScopeImpl {
         return def;
     }
 
-    public AppInfoDao getAppInfoDao() {
-        return daoSession.getAppInfoDao();
+    public AppResourceGDDao getAppInfoDao() {
+        return daoSession.getAppResourceGDDao();
     }
 
     public TransactionLogDao getTransactionLogDao() {
@@ -83,5 +84,8 @@ public class SqlBaseScopeImpl {
         return daoSession.getBankCardGDDao();
     }
 
+    public PaymentTransTypeGDDao getPaymentTransDao() {
+        return daoSession.getPaymentTransTypeGDDao();
+    }
 
 }

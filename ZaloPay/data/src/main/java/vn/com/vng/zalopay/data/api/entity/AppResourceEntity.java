@@ -16,7 +16,6 @@ public class AppResourceEntity {
     @SerializedName("needdownloadrs")
     public int needdownloadrs;
 
-
     @SerializedName("imageurl")
     public String imageurl;
 

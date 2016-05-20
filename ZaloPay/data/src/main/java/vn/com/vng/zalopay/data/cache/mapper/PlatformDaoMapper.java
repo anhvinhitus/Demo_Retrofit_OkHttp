@@ -7,8 +7,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
+import vn.com.vng.zalopay.data.api.entity.PCMEntity;
+import vn.com.vng.zalopay.data.api.entity.PaymentTransTypeEntity;
+import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.BankCardGD;
+import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
 import vn.com.vng.zalopay.data.util.Lists;
 
 import static java.util.Collections.emptyList;
@@ -76,5 +81,100 @@ public class PlatformDaoMapper {
             }
         }
         return bankCardGDs;
+    }
+
+
+    public AppResourceGD transform(AppResourceEntity appResourceEntity) {
+        AppResourceGD appResourceGD = null;
+        if (appResourceEntity != null) {
+            appResourceGD = new AppResourceGD(appResourceEntity.appid);
+            appResourceGD.setAppname(appResourceEntity.appname);
+            appResourceGD.setChecksum(appResourceEntity.checksum);
+            appResourceGD.setImageurl(appResourceEntity.imageurl);
+            appResourceGD.setJsurl(appResourceEntity.jsurl);
+            appResourceGD.setNeeddownloadrs(appResourceEntity.needdownloadrs);
+            appResourceGD.setStatus(appResourceEntity.status);
+        }
+        return appResourceGD;
+    }
+
+    public AppResourceEntity transform(AppResourceGD appResourceGD) {
+        AppResourceEntity appResourceEntity = null;
+        if (appResourceGD != null) {
+            appResourceEntity = new AppResourceEntity();
+            appResourceEntity.appid = appResourceGD.getAppid();
+            appResourceEntity.appname = appResourceGD.getAppname();
+            appResourceEntity.checksum = appResourceGD.getChecksum();
+            appResourceEntity.imageurl = appResourceGD.getImageurl();
+            appResourceEntity.needdownloadrs = appResourceGD.getNeeddownloadrs();
+            appResourceEntity.status = appResourceGD.getStatus();
+            appResourceEntity.jsurl = appResourceGD.getJsurl();
+
+        }
+        return appResourceEntity;
+    }
+
+    public List<AppResourceGD> transformAppResourceEntity(Collection<AppResourceEntity> appResourceEntities) {
+        if (Lists.isEmptyOrNull(appResourceEntities))
+            return emptyList();
+
+        List<AppResourceGD> appResourceGDs = new ArrayList<>(appResourceEntities.size());
+        for (AppResourceEntity appResourceEntity : appResourceEntities) {
+            AppResourceGD appResourceGD = transform(appResourceEntity);
+            if (appResourceGD != null) {
+                appResourceGDs.add(appResourceGD);
+            }
+        }
+        return appResourceGDs;
+    }
+
+    public List<AppResourceEntity> transformAppResourceDao(Collection<AppResourceGD> appResourceGDs) {
+        if (Lists.isEmptyOrNull(appResourceGDs))
+            return emptyList();
+
+        List<AppResourceEntity> appResourceEntities = new ArrayList<>(appResourceGDs.size());
+        for (AppResourceGD appResourceGD : appResourceGDs) {
+            AppResourceEntity appResourceEntity = transform(appResourceGD);
+            if (appResourceEntity != null) {
+                appResourceEntities.add(appResourceEntity);
+            }
+        }
+        return appResourceEntities;
+    }
+
+
+    public List<PaymentTransTypeGD> transform(PaymentTransTypeEntity appResourceEntity) {
+        List<PaymentTransTypeGD> listPaymentTransDao = null;
+        if (appResourceEntity != null && !Lists.isEmptyOrNull(appResourceEntity.pmclist)) {
+            listPaymentTransDao = new ArrayList<>();
+
+            for (PCMEntity pcmEntity : appResourceEntity.pmclist) {
+                PaymentTransTypeGD paymentTransTypeGD = new PaymentTransTypeGD(appResourceEntity.transtype);
+                paymentTransTypeGD.setPmcid(pcmEntity.pmcid);
+                paymentTransTypeGD.setStatus(pcmEntity.status);
+                paymentTransTypeGD.setFeecaltype(pcmEntity.feecaltype);
+                paymentTransTypeGD.setFeerate(pcmEntity.feerate);
+                paymentTransTypeGD.setMinvalue(pcmEntity.minvalue);
+                paymentTransTypeGD.setMaxvalue(pcmEntity.maxvalue);
+                paymentTransTypeGD.setPmcname(pcmEntity.pmcname);
+                paymentTransTypeGD.setMinfee(pcmEntity.minxfee);
+
+                listPaymentTransDao.add(paymentTransTypeGD);
+            }
+        }
+        return listPaymentTransDao;
+    }
+
+
+    public List<PaymentTransTypeGD> transformPaymentTransTypeEntity(List<PaymentTransTypeEntity> appResourceEntity) {
+        if (Lists.isEmptyOrNull(appResourceEntity))
+            return emptyList();
+        List<PaymentTransTypeGD> appResourceEntities = new ArrayList<>();
+        for (PaymentTransTypeEntity paymentTransTypeEntity : appResourceEntity) {
+            if (paymentTransTypeEntity == null) continue;
+            appResourceEntities.addAll(transform(paymentTransTypeEntity));
+        }
+        return appResourceEntities;
+
     }
 }

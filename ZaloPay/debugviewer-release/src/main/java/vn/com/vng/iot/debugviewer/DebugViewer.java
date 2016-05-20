@@ -9,4 +9,7 @@ public class DebugViewer {
 
     public static void postLog(Level level, String tag, String message) {
     }
+
+    public static void postLog(int level, String tag, String message) {
+    }
 }

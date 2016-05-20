@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.AppInfoEntity;
-import vn.com.vng.zalopay.data.cache.model.AppInfo;
 import vn.com.vng.zalopay.data.util.Lists;
 
 import static java.util.Collections.emptyList;
@@ -24,7 +23,7 @@ public class AppInfoDaoMapper {
     public AppInfoDaoMapper() {
     }
 
-    public AppInfo transform(AppInfoEntity appInfoEntity) {
+/*    public AppInfo transform(AppInfoEntity appInfoEntity) {
         AppInfo info = null;
         if (appInfoEntity != null) {
             info = new AppInfo(appInfoEntity.app_id,
@@ -53,6 +52,6 @@ public class AppInfoDaoMapper {
             }
         }
         return appInfos;
-    }
+    }*/
 
 }
