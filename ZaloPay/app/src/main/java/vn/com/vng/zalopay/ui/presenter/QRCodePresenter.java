@@ -289,6 +289,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements Prese
         zaloPayRepository.transactionUpdate()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(new DefaultSubscriber<Boolean>());
     }
 }
