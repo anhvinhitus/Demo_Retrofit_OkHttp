@@ -249,6 +249,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".account.ui.activities.PreProfileActivity"
             android:theme="@style/AppTheme.NoActionBar.AppColor"/>
+        <activity android:name=".account.ui.activities.PinProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
     </application>
 
 </manifest>

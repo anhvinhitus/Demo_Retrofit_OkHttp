@@ -1,205 +1,105 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ScrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentTop="true"
-    android:clipToPadding="false"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:gravity="bottom"
+        android:paddingBottom="6dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:paddingTop="14dp"
+        android:text="@string/note_transaction"
+        android:textColor="#727f8c"
+        android:textSize="13sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing.medium.s"
+        android:paddingRight="@dimen/spacing.medium.s">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_cover"
-                android:orientation="horizontal"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.0"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <vn.vng.uicomponent.widget.image.BezelImageView
-                        android:id="@+id/imgAvatar"
-                        android:layout_width="@dimen/leftmenu.avatar"
-                        android:layout_height="@dimen/leftmenu.avatar"
-                        android:scaleType="centerCrop"
-                        app:borderDrawable="@drawable/circle_border_profile"
-                        app:maskDrawable="@drawable/circle_mask" />
-
-                    <TextView
-                        android:id="@+id/tv_name"
-                        style="@style/TextView.Default"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/textsize.normal.s"
-                        tools:text="@string/app_name" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="106dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.0"
-                    android:background="@color/white" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1.0"
-                    android:orientation="vertical"
-                    android:paddingLeft="19dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="left|center_vertical"
-                        android:text="@string/sex"
-                        android:textColor="#55ffffff"
-                        android:textSize="9sp" />
-
-                    <TextView
-                        android:id="@+id/tvSex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing.tiny"
-                        android:gravity="left|center_vertical"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        tools:text="Nam" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing.tiny"
-                        android:layout_marginTop="17dp"
-                        android:gravity="left|center_vertical"
-                        android:text="@string/birthday"
-                        android:textColor="#55ffffff"
-                        android:textSize="9sp" />
-
-                    <TextView
-                        android:id="@+id/tvBirthday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing.tiny"
-                        android:gravity="left|center_vertical"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        tools:text="01/12/2000" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="62dp"
-                android:gravity="bottom"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:paddingTop="14dp"
-                android:paddingBottom="6dp"
-                android:text="@string/transaction_note"
-                android:textColor="#727f8c"
-                android:textSize="13sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="@dimen/spacing.medium">
-
-                    <EditText
-                        android:id="@+id/edtPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_phonenumber"
-                        android:inputType="phone" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="@dimen/spacing.medium">
-
-                    <EditText
-                        android:id="@+id/edtEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_email"
-                        android:inputType="textEmailAddress" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputCMND"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="@dimen/spacing.medium">
-
-                    <EditText
-                        android:id="@+id/edtCmnd"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_cmnd"
-                        android:inputType="phone" />
-
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="0.0"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/spacing.small"
+            app:errorEnabled="true">
 
-            <TextView
-                android:id="@+id/tvTermsOfUser"
+            <EditText
+                android:id="@+id/edtPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/spacing.medium.t"
-                android:text="@string/terms_of_use"
-                android:textColor="@color/deposit.title"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="13sp" />
+                android:hint="@string/hint_phone"
+                android:inputType="phone" />
+        </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/btnDeposit"
+        <TextView
+            android:id="@+id/tvPhoneNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing.small"
+            android:layout_marginLeft="@dimen/spacing.tiny"
+            android:text="@string/note_phone"
+            android:textSize="@dimen/textsize.tiny"
+            android:visibility="gone" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            app:errorEnabled="true">
+
+            <EditText
+                android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@color/bg_btn_blue_selected"
-                android:text="@string/txt_home_deposit"
-                android:textColor="@color/white" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress" />
+        </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            android:id="@+id/tvEmailNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing.small"
+            android:layout_marginLeft="@dimen/spacing.tiny"
+            android:text="@string/note_email"
+            android:textSize="@dimen/textsize.tiny"
+            android:visibility="gone" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputCMND"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            app:errorEnabled="true">
+
+            <EditText
+                android:id="@+id/edtCmnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_cmnd"
+                android:inputType="phone" />
+
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/tvCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:padding="@dimen/app_padding"
+        android:text="@string/txt_cancel"
+        android:textColor="@color/txt_cancel"
+        android:textSize="@dimen/textsize.small" />
+</LinearLayout>

@@ -4,25 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.method.LinkMovementMethod;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.inject.Inject;
-
 import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
-import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
-import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,26 +25,123 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * Use the {@link PreProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PreProfileFragment extends BaseFragment implements IPreProfileView {
+public class PreProfileFragment extends AbsProfileFragment {
     private OnFragmentInteractionListener mListener;
 
-    @Inject
-    PreProfilePresenter presenter;
+    @BindView(R.id.textInputPhone)
+    TextInputLayout textInputPhone;
 
-    @BindView(R.id.imgAvatar)
-    ImageView imgAvatar;
+    @BindView(R.id.edtPhone)
+    EditText edtPhone;
 
-    @BindView(R.id.tvSex)
-    TextView tvSex;
+    @BindView(R.id.tvPhoneNote)
+    TextView tvPhoneNote;
 
-    @BindView(R.id.tvBirthday)
-    TextView tvBirthday;
+    @BindView(R.id.textInputEmail)
+    TextInputLayout textInputEmail;
 
-    @Bind(R.id.tv_name)
-    TextView tvName;
+    @BindView(R.id.edtEmail)
+    EditText edtEmail;
 
-    @Bind(R.id.tvTermsOfUser)
-    TextView tvTermsOfUser;
+    @BindView(R.id.tvEmailNote)
+    TextView tvEmailNote;
+
+    @BindView(R.id.textInputCMND)
+    TextInputLayout textInputCMND;
+
+    @BindView(R.id.edtCmnd)
+    EditText edtCmnd;
+
+    @BindView(R.id.tvCancel)
+    TextView tvCancel;
+
+    @OnFocusChange(R.id.edtPhone)
+    public void onFocusChangedPhone(boolean isFocus) {
+        if (isFocus) {
+            showPhoneNote();
+        } else {
+            if (isValidPhone()) {
+                hidePhoneError();
+            } else {
+                showPhoneError();
+            }
+        }
+    }
+
+    @OnFocusChange(R.id.edtEmail)
+    public void onFocusChangedEmail(boolean isFocus) {
+        if (isFocus) {
+            showEmailNote();
+        } else {
+            if (isValidEmail()) {
+                hideEmailError();
+            } else {
+                showEmailError();
+            }
+        }
+    }
+
+    @OnFocusChange(R.id.edtCmnd)
+    public void onFocusChangedCmnd(boolean isFocus) {
+        if (!isFocus) {
+            if (isValidCmnd()) {
+                hideCmndError();
+            } else {
+                showCmndError();
+            }
+        }
+    }
+
+    @OnClick(R.id.tvCancel)
+    public void onClickCancel(View view) {
+        navigator.startHomeActivity(getContext(), true);
+    }
+
+    private void showPhoneError() {
+        tvPhoneNote.setVisibility(View.GONE);
+        textInputPhone.setErrorEnabled(true);
+        textInputPhone.setError(getString(R.string.invalid_phone));
+    }
+
+    private void hidePhoneError() {
+        tvPhoneNote.setVisibility(View.INVISIBLE);
+        textInputPhone.setErrorEnabled(false);
+        textInputPhone.setError(null);
+    }
+
+    private void showPhoneNote() {
+        textInputPhone.setError(null);
+        textInputPhone.setErrorEnabled(false);
+        tvPhoneNote.setVisibility(View.VISIBLE);
+    }
+
+    private void showEmailError() {
+        tvEmailNote.setVisibility(View.GONE);
+        textInputEmail.setErrorEnabled(true);
+        textInputEmail.setError(getString(R.string.invalid_email));
+    }
+
+    private void hideEmailError() {
+        tvEmailNote.setVisibility(View.INVISIBLE);
+        textInputEmail.setErrorEnabled(false);
+        textInputEmail.setError(null);
+    }
+
+    private void showEmailNote() {
+        textInputEmail.setErrorEnabled(false);
+        textInputEmail.setError(null);
+        tvEmailNote.setVisibility(View.VISIBLE);
+    }
+
+    private void showCmndError() {
+        textInputCMND.setErrorEnabled(true);
+        textInputCMND.setError(getString(R.string.invalid_cmnd));
+    }
+
+    private void hideCmndError() {
+        textInputCMND.setErrorEnabled(false);
+        textInputCMND.setError(null);
+    }
 
     public PreProfileFragment() {
         // Required empty public constructor
@@ -61,12 +151,40 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment PreProfileFragment.
+     * @return A new instance of fragment PinProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static PreProfileFragment newInstance() {
         PreProfileFragment fragment = new PreProfileFragment();
         return fragment;
+    }
+
+    @Override
+    public void onClickContinue() {
+        if (!isValidPhone()) {
+            showPhoneError();
+            return;
+        } else {
+            hidePhoneError();
+        }
+        if (!isValidEmail()) {
+            showEmailError();
+            return;
+        } else {
+            hideEmailError();
+        }
+        if (!isValidCmnd()) {
+            showCmndError();
+            return;
+        } else {
+            hideCmndError();
+        }
+
+        hidePhoneError();
+        hideEmailError();
+        hideCmndError();
+
+        navigator.startPinProfileActivity(getActivity());
     }
 
     @Override
@@ -83,37 +201,14 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        presenter.resume();
-    }
-
-    public void updateUserInfo(User user) {
-        if (user == null) {
-            return;
-        }
-        Date date = new Date(user.birthDate*1000);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        tvBirthday.setText(simpleDateFormat.format(date));
-        tvName.setText(user.dname);
-        tvSex.setText(user.getGender());
-        Glide.with(this).load(user.avatar)
-                .placeholder(R.color.silver)
-                .centerCrop()
-                .into(imgAvatar);
-        tvTermsOfUser.setClickable(true);
-        tvTermsOfUser.setMovementMethod (LinkMovementMethod.getInstance());
+        tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel_html)));
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -140,29 +235,28 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
         mListener = null;
     }
 
-    @Override
-    public void showLoading() {
-        super.showProgressDialog();
+    public boolean isValidPhone() {
+        String phone = edtPhone.getText().toString();
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        }
+        return true;
     }
 
-    @Override
-    public void hideLoading() {
-        super.hideProgressDialog();
+    public boolean isValidEmail() {
+        String email = edtEmail.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            return false;
+        }
+        return true;
     }
 
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
-    public void showError(String message) {
-        super.showToast(message);
+    public boolean isValidCmnd() {
+        String cmnd = edtCmnd.getText().toString();
+        if (TextUtils.isEmpty(cmnd)) {
+            return false;
+        }
+        return true;
     }
 
     /**

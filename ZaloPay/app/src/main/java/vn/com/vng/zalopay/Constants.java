@@ -34,4 +34,8 @@ public class Constants {
     public static final String BANKCODE = "bankcode";
     public static final String EXPIRETIME = "expiretime";
 
+    public static final String PROFILE_TYPE = "profile_type";
+    public static final int PRE_PROFILE_TYPE = 1;
+    public static final int PIN_PROFILE_TYPE = 2;
+
 }

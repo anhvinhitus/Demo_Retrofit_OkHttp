@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
+import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
+import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.domain.model.User;
@@ -55,7 +57,11 @@ public interface UserComponent {
 
     void inject(LinkCardProdureFragment f);
 
+    void inject(ProfileFragment f);
+
     void inject(PreProfileFragment f);
+
+    void inject(PinProfileFragment f);
     /* inject activity */
 
     void inject(QRCodeScannerActivity activity);

@@ -8,7 +8,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class PreProfileActivity extends BaseActivity {
+public class PinProfileActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -17,7 +17,7 @@ public class PreProfileActivity extends BaseActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return ProfileFragment.newInstance(Constants.PRE_PROFILE_TYPE);
+        return ProfileFragment.newInstance(Constants.PIN_PROFILE_TYPE);
     }
 
     @Override

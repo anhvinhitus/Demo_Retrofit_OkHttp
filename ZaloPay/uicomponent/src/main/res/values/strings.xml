@@ -54,6 +54,6 @@
 
     <string name="copyright">\@ 2016 by VNG</string>
 
-    <string name="gender">Gender</string>
-    <string name="birthday">Birthday</string>
+    <string name="gender">Giới tính</string>
+    <string name="birthday">Ngày sinh</string>
 </resources>

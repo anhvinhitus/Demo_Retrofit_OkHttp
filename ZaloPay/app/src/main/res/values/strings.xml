@@ -59,6 +59,9 @@
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
 
+    <string name="txt_cancel">Bỏ qua</string>
+    <string name="txt_cancel_html"><u>Bỏ qua</u></string>
+
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
     <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
@@ -123,14 +126,21 @@
     <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
     <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
 
-    <string name="sex">Giới tính</string>
     <string name="hint_birthday">Năm sinh</string>
-    <string name="transaction_note">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN:</string>
+    <string name="note_transaction">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN:</string>
     <string name="hint_cmnd">CMND</string>
-    <string name="hint_phonenumber">Số điện thoại</string>
-    <string name="phone_note">Dùng để liên lạc với bạn khi cần thiết</string>
+    <string name="invalid_cmnd">Bạn chưa nhập CMND</string>
+    <string name="hint_phone">Số điện thoại</string>
+    <string name="invalid_phone">Bạn chưa nhập số điện thoại</string>
+    <string name="note_phone">Dùng để liên lạc với bạn khi cần thiết</string>
     <string name="hint_email">Email</string>
-    <string name="email_note">Để lấy lại mật khẩu, thông tin khuyến mại</string>
+    <string name="invalid_email">Bạn chưa nhập email</string>
+    <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
+
+    <string name="pin_title">Hãy tạo mã số PIN để giao dịch thanh toán AN TOÀN</string>
+    <string name="hint_pin">Mã số PIN</string>
+    <string name="note_pin">Là mã số bí mật khi thực hiện thanh toán hoặc giao dịch</string>
+    <string name="hint_pin_compare">Nhập lại mã số PIN</string>
 
 </resources>
