@@ -9,12 +9,14 @@ import de.greenrobot.dao.AbstractDaoSession;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 import de.greenrobot.dao.internal.DaoConfig;
 
-import vn.com.vng.zalopay.data.cache.model.AppInfo;
+import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
+import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.BankCardGD;
 
-import vn.com.vng.zalopay.data.cache.model.AppInfoDao;
+import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
+import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
 import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
@@ -28,12 +30,14 @@ import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
-    private final DaoConfig appInfoDaoConfig;
+    private final DaoConfig appResourceGDDaoConfig;
+    private final DaoConfig paymentTransTypeGDDaoConfig;
     private final DaoConfig transactionLogDaoConfig;
     private final DaoConfig dataManifestDaoConfig;
     private final DaoConfig bankCardGDDaoConfig;
 
-    private final AppInfoDao appInfoDao;
+    private final AppResourceGDDao appResourceGDDao;
+    private final PaymentTransTypeGDDao paymentTransTypeGDDao;
     private final TransactionLogDao transactionLogDao;
     private final DataManifestDao dataManifestDao;
     private final BankCardGDDao bankCardGDDao;
@@ -42,8 +46,11 @@ public class DaoSession extends AbstractDaoSession {
             daoConfigMap) {
         super(db);
 
-        appInfoDaoConfig = daoConfigMap.get(AppInfoDao.class).clone();
-        appInfoDaoConfig.initIdentityScope(type);
+        appResourceGDDaoConfig = daoConfigMap.get(AppResourceGDDao.class).clone();
+        appResourceGDDaoConfig.initIdentityScope(type);
+
+        paymentTransTypeGDDaoConfig = daoConfigMap.get(PaymentTransTypeGDDao.class).clone();
+        paymentTransTypeGDDaoConfig.initIdentityScope(type);
 
         transactionLogDaoConfig = daoConfigMap.get(TransactionLogDao.class).clone();
         transactionLogDaoConfig.initIdentityScope(type);
@@ -54,26 +61,33 @@ public class DaoSession extends AbstractDaoSession {
         bankCardGDDaoConfig = daoConfigMap.get(BankCardGDDao.class).clone();
         bankCardGDDaoConfig.initIdentityScope(type);
 
-        appInfoDao = new AppInfoDao(appInfoDaoConfig, this);
+        appResourceGDDao = new AppResourceGDDao(appResourceGDDaoConfig, this);
+        paymentTransTypeGDDao = new PaymentTransTypeGDDao(paymentTransTypeGDDaoConfig, this);
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
         dataManifestDao = new DataManifestDao(dataManifestDaoConfig, this);
         bankCardGDDao = new BankCardGDDao(bankCardGDDaoConfig, this);
 
-        registerDao(AppInfo.class, appInfoDao);
+        registerDao(AppResourceGD.class, appResourceGDDao);
+        registerDao(PaymentTransTypeGD.class, paymentTransTypeGDDao);
         registerDao(TransactionLog.class, transactionLogDao);
         registerDao(DataManifest.class, dataManifestDao);
         registerDao(BankCardGD.class, bankCardGDDao);
     }
     
     public void clear() {
-        appInfoDaoConfig.getIdentityScope().clear();
+        appResourceGDDaoConfig.getIdentityScope().clear();
+        paymentTransTypeGDDaoConfig.getIdentityScope().clear();
         transactionLogDaoConfig.getIdentityScope().clear();
         dataManifestDaoConfig.getIdentityScope().clear();
         bankCardGDDaoConfig.getIdentityScope().clear();
     }
 
-    public AppInfoDao getAppInfoDao() {
-        return appInfoDao;
+    public AppResourceGDDao getAppResourceGDDao() {
+        return appResourceGDDao;
+    }
+
+    public PaymentTransTypeGDDao getPaymentTransTypeGDDao() {
+        return paymentTransTypeGDDao;
     }
 
     public TransactionLogDao getTransactionLogDao() {

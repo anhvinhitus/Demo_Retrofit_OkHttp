@@ -20,6 +20,7 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
 
     private AppConfigFactory appConfigFactory;
     private AppConfigEntityDataMapper mapper;
+
     public AppConfigRepositoryImpl(AppConfigFactory factory, AppConfigEntityDataMapper mapper) {
         this.appConfigFactory = factory;
         this.mapper = mapper;
@@ -33,14 +34,14 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
                     .subscribe(new DefaultSubscriber<>())
             ;
 
-            appConfigFactory.getAppResource()
+            appConfigFactory.getAppResourceCloud()
                     .subscribe(new DefaultSubscriber<>());
             return Boolean.TRUE;
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<List<BankCard>> listCard() {
-        return appConfigFactory.listCard().map(cardEntities -> mapper.transform(cardEntities));
+    public Observable<List<BankCard>> listCardCache() {
+        return appConfigFactory.listCardCache().map(cardEntities -> mapper.transform(cardEntities));
     }
 }

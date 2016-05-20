@@ -2,10 +2,12 @@ package vn.com.vng.zalopay.greendao;
 
 import de.greenrobot.daogenerator.DaoGenerator;
 import de.greenrobot.daogenerator.Entity;
+import de.greenrobot.daogenerator.Index;
+import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 5;
+    private static final int APP_DB_VERSION = 6;
 
 
     public static void main(String[] args) throws Exception {
@@ -13,7 +15,7 @@ public class GreenDaoGenerator {
 
         //ADD TABLE
         addApplicationInfo(appSchema);
-
+        addPaymentTransactionType(appSchema);
         addTransactionLog(appSchema);
         addDataManifest(appSchema);
         addCardList(appSchema);
@@ -22,17 +24,39 @@ public class GreenDaoGenerator {
     }
 
     private static void addApplicationInfo(Schema schema) {
-        Entity appInfoEntity = schema.addEntity("AppInfo");
-        appInfoEntity.addStringProperty("app_id").notNull().unique().primaryKey();
-        appInfoEntity.addStringProperty("app_name");
-        appInfoEntity.addStringProperty("app_icon_url");
-        appInfoEntity.addStringProperty("js_url");
-        appInfoEntity.addStringProperty("resource_url");
-        appInfoEntity.addStringProperty("base_url");
-        appInfoEntity.addStringProperty("app_checksum");
-        appInfoEntity.addIntProperty("status");
-        appInfoEntity.addStringProperty("app_local_url");
+        Entity appInfoEntity = schema.addEntity("AppResourceGD");
 
+        appInfoEntity.addLongProperty("appid").notNull().unique().primaryKey();
+        appInfoEntity.addStringProperty("appname");
+        appInfoEntity.addIntProperty("needdownloadrs");
+        appInfoEntity.addStringProperty("imageurl");
+        appInfoEntity.addStringProperty("jsurl");
+        appInfoEntity.addIntProperty("status");
+        appInfoEntity.addStringProperty("checksum");
+
+    }
+
+
+    private static void addPaymentTransactionType(Schema schema) {
+        Entity appInfoEntity = schema.addEntity("PaymentTransTypeGD");
+
+        Property transtype = appInfoEntity.addLongProperty("transtype").notNull().primaryKey().getProperty();
+        Property pmcid = appInfoEntity.addLongProperty("pmcid").notNull().getProperty();
+
+        appInfoEntity.addStringProperty("pmcname");
+        appInfoEntity.addIntProperty("status");
+        appInfoEntity.addLongProperty("minvalue");
+        appInfoEntity.addLongProperty("maxvalue");
+        appInfoEntity.addFloatProperty("feerate");
+
+        appInfoEntity.addLongProperty("minfee");
+        appInfoEntity.addStringProperty("feecaltype");
+
+        Index uniqIndex = new Index();
+        uniqIndex.addProperty(transtype);
+        uniqIndex.addProperty(pmcid);
+        uniqIndex.makeUnique();
+        appInfoEntity.addIndex(uniqIndex);
     }
 
 

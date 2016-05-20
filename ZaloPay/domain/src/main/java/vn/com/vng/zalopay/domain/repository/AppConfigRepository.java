@@ -11,6 +11,6 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 public interface AppConfigRepository {
     Observable<Boolean> initialize();
 
-    Observable<List<BankCard>> listCard();
+    Observable<List<BankCard>> listCardCache();
 
 }

@@ -47,10 +47,10 @@ public class PreProfileFragment extends BaseFragment implements IPreProfileView 
     @BindView(R.id.tvBirthday)
     TextView tvBirthday;
 
-    @Bind(R.id.tv_name)
+    @BindView(R.id.tv_name)
     TextView tvName;
 
-    @Bind(R.id.tvTermsOfUser)
+    @BindView(R.id.tvTermsOfUser)
     TextView tvTermsOfUser;
 
     public PreProfileFragment() {
