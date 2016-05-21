@@ -11,6 +11,7 @@ import dagger.Component;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.download.DownloadService;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -51,4 +52,6 @@ public interface ApplicationComponent {
     void inject(SplashScreenFragment f);
 
     void inject(LoginZaloActivity a);
+
+    void inject(DownloadService service);
 }
