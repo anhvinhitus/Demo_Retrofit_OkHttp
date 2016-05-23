@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
  * Created by AnhHieu on 4/28/16.
+ *
  */
 @Module
 public class UserControllerModule {

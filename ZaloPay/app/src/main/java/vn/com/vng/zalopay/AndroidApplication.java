@@ -26,6 +26,7 @@ import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public class AndroidApplication extends MultiDexApplication {
 

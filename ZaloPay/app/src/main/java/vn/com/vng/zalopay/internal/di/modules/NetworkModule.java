@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -22,8 +21,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
@@ -32,16 +30,17 @@ import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 @Module
 public class NetworkModule {
 
-    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse(BuildConfig.HOST);
+    private static final HttpUrl API_HTTP_URL = HttpUrl.parse(BuildConfig.HOST);
 
     @Provides
     @Singleton
     HttpUrl provideBaseUrl() {
-        return PRODUCTION_API_URL;
+        return API_HTTP_URL;
     }
 
     public NetworkModule() {
@@ -51,8 +50,7 @@ public class NetworkModule {
     @Singleton
     Cache provideOkHttpCache(Context application) {
         int cacheSize = 50 * 1024 * 1024; // 10 MiB
-        Cache cache = new Cache(application.getCacheDir(), cacheSize);
-        return cache;
+        return new Cache(application.getCacheDir(), cacheSize);
     }
 
     @Provides
@@ -68,7 +66,12 @@ public class NetworkModule {
     OkHttpClient provideOkHttpClient(Cache cache) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(String message) {
+                    Timber.i(message);
+                }
+            });
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
         }
@@ -90,14 +93,13 @@ public class NetworkModule {
     @Singleton
     @Named("retrofit")
     Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
-        return retrofit;
     }
 
 

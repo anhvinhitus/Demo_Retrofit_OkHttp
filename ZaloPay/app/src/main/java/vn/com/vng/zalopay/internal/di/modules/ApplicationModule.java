@@ -27,7 +27,6 @@ import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
-import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 
 @Module
