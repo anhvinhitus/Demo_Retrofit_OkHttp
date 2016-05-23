@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.data.download;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,12 +16,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.inject.Inject;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
@@ -32,8 +25,8 @@ import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
  */
 public class DownloadService extends IntentService {
 
-    @Inject
-    private OkHttpClient httpClient;
+//    @Inject
+//    private OkHttpClient httpClient;
 
     private boolean running;
 
@@ -82,21 +75,21 @@ public class DownloadService extends IntentService {
     private boolean download(String url, String path) {
         File temp = ensureDirectory(path);
 
-        final Call call = httpClient.newCall(new Request.Builder().url(url).get().build());
+//        final Call call = httpClient.newCall(new Request.Builder().url(url).get().build());
         boolean result = false;
-        try {
-            Response response = call.execute();
-            if (response.code() == 200) {
-                result = writeResponseBodyToDisk(response.body(), temp);
-            }
-        } catch (Exception ex) {
-            call.cancel();
-        }
-
-        if (result) {
-            // delete  temp
-            unzip();
-        }
+//        try {
+//            Response response = call.execute();
+//            if (response.code() == 200) {
+//                result = writeResponseBodyToDisk(response.body(), temp);
+//            }
+//        } catch (Exception ex) {
+//            call.cancel();
+//        }
+//
+//        if (result) {
+//            // delete  temp
+//            unzip();
+//        }
 
         return result;
     }
