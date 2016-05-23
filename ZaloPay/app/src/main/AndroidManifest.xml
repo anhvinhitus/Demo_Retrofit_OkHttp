@@ -257,7 +257,7 @@
             android:theme="@style/AppTheme.NoActionBar.AppColor" />
 
         <service
-            android:name=".data.download.DownloadService"
+            android:name=".service.DownloadService"
             android:label="DownloadService"
             android:process=":zmres" />
     </application>

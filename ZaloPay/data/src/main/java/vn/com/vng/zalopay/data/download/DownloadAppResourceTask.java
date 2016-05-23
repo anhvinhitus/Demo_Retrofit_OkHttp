@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.download;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +15,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 
 import static vn.com.vng.zalopay.data.download.FileUtil.*;
 
@@ -31,19 +31,31 @@ public class DownloadAppResourceTask {
         void onProgress(int progress);
     }
 
-    private OkHttpClient httpClient;
+    private final OkHttpClient httpClient;
 
     private final Context context;
-    private final AppResourceEntity appResourceEntity;
+    private final DownLoadInfo downloadInfo;
 
-    public DownloadAppResourceTask(Context context, AppResourceEntity appResourceEntity, OkHttpClient mOkHttpClient) {
-        this.appResourceEntity = appResourceEntity;
+    public DownloadAppResourceTask(Context context, DownLoadInfo appResourceEntity, OkHttpClient mOkHttpClient) {
+        this.downloadInfo = appResourceEntity;
         this.context = context;
         this.httpClient = mOkHttpClient;
     }
 
     public void execute(Callback callback) {
-        //download(appResourceEntity.)
+        //download(downloadInfo.)
+        boolean isDownloadSuccess = download(downloadInfo.url, callback);
+
+        if (!isDownloadSuccess) {
+            deleteDirectory(new File(getUnZipPath(downloadInfo)));
+            if (callback != null) {
+                callback.onFailure();
+            }
+        } else {
+            if (callback != null) {
+                callback.onSuccess();
+            }
+        }
     }
 
     private boolean writeResponseBodyToDisk(ResponseBody body, File temp) {
@@ -94,8 +106,9 @@ public class DownloadAppResourceTask {
         }
     }
 
-    private boolean download(String url, String path, Callback callback) {
-        File temp = ensureDirectory(path);
+    private boolean download(String url, Callback callback) {
+
+        File temp = ensureDirectory(getTempFilePath());
 
         final Call call = httpClient.newCall(new Request.Builder().url(url).get().build());
         boolean result = false;
@@ -105,17 +118,24 @@ public class DownloadAppResourceTask {
                 result = writeResponseBodyToDisk(response.body(), temp);
             }
         } catch (Exception ex) {
+
+            Timber.e("download exception %s", ex);
+
+            return false;
+        } finally {
             call.cancel();
         }
 
         if (result) {
             // delete  temp
 
-            String destinationPath = getResourcePath();
+            String destinationPath = getUnZipPath(downloadInfo);
+
             Timber.d("destinationPath %s", destinationPath);
             try {
                 unzipFile(temp, destinationPath, false);
             } catch (IOException ex) {
+                result = false;
             }
         }
 
@@ -128,7 +148,7 @@ public class DownloadAppResourceTask {
 
 
     private String getRootPath() {
-        return context.getFilesDir().getAbsolutePath();
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     private String getResourcePath() {
@@ -137,5 +157,9 @@ public class DownloadAppResourceTask {
 
     private String getTempFilePath() {
         return getResourcePath() + File.separator + "temp.zip";
+    }
+
+    private String getUnZipPath(DownLoadInfo downLoadInfo) {
+        return getResourcePath() + File.separator + downLoadInfo.appname + File.separator + downLoadInfo.checksum;
     }
 }

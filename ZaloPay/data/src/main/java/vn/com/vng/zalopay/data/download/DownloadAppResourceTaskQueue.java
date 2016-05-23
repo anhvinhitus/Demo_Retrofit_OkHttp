@@ -19,7 +19,7 @@ public class DownloadAppResourceTaskQueue {
     }
 
     private void startService() {
-        context.startService(new Intent(context, DownloadService.class));
+        context.startService(new Intent(context, AbsDownloadService.class));
     }
 
     public boolean isEmpty() {
@@ -36,15 +36,21 @@ public class DownloadAppResourceTaskQueue {
         startService();
     }
 
-  /*  public Object dequeue() {
-        Object item = list.getFirst();
-
-        list.removeFirst();
-        return item;
-    }*/
+    public void dequeue() {
+        //   Object item = tasklist.getFirst();
+//
+        if (!isEmpty()) {
+            tasklist.removeFirst();
+        }
+        //  return item;
+    }
 
     public DownloadAppResourceTask peek() {
-        return tasklist.getFirst();
+        if (!isEmpty()) {
+            return tasklist.getFirst();
+        }
+
+        return null;
     }
 
     public static final DownloadAppResourceTaskQueue create(Context context) {

@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
+import vn.com.vng.zalopay.data.download.DownLoadInfo;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTask;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -49,7 +50,8 @@ public class AppConfigFactory {
     public AppConfigFactory(Context context, AppConfigService service,
                             User user, SqlitePlatformScope sqlitePlatformScope,
                             HashMap<String, String> paramsReq,
-                            DownloadAppResourceTaskQueue taskQueue, OkHttpClient mOkHttpClient) {
+                            DownloadAppResourceTaskQueue taskQueue,
+                            OkHttpClient mOkHttpClient) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -131,19 +133,39 @@ public class AppConfigFactory {
             appResourceEntity.imageurl = baseurl + appResourceEntity.imageurl;
 
             if (appResourceEntity.needdownloadrs == 1) {
-                DownloadAppResourceTask task = new DownloadAppResourceTask(context, appResourceEntity, mOkHttpClient);
-                needDownloadList.add(task);
+                createTask(appResourceEntity, needDownloadList);
             }
         }
 
         if (!needDownloadList.isEmpty()) {
-            // taskQueue.enqueue(needDownloadList);
+            taskQueue.enqueue(needDownloadList);
         }
-
 
         Timber.d("baseurl %s listAppId %s resourcelistSize %s", baseurl, listAppId, resourcelist.size());
 
         sqlitePlatformScope.write(resourcelist);
         sqlitePlatformScope.updateAppId(listAppId);
+    }
+
+
+    private void createTask(AppResourceEntity appResourceEntity, List<DownloadAppResourceTask> listTask) {
+
+        DownLoadInfo downLoadJS = new DownLoadInfo();
+        downLoadJS.appname = appResourceEntity.appname;
+        downLoadJS.checksum = appResourceEntity.checksum;
+        downLoadJS.appid = appResourceEntity.appid;
+        downLoadJS.url = appResourceEntity.jsurl;
+
+        DownloadAppResourceTask taskJs = new DownloadAppResourceTask(context, downLoadJS, mOkHttpClient);
+        listTask.add(taskJs);
+
+        DownLoadInfo downloadImg = new DownLoadInfo();
+        downloadImg.appname = appResourceEntity.appname;
+        downloadImg.checksum = appResourceEntity.checksum;
+        downloadImg.appid = appResourceEntity.appid;
+        downloadImg.url = appResourceEntity.imageurl;
+
+        DownloadAppResourceTask taskImgUrl = new DownloadAppResourceTask(context, downloadImg, mOkHttpClient);
+        listTask.add(taskImgUrl);
     }
 }
