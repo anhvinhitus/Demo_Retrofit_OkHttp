@@ -131,10 +131,12 @@
     <string name="hint_cmnd">CMND</string>
     <string name="invalid_cmnd">Bạn chưa nhập CMND</string>
     <string name="hint_phone">Số điện thoại</string>
-    <string name="invalid_phone">Bạn chưa nhập số điện thoại</string>
+    <string name="invalid_phone_empty">Bạn chưa nhập số điện thoại</string>
+    <string name="invalid_phone">Số điện thoại không hợp lệ.</string>
     <string name="note_phone">Dùng để liên lạc với bạn khi cần thiết</string>
     <string name="hint_email">Email</string>
-    <string name="invalid_email">Bạn chưa nhập email</string>
+    <string name="invalid_email_empty">Bạn chưa nhập email</string>
+    <string name="invalid_email">Email không hợp lệ.</string>
     <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
 

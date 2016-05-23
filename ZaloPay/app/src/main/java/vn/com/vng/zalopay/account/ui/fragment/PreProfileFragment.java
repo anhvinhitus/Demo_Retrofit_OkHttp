@@ -102,7 +102,11 @@ public class PreProfileFragment extends AbsProfileFragment {
     private void showPhoneError() {
         tvPhoneNote.setVisibility(View.GONE);
         textInputPhone.setErrorEnabled(true);
-        textInputPhone.setError(getString(R.string.invalid_phone));
+        if (TextUtils.isEmpty(edtPhone.getText().toString())) {
+            textInputPhone.setError(getString(R.string.invalid_phone_empty));
+        } else {
+            textInputPhone.setError(getString(R.string.invalid_phone));
+        }
     }
 
     private void hidePhoneError() {
@@ -120,7 +124,11 @@ public class PreProfileFragment extends AbsProfileFragment {
     private void showEmailError() {
         tvEmailNote.setVisibility(View.GONE);
         textInputEmail.setErrorEnabled(true);
-        textInputEmail.setError(getString(R.string.invalid_email));
+        if (TextUtils.isEmpty(edtEmail.getText().toString())) {
+            textInputEmail.setError(getString(R.string.invalid_email_empty));
+        } else {
+            textInputEmail.setError(getString(R.string.invalid_email));
+        }
     }
 
     private void hideEmailError() {
