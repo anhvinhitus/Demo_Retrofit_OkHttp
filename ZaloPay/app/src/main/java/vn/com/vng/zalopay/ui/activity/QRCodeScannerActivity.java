@@ -94,7 +94,12 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     public void handleResult(String result) {
         Timber.tag(TAG).i("result:" + result);
-        vibrate();
+
+        try {
+            vibrate();
+        } catch (Exception ex) {
+        }
+
         qrCodePresenter.pay(result);
     }
 

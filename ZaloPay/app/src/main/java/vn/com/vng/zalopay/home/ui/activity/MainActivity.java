@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay.home.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -81,7 +84,20 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
     @OnClick(R.id.btn_qr_code)
     public void onBtnQrCodeClick(View view) {
-        navigator.startQrCodeActivity(this);
+        if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
+            navigator.startQrCodeActivity(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                navigator.startQrCodeActivity(this);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @OnClick(R.id.btn_deposit)
@@ -93,6 +109,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
     public void onBtnLinkCardClick(View view) {
         navigator.startLinkCardActivity(getActivity());
     }
+
+
 
   /*  */
 
