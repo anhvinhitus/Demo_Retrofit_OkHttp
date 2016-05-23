@@ -140,7 +140,8 @@
 
     <string name="pin_title">Hãy tạo mã số PIN để giao dịch thanh toán AN TOÀN</string>
     <string name="hint_pin">Mã số PIN</string>
+    <string name="invalid_pin">Mã số PIN không hợp lệ</string>
     <string name="note_pin">Là mã số bí mật khi thực hiện thanh toán hoặc giao dịch</string>
     <string name="hint_pin_compare">Nhập lại mã số PIN</string>
-
+    <string name="invalid_pin_compare">Mã số PIN không trùng nhau</string>
 </resources>

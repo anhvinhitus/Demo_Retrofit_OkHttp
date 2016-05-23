@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.zing.pay.zmpsdk.view.animation.ActivityAnimator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,6 +98,8 @@ public class PreProfileFragment extends AbsProfileFragment {
     @OnClick(R.id.tvCancel)
     public void onClickCancel(View view) {
         navigator.startHomeActivity(getContext(), true);
+        ActivityAnimator anim = new ActivityAnimator();
+        anim.fadeAnimation(getActivity());
     }
 
     private void showPhoneError() {
@@ -208,7 +213,8 @@ public class PreProfileFragment extends AbsProfileFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel_html)));
+        tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel)));
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -240,7 +246,7 @@ public class PreProfileFragment extends AbsProfileFragment {
         if (TextUtils.isEmpty(phone)) {
             return false;
         }
-        return true;
+        return ValidateUtil.isMobileNumber(phone.replaceAll("[^\\d]", ""));
     }
 
     public boolean isValidEmail() {
@@ -248,7 +254,7 @@ public class PreProfileFragment extends AbsProfileFragment {
         if (TextUtils.isEmpty(email)) {
             return false;
         }
-        return true;
+        return ValidateUtil.isEmailAddress(email);
     }
 
     public boolean isValidCmnd() {

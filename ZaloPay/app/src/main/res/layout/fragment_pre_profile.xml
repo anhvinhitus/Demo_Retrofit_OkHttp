@@ -33,12 +33,15 @@
             android:layout_marginTop="@dimen/spacing.small"
             app:errorEnabled="true">
 
-            <EditText
+            <vn.com.vng.zalopay.ui.widget.ClearableEditText
                 android:id="@+id/edtPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:hint="@string/hint_phone"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:maxLines="1"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
@@ -58,12 +61,15 @@
             android:layout_marginTop="0dp"
             app:errorEnabled="true">
 
-            <EditText
+            <vn.com.vng.zalopay.ui.widget.ClearableEditText
                 android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:hint="@string/hint_email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
@@ -83,12 +89,15 @@
             android:layout_marginTop="0dp"
             app:errorEnabled="true">
 
-            <EditText
+            <vn.com.vng.zalopay.ui.widget.ClearableEditText
                 android:id="@+id/edtCmnd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:hint="@string/hint_cmnd"
-                android:inputType="phone" />
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
