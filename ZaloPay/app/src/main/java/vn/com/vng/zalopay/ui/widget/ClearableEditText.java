@@ -26,6 +26,7 @@ import vn.zing.pay.zmpsdk.view.dialog.DialogManagerZaloPay;
 
 /**
  * Created by longlv on 23/05/2016.
+ *
  */
 public class ClearableEditText extends EditText {
     private static final String TAG = ClearableEditText.class.getName();
@@ -63,7 +64,7 @@ public class ClearableEditText extends EditText {
         }
 
         public void afterTextChanged(Editable s) {
-            ClearableEditText.this.formatText(Boolean.valueOf(false));
+            ClearableEditText.this.formatText(false);
         }
     };
 
@@ -194,42 +195,41 @@ public class ClearableEditText extends EditText {
 
     public void formatText(Boolean isTextFull) {
         Editable s = this.getEditableText();
-        if (this.mIsTextGroup) {
-            char c;
-            if (s.length() > 0 && s.length() % 5 == 0) {
-                c = s.charAt(s.length() - 1);
-                if (this.SPACE_SEPERATOR == c) {
-                    s.delete(s.length() - 1, s.length());
-                }
-            }
+        if (!this.mIsTextGroup) {
+            return;
+        }
 
-            if (isTextFull.booleanValue()) {
-                for (int var6 = 0; var6 < s.length(); ++var6) {
-                    if (var6 > 1 && var6 % 5 == 0) {
-                        char var7 = s.charAt(var6 - 1);
-                        if (Character.isDigit(var7) && TextUtils.split(s.toString(), String.valueOf(this.SPACE_SEPERATOR)).length <= 3) {
-                            InputFilter[] filters1 = s.getFilters();
-                            s.setFilters(new InputFilter[0]);
-                            s.insert(var6 - 1, String.valueOf(this.SPACE_SEPERATOR));
-                            s.setFilters(filters1);
-                        }
-                    }
-                }
-
-                return;
-            }
-
-            if (s.length() > 0 && s.length() % 5 == 0) {
-                c = s.charAt(s.length() - 1);
-                if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(this.SPACE_SEPERATOR)).length <= 3) {
-                    InputFilter[] filters = s.getFilters();
-                    s.setFilters(new InputFilter[0]);
-                    s.insert(s.length() - 1, String.valueOf(this.SPACE_SEPERATOR));
-                    s.setFilters(filters);
-                }
+        char c;
+        if (s.length() > 0 && s.length() % 5 == 0) {
+            c = s.charAt(s.length() - 1);
+            if (this.SPACE_SEPERATOR == c) {
+                s.delete(s.length() - 1, s.length());
             }
         }
 
+        if (isTextFull) {
+            for (int var6 = 0; var6 < s.length(); ++var6) {
+                if (var6 > 1 && var6 % 5 == 0) {
+                    filterTextAt(s, var6);
+                }
+            }
+
+            return;
+        }
+
+        if (s.length() > 0 && s.length() % 5 == 0) {
+            filterTextAt(s, s.length());
+        }
+    }
+
+    private void filterTextAt(Editable text, int index) {
+        char charAt = text.charAt(index - 1);
+        if (Character.isDigit(charAt) && TextUtils.split(text.toString(), String.valueOf(this.SPACE_SEPERATOR)).length <= 3) {
+            InputFilter[] textFilters = text.getFilters();
+            text.setFilters(new InputFilter[0]);
+            text.insert(index - 1, String.valueOf(this.SPACE_SEPERATOR));
+            text.setFilters(textFilters);
+        }
     }
 
     public void setGroupText(boolean pIsEnabled) {
