@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
@@ -35,7 +36,15 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Inject
     BundleReactConfig bundleReactConfig;
 
+
+    private AppResource appResource;
+
     public PaymentApplicationActivity() {
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     protected void doInjection() {
@@ -68,7 +77,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     String getJSBundleFile() {
-        return bundleReactConfig.getExternalJsBundle("");
+        return bundleReactConfig.getExternalJsBundle(appResource);
     }
 
     /**

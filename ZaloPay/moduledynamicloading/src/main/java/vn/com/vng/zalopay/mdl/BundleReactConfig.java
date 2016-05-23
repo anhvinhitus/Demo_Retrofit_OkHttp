@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.mdl;
 
+import vn.com.vng.zalopay.domain.model.AppResource;
+
 /**
  * Created by AnhHieu on 5/16/16.
  */
@@ -9,7 +11,7 @@ public interface BundleReactConfig {
 
     boolean isInternalDevSupport();
 
-    String getExternalJsBundle(String paymentAppName);
+    String getExternalJsBundle(AppResource appResource);
 
     boolean isExternalDevSupport();
 }

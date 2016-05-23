@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl.impl;
 
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 
 /**
@@ -22,7 +23,7 @@ public class BundleReactConfigDevel implements BundleReactConfig {
     }
 
     @Override
-    public String getExternalJsBundle(String paymentAppName) {
+    public String getExternalJsBundle(AppResource appResource) {
         return null;
     }
 
