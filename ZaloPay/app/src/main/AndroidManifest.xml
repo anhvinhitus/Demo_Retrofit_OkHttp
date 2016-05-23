@@ -193,6 +193,7 @@
             android:name="io.card.payment.DataEntryActivity"
             android:screenOrientation="portrait" />
 
+
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -205,7 +206,7 @@
             </intent-filter>
         </receiver>
 
-     <!--   <service
+        <!--<service
             android:name="vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService"
             android:exported="false" />
         <service
@@ -228,6 +229,7 @@
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
             android:exported="false" />
+
         <!-- ##########################Tich hop ZaloPayWalletSDK END ########################## -->
 
         <activity
@@ -247,10 +249,17 @@
             android:name=".ui.activity.LinkCardProcedureActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".account.ui.activities.PreProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
-        <activity android:name=".account.ui.activities.PinProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
+        <activity
+            android:name=".account.ui.activities.PreProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar.AppColor" />
+        <activity
+            android:name=".account.ui.activities.PinProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar.AppColor" />
+
+        <service
+            android:name=".data.download.DownloadService"
+            android:label="DownloadService"
+            android:process=":zmres" />
     </application>
 
 </manifest>

@@ -14,7 +14,6 @@ import java.io.File;
 
 import timber.log.Timber;
 import vn.com.vng.iot.debugviewer.DebugViewer;
-import vn.com.vng.iot.debugviewer.Level;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;

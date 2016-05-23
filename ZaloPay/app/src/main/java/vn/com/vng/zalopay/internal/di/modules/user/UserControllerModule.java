@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
@@ -24,6 +25,7 @@ import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ApplicationRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
@@ -48,11 +50,17 @@ public class UserControllerModule {
         return new SqlitePlatformScopeImpl(session, mapper);
     }
 
+
     @UserScope
     @Provides
-    AppConfigFactory provideAppConfigFactory(Context context, AppConfigService service,
-                                             User user, SqlitePlatformScope sqlitePlatformScope, @Named("params_request_default") HashMap<String, String> params) {
-        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params);
+    AppConfigFactory provideAppConfigFactory(Context context,
+                                             AppConfigService service,
+                                             User user,
+                                             SqlitePlatformScope sqlitePlatformScope,
+                                             @Named("params_request_default") HashMap<String, String> params,
+                                             DownloadAppResourceTaskQueue downloadQueue, OkHttpClient okHttpClient) {
+
+        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient);
     }
 
     @UserScope
@@ -99,5 +107,6 @@ public class UserControllerModule {
     ZaloPayRepository provideZaloPayRepository(ZaloPayFactory zaloPayFactory, ZaloPayEntityDataMapper mapper) {
         return new ZaloPayRepositoryImpl(zaloPayFactory, mapper);
     }
+
 
 }

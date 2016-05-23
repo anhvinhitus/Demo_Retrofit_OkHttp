@@ -12,7 +12,7 @@ ext {
     androidCompileSdkVersion = 21
 
     supportVersion = '23.2.1'
-    playService = "8.3.0"
+    playServiceVersion = "8.4.0"
     //Libraries Version
     daggerVersion = '2.2'
     butterKnifeVersion = '8.0.1'
@@ -56,7 +56,6 @@ ext {
 
     multidexVersion = "1.0.1"
 
-
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
@@ -89,8 +88,8 @@ ext {
             support_annotations    : "com.android.support:support-annotations:${supportVersion}",
             roundedimageview       : "com.makeramen:roundedimageview:${roundedimageviewVersion}",
             react_native           : "com.facebook.react:react-native:${reactNative}",
-            play_services_analytics: "com.google.android.gms:play-services-analytics:${playService}",
-            play_services          : "com.google.android.gms:play-services:${playService}"
+            play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}"
 
     ]
 
