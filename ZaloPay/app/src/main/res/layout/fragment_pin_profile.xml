@@ -31,7 +31,8 @@
             android:id="@+id/textInputPin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.medium">
+            android:layout_marginTop="@dimen/spacing.medium"
+            app:errorEnabled="true">
 
             <vn.com.vng.zalopay.ui.widget.ClearableEditText
                 android:id="@+id/edtPin"
@@ -39,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:hint="@string/hint_pin"
-                android:inputType="textPassword"
+                android:inputType="textPassword|number"
                 android:maxLines="1"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
@@ -57,7 +58,8 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputPinCompare"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
 
             <vn.com.vng.zalopay.ui.widget.ClearableEditText
                 android:id="@+id/edtPinCompare"
@@ -65,10 +67,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:hint="@string/hint_pin_compare"
-                android:inputType="textPassword"
+                android:inputType="textPassword|number"
                 android:maxLines="1"
                 android:singleLine="true" />
-
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 

@@ -21,7 +21,7 @@
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="colorControlNormal">@color/edt_control_normal</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/edt_control_normal</item>
         <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
     </style>
 
@@ -37,6 +37,10 @@
 
     <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@color/splash_bg</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.FullScreen">
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -18,7 +18,6 @@ import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.zing.pay.zmpsdk.view.animation.ActivityAnimator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,9 +96,7 @@ public class PreProfileFragment extends AbsProfileFragment {
 
     @OnClick(R.id.tvCancel)
     public void onClickCancel(View view) {
-        navigator.startHomeActivity(getContext(), true);
-        ActivityAnimator anim = new ActivityAnimator();
-        anim.fadeAnimation(getActivity());
+        navigator.startPinProfileActivity(getActivity());
     }
 
     private void showPhoneError() {
@@ -246,7 +243,7 @@ public class PreProfileFragment extends AbsProfileFragment {
         if (TextUtils.isEmpty(phone)) {
             return false;
         }
-        return ValidateUtil.isMobileNumber(phone.replaceAll("[^\\d]", ""));
+        return ValidateUtil.isMobileNumber(phone);
     }
 
     public boolean isValidEmail() {

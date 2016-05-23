@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -63,7 +62,6 @@ public class ClearableEditText extends EditText {
         }
 
         public void afterTextChanged(Editable s) {
-            ClearableEditText.this.formatText(Boolean.valueOf(false));
         }
     };
 
@@ -190,46 +188,6 @@ public class ClearableEditText extends EditText {
         } else {
             return true;
         }
-    }
-
-    public void formatText(Boolean isTextFull) {
-        Editable s = this.getEditableText();
-        if (this.mIsTextGroup) {
-            char c;
-            if (s.length() > 0 && s.length() % 5 == 0) {
-                c = s.charAt(s.length() - 1);
-                if (this.SPACE_SEPERATOR == c) {
-                    s.delete(s.length() - 1, s.length());
-                }
-            }
-
-            if (isTextFull.booleanValue()) {
-                for (int var6 = 0; var6 < s.length(); ++var6) {
-                    if (var6 > 1 && var6 % 5 == 0) {
-                        char var7 = s.charAt(var6 - 1);
-                        if (Character.isDigit(var7) && TextUtils.split(s.toString(), String.valueOf(this.SPACE_SEPERATOR)).length <= 3) {
-                            InputFilter[] filters1 = s.getFilters();
-                            s.setFilters(new InputFilter[0]);
-                            s.insert(var6 - 1, String.valueOf(this.SPACE_SEPERATOR));
-                            s.setFilters(filters1);
-                        }
-                    }
-                }
-
-                return;
-            }
-
-            if (s.length() > 0 && s.length() % 5 == 0) {
-                c = s.charAt(s.length() - 1);
-                if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(this.SPACE_SEPERATOR)).length <= 3) {
-                    InputFilter[] filters = s.getFilters();
-                    s.setFilters(new InputFilter[0]);
-                    s.insert(s.length() - 1, String.valueOf(this.SPACE_SEPERATOR));
-                    s.setFilters(filters);
-                }
-            }
-        }
-
     }
 
     public void setGroupText(boolean pIsEnabled) {

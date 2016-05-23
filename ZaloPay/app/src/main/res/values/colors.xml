@@ -52,4 +52,5 @@
     <color name="txt_cancel">#828283</color>
 
     <color name="edt_control_normal">#e3e6e7</color>
+    <color name="avatar_border_transparent">#c8ffffff</color>
 </resources>
