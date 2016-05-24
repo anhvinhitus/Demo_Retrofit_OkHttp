@@ -30,7 +30,6 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 
 /**
  * Created by AnhHieu on 5/12/16.
- *
  */
 @Module
 public class ReactNativeModule {
@@ -44,27 +43,6 @@ public class ReactNativeModule {
         bundleService.prepareInternalBundle();
         Timber.d("internalBundle %s", bundleService.mCurrentInternalBundleFolder);
         return bundleService;
-    }
-
-    @UserScope
-    @Provides
-    @Named("reactMainPackage")
-    ReactPackage provideMainReactPackage() {
-        return new MainReactPackage();
-    }
-
-    @UserScope
-    @Provides
-    @Named("reactInternalPackage")
-    ReactPackage provideReactInternalPackage(ZaloPayRepository repository) {
-        return new ReactInternalPackage(repository);
-    }
-
-    @UserScope
-    @Provides
-    @Named("reactIAPPackage")
-    ReactPackage provideReactIAPPackage(ZaloPayRepository repository, User user) {
-        return new ReactIAPPackage(repository, user);
     }
 
     @UserScope

@@ -68,9 +68,6 @@ public class ZaloPayFragment extends BaseMainFragment {
     TextView mTvAdsSubContent;
     /* Advertisement END */
 
-    @BindView(R.id.recyclerView)
-    RecyclerView mRecyclerView;
-
     @Override
     protected void setupFragmentComponent() {
 

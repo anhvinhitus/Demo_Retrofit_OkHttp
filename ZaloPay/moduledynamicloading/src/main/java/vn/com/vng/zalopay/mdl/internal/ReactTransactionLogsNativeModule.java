@@ -80,52 +80,6 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-/*
-    @ReactMethod
-    public void closeModule(int mId) {
-        getCurrentActivity().finish();
-    }*/
-
-   /* public void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber) {
-        repository.reloadListTransaction(count, subscriber);
-    }
-
-    public void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber) {
-        repository.getTransactions(pageIndex, count, subscriber);
-    }
-
-    private class TransactionSubsciber extends Subscriber<List<TransHistory>> {
-
-        WeakReference<Promise> promiseWeakReference;
-
-        public TransactionSubsciber(Promise promise) {
-            promiseWeakReference = new WeakReference<>(promise);
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(List<TransHistory> transHistories) {
-
-            Timber.d(" transaction log %s", transHistories);
-
-            if (promiseWeakReference != null) {
-                Promise promise = promiseWeakReference.get();
-                promise.resolve(transform(transHistories));
-                promiseWeakReference.clear();
-            }
-        }
-    }
-*/
-
     private class TransactionLogSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;

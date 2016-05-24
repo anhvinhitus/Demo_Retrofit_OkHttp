@@ -8,8 +8,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 
@@ -63,5 +65,15 @@ public class ZaloPayEntityDataMapper {
 
     public Order transform(GetOrderResponse getOrderResponse) {
         return new Order(getOrderResponse.getAppid(), getOrderResponse.getZptranstoken(), getOrderResponse.apptransid, getOrderResponse.appuser, getOrderResponse.apptime, getOrderResponse.embeddata, getOrderResponse.item, getOrderResponse.amount, getOrderResponse.description, getOrderResponse.payoption, getOrderResponse.mac);
+    }
+
+
+    public MerChantUserInfo transform(GetMerchantUserInfoResponse response) {
+        MerChantUserInfo ret = new MerChantUserInfo();
+        ret.birthdate = response.birthdate;
+        ret.displayname = response.displayname;
+        ret.muid = response.muid;
+        ret.usergender = response.usergender;
+        return ret;
     }
 }

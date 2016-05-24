@@ -121,9 +121,16 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Override
     protected List<ReactPackage> getPackages() {
+
+        long appId = 0;
+
+        if (appResource != null) {
+            appId = appResource.appid;
+        }
+
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
-                new ReactIAPPackage(mRepository, mUser)
+                new ReactIAPPackage(mRepository, mUser, appId)
         );
     }
 }

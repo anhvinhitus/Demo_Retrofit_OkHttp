@@ -21,16 +21,18 @@ public class ReactIAPPackage implements ReactPackage {
 
     ZaloPayRepository zaloPayRepository;
     User user;
+    private final long appId;
 
-    public ReactIAPPackage(ZaloPayRepository repository, User user) {
+    public ReactIAPPackage(ZaloPayRepository repository, User user, long appId) {
         this.zaloPayRepository = repository;
         this.user = user;
+        this.appId = appId;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayRepository, user));
+        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayRepository, user, appId));
         return modules;
     }
 

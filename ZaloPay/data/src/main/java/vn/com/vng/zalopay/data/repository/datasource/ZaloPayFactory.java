@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
+import android.util.LruCache;
+import android.util.SparseArray;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -15,6 +17,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -43,6 +46,8 @@ public class ZaloPayFactory {
     private final int payAppId;
 
     private EventBus eventBus;
+
+    private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope, int payAppId, EventBus eventBus) {
@@ -134,8 +139,6 @@ public class ZaloPayFactory {
     }
 
 
-
-
     private void writeTransactionResp(TransactionHistoryResponse response) {
         List<TransHistoryEntity> list = response.data;
         int size = list.size();
@@ -147,4 +150,16 @@ public class ZaloPayFactory {
             sqlZaloPayScope.write(response.data);
         }
     }
+
+    public Observable<GetMerchantUserInfoResponse> getMerchantUserInfo(long mAppJSId) {
+        GetMerchantUserInfoResponse responseCache = mCacheMerchantUser.get(mAppJSId);
+        if (responseCache != null) {
+            return Observable.just(responseCache);
+        } else {
+            return zaloPayService.getmerchantuserinfo(mAppJSId, user.uid, user.accesstoken)
+                    .doOnNext(response -> mCacheMerchantUser.put(mAppJSId, response))
+                    ;
+        }
+    }
+
 }

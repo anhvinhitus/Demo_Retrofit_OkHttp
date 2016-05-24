@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -122,5 +123,10 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
 
             return Boolean.TRUE;
         });
+    }
+
+    @Override
+    public Observable<MerChantUserInfo> getMerchantUserInfo(long appId) {
+        return zaloPayFactory.getMerchantUserInfo(appId).map(response -> zaloPayEntityDataMapper.transform(response));
     }
 }
