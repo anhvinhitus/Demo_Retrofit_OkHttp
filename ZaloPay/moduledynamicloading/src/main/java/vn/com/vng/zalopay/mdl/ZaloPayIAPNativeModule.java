@@ -19,6 +19,7 @@ import com.facebook.react.bridge.WritableMap;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
@@ -276,7 +277,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     public void getUserInfo(Promise promise) {
         Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
                 .subscribe(new UserInfoSubscriber(promise));
-
         compositeSubscription.add(subscription);
     }
 
@@ -290,7 +290,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         @Override
         public void onError(Throwable e) {
-            promise.resolve(errorResp());
+            promise.resolve(handleResultError(e));
         }
 
         @Override
@@ -313,12 +313,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         return item;
     }
 
-    private WritableMap errorResp() {
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", -1);
-        return item;
-    }
-
     @ReactMethod
     public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
         Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
@@ -326,8 +320,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         compositeSubscription.add(subscription);
     }
-
-
+    
     private final class VerifyAccessToken extends DefaultSubscriber<Boolean> {
         private Promise promise;
 
@@ -344,9 +337,17 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         @Override
         public void onError(Throwable e) {
-            WritableMap item = Arguments.createMap();
-            item.putInt("code", -1);
-            promise.resolve(item);
+            promise.resolve(handleResultError(e));
         }
+    }
+
+    private WritableMap handleResultError(Throwable e) {
+        WritableMap item = Arguments.createMap();
+        if (e instanceof BodyException) {
+            item.putInt("code", ((BodyException) e).errorCode);
+        } else {
+            item.putInt("code", -1);
+        }
+        return item;
     }
 }
