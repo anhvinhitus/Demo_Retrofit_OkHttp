@@ -74,6 +74,7 @@ public class ZaloPayEntityDataMapper {
         ret.displayname = response.displayname;
         ret.muid = response.muid;
         ret.usergender = response.usergender;
+        ret.maccesstoken = response.maccesstoken;
         return ret;
     }
 }

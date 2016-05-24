@@ -10,4 +10,6 @@ public class MerChantUserInfo {
     public String usergender;
     public long muid;
 
+    public String maccesstoken;
+
 }

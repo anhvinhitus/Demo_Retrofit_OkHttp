@@ -19,4 +19,7 @@ public class GetMerchantUserInfoResponse extends BaseResponse {
     @SerializedName("muid")
     public long muid;
 
+    @SerializedName("maccesstoken")
+    public String maccesstoken;
+
 }
