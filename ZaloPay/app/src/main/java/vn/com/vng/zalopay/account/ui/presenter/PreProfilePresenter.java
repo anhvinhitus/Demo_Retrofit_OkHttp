@@ -3,12 +3,12 @@ package vn.com.vng.zalopay.account.ui.presenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.presenter.BaseAppPresenter;
-import vn.com.vng.zalopay.ui.presenter.Presenter;
+import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 19/05/2016.
  */
-public class PreProfilePresenter extends BaseAppPresenter implements Presenter<IPreProfileView> {
+public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<IPreProfileView> {
 
     IPreProfileView mView;
     private UserConfig mUserConfig;

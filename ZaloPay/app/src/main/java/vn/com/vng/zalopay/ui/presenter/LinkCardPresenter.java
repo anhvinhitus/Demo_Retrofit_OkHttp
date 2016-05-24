@@ -28,7 +28,7 @@ import vn.zing.pay.zmpsdk.merchant.CShareData;
 /**
  * Created by AnhHieu on 5/11/16.
  */
-public class LinkCardPresenter extends BaseUserPresenter implements Presenter<ILinkCardView> {
+public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
 
     private ILinkCardView linkCardView;
     private Subscription subscription;

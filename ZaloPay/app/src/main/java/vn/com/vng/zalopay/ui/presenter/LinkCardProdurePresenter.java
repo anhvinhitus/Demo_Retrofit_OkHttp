@@ -24,7 +24,7 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 /**
  * Created by longlv on 12/05/2016.
  */
-public class LinkCardProdurePresenter extends BaseUserPresenter implements Presenter<ILinkCardProduceView> {
+public class LinkCardProdurePresenter extends BaseUserPresenter implements IPresenter<ILinkCardProduceView> {
 
     private ILinkCardProduceView mView;
     private Subscription subscription;

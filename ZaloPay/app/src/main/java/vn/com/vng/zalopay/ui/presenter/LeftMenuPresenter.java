@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.ui.view.ILeftMenuView;
  */
 
 @Singleton
-public class LeftMenuPresenter extends BaseUserPresenter implements Presenter<ILeftMenuView> {
+public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<ILeftMenuView> {
     private ILeftMenuView menuView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();

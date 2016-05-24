@@ -24,7 +24,7 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 /**
  * Created by longlv on 10/05/2016.
  */
-public class BalanceTopupPresenter extends BaseZaloPayPresenter implements Presenter<IBalanceTopupView> {
+public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPresenter<IBalanceTopupView> {
 
     private IBalanceTopupView mView;
 
