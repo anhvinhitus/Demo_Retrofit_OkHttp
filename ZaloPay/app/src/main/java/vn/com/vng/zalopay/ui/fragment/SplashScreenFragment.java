@@ -70,8 +70,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         super.onResume();
         if (interstitialCanceled) {
             gotoHomeScreen();
-        } else {
-            gotoLoginScreen();
         }
     }
 

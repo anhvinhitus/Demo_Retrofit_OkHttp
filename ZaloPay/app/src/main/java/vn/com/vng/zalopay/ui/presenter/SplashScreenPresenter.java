@@ -87,7 +87,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
     private void onVerifyComplete(boolean isVerifySuccess, boolean clearData) {
 
-        Timber.d("onVerifyComplete %s", isVerifySuccess);
+        Timber.d("onVerifyComplete %s %s", isVerifySuccess, clearData);
 
         mView.hideLoading();
         if (isVerifySuccess) {
@@ -99,7 +99,6 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
             mView.gotoLoginScreen();
         }
     }
-
 
 
     private final class VerifySubscriber extends DefaultSubscriber<Boolean> {
