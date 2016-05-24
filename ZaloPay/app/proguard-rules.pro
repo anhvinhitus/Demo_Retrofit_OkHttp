@@ -155,6 +155,10 @@
 
 -keep class com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
 
+#leakcanary
+
+-keep class org.eclipse.mat.** { *; }
+-keep class com.squareup.leakcanary.** { *; }
 
 #rxjava & rxandroid
 
@@ -222,6 +226,7 @@
 
 -keep public class org.w3c.dom.** { *; }
 -dontwarn org.w3c.dom.**
+
 
 
 #-dontwarn android.support.v7.**

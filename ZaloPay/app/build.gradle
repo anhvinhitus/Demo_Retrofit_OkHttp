@@ -194,6 +194,7 @@ dependencies {
 
     debugCompile devel.leakCanaryDebug
     releaseCompile devel.leakCanaryRelease
+    testCompile devel.leakCanaryTest
 
     compile libs.support_annotations
     compile libs.dagger
