@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.repository;
 
 import java.util.List;
@@ -8,9 +9,11 @@ import vn.com.vng.zalopay.data.repository.datasource.AppListFactory;
 import vn.com.vng.zalopay.domain.model.AppInfo;
 import vn.com.vng.zalopay.domain.repository.ApplicationRepository;
 
+*/
 /**
  * Created by AnhHieu on 5/3/16.
- */
+ *//*
+
 public class ApplicationRepositoryImpl implements ApplicationRepository {
 
     private AppListFactory factory;
@@ -27,3 +30,4 @@ public class ApplicationRepositoryImpl implements ApplicationRepository {
         return factory.listAppInfoEntity().map(appInfoEntities -> mapper.transform(appInfoEntities));
     }
 }
+*/

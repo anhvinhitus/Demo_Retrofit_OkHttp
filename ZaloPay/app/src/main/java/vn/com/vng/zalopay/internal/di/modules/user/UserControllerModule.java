@@ -12,10 +12,11 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.data.api.AppConfigService;
+import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
-import vn.com.vng.zalopay.data.api.entity.mapper.ApplicationEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayIAPEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlAppListScope;
 import vn.com.vng.zalopay.data.cache.SqlAppListScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -27,20 +28,19 @@ import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
-import vn.com.vng.zalopay.data.repository.ApplicationRepositoryImpl;
+import vn.com.vng.zalopay.data.repository.ZaloPayIAPRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
-import vn.com.vng.zalopay.data.repository.datasource.AppListFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
+import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
-import vn.com.vng.zalopay.domain.repository.ApplicationRepository;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
  * Created by AnhHieu on 4/28/16.
- *
  */
 @Module
 public class UserControllerModule {
@@ -77,19 +77,19 @@ public class UserControllerModule {
         return new SqlAppListScopeImpl(session);
     }
 
-    @UserScope
-    @Provides
-    AppListFactory provideAppListFactory(Context context, AppConfigService service,
-                                         User user, SqlAppListScope sqlAppListScope) {
-        return new AppListFactory(context, service, user, sqlAppListScope);
-    }
+    /* @UserScope
+     @Provides
+     AppListFactory provideAppListFactory(Context context, AppConfigService service,
+                                          User user, SqlAppListScope sqlAppListScope) {
+         return new AppListFactory(context, service, user, sqlAppListScope);
+     }
 
-    @UserScope
-    @Provides
-    ApplicationRepository provideApplicationRepository(AppListFactory appConfigFactory, ApplicationEntityDataMapper mapper) {
-        return new ApplicationRepositoryImpl(appConfigFactory, mapper);
-    }
-
+     @UserScope
+     @Provides
+     ApplicationRepository provideApplicationRepository(AppListFactory appConfigFactory, ApplicationEntityDataMapper mapper) {
+         return new ApplicationRepositoryImpl(appConfigFactory, mapper);
+     }
+ */
     @UserScope
     @Provides
     SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
@@ -107,6 +107,19 @@ public class UserControllerModule {
     @Provides
     ZaloPayRepository provideZaloPayRepository(ZaloPayFactory zaloPayFactory, ZaloPayEntityDataMapper mapper) {
         return new ZaloPayRepositoryImpl(zaloPayFactory, mapper);
+    }
+
+
+    @UserScope
+    @Provides
+    ZaloPayIAPFactory providesZaloPayIAPFactory(ZaloPayIAPService service, User user) {
+        return new ZaloPayIAPFactory(service, user);
+    }
+
+    @UserScope
+    @Provides
+    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, ZaloPayIAPEntityDataMapper mapper) {
+        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, mapper);
     }
 
 

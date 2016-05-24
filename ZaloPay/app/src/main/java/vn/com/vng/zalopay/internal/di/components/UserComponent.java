@@ -8,7 +8,6 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
-import vn.com.vng.zalopay.domain.repository.ApplicationRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
@@ -44,7 +43,7 @@ public interface UserComponent {
 
     ZaloPayRepository zaloPayRepository();
 
-    ApplicationRepository applicationRepository();
+ /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */
     void inject(ZaloPayFragment f);

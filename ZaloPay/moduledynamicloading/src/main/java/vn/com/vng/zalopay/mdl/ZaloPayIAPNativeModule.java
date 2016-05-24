@@ -16,18 +16,14 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
-import dagger.Provides;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
-import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
@@ -43,18 +39,22 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
 
 public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
+    final ZaloPayIAPRepository zaloPayIAPRepository;
 
-    ZaloPayRepository zaloPayRepository;
-    User user;
+    final User user;
+
     private PaymentListener paymentListener;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     final long appId; // AppId này là appid js cắm vào
 
-    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext, ZaloPayRepository zaloPayRepository, User user, long appId) {
+    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext,
+                                  ZaloPayIAPRepository zaloPayIAPRepository,
+                                  User user, long appId) {
         super(reactContext);
-        this.zaloPayRepository = zaloPayRepository;
         this.user = user;
+        this.zaloPayIAPRepository = zaloPayIAPRepository;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
@@ -67,7 +67,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     public String getName() {
         return "ZaloPayIAP";
     }
-
 
     private void destroyVariable() {
         paymentListener = null;
@@ -241,7 +240,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     }
 
     private void transactionUpdate() {
-        zaloPayRepository.transactionUpdate()
+        zaloPayIAPRepository.transactionUpdate()
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
 
@@ -275,7 +274,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void getUserInfo(Promise promise) {
-        Subscription subscription = zaloPayRepository.getMerchantUserInfo(appId)
+        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
                 .subscribe(new UserInfoSubscriber(promise));
 
         compositeSubscription.add(subscription);
@@ -318,5 +317,36 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         WritableMap item = Arguments.createMap();
         item.putInt("code", -1);
         return item;
+    }
+
+    @ReactMethod
+    public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
+        Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
+                .subscribe(new VerifyAccessToken(promise));
+
+        compositeSubscription.add(subscription);
+    }
+
+
+    private final class VerifyAccessToken extends DefaultSubscriber<Boolean> {
+        private Promise promise;
+
+        public VerifyAccessToken(Promise promise) {
+            this.promise = promise;
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            WritableMap item = Arguments.createMap();
+            item.putInt("code", 1);
+            promise.resolve(item);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            WritableMap item = Arguments.createMap();
+            item.putInt("code", -1);
+            promise.resolve(item);
+        }
     }
 }

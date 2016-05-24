@@ -16,6 +16,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
@@ -25,10 +26,11 @@ import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
  * Created by huuhoa on 5/16/16.
  */
 public class PaymentApplicationActivity extends ReactBasedActivity {
+
     private String mComponentName;
 
     @Inject
-    ZaloPayRepository mRepository;
+    ZaloPayIAPRepository zaloPayIAPRepository;
 
     @Inject
     User mUser;
@@ -128,9 +130,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             appId = appResource.appid;
         }
 
-        return Arrays.<ReactPackage>asList(
+        return Arrays.asList(
                 new MainReactPackage(),
-                new ReactIAPPackage(mRepository, mUser, appId)
+                new ReactIAPPackage(zaloPayIAPRepository, mUser, appId)
         );
     }
 }

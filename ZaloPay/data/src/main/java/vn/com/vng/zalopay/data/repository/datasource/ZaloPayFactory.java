@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -98,6 +99,19 @@ public class ZaloPayFactory {
                 ;
     }
 
+    public Observable<Boolean> transactionUpdate() {
+        return makeObservable(() -> {
+            // update balance
+            balanceServer()
+                    .subscribe(new DefaultSubscriber<>());
+
+            //update transaction
+            reloadListTransactionSync(30, null);
+
+            return Boolean.TRUE;
+        });
+    }
+
     private Observable<Long> balanceLocal() {
         return sqlZaloPayScope.balance();
     }
@@ -151,15 +165,24 @@ public class ZaloPayFactory {
         }
     }
 
-    public Observable<GetMerchantUserInfoResponse> getMerchantUserInfo(long mAppJSId) {
-        GetMerchantUserInfoResponse responseCache = mCacheMerchantUser.get(mAppJSId);
-        if (responseCache != null) {
-            return Observable.just(responseCache);
-        } else {
-            return zaloPayService.getmerchantuserinfo(mAppJSId, user.uid, user.accesstoken)
-                    .doOnNext(response -> mCacheMerchantUser.put(mAppJSId, response))
-                    ;
-        }
+
+    private <T> Observable<T> makeObservable(final Callable<T> func) {
+        return Observable.create(
+                new Observable.OnSubscribe<T>() {
+                    @Override
+                    public void call(Subscriber<? super T> subscriber) {
+                        try {
+                            subscriber.onNext(func.call());
+                            subscriber.onCompleted();
+                        } catch (Exception ex) {
+                            try {
+                                subscriber.onError(ex);
+                            } catch (Exception ex2) {
+                            }
+                        }
+                    }
+                });
     }
+
 
 }

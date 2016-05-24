@@ -102,18 +102,7 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
 
     @Override
     public Observable<Boolean> transactionUpdate() {
-        return makeObservable(() -> {
-
-            // update balance
-            zaloPayFactory.balanceServer()
-                    .subscribe(new DefaultSubscriber<>());
-
-            //update transaction
-
-            requestTransactionsHistory();
-
-            return Boolean.TRUE;
-        });
+        return zaloPayFactory.transactionUpdate();
     }
 
     @Override
@@ -123,10 +112,5 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
 
             return Boolean.TRUE;
         });
-    }
-
-    @Override
-    public Observable<MerChantUserInfo> getMerchantUserInfo(long appId) {
-        return zaloPayFactory.getMerchantUserInfo(appId).map(response -> zaloPayEntityDataMapper.transform(response));
     }
 }

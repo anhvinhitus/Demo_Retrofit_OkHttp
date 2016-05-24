@@ -51,5 +51,5 @@ public interface ZaloPayRepository {
     *
     * Sửa dụng cho App JS
     * */
-    Observable<MerChantUserInfo> getMerchantUserInfo(long appId);
+
 }

@@ -66,15 +66,4 @@ public class ZaloPayEntityDataMapper {
     public Order transform(GetOrderResponse getOrderResponse) {
         return new Order(getOrderResponse.getAppid(), getOrderResponse.getZptranstoken(), getOrderResponse.apptransid, getOrderResponse.appuser, getOrderResponse.apptime, getOrderResponse.embeddata, getOrderResponse.item, getOrderResponse.amount, getOrderResponse.description, getOrderResponse.payoption, getOrderResponse.mac);
     }
-
-
-    public MerChantUserInfo transform(GetMerchantUserInfoResponse response) {
-        MerChantUserInfo ret = new MerChantUserInfo();
-        ret.birthdate = response.birthdate;
-        ret.displayname = response.displayname;
-        ret.muid = response.muid;
-        ret.usergender = response.usergender;
-        ret.maccesstoken = response.maccesstoken;
-        return ret;
-    }
 }
