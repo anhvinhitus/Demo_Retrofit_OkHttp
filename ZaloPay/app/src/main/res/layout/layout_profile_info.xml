@@ -32,8 +32,8 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/circle_border_white"
-                    android:padding="4dp">
+                    android:background="@drawable/circle_border_dark"
+                    android:padding="1dp">
 
                     <vn.vng.uicomponent.widget.image.BezelImageView
                         android:id="@+id/imgAvatar"
@@ -42,6 +42,8 @@
                         android:scaleType="centerCrop"
                         app:borderDrawable="@color/transparent"
                         app:maskDrawable="@drawable/circle_mask" />
+
+
                 </FrameLayout>
 
                 <LinearLayout
