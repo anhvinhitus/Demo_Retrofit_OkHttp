@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,11 +20,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 
 /**
@@ -67,9 +64,6 @@ public class ZaloPayFragment extends BaseMainFragment {
     @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
     /* Advertisement END */
-
-    @BindView(R.id.recyclerView)
-    RecyclerView mRecyclerView;
 
     @Override
     protected void setupFragmentComponent() {
@@ -136,6 +130,16 @@ public class ZaloPayFragment extends BaseMainFragment {
     @OnClick(R.id.btn_transfer)
     public void onTransferMoneyClick(View view) {
 //        gotoTransferActivity();
+    }
+
+    @OnClick(R.id.btn_buy_topupcard)
+    public void onBuyTopupCardClick(View view) {
+        Timber.tag(TAG).d("onBuyTopupCardClick");
+    }
+
+    @OnClick(R.id.btn_buy_gamecard)
+    public void onBuyGameCardClick(View view) {
+        Timber.tag(TAG).d("onBuyGameCardClick");
     }
 
     private void gotoTransferActivity() {

@@ -29,8 +29,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_chuyentien" />
 
@@ -38,7 +38,7 @@
                 style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/spacing.medium.s"
                 android:text="@string/transfer.money" />
         </LinearLayout>
 
@@ -57,8 +57,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_naptiendt" />
 
@@ -66,7 +66,7 @@
                 style="@style/TextView.Title.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/spacing.medium.s"
                 android:text="Nạp Tiền ĐT" />
         </LinearLayout>
 
@@ -75,41 +75,28 @@
             android:layout_height="match_parent"
             android:background="@color/c.separate" />
 
-        <FrameLayout
+        <LinearLayout
+            android:id="@+id/btn_buy_topupcard"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/btn_recharge_game"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:gravity="center"
-                android:orientation="vertical">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_muathedt" />
 
-                <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_tiendien" />
-
-                <TextView
-                    style="@style/TextView.Title.Default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Tiền Điện" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/bg_translucence_white"
-                android:clickable="false"
-                android:gravity="center" />
-        </FrameLayout>
+            <TextView
+                style="@style/TextView.Title.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.s"
+                android:text="Mua thẻ ĐT" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
@@ -123,40 +110,28 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <LinearLayout
+            android:id="@+id/btn_buy_gamecard"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:gravity="center"
-                android:orientation="vertical">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_muathegame" />
 
-                <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_internet" />
-
-                <TextView
-                    style="@style/TextView.Title.Default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Internet/TV" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/bg_translucence_white"
-                android:clickable="false"
-                android:gravity="center" />
-        </FrameLayout>
+            <TextView
+                style="@style/TextView.Title.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.s"
+                android:text="Mua Thẻ Game" />
+        </LinearLayout>
 
         <View
             android:layout_width="1px"
@@ -177,8 +152,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_lixi" />
 
@@ -186,7 +161,7 @@
                     style="@style/TextView.Title.Default"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
                     android:text="@string/red.envelope" />
             </LinearLayout>
 
@@ -218,8 +193,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_tiennuoc" />
 
@@ -227,7 +202,7 @@
                     style="@style/TextView.Title.Default"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
                     android:text="Tiền nước" />
             </LinearLayout>
 
@@ -240,5 +215,117 @@
         </FrameLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/c.separate" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height.control.zalo.pay"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/btn_recharge_game"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_tiendien" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
+                    android:text="Tiền Điện" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:clickable="false"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/c.separate" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_internet" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
+                    android:text="Internet/TV" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:clickable="false"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/c.separate" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="center"
+                android:orientation="vertical"></LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/bg_translucence_white"
+                android:gravity="center" />
+        </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>
