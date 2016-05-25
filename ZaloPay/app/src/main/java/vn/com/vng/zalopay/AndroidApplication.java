@@ -108,11 +108,6 @@ public class AndroidApplication extends MultiDexApplication {
     public UserComponent getUserComponent() {
         return userComponent;
     }
-
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-	}
 	
     private void initializeFileFolder() {
         if (Environment.MEDIA_MOUNTED.equals(Environment
