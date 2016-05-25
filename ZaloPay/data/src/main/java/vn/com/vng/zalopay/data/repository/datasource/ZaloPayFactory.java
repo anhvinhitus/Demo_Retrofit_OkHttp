@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
 import android.util.LruCache;
-import android.util.SparseArray;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -13,7 +12,6 @@ import java.util.concurrent.Callable;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.ZaloPayService;

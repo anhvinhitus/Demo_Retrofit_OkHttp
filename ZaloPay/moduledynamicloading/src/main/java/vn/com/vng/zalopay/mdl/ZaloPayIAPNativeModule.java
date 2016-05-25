@@ -280,7 +280,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         Timber.d("get user info appId %s", appId);
 
-        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
+        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(2)
                 .subscribe(new UserInfoSubscriber(promise));
         compositeSubscription.add(subscription);
     }
@@ -296,7 +296,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         @Override
         public void onError(Throwable e) {
 
-            Timber.e("on error ", e);
+            Timber.e(e, "on error ", e);
 
             promise.resolve(handleResultError(e));
         }
@@ -316,10 +316,10 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         item.putInt("code", 1);
 
         WritableMap data = Arguments.createMap();
-        data.putString("mUid", String.valueOf(merChantUserInfo.muid));
+        data.putString("mUid", merChantUserInfo.muid);
         data.putString("displayName", merChantUserInfo.displayname);
         data.putString("dateOfBirth", merChantUserInfo.birthdate);
-        data.putString("gender", merChantUserInfo.usergender);
+        data.putString("gender", String.valueOf(merChantUserInfo.usergender));
         item.putMap("data", data);
         return item;
     }

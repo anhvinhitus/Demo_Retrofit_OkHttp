@@ -14,10 +14,10 @@ public class GetMerchantUserInfoResponse extends BaseResponse {
     public String birthdate;
 
     @SerializedName("usergender")
-    public String usergender;
+    public int usergender;
 
     @SerializedName("muid")
-    public long muid;
+    public String muid;
 
     @SerializedName("maccesstoken")
     public String maccesstoken;

@@ -7,8 +7,8 @@ public class MerChantUserInfo {
 
     public String displayname;
     public String birthdate;
-    public String usergender;
-    public long muid;
+    public int usergender;
+    public String muid;
 
     public String maccesstoken;
 
