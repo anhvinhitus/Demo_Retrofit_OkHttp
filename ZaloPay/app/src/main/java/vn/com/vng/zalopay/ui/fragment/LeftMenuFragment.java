@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
+import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -29,6 +30,15 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
  * Created by AnhHieu on 5/10/16.
  */
 public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItemClickListener, ILeftMenuView {
+
+    public static LeftMenuFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        LeftMenuFragment fragment = new LeftMenuFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public LeftMenuFragment() {
     }
@@ -55,7 +65,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     public TextView tvBalance;
 
-    private MenuItemClickListener mMenuListener;
+    private MenuClickListener mMenuListener;
 
     @Inject
     LeftMenuPresenter presenter;
@@ -64,8 +74,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof MenuItemClickListener) {
-            mMenuListener = (MenuItemClickListener) context;
+        if (context instanceof MenuClickListener) {
+            mMenuListener = (MenuClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnClickMenuItemListener");
@@ -127,7 +137,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
             @Override
             public void onClick(View v) {
                 if (mMenuListener != null) {
-                    mMenuListener.onProfileClick();
+                    mMenuListener.onClickProfile();
                 }
             }
         });
@@ -163,7 +173,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         if (item == null) return;
 
         if (mMenuListener != null) {
-            mMenuListener.onMenuItemClick(item);
+            mMenuListener.onMenuItemClick(item.getId());
         }
 
     }

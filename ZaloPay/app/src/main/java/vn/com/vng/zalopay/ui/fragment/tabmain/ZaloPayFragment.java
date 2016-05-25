@@ -1,10 +1,14 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
+import android.Manifest;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,15 +28,18 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
+import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 
 /**
  * Created by AnhHieu on 4/11/16.
  */
-public class ZaloPayFragment extends BaseMainFragment {
+public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -61,18 +69,18 @@ public class ZaloPayFragment extends BaseMainFragment {
     @BindView(R.id.indicator)
     SmartTabLayout mBannerIndicator;
 
-    @BindView(R.id.layoutAdsSub)
-    View mLayoutAdsSub;
-
     @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
     /* Advertisement END */
 
+
+    private ListAppRecyclerAdapter mAdapter;
+
+    @BindView(R.id.listView)
+    RecyclerView listView;
+
     @Override
     protected void setupFragmentComponent() {
-
-        Timber.d("User Component : %s", getUserComponent());
-
         getUserComponent().inject(this);
     }
 
@@ -84,67 +92,31 @@ public class ZaloPayFragment extends BaseMainFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAdapter = new ListAppRecyclerAdapter(getContext(), this);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        listView.setHasFixedSize(true);
+        listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        listView.setNestedScrollingEnabled(false);
+        int spanCount = 3; // 3 columns
+        int spacing = 2; // 50px
+        boolean includeEdge = false;
+
+        listView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+
+        listView.setAdapter(mAdapter);
+
         showAdsBanner();
         showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
-        initReactNativeApps();
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @NonNull
-    @OnClick(R.id.btn_transfer)
-    public void onClickTransfer(View v) {
-        Timber.d("Transfer");
-    }
-
-    @NonNull
-    @OnClick(R.id.btn_recharge_game)
-    public void onClickRechargeGame(View v) {
-        Timber.d("Recharge.Game");
-//        gotoRechargeGame();
-    }
-
-//    private void gotoRechargeGame() {
-//        Intent intent = new Intent(getActivity(), BalanceTopupActivity.class);
-//        startActivity(intent);
-//    }
-
-    @OnClick(R.id.btn_recharge_phone)
-    public void onClickRechargePhone(View view) {
-        Timber.d("Recharge.Phone");
-        gotoRechargePhoneActivity();
-    }
-
-    @OnClick(R.id.btn_lixi)
-    public void onClickLixi(View v) {
-//        Timber.d("Lixi");
-//        Intent intent = new Intent(this.getContext(), MiniApplicationActivity.class);
-//        this.getActivity().startActivity(intent);
-    }
-
-    @OnClick(R.id.btn_transfer)
-    public void onTransferMoneyClick(View view) {
-//        gotoTransferActivity();
-    }
-
-    private void gotoTransferActivity() {
-    }
-
-    private void gotoRechargePhoneActivity() {
-        navigator.startPaymentApplicationActivity(getActivity(), "PaymentMain");
-    }
-
-    @OnClick(R.id.others)
-    public void onLayoutOthersClick() {
-//        ShaUtils.getSha();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mAdapter.setData(getListData());
     }
 
     /* Show|Hide Banner START */
@@ -172,19 +144,78 @@ public class ZaloPayFragment extends BaseMainFragment {
             hideAdsBanner();
         } else {
             mTvAdsSubContent.setText(Html.fromHtml(content));
-            mLayoutAdsSub.setVisibility(View.VISIBLE);
         }
     }
 
-    public void hideAdsSub() {
-        if (mLayoutAdsSub != null) {
-            mLayoutAdsSub.setVisibility(View.GONE);
+    @Override
+    public void onClickAppListener(AppResource app) {
+        navigator.startPaymentApplicationActivity(getActivity(), "PaymentMain");
+    }
+
+    @OnClick(R.id.btn_deposit)
+    public void onBtnDepositClick(View view) {
+        navigator.startDepositActivity(getActivity());
+    }
+
+    @OnClick(R.id.btn_link_card)
+    public void onBtnLinkCardClick(View view) {
+        navigator.startLinkCardActivity(getActivity());
+    }
+
+    @OnClick(R.id.btn_qr_code)
+    public void onBtnQrCodeClick(View view) {
+        startQRCodeActivity();
+    }
+
+    private void startQRCodeActivity() {
+        if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
+            navigator.startQrCodeActivity(getActivity());
         }
     }
-    /* Show|Hide Banner END */
 
+    //Test
+    private List<AppResource> getListData() {
+        return Arrays.asList(new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
+                new AppResource(2, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
+                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)),
+                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet)),
+                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)),
+                new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc))
+        );
 
-    private void initReactNativeApps() {
+    }
 
+    public static class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position % spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing; // item bottom
+            } else {
+                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = spacing; // item top
+                }
+            }
+        }
     }
 }

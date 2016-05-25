@@ -12,10 +12,11 @@ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
-import vn.com.vng.zalopay.home.ui.activity.MainActivity;
+
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 

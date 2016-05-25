@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.app.ProgressDialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,6 +122,18 @@ public abstract class BaseFragment extends Fragment {
 
     public void showToast(int message) {
         ToastUtil.showToast(getActivity(), message);
+    }
+
+    public boolean checkAndRequestPermission(String permission, int requestCode) {
+        boolean hasPermission = true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getActivity(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                hasPermission = false;
+                requestPermissions(new String[]{permission}, requestCode);
+            }
+        }
+        return hasPermission;
     }
 
 

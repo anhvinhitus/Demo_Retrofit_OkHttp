@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.internal.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/nav_view"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:fitsSystemWindows="true"
-    android:padding="0dp">
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
     <ListView
         android:id="@android:id/list"
@@ -20,5 +20,4 @@
         android:scrollingCache="false"
         android:smoothScrollbar="true" />
 
-
-</android.support.design.widget.NavigationView>
+</android.support.design.internal.ScrimInsetsFrameLayout>

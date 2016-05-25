@@ -26,7 +26,11 @@
 
     <string name="authorized.services.by.vng">Dịch vụ ủy quyền bởi VNG</string>
     <string name="transfer.money">Chuyển tiền</string>
+    <string name="recharge.money.phone">Nạp Tiền ĐT</string>
     <string name="bill">Hoá đơn</string>
+    <string name="electric.bill">Tiền Điện</string>
+    <string name="internet.bill">Internet/TV</string>
+    <string name="water.bill">Tiền nước</string>
     <string name="red.envelope">Lì xì</string>
     <string name="collect.money">Gom tiền</string>
     <string name="other.services">Dịch vụ khác</string>
