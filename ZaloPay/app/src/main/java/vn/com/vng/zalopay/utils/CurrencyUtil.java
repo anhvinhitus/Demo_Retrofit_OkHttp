@@ -11,7 +11,7 @@ import vn.com.vng.zalopay.BuildConfig;
  */
 public class CurrencyUtil {
 
-    public static String CURRENCY_UNIT = "VNĐ";
+    public static String CURRENCY_UNIT = "VND";
     public static Locale VIETNAMESE_LOCAL = new Locale("vi", "VN");
 
     public static String formatCurrency(double money){

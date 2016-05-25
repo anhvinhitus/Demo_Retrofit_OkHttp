@@ -148,6 +148,9 @@
     <string name="hint_pin_compare">Nhập lại mã số PIN</string>
     <string name="invalid_pin_compare">Mã số PIN không trùng nhau</string>
 
+    <string name="invalid_fullname_empty">Bạn chưa nhập họ tên</string>
+    <string name="invalid_address_empty">Bạn chưa nhập địa chỉ</string>
+
     <string name="manager_card">Quản lí thẻ</string>
     <string name="my_qr_code">Mã QR của tôi</string>
 

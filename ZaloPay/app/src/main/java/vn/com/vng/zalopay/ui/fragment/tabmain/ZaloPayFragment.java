@@ -160,6 +160,7 @@ public class ZaloPayFragment extends BaseMainFragment {
         List<Integer> bannerResource = new ArrayList<>();
         bannerResource.add(R.drawable.ic_banner_full_screen1);
         bannerResource.add(R.drawable.ic_banner_full_screen2);
+        bannerResource.add(R.drawable.ic_banner_full_screen3);
         mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource);
         mBannerViewpager.setAdapter(mBannerPagerAdapter);
         mBannerIndicator.setViewPager(mBannerViewpager);

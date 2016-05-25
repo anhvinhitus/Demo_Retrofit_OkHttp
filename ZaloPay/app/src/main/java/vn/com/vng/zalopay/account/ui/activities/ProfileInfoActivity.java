@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 public class ProfileInfoActivity extends BaseActivity implements IProfileInfoView {
 
@@ -65,6 +66,31 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     @OnClick(R.id.layoutSigOutAndDelDB)
     public void onClickSigoutAndDelDB(View view) {
         sigoutAndCleanData();
+    }
+
+    @OnClick(R.id.layoutTransactionHistory)
+    public void onClickTransactionHistory(View view) {
+        navigator.startMiniAppActivity(this, "TransactionLogs");
+    }
+
+    @OnClick(R.id.layoutDeposit)
+    public void onClickDeposit(View view) {
+        navigator.startDepositActivity(this);
+    }
+
+    @OnClick(R.id.layoutTransfer)
+    public void onClickTransfer(View view) {
+        ToastUtil.showToast(this, "Transfer");
+    }
+
+    @OnClick(R.id.layoutManagerCard)
+    public void onClickManagerCard(View view) {
+        ToastUtil.showToast(this, "Manager Card");
+    }
+
+    @OnClick(R.id.layoutMyQRCode)
+    public void onClickMyQRCode(View view) {
+        ToastUtil.showToast(this, "My QRCode");
     }
 
     private void sigoutAndCleanData() {

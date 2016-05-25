@@ -75,9 +75,11 @@ public class UserConfigImpl implements UserConfig {
             currentUser.accesstoken = session;
             currentUser.expirein = preferences.getLong(Constants.PREF_USER_EXPIREIN, -1);
             currentUser.uid = preferences.getLong(Constants.PREF_USER_ID, -1);
+            currentUser.zaloId = preferences.getLong(Constants.PREF_ZALO_ID, -1);
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
+            currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDATE, 0);
         }
     }
 
@@ -89,6 +91,7 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_USER_EMAIL);
         editor.remove(Constants.PREF_USER_NAME);
         editor.remove(Constants.PREF_USER_ID);
+        editor.remove(Constants.PREF_ZALO_ID);
 
         editor.apply();
     }
@@ -130,9 +133,10 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void saveUserInfo(String avatar, String displayName, long birthData, int userGender) {
+    public void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender) {
 
         SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(Constants.PREF_ZALO_ID, zaloId);
         editor.putString(Constants.PREF_USER_NAME, displayName);
         editor.putString(Constants.PREF_USER_AVATAR, avatar);
         editor.putLong(Constants.PREF_USER_BIRTHDATE, birthData);
@@ -147,6 +151,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser.dname = displayName;
             currentUser.birthDate = birthData;
             currentUser.userGender = userGender;
+            currentUser.zaloId = zaloId;
             Timber.d("save EventBus post ");
             eventBus.post(new ZaloProfileInfoEvent(currentUser.uid, displayName, avatar));
         }

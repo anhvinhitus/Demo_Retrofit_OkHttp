@@ -163,7 +163,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
     public void deposit(long amount) {
         if (amount <= 0) {
-            showErrorView("Số tiền phải là bội của 10.000 VNĐ");
+            showErrorView("Số tiền phải là bội của 10.000 VND");
             return;
         }
         createWalletorder(amount);
