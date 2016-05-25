@@ -22,6 +22,7 @@
     <color name="number_color">#222222</color>
     <color name="accent">#FF4081</color>
 
+    <color name="separate">#e3e6e7</color>
     <color name="separate.login">#0c7dc1</color>
 
     <color name="leftmenu.title">#24272b</color>
@@ -52,4 +53,5 @@
     <color name="txt_cancel">#828283</color>
 
     <color name="edt_control_normal">#e3e6e7</color>
+    <color name="avatar_border_transparent">#c8ffffff</color>
 </resources>

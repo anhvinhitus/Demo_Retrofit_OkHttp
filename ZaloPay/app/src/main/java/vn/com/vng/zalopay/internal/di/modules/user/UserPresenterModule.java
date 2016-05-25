@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
+import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -54,7 +55,14 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter(UserConfig userConfig) {
+    MainPresenter providerMainPresenter() {
         return new MainPresenter();
+    }
+
+    @UserScope
+    @Provides
+    ProfileInfoPresenter provideProfileInfoPresenter(UserConfig userConfig) {
+        return new ProfileInfoPresenter(userConfig);
+
     }
 }

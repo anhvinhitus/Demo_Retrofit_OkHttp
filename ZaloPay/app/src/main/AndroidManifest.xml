@@ -262,6 +262,13 @@
         <activity
             android:name=".account.ui.activities.PinProfileActivity"
             android:theme="@style/AppTheme.NoActionBar.AppColor" />
+        <activity
+            android:name=".account.ui.activities.ProfileInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen" />
+        <activity
+            android:name=".account.ui.activities.EditProfileActivity"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.DownloadService"

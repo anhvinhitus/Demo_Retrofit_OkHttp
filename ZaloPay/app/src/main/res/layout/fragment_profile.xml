@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dp"
-    android:background="@color/background"
     android:clipToPadding="false"
     android:fillViewport="true"
-    android:padding="0dp"
+    android:fitsSystemWindows="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
@@ -25,27 +24,33 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="148dp"
                 android:background="@drawable/ic_cover"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp">
+                android:paddingTop="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.0"
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <vn.vng.uicomponent.widget.image.BezelImageView
-                        android:id="@+id/imgAvatar"
-                        android:layout_width="@dimen/leftmenu.avatar"
-                        android:layout_height="@dimen/leftmenu.avatar"
-                        android:scaleType="centerCrop"
-                        android:padding="2dp"
-                        app:borderDrawable="@drawable/circle_border_white"
-                        app:maskDrawable="@drawable/circle_mask" />
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_border_white"
+                        android:padding="4dp">
+
+                        <vn.vng.uicomponent.widget.image.BezelImageView
+                            android:id="@+id/imgAvatar"
+                            android:layout_width="@dimen/leftmenu.avatar"
+                            android:layout_height="@dimen/leftmenu.avatar"
+                            android:scaleType="centerCrop"
+                            app:borderDrawable="@color/transparent"
+                            app:maskDrawable="@drawable/circle_mask" />
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/tv_name"
@@ -54,16 +59,16 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing.tiny"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/textsize.normal.s"
+                        android:textSize="@dimen/textsize.normal"
                         tools:text="@string/app_name" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="1dp"
-                    android:layout_height="106dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="0.0"
-                    android:background="#b2ffffff" />
+                    android:layout_margin="24dp"
+                    android:background="#42ffffff" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -71,7 +76,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1.0"
                     android:orientation="vertical"
-                    android:paddingLeft="19dp">
+                    android:paddingLeft="0dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -80,16 +85,15 @@
                         android:text="@string/gender"
                         android:textAllCaps="true"
                         android:textColor="#b2ffffff"
-                        android:textSize="9sp" />
+                        android:textSize="@dimen/textsize.tiny" />
 
                     <TextView
                         android:id="@+id/tvSex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing.tiny"
                         android:gravity="left|center_vertical"
                         android:textColor="@color/white"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/textsize.normal.s"
                         tools:text="Nam" />
 
                     <TextView
@@ -101,7 +105,7 @@
                         android:text="@string/birthday"
                         android:textAllCaps="true"
                         android:textColor="#b2ffffff"
-                        android:textSize="9sp" />
+                        android:textSize="@dimen/textsize.tiny" />
 
                     <TextView
                         android:id="@+id/tvBirthday"
@@ -110,7 +114,7 @@
                         android:layout_marginLeft="@dimen/spacing.tiny"
                         android:gravity="left|center_vertical"
                         android:textColor="@color/white"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/textsize.normal.s"
                         tools:text="01/12/2000" />
                 </LinearLayout>
             </LinearLayout>

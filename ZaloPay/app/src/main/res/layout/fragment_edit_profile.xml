@@ -1,0 +1,10 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment">
+
+    <include layout="@layout/layout_profile_info" />
+
+    <include layout="@layout/layout_edit_profile_info" />
+</FrameLayout>

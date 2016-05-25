@@ -366,7 +366,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuItemClickLi
 
     @Override
     public void onProfileClick() {
-        navigator.startPreProfileActivity(this);
+//        navigator.startPreProfileActivity(this);
+        navigator.startProfileInfoActivity(this);
     }
 
     public void updateNotificationCount(final int count) {
