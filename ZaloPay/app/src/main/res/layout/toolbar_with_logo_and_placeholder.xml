@@ -45,7 +45,9 @@
                 android:drawablePadding="@dimen/spacing.medium.s"
                 android:drawableTop="@drawable/ic_qrcode"
                 android:gravity="center"
-                android:padding="@dimen/app_padding"
+                android:paddingLeft="@dimen/app_padding"
+                android:paddingRight="@dimen/app_padding"
+                android:paddingBottom="@dimen/app_padding"
                 android:text="@string/txt_home_qrcode"
                 android:textSize="@dimen/textsize.tiny" />
 
@@ -58,7 +60,9 @@
                 android:drawablePadding="@dimen/spacing.medium.s"
                 android:drawableTop="@drawable/ic_naptien"
                 android:gravity="center"
-                android:padding="@dimen/app_padding"
+                android:paddingLeft="@dimen/app_padding"
+                android:paddingRight="@dimen/app_padding"
+                android:paddingBottom="@dimen/app_padding"
                 android:text="@string/txt_home_deposit"
                 android:textSize="@dimen/textsize.tiny" />
 
@@ -71,7 +75,9 @@
                 android:drawablePadding="@dimen/spacing.medium.s"
                 android:drawableTop="@drawable/ic_lienketthe"
                 android:gravity="center"
-                android:padding="@dimen/app_padding"
+                android:paddingLeft="@dimen/app_padding"
+                android:paddingRight="@dimen/app_padding"
+                android:paddingBottom="@dimen/app_padding"
                 android:text="@string/link.card"
                 android:textAllCaps="true"
                 android:textSize="@dimen/textsize.tiny" />

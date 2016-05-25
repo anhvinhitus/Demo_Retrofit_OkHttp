@@ -356,7 +356,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/spacing.medium.l"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_transaction_history" />
+                    android:src="@drawable/ic_delete_user_info" />
 
                 <TextView
                     android:layout_width="match_parent"
