@@ -14,7 +14,9 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
@@ -24,10 +26,11 @@ import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
  * Created by huuhoa on 5/16/16.
  */
 public class PaymentApplicationActivity extends ReactBasedActivity {
+
     private String mComponentName;
 
     @Inject
-    ZaloPayRepository mRepository;
+    ZaloPayIAPRepository zaloPayIAPRepository;
 
     @Inject
     User mUser;
@@ -35,7 +38,15 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Inject
     BundleReactConfig bundleReactConfig;
 
+
+    private AppResource appResource;
+
     public PaymentApplicationActivity() {
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     protected void doInjection() {
@@ -68,7 +79,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     String getJSBundleFile() {
-        return bundleReactConfig.getExternalJsBundle("");
+        return bundleReactConfig.getExternalJsBundle(appResource);
     }
 
     /**
@@ -112,9 +123,16 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Override
     protected List<ReactPackage> getPackages() {
-        return Arrays.<ReactPackage>asList(
+
+        long appId = 0;
+
+        if (appResource != null) {
+            appId = appResource.appid;
+        }
+
+        return Arrays.asList(
                 new MainReactPackage(),
-                new ReactIAPPackage(mRepository, mUser)
+                new ReactIAPPackage(zaloPayIAPRepository, mUser, appId)
         );
     }
 }

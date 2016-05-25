@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -101,18 +102,7 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
 
     @Override
     public Observable<Boolean> transactionUpdate() {
-        return makeObservable(() -> {
-
-            // update balance
-            zaloPayFactory.balanceServer()
-                    .subscribe(new DefaultSubscriber<>());
-
-            //update transaction
-
-            requestTransactionsHistory();
-
-            return Boolean.TRUE;
-        });
+        return zaloPayFactory.transactionUpdate();
     }
 
     @Override

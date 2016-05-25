@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.ui.view.ISplashScreenView;
  * Created by AnhHieu on 5/13/16.
  */
 @Singleton
-public class SplashScreenPresenter extends BaseAppPresenter implements Presenter<ISplashScreenView> {
+public class SplashScreenPresenter extends BaseAppPresenter implements IPresenter<ISplashScreenView> {
 
 
     @Inject
@@ -85,9 +85,9 @@ public class SplashScreenPresenter extends BaseAppPresenter implements Presenter
         }
     }
 
-    private final void onVerifyComplete(boolean isVerifySuccess, boolean clearData) {
+    private void onVerifyComplete(boolean isVerifySuccess, boolean clearData) {
 
-        Timber.d("onVerifyComplete %s", isVerifySuccess);
+        Timber.d("onVerifyComplete %s %s", isVerifySuccess, clearData);
 
         mView.hideLoading();
         if (isVerifySuccess) {
@@ -99,7 +99,6 @@ public class SplashScreenPresenter extends BaseAppPresenter implements Presenter
             mView.gotoLoginScreen();
         }
     }
-
 
 
     private final class VerifySubscriber extends DefaultSubscriber<Boolean> {

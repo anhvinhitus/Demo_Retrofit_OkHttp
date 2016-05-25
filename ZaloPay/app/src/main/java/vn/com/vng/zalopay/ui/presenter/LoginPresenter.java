@@ -31,7 +31,7 @@ import vn.com.vng.zalopay.ui.view.ILoginView;
  */
 
 @Singleton
-public final class LoginPresenter extends BaseAppPresenter implements Presenter<ILoginView>, LoginListener.ILoginZaloListener {
+public final class LoginPresenter extends BaseAppPresenter implements IPresenter<ILoginView>, LoginListener.ILoginZaloListener {
 
     private ILoginView mView;
 

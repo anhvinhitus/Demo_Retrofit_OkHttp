@@ -4,7 +4,7 @@ package vn.com.vng.zalopay.ui.view;
 import android.content.Context;
 
 
-public interface LoadDataView {
+public interface ILoadDataView {
 
     void showLoading();
 

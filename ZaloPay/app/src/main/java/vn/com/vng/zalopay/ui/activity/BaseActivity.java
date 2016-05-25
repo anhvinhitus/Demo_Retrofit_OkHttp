@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.ui.activity;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -151,5 +154,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
+    }
+
+    public boolean checkAndRequestPermission(String permission, int requestCode) {
+        boolean hasPermission = true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                hasPermission = false;
+                requestPermissions(new String[]{permission}, requestCode);
+            }
+        }
+        return hasPermission;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl.impl;
 
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
 
@@ -25,8 +26,8 @@ public class BundleReactConfigRelease implements BundleReactConfig {
     }
 
     @Override
-    public String getExternalJsBundle(String paymentAppName) {
-        return bundleService.getExternalBundleFolder(paymentAppName) + "/main.jsbundle";
+    public String getExternalJsBundle(AppResource appResource) {
+        return bundleService.getExternalBundleFolder(appResource.appname) + "/main.jsbundle";
     }
 
     @Override

@@ -8,8 +8,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 

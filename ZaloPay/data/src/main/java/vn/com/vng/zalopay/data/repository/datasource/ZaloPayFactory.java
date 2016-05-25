@@ -1,11 +1,14 @@
 package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
+import android.util.LruCache;
+import android.util.SparseArray;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -15,6 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -43,6 +47,8 @@ public class ZaloPayFactory {
     private final int payAppId;
 
     private EventBus eventBus;
+
+    private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope, int payAppId, EventBus eventBus) {
@@ -93,6 +99,19 @@ public class ZaloPayFactory {
                 ;
     }
 
+    public Observable<Boolean> transactionUpdate() {
+        return makeObservable(() -> {
+            // update balance
+            balanceServer()
+                    .subscribe(new DefaultSubscriber<>());
+
+            //update transaction
+            reloadListTransactionSync(30, null);
+
+            return Boolean.TRUE;
+        });
+    }
+
     private Observable<Long> balanceLocal() {
         return sqlZaloPayScope.balance();
     }
@@ -134,8 +153,6 @@ public class ZaloPayFactory {
     }
 
 
-
-
     private void writeTransactionResp(TransactionHistoryResponse response) {
         List<TransHistoryEntity> list = response.data;
         int size = list.size();
@@ -147,4 +164,25 @@ public class ZaloPayFactory {
             sqlZaloPayScope.write(response.data);
         }
     }
+
+
+    private <T> Observable<T> makeObservable(final Callable<T> func) {
+        return Observable.create(
+                new Observable.OnSubscribe<T>() {
+                    @Override
+                    public void call(Subscriber<? super T> subscriber) {
+                        try {
+                            subscriber.onNext(func.call());
+                            subscriber.onCompleted();
+                        } catch (Exception ex) {
+                            try {
+                                subscriber.onError(ex);
+                            } catch (Exception ex2) {
+                            }
+                        }
+                    }
+                });
+    }
+
+
 }

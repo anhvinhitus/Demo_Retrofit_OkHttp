@@ -8,7 +8,7 @@ import vn.com.vng.zalopay.ui.view.IHomeView;
  */
 
 
-public class HomePresenter extends BaseUserPresenter implements Presenter<IHomeView> {
+public class HomePresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
     private IHomeView mView;
 
     public HomePresenter() {

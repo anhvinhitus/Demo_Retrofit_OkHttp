@@ -7,19 +7,24 @@ import android.net.NetworkInfo;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.Constants;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.zing.pay.zmpsdk.ZingMobilePayService;
 import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
@@ -33,22 +38,29 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
  */
 
 
-
 public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
+    final ZaloPayIAPRepository zaloPayIAPRepository;
 
+    final User user;
 
-    ZaloPayRepository zaloPayRepository;
-    User user;
     private PaymentListener paymentListener;
 
-    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext, ZaloPayRepository zaloPayRepository, User user) {
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    final long appId; // AppId này là appid js cắm vào
+
+    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext,
+                                  ZaloPayIAPRepository zaloPayIAPRepository,
+                                  User user, long appId) {
         super(reactContext);
-        this.zaloPayRepository = zaloPayRepository;
         this.user = user;
+        this.zaloPayIAPRepository = zaloPayIAPRepository;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
+
+        this.appId = appId;
 
     }
 
@@ -56,7 +68,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     public String getName() {
         return "ZaloPayIAP";
     }
-
 
     private void destroyVariable() {
         paymentListener = null;
@@ -84,37 +95,37 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
             String mac = params.getString(Constants.MAC);
 
             if (appID < 0) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_INPUT);
                 }
                 return;
             }
             if (TextUtils.isEmpty(appTransID)) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_INPUT);
                 }
                 return;
             }
             if (TextUtils.isEmpty(appUser)) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_INPUT);
                 }
                 return;
             }
             if (appTime <= 0) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_INPUT);
                 }
                 return;
             }
             if (amount <= 0) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_INPUT);
                 }
                 return;
             }
             if (TextUtils.isEmpty(itemName)) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_INPUT);
                 }
                 return;
@@ -129,7 +140,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
             }
 
             if (user == null || user.uid <= 0) {
-                if (promise!=null) {
+                if (promise != null) {
                     handleResultError(promise, PaymentError.ERR_CODE_USER_INFO);
                 }
                 return;
@@ -154,7 +165,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
             paymentListener = new PaymentListener(promise);
             ZingMobilePayService.pay(getCurrentActivity(), forcedPaymentChannel, paymentInfo, paymentListener);
         } catch (Exception e) {
-            if (promise!=null) {
+            if (promise != null) {
                 handleResultError(promise, PaymentError.ERR_CODE_INPUT);
             }
         }
@@ -230,10 +241,8 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     }
 
     private void transactionUpdate() {
-        zaloPayRepository.transactionUpdate()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+        zaloPayIAPRepository.transactionUpdate()
+                .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     @Override
@@ -254,6 +263,91 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     @Override
     public void onHostDestroy() {
         Timber.d("Actvity `onDestroy");
+        unsubscribeIfNotNull(compositeSubscription);
         destroyVariable();
+    }
+
+    public void unsubscribeIfNotNull(CompositeSubscription subscription) {
+        if (subscription != null) {
+            subscription.clear();
+        }
+    }
+
+    @ReactMethod
+    public void getUserInfo(Promise promise) {
+        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
+                .subscribe(new UserInfoSubscriber(promise));
+        compositeSubscription.add(subscription);
+    }
+
+    private final class UserInfoSubscriber extends DefaultSubscriber<MerChantUserInfo> {
+
+        private Promise promise;
+
+        public UserInfoSubscriber(Promise promise) {
+            this.promise = promise;
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            promise.resolve(handleResultError(e));
+        }
+
+        @Override
+        public void onNext(MerChantUserInfo merChantUserInfo) {
+            promise.resolve(transform(merChantUserInfo));
+        }
+    }
+
+    private WritableMap transform(MerChantUserInfo merChantUserInfo) {
+        if (merChantUserInfo == null) return null;
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", 1);
+
+        WritableMap data = Arguments.createMap();
+        data.putString("mUid", String.valueOf(merChantUserInfo.muid));
+        data.putString("displayName", merChantUserInfo.displayname);
+        data.putString("dateOfBirth", merChantUserInfo.birthdate);
+        data.putString("gender", merChantUserInfo.usergender);
+        item.putMap("data", data);
+        return item;
+    }
+
+    @ReactMethod
+    public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
+        Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
+                .subscribe(new VerifyAccessToken(promise));
+
+        compositeSubscription.add(subscription);
+    }
+    
+    private final class VerifyAccessToken extends DefaultSubscriber<Boolean> {
+        private Promise promise;
+
+        public VerifyAccessToken(Promise promise) {
+            this.promise = promise;
+        }
+
+        @Override
+        public void onNext(Boolean aBoolean) {
+            WritableMap item = Arguments.createMap();
+            item.putInt("code", 1);
+            promise.resolve(item);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            promise.resolve(handleResultError(e));
+        }
+    }
+
+    private WritableMap handleResultError(Throwable e) {
+        WritableMap item = Arguments.createMap();
+        if (e instanceof BodyException) {
+            item.putInt("code", ((BodyException) e).errorCode);
+        } else {
+            item.putInt("code", -1);
+        }
+        return item;
     }
 }

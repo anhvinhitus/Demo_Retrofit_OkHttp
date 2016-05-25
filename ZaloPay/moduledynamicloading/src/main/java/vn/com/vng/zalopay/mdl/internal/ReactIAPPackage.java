@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
 
@@ -18,19 +19,21 @@ import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
  * Created by AnhHieu on 5/16/16.
  */
 public class ReactIAPPackage implements ReactPackage {
+    final ZaloPayIAPRepository zaloPayIAPRepository;
+    final User user;
+    private final long appId;
 
-    ZaloPayRepository zaloPayRepository;
-    User user;
-
-    public ReactIAPPackage(ZaloPayRepository repository, User user) {
-        this.zaloPayRepository = repository;
+    public ReactIAPPackage(ZaloPayIAPRepository zaloPayIAPRepository,
+                           User user, long appId) {
+        this.zaloPayIAPRepository = zaloPayIAPRepository;
         this.user = user;
+        this.appId = appId;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayRepository, user));
+        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayIAPRepository, user, appId));
         return modules;
     }
 

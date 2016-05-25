@@ -4,6 +4,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 
@@ -44,4 +45,11 @@ public interface ZaloPayRepository {
 
     /* Gọi lần mới run app */
     Observable<Boolean> initialize();
+
+
+    /*
+    *
+    * Sửa dụng cho App JS
+    * */
+
 }

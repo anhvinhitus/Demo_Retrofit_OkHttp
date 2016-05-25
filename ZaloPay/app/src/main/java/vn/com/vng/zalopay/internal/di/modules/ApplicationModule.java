@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
@@ -115,5 +116,13 @@ public class ApplicationModule {
         params.put("devicemodel", Build.MODEL);
         return params;
     }
+
+
+    @Provides
+    @Singleton
+    DownloadAppResourceTaskQueue providesDownloadAppResource(Context context) {
+        return DownloadAppResourceTaskQueue.create(context);
+    }
+
 
 }

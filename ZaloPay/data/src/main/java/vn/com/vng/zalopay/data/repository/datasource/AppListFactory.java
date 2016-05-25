@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
@@ -11,9 +12,11 @@ import vn.com.vng.zalopay.data.api.entity.AppInfoEntity;
 import vn.com.vng.zalopay.data.cache.SqlAppListScope;
 import vn.com.vng.zalopay.domain.model.User;
 
+*/
 /**
  * Created by AnhHieu on 5/4/16.
- */
+ *//*
+
 
 
 public class AppListFactory {
@@ -46,3 +49,4 @@ public class AppListFactory {
         return null;
     }
 }
+*/

@@ -31,7 +31,7 @@ import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
  * Created by longlv on 09/05/2016.
  */
 
-public final class QRCodePresenter extends BaseZaloPayPresenter implements Presenter<IQRScanView>, ZPPaymentListener {
+public final class QRCodePresenter extends BaseZaloPayPresenter implements IPresenter<IQRScanView>, ZPPaymentListener {
 
     private IQRScanView mView;
 

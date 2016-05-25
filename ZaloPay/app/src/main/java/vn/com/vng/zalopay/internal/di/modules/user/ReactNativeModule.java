@@ -47,27 +47,6 @@ public class ReactNativeModule {
 
     @UserScope
     @Provides
-    @Named("reactMainPackage")
-    ReactPackage provideMainReactPackage() {
-        return new MainReactPackage();
-    }
-
-    @UserScope
-    @Provides
-    @Named("reactInternalPackage")
-    ReactPackage provideReactInternalPackage(ZaloPayRepository repository) {
-        return new ReactInternalPackage(repository);
-    }
-
-    @UserScope
-    @Provides
-    @Named("reactIAPPackage")
-    ReactPackage provideReactIAPPackage(ZaloPayRepository repository, User user) {
-        return new ReactIAPPackage(repository, user);
-    }
-
-    @UserScope
-    @Provides
     BundleReactConfig provideBundleReactConfig(Context context, @Named("bundleservice") BundleService service) {
         switch (BuildConfig.REACT_DEVELOP_SUPPORT) {
             case DEV_INTERNAL:
@@ -80,31 +59,4 @@ public class ReactNativeModule {
                 return null;
         }
     }
-
-    @UserScope
-    @Provides
-    ReactInstanceManager providesReactInstanceManager(Context context, BundleReactConfig internalBundle,
-                                                      @Named("reactInternalPackage") ReactPackage internal,
-                                                      @Named("reactMainPackage") ReactPackage main,
-                                                      @Named("reactIAPPackage") ReactPackage iapPackage) {
-        Timber.d("providesReactInstanceManager %s, %s", internalBundle.getInternalJsBundle(), BuildConfig.DEBUG);
-        return ReactInstanceManager.builder()
-                .setApplication((Application) context)
-                .setJSBundleFile(internalBundle.getInternalJsBundle())
-//                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("index.android")
-                .addPackage(main)
-                .addPackage(internal)
-                .addPackage(iapPackage)
-                .setUseDeveloperSupport(internalBundle.isInternalDevSupport())
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .setNativeModuleCallExceptionHandler(new NativeModuleCallExceptionHandler() {
-                    @Override
-                    public void handleException(Exception e) {
-                        Timber.e(e, "Error from React Native module");
-                    }
-                })
-                .build();
-    }
-
 }

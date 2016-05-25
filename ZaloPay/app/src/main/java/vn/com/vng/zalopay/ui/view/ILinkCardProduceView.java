@@ -7,7 +7,7 @@ import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
 /**
  * Created by AnhHieu on 5/11/16.
  */
-public interface ILinkCardProduceView extends LoadDataView {
+public interface ILinkCardProduceView extends ILoadDataView {
     Activity getActivity();
     void onAddCardSuccess(DMappedCard card);
     void onTokenInvalid();
