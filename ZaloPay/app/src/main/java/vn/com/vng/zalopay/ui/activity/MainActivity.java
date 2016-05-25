@@ -150,7 +150,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void onClickProfile() {
-        navigator.startPreProfileActivity(this);
+//        navigator.startPreProfileActivity(this);
+        navigator.startProfileInfoActivity(this);
     }
 
     public void replaceFragmentDelay(final int id) {
