@@ -31,14 +31,22 @@ public class EditProfileFragment extends BaseFragment {
 
     @OnClick(R.id.imgEditInfo)
     public void onClickEditInfo(View view) {
-        mLayoutProfileInfo.setVisibility(View.GONE);
-        layoutEditProfileInfo.setVisibility(View.VISIBLE);
+        showEditProfileInfo();
     }
 
     @OnClick(R.id.btnUpdate)
     public void onClickBtnContinue(View view) {
+        showProfileInfo();
+    }
+
+    private void showProfileInfo() {
         mLayoutProfileInfo.setVisibility(View.VISIBLE);
         layoutEditProfileInfo.setVisibility(View.GONE);
+    }
+
+    private void showEditProfileInfo() {
+        mLayoutProfileInfo.setVisibility(View.GONE);
+        layoutEditProfileInfo.setVisibility(View.VISIBLE);
     }
 
     public EditProfileFragment() {
@@ -100,6 +108,16 @@ public class EditProfileFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (layoutEditProfileInfo.getVisibility()==View.VISIBLE) {
+            showProfileInfo();
+            return true;
+        } else {
+            return super.onBackPressed();
+        }
     }
 
     /**

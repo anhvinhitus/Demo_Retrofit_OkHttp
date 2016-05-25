@@ -9,12 +9,12 @@ import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.vng.zalopay.ui.presenter.Presenter;
+import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 19/05/2016.
  */
-public class ProfileInfoPresenter extends BaseUserPresenter implements Presenter<IProfileInfoView> {
+public class ProfileInfoPresenter extends BaseUserPresenter implements IPresenter<IProfileInfoView> {
 
     IProfileInfoView mView;
     private UserConfig mUserConfig;
