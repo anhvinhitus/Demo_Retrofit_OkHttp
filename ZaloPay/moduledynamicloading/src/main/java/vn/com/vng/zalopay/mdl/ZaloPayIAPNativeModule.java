@@ -262,7 +262,9 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @Override
     public void onHostDestroy() {
+
         Timber.d("Actvity `onDestroy");
+
         unsubscribeIfNotNull(compositeSubscription);
         destroyVariable();
     }
@@ -275,6 +277,9 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void getUserInfo(Promise promise) {
+
+        Timber.d("get user info appId %s", appId);
+
         Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
                 .subscribe(new UserInfoSubscriber(promise));
         compositeSubscription.add(subscription);
@@ -290,11 +295,17 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         @Override
         public void onError(Throwable e) {
+
+            Timber.e("on error ", e);
+
             promise.resolve(handleResultError(e));
         }
 
         @Override
         public void onNext(MerChantUserInfo merChantUserInfo) {
+
+            Timber.d("get user info %s %s ", merChantUserInfo, merChantUserInfo.muid);
+
             promise.resolve(transform(merChantUserInfo));
         }
     }
@@ -315,12 +326,14 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
+
+        Timber.d("verifyAccessToken %s %s", mUid, mAccessToken);
+
         Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
                 .subscribe(new VerifyAccessToken(promise));
-
         compositeSubscription.add(subscription);
     }
-    
+
     private final class VerifyAccessToken extends DefaultSubscriber<Boolean> {
         private Promise promise;
 
@@ -330,6 +343,9 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         @Override
         public void onNext(Boolean aBoolean) {
+
+            Timber.d("verifyAccessToken onNext");
+
             WritableMap item = Arguments.createMap();
             item.putInt("code", 1);
             promise.resolve(item);
@@ -337,6 +353,9 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
         @Override
         public void onError(Throwable e) {
+
+            Timber.e("on Error %s", e);
+
             promise.resolve(handleResultError(e));
         }
     }

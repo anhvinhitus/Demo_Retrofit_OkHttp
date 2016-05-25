@@ -1,99 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="110dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
+    android:baselineAligned="false"
     android:orientation="horizontal">
 
-
-    <LinearLayout
+    <TextView
         android:id="@+id/btn_qr_code"
-        android:layout_width="0dp"
+        style="@style/TextView.Default"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.0"
+        android:background="?selector"
+        android:drawablePadding="@dimen/spacing.medium.s"
+        android:drawableTop="@drawable/ic_qrcode"
         android:gravity="center"
-        android:orientation="vertical">
+        android:padding="@dimen/app_padding"
+        android:text="@string/txt_home_qrcode"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize.tiny" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_qrcode" />
-
-        <TextView
-            style="@style/TextView.Default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="@string/scan.qr.code"
-            android:textColor="#f6f0ff"
-            android:textSize="14.5dp" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="1px"
+    <TextView
+        android:id="@+id/btn_deposit"
+        style="@style/TextView.Default"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="24dp"
-        android:layout_marginTop="24dp"
-        android:background="#44aceb" />
-
-    <LinearLayout
-        android:id="@+id/profile"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.0"
+        android:background="?selector"
+        android:drawablePadding="@dimen/spacing.medium.s"
+        android:drawableTop="@drawable/ic_naptien"
         android:gravity="center"
-        android:orientation="vertical">
+        android:padding="@dimen/app_padding"
+        android:text="@string/txt_home_deposit"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize.tiny" />
 
-
-        <vn.vng.uicomponent.widget.image.BezelImageView
-            android:id="@+id/avatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:borderDrawable="@drawable/circle_border_white"
-            app:maskDrawable="@drawable/circle_mask" />
-
-        <TextView
-            style="@style/TextView.Default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="10000000 đ"
-            android:textColor="#f6f0ff"
-            android:textSize="14.5dp" />
-
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="1px"
+    <TextView
+        android:id="@+id/btn_link_card"
+        style="@style/TextView.Default"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="24dp"
-        android:layout_marginTop="24dp"
-        android:background="#44aceb" />
-
-
-    <LinearLayout
-        android:id="@+id/btn_card_bank"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.0"
+        android:background="?selector"
+        android:drawablePadding="@dimen/spacing.medium.s"
+        android:drawableTop="@drawable/ic_lienketthe"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_lienketthe" />
-
-        <TextView
-            style="@style/TextView.Default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="@string/card.bank"
-            android:textColor="#f6f0ff"
-            android:textSize="14.5dp" />
-    </LinearLayout>
+        android:padding="@dimen/app_padding"
+        android:text="@string/link.card"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize.tiny" />
 </LinearLayout>

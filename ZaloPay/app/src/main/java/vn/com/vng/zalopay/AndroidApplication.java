@@ -1,9 +1,7 @@
 package vn.com.vng.zalopay;
 
-import android.content.Context;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
@@ -108,11 +106,6 @@ public class AndroidApplication extends MultiDexApplication {
     public UserComponent getUserComponent() {
         return userComponent;
     }
-
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-	}
 	
     private void initializeFileFolder() {
         if (Environment.MEDIA_MOUNTED.equals(Environment

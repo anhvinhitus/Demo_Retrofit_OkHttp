@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -47,12 +48,27 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+            appResource = getIntent().getParcelableExtra("appResource");
+        } else {
+            appResource = savedInstanceState.getParcelable("appResource");
+        }
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (appResource != null) {
+            outState.putParcelable("appResource", appResource);
+        }
     }
 
     protected void doInjection() {
         mComponentName = getIntent().getStringExtra("moduleName");
         Timber.e("Starting module: %s", mComponentName);
-
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 

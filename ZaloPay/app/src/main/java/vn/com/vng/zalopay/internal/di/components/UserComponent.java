@@ -78,5 +78,9 @@ public interface UserComponent {
 
     void inject(PaymentApplicationActivity activity);
 
+
+    void inject(vn.com.vng.zalopay.ui.activity.MainActivity act);
+
     void inject(ProfileInfoActivity a);
+
 }

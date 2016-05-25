@@ -14,12 +14,24 @@ public class AppResource extends AbstractData {
 
     public String checksum;
 
+    public int status;
+
+    public String urlImage;
+
     public AppResource(Parcel source) {
         appid = source.readLong();
         appname = source.readString();
         checksum = source.readString();
     }
 
+    public AppResource(long appid, String appname, String urlImage) {
+        this.appid = appid;
+        this.appname = appname;
+        this.urlImage = urlImage;
+    }
+
+    public AppResource() {
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

@@ -9,20 +9,14 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
-import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
+import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 
 @Module
 public class UserPresenterModule {
-
-    @UserScope
-    @Provides
-    HomePresenter provideHomePresenter() {
-        return new HomePresenter();
-    }
 
     @UserScope
     @Provides
@@ -62,8 +56,15 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
+    MainPresenter providerMainPresenter() {
+        return new MainPresenter();
+    }
+
+    @UserScope
+    @Provides
     ProfileInfoPresenter provideProfileInfoPresenter(UserConfig userConfig) {
         return new ProfileInfoPresenter(userConfig);
+
     }
 
     @UserScope
