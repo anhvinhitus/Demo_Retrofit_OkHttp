@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
@@ -109,6 +110,13 @@ public class Navigator {
     public void startPaymentApplicationActivity(Context context, String name) {
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
         intent.putExtra("moduleName", name);
+        context.startActivity(intent);
+    }
+
+    public void startPaymentApplicationActivity(Context context, AppResource appResource, String moduleName) {
+        Intent intent = new Intent(context, PaymentApplicationActivity.class);
+        intent.putExtra("moduleName", moduleName);
+        intent.putExtra("appResource", appResource);
         context.startActivity(intent);
     }
 

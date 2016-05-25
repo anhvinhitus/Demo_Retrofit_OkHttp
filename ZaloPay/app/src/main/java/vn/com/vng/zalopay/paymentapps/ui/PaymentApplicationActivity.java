@@ -48,6 +48,22 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+            appResource = getIntent().getParcelableExtra("appResource");
+        } else {
+            appResource = savedInstanceState.getParcelable("appResource");
+        }
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (appResource != null) {
+            outState.putParcelable("appResource", appResource);
+        }
     }
 
     protected void doInjection() {

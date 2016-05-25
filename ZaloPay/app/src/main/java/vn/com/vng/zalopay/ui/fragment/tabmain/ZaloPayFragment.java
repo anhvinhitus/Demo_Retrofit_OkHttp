@@ -138,7 +138,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onClickAppListener(AppResource app) {
-        navigator.startPaymentApplicationActivity(getActivity(), "PaymentMain");
+        navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
     }
 
     @OnClick(R.id.btn_deposit)
