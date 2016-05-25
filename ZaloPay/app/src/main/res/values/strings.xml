@@ -55,6 +55,7 @@
     <string name="amount_vnd"> (VND)</string>
     <string name="vnd"> VND</string>
 
+    <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
@@ -146,4 +147,20 @@
     <string name="note_pin">Là mã số bí mật khi thực hiện thanh toán hoặc giao dịch</string>
     <string name="hint_pin_compare">Nhập lại mã số PIN</string>
     <string name="invalid_pin_compare">Mã số PIN không trùng nhau</string>
+
+    <string name="manager_card">Quản lí thẻ</string>
+    <string name="my_qr_code">Mã QR của tôi</string>
+
+    <string name="personal">Cá nhân</string>
+    <string name="user_info">Thông tin cá nhân</string>
+    <string name="sigout_and_delete_db">Thoát và xóa dữ liệu</string>
+    <string name="title_activity_edit_profile">Thông tin cá nhân</string>
+
+    <string name="not_update">Chưa cập nhật</string>
+    <string name="cmnd_passpost">CMND/Hộ chiếu</string>
+    <string name="address">Địa chỉ</string>
+    <string name="zalo_id">Zalo ID</string>
+    <string name="zalopay_id">ZaloPay ID</string>
+
+    <string name="hint_fullname">Họ tên</string>
 </resources>

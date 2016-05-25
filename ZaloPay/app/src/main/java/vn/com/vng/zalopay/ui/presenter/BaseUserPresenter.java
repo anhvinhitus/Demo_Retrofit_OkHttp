@@ -9,9 +9,9 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
  */
 public abstract class BaseUserPresenter extends BaseAppPresenter {
 
-    AppConfigRepository appConfigRepository = AndroidApplication.instance().getUserComponent().appConfigRepository();
+    protected AppConfigRepository appConfigRepository = AndroidApplication.instance().getUserComponent().appConfigRepository();
 
-    ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
+    protected ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
 
 
 }

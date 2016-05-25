@@ -205,7 +205,8 @@
             </intent-filter>
         </receiver>
 
-     <!--   <service
+        <!--
+        <service
             android:name="vn.zing.pay.zmpsdk.helper.gms.RegistrationIntentService"
             android:exported="false" />
         <service
@@ -214,7 +215,8 @@
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
-        </service>-->
+        </service>
+        -->
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
@@ -247,10 +249,19 @@
             android:name=".ui.activity.LinkCardProcedureActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".account.ui.activities.PreProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
-        <activity android:name=".account.ui.activities.PinProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
+        <activity
+            android:name=".account.ui.activities.PreProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar.AppColor" />
+        <activity
+            android:name=".account.ui.activities.PinProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar.AppColor" />
+        <activity
+            android:name=".account.ui.activities.ProfileInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen" />
+        <activity
+            android:name=".account.ui.activities.EditProfileActivity"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

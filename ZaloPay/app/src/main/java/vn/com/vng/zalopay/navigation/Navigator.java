@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
+import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -116,6 +118,16 @@ public class Navigator {
 
     public void startPinProfileActivity(Activity activity) {
         Intent intent = new Intent(activity, PinProfileActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startProfileInfoActivity(Activity activity) {
+        Intent intent = new Intent(activity, ProfileInfoActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startEditProfileActivity(Activity activity) {
+        Intent intent = new Intent(activity, EditProfileActivity.class);
         activity.startActivity(intent);
     }
 }
