@@ -134,7 +134,7 @@ public class AppConfigFactory {
             appResourceEntity.jsurl = baseurl + appResourceEntity.jsurl;
             appResourceEntity.imageurl = baseurl + appResourceEntity.imageurl;
 
-            if (appResourceEntity.needdownloadrs == 1 && appResourceEntity.appid == 8) {
+            if (appResourceEntity.needdownloadrs == 1 ) {
                 createTask(appResourceEntity, needDownloadList);
             }
         }
