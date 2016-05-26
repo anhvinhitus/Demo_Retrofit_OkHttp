@@ -272,8 +272,8 @@
 
         <service
             android:name=".service.DownloadService"
-            android:label="DownloadService"
-            android:process=":zmres" />
+            android:exported="false"
+            android:label="DownloadService" />
     </application>
 
 </manifest>

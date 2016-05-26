@@ -27,12 +27,14 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
+import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 
 /**
  * Created by AnhHieu on 4/11/16.
  */
-public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener {
+public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener, IZaloPayView {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -49,7 +51,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     Navigator navigator;
 
     @Inject
-    User user;
+    ZaloPayPresenter presenter;
 
     /* Advertisement START */
     @BindView(R.id.layoutBannerFullScreen)
@@ -91,6 +93,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.setView(this);
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         listView.setNestedScrollingEnabled(false);
@@ -106,6 +109,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter.setData(getListData());
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.destroyView();
+        super.onDestroyView();
     }
 
     /* Show|Hide Banner START */

@@ -44,7 +44,10 @@ public class DownloadAppResourceTask {
 
     public void execute(Callback callback) {
         //download(downloadInfo.)
+
         boolean isDownloadSuccess = download(downloadInfo.url, callback);
+
+        Timber.d("isDownload %s", isDownloadSuccess);
 
         if (!isDownloadSuccess) {
             deleteDirectory(new File(getUnZipPath(downloadInfo)));
@@ -58,41 +61,43 @@ public class DownloadAppResourceTask {
         }
     }
 
-    private boolean writeResponseBodyToDisk(ResponseBody body, File temp) {
+    private boolean writeResponseBodyToDisk(ResponseBody body, String temp) {
+
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+
         try {
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
+            byte[] fileReader = new byte[1024 * 4];
 
-            try {
-                byte[] fileReader = new byte[1024 * 2];
+            long fileSize = body.contentLength();
+            long fileSizeDownloaded = 0;
 
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
+            inputStream = body.byteStream();
+            outputStream = new FileOutputStream(temp);
 
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(temp);
+            while (true) {
+                int read = inputStream.read(fileReader);
 
-                while (true) {
-                    int read = inputStream.read(fileReader);
-
-                    if (read == -1) {
-                        break;
-                    }
-
-                    outputStream.write(fileReader, 0, read);
-
-                    fileSizeDownloaded += read;
+                if (read == -1) {
+                    break;
                 }
 
-                outputStream.flush();
+                outputStream.write(fileReader, 0, read);
 
-                if (fileSize != fileSizeDownloaded) {
-                    return false;
-                }
-                return true;
-            } catch (IOException e) {
+                fileSizeDownloaded += read;
+            }
+
+            outputStream.flush();
+
+            if (fileSize != fileSizeDownloaded) {
                 return false;
-            } finally {
+            }
+            return true;
+        } catch (IOException e) {
+            Timber.e(e, " download exception %s", e);
+            return false;
+        } finally {
+            try {
                 if (inputStream != null) {
                     inputStream.close();
                 }
@@ -100,15 +105,17 @@ public class DownloadAppResourceTask {
                 if (outputStream != null) {
                     outputStream.close();
                 }
+            } catch (Exception e) {
             }
-        } catch (IOException e) {
-            return false;
         }
+
     }
 
     private boolean download(String url, Callback callback) {
 
-        File temp = ensureDirectory(getTempFilePath());
+        Timber.d("url download %s", url);
+
+        String temp = getTempFilePath();
 
         final Call call = httpClient.newCall(new Request.Builder().url(url).get().build());
         boolean result = false;
@@ -116,6 +123,8 @@ public class DownloadAppResourceTask {
             Response response = call.execute();
             if (response.code() == 200) {
                 result = writeResponseBodyToDisk(response.body(), temp);
+            } else {
+                Timber.e("response.code() %s", response.code());
             }
         } catch (Exception ex) {
 
@@ -125,23 +134,25 @@ public class DownloadAppResourceTask {
         } finally {
             call.cancel();
         }
-
+        Timber.i("result download %s", result);
         if (result) {
             // delete  temp
-
             String destinationPath = getUnZipPath(downloadInfo);
-
             Timber.d("destinationPath %s", destinationPath);
             try {
-                unzipFile(temp, destinationPath, false);
-            } catch (IOException ex) {
+                unzip(temp, destinationPath);
+            } catch (Exception ex) {
+                Timber.e(ex, "exception unzip ");
                 result = false;
             }
         }
 
-        if (temp != null && temp.exists()) {
-            temp.delete();
+
+        if (!result) {
+
         }
+
+        deleteFile(temp);
 
         return result;
     }

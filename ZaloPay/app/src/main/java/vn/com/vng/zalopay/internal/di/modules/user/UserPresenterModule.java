@@ -14,6 +14,8 @@ import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
+import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
 
 @Module
 public class UserPresenterModule {
@@ -58,6 +60,12 @@ public class UserPresenterModule {
     @Provides
     MainPresenter providerMainPresenter() {
         return new MainPresenter();
+    }
+
+    @UserScope
+    @Provides
+    ZaloPayPresenter providerZaloPayPresenter() {
+        return new ZaloPayPresenterImpl();
     }
 
     @UserScope

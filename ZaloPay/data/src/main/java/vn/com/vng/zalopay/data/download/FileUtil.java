@@ -30,8 +30,8 @@ public class FileUtil {
         }
     }
 
-    public static void unzip(String zipFilePath, String destinationPath) {
-        try {
+    public static void unzip(String zipFilePath, String destinationPath) throws Exception {
+
             File archive = new File(zipFilePath);
 
             ZipFile zipfile = new ZipFile(archive);
@@ -45,9 +45,7 @@ public class FileUtil {
             }
 
             zipfile.close();
-        } catch (Exception e) {
-            Timber.e(e, "Unzip exception");
-        }
+
     }
 
     public static void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
@@ -93,6 +91,22 @@ public class FileUtil {
         directory.delete();
     }
 
+    public static void deleteFile(String path) {
+        try {
+            File oldDir = new File(path);
+            deleteRecursive(oldDir);
+        } catch (Exception ex) {
+        }
+    }
+
+    public static void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        fileOrDirectory.delete();
+    }
     public static void unzipFile(File zipFile, String destination, boolean deleteExisting) throws IOException {
         FileInputStream fileStream = null;
         BufferedInputStream bufferedStream = null;

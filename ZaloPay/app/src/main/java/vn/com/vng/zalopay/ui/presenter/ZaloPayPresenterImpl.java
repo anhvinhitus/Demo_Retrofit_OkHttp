@@ -26,7 +26,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void pause() {
-
     }
 
     @Override

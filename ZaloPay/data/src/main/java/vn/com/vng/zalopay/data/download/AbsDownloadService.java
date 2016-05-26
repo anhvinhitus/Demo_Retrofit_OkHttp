@@ -39,21 +39,14 @@ public abstract class AbsDownloadService extends IntentService implements Downlo
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Timber.d("on handle intent %s", intent);
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        //return super.onStartCommand(intent, flags, startId);
-        Timber.d(" onStartCommand %s", intent);
+        Timber.d("on handle intent currentThread %s", Thread.currentThread().getName());
         executeNext();
-        return START_STICKY;
     }
 
     private void executeNext() {
         if (running) return; // Only one task at a time.
 
+        Timber.d(" executeNext isEmpty %s", queue.isEmpty());
         DownloadAppResourceTask task = queue.peek();
         if (task != null) {
             running = true;
@@ -63,7 +56,6 @@ public abstract class AbsDownloadService extends IntentService implements Downlo
             stopSelf(); // No more tasks are present. Stop.
         }
     }
-
 
     @Override
     public void onSuccess() {

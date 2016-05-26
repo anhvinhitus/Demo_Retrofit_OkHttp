@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -93,19 +94,28 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         public void bindView(AppResource appResource) {
+
             mNameView.setText(appResource.appname);
             setImage(mLogoView, appResource.urlImage);
             if (appResource.status == 0) {
             } else {
             }
+
         }
 
         private final void setImage(ImageView image, String url) {
+            image.setVisibility(View.VISIBLE);
+
             try {
                 int resId = Integer.parseInt(url);
                 image.setImageResource(resId);
             } catch (NumberFormatException ex) {
-                loadImage(image, url);
+
+                if (TextUtils.isEmpty(url)) {
+                    image.setVisibility(View.INVISIBLE);
+                } else {
+                    loadImage(image, url);
+                }
 
             }
         }

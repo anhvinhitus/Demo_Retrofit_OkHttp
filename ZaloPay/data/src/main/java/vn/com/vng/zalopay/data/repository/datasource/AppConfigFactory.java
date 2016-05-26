@@ -94,11 +94,13 @@ public class AppConfigFactory {
     public Observable<AppResourceResponse> getAppResourceCloud() {
         List<Long> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
+
+
         listAppIdAndChecksum(appidlist, checksumlist);
 
-        Timber.d("appid react-native list ", appidlist);
+        Timber.d("appid react-native list %s", appidlist);
 
-        return appConfigService.insideappresource(appidlist, checksumlist, paramsReq)
+        return appConfigService.insideappresource(appidlist.toString(), checksumlist.toString(), paramsReq)
                 .doOnNext(resourceResponse -> processAppResourceResponse(resourceResponse))
                 ;
     }
@@ -132,12 +134,13 @@ public class AppConfigFactory {
             appResourceEntity.jsurl = baseurl + appResourceEntity.jsurl;
             appResourceEntity.imageurl = baseurl + appResourceEntity.imageurl;
 
-            if (appResourceEntity.needdownloadrs == 1) {
+            if (appResourceEntity.needdownloadrs == 1 && appResourceEntity.appid == 8) {
                 createTask(appResourceEntity, needDownloadList);
             }
         }
 
         if (!needDownloadList.isEmpty()) {
+            Timber.d("Start download %s", needDownloadList.size());
             taskQueue.enqueue(needDownloadList);
         }
 

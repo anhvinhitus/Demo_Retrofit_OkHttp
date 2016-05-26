@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.service.DownloadService;
 
 
 @Module
@@ -121,7 +122,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     DownloadAppResourceTaskQueue providesDownloadAppResource(Context context) {
-        return DownloadAppResourceTaskQueue.create(context);
+        return DownloadAppResourceTaskQueue.create(context, DownloadService.class);
     }
 
 

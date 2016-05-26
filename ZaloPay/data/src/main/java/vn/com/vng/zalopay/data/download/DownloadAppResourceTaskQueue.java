@@ -6,20 +6,25 @@ import android.content.Intent;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import timber.log.Timber;
+
 /**
  * Created by AnhHieu on 5/21/16.
  */
 public class DownloadAppResourceTaskQueue {
+
     private final LinkedList<DownloadAppResourceTask> tasklist;
     private final Context context;
+    private final Class<?> cls;
 
-    public DownloadAppResourceTaskQueue(Context context) {
+    public DownloadAppResourceTaskQueue(Context context, Class<?> cls) {
         this.tasklist = new LinkedList();
         this.context = context;
+        this.cls = cls;
     }
 
     private void startService() {
-        context.startService(new Intent(context, AbsDownloadService.class));
+        context.startService(new Intent(context, cls));
     }
 
     public boolean isEmpty() {
@@ -32,6 +37,7 @@ public class DownloadAppResourceTaskQueue {
     }
 
     public void enqueue(Collection<DownloadAppResourceTask> tasks) {
+        Timber.d(" enqueue currentThread %s", Thread.currentThread().getName());
         tasklist.addAll(tasks);
         startService();
     }
@@ -53,7 +59,7 @@ public class DownloadAppResourceTaskQueue {
         return null;
     }
 
-    public static final DownloadAppResourceTaskQueue create(Context context) {
-        return new DownloadAppResourceTaskQueue(context);
+    public static final DownloadAppResourceTaskQueue create(Context context, Class<?> cls) {
+        return new DownloadAppResourceTaskQueue(context, cls);
     }
 }

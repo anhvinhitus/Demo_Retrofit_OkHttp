@@ -6,7 +6,11 @@ import java.util.List;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
@@ -49,16 +53,13 @@ public interface AppConfigService {
     json array
     json array*/
 
-    @FormUrlEncoded
-    @POST("tpe/insideappresource")
-    Observable<AppResourceResponse> insideappresource(@Field("platformcode") String platformcode,
-                                                      @Field("dscreentype") String dscreentype,
-                                                      @Field("appidlist") List<Long> appidlist,
-                                                      @Field("checksumlist") List<String> checksumlist);
+    @GET("tpe/insideappresource")
+    Observable<AppResourceResponse> insideappresource(@Query("appidlist") List<Long> appidlist,
+                                                      @Query("checksumlist") List<String> checksumlist,
+                                                      @QueryMap HashMap<String, String> params);
 
-    @FormUrlEncoded
-    @POST("tpe/insideappresource")
-    Observable<AppResourceResponse> insideappresource(@Field("appidlist") List<Long> appidlist,
-                                                      @Field("checksumlist") List<String> checksumlist,
-                                                      @FieldMap HashMap<String, String> params);
+    @GET("tpe/insideappresource")
+    Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = true) String appidlist,
+                                                      @Query(value = "checksumlist", encoded = true) String checksumlist,
+                                                      @QueryMap HashMap<String, String> params);
 }
