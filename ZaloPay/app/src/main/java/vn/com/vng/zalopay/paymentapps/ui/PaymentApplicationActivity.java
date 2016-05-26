@@ -48,12 +48,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            appResource = getIntent().getParcelableExtra("appResource");
-        } else {
-            appResource = savedInstanceState.getParcelable("appResource");
-        }
     }
 
 
@@ -68,7 +62,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     protected void doInjection() {
         mComponentName = getIntent().getStringExtra("moduleName");
-        Timber.e("Starting module: %s", mComponentName);
+
+        appResource = getIntent().getParcelableExtra("appResource");
+
+
+        Timber.e("Starting module: %s user %s", mComponentName, AndroidApplication.instance().getUserComponent());
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 

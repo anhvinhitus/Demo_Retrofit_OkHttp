@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 
@@ -34,8 +35,8 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
                     .subscribe(new DefaultSubscriber<>())
             ;
 
-            appConfigFactory.getAppResourceCloud()
-                    .subscribe(new DefaultSubscriber<>());
+          /*  appConfigFactory.getAppResourceCloud()
+                    .subscribe(new DefaultSubscriber<>());*/
             return Boolean.TRUE;
         }).subscribeOn(Schedulers.io());
     }
@@ -43,5 +44,18 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
     @Override
     public Observable<List<BankCard>> listCardCache() {
         return appConfigFactory.listCardCache().map(cardEntities -> mapper.transform(cardEntities));
+    }
+
+    @Override
+    public Observable<List<AppResource>> listAppResource() {
+        return appConfigFactory.getAppResourceCloud()
+                .flatMap(response -> {
+                    if (response.resourcelist.isEmpty()) {
+                        return appConfigFactory.listAppResourceCache();
+                    } else {
+                        return Observable.just(response.resourcelist);
+                    }
+                })
+                .map(resourceEntities -> mapper.transformAppResourceEntity(resourceEntities));
     }
 }

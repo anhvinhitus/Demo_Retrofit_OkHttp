@@ -109,6 +109,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter.setData(getListData());
+        presenter.listAppResouce();
     }
 
     @Override
@@ -182,5 +183,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc))
         );
 
+    }
+
+    @Override
+    public void insertApps(List<AppResource> list) {
+        mAdapter.insertItems(list);
     }
 }

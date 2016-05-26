@@ -7,8 +7,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.BankCard;
 
 /**
@@ -39,6 +41,30 @@ public class AppConfigEntityDataMapper {
             BankCard bCard = transform(dMappedCard);
             if (bCard != null) {
                 list.add(bCard);
+            }
+        }
+        return list;
+    }
+
+
+    public AppResource transform(AppResourceEntity appResourceEntity) {
+        AppResource appResource = null;
+        if (appResourceEntity != null) {
+            appResource = new AppResource();
+            appResource.checksum = appResourceEntity.checksum;
+            appResource.appname = appResourceEntity.appname;
+            appResource.status = appResourceEntity.status;
+            appResource.appid = appResourceEntity.appid;
+        }
+        return appResource;
+    }
+    public List<AppResource> transformAppResourceEntity(List<AppResourceEntity> appResourceEntities) {
+        if (Lists.isEmptyOrNull(appResourceEntities)) return Collections.emptyList();
+        List<AppResource> list = new ArrayList<>();
+        for (AppResourceEntity appResourceEntity : appResourceEntities) {
+            AppResource appResource = transform(appResourceEntity);
+            if (appResource != null) {
+                list.add(appResource);
             }
         }
         return list;
