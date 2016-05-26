@@ -13,5 +13,4 @@ public abstract class BaseUserPresenter extends BaseAppPresenter {
 
     protected ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
 
-
 }

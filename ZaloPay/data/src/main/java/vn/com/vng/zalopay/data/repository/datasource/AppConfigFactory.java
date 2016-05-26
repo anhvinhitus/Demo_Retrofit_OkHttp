@@ -92,9 +92,9 @@ public class AppConfigFactory {
     }
 
     public Observable<AppResourceResponse> getAppResourceCloud() {
+
         List<Long> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
-
 
         listAppIdAndChecksum(appidlist, checksumlist);
 
@@ -104,7 +104,6 @@ public class AppConfigFactory {
                 .doOnNext(resourceResponse -> processAppResourceResponse(resourceResponse))
                 ;
     }
-
 
     public Observable<List<AppResourceEntity>> listAppResourceCache() {
         return sqlitePlatformScope.listApp();
@@ -126,15 +125,23 @@ public class AppConfigFactory {
         List<AppResourceEntity> resourcelist = resourceReponse.resourcelist;
 
         long expiredtime = resourceReponse.expiredtime;
-        String baseurl = resourceReponse.baseurl;
 
+        startDownloadService(resourcelist, resourceReponse.baseurl);
+
+        Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceReponse.baseurl, listAppId, resourcelist.size());
+
+        sqlitePlatformScope.write(resourcelist);
+        sqlitePlatformScope.updateAppId(listAppId);
+    }
+
+    private void startDownloadService(List<AppResourceEntity> resourcelist, String baseurl) {
 
         List<DownloadAppResourceTask> needDownloadList = new ArrayList<>();
         for (AppResourceEntity appResourceEntity : resourcelist) {
             appResourceEntity.jsurl = baseurl + appResourceEntity.jsurl;
             appResourceEntity.imageurl = baseurl + appResourceEntity.imageurl;
 
-            if (appResourceEntity.needdownloadrs == 1 ) {
+            if (appResourceEntity.needdownloadrs == 1) {
                 createTask(appResourceEntity, needDownloadList);
             }
         }
@@ -144,10 +151,6 @@ public class AppConfigFactory {
             taskQueue.enqueue(needDownloadList);
         }
 
-        Timber.d("baseurl %s listAppId %s resourcelistSize %s", baseurl, listAppId, resourcelist.size());
-
-        sqlitePlatformScope.write(resourcelist);
-        sqlitePlatformScope.updateAppId(listAppId);
     }
 
 

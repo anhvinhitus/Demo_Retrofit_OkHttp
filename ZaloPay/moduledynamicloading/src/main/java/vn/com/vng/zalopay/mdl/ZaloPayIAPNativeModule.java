@@ -320,6 +320,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         data.putString("displayName", merChantUserInfo.displayname);
         data.putString("dateOfBirth", merChantUserInfo.birthdate);
         data.putString("gender", String.valueOf(merChantUserInfo.usergender));
+        data.putString("mAccessToken", merChantUserInfo.maccesstoken);
         item.putMap("data", data);
         return item;
     }

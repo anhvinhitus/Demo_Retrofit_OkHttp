@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.mdl.impl;
 
+import android.os.Environment;
+
+import java.io.File;
+
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
@@ -27,11 +31,29 @@ public class BundleReactConfigRelease implements BundleReactConfig {
 
     @Override
     public String getExternalJsBundle(AppResource appResource) {
-        return bundleService.getExternalBundleFolder(appResource.appname) + "/main.jsbundle";
+        if (appResource == null) return "";
+        return getUnZipPath(appResource) + "/main.jsbundle";
     }
 
     @Override
     public boolean isExternalDevSupport() {
         return false;
+    }
+
+
+    private String getRootPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+
+    private String getResourcePath() {
+        return getRootPath() + File.separator + "zmres";
+    }
+
+    private String getTempFilePath() {
+        return getResourcePath() + File.separator + "temp.zip";
+    }
+
+    private String getUnZipPath(AppResource resource) {
+        return getResourcePath() + File.separator + resource.appname + File.separator + resource.checksum;
     }
 }
