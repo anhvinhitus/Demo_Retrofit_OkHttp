@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.zalopay.wallet.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.data.Constants;
 
 
 /**
@@ -73,6 +74,9 @@ public class AndroidApplication extends MultiDexApplication {
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
         ZingMobilePayApplication.wrap(this);
+        if (!BuildConfig.DEBUG) {
+            Constants.IS_RELEASE = true;
+        }
     }
 
 
