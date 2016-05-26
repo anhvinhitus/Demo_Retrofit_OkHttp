@@ -50,7 +50,7 @@ public class DownloadAppResourceTask {
         Timber.d("isDownload %s", isDownloadSuccess);
 
         if (!isDownloadSuccess) {
-            deleteDirectory(new File(getUnZipPath(downloadInfo)));
+            //Fixme:   deleteDirectory(new File(getUnZipPath(downloadInfo.appname)));
             if (callback != null) {
                 callback.onFailure();
             }
@@ -136,8 +136,7 @@ public class DownloadAppResourceTask {
         }
         Timber.i("result download %s", result);
         if (result) {
-            // delete  temp
-            String destinationPath = getUnZipPath(downloadInfo);
+            String destinationPath = getUnZipPath(downloadInfo.appname);
             Timber.d("destinationPath %s", destinationPath);
             try {
                 unzip(file.getAbsolutePath(), destinationPath);
@@ -172,7 +171,12 @@ public class DownloadAppResourceTask {
         return getResourcePath() + File.separator + "temp.zip";
     }
 
-    private String getUnZipPath(DownLoadInfo downLoadInfo) {
-        return getResourcePath() + File.separator + downLoadInfo.appname + File.separator + downLoadInfo.checksum;
+
+    public String getUnZipPath(String appName) {
+        return getRootApplicationPath(appName) + File.separator + "app";
+    }
+
+    public String getRootApplicationPath(String appName) {
+        return getResourcePath() + File.separator + appName;
     }
 }

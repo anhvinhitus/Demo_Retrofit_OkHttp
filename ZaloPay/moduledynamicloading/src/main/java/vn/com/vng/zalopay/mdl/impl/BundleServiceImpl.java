@@ -3,10 +3,10 @@ package vn.com.vng.zalopay.mdl.impl;
 import android.app.Application;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.text.TextUtils;
 
-import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.shell.MainReactPackage;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,8 +26,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.download.FileUtil;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
+import vn.com.vng.zalopay.mdl.internal.FileUtils;
+import vn.com.vng.zalopay.mdl.model.ReactBundleAssetData;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -45,8 +49,11 @@ public class BundleServiceImpl implements BundleService {
     String mCurrentInternalBundleVersion;
     String mExpectedInternalBundleVersion;
 
-    public BundleServiceImpl(Application application) {
+    private Gson mGson;
+
+    public BundleServiceImpl(Application application, Gson gson) {
         mApplication = application;
+        this.mGson = gson;
         prepareBundleEnvironment();
     }
 
@@ -74,6 +81,88 @@ public class BundleServiceImpl implements BundleService {
         // TODO: 5/18/16 Return real folder of the payment app
         return "";
     }
+
+    @Override
+    public void extractAllExternalApplication() {
+
+        Timber.i("Extract External Application Start");
+
+        AssetManager assetManager = mApplication.getAssets();
+
+        String bundle = null;
+
+        try {
+            bundle = loadStringFromStream(assetManager.open("bundle.json"));
+        } catch (IOException ex) {
+            Timber.e(ex, "IOException loadStringFromStream");
+            return;
+        }
+
+        ReactBundleAssetData reactBundleAssetData = mGson.fromJson(bundle, ReactBundleAssetData.class);
+
+        for (ReactBundleAssetData.ExternalBundle ebundle : reactBundleAssetData.external_bundle) {
+            String rootApp = getRootApplicationPath(ebundle);
+            ensureDirectory(rootApp);
+
+            File versionFile = getFileVersionApplication(ebundle);
+
+            boolean isExtract = false;
+
+            if (!versionFile.exists()) {
+                isExtract = true;
+            } else {
+                String version = loadStringFromFile(versionFile);
+                if (TextUtils.isEmpty(version) || !version.equals(ebundle.version)) {
+                    isExtract = true;
+                }
+            }
+
+
+            Timber.d("isExtract %s %s", ebundle, isExtract);
+
+            if (isExtract) {
+                String destination = getUnZipPath(ebundle);
+
+                FileUtils.deleteDirectoryAtPath(destination);
+
+                Timber.d("destination %s %s ", destination, ebundle.appname);
+
+                ensureDirectory(destination);
+
+                File fileAsset = new File(getRootApplicationPath(ebundle), ebundle.asset);
+                copyAssetToDirectory("external/" + ebundle.asset, fileAsset.getAbsolutePath());
+
+                try {
+                    FileUtil.unzip(fileAsset.getAbsolutePath(), destination);
+                } catch (Exception e) {
+                    Timber.e(e, "exception %s", e);
+                } finally {
+                    if (fileAsset.exists()) {
+                        fileAsset.delete();
+                    }
+                }
+
+                try {
+                    writeToFile(ebundle.version, versionFile.getAbsolutePath());
+                } catch (Exception ex) {
+                    Timber.e(ex, " write to file exception");
+                }
+            }
+
+        }
+
+        Timber.i("Extract External Application done");
+
+    }
+
+
+    private boolean equalsVersion(ReactBundleAssetData.ExternalBundle ebundle, String oldVersion) {
+        if (!TextUtils.isEmpty(oldVersion) && !oldVersion.equals(ebundle.version)) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public void prepareInternalBundle() {
@@ -242,6 +331,18 @@ public class BundleServiceImpl implements BundleService {
         }
     }
 
+    public static void writeToFile(final String fileContents, String path) throws IOException {
+        FileWriter out = null;
+        try {
+            out = new FileWriter(new File(path));
+            out.write(fileContents);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
+    }
+
     public String loadStringFromStream(InputStream is) {
         String json = null;
         try {
@@ -390,4 +491,35 @@ public class BundleServiceImpl implements BundleService {
             throw new RuntimeException("Can not create dir " + dir);
         }
     }
+
+
+    public String getRootPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+
+    public String getResourcePath() {
+        return getRootPath() + File.separator + "zmres";
+    }
+
+    public String getTempFilePath() {
+        return getResourcePath() + File.separator + "temp.zip";
+    }
+
+    public String getRootApplicationPath(AppResource resource) {
+        return getResourcePath() + File.separator + resource.appname;
+    }
+
+    public String getRootApplicationPath(ReactBundleAssetData.ExternalBundle resource) {
+        return getResourcePath() + File.separator + resource.appname;
+    }
+
+    public File getFileVersionApplication(ReactBundleAssetData.ExternalBundle ebundle) {
+        return new File(getRootApplicationPath(ebundle), "version.txt");
+    }
+
+    public String getUnZipPath(ReactBundleAssetData.ExternalBundle ebundle) {
+        return getRootApplicationPath(ebundle) + File.separator + "app";
+    }
+
+
 }

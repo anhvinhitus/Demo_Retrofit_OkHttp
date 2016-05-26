@@ -54,7 +54,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             appResource = savedInstanceState.getParcelable("appResource");
         }
 
-        Timber.d("appResource %s %s", appResource, appResource == null ? "" : appResource.appname);
+        Timber.d("appResource appname %s", appResource == null ? "" : appResource.appname);
 
         super.onCreate(savedInstanceState);
     }
@@ -71,7 +71,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     protected void doInjection() {
         mComponentName = getIntent().getStringExtra("moduleName");
-        Timber.e("Starting module: %s user %s", mComponentName, AndroidApplication.instance().getUserComponent());
+        Timber.e("Starting module: %s", mComponentName);
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 
@@ -145,11 +145,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected List<ReactPackage> getPackages() {
 
-        long appId = 0;
-
-        if (appResource != null) {
-            appId = appResource.appid;
-        }
+        long appId = appResource == null ? 0 : appResource.appid;
 
         return Arrays.asList(
                 new MainReactPackage(),

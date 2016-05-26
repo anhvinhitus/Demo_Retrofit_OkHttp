@@ -1,7 +1,16 @@
 {
-    "external_bundle": {}, 
-    "internal_bundle": {
-        "checksum": "ba910kal", 
-        "version": "1.0.20160518.002"
+  "external_bundle": [
+    {
+      "appid": 8,
+      "appname": "Esale",
+      "asset": "esale.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
     }
+  ],
+  "internal_bundle": {
+    "checksum": "ba910kal",
+    "version": "1.0.20160518.002"
+  }
 }

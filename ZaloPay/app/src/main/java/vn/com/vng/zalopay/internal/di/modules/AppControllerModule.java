@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.internal.di.modules;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.gson.Gson;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -34,8 +36,8 @@ public class AppControllerModule {
 
     @Provides
     @Singleton
-    BundleService providesBundleService(Context context) {
-        return new BundleServiceImpl((Application) context);
+    BundleService providesBundleService(Context context, Gson gson) {
+        return new BundleServiceImpl((Application) context, gson);
     }
 
     @Provides

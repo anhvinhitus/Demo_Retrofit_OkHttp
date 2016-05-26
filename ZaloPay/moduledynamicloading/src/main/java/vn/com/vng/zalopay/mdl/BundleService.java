@@ -18,4 +18,6 @@ public interface BundleService {
     String getInternalBundleFolder();
 
     String getExternalBundleFolder(String paymentAppName);
+
+    void extractAllExternalApplication();
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.mdl.model.ReactBundleAssetData;
 
 /**
  * Created by AnhHieu on 5/16/16.
@@ -32,7 +33,7 @@ public class BundleReactConfigRelease implements BundleReactConfig {
     @Override
     public String getExternalJsBundle(AppResource appResource) {
         if (appResource == null) return "";
-        return getUnZipPath(appResource) + "/main.jsbundle";
+        return getUnZipPath(appResource.appname) + "/main.jsbundle";
     }
 
     @Override
@@ -40,20 +41,25 @@ public class BundleReactConfigRelease implements BundleReactConfig {
         return false;
     }
 
-
-    private String getRootPath() {
+    public String getRootPath() {
         return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
-    private String getResourcePath() {
+    public String getResourcePath() {
         return getRootPath() + File.separator + "zmres";
     }
 
-    private String getTempFilePath() {
+    public String getTempFilePath() {
         return getResourcePath() + File.separator + "temp.zip";
     }
 
-    private String getUnZipPath(AppResource resource) {
-        return getResourcePath() + File.separator + resource.appname + File.separator + resource.checksum;
+
+    public String getRootApplicationPath(String appName) {
+        return getResourcePath() + File.separator + appName;
     }
+
+    public String getUnZipPath(String appName) {
+        return getRootApplicationPath(appName) + File.separator + "app";
+    }
+
 }
