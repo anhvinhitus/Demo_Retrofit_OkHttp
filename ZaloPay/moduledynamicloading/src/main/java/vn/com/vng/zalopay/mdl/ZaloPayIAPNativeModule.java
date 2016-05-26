@@ -26,12 +26,12 @@ import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
-import vn.zing.pay.zmpsdk.ZingMobilePayService;
-import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
-import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
-import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentChannel;
-import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentStatus;
-import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.ZingMobilePayService;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
+import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
+import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 /**
  * Created by huuhoa on 5/16/16.

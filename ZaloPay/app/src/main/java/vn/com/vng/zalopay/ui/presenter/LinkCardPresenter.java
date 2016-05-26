@@ -18,12 +18,12 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
-import vn.zing.pay.zmpsdk.entity.BaseResponse;
-import vn.zing.pay.zmpsdk.entity.ZPWRemoveMapCardParams;
-import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
-import vn.zing.pay.zmpsdk.listener.ZPWRemoveMapCardListener;
-import vn.zing.pay.zmpsdk.merchant.CShareData;
+import vn.com.zalopay.wallet.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
@@ -142,7 +142,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     ZPWRemoveMapCardListener zpwRemoveMapCardListener = new ZPWRemoveMapCardListener() {
         @Override
         public void onSuccess(DMappedCard mapCard) {
-            Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard.toJsonString());
+            Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard);
             linkCardView.hideLoading();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);

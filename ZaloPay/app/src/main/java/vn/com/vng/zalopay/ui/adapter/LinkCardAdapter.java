@@ -14,9 +14,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.zalopay.wallet.entity.enumeration.ECardType;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
 import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
-import vn.zing.pay.zmpsdk.entity.enumeration.ECardType;
 
 /**
  * Created by AnhHieu on 5/10/16.

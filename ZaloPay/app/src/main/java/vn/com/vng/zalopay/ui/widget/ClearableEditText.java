@@ -10,19 +10,18 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.zing.pay.zmpsdk.business.AdapterBase;
-import vn.zing.pay.zmpsdk.data.GlobalData;
-import vn.zing.pay.zmpsdk.data.ResourceManager;
-import vn.zing.pay.zmpsdk.entity.staticconfig.page.DDynamicEditText;
-import vn.zing.pay.zmpsdk.listener.ZPOnSelectionChangeListener;
-import vn.zing.pay.zmpsdk.utils.Log;
-import vn.zing.pay.zmpsdk.view.PaymentChannelActivity;
-import vn.zing.pay.zmpsdk.view.dialog.DialogManagerZaloPay;
+import vn.com.zalopay.wallet.business.AdapterBase;
+import vn.com.zalopay.wallet.data.ResourceManager;
+import vn.com.zalopay.wallet.entity.staticconfig.page.DDynamicEditText;
+import vn.com.zalopay.wallet.listener.ZPOnSelectionChangeListener;
+import vn.com.zalopay.wallet.view.PaymentChannelActivity;
 
 /**
  * Created by longlv on 23/05/2016.
@@ -49,9 +48,9 @@ public class ClearableEditText extends EditText {
     private View.OnClickListener mSelectedCardScanListener = null;
     private View.OnFocusChangeListener mOnFocusChangeListener = new View.OnFocusChangeListener() {
         public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                ClearableEditText.this.checkPattern();
-            }
+//            if (!hasFocus) {
+//                ClearableEditText.this.checkPattern();
+//            }
 
         }
     };
@@ -125,9 +124,9 @@ public class ClearableEditText extends EditText {
         super(context, attrs);
         this.init(attrs, 0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.drawableRightDelete = context.getDrawable(R.drawable.ic_del);
+            this.drawableRightDelete = context.getDrawable(R.drawable.ic_remove_circle);
         } else {
-            this.drawableRightDelete = context.getResources().getDrawable(R.drawable.ic_del);
+            this.drawableRightDelete = context.getResources().getDrawable(R.drawable.ic_remove_circle);
         }
     }
 
@@ -170,11 +169,11 @@ public class ClearableEditText extends EditText {
                 if (this.mPattern != null) {
                     String text = this.getString();
                     if (text.matches(this.mPattern)) {
-                        Log.i(this, "**** " + this.mEditTextConfig.id + " MATCH ****");
+                        Timber.tag(TAG).d("**** " + this.mEditTextConfig.id + " MATCH ****");
                         return true;
                     }
 
-                    Log.i(this, "**** " + this.mEditTextConfig.id + " NOT MATCH ****");
+                    Timber.tag(TAG).d("**** " + this.mEditTextConfig.id + " NOT MATCH ****");
                 }
 
                 return false;
@@ -184,14 +183,14 @@ public class ClearableEditText extends EditText {
         }
     }
 
-    public boolean checkPattern() {
-        if (!this.isValid()) {
-            DialogManagerZaloPay.showSweetDialogCustom(GlobalData.getOwnerActivity(), this.mEditTextConfig.errMess, GlobalData.getStringResource("dialog_retry_button"), 3, (DialogManagerZaloPay.EventDialog) null);
-            return false;
-        } else {
-            return true;
-        }
-    }
+//    public boolean checkPattern() {
+//        if (!this.isValid()) {
+//            DialogManagerZaloPay.showSweetDialogCustom(GlobalData.getOwnerActivity(), this.mEditTextConfig.errMess, GlobalData.getStringResource("dialog_retry_button"), 3, (DialogManagerZaloPay.EventDialog) null);
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
 
     public void formatText(Boolean isTextFull) {
         Editable s = this.getEditableText();
@@ -246,9 +245,9 @@ public class ClearableEditText extends EditText {
         if (s.toString().length() > 0) {
             if (this.drawableRightDelete == null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    this.drawableRightDelete = getContext().getDrawable(R.drawable.ic_del);
+                    this.drawableRightDelete = getContext().getDrawable(R.drawable.ic_remove_circle);
                 } else {
-                    this.drawableRightDelete = this.getResources().getDrawable(R.drawable.ic_del);
+                    this.drawableRightDelete = this.getResources().getDrawable(R.drawable.ic_remove_circle);
                 }
             }
 

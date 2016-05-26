@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
-import vn.zing.pay.zmpsdk.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -2,9 +2,9 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.IHomeView;
-import vn.zing.pay.zmpsdk.ZingMobilePayApplication;
-import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
-import vn.zing.pay.zmpsdk.listener.ZPWGatewayInfoCallback;
+import vn.com.zalopay.wallet.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 
 /**
  * Created by AnhHieu on 5/24/16.

@@ -1,9 +1,0 @@
-<resources>
-      <integer name="maximum_character_field_visa_cvv">3</integer>
-      <integer name="maximum_character_field_visa_valid_date">5</integer>
-      <integer name="maximum_character_field_card_number">23</integer>
-      <integer name="maximum_character_field_card_nameholder">50</integer>
-      <integer name="maximum_character_field_opt_length">12</integer>
-      <integer name="maximum_character_field_capcha_length">12</integer>
-      <integer name="maximum_character_field_acc_name_length">20</integer>
-</resources>
