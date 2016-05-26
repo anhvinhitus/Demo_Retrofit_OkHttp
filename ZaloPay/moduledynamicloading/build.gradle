@@ -26,7 +26,7 @@ buildscript {
         mavenCentral()
         jcenter()
         flatDir {
-            dirs 'libs'
+            dirs "../libs"
         }
     }
 

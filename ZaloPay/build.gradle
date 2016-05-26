@@ -38,7 +38,7 @@ allprojects {
             url "$projectDir/../../maven_local"
         }
         flatDir {
-            dirs 'libs'
+            dirs "../libs"
         }
     }
 }
