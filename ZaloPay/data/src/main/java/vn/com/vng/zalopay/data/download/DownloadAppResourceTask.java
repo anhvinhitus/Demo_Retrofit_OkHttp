@@ -61,7 +61,7 @@ public class DownloadAppResourceTask {
         }
     }
 
-    private boolean writeResponseBodyToDisk(ResponseBody body, String temp) {
+    private boolean writeResponseBodyToDisk(ResponseBody body, File temp) {
 
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -114,15 +114,16 @@ public class DownloadAppResourceTask {
     private boolean download(String url, Callback callback) {
 
         Timber.d("url download %s", url);
-
-        String temp = getTempFilePath();
+        String resourcePath = getResourcePath();
+        ensureDirectory(resourcePath);
+        final File file = new File(resourcePath, "temp.zip");
 
         final Call call = httpClient.newCall(new Request.Builder().url(url).get().build());
         boolean result = false;
         try {
             Response response = call.execute();
             if (response.code() == 200) {
-                result = writeResponseBodyToDisk(response.body(), temp);
+                result = writeResponseBodyToDisk(response.body(), file);
             } else {
                 Timber.e("response.code() %s", response.code());
             }
@@ -132,7 +133,6 @@ public class DownloadAppResourceTask {
 
             return false;
         } finally {
-            call.cancel();
         }
         Timber.i("result download %s", result);
         if (result) {
@@ -140,7 +140,7 @@ public class DownloadAppResourceTask {
             String destinationPath = getUnZipPath(downloadInfo);
             Timber.d("destinationPath %s", destinationPath);
             try {
-                unzip(temp, destinationPath);
+                unzip(file.getAbsolutePath(), destinationPath);
             } catch (Exception ex) {
                 Timber.e(ex, "exception unzip ");
                 result = false;
@@ -152,7 +152,9 @@ public class DownloadAppResourceTask {
 
         }
 
-        deleteFile(temp);
+        if (file != null && file.exists()) {
+            file.delete();
+        }
 
         return result;
     }

@@ -47,6 +47,15 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (savedInstanceState == null) {
+            appResource = getIntent().getParcelableExtra("appResource");
+        } else {
+            appResource = savedInstanceState.getParcelable("appResource");
+        }
+
+        Timber.d("appResource %s %s", appResource, appResource == null ? "" : appResource.appname);
+
         super.onCreate(savedInstanceState);
     }
 
@@ -62,10 +71,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     protected void doInjection() {
         mComponentName = getIntent().getStringExtra("moduleName");
-
-        appResource = getIntent().getParcelableExtra("appResource");
-
-
         Timber.e("Starting module: %s user %s", mComponentName, AndroidApplication.instance().getUserComponent());
         AndroidApplication.instance().getUserComponent().inject(this);
     }
@@ -93,7 +98,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     String getJSBundleFile() {
-        return bundleReactConfig.getExternalJsBundle(appResource);
+        String jsBundleFile = bundleReactConfig.getExternalJsBundle(appResource);
+        Timber.d("jsBundleFile %s", jsBundleFile);
+        return jsBundleFile;
     }
 
     /**
