@@ -18,6 +18,9 @@ ext {
 buildscript {
     repositories {
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
@@ -33,6 +36,9 @@ allprojects {
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$projectDir/../../maven_local"
+        }
+        flatDir {
+            dirs "../libs"
         }
     }
 }

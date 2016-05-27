@@ -25,6 +25,9 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        flatDir {
+            dirs "../libs"
+        }
     }
 
     dependencies {
@@ -48,5 +51,5 @@ dependencies {
     compile libs.react_native
 
     compile project(':data')
-    compile project(':zalopaymentsdk')
+    compile(name:'wallet', ext:'aar')
 }

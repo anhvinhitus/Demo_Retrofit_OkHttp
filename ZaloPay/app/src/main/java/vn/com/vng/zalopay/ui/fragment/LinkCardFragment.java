@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.zing.pay.zmpsdk.merchant.CShareData;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.

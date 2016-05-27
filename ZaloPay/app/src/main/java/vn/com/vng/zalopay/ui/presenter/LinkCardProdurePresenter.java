@@ -13,13 +13,13 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.zing.pay.zmpsdk.ZingMobilePayService;
-import vn.zing.pay.zmpsdk.entity.ZPPaymentResult;
-import vn.zing.pay.zmpsdk.entity.ZPWPaymentInfo;
-import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentChannel;
-import vn.zing.pay.zmpsdk.entity.enumeration.EPaymentStatus;
-import vn.zing.pay.zmpsdk.entity.enumeration.ETransactionType;
-import vn.zing.pay.zmpsdk.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.ZingMobilePayService;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
+import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
+import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 /**
  * Created by longlv on 12/05/2016.

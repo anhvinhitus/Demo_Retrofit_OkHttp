@@ -18,7 +18,7 @@ import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.R;
-import vn.zing.pay.zmpsdk.view.animation.ActivityAnimator;
+import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
 
 /**
  * A simple {@link Fragment} subclass.
