@@ -1,5 +1,5 @@
 before_script:  
-  - export ANDROID_HOME="/home/builder/android-sdk-linux"
+  - export ANDROID_HOME="/opt/android-sdk"
 
 dev:  
   script:
