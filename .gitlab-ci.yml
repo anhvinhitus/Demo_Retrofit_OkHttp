@@ -3,4 +3,4 @@ before_script:
 
 dev:  
   script:
-    - cd ZaloPay && ./gradlew ./gradlew --no-daemon --max-workers=3 assembleProductionDebug
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleProductionDebug
