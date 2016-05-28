@@ -107,20 +107,8 @@ public class BundleServiceImpl implements BundleService {
         }
     }
 
-    public String getRootPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
-    }
-
     public String getResourcePath() {
-        return getRootPath() + File.separator + "zmres";
-    }
-
-    public String getRootApplicationPath(ReactBundleAssetData.ExternalBundle resource) {
-        return getResourcePath() + File.separator + resource.appid;
-    }
-
-    public String getUnZipPath(ReactBundleAssetData.ExternalBundle ebundle) {
-        return getRootApplicationPath(ebundle) + File.separator + "app";
+        return getBundleRoot() + File.separator + "modules";
     }
 
     @Override
