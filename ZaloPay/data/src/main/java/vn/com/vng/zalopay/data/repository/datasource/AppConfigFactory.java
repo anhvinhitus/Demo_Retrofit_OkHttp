@@ -126,7 +126,7 @@ public class AppConfigFactory {
 
         long expiredtime = resourceReponse.expiredtime;
 
-        startDownloadService(resourcelist, resourceReponse.baseurl);
+//        startDownloadService(resourcelist, resourceReponse.baseurl);
 
         Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceReponse.baseurl, listAppId, resourcelist.size());
 
