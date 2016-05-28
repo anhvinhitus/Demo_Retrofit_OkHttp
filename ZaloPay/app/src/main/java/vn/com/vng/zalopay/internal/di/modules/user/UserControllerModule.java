@@ -28,13 +28,16 @@ import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
+import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayIAPRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
+import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
+import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -121,6 +124,4 @@ public class UserControllerModule {
     ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, ZaloPayIAPEntityDataMapper mapper) {
         return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, mapper);
     }
-
-
 }

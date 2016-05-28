@@ -76,6 +76,15 @@ public class AndroidApplication extends MultiDexApplication {
         if (!BuildConfig.DEBUG) {
             Constants.IS_RELEASE = true;
         }
+
+        if (BuildConfig.DEBUG) {
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread thread, Throwable throwable) {
+                    Timber.e(throwable, "UncaughtException!!!");
+                }
+            });
+        }
     }
 
 
@@ -88,8 +97,9 @@ public class AndroidApplication extends MultiDexApplication {
         appComponent.threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                appComponent.bundleService().prepareInternalBundle();
-                appComponent.bundleService().extractAllExternalApplication();
+                appComponent.bundleService().ensureLocalResources();
+//                appComponent.bundleService().prepareInternalBundle();
+//                appComponent.bundleService().extractAllExternalApplication();
             }
         });
     }

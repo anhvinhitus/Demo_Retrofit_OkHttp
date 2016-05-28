@@ -17,7 +17,7 @@ public class ReactBundleAssetData {
 
     public static class ExternalBundle {
         @SerializedName("appid")
-        public long appid;
+        public int appid;
 
         @SerializedName("appname")
         public String appname;

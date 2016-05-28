@@ -54,7 +54,7 @@ public class ResourceHandlerServiceImpl implements ResourceHandlerService {
     @Override
     public void unzipFile(String zipPathName, String destinationPath) throws MiniApplicationException {
         try {
-            FileUtils.unzipFile(new File(zipPathName), destinationPath, true);
+            FileUtils.unzipFile(zipPathName, destinationPath, true);
         } catch (IOException e) {
             throw new MiniApplicationException("IOException", e);
         }
