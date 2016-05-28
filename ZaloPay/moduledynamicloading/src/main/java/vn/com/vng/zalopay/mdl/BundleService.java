@@ -8,7 +8,7 @@ import com.facebook.react.ReactInstanceManager;
  */
 public interface BundleService {
     String getInternalBundleFolder();
-    String getExternalBundleFolder(String paymentAppName);
+    String getExternalBundleFolder(int appId);
 
     /**
      * Make sure the local resources is up-to-date with resources shipped with apk

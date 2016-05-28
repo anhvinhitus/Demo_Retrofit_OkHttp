@@ -58,7 +58,7 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
     }
 
     @Override
-    public void updateAppId(List<Long> list) {
+    public void updateAppId(List<Integer> list) {
         getAppInfoDao().queryBuilder()
                 .where(AppResourceGDDao.Properties.Appid.notIn(list))
                 .buildDelete()

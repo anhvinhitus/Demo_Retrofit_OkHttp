@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 /** 
  * DAO for table "APP_RESOURCE_GD".
 */
-public class AppResourceGDDao extends AbstractDao<AppResourceGD, Long> {
+public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
 
     public static final String TABLENAME = "APP_RESOURCE_GD";
 
@@ -23,7 +23,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Appid = new Property(0, long.class, "appid", true, "APPID");
+        public final static Property Appid = new Property(0, int.class, "appid", true, "APPID");
         public final static Property Appname = new Property(1, String.class, "appname", false, "APPNAME");
         public final static Property Needdownloadrs = new Property(2, Integer.class, "needdownloadrs", false, "NEEDDOWNLOADRS");
         public final static Property Imageurl = new Property(3, String.class, "imageurl", false, "IMAGEURL");
@@ -99,15 +99,15 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Long> {
 
     /** @inheritdoc */
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+    public Integer readKey(Cursor cursor, int offset) {
+        return cursor.getInt(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public AppResourceGD readEntity(Cursor cursor, int offset) {
         AppResourceGD entity = new AppResourceGD( //
-            cursor.getLong(offset + 0), // appid
+            cursor.getInt(offset + 0), // appid
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // appname
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // needdownloadrs
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // imageurl
@@ -121,7 +121,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, AppResourceGD entity, int offset) {
-        entity.setAppid(cursor.getLong(offset + 0));
+        entity.setAppid(cursor.getInt(offset + 0));
         entity.setAppname(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setNeeddownloadrs(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setImageurl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -132,14 +132,13 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Long> {
     
     /** @inheritdoc */
     @Override
-    protected Long updateKeyAfterInsert(AppResourceGD entity, long rowId) {
-        entity.setAppid(rowId);
-        return rowId;
+    protected Integer updateKeyAfterInsert(AppResourceGD entity, long rowId) {
+        return entity.getAppid();
     }
     
     /** @inheritdoc */
     @Override
-    public Long getKey(AppResourceGD entity) {
+    public Integer getKey(AppResourceGD entity) {
         if(entity != null) {
             return entity.getAppid();
         } else {

@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 public class AppResource extends AbstractData {
 
-    public long appid;
+    public int appid;
 
     public String appname;
 
@@ -19,12 +19,12 @@ public class AppResource extends AbstractData {
     public String urlImage;
 
     public AppResource(Parcel source) {
-        appid = source.readLong();
+        appid = source.readInt();
         appname = source.readString();
         checksum = source.readString();
     }
 
-    public AppResource(long appid, String appname, String urlImage) {
+    public AppResource(int appid, String appname, String urlImage) {
         this.appid = appid;
         this.appname = appname;
         this.urlImage = urlImage;
@@ -35,7 +35,7 @@ public class AppResource extends AbstractData {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(appid);
+        dest.writeInt(appid);
         dest.writeString(appname);
         dest.writeString(checksum);
     }

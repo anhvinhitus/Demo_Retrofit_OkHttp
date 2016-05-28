@@ -33,33 +33,12 @@ public class BundleReactConfigRelease implements BundleReactConfig {
     @Override
     public String getExternalJsBundle(AppResource appResource) {
         if (appResource == null) return "";
-        return getUnZipPath(appResource.appname) + "/main.jsbundle";
+        return bundleService.getExternalBundleFolder(appResource.appid) + "/main.jsbundle";
     }
 
     @Override
     public boolean isExternalDevSupport() {
         return false;
-    }
-
-    public String getRootPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
-    }
-
-    public String getResourcePath() {
-        return getRootPath() + File.separator + "zmres";
-    }
-
-    public String getTempFilePath() {
-        return getResourcePath() + File.separator + "temp.zip";
-    }
-
-
-    public String getRootApplicationPath(String appName) {
-        return getResourcePath() + File.separator + appName;
-    }
-
-    public String getUnZipPath(String appName) {
-        return getRootApplicationPath(appName) + File.separator + "app";
     }
 
 }

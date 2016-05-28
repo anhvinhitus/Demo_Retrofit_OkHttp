@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 6;
+    private static final int APP_DB_VERSION = 7;
 
 
     public static void main(String[] args) throws Exception {
@@ -26,7 +26,7 @@ public class GreenDaoGenerator {
     private static void addApplicationInfo(Schema schema) {
         Entity appInfoEntity = schema.addEntity("AppResourceGD");
 
-        appInfoEntity.addLongProperty("appid").notNull().unique().primaryKey();
+        appInfoEntity.addIntProperty("appid").notNull().unique().primaryKey();
         appInfoEntity.addStringProperty("appname");
         appInfoEntity.addIntProperty("needdownloadrs");
         appInfoEntity.addStringProperty("imageurl");

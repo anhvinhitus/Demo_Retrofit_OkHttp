@@ -24,7 +24,7 @@ public interface SqlitePlatformScope extends SqlBaseScope {
     List<AppResourceEntity> listAppResourceEntity();
 
     // Xoá app, nếu không tồn tại trong list này.
-    void updateAppId(List<Long> list);
+    void updateAppId(List<Integer> list);
 
     void writePaymentTransType(List<PaymentTransTypeEntity> list);
 

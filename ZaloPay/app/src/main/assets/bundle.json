@@ -3,7 +3,7 @@
     {
       "appid": 8,
       "appname": "Esale",
-      "asset": "esale.zip",
+      "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1

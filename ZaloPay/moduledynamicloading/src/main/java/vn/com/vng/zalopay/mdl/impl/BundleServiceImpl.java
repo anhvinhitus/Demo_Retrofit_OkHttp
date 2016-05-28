@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -65,9 +66,8 @@ public class BundleServiceImpl implements BundleService {
     }
 
     @Override
-    public String getExternalBundleFolder(String paymentAppName) {
-        // TODO: 5/18/16 Return real folder of the payment app
-        return "";
+    public String getExternalBundleFolder(int appId) {
+        return String.format(Locale.getDefault(), "%s/%d/app", getResourcePath(), appId);
     }
 
     private String getBundleRoot() {
@@ -115,20 +115,8 @@ public class BundleServiceImpl implements BundleService {
         return getRootPath() + File.separator + "zmres";
     }
 
-    public String getTempFilePath() {
-        return getResourcePath() + File.separator + "temp.zip";
-    }
-
-    public String getRootApplicationPath(AppResource resource) {
-        return getResourcePath() + File.separator + resource.appname;
-    }
-
     public String getRootApplicationPath(ReactBundleAssetData.ExternalBundle resource) {
-        return getResourcePath() + File.separator + resource.appname;
-    }
-
-    public File getFileVersionApplication(ReactBundleAssetData.ExternalBundle ebundle) {
-        return new File(getRootApplicationPath(ebundle), "version.txt");
+        return getResourcePath() + File.separator + resource.appid;
     }
 
     public String getUnZipPath(ReactBundleAssetData.ExternalBundle ebundle) {
@@ -198,15 +186,12 @@ public class BundleServiceImpl implements BundleService {
     }
 
     private boolean updatePaymentAppLocalResource(ReactBundleAssetData.ExternalBundle bundle) {
-        String rootApp = getRootApplicationPath(bundle);
-        ensureDirectory(rootApp);
-
-        String destination = getUnZipPath(bundle);
+        String destination = getExternalBundleFolder(bundle.appid);
 
         Timber.d("destination %s %s ", destination, bundle.appname);
 
         try {
-            InputStream stream = mApplication.getAssets().open("external/" + bundle.asset);
+            InputStream stream = mApplication.getAssets().open(bundle.asset);
             FileUtils.unzipFile(stream, destination, true);
 
             return true;
