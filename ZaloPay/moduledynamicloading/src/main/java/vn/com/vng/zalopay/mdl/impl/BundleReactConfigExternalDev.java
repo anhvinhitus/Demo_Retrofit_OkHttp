@@ -6,12 +6,13 @@ import vn.com.vng.zalopay.mdl.BundleService;
 
 /**
  * Created by AnhHieu on 5/16/16.
+ * External RN development configuration
  */
-public class BundleReactConfigImpl implements BundleReactConfig {
+public class BundleReactConfigExternalDev implements BundleReactConfig {
 
     private BundleService bundleService;
 
-    public BundleReactConfigImpl(BundleService service) {
+    public BundleReactConfigExternalDev(BundleService service) {
         this.bundleService = service;
     }
 

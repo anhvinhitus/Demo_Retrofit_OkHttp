@@ -2,16 +2,14 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 
 import android.content.Context;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.mdl.impl.BundleReactConfigDevel;
-import vn.com.vng.zalopay.mdl.impl.BundleReactConfigImpl;
+import vn.com.vng.zalopay.mdl.impl.BundleReactConfigInternalDev;
+import vn.com.vng.zalopay.mdl.impl.BundleReactConfigExternalDev;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigRelease;
 
 /**
@@ -36,9 +34,9 @@ public class ReactNativeModule {
     BundleReactConfig provideBundleReactConfig(Context context, BundleService service) {
         switch (BuildConfig.REACT_DEVELOP_SUPPORT) {
             case DEV_INTERNAL:
-                return new BundleReactConfigDevel();
+                return new BundleReactConfigInternalDev();
             case DEV_EXTERNAL:
-                return new BundleReactConfigImpl(service);
+                return new BundleReactConfigExternalDev(service);
             case RELEASE:
                 return new BundleReactConfigRelease(service);
             default:

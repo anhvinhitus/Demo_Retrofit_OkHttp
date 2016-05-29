@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.mdl.model.ReactBundleAssetData;
 
 /**
  * Created by AnhHieu on 5/16/16.
+ * Production configuration
  */
 public class BundleReactConfigRelease implements BundleReactConfig {
 
@@ -32,7 +33,10 @@ public class BundleReactConfigRelease implements BundleReactConfig {
 
     @Override
     public String getExternalJsBundle(AppResource appResource) {
-        if (appResource == null) return "";
+        if (appResource == null) {
+            return "";
+        }
+
         return bundleService.getExternalBundleFolder(appResource.appid) + "/main.jsbundle";
     }
 

@@ -5,11 +5,12 @@ import vn.com.vng.zalopay.mdl.BundleReactConfig;
 
 /**
  * Created by AnhHieu on 5/16/16.
+ * Internal RN development configuration
  */
-public class BundleReactConfigDevel implements BundleReactConfig {
+public class BundleReactConfigInternalDev implements BundleReactConfig {
 
 
-    public BundleReactConfigDevel() {
+    public BundleReactConfigInternalDev() {
     }
 
     @Override
