@@ -211,4 +211,21 @@ public class FileUtils {
 
         unzipFile(fileStream, destination, deleteExisting);
     }
+
+    public static String loadStringFromStream(InputStream is) {
+        String json = null;
+        try {
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            if (is.read(buffer) < 0) {
+                buffer[0] = 0;
+            }
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
 }

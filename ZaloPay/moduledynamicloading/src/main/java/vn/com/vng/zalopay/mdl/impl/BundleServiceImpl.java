@@ -51,13 +51,15 @@ public class BundleServiceImpl implements BundleService {
     Application mApplication;
     public String mCurrentInternalBundleFolder;
     private final LocalResourceRepository mLocalResourceRepository;
-
+    private final String mBundleRootFolder;
     private Gson mGson;
 
     public BundleServiceImpl(Application application, LocalResourceRepository localResourceRepository, Gson gson) {
         mApplication = application;
         this.mLocalResourceRepository = localResourceRepository;
         this.mGson = gson;
+        String packageName = mApplication.getPackageName();
+        mBundleRootFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + packageName + File.separator +"bundles";
     }
 
     @Override
@@ -67,48 +69,7 @@ public class BundleServiceImpl implements BundleService {
 
     @Override
     public String getExternalBundleFolder(int appId) {
-        return String.format(Locale.getDefault(), "%s/%d/app", getResourcePath(), appId);
-    }
-
-    private String getBundleRoot() {
-        String packageName = mApplication.getPackageName();
-        return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + packageName + File.separator +"bundles";
-    }
-
-    private String getInternalBundleRoot() {
-        return getBundleRoot() + File.separator + "modules/zalopay";
-    }
-
-    public String loadStringFromStream(InputStream is) {
-        String json = null;
-        try {
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            if (is.read(buffer) < 0) {
-                buffer[0] = 0;
-            }
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-    private void ensureDirectory(String path) {
-        File file = new File(path);
-        ensureDirectory(file);
-    }
-
-    private void ensureDirectory(File dir) {
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-    }
-
-    public String getResourcePath() {
-        return getBundleRoot() + File.separator + "modules";
+        return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
     }
 
     @Override
@@ -122,6 +83,10 @@ public class BundleServiceImpl implements BundleService {
         } catch (PackageManager.NameNotFoundException e) {
             Timber.e(e, "Error!!!");
         }
+    }
+
+    private String getInternalBundleRoot() {
+        return mBundleRootFolder + File.separator + "modules/zalopay";
     }
 
     private void ensureInternalLocalResources(PackageInfo packageInfo) {
@@ -143,14 +108,12 @@ public class BundleServiceImpl implements BundleService {
     }
 
     private void ensurePaymentAppLocalResources(PackageInfo packageInfo) {
-        Timber.i("Extract External Application Start");
-
-        AssetManager assetManager = mApplication.getAssets();
 
         String bundle;
 
         try {
-            bundle = loadStringFromStream(assetManager.open("bundle.json"));
+            AssetManager assetManager = mApplication.getAssets();
+            bundle = FileUtils.loadStringFromStream(assetManager.open("bundle.json"));
         } catch (IOException ex) {
             Timber.e(ex, "IOException loadStringFromStream");
             return;
@@ -164,13 +127,15 @@ public class BundleServiceImpl implements BundleService {
                 continue;
             }
 
+            Timber.i("Application %s need to be updated", ebundle.appname);
             if (!updatePaymentAppLocalResource(ebundle)) {
                 continue;
             }
+
             mLocalResourceRepository.setExternalResourceVersion(ebundle.appid, packageInfo.versionName);
         }
 
-        Timber.i("Extract External Application done");
+        Timber.i("Update PaymentApp done");
     }
 
     private boolean updatePaymentAppLocalResource(ReactBundleAssetData.ExternalBundle bundle) {
@@ -178,15 +143,7 @@ public class BundleServiceImpl implements BundleService {
 
         Timber.d("destination %s %s ", destination, bundle.appname);
 
-        try {
-            InputStream stream = mApplication.getAssets().open(bundle.asset);
-            FileUtils.unzipFile(stream, destination, true);
-
-            return true;
-        } catch (Exception e) {
-            Timber.e(e, "exception %s", e);
-            return false;
-        }
+        return unzipAssetToFolder(bundle.asset, destination);
     }
 
     /**
@@ -195,20 +152,19 @@ public class BundleServiceImpl implements BundleService {
      */
     private boolean updateInternalResource() {
         Timber.d("updateInternalResource");
-
         String internalRoot = getInternalBundleRoot();
-        ensureDirectory(internalRoot);
 
+        return unzipAssetToFolder("zalopay_internal.zip", internalRoot);
+    }
+
+    private boolean unzipAssetToFolder(String assetName, String dstPath) {
         try {
-            InputStream stream = mApplication.getAssets().open("zalopay_internal.zip");
-            FileUtils.unzipFile(stream, internalRoot, true);
-        } catch (IOException e) {
-            Timber.e(e, "Error loading bundle info");
-            return false;
-        } catch (MiniApplicationException e) {
-            Timber.e(e, "Error extracting internal local resource");
+            InputStream stream = mApplication.getAssets().open(assetName);
+            FileUtils.unzipFile(stream, dstPath, true);
+            return true;
+        } catch (Exception e) {
+            Timber.e(e, "exception %s", e);
             return false;
         }
-        return true;
     }
 }
