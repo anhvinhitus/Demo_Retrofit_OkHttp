@@ -1,16 +1,16 @@
 {
-  "external_bundle": [
-    {
-      "appid": 8,
-      "appname": "Esale",
-      "asset": "external/esale.zip",
-      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
-      "version": "1.0.0",
-      "status": 1
+    "external_bundle": [
+        {
+            "appid": 8, 
+            "appname": "Esale", 
+            "asset": "external/esale.zip", 
+            "checksum": "An3SoswJ6ujv2Qk6UqYxcw", 
+            "status": 1, 
+            "version": "1.0.0"
+        }
+    ], 
+    "internal_bundle": {
+        "checksum": "ba910kal", 
+        "version": "1.0.20160531.001"
     }
-  ],
-  "internal_bundle": {
-    "checksum": "ba910kal",
-    "version": "1.0.20160523.001"
-  }
 }
