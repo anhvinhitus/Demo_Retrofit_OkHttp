@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 
+import android.content.Context;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.Callable;
@@ -24,6 +26,8 @@ public abstract class BaseAppPresenter {
 
     protected final PassportRepository passportRepository = AndroidApplication.instance().getAppComponent().passportRepository();
     protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+
+    protected final Context applicationContext = AndroidApplication.instance();
 
     protected void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {

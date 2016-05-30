@@ -1,5 +1,10 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
+import org.json.JSONObject;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -91,13 +96,41 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
         mView.hideLoading();
         if (isVerifySuccess) {
+
+            getZaloProfileInfo();
+
             mView.gotoHomeScreen();
+
         } else {
             if (clearData) {
                 clearData();
             }
             mView.gotoLoginScreen();
         }
+    }
+
+    private void getZaloProfileInfo() {
+        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
+            @Override
+            public void onResult(JSONObject profile) {
+                try {
+                    JSONObject data = profile.getJSONObject("result");
+
+                    Timber.tag(TAG).d("zalo profile %s", data.toString());
+
+                    long userId = data.getLong("userId");
+                    String displayName = data.getString("displayName");
+                    String avatar = data.getString("largeAvatar");
+                    long birthday = data.getLong("birthDate");
+                    int userGender = data.getInt("userGender");
+
+                    userConfig.saveUserInfo(userId, avatar, displayName, birthday, userGender);
+
+                } catch (Exception ex) {
+                    Timber.tag(TAG).e(ex, " Exception :");
+                }
+            }
+        });
     }
 
 
