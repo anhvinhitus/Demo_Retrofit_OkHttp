@@ -5,19 +5,21 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
-import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
+import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
+import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
 
 /**
@@ -31,23 +33,32 @@ import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
 public class PinProfileFragment extends AbsProfileFragment {
     private OnFragmentInteractionListener mListener;
 
-    @BindView(R.id.textInputPin)
-    TextInputLayout textInputPin;
+    @BindView(R.id.passcodeInput)
+    PassCodeView passCode;
 
-    @BindView(R.id.edtPin)
-    EditText edtPin;
+    @BindView(R.id.passcodeConfirm)
+    PassCodeView passCodeConfirm;
 
-    @BindView(R.id.tvPinNote)
-    TextView tvPinNote;
+    @BindView(R.id.checkbox)
+    CheckBox chkShowPass;
 
-    @BindView(R.id.textInputPinCompare)
-    TextInputLayout textInputPinCompare;
-
-    @BindView(R.id.edtPinCompare)
-    EditText edtPinCompare;
+    @BindView(R.id.tvShowPass)
+    TextView tvShowPass;
 
     @BindView(R.id.tvCancel)
     TextView tvCancel;
+
+    @OnClick(R.id.tvShowPass)
+    public void onClickShowPass(View view) {
+        boolean isChecked = chkShowPass.isChecked();
+        chkShowPass.setChecked(!isChecked);
+    }
+
+    @Nullable
+    @OnClick(R.id.btnContinue)
+    public void onClickBtnContinute(View view) {
+        onClickContinue();
+    }
 
     @OnClick(R.id.tvCancel)
     public void onClickCancel(View view) {
@@ -56,53 +67,95 @@ public class PinProfileFragment extends AbsProfileFragment {
         anim.fadeAnimation(getActivity());
     }
 
-    @OnFocusChange(R.id.edtPin)
+    private IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            onTextChangePin(s);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private IPasscodeChanged confirmPasscodeChanged = new IPasscodeChanged() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            onTextChangePinCompare(s);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private IPasscodeFocusChanged passcodeFocusChanged = new IPasscodeFocusChanged() {
+        @Override
+        public void onFocusChangedPin(boolean isFocus) {
+            onFocusChangedPin(isFocus);
+        }
+    };
+
+    private IPasscodeFocusChanged confirmPasscodeFocusChanged = new IPasscodeFocusChanged() {
+        @Override
+        public void onFocusChangedPin(boolean isFocus) {
+            onFocusChangedPinCompare(isFocus);
+        }
+    };
+
     public void onFocusChangedPin(boolean isFocus) {
-        if (isFocus) {
-            showPinNote();
-        } else {
+        if (!isFocus) {
             if (isValidPin()) {
-                hidePinError();
+                passCode.hideError();
             } else {
-                showPinError();
+                passCode.showError(getString(R.string.invalid_pin));
             }
         }
     }
 
-    @OnFocusChange(R.id.edtPinCompare)
     public void onFocusChangedPinCompare(boolean isFocus) {
         if (!isFocus) {
             if (isValidPinCompare()) {
-                hidePinCompareError();
+                passCodeConfirm.hideError();
             } else {
-                showPinCompareError();
+                passCode.showError(getString(R.string.invalid_pin));
             }
         }
     }
 
-    @OnTextChanged(R.id.edtPin)
     public void onTextChangePin(CharSequence text) {
         if (isValidPin()) {
-            hidePinError();
+            passCode.hideError();
             if (isValidPinCompare()) {
-                hidePinCompareError();
+                passCodeConfirm.hideError();
             }
         }
     }
 
-    @OnTextChanged(R.id.edtPinCompare)
     public void onTextChangePinCompare(CharSequence text) {
         if (isValidPinCompare()) {
-            hidePinError();
-            hidePinCompareError();
+            passCode.hideError();
+            passCodeConfirm.hideError();
         } else {
-            showPinCompareError();
+            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
         }
     }
 
     private boolean isValidPinCompare() {
-        String pin = edtPin.getText().toString();
-        String pinCompare = edtPinCompare.getText().toString();
+        String pin = passCode.getText().toString();
+        String pinCompare = passCodeConfirm.getText().toString();
         if (TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin)) {
             return false;
         }
@@ -110,39 +163,11 @@ public class PinProfileFragment extends AbsProfileFragment {
     }
 
     private boolean isValidPin() {
-        String pin = edtPin.getText().toString();
+        String pin = passCode.getText().toString();
         if (TextUtils.isEmpty(pin)) {
             return false;
         }
         return true;
-    }
-
-    private void hidePinError() {
-        tvPinNote.setVisibility(View.INVISIBLE);
-        textInputPin.setErrorEnabled(false);
-        textInputPin.setError(null);
-    }
-
-    private void showPinNote() {
-        textInputPin.setError(null);
-        textInputPin.setErrorEnabled(false);
-        tvPinNote.setVisibility(View.VISIBLE);
-    }
-
-    private void showPinError() {
-        tvPinNote.setVisibility(View.GONE);
-        textInputPin.setErrorEnabled(true);
-        textInputPin.setError(getString(R.string.invalid_pin));
-    }
-
-    private void hidePinCompareError() {
-        textInputPinCompare.setErrorEnabled(false);
-        textInputPinCompare.setError(null);
-    }
-
-    private void showPinCompareError() {
-        textInputPinCompare.setErrorEnabled(true);
-        textInputPinCompare.setError(getString(R.string.invalid_pin_compare));
     }
 
     public PinProfileFragment() {
@@ -164,20 +189,17 @@ public class PinProfileFragment extends AbsProfileFragment {
     @Override
     public void onClickContinue() {
         if (!isValidPin()) {
-            showPinError();
+            passCode.showError(getString(R.string.invalid_pin));
             return;
         } else {
-            hidePinError();
+            passCode.hideError();
         }
         if (!isValidPinCompare()) {
-            showPinCompareError();
+            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
             return;
         } else {
-            hidePinCompareError();
+            passCodeConfirm.hideError();
         }
-
-        hidePinError();
-        hidePinCompareError();
 
         navigator.startHomeActivity(getContext(), true);
     }
@@ -205,6 +227,24 @@ public class PinProfileFragment extends AbsProfileFragment {
         super.onViewCreated(view, savedInstanceState);
         tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel)));
+
+        chkShowPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    passCode.showPasscode();
+                    passCodeConfirm.showPasscode();
+                } else {
+                    passCode.hidePasscode();
+                    passCodeConfirm.hidePasscode();
+                }
+            }
+        });
+
+//        passCode.setPasscodeChanged(passcodeChanged);
+//        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
+//        passCodeConfirm.setPasscodeChanged(confirmPasscodeChanged);
+//        passCodeConfirm.setPasscodeFocusChanged(confirmPasscodeFocusChanged);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

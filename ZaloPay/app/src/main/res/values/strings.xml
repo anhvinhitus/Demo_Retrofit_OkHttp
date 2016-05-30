@@ -170,4 +170,6 @@
     <string name="zalopay_id">ZaloPay ID</string>
 
     <string name="hint_fullname">Họ tên</string>
+
+    <string name="show_pass">Hiện mật khẩu?</string>
 </resources>
