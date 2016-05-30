@@ -114,6 +114,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Tích hợp Crashlytics -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff"
+            />
+
         <!-- Bắt buộc -->
         <!-- App ID của app đã đăng ký với bên server ZaloPayment -->
         <meta-data

@@ -22,9 +22,12 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.zalopay.wallet.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public class AndroidApplication extends MultiDexApplication {
 
@@ -66,6 +69,8 @@ public class AndroidApplication extends MultiDexApplication {
                 }
             });
         }
+
+        Fabric.with(this, new Crashlytics());
 
         initAppComponent();
         initializeFileFolder();
