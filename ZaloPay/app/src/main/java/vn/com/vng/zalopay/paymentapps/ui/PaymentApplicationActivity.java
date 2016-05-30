@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -18,7 +17,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
@@ -139,6 +137,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * Returns whether dev mode should be enabled. This enables e.g. the dev menu.
      */
     protected boolean getUseDeveloperSupport() {
+        Timber.d("Developer support: %s", bundleReactConfig.isExternalDevSupport());
         return bundleReactConfig.isExternalDevSupport();
     }
 

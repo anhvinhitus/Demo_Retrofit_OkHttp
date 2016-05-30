@@ -133,6 +133,19 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
+    public void saveUserInfo(long zaloId) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(Constants.PREF_ZALO_ID, zaloId);
+        editor.apply();
+
+        Timber.d("save UserInfo isClientActivated %s", isClientActivated());
+
+        if (isClientActivated()) {
+            currentUser.zaloId = zaloId;
+        }
+    }
+
+    @Override
     public void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender) {
 
         SharedPreferences.Editor editor = preferences.edit();

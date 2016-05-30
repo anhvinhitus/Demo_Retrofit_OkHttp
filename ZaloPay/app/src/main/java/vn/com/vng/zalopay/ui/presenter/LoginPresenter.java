@@ -110,6 +110,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
      /*       zaloProfilePreferences.setUserId(uId);
         zaloProfilePreferences.setAuthCode(authCode);
 */
+        userConfig.saveUserInfo(uId, "", "", 0, 0);
 
         Timber.tag(TAG).d("OAuthComplete uid %s authCode %s", uId, authCode);
         if (mView != null) {
