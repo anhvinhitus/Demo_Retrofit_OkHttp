@@ -26,13 +26,14 @@ public class GreenDaoGenerator {
     private static void addApplicationInfo(Schema schema) {
         Entity appInfoEntity = schema.addEntity("AppResourceGD");
 
-        appInfoEntity.addIntProperty("appid").notNull().unique().primaryKey();
+        appInfoEntity.addIntProperty("appid").notNull().unique();
         appInfoEntity.addStringProperty("appname");
         appInfoEntity.addIntProperty("needdownloadrs");
         appInfoEntity.addStringProperty("imageurl");
         appInfoEntity.addStringProperty("jsurl");
         appInfoEntity.addIntProperty("status");
         appInfoEntity.addStringProperty("checksum");
+        appInfoEntity.addBooleanProperty("download");
 
     }
 

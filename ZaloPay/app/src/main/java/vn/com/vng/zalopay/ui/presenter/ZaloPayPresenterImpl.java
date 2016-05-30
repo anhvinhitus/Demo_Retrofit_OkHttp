@@ -6,6 +6,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -70,6 +71,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         @Override
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
+
+            Timber.d(" AppResource %s", appResources.size());
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e(e, " Throwable AppResouceSubscriber ", e);
         }
     }
 

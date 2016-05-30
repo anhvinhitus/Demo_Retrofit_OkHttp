@@ -87,7 +87,8 @@ public class PlatformDaoMapper {
     public AppResourceGD transform(AppResourceEntity appResourceEntity) {
         AppResourceGD appResourceGD = null;
         if (appResourceEntity != null) {
-            appResourceGD = new AppResourceGD(appResourceEntity.appid);
+            appResourceGD = new AppResourceGD();
+            appResourceGD.setAppid(appResourceEntity.appid);
             appResourceGD.setAppname(appResourceEntity.appname);
             appResourceGD.setChecksum(appResourceEntity.checksum);
             appResourceGD.setImageurl(appResourceEntity.imageurl);
@@ -106,9 +107,10 @@ public class PlatformDaoMapper {
             appResourceEntity.appname = appResourceGD.getAppname();
             appResourceEntity.checksum = appResourceGD.getChecksum();
             appResourceEntity.imageurl = appResourceGD.getImageurl();
-            appResourceEntity.needdownloadrs = appResourceGD.getNeeddownloadrs();
-            appResourceEntity.status = appResourceGD.getStatus();
+            appResourceEntity.needdownloadrs = appResourceGD.getNeeddownloadrs() == null ? 0 : 1;
+            appResourceEntity.status = appResourceGD.getStatus() == null ? 0 : 1;
             appResourceEntity.jsurl = appResourceGD.getJsurl();
+            appResourceEntity.download = appResourceGD.getDownload();
 
         }
         return appResourceEntity;

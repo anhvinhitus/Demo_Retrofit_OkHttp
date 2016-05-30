@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.cache;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.api.entity.PaymentTransTypeEntity;
@@ -33,7 +34,6 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     }
 
-
     @Override
     public Observable<List<CardEntity>> listCard() {
         return makeObservable(() -> listCardEntity());
@@ -45,7 +45,13 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     @Override
     public void write(List<AppResourceEntity> listApp) {
-        getAppInfoDao().insertOrReplaceInTx(platformDaoMapper.transformAppResourceEntity(listApp));
+
+        List<AppResourceGD> list = platformDaoMapper.transformAppResourceEntity(listApp);
+        for (AppResourceGD appResource : list) {
+            appResource.setDownload(false);
+        }
+
+        getAppInfoDao().insertOrReplaceInTx(list);
     }
 
     @Override
@@ -68,5 +74,15 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
     @Override
     public void writePaymentTransType(List<PaymentTransTypeEntity> list) {
         getPaymentTransDao().insertOrReplaceInTx(platformDaoMapper.transformPaymentTransTypeEntity(list));
+    }
+
+    @Override
+    public void setDownloadInfo(int appResourceId, boolean download) {
+        Timber.e("setDownloadInfo appResourceId %s", appResourceId);
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appResourceId)).list();
+        for (AppResourceGD app : appResourceGD) {
+            app.setDownload(download);
+        }
+        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
     }
 }

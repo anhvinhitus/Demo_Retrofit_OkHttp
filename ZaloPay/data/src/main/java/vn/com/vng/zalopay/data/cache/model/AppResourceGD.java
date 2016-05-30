@@ -13,15 +13,12 @@ public class AppResourceGD {
     private String jsurl;
     private Integer status;
     private String checksum;
+    private Boolean download;
 
     public AppResourceGD() {
     }
 
-    public AppResourceGD(int appid) {
-        this.appid = appid;
-    }
-
-    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum) {
+    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Boolean download) {
         this.appid = appid;
         this.appname = appname;
         this.needdownloadrs = needdownloadrs;
@@ -29,6 +26,7 @@ public class AppResourceGD {
         this.jsurl = jsurl;
         this.status = status;
         this.checksum = checksum;
+        this.download = download;
     }
 
     public int getAppid() {
@@ -85,6 +83,14 @@ public class AppResourceGD {
 
     public void setChecksum(String checksum) {
         this.checksum = checksum;
+    }
+
+    public Boolean getDownload() {
+        return download;
+    }
+
+    public void setDownload(Boolean download) {
+        this.download = download;
     }
 
 }

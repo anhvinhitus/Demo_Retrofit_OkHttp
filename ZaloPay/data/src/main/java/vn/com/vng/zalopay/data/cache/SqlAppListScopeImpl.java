@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.cache;
 
 import java.util.List;
@@ -5,9 +6,11 @@ import java.util.List;
 import vn.com.vng.zalopay.data.api.entity.AppInfoEntity;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 
+*/
 /**
  * Created by AnhHieu on 5/4/16.
- */
+ *//*
+
 public class SqlAppListScopeImpl extends SqlBaseScopeImpl implements SqlAppListScope {
 
 
@@ -25,3 +28,4 @@ public class SqlAppListScopeImpl extends SqlBaseScopeImpl implements SqlAppListS
         //Todo write db
     }
 }
+*/

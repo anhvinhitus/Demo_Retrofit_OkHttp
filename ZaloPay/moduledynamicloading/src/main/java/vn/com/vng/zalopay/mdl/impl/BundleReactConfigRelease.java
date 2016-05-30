@@ -1,13 +1,8 @@
 package vn.com.vng.zalopay.mdl.impl;
 
-import android.os.Environment;
-
-import java.io.File;
-
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.mdl.model.ReactBundleAssetData;
 
 /**
  * Created by AnhHieu on 5/16/16.

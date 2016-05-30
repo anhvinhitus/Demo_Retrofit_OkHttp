@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.service.DownloadService;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 
 @Module
@@ -113,7 +114,7 @@ public class ApplicationModule {
     HashMap<String, String> providesParamsRequest() {
         HashMap<String, String> params = new HashMap<>();
         params.put("platformcode", "android");
-        params.put("dscreentype", "xhdpi"); //ldpi, dpi, mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi"
+        params.put("dscreentype", AndroidUtils.getScreenType()); //ldpi, dpi, mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi"
         params.put("devicemodel", Build.MODEL);
         return params;
     }

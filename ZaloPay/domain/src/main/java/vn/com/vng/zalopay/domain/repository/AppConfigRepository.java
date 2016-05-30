@@ -14,6 +14,5 @@ public interface AppConfigRepository {
 
     Observable<List<BankCard>> listCardCache();
 
-
     Observable<List<AppResource>> listAppResource();
 }

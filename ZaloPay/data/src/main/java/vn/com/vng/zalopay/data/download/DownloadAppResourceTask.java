@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -15,8 +16,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 
-import static vn.com.vng.zalopay.data.download.FileUtil.*;
+import static vn.com.vng.zalopay.data.download.FileUtil.ensureDirectory;
+import static vn.com.vng.zalopay.data.download.FileUtil.unzip;
 
 /**
  * Created by AnhHieu on 5/21/16.
@@ -34,18 +37,28 @@ public class DownloadAppResourceTask {
     private final OkHttpClient httpClient;
 
     private final Context context;
-    private final DownLoadInfo downloadInfo;
+    private final DownloadInfo downloadInfo;
+    private final SqlitePlatformScope sqlitePlatformScope;
 
-    public DownloadAppResourceTask(Context context, DownLoadInfo appResourceEntity, OkHttpClient mOkHttpClient) {
+    private final String mBundleRootFolder;
+
+    public DownloadAppResourceTask(Context context,
+                                   DownloadInfo appResourceEntity,
+                                   OkHttpClient mOkHttpClient,
+                                   SqlitePlatformScope sqlitePlatformScope) {
+
         this.downloadInfo = appResourceEntity;
         this.context = context;
         this.httpClient = mOkHttpClient;
+        this.sqlitePlatformScope = sqlitePlatformScope;
+
+        mBundleRootFolder = context.getFilesDir().getAbsolutePath() + File.separator + context.getPackageName() + File.separator + "bundles";
     }
 
     public void execute(Callback callback) {
         //download(downloadInfo.)
 
-        boolean isDownloadSuccess = download(downloadInfo.url, callback);
+        boolean isDownloadSuccess = download(downloadInfo, callback);
 
         Timber.d("isDownload %s", isDownloadSuccess);
 
@@ -55,6 +68,8 @@ public class DownloadAppResourceTask {
                 callback.onFailure();
             }
         } else {
+            sqlitePlatformScope.setDownloadInfo(downloadInfo.appid, true);
+
             if (callback != null) {
                 callback.onSuccess();
             }
@@ -111,14 +126,14 @@ public class DownloadAppResourceTask {
 
     }
 
-    private boolean download(String url, Callback callback) {
+    private boolean download(DownloadInfo downloadInfo, Callback callback) {
 
-        Timber.d("url download %s", url);
+        Timber.d("url download %s", downloadInfo.url);
         String resourcePath = getResourcePath();
         ensureDirectory(resourcePath);
         final File file = new File(resourcePath, "temp.zip");
 
-        final Call call = httpClient.newCall(new Request.Builder().url(url).get().build());
+        final Call call = httpClient.newCall(new Request.Builder().url(downloadInfo.url).get().build());
         boolean result = false;
         try {
             Response response = call.execute();
@@ -127,16 +142,16 @@ public class DownloadAppResourceTask {
             } else {
                 Timber.e("response.code() %s", response.code());
             }
+
+            response.body().close();
         } catch (Exception ex) {
-
             Timber.e("download exception %s", ex);
-
-            return false;
         } finally {
         }
+
         Timber.i("result download %s", result);
         if (result) {
-            String destinationPath = getUnZipPath(downloadInfo.appname);
+            String destinationPath = getExternalBundleFolder(downloadInfo.appid);
             Timber.d("destinationPath %s", destinationPath);
             try {
                 unzip(file.getAbsolutePath(), destinationPath);
@@ -144,11 +159,6 @@ public class DownloadAppResourceTask {
                 Timber.e(ex, "exception unzip ");
                 result = false;
             }
-        }
-
-
-        if (!result) {
-
         }
 
         if (file != null && file.exists()) {
@@ -159,24 +169,11 @@ public class DownloadAppResourceTask {
     }
 
 
-    private String getRootPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
+    public String getExternalBundleFolder(int appId) {
+        return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
     }
 
-    private String getResourcePath() {
-        return getRootPath() + File.separator + "zmres";
-    }
-
-    private String getTempFilePath() {
-        return getResourcePath() + File.separator + "temp.zip";
-    }
-
-
-    public String getUnZipPath(String appName) {
-        return getRootApplicationPath(appName) + File.separator + "app";
-    }
-
-    public String getRootApplicationPath(String appName) {
-        return getResourcePath() + File.separator + appName;
+    public String getResourcePath() {
+        return mBundleRootFolder;
     }
 }

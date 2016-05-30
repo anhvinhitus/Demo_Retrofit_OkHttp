@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.api.entity;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -27,5 +28,8 @@ public class AppResourceEntity {
 
     @SerializedName("checksum")
     public String checksum;
+
+    @Expose(deserialize = false, serialize = false)
+    public boolean download;
 
 }

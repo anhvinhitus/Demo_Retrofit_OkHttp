@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.repository;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -35,6 +36,8 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
                     .subscribe(new DefaultSubscriber<>())
             ;
 
+            appConfigFactory.checkDownloadAppResource();
+
           /*  appConfigFactory.getAppResourceCloud()
                     .subscribe(new DefaultSubscriber<>());*/
             return Boolean.TRUE;
@@ -48,14 +51,8 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
 
     @Override
     public Observable<List<AppResource>> listAppResource() {
-        return appConfigFactory.getAppResourceCloud()
-                .flatMap(response -> {
-                    if (response.resourcelist.isEmpty()) {
-                        return appConfigFactory.listAppResourceCache();
-                    } else {
-                        return Observable.just(response.resourcelist);
-                    }
-                })
-                .map(resourceEntities -> mapper.transformAppResourceEntity(resourceEntities));
+        return Observable.concat(appConfigFactory.listAppResourceCache(),
+                appConfigFactory.listAppResourceCloud().flatMap(appResourceResponse -> appConfigFactory.listAppResourceCache())).delaySubscription(200, TimeUnit.MILLISECONDS)
+                .map(o -> mapper.transformAppResourceEntity(o));
     }
 }

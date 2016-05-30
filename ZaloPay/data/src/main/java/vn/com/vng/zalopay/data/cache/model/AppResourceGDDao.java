@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 /** 
  * DAO for table "APP_RESOURCE_GD".
 */
-public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
+public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
 
     public static final String TABLENAME = "APP_RESOURCE_GD";
 
@@ -23,13 +23,14 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Appid = new Property(0, int.class, "appid", true, "APPID");
+        public final static Property Appid = new Property(0, int.class, "appid", false, "APPID");
         public final static Property Appname = new Property(1, String.class, "appname", false, "APPNAME");
         public final static Property Needdownloadrs = new Property(2, Integer.class, "needdownloadrs", false, "NEEDDOWNLOADRS");
         public final static Property Imageurl = new Property(3, String.class, "imageurl", false, "IMAGEURL");
         public final static Property Jsurl = new Property(4, String.class, "jsurl", false, "JSURL");
         public final static Property Status = new Property(5, Integer.class, "status", false, "STATUS");
         public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
+        public final static Property Download = new Property(7, Boolean.class, "download", false, "DOWNLOAD");
     };
 
 
@@ -45,13 +46,14 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"APP_RESOURCE_GD\" (" + //
-                "\"APPID\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: appid
+                "\"APPID\" INTEGER NOT NULL UNIQUE ," + // 0: appid
                 "\"APPNAME\" TEXT," + // 1: appname
                 "\"NEEDDOWNLOADRS\" INTEGER," + // 2: needdownloadrs
                 "\"IMAGEURL\" TEXT," + // 3: imageurl
                 "\"JSURL\" TEXT," + // 4: jsurl
                 "\"STATUS\" INTEGER," + // 5: status
-                "\"CHECKSUM\" TEXT);"); // 6: checksum
+                "\"CHECKSUM\" TEXT," + // 6: checksum
+                "\"DOWNLOAD\" INTEGER);"); // 7: download
     }
 
     /** Drops the underlying database table. */
@@ -95,12 +97,17 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
         if (checksum != null) {
             stmt.bindString(7, checksum);
         }
+ 
+        Boolean download = entity.getDownload();
+        if (download != null) {
+            stmt.bindLong(8, download ? 1L: 0L);
+        }
     }
 
     /** @inheritdoc */
     @Override
-    public Integer readKey(Cursor cursor, int offset) {
-        return cursor.getInt(offset + 0);
+    public Void readKey(Cursor cursor, int offset) {
+        return null;
     }    
 
     /** @inheritdoc */
@@ -113,7 +120,8 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // imageurl
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // jsurl
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // status
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // checksum
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // checksum
+            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0 // download
         );
         return entity;
     }
@@ -128,22 +136,20 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Integer> {
         entity.setJsurl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setStatus(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
         entity.setChecksum(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setDownload(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
      }
     
     /** @inheritdoc */
     @Override
-    protected Integer updateKeyAfterInsert(AppResourceGD entity, long rowId) {
-        return entity.getAppid();
+    protected Void updateKeyAfterInsert(AppResourceGD entity, long rowId) {
+        // Unsupported or missing PK type
+        return null;
     }
     
     /** @inheritdoc */
     @Override
-    public Integer getKey(AppResourceGD entity) {
-        if(entity != null) {
-            return entity.getAppid();
-        } else {
-            return null;
-        }
+    public Void getKey(AppResourceGD entity) {
+        return null;
     }
 
     /** @inheritdoc */

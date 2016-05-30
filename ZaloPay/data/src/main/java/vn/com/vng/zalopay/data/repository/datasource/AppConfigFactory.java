@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
-import vn.com.vng.zalopay.data.download.DownLoadInfo;
+import vn.com.vng.zalopay.data.download.DownloadInfo;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTask;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -78,6 +79,20 @@ public class AppConfigFactory {
 
     }
 
+    public void checkDownloadAppResource() {
+        List<AppResourceEntity> list = sqlitePlatformScope.listAppResourceEntity();
+        List<AppResourceEntity> listAppDownload = new ArrayList<>();
+        for (AppResourceEntity app : list) {
+            if (!app.download) {
+                listAppDownload.add(app);
+            }
+        }
+
+        if (!listAppDownload.isEmpty()) {
+            startDownloadService(listAppDownload, null);
+        }
+    }
+
     private void processPlatformResp(PlatformInfoResponse response) {
         //  sqlitePlatformScope.put
         sqlitePlatformScope.insertDataManifest(Constants.MANIF_PLATFORM_INFO_CHECKSUM, response.platforminfochecksum);
@@ -91,7 +106,7 @@ public class AppConfigFactory {
         return sqlitePlatformScope.listCard();
     }
 
-    public Observable<AppResourceResponse> getAppResourceCloud() {
+    public Observable<AppResourceResponse> listAppResourceCloud() {
 
         List<Integer> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
@@ -119,27 +134,31 @@ public class AppConfigFactory {
         }
     }
 
-    private void processAppResourceResponse(AppResourceResponse resourceReponse) {
-        List<Integer> listAppId = resourceReponse.appidlist;
+    private void processAppResourceResponse(AppResourceResponse resourceResponse) {
+        List<Integer> listAppId = resourceResponse.appidlist;
 
-        List<AppResourceEntity> resourcelist = resourceReponse.resourcelist;
+        List<AppResourceEntity> resourcelist = resourceResponse.resourcelist;
 
-        long expiredtime = resourceReponse.expiredtime;
+        long expiredtime = resourceResponse.expiredtime;
 
-//        startDownloadService(resourcelist, resourceReponse.baseurl);
+        startDownloadService(resourcelist, resourceResponse.baseurl);
 
-        Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceReponse.baseurl, listAppId, resourcelist.size());
+        Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceResponse.baseurl, listAppId, resourcelist.size());
 
         sqlitePlatformScope.write(resourcelist);
         sqlitePlatformScope.updateAppId(listAppId);
     }
 
-    private void startDownloadService(List<AppResourceEntity> resourcelist, String baseurl) {
+
+    private void startDownloadService(List<AppResourceEntity> resource, String baseUrl) {
 
         List<DownloadAppResourceTask> needDownloadList = new ArrayList<>();
-        for (AppResourceEntity appResourceEntity : resourcelist) {
-            appResourceEntity.jsurl = baseurl + appResourceEntity.jsurl;
-            appResourceEntity.imageurl = baseurl + appResourceEntity.imageurl;
+        for (AppResourceEntity appResourceEntity : resource) {
+
+            if (!TextUtils.isEmpty(baseUrl)) {
+                appResourceEntity.jsurl = baseUrl + appResourceEntity.jsurl;
+                appResourceEntity.imageurl = baseUrl + appResourceEntity.imageurl;
+            }
 
             if (appResourceEntity.needdownloadrs == 1) {
                 createTask(appResourceEntity, needDownloadList);
@@ -150,28 +169,22 @@ public class AppConfigFactory {
             Timber.d("Start download %s", needDownloadList.size());
             taskQueue.enqueue(needDownloadList);
         }
-
     }
-
 
     private void createTask(AppResourceEntity appResourceEntity, List<DownloadAppResourceTask> listTask) {
 
-        DownLoadInfo downLoadJS = new DownLoadInfo();
-        downLoadJS.appname = appResourceEntity.appname;
-        downLoadJS.checksum = appResourceEntity.checksum;
-        downLoadJS.appid = appResourceEntity.appid;
-        downLoadJS.url = appResourceEntity.jsurl;
+        DownloadAppResourceTask taskJs = new DownloadAppResourceTask(context,
+                new DownloadInfo(appResourceEntity.jsurl, appResourceEntity.appname,
+                        appResourceEntity.appid, appResourceEntity.checksum),
+                mOkHttpClient, sqlitePlatformScope);
 
-        DownloadAppResourceTask taskJs = new DownloadAppResourceTask(context, downLoadJS, mOkHttpClient);
         listTask.add(taskJs);
 
-        DownLoadInfo downloadImg = new DownLoadInfo();
-        downloadImg.appname = appResourceEntity.appname;
-        downloadImg.checksum = appResourceEntity.checksum;
-        downloadImg.appid = appResourceEntity.appid;
-        downloadImg.url = appResourceEntity.imageurl;
+        DownloadAppResourceTask taskImgUrl = new DownloadAppResourceTask(context,
+                new DownloadInfo(appResourceEntity.imageurl, appResourceEntity.appname,
+                        appResourceEntity.appid, appResourceEntity.checksum),
+                mOkHttpClient, sqlitePlatformScope);
 
-        DownloadAppResourceTask taskImgUrl = new DownloadAppResourceTask(context, downloadImg, mOkHttpClient);
         listTask.add(taskImgUrl);
     }
 }

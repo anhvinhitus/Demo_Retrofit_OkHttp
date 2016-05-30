@@ -98,6 +98,25 @@ public class AndroidUtils {
     }
 
 
+    public static final String getScreenType() {
+        if (density == 0.75) {
+            return "ldpi";
+        } else if (density == 1) {
+            return "mdpi";
+        } else if (density == 1.5) {
+            return "hdpi";
+        } else if (density == 2) {
+            return "xhdpi";
+        } else if (density == 3) {
+            return "xxhdpi";
+        } else if (density == 4) {
+            return "xxxhdpi";
+        } else {
+            return "xhdpi";
+        }
+    }
+
+
     public static String getDeviceId() {
         final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance().getSystemService(Context.TELEPHONY_SERVICE);
 

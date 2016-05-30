@@ -28,5 +28,6 @@ public interface SqlitePlatformScope extends SqlBaseScope {
 
     void writePaymentTransType(List<PaymentTransTypeEntity> list);
 
+    void setDownloadInfo(int appResourceId, boolean download);
 
 }

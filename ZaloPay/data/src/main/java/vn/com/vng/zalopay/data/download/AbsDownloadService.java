@@ -39,7 +39,6 @@ public abstract class AbsDownloadService extends IntentService implements Downlo
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Timber.d("on handle intent currentThread %s", Thread.currentThread().getName());
         executeNext();
     }
 

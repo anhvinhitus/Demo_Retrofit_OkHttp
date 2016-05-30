@@ -59,7 +59,7 @@ public class BundleServiceImpl implements BundleService {
         this.mLocalResourceRepository = localResourceRepository;
         this.mGson = gson;
         String packageName = mApplication.getPackageName();
-        mBundleRootFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + packageName + File.separator +"bundles";
+        mBundleRootFolder = application.getFilesDir().getAbsolutePath() + File.separator + packageName + File.separator + "bundles";
     }
 
     @Override
@@ -148,6 +148,7 @@ public class BundleServiceImpl implements BundleService {
 
     /**
      * Extract zalopay_internal.zip from apk's assets and unzip to destination folder
+     *
      * @return true if succeeded
      */
     private boolean updateInternalResource() {
