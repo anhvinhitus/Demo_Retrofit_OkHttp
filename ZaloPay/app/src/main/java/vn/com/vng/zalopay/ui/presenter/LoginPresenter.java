@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -190,6 +192,12 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         @Override
         public void onNext(User user) {
             Timber.d("login success " + user);
+            // TODO: Use your own attributes to track content views in your app
+            Answers.getInstance().logContentView(new ContentViewEvent()
+                    .putContentName("Login Success")
+                    .putContentType("Login")
+                    .putContentId(String.valueOf(user.zaloId)));
+
             LoginPresenter.this.onLoginSuccess(user);
         }
 
