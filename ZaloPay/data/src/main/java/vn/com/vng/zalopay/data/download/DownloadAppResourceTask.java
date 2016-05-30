@@ -63,7 +63,6 @@ public class DownloadAppResourceTask {
         Timber.d("isDownload %s", isDownloadSuccess);
 
         if (!isDownloadSuccess) {
-            //Fixme:   deleteDirectory(new File(getUnZipPath(downloadInfo.appname)));
             if (callback != null) {
                 callback.onFailure();
             }

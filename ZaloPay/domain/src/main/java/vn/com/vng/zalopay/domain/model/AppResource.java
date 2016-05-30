@@ -53,4 +53,11 @@ public class AppResource extends AbstractData {
         }
     };
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AppResource) {
+            return appid == ((AppResource) o).appid && appid > 0;
+        }
+        return false;
+    }
 }

@@ -7,6 +7,20 @@
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
+    }, {
+      "appid": 1,
+      "appname": "Chuyển tiền",
+      "asset": "external/esale.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
+    }, {
+      "appid": 2,
+      "appname": "Nạp Tiền ĐT",
+      "asset": "external/esale.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
     }
   ],
   "internal_bundle": {

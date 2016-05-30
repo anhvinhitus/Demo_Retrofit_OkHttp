@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Collection;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -69,6 +72,19 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
     }
 
+    @Override
+    public void insertItems(Collection<AppResource> items) {
+        for (AppResource item : items) {
+            if (!exist(item)) {
+                insert(item);
+            }
+        }
+    }
+
+    private boolean exist(AppResource item) {
+        List<AppResource> list = getItems();
+        return list.indexOf(item) >= 0;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private OnItemClickListener listener;

@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
@@ -149,6 +150,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onClickAppListener(AppResource app) {
+
+        Timber.d("onclick app %s %s ", app.appid, app.appname);
+
         navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
     }
 
@@ -176,7 +180,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     //Test
     private List<AppResource> getListData() {
         return Arrays.asList(new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
-                new AppResource(8, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
+                new AppResource(2, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
                 new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)),
                 new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet)),
                 new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)),

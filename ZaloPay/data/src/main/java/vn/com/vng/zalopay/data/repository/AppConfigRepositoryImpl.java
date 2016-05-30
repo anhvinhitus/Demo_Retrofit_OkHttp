@@ -52,7 +52,9 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
     @Override
     public Observable<List<AppResource>> listAppResource() {
         return Observable.concat(appConfigFactory.listAppResourceCache(),
-                appConfigFactory.listAppResourceCloud().flatMap(appResourceResponse -> appConfigFactory.listAppResourceCache())).delaySubscription(200, TimeUnit.MILLISECONDS)
+                appConfigFactory.listAppResourceCloud()
+                        .flatMap(appResourceResponse -> appConfigFactory.listAppResourceCache()))
+                .delaySubscription(200, TimeUnit.MILLISECONDS)
                 .map(o -> mapper.transformAppResourceEntity(o));
     }
 }

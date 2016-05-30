@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.repository;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -111,6 +112,6 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
             requestTransactionsHistory();
 
             return Boolean.TRUE;
-        });
+        }).delaySubscription(5, TimeUnit.SECONDS);
     }
 }
