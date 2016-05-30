@@ -176,7 +176,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     //Test
     private List<AppResource> getListData() {
         return Arrays.asList(new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
-                new AppResource(2, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
+                new AppResource(8, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
                 new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)),
                 new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet)),
                 new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)),

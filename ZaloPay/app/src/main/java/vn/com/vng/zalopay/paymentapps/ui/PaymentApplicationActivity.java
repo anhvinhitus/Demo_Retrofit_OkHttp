@@ -48,11 +48,14 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         if (savedInstanceState == null) {
             appResource = getIntent().getParcelableExtra("appResource");
+            mComponentName = getIntent().getStringExtra("moduleName");
         } else {
             appResource = savedInstanceState.getParcelable("appResource");
+            mComponentName = savedInstanceState.getString("moduleName");
         }
 
-        Timber.d("appResource %s %s", appResource, appResource == null ? "" : appResource.appname);
+        Timber.e("Starting module: %s", mComponentName);
+        Timber.d("appResource appname %s", appResource == null ? "" : appResource.appname);
 
         super.onCreate(savedInstanceState);
     }
@@ -65,11 +68,13 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         if (appResource != null) {
             outState.putParcelable("appResource", appResource);
         }
+
+        if (mComponentName != null) {
+            outState.putString("moduleName", mComponentName);
+        }
     }
 
     protected void doInjection() {
-        mComponentName = getIntent().getStringExtra("moduleName");
-        Timber.e("Starting module: %s user %s", mComponentName, AndroidApplication.instance().getUserComponent());
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 
@@ -79,13 +84,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * always try to load the JS bundle from the packager server.
      * e.g. "index.android.bundle"
      */
-    protected
     @Nullable
-    String getBundleAssetName() {
+    protected String getBundleAssetName() {
         return "index.android.bundle";
     }
 
-    ;
 
     /**
      * Returns a custom path of the bundle file. This is used in cases the bundle should be loaded
@@ -93,9 +96,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * by getBundleAssetName.
      * e.g. "file://sdcard/myapp_cache/index.android.bundle"
      */
-    protected
     @Nullable
-    String getJSBundleFile() {
+    protected String getJSBundleFile() {
         String jsBundleFile = bundleReactConfig.getExternalJsBundle(appResource);
         Timber.d("jsBundleFile %s", jsBundleFile);
         return jsBundleFile;
@@ -144,11 +146,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected List<ReactPackage> getPackages() {
 
-        long appId = 0;
-
-        if (appResource != null) {
-            appId = appResource.appid;
-        }
+        long appId = appResource == null ? 0 : appResource.appid;
 
         return Arrays.asList(
                 new MainReactPackage(),

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class AppResourceEntity {
 
     @SerializedName("appid")
-    public long appid;
+    public int appid;
 
     @SerializedName("appname")
     public String appname;

@@ -93,7 +93,7 @@ public class AppConfigFactory {
 
     public Observable<AppResourceResponse> getAppResourceCloud() {
 
-        List<Long> appidlist = new ArrayList<>();
+        List<Integer> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
 
         listAppIdAndChecksum(appidlist, checksumlist);
@@ -109,7 +109,7 @@ public class AppConfigFactory {
         return sqlitePlatformScope.listApp();
     }
 
-    private void listAppIdAndChecksum(List<Long> appidlist, List<String> checksumlist) {
+    private void listAppIdAndChecksum(List<Integer> appidlist, List<String> checksumlist) {
         List<AppResourceEntity> listApp = sqlitePlatformScope.listAppResourceEntity();
         if (!Lists.isEmptyOrNull(listApp)) {
             for (AppResourceEntity appResourceEntity : listApp) {
@@ -120,13 +120,13 @@ public class AppConfigFactory {
     }
 
     private void processAppResourceResponse(AppResourceResponse resourceReponse) {
-        List<Long> listAppId = resourceReponse.appidlist;
+        List<Integer> listAppId = resourceReponse.appidlist;
 
         List<AppResourceEntity> resourcelist = resourceReponse.resourcelist;
 
         long expiredtime = resourceReponse.expiredtime;
 
-        startDownloadService(resourcelist, resourceReponse.baseurl);
+//        startDownloadService(resourcelist, resourceReponse.baseurl);
 
         Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceReponse.baseurl, listAppId, resourcelist.size());
 

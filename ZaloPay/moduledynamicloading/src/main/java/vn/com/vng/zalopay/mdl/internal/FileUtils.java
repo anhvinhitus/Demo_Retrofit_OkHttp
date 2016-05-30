@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
@@ -153,13 +154,11 @@ public class FileUtils {
         }
     }
 
-    public static void unzipFile(File zipFile, String destination, boolean deleteExisting) throws IOException, MiniApplicationException {
-        FileInputStream fileStream = null;
+    public static void unzipFile(InputStream stream, String destination, boolean deleteExisting) throws IOException, MiniApplicationException {
         BufferedInputStream bufferedStream = null;
         ZipInputStream zipStream = null;
         try {
-            fileStream = new FileInputStream(zipFile);
-            bufferedStream = new BufferedInputStream(fileStream);
+            bufferedStream = new BufferedInputStream(stream);
             zipStream = new ZipInputStream(bufferedStream);
             ZipEntry entry;
 
@@ -201,10 +200,32 @@ public class FileUtils {
             try {
                 if (zipStream != null) zipStream.close();
                 if (bufferedStream != null) bufferedStream.close();
-                if (fileStream != null) fileStream.close();
             } catch (IOException e) {
                 throw new MiniApplicationException("Error closing IO resources.", e);
             }
         }
+    }
+
+    public static void unzipFile(String zipFile, String destination, boolean deleteExisting) throws IOException, MiniApplicationException {
+        FileInputStream fileStream = new FileInputStream(zipFile);
+
+        unzipFile(fileStream, destination, deleteExisting);
+    }
+
+    public static String loadStringFromStream(InputStream is) {
+        String json = null;
+        try {
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            if (is.read(buffer) < 0) {
+                buffer[0] = 0;
+            }
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 }

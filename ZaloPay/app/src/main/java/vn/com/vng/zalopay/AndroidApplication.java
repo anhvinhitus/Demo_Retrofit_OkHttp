@@ -25,7 +25,6 @@ import vn.com.zalopay.wallet.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.
- *
  */
 public class AndroidApplication extends MultiDexApplication {
 
@@ -77,6 +76,15 @@ public class AndroidApplication extends MultiDexApplication {
         if (!BuildConfig.DEBUG) {
             Constants.IS_RELEASE = true;
         }
+
+        if (BuildConfig.DEBUG) {
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread thread, Throwable throwable) {
+                    Timber.e(throwable, "UncaughtException!!!");
+                }
+            });
+        }
     }
 
 
@@ -86,12 +94,14 @@ public class AndroidApplication extends MultiDexApplication {
                 .build();
 
         appComponent.userConfig().loadConfig();
-       /* appComponent.threadExecutor().execute(new Runnable() {
+        appComponent.threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                appComponent.bundleService().prepareInternalBundle();
+                appComponent.bundleService().ensureLocalResources();
+//                appComponent.bundleService().prepareInternalBundle();
+//                appComponent.bundleService().extractAllExternalApplication();
             }
-        });*/
+        });
     }
 
     public UserComponent createUserComponent(User user) {
@@ -110,7 +120,7 @@ public class AndroidApplication extends MultiDexApplication {
     public UserComponent getUserComponent() {
         return userComponent;
     }
-	
+
     private void initializeFileFolder() {
         if (Environment.MEDIA_MOUNTED.equals(Environment
                 .getExternalStorageState())) {

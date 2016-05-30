@@ -22,6 +22,8 @@ public class PaymentError {
     //lỗi hệ thống
     public static int ERR_CODE_SYSTEM = 5000;
 
+    public static int ERR_CODE_UNKNOWN = 0;
+
     //thông tin user thiếu hoặc không hợp lệ.
     public static int ERR_CODE_USER_INFO = 5001;
 

@@ -20,6 +20,8 @@ public class DBOpenHelper extends DaoMaster.OpenHelper {
 
         // Debug
         DaoMaster.dropAllTables(db, true);
+
+        DaoMaster.createAllTables(db, true);
     }
 
 }

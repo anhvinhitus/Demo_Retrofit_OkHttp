@@ -9,6 +9,8 @@ public class Constants {
     public static final String MANIF_PLATFORM_INFO_CHECKSUM = "manif_pfinfochecksum";
     public static final String MANIF_RESOURCE_VERSION = "manif_resource_version";
 
+    public static final String MANIFEST_RESOURCE_INTERNAL_VERSION = "manifest_resource_internal_version";
+    public static final String MANIFEST_RESOURCE_EXTERNAL_VERSION = "manifest_resource_internal_version";
 
     public static final String ZPTRANSTOKEN = "zptranstoken";
     public static final String APPID = "appid";

@@ -16,6 +16,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
+import java.util.Locale;
+
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -35,6 +37,7 @@ import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 /**
  * Created by huuhoa on 5/16/16.
+ * API for PaymentApp integration
  */
 
 
@@ -56,11 +59,10 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         super(reactContext);
         this.user = user;
         this.zaloPayIAPRepository = zaloPayIAPRepository;
+        this.appId = appId;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
-
-        this.appId = appId;
 
     }
 
@@ -95,54 +97,40 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
             String mac = params.getString(Constants.MAC);
 
             if (appID < 0) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-                }
+                reportInvalidParameter(promise, Constants.APPID);
                 return;
             }
             if (TextUtils.isEmpty(appTransID)) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-                }
+                reportInvalidParameter(promise, Constants.APPTRANSID);
                 return;
             }
             if (TextUtils.isEmpty(appUser)) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-                }
+                reportInvalidParameter(promise, Constants.APPUSER);
                 return;
             }
             if (appTime <= 0) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-                }
+                reportInvalidParameter(promise, Constants.APPTIME);
                 return;
             }
             if (amount <= 0) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-                }
+                reportInvalidParameter(promise, Constants.AMOUNT);
                 return;
             }
             if (TextUtils.isEmpty(itemName)) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-                }
+                reportInvalidParameter(promise, Constants.ITEM);
                 return;
             }
             if (TextUtils.isEmpty(embedData)) {
-                handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                reportInvalidParameter(promise, Constants.DESCRIPTION);
                 return;
             }
             if (TextUtils.isEmpty(mac)) {
-                handleResultError(promise, PaymentError.ERR_CODE_INPUT);
+                reportInvalidParameter(promise, Constants.MAC);
                 return;
             }
 
             if (user == null || user.uid <= 0) {
-                if (promise != null) {
-                    handleResultError(promise, PaymentError.ERR_CODE_USER_INFO);
-                }
+                errorCallback(promise, PaymentError.ERR_CODE_USER_INFO);
                 return;
             }
 
@@ -165,84 +153,28 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
             paymentListener = new PaymentListener(promise);
             ZingMobilePayService.pay(getCurrentActivity(), forcedPaymentChannel, paymentInfo, paymentListener);
         } catch (Exception e) {
-            if (promise != null) {
-                handleResultError(promise, PaymentError.ERR_CODE_INPUT);
-            }
+            errorCallback(promise, PaymentError.ERR_CODE_INPUT);
         }
     }
 
-    class PaymentListener implements ZPPaymentListener {
+    @ReactMethod
+    public void getUserInfo(Promise promise) {
 
-        private Promise promise;
+        Timber.d("get user info appId %s", appId);
 
-        public PaymentListener(Promise promise) {
-            this.promise = promise;
-        }
-
-        @Override
-        public void onComplete(ZPPaymentResult zpPaymentResult) {
-            if (zpPaymentResult == null) {
-                if (!isNetworkAvailable(getReactApplicationContext())) {
-                    handleResultError(promise, PaymentError.ERR_CODE_INTERNET);
-                } else {
-                    handleResultError(promise, PaymentError.ERR_CODE_SYSTEM);
-                }
-            } else {
-                EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-                if (paymentStatus == null) {
-                    handleResultError(promise, String.valueOf(PaymentError.ERR_CODE_SYSTEM), PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
-                } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                    handleResultSucess(promise, null);
-                } else {
-                    handleResultError(promise, String.valueOf(paymentStatus.getNum()), paymentStatus.toString());
-                }
-            }
-        }
-
-        @Override
-        public void onCancel() {
-            handleResultError(promise, PaymentError.ERR_CODE_USER_CANCEL);
-            destroyVariable();
-        }
-
-        @Override
-        public void onSMSCallBack(String s) {
-            //not use
-        }
+        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
+                .subscribe(new UserInfoSubscriber(promise));
+        compositeSubscription.add(subscription);
     }
 
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+    @ReactMethod
+    public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
 
-    private void handleResultSucess(Promise promise, Object object) {
-        transactionUpdate();
-        if (promise == null) {
-            return;
-        }
-        promise.resolve(object);
-    }
+        Timber.d("verifyAccessToken %s %s", mUid, mAccessToken);
 
-    private void handleResultError(Promise promise, int errorCode) {
-        if (promise == null) {
-            return;
-        }
-        promise.reject(String.valueOf(errorCode), PaymentError.getErrorMessage(errorCode));
-    }
-
-    private void handleResultError(Promise promise, String error, String message) {
-        if (promise == null) {
-            return;
-        }
-        promise.reject(error, message);
-    }
-
-    private void transactionUpdate() {
-        zaloPayIAPRepository.transactionUpdate()
-                .subscribe(new DefaultSubscriber<Boolean>());
+        Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
+                .subscribe(new VerifyAccessToken(promise));
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -269,20 +201,103 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         destroyVariable();
     }
 
-    public void unsubscribeIfNotNull(CompositeSubscription subscription) {
+    private void unsubscribeIfNotNull(CompositeSubscription subscription) {
         if (subscription != null) {
             subscription.clear();
         }
     }
 
-    @ReactMethod
-    public void getUserInfo(Promise promise) {
+    private void reportInvalidParameter(Promise promise, String parameterName) {
+        if (promise == null) {
+            return;
+        }
 
-        Timber.d("get user info appId %s", appId);
+        String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
+        Timber.w("Invalid parameter %s", parameterName);
+        errorCallback(promise, PaymentError.ERR_CODE_INPUT, message);
+    }
 
-        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(2)
-                .subscribe(new UserInfoSubscriber(promise));
-        compositeSubscription.add(subscription);
+    private void successCallback(Promise promise, WritableMap object) {
+        transactionUpdate();
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        if (object != null) {
+            item.putMap("data", object);
+        }
+        promise.resolve(item);
+    }
+
+    private void errorCallback(Promise promise, int errorCode) {
+        errorCallback(promise, errorCode, null);
+    }
+
+    private void errorCallback(Promise promise, int errorCode, String message) {
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", errorCode);
+        if (!TextUtils.isEmpty(message)) {
+            item.putString("message", message);
+        }
+        promise.resolve(item);
+    }
+
+    private void transactionUpdate() {
+        zaloPayIAPRepository.transactionUpdate()
+                .subscribe(new DefaultSubscriber<Boolean>());
+    }
+
+    class PaymentListener implements ZPPaymentListener {
+
+        private Promise promise;
+
+        public PaymentListener(Promise promise) {
+            this.promise = promise;
+        }
+
+        @Override
+        public void onComplete(ZPPaymentResult zpPaymentResult) {
+            if (zpPaymentResult == null) {
+                if (!isNetworkAvailable(getReactApplicationContext())) {
+                    errorCallback(promise, PaymentError.ERR_CODE_INTERNET);
+                    return;
+                }
+
+                errorCallback(promise, PaymentError.ERR_CODE_SYSTEM);
+                return;
+            }
+
+            EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
+            if (paymentStatus == null) {
+                errorCallback(promise, PaymentError.ERR_CODE_SYSTEM, PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
+            } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                successCallback(promise, null);
+            } else {
+                errorCallback(promise, paymentStatus.getNum(), paymentStatus.toString());
+            }
+        }
+
+        @Override
+        public void onCancel() {
+            errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL);
+            destroyVariable();
+        }
+
+        @Override
+        public void onSMSCallBack(String s) {
+            //not use
+        }
+
+        private boolean isNetworkAvailable(Context context) {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
     }
 
     private final class UserInfoSubscriber extends DefaultSubscriber<MerChantUserInfo> {
@@ -298,7 +313,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
             Timber.e(e, "on error ", e);
 
-            promise.resolve(handleResultError(e));
+            errorCallback(promise, getErrorCode(e));
         }
 
         @Override
@@ -306,33 +321,30 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
             Timber.d("get user info %s %s ", merChantUserInfo, merChantUserInfo.muid);
 
-            promise.resolve(transform(merChantUserInfo));
+            successCallback(promise, transform(merChantUserInfo));
         }
-    }
 
-    private WritableMap transform(MerChantUserInfo merChantUserInfo) {
-        if (merChantUserInfo == null) return null;
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", 1);
+        private WritableMap transform(MerChantUserInfo merChantUserInfo) {
+            if (merChantUserInfo == null) {
+                return null;
+            }
 
-        WritableMap data = Arguments.createMap();
-        data.putString("mUid", merChantUserInfo.muid);
-        data.putString("displayName", merChantUserInfo.displayname);
-        data.putString("dateOfBirth", merChantUserInfo.birthdate);
-        data.putString("gender", String.valueOf(merChantUserInfo.usergender));
-        data.putString("mAccessToken", merChantUserInfo.maccesstoken);
-        item.putMap("data", data);
-        return item;
-    }
+            WritableMap data = Arguments.createMap();
+            data.putString("mUid", merChantUserInfo.muid);
+            data.putString("mAccessToken", merChantUserInfo.maccesstoken);
+            data.putString("displayName", merChantUserInfo.displayname);
+            data.putString("dateOfBirth", merChantUserInfo.birthdate);
+            data.putString("gender", String.valueOf(merChantUserInfo.usergender));
+            return data;
+        }
 
-    @ReactMethod
-    public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
-
-        Timber.d("verifyAccessToken %s %s", mUid, mAccessToken);
-
-        Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
-                .subscribe(new VerifyAccessToken(promise));
-        compositeSubscription.add(subscription);
+        private int getErrorCode(Throwable e) {
+            if (e instanceof BodyException) {
+                return ((BodyException) e).errorCode;
+            } else {
+                return PaymentError.ERR_CODE_UNKNOWN;
+            }
+        }
     }
 
     private final class VerifyAccessToken extends DefaultSubscriber<Boolean> {
@@ -346,10 +358,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
         public void onNext(Boolean aBoolean) {
 
             Timber.d("verifyAccessToken onNext");
-
-            WritableMap item = Arguments.createMap();
-            item.putInt("code", 1);
-            promise.resolve(item);
+            successCallback(promise, null);
         }
 
         @Override
@@ -357,17 +366,15 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
             Timber.e("on Error %s", e);
 
-            promise.resolve(handleResultError(e));
+            errorCallback(promise, getErrorCode(e));
         }
-    }
 
-    private WritableMap handleResultError(Throwable e) {
-        WritableMap item = Arguments.createMap();
-        if (e instanceof BodyException) {
-            item.putInt("code", ((BodyException) e).errorCode);
-        } else {
-            item.putInt("code", -1);
+        private int getErrorCode(Throwable e) {
+            if (e instanceof BodyException) {
+                return ((BodyException) e).errorCode;
+            } else {
+                return PaymentError.ERR_CODE_UNKNOWN;
+            }
         }
-        return item;
     }
 }

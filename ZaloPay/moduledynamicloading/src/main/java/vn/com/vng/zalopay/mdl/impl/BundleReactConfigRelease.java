@@ -7,9 +7,11 @@ import java.io.File;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.mdl.model.ReactBundleAssetData;
 
 /**
  * Created by AnhHieu on 5/16/16.
+ * Production configuration
  */
 public class BundleReactConfigRelease implements BundleReactConfig {
 
@@ -31,8 +33,11 @@ public class BundleReactConfigRelease implements BundleReactConfig {
 
     @Override
     public String getExternalJsBundle(AppResource appResource) {
-        if (appResource == null) return "";
-        return getUnZipPath(appResource) + "/main.jsbundle";
+        if (appResource == null) {
+            return "";
+        }
+
+        return bundleService.getExternalBundleFolder(appResource.appid) + "/main.jsbundle";
     }
 
     @Override
@@ -40,20 +45,4 @@ public class BundleReactConfigRelease implements BundleReactConfig {
         return false;
     }
 
-
-    private String getRootPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
-    }
-
-    private String getResourcePath() {
-        return getRootPath() + File.separator + "zmres";
-    }
-
-    private String getTempFilePath() {
-        return getResourcePath() + File.separator + "temp.zip";
-    }
-
-    private String getUnZipPath(AppResource resource) {
-        return getResourcePath() + File.separator + resource.appname + File.separator + resource.checksum;
-    }
 }

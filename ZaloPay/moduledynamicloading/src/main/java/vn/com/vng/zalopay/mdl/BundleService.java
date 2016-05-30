@@ -7,15 +7,11 @@ import com.facebook.react.ReactInstanceManager;
  * Service interface for managing RN bundles
  */
 public interface BundleService {
-    ReactInstanceManager getInternalBundleInstanceManager();
-
-    boolean checkForInternalBundleUpdate();
-
-    void downloadInternalBundle();
-
-    void prepareInternalBundle();
-
     String getInternalBundleFolder();
+    String getExternalBundleFolder(int appId);
 
-    String getExternalBundleFolder(String paymentAppName);
+    /**
+     * Make sure the local resources is up-to-date with resources shipped with apk
+     */
+    void ensureLocalResources();
 }

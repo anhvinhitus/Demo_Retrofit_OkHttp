@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.download.AbsDownloadService;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
@@ -47,6 +48,8 @@ public interface ApplicationComponent {
     ZaloProfilePreferences profilePreferences();
 
     PassportRepository passportRepository();
+
+    LocalResourceRepository localResourceRepository();
 
     /*INJECT*/
 

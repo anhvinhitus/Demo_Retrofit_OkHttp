@@ -6,7 +6,7 @@ package vn.com.vng.zalopay.data.cache.model;
  */
 public class AppResourceGD {
 
-    private long appid;
+    private int appid;
     private String appname;
     private Integer needdownloadrs;
     private String imageurl;
@@ -17,11 +17,11 @@ public class AppResourceGD {
     public AppResourceGD() {
     }
 
-    public AppResourceGD(long appid) {
+    public AppResourceGD(int appid) {
         this.appid = appid;
     }
 
-    public AppResourceGD(long appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum) {
+    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum) {
         this.appid = appid;
         this.appname = appname;
         this.needdownloadrs = needdownloadrs;
@@ -31,11 +31,11 @@ public class AppResourceGD {
         this.checksum = checksum;
     }
 
-    public long getAppid() {
+    public int getAppid() {
         return appid;
     }
 
-    public void setAppid(long appid) {
+    public void setAppid(int appid) {
         this.appid = appid;
     }
 

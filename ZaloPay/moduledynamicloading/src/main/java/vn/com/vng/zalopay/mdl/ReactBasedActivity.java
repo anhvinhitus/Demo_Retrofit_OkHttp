@@ -20,6 +20,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -265,7 +266,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 }
 
 class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNativeInstanceManager {
-    private static ReactInstanceManager mInstance;
+    private static HashMap<String, ReactInstanceManager> mInstance = new HashMap<>();
     private final WeakReference<ReactBasedActivity> activityReference;
 
     public ReactNativeInstanceManagerLongLife(ReactBasedActivity activity) {
@@ -279,10 +280,15 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return null;
         }
 
-        if (mInstance != null) {
+        String mapping = activity.getJSBundleFile();
+        if (mapping == null) {
+            mapping = "NULL";
+        }
+
+        if (mInstance != null && mInstance.containsKey(mapping)) {
             Timber.e("reuse react instance manager");
 //            mInstance.onHostResume(activity, activity);
-            return mInstance;
+            return mInstance.get(mapping);
         }
 
         Timber.e("create new react instance manager");
@@ -305,8 +311,8 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             builder.setBundleAssetName(activity.getBundleAssetName());
         }
 
-        mInstance = builder.build();
-        return mInstance;
+        mInstance.put(mapping, builder.build());
+        return mInstance.get(mapping);
     }
 
     @Override
@@ -317,11 +323,27 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
 
         Timber.e("release react instance manager");
         final ReactBasedActivity activity = activityReference.get();
-        if (activity != null && activity.mReactRootView != null) {
-            mInstance.detachRootView(activity.mReactRootView);
-        }
+        if (activity != null) {
+            String mapping = activity.getJSBundleFile();
+            if (mapping == null) {
+                mapping = "NULL";
+            }
 
-        mInstance.onHostDestroy();
+            if (!mInstance.containsKey(mapping)) {
+                return;
+            }
+
+            ReactInstanceManager i = mInstance.get(mapping);
+            if (i == null) {
+                return;
+            }
+
+            if (activity.mReactRootView != null) {
+                i.detachRootView(activity.mReactRootView);
+            }
+
+            i.onHostDestroy();
+        }
     }
 }
 
