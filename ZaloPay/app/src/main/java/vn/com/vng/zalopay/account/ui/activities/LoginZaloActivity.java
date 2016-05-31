@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.home.ui.activity.MainActivity;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -99,7 +98,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void gotoMainActivity() {
-        navigator.startHomeActivity(this);
+        navigator.startHomeActivity(this, true);
         finish();
     }
 
