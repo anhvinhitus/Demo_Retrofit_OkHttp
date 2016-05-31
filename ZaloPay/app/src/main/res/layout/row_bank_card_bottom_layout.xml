@@ -10,13 +10,12 @@
         android:layout_width="208dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@drawable/bg_btn_blue"
         android:drawableLeft="@drawable/ic_lc_card_add"
         android:drawablePadding="8dp"
         android:gravity="center"
+        android:padding="@dimen/spacing.small"
         android:text="@string/link_card_other"
-        android:textAllCaps="false"
-        android:textSize="@dimen/textsize.small" />
-
-
+        android:textAllCaps="false" />
 </FrameLayout>
 
