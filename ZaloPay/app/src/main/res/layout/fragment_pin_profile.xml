@@ -52,26 +52,34 @@
         android:layout_height="match_parent"
         android:layout_weight="1.0"
         android:gravity="top"
-        android:orientation="horizontal"
-        android:padding="@dimen/app_padding">
+        android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.small"
+            android:checked="false"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.medium" />
 
         <TextView
             android:id="@+id/tvShowPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:text="@string/show_pass" />
+            android:gravity="left|center_vertical"
+            android:padding="@dimen/spacing.small"
+            android:text="@string/show_passcode" />
 
         <TextView
             android:id="@+id/tvCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.0"
+            android:gravity="center"
+            android:padding="@dimen/spacing.medium"
             android:text="@string/txt_cancel"
             android:textColor="@color/txt_cancel"
             android:textSize="@dimen/textsize.small" />

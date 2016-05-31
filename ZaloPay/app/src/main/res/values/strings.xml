@@ -171,5 +171,5 @@
 
     <string name="hint_fullname">Họ tên</string>
 
-    <string name="show_pass">Hiện mật khẩu?</string>
+    <string name="show_passcode">Hiện mã PIN?</string>
 </resources>

@@ -162,14 +162,15 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             }
         } else {
             String strInput = mEditText.getText().toString();
-            char[] charArray = null;
+            int inputLength = 0;
             if (!TextUtils.isEmpty(strInput)) {
-                charArray = strInput.toCharArray();
+                inputLength = strInput.length();
             }
             for (int i = 0; i < mTextViews.size(); i++) {
 //                TextView textView = (TextView) mRootView.getChildAt(i);
                 TextView textView = mTextViews.get(i);
-                if (charArray != null && i < charArray.length) {
+                textView.setText("");
+                if (i < inputLength) {
                     textView.setBackgroundResource(R.drawable.pin_code_round_full);
                 } else {
                     textView.setBackgroundResource(R.drawable.pin_code_round_empty);
@@ -179,7 +180,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public String getText() {
-        if (mEditText != null) {
+        if (mEditText == null) {
             return "";
         }
         return mEditText.getText().toString();
@@ -195,6 +196,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             hideError();
             return;
         }
+        mTvNote.setVisibility(GONE);
         mTextInputLayout.setErrorEnabled(true);
         mTextInputLayout.setError(error);
     }
