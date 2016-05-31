@@ -57,7 +57,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         subscription = makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList();
+                List<DMappedCard> mapCardLis = CShareData.getInstance(linkCardView.getActivity()).getMappedCardList();
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -71,7 +71,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         if (card != null) {
             bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, card.expiretime);
             try {
-                bankCard.type = CShareData.getInstance().detectCardType(card.first6cardno).toString();
+                bankCard.type = CShareData.getInstance(linkCardView.getActivity()).detectCardType(card.first6cardno).toString();
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     e.printStackTrace();
@@ -109,7 +109,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void destroy() {
-
+        //release cache
+        CShareData.dispose();
     }
 
     protected final void onGetLinkCardSuccess(List<BankCard> list) {

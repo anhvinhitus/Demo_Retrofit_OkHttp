@@ -96,6 +96,7 @@
     <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
     <string name="txt_link_card_view_detail">Xem chi tiết</string>
     <string name="txt_link_card_remove_link">Hủy liên kết</string>
+    <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
 
     <string name="txt_home_qrcode">QUÉT MÃ QR</string>
     <string name="txt_home_deposit">NẠP TIỀN</string>

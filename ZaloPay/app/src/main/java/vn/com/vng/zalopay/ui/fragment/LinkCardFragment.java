@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -11,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -61,6 +64,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Inject
     Navigator navigator;
 
+    @BindView(R.id.imgLinkCardEmpty)
+    ImageView imgLinkCardEmpty;
+
+    @BindView(R.id.tvEmpty)
+    TextView tvEmpty;
+
     @BindView(R.id.listview)
     RecyclerView recyclerView;
 
@@ -93,6 +102,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         recyclerView.setAdapter(mAdapter);
 
         initBottomSheet();
+        showOrHidekLinkCardEmpty();
     }
 
     private void initBottomSheet() {
@@ -117,6 +127,28 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 //        });
     }
 
+    private void showOrHidekLinkCardEmpty() {
+        if (mAdapter == null || mAdapter.getItemCount() <= 1) {
+            showLinkCardEmpty();
+        } else {
+            hideLinkCardEmpty();
+        }
+    }
+
+    private void showLinkCardEmpty() {
+        imgLinkCardEmpty.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.VISIBLE);
+        //start animation
+        imgLinkCardEmpty.setBackgroundResource(R.drawable.link_card_empty_anim);
+        AnimationDrawable frameAnimation = (AnimationDrawable) imgLinkCardEmpty.getBackground();
+        frameAnimation.start();
+    }
+
+    private void hideLinkCardEmpty() {
+        imgLinkCardEmpty.setVisibility(View.GONE);
+        tvEmpty.setVisibility(View.GONE);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -132,17 +164,20 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Override
     public void setData(List<BankCard> bankCards) {
         mAdapter.setData(bankCards);
+        showOrHidekLinkCardEmpty();
     }
 
 
     @Override
     public void updateData(BankCard bankCard) {
         mAdapter.insert(bankCard);
+        showOrHidekLinkCardEmpty();
     }
 
     @Override
     public void removeData(BankCard bankCard) {
         mAdapter.remove(bankCard);
+        showOrHidekLinkCardEmpty();
     }
 
     @Override
@@ -194,12 +229,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
                 String carname = bundle.getString(Constants.CARDNAME);
                 String first6CardNo = bundle.getString(Constants.FIRST6CARDNO);
                 String last4CardNo = bundle.getString(Constants.LAST4CARDNO);
-                String bankcode =  bundle.getString(Constants.BANKCODE);
-                long expiretime  = bundle.getLong(Constants.EXPIRETIME);
+                String bankcode = bundle.getString(Constants.BANKCODE);
+                long expiretime = bundle.getLong(Constants.EXPIRETIME);
                 BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
                 try {
-                    Timber.tag("LinkCardFragment").d("onActivityResult first6CardNo: %s",first6CardNo);
-                    bankCard.type = CShareData.getInstance().detectCardType(first6CardNo).toString();
+                    Timber.tag("LinkCardFragment").d("onActivityResult first6CardNo: %s", first6CardNo);
+                    bankCard.type = CShareData.getInstance(getActivity()).detectCardType(first6CardNo).toString();
                 } catch (Exception e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
