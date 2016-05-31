@@ -14,9 +14,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
@@ -75,6 +78,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     protected void doInjection() {
+        createUserComponent();
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 
@@ -152,5 +156,26 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new MainReactPackage(),
                 new ReactIAPPackage(zaloPayIAPRepository, mUser, appId)
         );
+    }
+
+    private void createUserComponent() {
+        Timber.d(" user component %s", getUserComponent());
+        if (getUserComponent() != null)
+            return;
+
+        UserConfig userConfig = getAppComponent().userConfig();
+        Timber.d(" userConfig %s", userConfig.isSignIn());
+        if (userConfig.isSignIn()) {
+            userConfig.loadConfig();
+            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+        }
+    }
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
+    }
+
+    public UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
     }
 }

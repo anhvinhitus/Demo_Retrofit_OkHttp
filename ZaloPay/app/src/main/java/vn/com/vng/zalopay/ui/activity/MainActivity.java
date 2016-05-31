@@ -263,4 +263,37 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
+      /*  */
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     *//*
+    private boolean checkPlayServices() {
+        Timber.tag(TAG).d("checkPlayServices.........");
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Timber.tag(TAG).d("This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private void startRegistrationReceiver() {
+        Timber.tag(TAG).d("startRegistrationReceiver......");
+        if (checkPlayServices()) {
+            Timber.tag(TAG).d("Start IntentService to register this application with GCM");
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
+    }*/
 }
