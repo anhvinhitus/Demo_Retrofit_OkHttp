@@ -69,13 +69,6 @@
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".home.ui.activity.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/app_name"
@@ -117,8 +110,7 @@
         <!-- Tích hợp Crashlytics -->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff"
-            />
+            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff" />
 
         <!-- Bắt buộc -->
         <!-- App ID của app đã đăng ký với bên server ZaloPayment -->
@@ -136,6 +128,8 @@
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
             android:theme="@style/AppTheme.NoActionBar" />
+
+
         <activity
             android:name=".ui.activity.LinkCardActivity"
             android:label="@string/title.activity.link.card"
@@ -157,6 +151,10 @@
             android:name=".account.ui.activities.EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+            android:exported="false" />
 
         <service
             android:name=".service.DownloadService"
