@@ -10,6 +10,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
+import timber.log.Timber;
+
 /**
  * Created by huuhoa on 4/25/16.
  */
@@ -23,7 +25,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     /// so that we can access it through React.NativeModules.ZaloPayInternal in JavaScript.
     @Override
     public String getName() {
-        return "ZaloPayInternal";
+        return "ZaloPayApi";
     }
 
     /// To expose a method to JavaScript a Java method must be annotated using @ReactMethod.
@@ -42,6 +44,12 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         result.merge(parameters);
         result.putString("method", methodName);
         promise.resolve(result);
+    }
+
+    @ReactMethod
+    public void closeModule() {
+        Timber.d("close Module");
+        getCurrentActivity().finish();
     }
 }
 
