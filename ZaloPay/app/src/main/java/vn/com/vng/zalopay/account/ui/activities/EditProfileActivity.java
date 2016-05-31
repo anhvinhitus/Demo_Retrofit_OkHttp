@@ -24,6 +24,8 @@ public class EditProfileActivity extends BaseToolBarActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private EditProfileFragment mEditProfileFragment;
+    private PinProfileFragment mPinProfileFragment;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -50,6 +52,22 @@ public class EditProfileActivity extends BaseToolBarActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                hideKeyboard();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -70,9 +88,11 @@ public class EditProfileActivity extends BaseToolBarActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 1) {
-                return PinProfileFragment.newInstance();
+                mPinProfileFragment = PinProfileFragment.newInstance();
+                return mPinProfileFragment;
             } else {
-                return EditProfileFragment.newInstance();
+                mEditProfileFragment = EditProfileFragment.newInstance();
+                return mEditProfileFragment;
             }
         }
 
@@ -90,6 +110,15 @@ public class EditProfileActivity extends BaseToolBarActivity {
                     return "MẬT KHẨU";
             }
             return null;
+        }
+    }
+
+    private void hideKeyboard() {
+        if (mPinProfileFragment!=null) {
+            mPinProfileFragment.hideKeyboard();
+        }
+        if (mEditProfileFragment!=null) {
+            mEditProfileFragment.hideKeyboard();
         }
     }
 }
