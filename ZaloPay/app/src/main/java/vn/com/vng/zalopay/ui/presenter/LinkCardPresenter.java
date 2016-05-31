@@ -136,7 +136,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         params.userID = String.valueOf(user.uid);
         params.mapCard = mapCard;
 
-        ZingMobilePayApplication.removeCardMap(params, zpwRemoveMapCardListener);
+        ZingMobilePayApplication.removeCardMap(linkCardView.getActivity(), params, zpwRemoveMapCardListener);
     }
 
     ZPWRemoveMapCardListener zpwRemoveMapCardListener = new ZPWRemoveMapCardListener() {
