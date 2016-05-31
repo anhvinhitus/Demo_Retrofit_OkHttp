@@ -14,7 +14,10 @@
         android:drawableLeft="@drawable/ic_lc_card_add"
         android:drawablePadding="8dp"
         android:gravity="center"
-        android:padding="@dimen/spacing.small"
+        android:paddingBottom="@dimen/spacing.small"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.small"
         android:text="@string/link_card_other"
         android:textAllCaps="false" />
 </FrameLayout>
