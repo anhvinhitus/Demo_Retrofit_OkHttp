@@ -227,6 +227,11 @@
 -keep public class org.w3c.dom.** { *; }
 -dontwarn org.w3c.dom.**
 
+-keep public class org.ietf.jgss.** { *; }
+-dontwarn org.ietf.jgss.**
+
+-keep public class org.apache.http.** { *; }
+-dontwarn org.apache.http.**
 
 
 #-dontwarn android.support.v7.**
