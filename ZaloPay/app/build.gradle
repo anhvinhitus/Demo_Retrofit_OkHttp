@@ -259,7 +259,14 @@ dependencies {
 
     compile project(':data')
     compile project(':uicomponent')
-    compile project(':moduledynamicloading')
     compile project(':qrcodecore')
     compile project(':zalosdk')
+
+    debugCompile(name:'WALLET-debug', ext:'aar')
+    releaseCompile(name:'WALLET-release', ext:'aar')
+
+    compile ( project(':moduledynamicloading') ) {
+        exclude (module:'WALLET-debug')
+        exclude (module:'WALLET-release')
+    }
 }
