@@ -16,37 +16,16 @@ buildscript {
         // quickly to Android tooling updates
 
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.5.3'
     }
 }
 
 def cfg = rootProject.ext.configuration
 
 apply plugin: 'io.fabric'
-apply plugin: 'org.moallemi.advanced-build-version'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
-
-advancedVersioning {
-    nameOptions {
-        versionMajor 1
-        versionMinor 0
-        versionBuild 8
-    }
-    codeOptions {
-        versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
-        dependsOnTasks 'release'
-    }
-    outputOptions {
-        renameOutput true
-        nameFormat '${appName}-${buildType}-${versionName}'
-    }
-}
-
-def appVersionName = advancedVersioning.versionName
-def appVersionCode = advancedVersioning.versionCode
 
 android {
     compileSdkVersion cfg.compileVersion
@@ -56,11 +35,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        //versionCode 5
-        //versionName "1.0.${versionCode}"
-
-        versionCode appVersionCode
-        versionName appVersionName
+        versionCode 10
+        versionName "1.0.${versionCode}"
 
         multiDexEnabled true
 
@@ -124,6 +100,7 @@ android {
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
         }
 
         sandbox {
@@ -131,6 +108,7 @@ android {
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
         }
 
         internalProduction {
@@ -138,6 +116,7 @@ android {
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
         }
 
         internalSandbox {
@@ -145,6 +124,7 @@ android {
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
         }
 
         iapSandbox {
@@ -153,6 +133,7 @@ android {
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
         }
 
         iapProduction {
@@ -160,7 +141,8 @@ android {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'true'
+            buildConfigField 'boolean', 'ENV_LIVE', 'false'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
         }
     }
 
