@@ -1,8 +1,7 @@
 package vn.com.vng.zalopay.scanners.ui;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,8 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +16,7 @@ import android.widget.TextView;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -33,6 +31,8 @@ public class ScanToPayActivity extends BaseToolBarActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private NFCReaderPresenter mNFCReader;
+    private boolean mNFCTabActivated = false;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -53,6 +53,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mNFCReader = new NFCReaderPresenter(this);
         try {
             // Create the adapter that will return a fragment for each of the three
             // primary sections of the activity.
@@ -60,14 +61,80 @@ public class ScanToPayActivity extends BaseToolBarActivity {
             // Set up the ViewPager with the sections adapter.
             mViewPager = (ViewPager) findViewById(R.id.container);
             mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    if (position == 0) {
+                        // should enable NFC reader handler
+                        mNFCTabActivated = true;
+                        mNFCReader.setupForegroundDispatch(ScanToPayActivity.this);
+                    } else {
+                        // should disable NFC reader handler
+                        mNFCReader.stopForegroundDispatch();
+                        mNFCTabActivated = false;
+                    }
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
 
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
             tabLayout.setupWithViewPager(mViewPager);
         } catch (NullPointerException e) {
             Timber.e(e, "Null exception");
         }
+
+        mNFCReader.initialize();
+        handleIntent(getIntent());
     }
 
+    private void handleIntent(Intent intent) {
+        mNFCReader.handleDispatch(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        /**
+         * It's important, that the activity is in the foreground (resumed). Otherwise
+         * an IllegalStateException is thrown.
+         */
+        if (mNFCTabActivated) {
+            mNFCReader.setupForegroundDispatch(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        /**
+         * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
+         */
+//        stopForegroundDispatch(this, mNfcAdapter);
+        mNFCReader.stopForegroundDispatch();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        /**
+         * This method gets called, when a new Intent gets associated with the current activity instance.
+         * Instead of creating a new activity, onNewIntent will be called. For more information have a look
+         * at the documentation.
+         *
+         * In our case this method gets called, when the user attaches a Tag to the device.
+         */
+        handleIntent(intent);
+    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -119,8 +186,11 @@ public class ScanToPayActivity extends BaseToolBarActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
-                case 0:
-                    return ScanNFCFragment.newInstance("Hello NFC", "abc");
+                case 0: {
+                    ScanNFCFragment fragment = ScanNFCFragment.newInstance("Hello NFC", "abc");
+                    fragment.setReaderPresenter(mNFCReader);
+                    return fragment;
+                }
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }

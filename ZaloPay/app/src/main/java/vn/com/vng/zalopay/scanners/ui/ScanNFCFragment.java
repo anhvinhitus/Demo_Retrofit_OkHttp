@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay.scanners.ui;
 
+import android.app.Activity;
+import android.app.FragmentHostCallback;
 import android.content.Context;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -19,15 +24,17 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * Use the {@link ScanNFCFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScanNFCFragment extends BaseFragment {
+public class ScanNFCFragment extends BaseFragment implements NfcView {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private NFCReaderPresenter readerPresenter;
 
     public ScanNFCFragment() {
         // Required empty public constructor
@@ -36,6 +43,16 @@ public class ScanNFCFragment extends BaseFragment {
     @BindView(R.id.scan_nfc_content)
     TextView mNFCContent;
 
+    @BindView(R.id.scan_nfc_status)
+    TextView mNFCStatus;
+
+    @BindView(R.id.btn_read_nfc)
+    View mBtnRead;
+
+    @OnClick(R.id.btn_read_nfc)
+    void onReadNFC() {
+
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -53,6 +70,9 @@ public class ScanNFCFragment extends BaseFragment {
         return fragment;
     }
 
+    public void setReaderPresenter(NFCReaderPresenter presenter) {
+        readerPresenter = presenter;
+    }
     @Override
     protected void setupFragmentComponent() {
 
@@ -78,6 +98,33 @@ public class ScanNFCFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mNFCContent.setText(mParam1);
+
+        readerPresenter.setView(this);
+        readerPresenter.initialize();
+    }
+
+    @Override
+    public void onDestroyView() {
+        readerPresenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        readerPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        readerPresenter.pause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        readerPresenter.destroy();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -85,5 +132,16 @@ public class ScanNFCFragment extends BaseFragment {
 //        if (mListener != null) {
 //            mListener.onFragmentInteraction(uri);
 //        }
+    }
+
+    @Override
+    public void onReceiveString(String content) {
+        mNFCContent.setText(content);
+    }
+
+    @Override
+    public void onInitDone(boolean isEnable, String status) {
+        mNFCStatus.setText(status);
+        mBtnRead.setEnabled(isEnable);
     }
 }
