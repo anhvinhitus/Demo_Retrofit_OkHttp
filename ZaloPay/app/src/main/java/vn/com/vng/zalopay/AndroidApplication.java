@@ -78,9 +78,7 @@ public class AndroidApplication extends MultiDexApplication {
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
         ZingMobilePayApplication.wrap(this);
-        if (!BuildConfig.DEBUG) {
-            Constants.IS_RELEASE = true;
-        }
+        Constants.IS_RELEASE = BuildConfig.ENV_LIVE;
 
         if (BuildConfig.DEBUG) {
             Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
