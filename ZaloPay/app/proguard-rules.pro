@@ -234,6 +234,10 @@
 -dontwarn org.apache.http.**
 
 
+# https://github.com/facebook/fresco/issues/209
+-keep class com.facebook.imagepipeline.gif.** { *; }
+-keep class com.facebook.imagepipeline.webp.** { *; }
+
 #-dontwarn android.support.v7.**
 #-keep class android.support.v7.** { *; }
 #-keep interface android.support.v7.** { *; }
@@ -244,3 +248,4 @@
 #-keep class android.support.design.** { *; }
 #-keep interface android.support.design.** { *; }
 #-keep public class android.support.design.R$* { *; }
+

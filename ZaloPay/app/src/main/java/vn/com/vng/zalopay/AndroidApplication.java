@@ -79,6 +79,7 @@ public class AndroidApplication extends MultiDexApplication {
         ZaloSDKApplication.wrap(this);
         ZingMobilePayApplication.wrap(this);
         Constants.IS_RELEASE = BuildConfig.ENV_LIVE;
+        Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
 
         if (BuildConfig.DEBUG) {
             Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

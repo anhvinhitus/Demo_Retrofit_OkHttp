@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 7;
+    private static final int APP_DB_VERSION = 8;
 
 
     public static void main(String[] args) throws Exception {
