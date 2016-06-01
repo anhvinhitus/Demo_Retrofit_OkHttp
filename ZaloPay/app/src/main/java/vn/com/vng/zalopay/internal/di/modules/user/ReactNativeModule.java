@@ -1,6 +1,11 @@
 package vn.com.vng.zalopay.internal.di.modules.user;
 
 import android.content.Context;
+import android.os.Environment;
+
+import java.io.File;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,6 +33,26 @@ public class ReactNativeModule {
         Timber.d("internalBundle %s", bundleService.mCurrentInternalBundleFolder);
         return bundleService;
     }*/
+
+
+    @UserScope
+    @Provides
+    @Named("rootbundle")
+    String providesRootBundle(Context context) {
+
+        StringBuilder builder = new StringBuilder();
+        if (BuildConfig.DEBUG) {
+            builder.append(Environment.getExternalStorageDirectory().getAbsolutePath());
+        } else {
+            builder.append(context.getFilesDir().getAbsolutePath());
+        }
+
+        builder.append(File.separator)
+                .append(context.getPackageName())
+                .append(File.separator)
+                .append("bundles");
+        return builder.toString();
+    }
 
     @UserScope
     @Provides

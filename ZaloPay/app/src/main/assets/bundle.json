@@ -21,6 +21,20 @@
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
+    }, {
+      "appid": 3,
+      "appname": "Thẻ ĐT",
+      "asset": "external/esale.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
+    }, {
+      "appid": 4,
+      "appname": "Thẻ game",
+      "asset": "external/esale.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
     }
   ],
   "internal_bundle": {
