@@ -16,16 +16,37 @@ buildscript {
         // quickly to Android tooling updates
 
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.5.3'
     }
 }
 
 def cfg = rootProject.ext.configuration
 
 apply plugin: 'io.fabric'
+apply plugin: 'org.moallemi.advanced-build-version'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
+
+advancedVersioning {
+    nameOptions {
+        versionMajor 1
+        versionMinor 0
+        versionBuild 8
+    }
+    codeOptions {
+        versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+        dependsOnTasks 'sandbox', 'release'
+    }
+    outputOptions {
+        renameOutput true
+        nameFormat '${appName}-${buildType}-${versionName}'
+    }
+}
+
+def appVersionName = advancedVersioning.versionName
+def appVersionCode = advancedVersioning.versionCode
 
 android {
     compileSdkVersion cfg.compileVersion
@@ -35,8 +56,12 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 4
-        versionName "1.0.${versionCode}"
+        //versionCode 5
+        //versionName "1.0.${versionCode}"
+
+        versionCode appVersionCode
+        versionName appVersionName
+
         multiDexEnabled true
 
         buildConfigField "String", "PRODUCTION_FLAVOR", "\"production\""
@@ -72,17 +97,12 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-
         }
         debug {
             minifyEnabled false
             //  applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
         }
     }
 
@@ -101,17 +121,48 @@ android {
     productFlavors {
         production {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
+            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'true'
         }
 
-        beta {
+        sandbox {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'false'
+        }
+
+        internalProduction {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
+            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'true'
         }
 
-        iapbeta {
+        internalSandbox {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'false'
+        }
+
+        iapSandbox {
+            // IAP dev with sandbox environment
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'false'
+        }
+
+        iapProduction {
+            // IAP dev with live environment
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
+            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'true'
         }
     }
-
 
 
     lintOptions {
@@ -217,6 +268,7 @@ dependencies {
     compile (libs.crashlytics) {
         transitive = true;
     }
+
     debugCompile project(':debugviewer')
     releaseCompile project(':debugviewer-release')
 
@@ -224,6 +276,5 @@ dependencies {
     compile project(':uicomponent')
     compile project(':moduledynamicloading')
     compile project(':qrcodecore')
-
     compile project(':zalosdk')
 }
