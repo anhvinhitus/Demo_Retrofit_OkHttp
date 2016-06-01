@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.cache;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -60,7 +61,12 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
     }
 
     public List<AppResourceEntity> listAppResourceEntity() {
-        return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().list());
+        try {
+            return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().list());
+        } catch (android.database.sqlite.SQLiteException e) {
+            Timber.e(e, "Exception");
+            return new ArrayList<>();
+        }
     }
 
     @Override
