@@ -16,8 +16,8 @@ public class DBOpenHelper extends DaoMaster.OpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //Todo: apply db upgrade code here
 
+        //Todo: apply db upgrade code here
         // Debug
         DaoMaster.dropAllTables(db, true);
         onCreate(db);
