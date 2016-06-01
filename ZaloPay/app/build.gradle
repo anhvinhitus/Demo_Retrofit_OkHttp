@@ -247,7 +247,7 @@ dependencies {
 
     compile libs.play_services_gcm
     compile libs.play_services_analytics
-    compile (libs.crashlytics) {
+    compile(libs.crashlytics) {
         transitive = true;
     }
 

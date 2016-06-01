@@ -167,4 +167,7 @@
     <string name="hint_fullname">Họ tên</string>
 
     <string name="show_passcode">Hiện mã PIN?</string>
+    <string name="txt_home_scantopay">TRẢ TIỀN</string>
+    <string name="title_activity_scan_to_pay">QUÉT MÃ TRẢ TIỀN</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

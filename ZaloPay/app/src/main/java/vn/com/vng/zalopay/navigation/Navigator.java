@@ -17,11 +17,13 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.zalopay.wallet.data.Constants;
 
 /*
 * Navigator
@@ -76,6 +78,11 @@ public class Navigator {
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
         context.startActivity(intent);
+    }
+
+    public void startScanToPayActivity(Activity activity) {
+        Intent intent = new Intent(activity, ScanToPayActivity.class);
+        activity.startActivity(intent);
     }
 
     public void startActivity(Fragment fragment, Intent intent) {

@@ -171,6 +171,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         startQRCodeActivity();
     }
 
+    @OnClick(R.id.btn_scan_to_pay)
+    public void onScanToPayClick(View view) {
+        navigator.startScanToPayActivity(getActivity());
+    }
+
     private void startQRCodeActivity() {
         if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
             navigator.startQrCodeActivity(getActivity());
