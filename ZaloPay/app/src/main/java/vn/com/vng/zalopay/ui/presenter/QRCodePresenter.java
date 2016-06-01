@@ -179,6 +179,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         hideLoadingView();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         showErrorView(message);
+        mView.resumeScanner();
     }
 
     private final void onGetOrderSuccess(Order order) {
@@ -195,7 +196,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         @Override
         public void onNext(Order order) {
             Timber.d("login success " + order);
-            QRCodePresenter.this.onGetOrderSuccess(order);
+            onGetOrderSuccess(order);
         }
 
         @Override
@@ -205,7 +206,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "onError " + e);
-            QRCodePresenter.this.onGetOrderError(e);
+            onGetOrderError(e);
         }
     }
 
