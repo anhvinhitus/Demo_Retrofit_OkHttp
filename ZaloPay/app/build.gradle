@@ -217,6 +217,10 @@ dependencies {
     compile (libs.crashlytics) {
         transitive = true;
     }
+
+    compile libs.avi
+    compile libs.nineoldandroids
+
     debugCompile project(':debugviewer')
     releaseCompile project(':debugviewer-release')
 

@@ -3,13 +3,10 @@ package vn.com.vng.zalopay.ui.presenter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -54,14 +51,14 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void getListCard() {
         linkCardView.showLoading();
-        subscription = makeObservable(new Callable<List<BankCard>>() {
-            @Override
-            public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance(linkCardView.getActivity()).getMappedCardList();
-                return transform(mapCardLis);
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new LinkCardSubscriber());
+//        subscription = makeObservable(new Callable<List<BankCard>>() {
+//            @Override
+//            public List<BankCard> call() throws Exception {
+//                List<DMappedCard> mapCardLis = CShareData.getInstance(linkCardView.getActivity()).getMappedCardList();
+//                return transform(mapCardLis);
+//            }
+//        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new LinkCardSubscriber());
     }
 
 

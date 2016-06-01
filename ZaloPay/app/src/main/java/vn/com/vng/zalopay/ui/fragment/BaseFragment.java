@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.bumptech.glide.Glide;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -37,7 +37,7 @@ public abstract class BaseFragment extends Fragment {
     public final String TAG = getClass().getSimpleName();
 
     private Snackbar mSnackBar;
-    private ProgressDialog mProgressDialog;
+    private AVLoadingIndicatorView mProgressDialog;
     private Unbinder unbinder;
 
     @Override
@@ -103,15 +103,15 @@ public abstract class BaseFragment extends Fragment {
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+            mProgressDialog = (AVLoadingIndicatorView) LayoutInflater.from(getContext()).inflate(R.layout.layout_loading, null);
         }
-        mProgressDialog.show();
+        mProgressDialog.setVisibility(View.VISIBLE);
     }
 
 
     public void hideProgressDialog() {
         if (mProgressDialog != null)
-            mProgressDialog.dismiss();
+            mProgressDialog.setVisibility(View.GONE);
     }
 
     public UserComponent getUserComponent() {
