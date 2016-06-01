@@ -96,7 +96,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void gotoMainActivity() {
-        navigator.startHomeActivity(this);
+        navigator.startHomeActivity(this, true);
         finish();
     }
 
