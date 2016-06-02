@@ -86,7 +86,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     }
 
     public void pay(String jsonString) {
-        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonString);
+        Timber.tag(TAG).d("pay jsonString:" + jsonString);
         showLoadingView();
         if (zpTransaction(jsonString)) {
             return;
@@ -100,7 +100,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private boolean zpTransaction(String jsonOrder) {
-        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonOrder);
+        Timber.tag(TAG).d("zpTransaction, jsonOrder:" + jsonOrder);
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(jsonOrder);
@@ -183,7 +183,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private final void onGetOrderSuccess(Order order) {
-        Timber.d("session =========" + order.getItem());
+        Timber.tag(TAG).d("onGetOrderSuccess, session:" + order.getItem());
         hideLoadingView();
         pay(order);
     }
@@ -212,12 +212,12 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     //Zalo payment sdk
     private void pay(Order order) {
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.==============");
+        Timber.tag(TAG).d("pay start, order:" + order);
         if (order == null) {
             showErrorView(mView.getContext().getString(R.string.order_invalid));
             return;
         }
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................2");
+        Timber.tag(TAG).d("pay.................check userInfo");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (user.uid <= 0) {
             showErrorView(mView.getContext().getString(R.string.user_invalid));
@@ -232,7 +232,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             paymentInfo.zaloPayAccessToken = user.accesstoken;
             paymentInfo.appTime = Long.valueOf(order.getApptime());
             paymentInfo.appTransID = order.getApptransid();
-            Timber.tag("_____________________").d("paymentInfo.appTransID:" + paymentInfo.appTransID);
+            Timber.tag(TAG).d("paymentInfo.appTransID:" + paymentInfo.appTransID);
             paymentInfo.itemName = order.getItem();
             paymentInfo.amount = Long.parseLong(order.getAmount());
             paymentInfo.description = order.getDescription();
@@ -241,7 +241,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             paymentInfo.appUser = order.getAppuser();
             paymentInfo.mac = order.getMac();
 
-            Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
+            Timber.tag(TAG).d("pay finish");
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
             ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
         } catch (NumberFormatException e) {
@@ -253,7 +253,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     @Override
     public void onComplete(ZPPaymentResult pPaymentResult) {
-        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("onComplete.................pPaymentResult:" + pPaymentResult);
+        Timber.tag(TAG).d("onComplete pPaymentResult:" + pPaymentResult);
         this.hideLoadingView();
         if (pPaymentResult == null) {
             if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
