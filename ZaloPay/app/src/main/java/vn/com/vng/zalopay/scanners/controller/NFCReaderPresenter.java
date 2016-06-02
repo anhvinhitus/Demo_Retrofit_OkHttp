@@ -55,14 +55,11 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
         }
     }
 
-    /**
-     * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
-     */
-    public void setupForegroundDispatch(final Activity activity) {
-        final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
+    public void setupForegroundDispatch() {
+        final Intent intent = new Intent(mActivity.getApplicationContext(), mActivity.getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(mActivity.getApplicationContext(), 0, intent, 0);
 
         IntentFilter[] filters = new IntentFilter[1];
         String[][] techList = new String[][]{};
@@ -78,7 +75,7 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
         }
 
         if (mNfcAdapter != null) {
-            mNfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
+            mNfcAdapter.enableForegroundDispatch(mActivity, pendingIntent, filters, techList);
         }
     }
 
@@ -136,7 +133,7 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
             return;
         }
 
-        setupForegroundDispatch(mActivity);
+        setupForegroundDispatch();
     }
 
     @Override

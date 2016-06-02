@@ -71,7 +71,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                     if (position == 0) {
                         // should enable NFC reader handler
                         mNFCTabActivated = true;
-                        mNFCReader.setupForegroundDispatch(ScanToPayActivity.this);
+                        mNFCReader.setupForegroundDispatch();
                     } else {
                         // should disable NFC reader handler
                         mNFCReader.stopForegroundDispatch();
@@ -109,7 +109,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
          * an IllegalStateException is thrown.
          */
         if (mNFCTabActivated) {
-            mNFCReader.setupForegroundDispatch(this);
+            mNFCReader.setupForegroundDispatch();
         }
     }
 

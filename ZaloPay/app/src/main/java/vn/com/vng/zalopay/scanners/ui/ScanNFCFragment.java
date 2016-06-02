@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -123,6 +125,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
     @Override
     public void onDestroy() {
+        Timber.i("ScanNFCFragment is destroyed");
         super.onDestroy();
         readerPresenter.destroy();
     }
@@ -137,6 +140,11 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     @Override
     public void onReceiveString(String content) {
         mNFCContent.setText(content);
+
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setContentText("Xác nhận thanh toán.\nBạn cần thanh toán 30.000 VND")
+                .show();
+
     }
 
     @Override
