@@ -1,16 +1,9 @@
 package vn.com.vng.zalopay.scanners.ui;
 
-import android.app.Activity;
-import android.app.FragmentHostCallback;
-import android.content.Context;
 import android.net.Uri;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -49,12 +42,31 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     TextView mNFCStatus;
 
     @BindView(R.id.btn_read_nfc)
-    View mBtnRead;
+    View mBtnEmulateNfcReceive;
 
     @OnClick(R.id.btn_read_nfc)
     void onReadNFC() {
+        String emulateContent = "3:nd0raT2d2tLAi567+5cXog==";
 
+        processOrder(emulateContent);
     }
+
+    private boolean processOrder(String orderToken) {
+        String[] contents = orderToken.split(":");
+        if (contents.length < 2) {
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    .setContentText(String.format("Nội dung thẻ Nfc không hợp lệ.\nNội dung: [%s]", orderToken))
+                    .show();
+            return false;
+        }
+
+        long appId = Long.valueOf(contents[0]);
+        String token = contents[1];
+        // TODO: Call payment SDK
+
+        return true;
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -140,16 +152,17 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     @Override
     public void onReceiveString(String content) {
         mNFCContent.setText(content);
-
-        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                .setContentText("Xác nhận thanh toán.\nBạn cần thanh toán 30.000 VND")
-                .show();
+        if (!processOrder(content)) {
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setContentText("Xác nhận thanh toán.\nBạn cần thanh toán 30.000 VND")
+                    .show();
+        }
 
     }
 
     @Override
     public void onInitDone(boolean isEnable, String status) {
         mNFCStatus.setText(status);
-        mBtnRead.setEnabled(isEnable);
+        mBtnEmulateNfcReceive.setEnabled(!isEnable);
     }
 }
