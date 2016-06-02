@@ -164,8 +164,8 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         ToastUtil.showToast(mView.getActivity(), "Dữ liệu không hợp lệ.");
     }
 
-    private void getOrder(long appId, String zalooauthcode) {
-        subscriptionGetOrder = zaloPayRepository.getOrder(appId, zalooauthcode)
+    private void getOrder(long appId, String transactionToken) {
+        subscriptionGetOrder = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());
