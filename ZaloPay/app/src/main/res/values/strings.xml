@@ -98,8 +98,9 @@
     <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
 
     <string name="txt_home_qrcode">QUÉT MÃ QR</string>
+    <string name="txt_home_scantopay">TRẢ TIỀN</string>
     <string name="txt_home_deposit">NẠP TIỀN</string>
-    <string name="txt_home_link_card">THẺ LIÊN KẾT</string>
+    <string name="txt_home_link_card">THẺ</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -167,7 +168,7 @@
     <string name="hint_fullname">Họ tên</string>
 
     <string name="show_passcode">Hiện mã PIN?</string>
-    <string name="txt_home_scantopay">TRẢ TIỀN</string>
     <string name="title_activity_scan_to_pay">QUÉT MÃ TRẢ TIỀN</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="btn_emulate_nfc">Giả lập Nfc</string>
 </resources>

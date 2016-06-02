@@ -61,7 +61,7 @@
         android:drawableTop="@drawable/ic_lienketthe"
         android:gravity="center"
         android:padding="@dimen/app_padding"
-        android:text="@string/link.card"
+        android:text="@string/txt_home_link_card"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize.tiny" />
