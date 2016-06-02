@@ -36,6 +36,8 @@ import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.mdl.IPaymentService;
+import vn.com.vng.zalopay.service.PaymentServiceImpl;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -118,5 +120,11 @@ public class UserControllerModule {
     @Provides
     ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, ZaloPayIAPEntityDataMapper mapper) {
         return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, mapper);
+    }
+
+    @UserScope
+    @Provides
+    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, User user) {
+        return new PaymentServiceImpl(zaloPayIAPRepository, user);
     }
 }
