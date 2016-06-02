@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -11,6 +13,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.ZingMobilePayService;
@@ -29,11 +33,52 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
     private ILinkCardProduceView mView;
     private Subscription subscription;
     private Subscription subscriptionGetOrder;
+    private PaymentWrapper paymentWrapper;
 
     User user;
 
     public LinkCardProdurePresenter(User user) {
         this.user = user;
+        paymentWrapper = new PaymentWrapper(new PaymentWrapper.IViewListener() {
+            @Override
+            public Activity getActivity() {
+                return mView.getActivity();
+            }
+        }, new PaymentWrapper.IResponseListener() {
+            @Override
+            public void onParameterError(String param) {
+                mView.showError(param);
+            }
+
+            @Override
+            public void onResponseError(int status) {
+                if (status == PaymentError.ERR_CODE_INTERNET) {
+                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                } else {
+                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+                }
+            }
+
+            @Override
+            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                transactionUpdate();
+                ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+                if (paymentInfo == null) {
+                    return;
+                }
+                mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
+            }
+
+            @Override
+            public void onResponseTokenInvalid() {
+
+            }
+
+            @Override
+            public void onResponseCancel() {
+
+            }
+        });
     }
 
     @Override

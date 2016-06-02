@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.ZingMobilePayService;
@@ -58,12 +59,16 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             }
 
             @Override
-            public void onResponseError(String message) {
-                mView.showError(message);
+            public void onResponseError(int status) {
+                if (status == PaymentError.ERR_CODE_INTERNET) {
+                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                } else {
+                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+                }
             }
 
             @Override
-            public void onResponseSuccess() {
+            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 transactionUpdate();
                 mView.getActivity().finish();
             }
