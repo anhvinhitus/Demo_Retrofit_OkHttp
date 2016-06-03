@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
 import org.json.JSONException;
@@ -9,38 +10,79 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 /**
  * Created by longlv on 09/05/2016.
+ *
  */
 
-public final class QRCodePresenter extends BaseZaloPayPresenter implements IPresenter<IQRScanView>, ZPPaymentListener {
+public final class QRCodePresenter extends BaseZaloPayPresenter implements IPresenter<IQRScanView> {
 
     private IQRScanView mView;
 
     private Subscription subscriptionGetOrder;
 
+    private PaymentWrapper paymentWrapper;
+
     private User user;
 
     public QRCodePresenter(User user) {
         this.user = user;
+        paymentWrapper = new PaymentWrapper(zaloPayRepository, new PaymentWrapper.IViewListener() {
+            @Override
+            public Activity getActivity() {
+                return mView.getActivity();
+            }
+        }, new PaymentWrapper.IResponseListener() {
+            @Override
+            public void onParameterError(String param) {
+                if ("order".equalsIgnoreCase(param)) {
+                    mView.showError(mView.getContext().getString(R.string.order_invalid));
+                } else if ("uid".equalsIgnoreCase(param)) {
+                    mView.showError(mView.getContext().getString(R.string.user_invalid));
+                } else if ("token".equalsIgnoreCase(param)) {
+                    hideLoadingView();
+                    mView.showError(mView.getContext().getString(R.string.order_invalid));
+                    mView.resumeScanner();
+                }
+            }
+
+            @Override
+            public void onResponseError(int status) {
+                if (status == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
+                    mView.getActivity().finish();
+                }
+            }
+
+            @Override
+            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                transactionUpdate();
+                if (mView != null && mView.getActivity() != null) {
+                    mView.getActivity().finish();
+                }
+            }
+
+            @Override
+            public void onResponseTokenInvalid() {
+                mView.onTokenInvalid();
+            }
+
+            @Override
+            public void onResponseCancel() {
+                hideLoadingView();
+            }
+        });
     }
 
     @Override
@@ -81,12 +123,12 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         mView.hideLoading();
     }
 
-    private void showErrorView(String message) {
-        mView.showError(message);
-    }
+//    private void showErrorView(String message) {
+//        mView.showError(message);
+//    }
 
     public void pay(String jsonString) {
-        Timber.tag(TAG).d("pay jsonString:" + jsonString);
+        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonString);
         showLoadingView();
         if (zpTransaction(jsonString)) {
             return;
@@ -100,18 +142,17 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private boolean zpTransaction(String jsonOrder) {
-        Timber.tag(TAG).d("zpTransaction, jsonOrder:" + jsonOrder);
+        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonOrder);
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(jsonOrder);
             long appId = jsonObject.getLong(Constants.APPID);
             String zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
-            getOrder(appId, zptranstoken);
+            paymentWrapper.payWithToken(appId, zptranstoken);
+//            getOrder(appId, zptranstoken);
             return true;
         } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.e(e, "JSON error");
         }
         return false;
     }
@@ -145,7 +186,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             if (TextUtils.isEmpty(order.getMac())) {
                 return false;
             }
-            pay(order);
+            paymentWrapper.payWithOrder(order);
             hideLoadingView();
             return true;
         } catch (JSONException e) {
@@ -164,127 +205,9 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         ToastUtil.showToast(mView.getActivity(), "Dữ liệu không hợp lệ.");
     }
 
-    private void getOrder(long appId, String zalooauthcode) {
-        subscriptionGetOrder = zaloPayRepository.getOrder(appId, zalooauthcode)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetOrderSubscriber());
-    }
-
-    private void showOrderDetail(Order order) {
-        mView.showOrderDetail(order);
-    }
-
-    private final void onGetOrderError(Throwable e) {
-        hideLoadingView();
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
-        showErrorView(message);
-        mView.resumeScanner();
-    }
-
-    private final void onGetOrderSuccess(Order order) {
-        Timber.tag(TAG).d("onGetOrderSuccess, session:" + order.getItem());
-        hideLoadingView();
-        pay(order);
-    }
-
-
-    private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
-        public GetOrderSubscriber() {
-        }
-
-        @Override
-        public void onNext(Order order) {
-            Timber.d("login success " + order);
-            onGetOrderSuccess(order);
-        }
-
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e, "onError " + e);
-            onGetOrderError(e);
-        }
-    }
-
-    //Zalo payment sdk
-    private void pay(Order order) {
-        Timber.tag(TAG).d("pay start, order:" + order);
-        if (order == null) {
-            showErrorView(mView.getContext().getString(R.string.order_invalid));
-            return;
-        }
-        Timber.tag(TAG).d("pay.................check userInfo");
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user.uid <= 0) {
-            showErrorView(mView.getContext().getString(R.string.user_invalid));
-            return;
-        }
-        try {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-
-            EPaymentChannel forcedPaymentChannel = null;
-            paymentInfo.appID = order.getAppid();
-            paymentInfo.zaloUserID = String.valueOf(user.uid);
-            paymentInfo.zaloPayAccessToken = user.accesstoken;
-            paymentInfo.appTime = Long.valueOf(order.getApptime());
-            paymentInfo.appTransID = order.getApptransid();
-            Timber.tag(TAG).d("paymentInfo.appTransID:" + paymentInfo.appTransID);
-            paymentInfo.itemName = order.getItem();
-            paymentInfo.amount = Long.parseLong(order.getAmount());
-            paymentInfo.description = order.getDescription();
-            paymentInfo.embedData = order.getEmbeddata();
-            //lap vao ví appId = appUser = 1
-            paymentInfo.appUser = order.getAppuser();
-            paymentInfo.mac = order.getMac();
-
-            Timber.tag(TAG).d("pay finish");
-//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, this);
-        } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onComplete(ZPPaymentResult pPaymentResult) {
-        Timber.tag(TAG).d("onComplete pPaymentResult:" + pPaymentResult);
-        this.hideLoadingView();
-        if (pPaymentResult == null) {
-            if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
-                mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-            } else {
-                mView.showError("Lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.");
-            }
-        } else {
-            int resultStatus = pPaymentResult.paymentStatus.getNum();
-            if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                transactionUpdate();
-                if (mView != null && mView.getActivity() != null) {
-                    mView.getActivity().finish();
-                }
-            } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-                mView.onTokenInvalid();
-            } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
-                mView.getActivity().finish();
-            }
-        }
-    }
-
-    @Override
-    public void onCancel() {
-        this.hideLoadingView();
-    }
-
-    @Override
-    public void onSMSCallBack(String appTransID) {
-
-    }
+//    private void showOrderDetail(Order order) {
+//        mView.showOrderDetail(order);
+//    }
 
     private void transactionUpdate() {
         zaloPayRepository.transactionUpdate()
