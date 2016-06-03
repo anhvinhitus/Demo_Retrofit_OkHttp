@@ -268,3 +268,11 @@
 
 -keep public class com.zing.zalo.zalosdk.resource.** { *; }
 -dontwarn com.zing.zalo.zalosdk.resource.**
+
+
+-keepattributes InnerClasses
+
+-keep class **.R
+-keep class **.R$* {
+    <fields>;
+}
