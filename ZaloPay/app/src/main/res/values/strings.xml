@@ -167,4 +167,7 @@
     <string name="hint_fullname">Họ tên</string>
 
     <string name="show_passcode">Hiện mã PIN?</string>
+
+    <string name="show">Hiện</string>
+    <string name="hide">Ẩn</string>
 </resources>

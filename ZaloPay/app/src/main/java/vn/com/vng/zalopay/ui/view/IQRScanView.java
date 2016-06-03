@@ -8,7 +8,7 @@ import vn.com.vng.zalopay.domain.model.Order;
  * Created by longlv on 09/05/2016.
  */
 public interface IQRScanView extends ILoadDataView {
-    public void showOrderDetail(Order order);
+    void showOrderDetail(Order order);
     Activity getActivity();
     void onTokenInvalid();
     void resumeScanner();

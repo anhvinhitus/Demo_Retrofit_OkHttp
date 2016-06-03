@@ -32,9 +32,9 @@
             android:id="@+id/passcodeInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="6"
+            android:maxLength="4"
             zalopay:hint="@string/hint_pin"
-            zalopay:length="6"
+            zalopay:length="4"
             zalopay:note="@string/note_pin" />
 
         <vn.com.vng.zalopay.ui.widget.PassCodeView
@@ -42,9 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing.tiny"
-            android:maxLength="6"
+            android:maxLength="4"
             zalopay:hint="@string/hint_pin_compare"
-            zalopay:length="6" />
+            zalopay:length="4" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,7 +52,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1.0"
         android:gravity="top"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/checkbox"
@@ -87,12 +88,14 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutAction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="?attr/actionBarSize"
         android:layout_weight="0.0"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tvTermsOfUser"

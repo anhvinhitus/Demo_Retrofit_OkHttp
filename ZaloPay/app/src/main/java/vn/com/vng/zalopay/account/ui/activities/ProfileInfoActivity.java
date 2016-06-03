@@ -63,6 +63,11 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     @BindView(R.id.imgAdsBanner)
     ImageView imgAdsBanner;
 
+    @OnClick(R.id.layoutUser)
+    public void onClickLayoutUser(View view) {
+        navigator.startPreProfileActivity(this);
+    }
+
     @OnClick(R.id.layoutSigOutAndDelDB)
     public void onClickSigoutAndDelDB(View view) {
         sigoutAndCleanData();

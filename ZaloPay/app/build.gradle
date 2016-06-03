@@ -261,6 +261,7 @@ dependencies {
     compile project(':uicomponent')
     compile project(':qrcodecore')
     compile project(':zalosdk')
+    compile project(':reactnativemodules')
 
     debugCompile(name:'WALLET-debug', ext:'aar')
     releaseCompile(name:'WALLET-release', ext:'aar')
