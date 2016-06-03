@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.facebook.react.bridge.Promise;
-
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.Constants;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.ZingMobilePayService;
@@ -25,9 +27,11 @@ import vn.com.zalopay.wallet.listener.ZPPaymentListener;
  * Wrapper for handle common processing involves with wallet SDK
  */
 public class PaymentWrapper {
+
     public interface IViewListener {
         Activity getActivity();
     }
+
     public interface IResponseListener {
         void onParameterError(String param);
         void onResponseError(int status);
@@ -38,9 +42,19 @@ public class PaymentWrapper {
 
     private final IViewListener viewListener;
     private final IResponseListener responseListener;
-    public PaymentWrapper(IViewListener viewListener, IResponseListener responseListener) {
+    private final ZaloPayRepository zaloPayRepository;
+
+    public PaymentWrapper(ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+        this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
         this.responseListener = responseListener;
+    }
+
+    public void payWithToken(long appId, String transactionToken) {
+        zaloPayRepository.getOrder(appId, transactionToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GetOrderSubscriber());
     }
 
     public void payWithDetail(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
@@ -191,4 +205,25 @@ public class PaymentWrapper {
 
         }
     };
+
+    private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
+        public GetOrderSubscriber() {
+        }
+
+        @Override
+        public void onNext(Order order) {
+            Timber.d("getOrder response: %s", order.getItem());
+            payWithOrder(order);
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e(e, "onError " + e);
+            responseListener.onParameterError("token");
+        }
+    }
 }

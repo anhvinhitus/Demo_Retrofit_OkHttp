@@ -40,7 +40,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
     public BalanceTopupPresenter(User user) {
 //        this.user = user;
-        paymentWrapper = new PaymentWrapper(new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
