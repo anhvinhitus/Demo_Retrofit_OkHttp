@@ -1,30 +1,27 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import java.util.List;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
-import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 25/05/2016.
  */
-public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
+public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter<IOTPProfileView> {
 
-    IPinProfileView mView;
+    IOTPProfileView mView;
     private Subscription subscriptionLogin;
-    private UserConfig mUserConfig;
-
-    public PinProfilePresenter(UserConfig userConfig) {
-        mUserConfig = userConfig;
-    }
 
     @Override
-    public void setView(IPinProfileView iProfileView) {
+    public void setView(IOTPProfileView iProfileView) {
         mView = iProfileView;
     }
 
@@ -53,22 +50,32 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         this.unsubscribe();
     }
 
-    public void updateProfile(String pin, String phone) {
-        showLoading();
-        subscriptionLogin = accountRepository.updateProfile(pin, phone)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new updateProfileSubscriber());
+    private void onConfirmOTPError(Throwable e) {
+        hideLoading();
+        mView.showError("Cập nhật thông tin người dùng thất bại.");
     }
 
-    private final class updateProfileSubscriber extends DefaultSubscriber<Boolean> {
-        public updateProfileSubscriber() {
+    private void onVerifyOTPSucess() {
+        hideLoading();
+        mView.confirmOTPSuccess();
+    }
+
+    public void verifyOtp(String otp) {
+        showLoading();
+        subscriptionLogin = accountRepository.verifyOTPProfile(otp)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new VerifyOTPProfileSubscriber());
+    }
+
+    private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<List<ProfilePermisssion>> {
+        public VerifyOTPProfileSubscriber() {
         }
 
         @Override
-        public void onNext(Boolean result) {
-            Timber.d("updateProfile success " + result);
-            PinProfilePresenter.this.onUpdateProfileSuccess();
+        public void onNext(List<ProfilePermisssion> permisssions) {
+            Timber.d("confirmOTP success " );
+            OTPProfilePresenter.this.onVerifyOTPSucess();
         }
 
         @Override
@@ -78,18 +85,8 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "onError " + e);
-            PinProfilePresenter.this.onUpdateProfileError(e);
+            OTPProfilePresenter.this.onConfirmOTPError(e);
         }
-    }
-
-    private void onUpdateProfileError(Throwable e) {
-        hideLoading();
-        mView.showError("Cập nhật thông tin người dùng thất bại.");
-    }
-
-    private void onUpdateProfileSuccess() {
-        hideLoading();
-        mView.updateProfileSuccess();
     }
 
     public void showLoading() {

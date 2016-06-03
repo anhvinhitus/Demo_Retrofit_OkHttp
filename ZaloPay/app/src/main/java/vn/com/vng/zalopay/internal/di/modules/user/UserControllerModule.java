@@ -114,8 +114,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    AccountRepository provideAccountRepository(AccountService accountService) {
-        return new AccountRepositoryImpl(accountService);
+    AccountRepository provideAccountRepository(AccountService accountService, User user) {
+        return new AccountRepositoryImpl(accountService, user);
     }
 
     @UserScope
