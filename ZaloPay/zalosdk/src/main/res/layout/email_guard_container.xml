@@ -104,7 +104,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:paddingTop="5dp"
-        android:text="Thông tin khôi phục tài khoản sẽ gửi đến email trên"
+        android:text="@string/title_sent_email_confirm"
         android:layout_below="@id/title_forget_pass"
         android:textColor="#fff"
         android:textSize="12dp" />
@@ -137,24 +137,26 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="5dp"
-        android:text="Hoặc chơi tiếp"
+        android:text="@string/tt_continue_login_login_form"
         android:textColor="#fff"
         android:textSize="14dp" />
 
     <RelativeLayout
         android:id="@+id/back_form"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="195dp"
+        android:layout_marginTop="@dimen/login_form_margin_top_back_button"
+        android:layout_marginBottom="@dimen/login_form_margin_bottom_back_button"
         android:visibility="gone" >
 
         <TextView
             android:id="@+id/tt_back_form"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
             android:text="Quay về trước"
             android:textColor="#fff"
             android:textSize="14dp" />
@@ -163,8 +165,6 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@id/tt_back_form"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_arrow" />
     </RelativeLayout>

@@ -54,12 +54,12 @@ public interface AppConfigService {
     json array*/
 
     @GET("tpe/insideappresource")
-    Observable<AppResourceResponse> insideappresource(@Query("appidlist") List<Long> appidlist,
+    Observable<AppResourceResponse> insideappresource(@Query(encoded = false, value = "appidlist") List<Long> appidlist,
                                                       @Query("checksumlist") List<String> checksumlist,
                                                       @QueryMap HashMap<String, String> params);
 
     @GET("tpe/insideappresource")
-    Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = true) String appidlist,
+    Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                       @Query(value = "checksumlist", encoded = true) String checksumlist,
                                                       @QueryMap HashMap<String, String> params);
 }

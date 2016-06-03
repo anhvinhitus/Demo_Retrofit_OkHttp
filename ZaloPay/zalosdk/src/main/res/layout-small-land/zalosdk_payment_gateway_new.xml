@@ -569,6 +569,17 @@
                                 android:visibility="gone" />
                         </LinearLayout>
 
+                        <TextView
+                            android:id="@+id/number_gift_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="30dp"
+                            android:textSize="@dimen/number_gift_code"
+                            android:gravity="center"
+                            android:visibility="gone" />
+
                         <ImageView
                             android:layout_width="17dp"
                             android:layout_height="wrap_content"

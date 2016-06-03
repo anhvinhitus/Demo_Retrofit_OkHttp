@@ -7,29 +7,33 @@
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
-    }, {
+    },
+    {
       "appid": 1,
       "appname": "Chuyển tiền",
       "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
-    }, {
-      "appid": 2,
+    },
+    {
+      "appid": 11,
       "appname": "Nạp Tiền ĐT",
-      "asset": "external/esale.zip",
+      "asset": "external/android.011.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
-    }, {
-      "appid": 3,
+    },
+    {
+      "appid": 12,
       "appname": "Thẻ ĐT",
-      "asset": "external/esale.zip",
+      "asset": "external/android.012.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
-    }, {
-      "appid": 4,
+    },
+    {
+      "appid": 13,
       "appname": "Thẻ game",
       "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",

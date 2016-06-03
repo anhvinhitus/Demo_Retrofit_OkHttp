@@ -35,7 +35,7 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 10
+        versionCode 11
         versionName "1.0.${versionCode}"
 
         multiDexEnabled true
@@ -261,6 +261,7 @@ dependencies {
     compile project(':uicomponent')
     compile project(':qrcodecore')
     compile project(':zalosdk')
+    compile project(':reactnativemodules')
 
     debugCompile(name:'WALLET-debug', ext:'aar')
     releaseCompile(name:'WALLET-release', ext:'aar')

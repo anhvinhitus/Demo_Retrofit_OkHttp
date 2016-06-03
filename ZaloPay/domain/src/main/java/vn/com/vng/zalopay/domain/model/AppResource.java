@@ -30,6 +30,13 @@ public class AppResource extends AbstractData {
         this.urlImage = urlImage;
     }
 
+    public AppResource(int appid, String appname, String urlImage, int status) {
+        this.appid = appid;
+        this.appname = appname;
+        this.urlImage = urlImage;
+        this.status = status;
+    }
+
     public AppResource() {
     }
 
