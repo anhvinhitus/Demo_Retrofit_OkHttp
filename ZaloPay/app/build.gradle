@@ -265,8 +265,5 @@ dependencies {
     debugCompile(name:'WALLET-debug', ext:'aar')
     releaseCompile(name:'WALLET-release', ext:'aar')
 
-    compile ( project(':moduledynamicloading') ) {
-        exclude (module:'WALLET-debug')
-        exclude (module:'WALLET-release')
-    }
+    compile project(':moduledynamicloading')
 }
