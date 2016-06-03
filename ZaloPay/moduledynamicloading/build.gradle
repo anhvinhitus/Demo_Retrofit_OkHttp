@@ -51,6 +51,4 @@ dependencies {
     compile libs.react_native
 
     compile project(':data')
-    debugCompile(name:'WALLET-debug', ext:'aar')
-    releaseCompile(name:'WALLET-release', ext:'aar')
 }

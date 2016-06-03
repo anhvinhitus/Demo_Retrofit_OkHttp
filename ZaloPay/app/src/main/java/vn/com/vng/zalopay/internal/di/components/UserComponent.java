@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
@@ -44,6 +45,8 @@ public interface UserComponent {
     AppConfigRepository appConfigRepository();
 
     ZaloPayRepository zaloPayRepository();
+
+    IPaymentService paymentService();
 
  /*   ApplicationRepository applicationRepository();*/
 

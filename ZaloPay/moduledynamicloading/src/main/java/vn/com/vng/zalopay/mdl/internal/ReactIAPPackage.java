@@ -12,7 +12,7 @@ import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
 
 /**
@@ -20,12 +20,15 @@ import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
  */
 public class ReactIAPPackage implements ReactPackage {
     final ZaloPayIAPRepository zaloPayIAPRepository;
+    final IPaymentService paymentService;
     final User user;
     private final long appId;
 
     public ReactIAPPackage(ZaloPayIAPRepository zaloPayIAPRepository,
+                           IPaymentService paymentService,
                            User user, long appId) {
         this.zaloPayIAPRepository = zaloPayIAPRepository;
+        this.paymentService = paymentService;
         this.user = user;
         this.appId = appId;
     }
@@ -33,7 +36,7 @@ public class ReactIAPPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayIAPRepository, user, appId));
+        modules.add(new ZaloPayIAPNativeModule(reactContext, zaloPayIAPRepository, paymentService, appId));
         return modules;
     }
 
