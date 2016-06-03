@@ -5,6 +5,9 @@
 	<string name="hint_zing_id">Zing ID</string>
     <string name="hint_password">Password</string>
 	<string name="btn_login">Đăng nhập</string>
+	<string name="tt_continue_login_login_form">Hoặc chơi tiếp</string>
+	<string name="tt_continue_login">Bỏ qua</string>
+	<string name="title_sent_email_confirm">Thông tin xác thực sẽ gửi đến email trên</string>
 	
 	<string name="zalosdk_app_name"></string>
     <string name="zalosdk_peter_pan">Peter Pan</string>
@@ -14,6 +17,7 @@
     <string name="zalosdk_mobile_card">Thẻ cào điện thoại</string>
     <string name="zalosdk_mobileacc">Tài khoản điện thoại</string>
     <string name="zalosdk_atmacc">Tài khoản ATM nội địa</string>
+    <string name="zalosdk_redeem_hint">Mã quà tặng</string>
     <string name="zalosdk_hotline">"Hotline: "</string>
     <string name="zalosdk_1900_561_558">1900 561 558</string>
     <string name="zalosdk_zalo_acc">Tài khoản ví Zalo</string>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:paddingRight="10dp"
+    android:layout_marginRight="10dp">
+
+    <FrameLayout
+        android:id="@+id/tooltip_topframe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/tooltip_top_frame_b" />
+
+    <ImageView
+        android:id="@+id/tooltip_pointer_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/tooltip_arrow_up" />
+
+    <FrameLayout
+        android:id="@+id/tooltip_contentholder"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tooltip_topframe"
+        android:layout_marginTop="-2dp"
+        android:background="@drawable/zalosdk_border01_0"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:scrollbars="none" >
+
+        <TextView
+            android:id="@+id/tooltip_contenttv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:singleLine="false" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/tooltip_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/tooltip_contentholder"
+        android:layout_marginTop="-6dp"
+        android:background="@drawable/quickcontact_drop_shadow" />
+
+    <FrameLayout
+        android:id="@+id/tooltip_bottomframe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tooltip_contentholder"
+        android:background="@drawable/tooltip_bottom_frame_b" />
+
+    <ImageView
+        android:id="@+id/tooltip_pointer_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tooltip_bottomframe"
+        android:layout_marginTop="-1dp"
+        android:src="@drawable/tooltip_arrow_down" />
+
+</RelativeLayout>
