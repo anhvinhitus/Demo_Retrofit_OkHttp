@@ -37,6 +37,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     private TextView mTvHint;
     private EditText mEditText;
     private TextView mTvNote;
+    private TextView mTvShowHide;
     private TextInputLayout mTextInputLayout;
     private ArrayList<TextView> mTextViews;
     private int mTextViewSize = 0;
@@ -94,6 +95,24 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         mEditText.addTextChangedListener(this);
         mEditText.setOnFocusChangeListener(this);
         initTextView();
+        initShowHidePassCode();
+    }
+
+    private void initShowHidePassCode() {
+        mTvShowHide = (TextView) findViewById(R.id.tvShowHide);
+
+        mTvShowHide.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mShowPasscode) {
+                    hidePasscode();
+                    mTvShowHide.setText(getContext().getResources().getString(R.string.show));
+                } else {
+                    showPasscode();
+                    mTvShowHide.setText(getContext().getResources().getString(R.string.hide));
+                }
+            }
+        });
     }
 
     private void initTextView() {

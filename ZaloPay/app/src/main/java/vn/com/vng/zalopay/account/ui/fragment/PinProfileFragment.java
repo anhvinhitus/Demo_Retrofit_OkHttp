@@ -48,6 +48,9 @@ public class PinProfileFragment extends AbsProfileFragment {
     @BindView(R.id.tvCancel)
     TextView tvCancel;
 
+    @BindView(R.id.layoutAction)
+    View layoutAction;
+
     @OnClick(R.id.tvShowPass)
     public void onClickShowPass(View view) {
         boolean isChecked = chkShowPass.isChecked();
