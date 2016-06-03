@@ -7,33 +7,43 @@
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
-    }, {
+    },
+    {
       "appid": 1,
       "appname": "Chuyển tiền",
       "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
-    }, {
-      "appid": 2,
+    },
+    {
+      "appid": 11,
       "appname": "Nạp Tiền ĐT",
       "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
+      "key1": "dPxERGjRqZqKzjz",
+      "key2": "U4dKNoZBfaOn5kH",
       "status": 1
-    }, {
-      "appid": 3,
+    },
+    {
+      "appid": 12,
       "appname": "Thẻ ĐT",
       "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
+      "key1": "RJdd3KzrkTobVYl",
+      "key2": "amnsTAMzygciCHC",
       "status": 1
-    }, {
-      "appid": 4,
+    },
+    {
+      "appid": 13,
       "appname": "Thẻ game",
       "asset": "external/esale.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
+      "key1": "ydpDFMRUnnW5jUH",
+      "key2": "dW8lUaRM57DuoYU",
       "status": 1
     }
   ],
