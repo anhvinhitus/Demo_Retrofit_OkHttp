@@ -221,8 +221,8 @@
 -keep class com.android.vending.billing.**
 -dontwarn com.android.vending.billing.**
 
--keep public class com.zing.zalo.zalosdk.oauth.** { *; }
--dontwarn com.zing.zalo.zalosdk.oauth.**
+#-keep public class com.zing.zalo.zalosdk.oauth.** { *; }
+#-dontwarn com.zing.zalo.zalosdk.oauth.**
 
 -keep public class org.w3c.dom.** { *; }
 -dontwarn org.w3c.dom.**
@@ -249,3 +249,52 @@
 #-keep interface android.support.design.** { *; }
 #-keep public class android.support.design.R$* { *; }
 
+
+-keep public class * extends com.google.protobuf.GeneratedMessage { *; }
+#Warning:vn.com.zalopay.wallet.entity.protobuf.LogicMessages: can't find referenced class com.google.protobuf.Descriptors$Descriptor
+-keepclassmembernames class * extends com.google.protobuf.GeneratedMessage { *; }
+
+#Warning:vn.com.zalopay.wallet.entity.protobuf.LogicMessages$Login: can't find referenced class com.google.protobuf.UnknownFieldSet
+
+-keep public class com.google.protobuf.** { *; }
+
+-keep interface com.google.protobuf.** { *; }
+-dontwarn com.google.protobuf.**
+
+-keep class vn.com.zalopay.wallet.entity.protobuf.** { *; }
+
+-keep public class io.netty.channel.** { *; }
+-dontwarn io.netty.channel.**
+
+-keep public class io.netty.bootstrap.** { *; }
+-dontwarn io.netty.bootstrap.**
+
+-keep public class io.netty.handler.** { *; }
+-dontwarn io.netty.handler.**
+
+-keep public interface com.sun.msv.datatype.SerializationContext
+-keep public interface org.relaxng.datatype.** { *; }
+
+-keep public interface javax.swing.tree.** { *; }
+-keep public interface javax.swing.table.** { *; }
+-keep public interface org.gjt.xpp.** { *; }
+
+-dontwarn android.support.**
+
+#-keepclassmembers class * extends java.lang.Enum {
+#    <fields>;
+#    public static **[] values();
+#    public static ** valueOf(java.lang.String);
+#}
+
+#-keep public class vn.com.zalopay.wallet.data.Constants { *; }
+
+
+
+-dontwarn vn.com.zalopay.wallet.entity.**
+
+#-keep class **.R
+#
+#-keep class **.R$* {
+#    <fields>;
+#}

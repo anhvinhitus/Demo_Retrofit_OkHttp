@@ -10,14 +10,15 @@ android {
 
     defaultConfig {
 //        applicationId "com.zing.zalo.zalosdk"
-        minSdkVersion 14
-        targetSdkVersion 23
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

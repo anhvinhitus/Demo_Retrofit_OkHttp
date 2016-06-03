@@ -183,10 +183,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 new AppResource(11, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
                 new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)),
                 new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)),
-                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)),
-                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet)),
-                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)),
-                new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc))
+                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien), 1),
+                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet), 1),
+                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi), 1),
+                new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc), 1)
         );
     }
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gift_code_root_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp" >
+
+    <TextView
+        android:id="@+id/gift_code_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="#333333"
+        android:textSize="@dimen/sdk_form_input_size" />
+
+    <TextView
+        android:id="@+id/gift_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textColor="#333333"
+        android:textSize="@dimen/sdk_form_input_size"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gift_code_title" >
+
+        <TextView
+            android:id="@+id/gift_code_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#488B21"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/gift_code_expiredDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/gift_code_expired_time_text_color"
+            android:textSize="@dimen/sdk_form_input_size"
+            android:layout_marginTop="3dp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/gift_code_desc"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ico_info_disabled"
+        android:visibility="gone" />
+
+</RelativeLayout>

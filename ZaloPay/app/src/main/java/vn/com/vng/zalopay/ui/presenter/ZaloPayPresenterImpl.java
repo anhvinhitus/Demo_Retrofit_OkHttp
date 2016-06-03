@@ -60,7 +60,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private final void onGetAppResourceSuccess(List<AppResource> resources) {
-        mZaloPayView.insertApps(resources);
+         // mZaloPayView.insertApps(resources);
     }
 
 
