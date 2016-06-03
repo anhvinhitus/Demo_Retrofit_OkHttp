@@ -45,6 +45,28 @@
             android:maxLength="4"
             zalopay:hint="@string/hint_pin_compare"
             zalopay:length="4" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingLeft="@dimen/spacing.small"
+            android:paddingRight="@dimen/spacing.small"
+            app:errorEnabled="false">
+
+            <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                android:id="@+id/edtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:hint="@string/hint_phone"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:paddingTop="@dimen/spacing.small"
+                android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout

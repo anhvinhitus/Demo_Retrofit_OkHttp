@@ -5,13 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +24,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.adapter.ProfileSlidePagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.domain.model.User;
@@ -39,7 +42,7 @@ public class ProfileFragment extends BaseFragment implements IPreProfileView {
     private OnFragmentInteractionListener mListener;
 
     private AbsProfileFragment profileFragment;
-
+    private ProfileSlidePagerAdapter adapter;
     private int profileType = 1;
 
     @Inject
@@ -59,6 +62,9 @@ public class ProfileFragment extends BaseFragment implements IPreProfileView {
 
     @BindView(R.id.tvTermsOfUser)
     TextView tvTermsOfUser;
+
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue(View view) {
@@ -112,22 +118,15 @@ public class ProfileFragment extends BaseFragment implements IPreProfileView {
     }
 
     private void initContent() {
+        adapter = new ProfileSlidePagerAdapter(getChildFragmentManager());
+
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(2);
+
         if (profileType == Constants.PRE_PROFILE_TYPE) {
-            if (getChildFragmentManager().findFragmentById(R.id.preProfileContent) == null) {
-                FragmentTransaction childFragTrans = getChildFragmentManager().beginTransaction();
-                profileFragment = PreProfileFragment.newInstance();
-                childFragTrans.add(R.id.preProfileContent, profileFragment);
-                childFragTrans.addToBackStack(null);
-                childFragTrans.commit();
-            }
+            viewPager.setCurrentItem(0);
         } else if (profileType == Constants.PIN_PROFILE_TYPE) {
-            if (getChildFragmentManager().findFragmentById(R.id.pinProfileContent) == null) {
-                FragmentTransaction childFragTrans = getChildFragmentManager().beginTransaction();
-                profileFragment = PinProfileFragment.newInstance();
-                childFragTrans.add(R.id.pinProfileContent, profileFragment);
-                childFragTrans.addToBackStack(null);
-                childFragTrans.commit();
-            }
+            viewPager.setCurrentItem(1);
         }
     }
 

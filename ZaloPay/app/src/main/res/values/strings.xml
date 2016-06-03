@@ -170,4 +170,7 @@
 
     <string name="show">Hiện</string>
     <string name="hide">Ẩn</string>
+
+    <string name="hint_otp">Mã OTP</string>
+    <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
 </resources>
