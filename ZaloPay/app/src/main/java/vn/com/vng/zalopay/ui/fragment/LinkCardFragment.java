@@ -78,8 +78,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Inject
     LinkCardPresenter presenter;
 
-    @BindView(R.id.progressContainer)
-    View mLoadingView;
+//    @BindView(R.id.progressContainer)
+//    View mLoadingView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,12 +182,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void showLoading() {
-        mLoadingView.setVisibility(View.VISIBLE);
+        super.showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
-        mLoadingView.setVisibility(View.GONE);
+        super.showProgressDialog();
     }
 
     @Override

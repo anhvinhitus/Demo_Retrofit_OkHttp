@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
+import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 
@@ -33,6 +34,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Inject
     ZaloPayIAPRepository zaloPayIAPRepository;
+
+    @Inject
+    IPaymentService paymentService;
 
     @Inject
     User mUser;
@@ -154,7 +158,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         return Arrays.asList(
                 new MainReactPackage(),
-                new ReactIAPPackage(zaloPayIAPRepository, mUser, appId)
+                new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
         );
     }
 

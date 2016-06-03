@@ -50,6 +50,9 @@ ext {
     zxingAndroidCoreVersion = "3.2.1"
     zxingAndroidEmbeddedVersion = "3.2.0@aar"
 
+    aviVersion = '1.0.5'
+    nineoldVersion = '2.4.0'
+
     reactNativeVersion = "0.25.1"
 
     roundedimageviewVersion = "2.2.1"
@@ -81,6 +84,9 @@ ext {
             zxing                  : "com.google.zxing:core:${zxingVersion}",
             zxing_android_core     : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
             zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
+
+            avi                    : "com.wang.avi:library:${aviVersion}",
+            nineoldandroids        : "com.nineoldandroids:library:${nineoldVersion}",
 
             support_support_v4     : "com.android.support:support-v4:${supportVersion}",
             support_appcompat_v7   : "com.android.support:appcompat-v7:${supportVersion}",
