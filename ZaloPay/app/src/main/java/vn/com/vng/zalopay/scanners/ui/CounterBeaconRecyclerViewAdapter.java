@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import vn.com.vng.zalopay.R;
@@ -40,6 +41,11 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
         holder.mContentView.setText(String.valueOf(mValues.get(position).rssi));
+        if (mValues.get(position).paymentRecord != null) {
+            holder.mStatusView.setImageResource(R.drawable.ic_checked_mark);
+        } else {
+            holder.mStatusView.setImageResource(R.drawable.ic_lichsu);
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +68,7 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final ImageView mStatusView;
         public BeaconDevice mItem;
 
         public ViewHolder(View view) {
@@ -69,6 +76,7 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mStatusView = (ImageView) view.findViewById(R.id.img_status);
         }
 
         @Override

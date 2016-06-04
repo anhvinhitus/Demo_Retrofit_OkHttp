@@ -28,5 +28,10 @@ public class PaymentRecord {
         return obj.transactionToken.equalsIgnoreCase(transactionToken);
     }
 
+    @Override
+    public String toString() {
+        return String.format("appId: %d, token: %s", appId, transactionToken);
+    }
+
     public final static PaymentRecord Invalid = new PaymentRecord(-1, -1, -1, "", -1);
 }

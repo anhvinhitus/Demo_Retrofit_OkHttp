@@ -150,40 +150,45 @@ public class BeaconScanner {
         }
 
         if (enable) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (Build.VERSION.SDK_INT < 18) {
-                        return;
-                    }
-
-                    if (Build.VERSION.SDK_INT < 21) {
-                        mBluetoothAdapter.stopLeScan(mLeScanCallback18);
-                    } else {
-                        mLEScanner.stopScan(mLeScanCallback21);
-                    }
-
-                    mListener.onScanningStopped();
-                }
-            }, SCAN_PERIOD);
-            if (Build.VERSION.SDK_INT < 21) {
-                mBluetoothAdapter.startLeScan(mLeScanCallback18);
-            } else {
-                mLEScanner.startScan(filters, settings, mLeScanCallback21);
-            }
-
-            mListener.onScanningStarted();
+//            mHandler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    stopScanning();
+//                }
+//            }, SCAN_PERIOD);
+            startScanning();
         } else {
-            if (Build.VERSION.SDK_INT < 21) {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback18);
-            } else {
-                mLEScanner.stopScan(mLeScanCallback21);
-            }
-
-            mListener.onScanningStopped();
+            stopScanning();
         }
     }
 
+    private void startScanning() {
+        if (Build.VERSION.SDK_INT < 18) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < 21) {
+            mBluetoothAdapter.startLeScan(mLeScanCallback18);
+        } else {
+            mLEScanner.startScan(filters, settings, mLeScanCallback21);
+        }
+
+        mListener.onScanningStarted();
+    }
+
+    private void stopScanning() {
+        if (Build.VERSION.SDK_INT < 18) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < 21) {
+            mBluetoothAdapter.stopLeScan(mLeScanCallback18);
+        } else {
+            mLEScanner.stopScan(mLeScanCallback21);
+        }
+
+        mListener.onScanningStopped();
+    }
 
     private ScanCallback mLeScanCallback21 = new LeScanCallback21();
 
@@ -258,31 +263,36 @@ public class BeaconScanner {
 
     @Nullable
     private PaymentRecord getPaymentRecord(SparseArray<byte[]> manufacturerSpecificData) {
+//        String token = "_1fgXP0mwsf9AMZdcfzUlQ";
+//        Log.e("LOGTOKEN", "Token: " + Arrays.toString(Base64.decode(token, Base64.URL_SAFE)));
+
         if (manufacturerSpecificData == null) {
             Timber.d("Invalid scanRecord. No manufacturer specific data.");
             return null;
         }
-        
+
         byte[] data = manufacturerSpecificData.get(0x1710);
         if (data == null) {
             Timber.d("Invalid scanRecord. Specific data not found.");
             return null;
         }
 
+        Timber.d("Data length: %d", data.length);
+
         int currentPos = 0;
 
         // The first two bytes of the manufacturer specific data are
         // manufacturer ids in little endian.
 
-        long manufacturerId = extractShort(data, currentPos);
-        currentPos += 2;
+        long manufacturerId = 0x1710;
+//        currentPos += 2;
         long amount = 0;
 //            long amount = extractLong(data, currentPos);
 //            currentPos += 4;
         long appid = extractLong(data, currentPos);
         currentPos += 4;
         byte[] transactionTokenBytes = extractBytes(data, currentPos, 16);
-        String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.DEFAULT);
+        String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING);
         currentPos += 16;
         long crc16 = extractShort(data, currentPos);
 

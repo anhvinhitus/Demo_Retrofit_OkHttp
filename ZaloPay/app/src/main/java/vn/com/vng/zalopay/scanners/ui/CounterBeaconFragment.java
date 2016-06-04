@@ -97,12 +97,14 @@ public class CounterBeaconFragment extends BaseFragment {
                     @Override
                     public void onParameterError(String param) {
                         showToast("Error in parameter: " + param);
+                        beaconScanner.startScan();
                     }
 
                     @Override
                     public void onResponseError(int status) {
                         Timber.d("Payment error: " + status);
                         showToast("Error code: " + String.valueOf(status));
+                        beaconScanner.startScan();
                     }
 
                     @Override
@@ -119,6 +121,7 @@ public class CounterBeaconFragment extends BaseFragment {
                     @Override
                     public void onResponseCancel() {
                         Timber.d("User cancel transaction");
+                        beaconScanner.startScan();
                     }
                 }
         );
@@ -184,6 +187,12 @@ public class CounterBeaconFragment extends BaseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mMainLooperHandler = new Handler(context.getMainLooper());
+        mMainLooperHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                beaconScanner.startScan();
+            }
+        });
 //        if (context instanceof OnListFragmentInteractionListener) {
 //            mListener = (OnListFragmentInteractionListener) context;
 //        } else {
@@ -205,6 +214,8 @@ public class CounterBeaconFragment extends BaseFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (!isVisibleToUser) {
             beaconScanner.stopScan();
+        } else {
+            beaconScanner.startScan();
         }
     }
 
@@ -226,6 +237,7 @@ public class CounterBeaconFragment extends BaseFragment {
             if (item.paymentRecord == null) {
                 return;
             }
+            beaconScanner.stopScan();
             mPaymentWrapper.payWithToken(item.paymentRecord.appId, item.paymentRecord.transactionToken);
         }
     }
@@ -281,12 +293,12 @@ public class CounterBeaconFragment extends BaseFragment {
 
         @Override
         public void onScanningStarted() {
-            showProgressDialog();
+            showToast("Scanning Started");
         }
 
         @Override
         public void onScanningStopped() {
-            hideProgressDialog();
+            showToast("Scanning Stopped");
         }
     }
 }
