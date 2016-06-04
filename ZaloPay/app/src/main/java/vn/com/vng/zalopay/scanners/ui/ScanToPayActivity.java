@@ -17,10 +17,12 @@ import android.widget.TextView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
+import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
+import vn.com.vng.zalopay.scanners.ui.dummy.DummyContent;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class ScanToPayActivity extends BaseToolBarActivity {
+public class ScanToPayActivity extends BaseToolBarActivity implements CounterBeaconFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -136,6 +138,11 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         handleIntent(intent);
     }
 
+    @Override
+    public void onListFragmentInteraction(BeaconDevice item) {
+        Timber.i("Select item: %s", item);
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -189,6 +196,10 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                 case 0: {
                     ScanNFCFragment fragment = ScanNFCFragment.newInstance("Hello NFC", "abc");
                     fragment.setReaderPresenter(mNFCReader);
+                    return fragment;
+                }
+                case 2: {
+                    CounterBeaconFragment fragment = CounterBeaconFragment.newInstance(1);
                     return fragment;
                 }
                 default:

@@ -1,17 +1,23 @@
 package vn.com.vng.zalopay.scanners.ui;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -25,11 +31,15 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private PaymentWrapper paymentWrapper;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private NFCReaderPresenter readerPresenter;
+
+    @Inject
+    ZaloPayRepository zaloPayRepository;
 
     public ScanNFCFragment() {
         // Required empty public constructor
@@ -46,12 +56,14 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
     @OnClick(R.id.btn_read_nfc)
     void onReadNFC() {
-        String emulateContent = "3:nd0raT2d2tLAi567+5cXog==";
+//        String emulateContent = "3:nd0raT2d2tLAi567+5cXog==";
+        String emulateContent = "3:AyGiIa2sSFBlUoUOjwMc1A";
 
         processOrder(emulateContent);
     }
 
     private boolean processOrder(String orderToken) {
+        Timber.i("About to process orderToken: %s", orderToken);
         String[] contents = orderToken.split(":");
         if (contents.length < 2) {
             new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
@@ -64,6 +76,13 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         String token = contents[1];
         // TODO: Call payment SDK
 
+        if (paymentWrapper == null) {
+            mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
+            return false;
+        }
+
+        Timber.i("appId: %d, token: %s", appId, token);
+        paymentWrapper.payWithToken(appId, token);
         return true;
     }
 
@@ -89,7 +108,42 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     }
     @Override
     protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
 
+        paymentWrapper = new PaymentWrapper(zaloPayRepository,
+                new PaymentWrapper.IViewListener() {
+                    @Override
+                    public Activity getActivity() {
+                        return ScanNFCFragment.this.getActivity();
+                    }
+                },
+                new PaymentWrapper.IResponseListener() {
+                    @Override
+                    public void onParameterError(String param) {
+                        mNFCStatus.setText(String.format("Parameter error: %s", param));
+                    }
+
+                    @Override
+                    public void onResponseError(int status) {
+                        mNFCStatus.setText(String.format("Response error: %d", status));
+                    }
+
+                    @Override
+                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                        mNFCStatus.setText("Payment succeeded");
+
+                    }
+
+                    @Override
+                    public void onResponseTokenInvalid() {
+
+                    }
+
+                    @Override
+                    public void onResponseCancel() {
+
+                    }
+                });
     }
 
     @Override
@@ -140,13 +194,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         Timber.i("ScanNFCFragment is destroyed");
         super.onDestroy();
         readerPresenter.destroy();
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
     }
 
     @Override
