@@ -190,15 +190,10 @@ public class BeaconScanner {
             Timber.i("result: %s", result.toString());
 
             BluetoothDevice btDevice = result.getDevice();
-            byte[] data = null;
-            if (result.getScanRecord() != null) {
-                data = result.getScanRecord().getBytes();
-            }
             PaymentRecord paymentRecord = parseScanRecord(result.getScanRecord());
             if (paymentRecord != null) {
                 mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
             }
-//            BluetoothDevice btDevice = result.getDevice();
         }
 
         @Override
