@@ -2,15 +2,17 @@ package vn.com.vng.zalopay.mdl.impl;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
+import vn.com.vng.zalopay.mdl.BundleService;
 
 /**
  * Created by AnhHieu on 5/16/16.
  * Internal RN development configuration
  */
 public class BundleReactConfigInternalDev implements BundleReactConfig {
+    private BundleService bundleService;
 
-
-    public BundleReactConfigInternalDev() {
+    public BundleReactConfigInternalDev(BundleService bundleService) {
+        this.bundleService = bundleService;
     }
 
     @Override
@@ -25,7 +27,11 @@ public class BundleReactConfigInternalDev implements BundleReactConfig {
 
     @Override
     public String getExternalJsBundle(AppResource appResource) {
-        return null;
+        if (appResource == null) {
+            return "";
+        }
+
+        return bundleService.getExternalBundleFolder(appResource.appid) + "/main.jsbundle";
     }
 
     @Override
