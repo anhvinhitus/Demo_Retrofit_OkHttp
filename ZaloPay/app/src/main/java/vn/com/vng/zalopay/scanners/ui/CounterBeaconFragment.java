@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.scanners.controller.BeaconScanner;
 import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
@@ -30,6 +31,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -55,6 +57,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
     private final List<BeaconDevice> mDeviceList = new ArrayList<>();
     private PaymentWrapper mPaymentWrapper;
+    private final HashMap<String, OrderCache> mTransactionCache = new HashMap<>();
 
     @Inject
     ZaloPayRepository zaloPayRepository;
@@ -207,6 +210,21 @@ public class CounterBeaconFragment extends BaseFragment {
         super.onDetach();
         mListener = null;
         mMainLooperHandler = null;
+        beaconScanner.stopScan();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        beaconScanner.stopScan();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        beaconScanner.startScan();
     }
 
     @Override
@@ -238,7 +256,11 @@ public class CounterBeaconFragment extends BaseFragment {
                 return;
             }
             beaconScanner.stopScan();
-            mPaymentWrapper.payWithToken(item.paymentRecord.appId, item.paymentRecord.transactionToken);
+            if (item.order != null) {
+                mPaymentWrapper.payWithOrder(item.order);
+            } else {
+                mPaymentWrapper.payWithToken(item.paymentRecord.appId, item.paymentRecord.transactionToken);
+            }
         }
     }
 
@@ -276,7 +298,21 @@ public class CounterBeaconFragment extends BaseFragment {
 
             Timber.d("Found device: %s - rssi: %d", title, rssi);
 
-            BeaconDevice device = new BeaconDevice(title, rssi, data);
+            OrderCache cache = mTransactionCache.get(data.transactionToken);
+            Order order = null;
+            if (cache != null) {
+                order = cache.order;
+            }
+            BeaconDevice device = new BeaconDevice(title, rssi, data, order);
+            if (cache == null) {
+                Timber.i("Start fetching order information for %s", data.transactionToken);
+                cache = new OrderCache();
+                cache.status = OrderCache.STATUS_FETCHING;
+                mTransactionCache.put(data.transactionToken, cache);
+                // fetch order info
+                mPaymentWrapper.getOrder(data.appId, data.transactionToken, new GetOrderCallback(device));
+            }
+
             if (mDeviceList.contains(device)) {
                 Timber.d("Replace existing device");
                 int position = mDeviceList.indexOf(device);
@@ -293,12 +329,53 @@ public class CounterBeaconFragment extends BaseFragment {
 
         @Override
         public void onScanningStarted() {
-            showToast("Scanning Started");
+//            showToast("Scanning Started");
         }
 
         @Override
         public void onScanningStopped() {
-            showToast("Scanning Stopped");
+//            showToast("Scanning Stopped");
         }
+    }
+
+    private class GetOrderCallback implements PaymentWrapper.IGetOrderCallback {
+        private final BeaconDevice device;
+
+        public GetOrderCallback(BeaconDevice device) {
+            this.device = device;
+        }
+
+        @Override
+        public void onResponseSuccess(Order order) {
+            Timber.i("Got order information for transaction %s", device.paymentRecord.transactionToken);
+            OrderCache cache = mTransactionCache.get(device.paymentRecord.transactionToken);
+            cache.status = OrderCache.STATUS_CACHED;
+            cache.order = order;
+            mTransactionCache.put(device.paymentRecord.transactionToken, cache);
+            BeaconDevice device = this.device.cloneWithOrder(order);
+            int position = mDeviceList.indexOf(device);
+            mDeviceList.set(position, device);
+            if (mMainLooperHandler != null) {
+                mMainLooperHandler.post(updateDatasetRunnable);
+            }
+        }
+
+        @Override
+        public void onResponseError(int status) {
+            Timber.i("Error in getting order information for transaction %s", device.paymentRecord.transactionToken);
+            OrderCache cache = mTransactionCache.get(device.paymentRecord.transactionToken);
+            cache.status = OrderCache.STATUS_ERROR;
+            mTransactionCache.put(device.paymentRecord.transactionToken, cache);
+        }
+    }
+
+    private class OrderCache {
+        public static final int STATUS_ERROR = 48;
+        public static final int STATUS_CACHED = 49;
+        public static final int STATUS_FETCHING = 50;
+        public static final int STATUS_EMPTY = 51;
+
+        public Order order;
+        public int status;
     }
 }

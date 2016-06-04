@@ -42,7 +42,7 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
 
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
-            Toast.makeText(mActivity, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+//            Toast.makeText(mActivity, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
             mNfcView.onInitDone(false, "This device doesn't support NFC.");
             return;
 

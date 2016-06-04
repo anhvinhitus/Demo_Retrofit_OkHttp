@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 
 /**
  * Created by huuhoa on 6/3/16.
  * Beacon scanner
  */
 public class BeaconScanner {
+    public static boolean INCLUDE_NON_PAYMENT_DEVICE = false;
     public interface BeaconListener {
         void shouldRequestEnableBluetooth();
         void onDiscoverDevice(String deviceName, int rssi, PaymentRecord data);
@@ -76,6 +78,10 @@ public class BeaconScanner {
     }
 
     public void startScan() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return;
+        }
+
         if (!initialized) {
             return;
         }
@@ -83,24 +89,43 @@ public class BeaconScanner {
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             mListener.shouldRequestEnableBluetooth();
         } else {
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                mBluetoothAdapter.startLeScan(mLeScanCallback18);
+            } else {
                 mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
                 settings = new ScanSettings.Builder()
                         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                         .build();
                 filters = new ArrayList<ScanFilter>();
+                mLEScanner.startScan(filters, settings, mLeScanCallback21);
             }
-            scanLeDevice(true);
+
+            mListener.onScanningStarted();
         }
     }
 
     public void stopScan() {
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return;
         }
 
-        scanLeDevice(false);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+                return;
+            } else {
+                mBluetoothAdapter.stopLeScan(mLeScanCallback18);
+            }
+        } else {
+            if (mLEScanner == null) {
+                return;
+            } else {
+                mLEScanner.stopScan(mLeScanCallback21);
+            }
+        }
+
+        mListener.onScanningStopped();
     }
+
 //
 //    @Override
 //    protected void onPause() {
@@ -132,64 +157,6 @@ public class BeaconScanner {
 //        super.onActivityResult(requestCode, resultCode, data);
 //    }
 
-    private void scanLeDevice(final boolean enable) {
-        if (Build.VERSION.SDK_INT < 18) {
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT < 21) {
-            if (mBluetoothAdapter == null) {
-                Timber.w("Trying to control BLE scanning without proper initializing");
-                return;
-            }
-        } else {
-            if (mLEScanner == null) {
-                Timber.w("Trying to control BLE scanning without proper initializing");
-                return;
-            }
-        }
-
-        if (enable) {
-//            mHandler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    stopScanning();
-//                }
-//            }, SCAN_PERIOD);
-            startScanning();
-        } else {
-            stopScanning();
-        }
-    }
-
-    private void startScanning() {
-        if (Build.VERSION.SDK_INT < 18) {
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT < 21) {
-            mBluetoothAdapter.startLeScan(mLeScanCallback18);
-        } else {
-            mLEScanner.startScan(filters, settings, mLeScanCallback21);
-        }
-
-        mListener.onScanningStarted();
-    }
-
-    private void stopScanning() {
-        if (Build.VERSION.SDK_INT < 18) {
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT < 21) {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback18);
-        } else {
-            mLEScanner.stopScan(mLeScanCallback21);
-        }
-
-        mListener.onScanningStopped();
-    }
-
     private ScanCallback mLeScanCallback21 = new LeScanCallback21();
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -201,7 +168,9 @@ public class BeaconScanner {
 
             BluetoothDevice btDevice = result.getDevice();
             PaymentRecord paymentRecord = parseScanRecord(result.getScanRecord());
-            mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
+            if (INCLUDE_NON_PAYMENT_DEVICE || paymentRecord != null) {
+                mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
+            }
         }
 
         @Override
@@ -226,7 +195,9 @@ public class BeaconScanner {
                              byte[] scanRecord) {
             Timber.i("onLeScan: %s", device.toString());
             PaymentRecord paymentRecord = parseScanRecord(scanRecord);
-            mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
+            if (INCLUDE_NON_PAYMENT_DEVICE || paymentRecord != null) {
+                mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
+            }
         }
     }
 
@@ -277,7 +248,7 @@ public class BeaconScanner {
             return null;
         }
 
-        Timber.d("Data length: %d", data.length);
+        Timber.d("Manufacturer specific data length: %d", data.length);
 
         int currentPos = 0;
 
@@ -286,13 +257,14 @@ public class BeaconScanner {
 
         long manufacturerId = 0x1710;
 //        currentPos += 2;
-        long amount = 0;
-//            long amount = extractLong(data, currentPos);
-//            currentPos += 4;
-        long appid = extractLong(data, currentPos);
+//        long amount = 0;
+        long amount = extractLong(data, currentPos);
         currentPos += 4;
+        long appid = extractShort(data, currentPos);
+        currentPos += 2;
         byte[] transactionTokenBytes = extractBytes(data, currentPos, 16);
         String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING);
+//        transactionToken = "DQ5ZWRbtdc4NKCQckstZLg";
         currentPos += 16;
         long crc16 = extractShort(data, currentPos);
 

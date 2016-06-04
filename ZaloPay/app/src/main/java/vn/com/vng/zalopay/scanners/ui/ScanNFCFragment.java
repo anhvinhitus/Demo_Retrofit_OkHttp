@@ -167,33 +167,43 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
         mNFCContent.setText(mParam1);
 
-        readerPresenter.setView(this);
-        readerPresenter.initialize();
+        if (readerPresenter != null) {
+            readerPresenter.setView(this);
+            readerPresenter.initialize();
+        }
     }
 
     @Override
     public void onDestroyView() {
-        readerPresenter.destroyView();
+        if (readerPresenter != null) {
+            readerPresenter.destroyView();
+        }
         super.onDestroyView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        readerPresenter.resume();
+        if (readerPresenter != null) {
+            readerPresenter.resume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        readerPresenter.pause();
+        if (readerPresenter != null) {
+            readerPresenter.pause();
+        }
     }
 
     @Override
     public void onDestroy() {
         Timber.i("ScanNFCFragment is destroyed");
         super.onDestroy();
-        readerPresenter.destroy();
+        if (readerPresenter != null) {
+            readerPresenter.destroy();
+        }
     }
 
     @Override

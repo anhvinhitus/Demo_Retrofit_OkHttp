@@ -4,20 +4,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.ui.CounterBeaconFragment.OnListFragmentInteractionListener;
 import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
 import vn.com.vng.zalopay.scanners.ui.dummy.DummyContent.DummyItem;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<CounterBeaconRecyclerViewAdapter.ViewHolder> {
 
@@ -39,13 +38,17 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(String.valueOf(mValues.get(position).rssi));
-        if (mValues.get(position).paymentRecord != null) {
-            holder.mStatusView.setImageResource(R.drawable.ic_checked_mark);
+        String amount = "";
+        if (holder.mItem.order != null) {
+            amount = CurrencyUtil.formatCurrency(holder.mItem.order.getAmount());
+            holder.mDescriptionView.setText(holder.mItem.order.getDescription());
+        } else if (holder.mItem.paymentRecord != null) {
+            amount = CurrencyUtil.formatCurrency(holder.mItem.paymentRecord.amount);
+            holder.mDescriptionView.setText("Hoá đơn: ");
         } else {
-            holder.mStatusView.setImageResource(R.drawable.ic_lichsu);
+            holder.mDescriptionView.setText(mValues.get(position).id);
         }
+        holder.mAmountView.setText(amount);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,22 +69,20 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public final ImageView mStatusView;
+        public final TextView mDescriptionView;
+        public final TextView mAmountView;
         public BeaconDevice mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            mStatusView = (ImageView) view.findViewById(R.id.img_status);
+            mDescriptionView = (TextView) view.findViewById(R.id.counter_description);
+            mAmountView = (TextView) view.findViewById(R.id.counter_order_amount);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mAmountView.getText() + "'";
         }
     }
 }

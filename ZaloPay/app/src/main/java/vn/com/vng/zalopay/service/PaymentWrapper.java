@@ -27,6 +27,10 @@ import vn.com.zalopay.wallet.listener.ZPPaymentListener;
  * Wrapper for handle common processing involves with wallet SDK
  */
 public class PaymentWrapper {
+    public interface IGetOrderCallback {
+        void onResponseSuccess(Order order);
+        void onResponseError(int status);
+    }
 
     public interface IViewListener {
         Activity getActivity();
@@ -128,6 +132,22 @@ public class PaymentWrapper {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
         }
+    }
+
+    public void getOrder(long appId, String transactionToken, final IGetOrderCallback callback) {
+        zaloPayRepository.getOrder(appId, transactionToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Order>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onResponseError(-1);
+                    }
+
+                    @Override
+                    public void onNext(Order order) {
+                        callback.onResponseSuccess(order);
+                    }
+                });
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo) {
