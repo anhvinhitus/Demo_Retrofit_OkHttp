@@ -187,7 +187,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void hideLoading() {
-        super.showProgressDialog();
+        super.hideProgressDialog();
     }
 
     @Override

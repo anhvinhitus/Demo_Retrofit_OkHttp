@@ -112,6 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="Bạn chưa có tài khoản?"
+            android:layout_marginRight="@dimen/login_form_margin_right_title_regis_acc"
             android:textColor="#fff"
             android:textSize="14dp" />
 
@@ -134,17 +135,19 @@
 
     <RelativeLayout
         android:id="@+id/back_login_form"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="195dp" >
+        android:layout_marginTop="@dimen/login_form_margin_top_back_button"
+        android:layout_marginBottom="@dimen/login_form_margin_bottom_back_button" >
 
         <TextView
             android:id="@+id/tt_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
             android:text="Quay về trước"
             android:textColor="#fff"
             android:textSize="14dp" />
@@ -153,8 +156,6 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@id/tt_back"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_arrow" />
     </RelativeLayout>

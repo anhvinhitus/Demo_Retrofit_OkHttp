@@ -6,9 +6,9 @@ import android.view.View;
 
 
 public class ZingMeLoginView extends ZingMeBaseLoginView{
-
+		
 	public ZingMeLoginView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-
+		
 	}
 }

@@ -18,4 +18,8 @@
     <dimen name="payment_mobile_container_padding">20dp</dimen>
     <dimen name="payment_save_card_text_size">14dp</dimen>
     <dimen name="payment_save_card_label_width">105dp</dimen>
+    
+    <dimen name="login_form_margin_top_back_button">160dp</dimen>
+    <dimen name="login_form_margin_bottom_back_button">10dp</dimen>
+    <dimen name="login_form_margin_right_title_regis_acc">125dp</dimen>
 </resources>

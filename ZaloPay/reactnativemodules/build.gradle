@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+
+def cfg = rootProject.ext.configuration
+
+android {
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    def libs = rootProject.ext.libraries
+    def tests = rootProject.ext.testingLibraries
+
+    testCompile tests.junit
+    compile libs.support_appcompat_v7
+    compile libs.timber
+    compile libs.react_native
+}

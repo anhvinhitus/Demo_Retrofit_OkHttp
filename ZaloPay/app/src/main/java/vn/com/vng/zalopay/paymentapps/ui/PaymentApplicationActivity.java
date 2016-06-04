@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.os.Bundle;
 
+import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -158,6 +159,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         return Arrays.asList(
                 new MainReactPackage(),
+                new RNSendIntentPackage(),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
         );
     }

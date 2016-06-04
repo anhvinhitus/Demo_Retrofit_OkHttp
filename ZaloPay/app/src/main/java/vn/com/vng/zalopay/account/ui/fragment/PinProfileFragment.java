@@ -2,9 +2,9 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.Html;
@@ -14,24 +14,34 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
+import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
+import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
+import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PinProfileFragment.OnFragmentInteractionListener} interface
+ * {@link PinProfileFragment.OnPinProfileFragmentListener} interface
  * to handle interaction events.
  * Use the {@link PinProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PinProfileFragment extends AbsProfileFragment {
-    private OnFragmentInteractionListener mListener;
+public class PinProfileFragment extends AbsProfileFragment implements IPinProfileView {
+    private OnPinProfileFragmentListener mListener;
+
+    @Inject
+    PinProfilePresenter presenter;
 
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
@@ -47,6 +57,46 @@ public class PinProfileFragment extends AbsProfileFragment {
 
     @BindView(R.id.tvCancel)
     TextView tvCancel;
+
+    @BindView(R.id.layoutAction)
+    View layoutAction;
+
+    @BindView(R.id.textInputPhone)
+    TextInputLayout textInputPhone;
+    @BindView(R.id.edtPhone)
+    ClearableEditText edtPhone;
+
+    @OnTextChanged(R.id.edtPhone)
+    public void onTextChangedPhone(CharSequence charSequence) {
+        if (isValidPhone()) {
+            hidePhoneError();
+        } else {
+            showPhoneError();
+        }
+    }
+
+    private void showPhoneError() {
+        textInputPhone.setErrorEnabled(true);
+        if (TextUtils.isEmpty(edtPhone.getText().toString())) {
+            textInputPhone.setError(getString(R.string.invalid_phone_empty));
+        } else {
+            textInputPhone.setError(getString(R.string.invalid_phone));
+        }
+    }
+
+    private void hidePhoneError() {
+        textInputPhone.setErrorEnabled(false);
+        textInputPhone.setError(null);
+    }
+
+    public boolean isValidPhone() {
+        String phone = edtPhone.getString();
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        }
+        return ValidateUtil.isMobileNumber(phone);
+    }
+
 
     @OnClick(R.id.tvShowPass)
     public void onClickShowPass(View view) {
@@ -154,7 +204,7 @@ public class PinProfileFragment extends AbsProfileFragment {
     }
 
     private boolean isValidPinCompare() {
-        String pin = passCode.getText().toString();
+        String pin = passCode.getText();
         String pinCompare = passCodeConfirm.getText().toString();
         if (TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin)) {
             return false;
@@ -163,7 +213,7 @@ public class PinProfileFragment extends AbsProfileFragment {
     }
 
     private boolean isValidPin() {
-        String pin = passCode.getText().toString();
+        String pin = passCode.getText();
         if (TextUtils.isEmpty(pin)) {
             return false;
         }
@@ -201,7 +251,13 @@ public class PinProfileFragment extends AbsProfileFragment {
             passCodeConfirm.hideError();
         }
 
-        navigator.startHomeActivity(getContext(), true);
+        if (!isValidPhone()) {
+            showPhoneError();
+            return;
+        } else {
+            hidePhoneError();
+        }
+        presenter.updateProfile(passCode.getText(), edtPhone.getString());
     }
 
     @Override
@@ -225,6 +281,7 @@ public class PinProfileFragment extends AbsProfileFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.setView(this);
         tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel)));
 
@@ -247,21 +304,14 @@ public class PinProfileFragment extends AbsProfileFragment {
 //        passCodeConfirm.setPasscodeFocusChanged(confirmPasscodeFocusChanged);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnPinProfileFragmentListener) {
+            mListener = (OnPinProfileFragmentListener) context;
         } else {
 //            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
+//                    + " must implement OnPinProfileFragmentListener");
         }
     }
 
@@ -269,6 +319,56 @@ public class PinProfileFragment extends AbsProfileFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void showLoading() {
+        super.showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void updateProfileSuccess() {
+        if (mListener != null) {
+            mListener.onUpdatePinSuccess();
+        }
     }
 
     /**
@@ -281,8 +381,9 @@ public class PinProfileFragment extends AbsProfileFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnPinProfileFragmentListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onUpdatePinSuccess();
+        void onUpdatePinFail();
     }
 }

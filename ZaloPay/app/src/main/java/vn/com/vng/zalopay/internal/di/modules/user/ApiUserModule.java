@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -27,6 +28,12 @@ public class ApiUserModule {
     @UserScope
     ZaloPayService provideZaloPayService(@Named("retrofit") Retrofit retrofit) {
         return retrofit.create(ZaloPayService.class);
+    }
+
+    @Provides
+    @UserScope
+    AccountService provideAccountService(@Named("retrofit") Retrofit retrofit) {
+        return retrofit.create(AccountService.class);
     }
 
     @Provides

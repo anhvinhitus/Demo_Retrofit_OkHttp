@@ -113,9 +113,11 @@ public class AppConfigFactory {
 
         listAppIdAndChecksum(appidlist, checksumlist);
 
-        Timber.d("appid react-native list %s", appidlist);
+        String appIds = appidlist.toString().replaceAll("\\s", "");
 
-        return appConfigService.insideappresource(appidlist.toString(), checksumlist.toString(), paramsReq)
+        Timber.d("appIds react-native list %s", appIds);
+
+        return appConfigService.insideappresource(appIds, checksumlist.toString(), paramsReq)
                 .doOnNext(resourceResponse -> processAppResourceResponse(resourceResponse))
                 ;
     }

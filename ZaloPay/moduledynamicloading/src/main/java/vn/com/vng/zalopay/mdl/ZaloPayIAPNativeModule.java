@@ -15,9 +15,9 @@ import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
+
 /**
  * Created by huuhoa on 5/16/16.
  * API for PaymentApp integration

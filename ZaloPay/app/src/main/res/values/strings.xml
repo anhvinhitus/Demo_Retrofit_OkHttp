@@ -171,4 +171,10 @@
     <string name="title_activity_scan_to_pay">QUÉT MÃ TRẢ TIỀN</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="btn_emulate_nfc">Giả lập Nfc</string>
+
+    <string name="show">Hiện</string>
+    <string name="hide">Ẩn</string>
+
+    <string name="hint_otp">Mã OTP</string>
+    <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
 </resources>

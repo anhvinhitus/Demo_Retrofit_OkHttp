@@ -59,7 +59,7 @@ public class ReactNativeModule {
     BundleReactConfig provideBundleReactConfig(Context context, BundleService service) {
         switch (BuildConfig.REACT_DEVELOP_SUPPORT) {
             case DEV_INTERNAL:
-                return new BundleReactConfigInternalDev();
+                return new BundleReactConfigInternalDev(service);
             case DEV_EXTERNAL:
                 return new BundleReactConfigExternalDev(service);
             case RELEASE:

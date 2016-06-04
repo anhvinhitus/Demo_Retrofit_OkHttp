@@ -104,6 +104,9 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
         @OnClick(R.id.itemLayout)
         public void onClickItem(View v) {
+
+            Timber.d("on click item %s", getAdapterPosition());
+
             if (listener != null) {
                 listener.onListItemClick(v, getAdapterPosition());
             }
@@ -113,9 +116,11 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
             mNameView.setText(appResource.appname);
             setImage(mLogoView, appResource.urlImage);
-            if (appResource.status == 0) {
+         /*   if (appResource.status == 0) {
+                itemView.setSelected(false);
             } else {
-            }
+                itemView.setSelected(true);
+            }*/
 
         }
 

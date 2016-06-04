@@ -119,15 +119,11 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/preProfileContent"
+            <vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <FrameLayout
-                android:id="@+id/pinProfileContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:visibility="visible" />
 
         </LinearLayout>
 
