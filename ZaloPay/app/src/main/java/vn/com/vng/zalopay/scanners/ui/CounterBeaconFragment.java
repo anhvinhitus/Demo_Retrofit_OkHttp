@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.scanners.ui;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -18,14 +19,20 @@ import android.view.ViewGroup;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.scanners.controller.BeaconScanner;
+import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
 import vn.com.vng.zalopay.scanners.ui.dummy.DummyContent;
 import vn.com.vng.zalopay.scanners.ui.dummy.DummyContent.DummyItem;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A fragment representing a list of Items.
@@ -47,13 +54,17 @@ public class CounterBeaconFragment extends BaseFragment {
     private Handler mMainLooperHandler;
 
     private final List<BeaconDevice> mDeviceList = new ArrayList<>();
+    private PaymentWrapper mPaymentWrapper;
+
+    @Inject
+    ZaloPayRepository zaloPayRepository;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public CounterBeaconFragment() {
         beaconScanner = new BeaconScanner(new BeaconListener());
-
     }
 
     // TODO: Customize parameter initialization
@@ -68,9 +79,49 @@ public class CounterBeaconFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+
         if (!beaconScanner.initialize(this.getActivity())) {
             showToast("Cannot initialize BLE");
+            return;
         }
+
+        mPaymentWrapper = new PaymentWrapper(zaloPayRepository,
+                new PaymentWrapper.IViewListener() {
+                    @Override
+                    public Activity getActivity() {
+                        return CounterBeaconFragment.this.getActivity();
+                    }
+                },
+                new PaymentWrapper.IResponseListener() {
+                    @Override
+                    public void onParameterError(String param) {
+                        showToast("Error in parameter: " + param);
+                    }
+
+                    @Override
+                    public void onResponseError(int status) {
+                        Timber.d("Payment error: " + status);
+                        showToast("Error code: " + String.valueOf(status));
+                    }
+
+                    @Override
+                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                        zaloPayRepository.transactionUpdate();
+                        CounterBeaconFragment.this.getActivity().finish();
+                    }
+
+                    @Override
+                    public void onResponseTokenInvalid() {
+                        Timber.d("Invalid token");
+                    }
+
+                    @Override
+                    public void onResponseCancel() {
+                        Timber.d("User cancel transaction");
+                    }
+                }
+        );
     }
 
     @Override
@@ -111,7 +162,7 @@ public class CounterBeaconFragment extends BaseFragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            mViewAdapter = new CounterBeaconRecyclerViewAdapter(mDeviceList, mListener);
+            mViewAdapter = new CounterBeaconRecyclerViewAdapter(mDeviceList, new SelectDeviceListener());
             recyclerView.setAdapter(mViewAdapter);
         }
         return view;
@@ -133,13 +184,13 @@ public class CounterBeaconFragment extends BaseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mMainLooperHandler = new Handler(context.getMainLooper());
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            Timber.w("Activity: %s", context);
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+//        if (context instanceof OnListFragmentInteractionListener) {
+//            mListener = (OnListFragmentInteractionListener) context;
+//        } else {
+//            Timber.w("Activity: %s", context);
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnListFragmentInteractionListener");
+//        }
     }
 
     @Override
@@ -168,6 +219,14 @@ public class CounterBeaconFragment extends BaseFragment {
             mViewAdapter.notifyDataSetChanged();
         }
     };
+
+    private class SelectDeviceListener implements OnListFragmentInteractionListener {
+        @Override
+        public void onListFragmentInteraction(BeaconDevice item) {
+            mPaymentWrapper.payWithToken(item.paymentRecord.appId, item.paymentRecord.transactionToken);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -194,7 +253,7 @@ public class CounterBeaconFragment extends BaseFragment {
         }
 
         @Override
-        public void onDiscoverDevice(String deviceName, int rssi, byte[] data) {
+        public void onDiscoverDevice(String deviceName, int rssi, PaymentRecord data) {
             String title = deviceName;
             if (deviceName == null) {
                 title = "<NULL>";
@@ -202,7 +261,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
             Timber.d("Found device: %s - rssi: %d", title, rssi);
 
-            BeaconDevice device = new BeaconDevice(title, data, rssi);
+            BeaconDevice device = new BeaconDevice(title, rssi, data);
             if (mDeviceList.contains(device)) {
                 Timber.d("Replace existing device");
                 int position = mDeviceList.indexOf(device);

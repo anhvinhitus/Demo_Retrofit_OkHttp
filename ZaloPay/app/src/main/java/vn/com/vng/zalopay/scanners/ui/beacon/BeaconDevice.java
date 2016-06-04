@@ -1,17 +1,19 @@
 package vn.com.vng.zalopay.scanners.ui.beacon;
 
+import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
+
 /**
  * Created by huuhoa on 6/4/16.
  * Hold beacon information
  */
 public class BeaconDevice {
     public final String id;
-    public final byte[] content;
     public final int rssi;
+    public final PaymentRecord paymentRecord;
 
-    public BeaconDevice(String id, byte[] content, int rssi) {
+    public BeaconDevice(String id, int rssi, PaymentRecord paymentRecord) {
         this.id = id;
-        this.content = content;
+        this.paymentRecord = paymentRecord;
         this.rssi = rssi;
     }
 

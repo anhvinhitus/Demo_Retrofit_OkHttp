@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.scanners.ui.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.ui.ScanNFCFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
@@ -86,4 +87,5 @@ public interface UserComponent {
 
     void inject(ScanNFCFragment fragment);
 
+    void inject(CounterBeaconFragment fragment);
 }
