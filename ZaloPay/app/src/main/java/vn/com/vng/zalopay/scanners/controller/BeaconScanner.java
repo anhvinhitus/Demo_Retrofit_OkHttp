@@ -14,12 +14,17 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.ParcelUuid;
+import android.support.annotation.Nullable;
+import android.util.ArrayMap;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -191,9 +196,7 @@ public class BeaconScanner {
 
             BluetoothDevice btDevice = result.getDevice();
             PaymentRecord paymentRecord = parseScanRecord(result.getScanRecord());
-            if (paymentRecord != null) {
-                mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
-            }
+            mListener.onDiscoverDevice(btDevice.getAddress(), result.getRssi(), paymentRecord);
         }
 
         @Override
@@ -218,9 +221,7 @@ public class BeaconScanner {
                              byte[] scanRecord) {
             Timber.i("onLeScan: %s", device.toString());
             PaymentRecord paymentRecord = parseScanRecord(scanRecord);
-            if (paymentRecord != null) {
-                mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
-            }
+            mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
         }
     }
 
@@ -233,35 +234,7 @@ public class BeaconScanner {
 
         try {
             SparseArray<byte[]> manufacturerSpecificData = scanRecord.getManufacturerSpecificData();
-            if (manufacturerSpecificData == null) {
-                Timber.d("Invalid scanRecord. No manufacturer specific data.");
-                return null;
-            }
-            byte[] data = manufacturerSpecificData.get(0x1710);
-            if (data == null) {
-                Timber.d("Invalid scanRecord. Specific data not found.");
-                return null;
-            }
-
-            int currentPos = 0;
-
-            // The first two bytes of the manufacturer specific data are
-            // manufacturer ids in little endian.
-
-            long manufacturerId = extractShort(data, currentPos);
-            currentPos += 2;
-            long amount = extractLong(data, currentPos);
-            currentPos += 4;
-            long appid = extractLong(data, currentPos);
-            currentPos += 4;
-            byte[] transactionTokenBytes = extractBytes(data, currentPos, 16);
-            String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.DEFAULT);
-            currentPos += 16;
-            long crc16 = extractShort(data, currentPos);
-
-            PaymentRecord paymentRecord = new PaymentRecord(manufacturerId, amount, appid, transactionToken, crc16);
-            Timber.d("Found payment record: %s", paymentRecord);
-            return paymentRecord;
+            return getPaymentRecord(manufacturerSpecificData);
         } catch (Exception e) {
             Timber.e(e, "unable to parse scan record: %s", scanRecord);
             return null;
@@ -275,41 +248,90 @@ public class BeaconScanner {
         }
 
         try {
-            int currentPos = 0;
-            int length = scanRecord[currentPos++] & 0xFF;
-            if (length == 0) {
-                Timber.d("Invalid scanRecord. Data length = 0");
-                return null;
-            }
-
-            // Note the length includes the length of the field type itself.
-            int dataLength = length - 1;
-            // fieldType is unsigned int.
-            int fieldType = scanRecord[currentPos++] & 0xFF;
-            if (fieldType != DATA_TYPE_MANUFACTURER_SPECIFIC_DATA) {
-                Timber.d("Invalid fieldType value in scanRecord. Field type: %d", fieldType);
-                return null;
-            }
-
-            // The first two bytes of the manufacturer specific data are
-            // manufacturer ids in little endian.
-
-            long manufacturerId = extractShort(scanRecord, currentPos);
-            currentPos += 2;
-            long amount = extractLong(scanRecord, currentPos);
-            currentPos += 4;
-            long appid = extractLong(scanRecord, currentPos);
-            currentPos += 4;
-            byte[] transactionTokenBytes = extractBytes(scanRecord, currentPos, 16);
-            String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.DEFAULT);
-            currentPos += 16;
-            long crc16 = extractShort(scanRecord, currentPos);
-
-            PaymentRecord paymentRecord = new PaymentRecord(manufacturerId, amount, appid, transactionToken, crc16);
-            Timber.d("Found payment record: %s", paymentRecord);
-            return paymentRecord;
+            SparseArray<byte[]> manufacturerSpecificData = splitScanRecord(scanRecord);
+            return getPaymentRecord(manufacturerSpecificData);
         } catch (Exception e) {
             Timber.e(e, "unable to parse scan record: %s", Arrays.toString(scanRecord));
+            return null;
+        }
+    }
+
+    @Nullable
+    private PaymentRecord getPaymentRecord(SparseArray<byte[]> manufacturerSpecificData) {
+        if (manufacturerSpecificData == null) {
+            Timber.d("Invalid scanRecord. No manufacturer specific data.");
+            return null;
+        }
+        
+        byte[] data = manufacturerSpecificData.get(0x1710);
+        if (data == null) {
+            Timber.d("Invalid scanRecord. Specific data not found.");
+            return null;
+        }
+
+        int currentPos = 0;
+
+        // The first two bytes of the manufacturer specific data are
+        // manufacturer ids in little endian.
+
+        long manufacturerId = extractShort(data, currentPos);
+        currentPos += 2;
+        long amount = 0;
+//            long amount = extractLong(data, currentPos);
+//            currentPos += 4;
+        long appid = extractLong(data, currentPos);
+        currentPos += 4;
+        byte[] transactionTokenBytes = extractBytes(data, currentPos, 16);
+        String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.DEFAULT);
+        currentPos += 16;
+        long crc16 = extractShort(data, currentPos);
+
+        PaymentRecord paymentRecord = new PaymentRecord(manufacturerId, amount, appid, transactionToken, crc16);
+        Timber.d("Found payment record: %s", paymentRecord);
+        return paymentRecord;
+    }
+
+    SparseArray<byte[]> splitScanRecord(byte[] scanRecord) {
+        if (scanRecord == null) {
+            return null;
+        }
+
+        int currentPos = 0;
+        SparseArray<byte[]> manufacturerData = new SparseArray<>();
+
+        try {
+            while (currentPos < scanRecord.length) {
+                // length is unsigned int.
+                int length = scanRecord[currentPos++] & 0xFF;
+                if (length == 0) {
+                    break;
+                }
+                // Note the length includes the length of the field type itself.
+                int dataLength = length - 1;
+                // fieldType is unsigned int.
+                int fieldType = scanRecord[currentPos++] & 0xFF;
+                switch (fieldType) {
+                    case DATA_TYPE_MANUFACTURER_SPECIFIC_DATA:
+                        // The first two bytes of the manufacturer specific data are
+                        // manufacturer ids in little endian.
+                        int manufacturerId = ((scanRecord[currentPos + 1] & 0xFF) << 8) +
+                                (scanRecord[currentPos] & 0xFF);
+                        byte[] manufacturerDataBytes = extractBytes(scanRecord, currentPos + 2,
+                                dataLength - 2);
+                        manufacturerData.put(manufacturerId, manufacturerDataBytes);
+                        break;
+                    default:
+                        // Just ignore, we don't handle such data type.
+                        break;
+                }
+                currentPos += dataLength;
+            }
+
+            return manufacturerData;
+        } catch (Exception e) {
+            Timber.e(e, "unable to parse scan record: " + Arrays.toString(scanRecord));
+            // As the record is invalid, ignore all the parsed results for this packet
+            // and return an empty record with raw scanRecord bytes in results
             return null;
         }
     }

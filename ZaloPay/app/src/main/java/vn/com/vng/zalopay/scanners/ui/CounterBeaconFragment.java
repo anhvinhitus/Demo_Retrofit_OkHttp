@@ -223,6 +223,9 @@ public class CounterBeaconFragment extends BaseFragment {
     private class SelectDeviceListener implements OnListFragmentInteractionListener {
         @Override
         public void onListFragmentInteraction(BeaconDevice item) {
+            if (item.paymentRecord == null) {
+                return;
+            }
             mPaymentWrapper.payWithToken(item.paymentRecord.appId, item.paymentRecord.transactionToken);
         }
     }
