@@ -2,7 +2,9 @@ package vn.com.vng.zalopay;
 
 import android.os.Environment;
 import android.os.StrictMode;
+import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
@@ -62,12 +64,14 @@ public class AndroidApplication extends MultiDexApplication {
             StrictMode.enableDefaults();
             LeakCanary.install(this);
             DebugViewer.registerInstance(this);
-            Timber.plant(new Timber.Tree() {
+            Timber.plant(new Timber.DebugTree() {
                 @Override
                 protected void log(int priority, String tag, String message, Throwable t) {
                     DebugViewer.postLog(priority, tag, message);
                 }
             });
+        } else {
+            Timber.plant(new CrashlyticsTree());
         }
 
         Fabric.with(this, new Crashlytics());
@@ -153,6 +157,29 @@ public class AndroidApplication extends MultiDexApplication {
                 }
             }
 
+        }
+    }
+
+    public class CrashlyticsTree extends Timber.Tree {
+        private static final String CRASHLYTICS_KEY_PRIORITY = "priority";
+        private static final String CRASHLYTICS_KEY_TAG = "tag";
+        private static final String CRASHLYTICS_KEY_MESSAGE = "message";
+
+        @Override
+        protected void log(int priority, @Nullable String tag, @Nullable String message, @Nullable Throwable t) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG || priority == Log.INFO) {
+                return;
+            }
+
+            Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority);
+            Crashlytics.setString(CRASHLYTICS_KEY_TAG, tag);
+            Crashlytics.setString(CRASHLYTICS_KEY_MESSAGE, message);
+
+            if (t == null) {
+                Crashlytics.logException(new Exception(message));
+            } else {
+                Crashlytics.logException(t);
+            }
         }
     }
 }
