@@ -32,16 +32,9 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
     @Override
     public Observable<Boolean> initialize() {
         return makeObservable(() -> {
-            appConfigFactory.getPlatformInfo()
-                    .subscribe(new DefaultSubscriber<>())
-            ;
-
             appConfigFactory.checkDownloadAppResource();
-
-          /*  appConfigFactory.getAppResourceCloud()
-                    .subscribe(new DefaultSubscriber<>());*/
             return Boolean.TRUE;
-        }).subscribeOn(Schedulers.io());
+        });
     }
 
     @Override
