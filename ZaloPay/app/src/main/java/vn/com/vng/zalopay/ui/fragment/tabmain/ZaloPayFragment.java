@@ -22,9 +22,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
@@ -173,11 +175,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @OnClick(R.id.btn_scan_to_pay)
     public void onScanToPayClick(View view) {
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
         navigator.startScanToPayActivity(getActivity());
     }
 
     private void startQRCodeActivity() {
         if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
+            getAppComponent().monitorTiming().startEvent(MonitorEvents.QR_SCANNING);
             navigator.startQrCodeActivity(getActivity());
         }
     }

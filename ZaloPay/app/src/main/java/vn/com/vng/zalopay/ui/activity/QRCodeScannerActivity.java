@@ -19,6 +19,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
@@ -76,6 +78,8 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.QR_SCANNING);
+
         qrCodePresenter.destroy();
         hideLoading();
         mProgressDialog = null;
@@ -100,11 +104,16 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         } catch (Exception ex) {
         }
 
+        getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
         qrCodePresenter.pay(result);
     }
 
     protected void setupActivityComponent() {
         AndroidApplication.instance().getUserComponent().inject(this);
+    }
+
+    protected ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
     }
 
     @Override

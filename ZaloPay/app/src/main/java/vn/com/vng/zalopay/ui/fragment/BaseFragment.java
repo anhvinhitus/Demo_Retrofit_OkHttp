@@ -21,6 +21,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -116,6 +117,10 @@ public abstract class BaseFragment extends Fragment {
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
+    }
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
     }
 
     public void showToast(String message) {

@@ -21,6 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.controller.BeaconScanner;
 import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
@@ -255,6 +256,8 @@ public class CounterBeaconFragment extends BaseFragment {
             if (item.paymentRecord == null) {
                 return;
             }
+            getAppComponent().monitorTiming().finishEvent(MonitorEvents.BLE_SCANNING);
+
             beaconScanner.stopScan();
             if (item.order != null) {
                 mPaymentWrapper.payWithOrder(item.order);
