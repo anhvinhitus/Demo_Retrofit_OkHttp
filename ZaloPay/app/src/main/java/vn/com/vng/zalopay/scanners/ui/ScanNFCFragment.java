@@ -15,6 +15,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
+import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
@@ -44,9 +45,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     public ScanNFCFragment() {
         // Required empty public constructor
     }
-
-    @BindView(R.id.scan_nfc_content)
-    TextView mNFCContent;
 
     @BindView(R.id.scan_nfc_status)
     TextView mNFCStatus;
@@ -165,8 +163,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         // Inflate the layout for this fragment
         super.onViewCreated(view, savedInstanceState);
 
-        mNFCContent.setText(mParam1);
-
         if (readerPresenter != null) {
             readerPresenter.setView(this);
             readerPresenter.initialize();
@@ -207,19 +203,36 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     }
 
     @Override
-    public void onReceiveString(String content) {
-        mNFCContent.setText(content);
-        if (!processOrder(content)) {
-            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                    .setContentText("Xác nhận thanh toán.\nBạn cần thanh toán 30.000 VND")
-                    .show();
+    public void onInitDone(int status) {
+        switch (status) {
+            case NfcView.STATUS_NOT_AVAILABLE:
+                mBtnEmulateNfcReceive.setEnabled(true);
+                mNFCStatus.setText("NFC is not available");
+                break;
+            case NfcView.STATUS_DISABLE:
+                mBtnEmulateNfcReceive.setVisibility(View.GONE);
+                mNFCStatus.setText("NFC is disabled");
+                break;
+            case NfcView.STATUS_ENABLE:
+                mBtnEmulateNfcReceive.setVisibility(View.GONE);
+                mNFCStatus.setText("NFC ready");
+                break;
         }
-
     }
 
     @Override
-    public void onInitDone(boolean isEnable, String status) {
-        mNFCStatus.setText(status);
-        mBtnEmulateNfcReceive.setEnabled(!isEnable);
+    public void onReceivePaymentRecord(PaymentRecord paymentRecord) {
+        if (paymentRecord == null) {
+            Timber.e("No payment record");
+            return;
+        }
+
+        if (paymentWrapper == null) {
+            mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
+            return;
+        }
+
+        Timber.i("appId: %d, token: %s", paymentRecord.appId, paymentRecord.transactionToken);
+        paymentWrapper.payWithToken(paymentRecord.appId, paymentRecord.transactionToken);
     }
 }

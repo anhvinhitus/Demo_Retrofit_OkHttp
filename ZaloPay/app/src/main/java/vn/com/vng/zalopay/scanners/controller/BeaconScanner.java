@@ -249,28 +249,10 @@ public class BeaconScanner {
         }
 
         Timber.d("Manufacturer specific data length: %d", data.length);
-
-        int currentPos = 0;
-
-        // The first two bytes of the manufacturer specific data are
-        // manufacturer ids in little endian.
-
-        long manufacturerId = 0x1710;
-//        currentPos += 2;
-//        long amount = 0;
-        long amount = extractLong(data, currentPos);
-        currentPos += 4;
-        long appid = extractShort(data, currentPos);
-        currentPos += 2;
-        byte[] transactionTokenBytes = extractBytes(data, currentPos, 16);
-        String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING);
-//        transactionToken = "DQ5ZWRbtdc4NKCQckstZLg";
-        currentPos += 16;
-        long crc16 = extractShort(data, currentPos);
-
-        PaymentRecord paymentRecord = new PaymentRecord(manufacturerId, amount, appid, transactionToken, crc16);
+        PaymentRecord paymentRecord = PaymentRecord.from(data);
         Timber.d("Found payment record: %s", paymentRecord);
         return paymentRecord;
+
     }
 
     SparseArray<byte[]> splitScanRecord(byte[] scanRecord) {
@@ -323,19 +305,5 @@ public class BeaconScanner {
         byte[] bytes = new byte[length];
         System.arraycopy(scanRecord, start, bytes, 0, length);
         return bytes;
-    }
-
-    private short extractShort(byte[] scanRecord, int start) {
-        long shortValue = scanRecord[start] & 0xFF;
-        shortValue += (scanRecord[start + 1] & 0xFF) << 8;
-        return (short)shortValue;
-    }
-
-    private long extractLong(byte[] scanRecord, int start) {
-        long longValue = scanRecord[start] & 0xFF;
-        longValue += (scanRecord[start + 1] & 0xFF) << 8;
-        longValue += (scanRecord[start + 2] & 0xFF) << 16;
-        longValue += (scanRecord[start + 3] & 0xFF) << 24;
-        return longValue;
     }
 }
