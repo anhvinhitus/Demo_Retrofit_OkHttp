@@ -48,7 +48,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:label,android:theme">
         <activity
@@ -63,6 +62,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="post"
+                    android:scheme="zalopay-1" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".account.ui.activities.LoginZaloActivity"
@@ -128,7 +139,6 @@
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
             android:theme="@style/AppTheme.NoActionBar" />
-
 
         <activity
             android:name=".ui.activity.LinkCardActivity"

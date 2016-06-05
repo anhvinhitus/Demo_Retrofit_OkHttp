@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -50,7 +51,23 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.d("onCreate");
+        onOpenDeepLinks();
+    }
+
+
+    private void onOpenDeepLinks() {
+        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoke={}"'
+        Uri data = getActivity().getIntent().getData();
+
+        if (data != null
+            //&& data.isHierarchical()
+                ) {
+
+            String appid = data.getQueryParameter("appid");
+            String zptranstoke = data.getQueryParameter("zptranstoke");
+
+            Timber.d("appid %s zptranstoke %s ", appid, zptranstoke);
+        }
     }
 
     @Override
