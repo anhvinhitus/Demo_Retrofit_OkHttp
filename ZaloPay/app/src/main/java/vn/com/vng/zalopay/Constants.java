@@ -39,4 +39,14 @@ public class Constants {
     public static final int PRE_PROFILE_TYPE = 1;
     public static final int PIN_PROFILE_TYPE = 2;
 
+    public static final int STATE_INCOMING_NUMBER = 1;
+    public static final int STATE_CALL_START = 2;
+    public static final int STATE_CALL_END = 3;
+    public static final int STATE_START_RECORDING = 4;
+    public static final int STATE_STOP_RECORDING = 5;
+    public static final int RECORDING_ENABLED = 6;
+    public static final int RECORDING_DISABLED = 7;
+
+    public static final String COMMANDTYPE = "commandType";
+    public static final String RECORDNAME = "recordName";
 }

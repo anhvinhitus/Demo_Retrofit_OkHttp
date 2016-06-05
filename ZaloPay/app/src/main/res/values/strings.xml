@@ -177,4 +177,14 @@
 
     <string name="hint_otp">Mã OTP</string>
     <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
+
+    <string name="receiver_start_record">Start record</string>
+    <string name="receiver_end_record">End Record</string>
+    <string name="record_impossible">Unfortunately, it is not possible to record calls in this device. (Usually because another application/service is using the microphone in the background)</string>
+    <string name="recording">Recording</string>
+    <string name="recording_ticker">Recording is now Starting</string>
+    <string name="recording_text">If recording was enabled, recording should have started, if not you can enable recording in the application, the phone will stop the recording when the conversation ends</string>
+
+    <string name="btn_start_scan_sound">Start scan</string>
+    <string name="btn_stop_scan_sound">Stop scan</string>
 </resources>

@@ -1,0 +1,312 @@
+package vn.com.vng.zalopay.service;
+
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
+import android.media.MediaRecorder;
+import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
+import android.util.Log;
+
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
+import vn.com.vng.zalopay.utils.FileUtil;
+
+/**
+ * Created by longlv on 05/06/2016.
+ */
+public class RecordService extends Service {
+    private final String TAG = this.getClass().getSimpleName();
+    private static final int SAMPLE_RATE = 44100;
+
+    private String fileName = "";
+    private boolean recording = false;
+    private boolean onForeground = false;
+
+    private BufferedOutputStream mBufferedOutputStream = null;
+    private AudioRecord mAudioRecord;
+
+    private Thread mThreadRecord;
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "RecordService onStartCommand");
+        if (intent != null) {
+            int commandType = intent.getIntExtra("commandType", 0);
+            if (commandType != 0) {
+                if (commandType == Constants.RECORDING_ENABLED) {
+                    Log.d(TAG, "RecordService RECORDING_ENABLED");
+                    if (!recording)
+                        commandType = Constants.STATE_START_RECORDING;
+
+                } else if (commandType == Constants.RECORDING_DISABLED) {
+                    Log.d(TAG, "RecordService RECORDING_DISABLED");
+                    if (recording)
+                        commandType = Constants.STATE_STOP_RECORDING;
+                }
+
+				/*if (commandType == Constants.STATE_INCOMING_NUMBER) {
+                    Log.d(TAG, "RecordService STATE_INCOMING_NUMBER");
+					startService();
+				} else */
+                if (commandType == Constants.STATE_START_RECORDING) {
+                    Log.d(TAG, "RecordService STATE_START_RECORDING");
+                    if (!recording) {
+                        recording = true;
+                        startService();
+                        startRecording(intent);
+                    }
+                } else if (commandType == Constants.STATE_STOP_RECORDING) {
+                    Log.d(TAG, "RecordService STATE_STOP_RECORDING");
+                    if (recording) {
+                        recording = false;
+                        stopService();
+                    }
+                }
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    /**
+     * in case it is impossible to mAudioRecord
+     */
+    private void terminateAndEraseFile() {
+        Log.d(TAG, "RecordService terminateAndEraseFile");
+        stopAndReleaseRecorder();
+        recording = false;
+        deleteFile();
+    }
+
+    private void stopService() {
+        Log.d(TAG, "RecordService stopService");
+        stopForeground(true);
+        onForeground = false;
+        this.stopSelf();
+    }
+
+    private void deleteFile() {
+        Log.d(TAG, "RecordService deleteFile");
+        FileUtil.deleteFile(fileName);
+        fileName = null;
+    }
+
+    private void stopAndReleaseRecorder() {
+        Log.v(TAG, "mBufferedOutputStream.close+++++++++++++++++++++++++++++++++++++++");
+        try {
+            recording = false;
+            if (mBufferedOutputStream != null) {
+                mBufferedOutputStream.close();
+            }
+            mThreadRecord = null;
+            if (mAudioRecord != null) {
+                mAudioRecord.stop();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error when releasing", e);
+        } finally {
+            mAudioRecord.release();
+            mAudioRecord = null;
+            mThreadRecord = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "RecordService onDestroy");
+        stopAndReleaseRecorder();
+        stopService();
+        super.onDestroy();
+    }
+
+    //convert short to byte
+    private byte[] short2byte(short[] sData) {
+        int shortArrsize = sData.length;
+        byte[] bytes = new byte[shortArrsize * 2];
+        for (int i = 0; i < shortArrsize; i++) {
+            bytes[i * 2] = (byte) (sData[i] & 0x00FF);
+            bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
+            sData[i] = 0;
+        }
+        return bytes;
+
+    }
+
+    private void startRecording(Intent intent) {
+        Timber.tag(TAG).d("RecordService startRecording");
+        try {
+            if (intent != null) {
+                fileName = intent.getStringExtra(Constants.RECORDNAME);
+            }
+            Timber.tag(TAG).d("RecordService startRecording fileName: %s", fileName);
+            if (TextUtils.isEmpty(fileName)) {
+                fileName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
+            }
+            Timber.tag(TAG).d("fileName: %s", fileName);
+            mBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // buffer size in bytes
+        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+
+        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+            bufferSize = SAMPLE_RATE * 2;
+        }
+
+        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize);
+
+        if (mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
+            Log.e(TAG, "Audio Record can't initialize!");
+            return;
+        }
+
+        mAudioRecord.startRecording();
+
+        mThreadRecord = new Thread(new Runnable() {
+            public void run() {
+                writeAudioDataToFile();
+            }
+        }, "AudioRecorder Thread");
+        mThreadRecord.start();
+    }
+
+    private void writeAudioDataToFile() {
+        // Write the output audio in byte
+
+        // buffer size in bytes
+        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+
+        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+            bufferSize = SAMPLE_RATE * 2;
+        }
+        byte audioData[] = new byte[bufferSize];
+        FileOutputStream os = null;
+        try {
+            fileName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
+            os = new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        AudioTrack audioTrack = new AudioTrack(
+                AudioManager.STREAM_MUSIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize,
+                AudioTrack.MODE_STREAM);
+
+        audioTrack.setPositionNotificationPeriod(SAMPLE_RATE / 30); // 30 times per second
+//        audioTrack.setNotificationMarkerPosition(mNumSamples);
+
+        audioTrack.play();
+
+        while (recording) {
+            // gets the voice output from microphone to byte format
+            Timber.tag(TAG).d("read audio data.......time: %s", System.currentTimeMillis());
+            int result =  mAudioRecord.read(audioData, 0, bufferSize);
+            if (result > 0) {
+                try {
+                    Log.e("Recording", "write data ngon roi heheehehehe");
+                    audioTrack.write(audioData, 0, audioData.length);
+                    // // writes the data to file from buffer
+                    // // stores the voice buffer
+                    os.write(audioData, 0, audioData.length);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (result == AudioRecord.ERROR_INVALID_OPERATION) {
+                Log.e("Recording", "Invalid operation error");
+                break;
+            } else if (result == AudioRecord.ERROR_BAD_VALUE) {
+                Log.e("Recording", "Bad value error");
+                break;
+            } else if (result == AudioRecord.ERROR) {
+                Log.e("Recording", "Unknown error");
+                break;
+            }
+
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                break;
+//            }
+        }
+        try {
+            recording = false;
+            os.close();
+            Log.v(TAG, "mBufferedOutputStream.close+++++++++++++++++++++++++++++++++++++++");
+            mAudioRecord.stop();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            mAudioRecord.release();
+            mAudioRecord = null;
+            mThreadRecord = null;
+        }
+    }
+
+    private void startService() {
+        if (!onForeground) {
+            Log.d(TAG, "RecordService startService");
+            Intent intent = new Intent(this, MainActivity.class);
+            // intent.setAction(Intent.ACTION_VIEW);
+            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    getBaseContext(), 0, intent, 0);
+
+            Notification notification = new NotificationCompat.Builder(
+                    getBaseContext())
+                    .setContentTitle(this.getString(R.string.recording))
+                    .setTicker(this.getString(R.string.recording_ticker))
+                    .setContentText(this.getString(R.string.recording_text))
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentIntent(pendingIntent).setOngoing(true)
+                    .getNotification();
+
+            notification.flags = Notification.FLAG_NO_CLEAR;
+
+            startForeground(1337, notification);
+            onForeground = true;
+        }
+    }
+}
+
