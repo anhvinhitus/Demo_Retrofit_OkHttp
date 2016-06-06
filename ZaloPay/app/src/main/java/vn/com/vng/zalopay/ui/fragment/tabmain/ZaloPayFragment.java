@@ -24,7 +24,6 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
@@ -68,7 +67,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
     /* Advertisement END */
-
 
     private ListAppRecyclerAdapter mAdapter;
 
