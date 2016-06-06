@@ -18,14 +18,17 @@ import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
+import vn.com.vng.zalopay.internal.di.modules.MonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.monitors.IMonitorReport;
+import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class, MonitorModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();
@@ -49,6 +52,9 @@ public interface ApplicationComponent {
     PassportRepository passportRepository();
 
     LocalResourceRepository localResourceRepository();
+
+    IMonitorTiming monitorTiming();
+    IMonitorReport monitorReport();
 
     /*INJECT*/
 

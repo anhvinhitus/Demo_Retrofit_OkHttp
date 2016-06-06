@@ -12,8 +12,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
 import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
@@ -54,14 +56,13 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
     @OnClick(R.id.btn_read_nfc)
     void onReadNFC() {
-//        String emulateContent = "3:nd0raT2d2tLAi567+5cXog==";
-        String emulateContent = "3:AyGiIa2sSFBlUoUOjwMc1A";
-
-        processOrder(emulateContent);
+        if (BuildConfig.DEBUG) {
+            String emulateContent = "3:j4lT_UrWh98EBA3UbF-jjQ";
+            processOrder(emulateContent);
+        }
     }
 
     private boolean processOrder(String orderToken) {
-        Timber.i("About to process orderToken: %s", orderToken);
         String[] contents = orderToken.split(":");
         if (contents.length < 2) {
             new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
@@ -72,7 +73,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
         long appId = Long.valueOf(contents[0]);
         String token = contents[1];
-        // TODO: Call payment SDK
 
         if (paymentWrapper == null) {
             mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
@@ -226,6 +226,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
             Timber.e("No payment record");
             return;
         }
+
+        getAppComponent().monitorTiming().finishEvent(MonitorEvents.NFC_SCANNING);
 
         if (paymentWrapper == null) {
             mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");

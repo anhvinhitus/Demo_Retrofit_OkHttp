@@ -62,6 +62,8 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             public void onResponseError(int status) {
                 if (status == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
                     mView.getActivity().finish();
+                } else {
+                    hideLoadingView();
                 }
             }
 

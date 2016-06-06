@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
 import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
 import vn.com.vng.zalopay.scanners.ui.fragment.ScanSoundFragment;
@@ -118,6 +119,14 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
         mNFCReader.stopForegroundDispatch();
 
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.NFC_SCANNING);
+        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.BLE_SCANNING);
+        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.SOUND_SCANNING);
     }
 
     @Override
