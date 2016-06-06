@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.cache;
 
+import org.json.JSONObject;
+
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.domain.model.User;
@@ -31,9 +33,13 @@ public interface UserConfig {
 
     long getUserId();
 
+    long getZaloId();
+
     void saveUserInfo(long zaloId);
 
     void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
+
+    void saveZaloUserInfo(JSONObject json);
 
     String getAvatar();
 
