@@ -5,9 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioRecord;
-import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -224,18 +222,16 @@ public class RecordService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AudioTrack audioTrack = new AudioTrack(
-                AudioManager.STREAM_MUSIC,
-                SAMPLE_RATE,
-                AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                bufferSize,
-                AudioTrack.MODE_STREAM);
-
-        audioTrack.setPositionNotificationPeriod(SAMPLE_RATE / 30); // 30 times per second
-//        audioTrack.setNotificationMarkerPosition(mNumSamples);
-
-        audioTrack.play();
+//        AudioTrack audioTrack = new AudioTrack(
+//                AudioManager.STREAM_MUSIC,
+//                SAMPLE_RATE,
+//                AudioFormat.CHANNEL_OUT_MONO,
+//                AudioFormat.ENCODING_PCM_16BIT,
+//                bufferSize,
+//                AudioTrack.MODE_STREAM);
+//
+//        audioTrack.setPositionNotificationPeriod(SAMPLE_RATE / 30); // 30 times per second
+//        audioTrack.play();
 
         while (recording) {
             // gets the voice output from microphone to byte format
@@ -244,7 +240,8 @@ public class RecordService extends Service {
             if (result > 0) {
                 try {
                     Log.e("Recording", "write data ngon roi heheehehehe");
-                    audioTrack.write(audioData, 0, audioData.length);
+//                    audioTrack.write(audioData, 0, audioData.length);
+
                     // // writes the data to file from buffer
                     // // stores the voice buffer
                     os.write(audioData, 0, audioData.length);
