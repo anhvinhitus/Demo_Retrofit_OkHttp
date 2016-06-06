@@ -10,6 +10,7 @@ import android.view.View;
 
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.grd.crity.CrityWrapper;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.service.RecordService;
@@ -47,6 +48,12 @@ public class ScanSoundFragment extends BaseFragment {
         Intent myIntent = new Intent(getContext(), RecordService.class);
         myIntent.putExtra(Constants.COMMANDTYPE, Constants.STATE_STOP_RECORDING);
         getContext().startService(myIntent);
+    }
+
+    @OnClick(R.id.btnTestJNI)
+    public void onClickTestJNI(View view) {
+        String crityStr = CrityWrapper.doCreateSecureKeyPart("Hello world", getContext());
+        Timber.tag(TAG).d("onClickTestJNI...........crityStr:%s", crityStr);
     }
 
     public ScanSoundFragment() {

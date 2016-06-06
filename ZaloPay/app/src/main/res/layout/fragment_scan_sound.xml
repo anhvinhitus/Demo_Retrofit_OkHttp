@@ -20,4 +20,10 @@
         android:layout_margin="@dimen/spacing.medium"
         android:text="@string/btn_stop_scan_sound" />
 
+    <Button
+        android:id="@+id/btnTestJNI"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/spacing.medium"
+        android:text="@string/test_jni" />
 </LinearLayout>
