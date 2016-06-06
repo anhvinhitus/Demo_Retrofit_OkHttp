@@ -4,6 +4,11 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@android:color/transparent" />
+            <padding
+                android:bottom="@dimen/spacing.tiny.s"
+                android:left="@dimen/spacing.tiny.s"
+                android:right="@dimen/spacing.tiny.s"
+                android:top="@dimen/spacing.tiny.s" />
             <size
                 android:width="15dp"
                 android:height="15dp" />
@@ -17,12 +22,12 @@
         <shape android:shape="oval">
             <!-- transparent stroke = larger_circle_size - smaller_circle_size -->
             <stroke
-                android:width="14dp"
-                android:color="@android:color/transparent" />
+                android:width="8dp"
+                android:color="@android:color/white" />
             <solid android:color="@android:color/black" />
             <size
-                android:width="2dp"
-                android:height="2dp" />
+                android:width="6dp"
+                android:height="6dp" />
         </shape>
     </item>
 </layer-list>
