@@ -32,11 +32,9 @@ public class RecordService extends Service {
     private static final int SAMPLE_RATE = 44100;
 
     private String fileName = "";
-    private boolean recording = false;
+//    private boolean recording = false;
     private boolean onForeground = false;
 
-    private BufferedOutputStream mBufferedOutputStream = null;
-    private AudioRecord mAudioRecord;
 
     private Thread mThreadRecord;
 
@@ -54,39 +52,31 @@ public class RecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("RecordService onStartCommand");
         if (intent == null) {
-            return super.onStartCommand(intent, flags, startId);
+            return super.onStartCommand(null, flags, startId);
         }
 
-        int commandType = intent.getIntExtra("commandType", 0);
+        int commandType = intent.getIntExtra(Constants.COMMANDTYPE, 0);
         if (commandType == 0) {
             return super.onStartCommand(intent, flags, startId);
         }
 
-        if (commandType == Constants.RECORDING_ENABLED) {
-            Timber.d("RecordService RECORDING_ENABLED");
-            if (!recording) {
-                commandType = Constants.STATE_START_RECORDING;
-            }
-        } else if (commandType == Constants.RECORDING_DISABLED) {
-            Timber.d("RecordService RECORDING_DISABLED");
-            if (recording) {
-                commandType = Constants.STATE_STOP_RECORDING;
-            }
-        }
-
-        if (commandType == Constants.STATE_START_RECORDING) {
-            Timber.d("RecordService STATE_START_RECORDING");
-            if (!recording) {
-                recording = true;
-                startService();
-                startRecording(intent);
-            }
-        } else if (commandType == Constants.STATE_STOP_RECORDING) {
-            Timber.d("RecordService STATE_STOP_RECORDING");
-            if (recording) {
-                recording = false;
-                stopService();
-            }
+        switch (commandType) {
+            case Constants.STATE_START_RECORDING:
+                Timber.d("RecordService STATE_START_RECORDING");
+                if (mThreadRecord == null || !mThreadRecord.isAlive()) {
+                    startService();
+                    startRecording(intent);
+                }
+                break;
+            case Constants.STATE_STOP_RECORDING:
+                Timber.d("RecordService STATE_STOP_RECORDING");
+                if (mThreadRecord != null && mThreadRecord.isAlive()) {
+                    stopService();
+                }
+                break;
+            default:
+                Timber.e("Unknown command [%d] passed to RecordService", commandType);
+                break;
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -98,7 +88,7 @@ public class RecordService extends Service {
     private void terminateAndEraseFile() {
         Log.d(TAG, "RecordService terminateAndEraseFile");
         stopAndReleaseRecorder();
-        recording = false;
+//        recording = false;
         deleteFile();
     }
 
@@ -118,21 +108,14 @@ public class RecordService extends Service {
     private void stopAndReleaseRecorder() {
         Timber.v("request to stop and release recorder");
         try {
-            recording = false;
-            if (mBufferedOutputStream != null) {
-                mBufferedOutputStream.close();
+            if (mThreadRecord != null && mThreadRecord.isAlive()) {
+                mThreadRecord.interrupt();
+                mThreadRecord.join();
             }
             mThreadRecord = null;
-            if (mAudioRecord != null) {
-                mAudioRecord.stop();
-            }
-        } catch (IOException e) {
+        } catch (InterruptedException e) {
             Timber.e(e, "Error when releasing");
         } finally {
-            if (mAudioRecord != null) {
-                mAudioRecord.release();
-            }
-            mAudioRecord = null;
             mThreadRecord = null;
         }
     }
@@ -169,120 +152,12 @@ public class RecordService extends Service {
                 fileName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
             }
             Timber.d("fileName: %s", fileName);
-            mBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // buffer size in bytes
-        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-
-        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
-            bufferSize = SAMPLE_RATE * 2;
-        }
-
-        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                bufferSize);
-
-        if (mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-            Log.e(TAG, "Audio Record can't initialize!");
-            return;
-        }
-
-        mAudioRecord.startRecording();
-
-        mThreadRecord = new Thread(new Runnable() {
-            public void run() {
-                writeAudioDataToFile();
-            }
-        }, "AudioRecorder Thread");
+        mThreadRecord = new Thread(new RecordingThread(fileName), "AudioRecorder Thread");
         mThreadRecord.start();
-    }
-
-    private void writeAudioDataToFile() {
-        // Write the output audio in byte
-
-        // buffer size in bytes
-        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-
-        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
-            bufferSize = SAMPLE_RATE * 2;
-        }
-        byte audioData[] = new byte[bufferSize];
-        FileOutputStream os = null;
-        try {
-            fileName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
-            os = new FileOutputStream(fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        AudioTrack audioTrack = new AudioTrack(
-//                AudioManager.STREAM_MUSIC,
-//                SAMPLE_RATE,
-//                AudioFormat.CHANNEL_OUT_MONO,
-//                AudioFormat.ENCODING_PCM_16BIT,
-//                bufferSize,
-//                AudioTrack.MODE_STREAM);
-//
-//        audioTrack.setPositionNotificationPeriod(SAMPLE_RATE / 30); // 30 times per second
-//        audioTrack.play();
-
-        while (recording) {
-            // gets the voice output from microphone to byte format
-            Timber.d("read audio data.......time: %s", System.currentTimeMillis());
-            int result = mAudioRecord.read(audioData, 0, bufferSize);
-            if (result > 0) {
-                try {
-                    Timber.d("write data ngon roi heheehehehe");
-//                    audioTrack.write(audioData, 0, audioData.length);
-
-                    // // writes the data to file from buffer
-                    // // stores the voice buffer
-                    os.write(audioData, 0, audioData.length);
-                } catch (IOException e) {
-                    Timber.e(e, "exception in writing data");
-                }
-            } else if (result == AudioRecord.ERROR_INVALID_OPERATION) {
-                Timber.d("Invalid operation error");
-                break;
-            } else if (result == AudioRecord.ERROR_BAD_VALUE) {
-                Timber.e("Bad value error");
-                break;
-            } else if (result == AudioRecord.ERROR) {
-                Timber.e("Unknown error");
-                break;
-            }
-
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//                break;
-//            }
-        }
-        try {
-            recording = false;
-            os.close();
-            Timber.v("about to stop audio record");
-            mAudioRecord.stop();
-
-        } catch (IOException e) {
-            Timber.e(e, "Cannot stop");
-        } finally {
-            mAudioRecord.release();
-            mAudioRecord = null;
-            mThreadRecord = null;
-        }
     }
 
     private void startService() {
@@ -308,6 +183,127 @@ public class RecordService extends Service {
 
             startForeground(1337, notification);
             onForeground = true;
+        }
+    }
+
+    private class RecordingThread implements Runnable {
+        private BufferedOutputStream mBufferedOutputStream = null;
+        private AudioRecord mAudioRecord;
+        private byte audioDataBuffer[];
+        public final String fileName;
+
+        public RecordingThread(String fileName) {
+            this.fileName = fileName;
+        }
+
+        @Override
+        public void run() {
+            if (!initialize()) {
+                return;
+            }
+
+            mAudioRecord.startRecording();
+
+            boolean isGood = true;
+            while (!Thread.currentThread().isInterrupted() && isGood) {
+                isGood = writeAudioDataToFile();
+            }
+
+            cleanup();
+        }
+
+        private boolean initialize() {
+            Timber.d("RecordService startRecording");
+            try {
+                mBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(fileName));
+            } catch (IOException e) {
+                Timber.e(e, "Exception in create new file");
+                return false;
+            } catch (Exception e) {
+                Timber.e(e, "Generic Exception");
+                return false;
+            }
+
+            // buffer size in bytes
+            int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT);
+
+            if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+                bufferSize = SAMPLE_RATE * 2;
+            }
+
+            audioDataBuffer = new byte[bufferSize];
+
+            mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                    SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                    bufferSize);
+
+            if (mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
+                Timber.e("Audio Record can't initialize!");
+                return false;
+            }
+
+            return true;
+        }
+
+        private boolean writeAudioDataToFile() {
+            // gets the voice output from microphone to byte format
+            Timber.d("read audio data.......time: %s", System.currentTimeMillis());
+            int result = mAudioRecord.read(audioDataBuffer, 0, audioDataBuffer.length);
+            if (result > 0) {
+                try {
+                    Timber.d("write data ngon roi heheehehehe");
+//                    audioTrack.write(audioData, 0, audioData.length);
+
+                    // // writes the data to file from buffer
+                    // // stores the voice buffer
+                    mBufferedOutputStream.write(audioDataBuffer, 0, audioDataBuffer.length);
+                } catch (IOException e) {
+                    Timber.e(e, "exception in writing data");
+                }
+            } else if (result == AudioRecord.ERROR_INVALID_OPERATION) {
+                Timber.d("Invalid operation error");
+                return false;
+            } else if (result == AudioRecord.ERROR_BAD_VALUE) {
+                Timber.e("Bad value error");
+                return false;
+            } else if (result == AudioRecord.ERROR) {
+                Timber.e("Unknown error");
+                return false;
+            }
+
+            return true;
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                break;
+//            }
+
+        }
+
+        private void cleanup() {
+            Timber.d("About to cleanup record thread");
+            try {
+//                recording = false;
+                mBufferedOutputStream.close();
+                Timber.v("about to stop audio record");
+                mAudioRecord.stop();
+
+            } catch (IOException e) {
+                Timber.e(e, "Cannot stop");
+            } catch (IllegalStateException e) {
+                Timber.e(e, "wrong call sequence");
+                mAudioRecord = null;
+            } finally {
+                if (mAudioRecord != null) {
+                    mAudioRecord.release();
+                }
+                mAudioRecord = null;
+//                mThreadRecord = null;
+            }
         }
     }
 }

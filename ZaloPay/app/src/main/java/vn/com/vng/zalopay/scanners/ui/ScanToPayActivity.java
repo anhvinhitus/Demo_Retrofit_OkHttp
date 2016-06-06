@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
@@ -36,7 +37,11 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    @BindView(R.id.container)
+    ViewPager mViewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout mTabLayout;
 
     @Override
     public BaseFragment getFragmentToHost() {
@@ -58,7 +63,6 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
             // primary sections of the activity.
             mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
             // Set up the ViewPager with the sections adapter.
-            mViewPager = (ViewPager) findViewById(R.id.container);
             mViewPager.setAdapter(mSectionsPagerAdapter);
             mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
@@ -85,8 +89,7 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
                 }
             });
 
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-            tabLayout.setupWithViewPager(mViewPager);
+            mTabLayout.setupWithViewPager(mViewPager);
         } catch (NullPointerException e) {
             Timber.e(e, "Null exception");
         }
@@ -168,12 +171,14 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
                     fragment.setReaderPresenter(mNFCReader);
                     return fragment;
                 }
+                case 1:
+                    return ScanSoundFragment.newInstance();
                 case 2: {
                     CounterBeaconFragment fragment = CounterBeaconFragment.newInstance(1);
                     return fragment;
                 }
                 default:
-                    return ScanSoundFragment.newInstance();
+                    return null;
             }
         }
 

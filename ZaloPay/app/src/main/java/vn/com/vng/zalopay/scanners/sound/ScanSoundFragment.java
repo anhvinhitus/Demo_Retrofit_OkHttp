@@ -19,17 +19,13 @@ import vn.com.vng.zalopay.utils.FileUtil;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ScanSoundFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link ScanSoundFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class ScanSoundFragment extends BaseFragment {
-    private OnFragmentInteractionListener mListener;
-
     @OnClick(R.id.btnStartScanSound)
     public void onClickStartScanSound(View view) {
+        Timber.d("Start scan sound");
         String mRecordName = null;
         try {
             mRecordName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
@@ -44,7 +40,7 @@ public class ScanSoundFragment extends BaseFragment {
 
     @OnClick(R.id.btnStopScanSound)
     public void onClickStopScanSound(View view) {
-        Timber.tag(TAG).d("onClickStopScanSound...");
+        Timber.d("Stop scan sound");
         Intent myIntent = new Intent(getContext(), RecordService.class);
         myIntent.putExtra(Constants.COMMANDTYPE, Constants.STATE_STOP_RECORDING);
         getContext().startService(myIntent);
@@ -52,8 +48,9 @@ public class ScanSoundFragment extends BaseFragment {
 
     @OnClick(R.id.btnTestJNI)
     public void onClickTestJNI(View view) {
+        Timber.d("Click Test JNI");
         String crityStr = CrityWrapper.doCreateSecureKeyPart("Hello world", getContext());
-        Timber.tag(TAG).d("onClickTestJNI...........crityStr:%s", crityStr);
+        Timber.d("onClickTestJNI...........crityStr:%s", crityStr);
     }
 
     public ScanSoundFragment() {
@@ -66,7 +63,6 @@ public class ScanSoundFragment extends BaseFragment {
      *
      * @return A new instance of fragment ScanSoundFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ScanSoundFragment newInstance() {
         ScanSoundFragment fragment = new ScanSoundFragment();
         return fragment;
@@ -85,8 +81,6 @@ public class ScanSoundFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//        }
     }
 
     @Override
@@ -95,42 +89,13 @@ public class ScanSoundFragment extends BaseFragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

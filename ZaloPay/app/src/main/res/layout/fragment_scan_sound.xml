@@ -5,7 +5,6 @@
     android:orientation="vertical"
     tools:context=".scanners.sound.ScanSoundFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <Button
         android:id="@+id/btnStartScanSound"
         android:layout_width="match_parent"
