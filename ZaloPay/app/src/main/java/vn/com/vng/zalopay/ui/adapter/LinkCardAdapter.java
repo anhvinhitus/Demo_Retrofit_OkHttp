@@ -144,6 +144,27 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
                 bgShape.setColor(Color.parseColor("#ef9825"));
                 mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PVTB.toString())) {
+                bgShape.setColor(Color.parseColor("#ef9825"));
+                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PBIDV.toString())) {
+                bgShape.setColor(Color.parseColor("#ef9825"));
+                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PVCB.toString())) {
+                bgShape.setColor(Color.parseColor("#ef9825"));
+                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PEIB.toString())) {
+                bgShape.setColor(Color.parseColor("#ef9825"));
+                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PSCB.toString())) {
+                bgShape.setColor(Color.parseColor("#ef9825"));
+                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PAGB.toString())) {
+                bgShape.setColor(Color.parseColor("#ef9825"));
+                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+            } else if (bankCard.type.equals(ECardType.PTPB.toString())) {
+
+
             } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
                 mLogo.setImageResource(R.color.transparent);
             }
