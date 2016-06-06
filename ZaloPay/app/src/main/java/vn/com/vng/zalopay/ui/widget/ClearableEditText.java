@@ -35,7 +35,7 @@ public class ClearableEditText extends EditText {
     private boolean showClearable = true;
     private DDynamicEditText mEditTextConfig = null;
     private AdapterBase mAdapter = null;
-    private boolean mIsTextGroup = true;
+    private boolean mIsTextGroup = false;
     private boolean mIsPattern = false;
     private String mPattern = null;
     private Drawable drawableRightScan;
