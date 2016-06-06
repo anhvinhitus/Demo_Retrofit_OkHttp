@@ -19,6 +19,7 @@ import java.util.List;
 *
 * */
 public final class User extends Person {
+
     public long zaloId;
     public String accesstoken;
     public long expirein;

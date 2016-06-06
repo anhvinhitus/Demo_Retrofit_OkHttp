@@ -4,8 +4,10 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -187,9 +189,30 @@ public class UserConfigImpl implements UserConfig {
             currentUser.birthDate = birthData;
             currentUser.userGender = userGender;
             currentUser.zaloId = zaloId;
-            Timber.d("save EventBus post ");
-            eventBus.post(new ZaloProfileInfoEvent(currentUser.uid, displayName, avatar));
         }
+
+        Timber.d("save EventBus post ");
+        eventBus.post(new ZaloProfileInfoEvent(zaloId, displayName, avatar));
+    }
+
+
+    @Override
+    public void saveZaloUserInfo(JSONObject profile) {
+        JSONObject json = profile.optJSONObject("result");
+
+        if (json == null) return;
+        long userId = json.optInt("userId");
+        String displayName = json.optString("displayName");
+        String avatar = json.optString("largeAvatar");
+        long birthday = json.optInt("birthDate");
+        int userGender = json.optInt("userGender");
+
+        saveUserInfo(userId, avatar, displayName, birthday, userGender);
+    }
+
+    @Override
+    public long getZaloId() {
+        return preferences.getLong(Constants.PREF_ZALO_ID, -1);
     }
 
     @Override
