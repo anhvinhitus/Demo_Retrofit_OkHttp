@@ -1,11 +1,9 @@
 package vn.com.vng.zalopay.data.repository;
 
-import java.util.List;
-
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.AccountService;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
 
 /**
@@ -14,20 +12,41 @@ import vn.com.vng.zalopay.domain.repository.AccountRepository;
 public class AccountRepositoryImpl extends BaseRepository implements AccountRepository {
 
     AccountService accountService;
-    private User user;
+    private UserConfig userConfig;
 
-    public AccountRepositoryImpl(AccountService accountService, User user) {
+    public AccountRepositoryImpl(AccountService accountService, UserConfig userConfig) {
         this.accountService = accountService;
-        this.user = user;
+        this.userConfig = userConfig;
     }
 
     @Override
     public Observable<Boolean> updateProfile(String pin, String phonenumber) {
-        return accountService.updateProfile(user.uid, user.accesstoken, pin, phonenumber).map(baseResponse -> Boolean.TRUE);
+        long uid = -1;
+        String accesstoken = "";
+        if (userConfig.getCurrentUser() != null) {
+            uid = userConfig.getCurrentUser().uid;
+            accesstoken = userConfig.getCurrentUser().accesstoken;
+        }
+        return accountService.updateProfile(uid, accesstoken, pin, phonenumber).map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
-    public Observable<List<ProfilePermisssion>> verifyOTPProfile(String otp) {
-        return accountService.verifyOTPProfile(user.uid, user.accesstoken, otp).map(baseResponse -> baseResponse.profilelevels);
+    public Observable<ProfilePermisssion> verifyOTPProfile(String otp) {
+        long uid = -1;
+        String accesstoken = "";
+        if (userConfig.getCurrentUser() != null) {
+            uid = userConfig.getCurrentUser().uid;
+            accesstoken = userConfig.getCurrentUser().accesstoken;
+        }
+        return accountService.verifyOTPProfile(uid, accesstoken, otp)
+                .map(baseResponse -> {
+                    ProfilePermisssion profilePermisssion = new ProfilePermisssion();
+                    profilePermisssion.profileLevel = baseResponse.profilelevel;
+                    profilePermisssion.profilePermisssions = baseResponse.profilePermisssions;
+                    return profilePermisssion;
+                })
+                .doOnNext(profilePermisssion -> {
+                    userConfig.saveProfilePermissions(profilePermisssion.profileLevel, profilePermisssion.profilePermisssions);
+                });
     }
 }

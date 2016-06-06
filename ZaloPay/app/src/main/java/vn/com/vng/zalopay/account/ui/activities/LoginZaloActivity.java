@@ -101,6 +101,12 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
     }
 
     @Override
+    public void gotoUpdateProfileLevel2() {
+        navigator.startUpdateProfileLevel2Activity(this, true);
+        finish();
+    }
+
+    @Override
     public void showLoading() {
         if (isFinishing()) {
             return;

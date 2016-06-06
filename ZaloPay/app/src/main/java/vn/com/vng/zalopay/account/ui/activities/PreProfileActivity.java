@@ -173,7 +173,10 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
 
     @Override
     public void onConfirmOTPSucess() {
-        navigator.startHomeActivity(this);
+        showToast("Cập nhật thông tin thành công.");
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            getActivity().finish();
+        }
     }
 
     @Override

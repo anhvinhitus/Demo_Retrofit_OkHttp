@@ -38,25 +38,31 @@ public class PassportRepositoryImpl implements PassportRepository {
         return passportFactory.login(zuid, zAuthCode)
                 .map(userEntity -> {
                     User user = userEntityDataMapper.transform(userEntity);
+
+
                     user.dname = userConfig.getDisPlayName();
                     user.avatar = userConfig.getAvatar();
+                    user.zaloId = userConfig.getZaloId();
+
+                    Timber.d("dname %s avatar %s zaloid %s", user.dname, user.avatar, user.zaloId);
+
                     return user;
                 }).doOnNext(user -> {
-                    //Check old user & new user
-                    Timber.d("PassportRepositoryImpl before cleanup user database");
-                    User oldUser = userConfig.getCurrentUser();
-                    if (oldUser!=null) {
-                        Timber.d("PassportRepositoryImpl before cleanup user oldUser: " + oldUser.uid);
-                    }
-                    if (oldUser== null || oldUser.uid != user.uid) {
-                        userConfigFactory.clearAllUserDB();
-                    }
+                            //Check old user & new user
+                            Timber.d("PassportRepositoryImpl before cleanup user database");
+                            User oldUser = userConfig.getCurrentUser();
+                            if (oldUser != null) {
+                                Timber.d("PassportRepositoryImpl before cleanup user oldUser: " + oldUser.uid);
+                            }
+                            if (oldUser == null || oldUser.uid != user.uid) {
+                                userConfigFactory.clearAllUserDB();
+                            }
 
-                    Timber.d("save User");
-                    userConfig.setCurrentUser(user);
-                    userConfig.saveConfig(user);
-                }
-            );
+                            Timber.d("save User");
+                            userConfig.setCurrentUser(user);
+                            userConfig.saveConfig(user);
+                        }
+                );
     }
 
     @Override

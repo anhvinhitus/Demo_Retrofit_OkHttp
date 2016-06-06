@@ -71,17 +71,6 @@
                 android:layout_marginTop="28dp"
                 android:text="@string/link_card_step_two" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/link_card_step_three" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/link_card_step_note" />
         </LinearLayout>
 
         <TextView

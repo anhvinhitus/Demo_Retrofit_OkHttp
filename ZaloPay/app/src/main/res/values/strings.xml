@@ -18,7 +18,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="zalopay">ZaloPay</string>
+    <string name="zalopay">Zalo Pay</string>
     <string name="me">Tôi</string>
     <string name="more">Thêm</string>
     <string name="notification">Thông báo</string>
@@ -117,8 +117,8 @@
 
     <!-- Link CARDS START-->
     <string name="link_card_title">Quy trình liên kết thẻ Visa/Master/JCB</string>
-    <string name="link_card_step_one">+ <u><b>Bước 1</b></u>: Khai báo thông tin thẻ &amp; chủ thẻ theo yêu cầu.</string>
-    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: ZaloPay sẽ trừ một số tiền ngẫu nhiên (dưới 10.000 VND) để kiểm tra tính hợp lệ của thẻ. Nếu giả định thành công, thẻ của bạn được liên kết và có thể dùng để thanh toán.</string>
+    <string name="link_card_step_one">+ <u><b>Bước 1</b></u>: Nhập thông tin thẻ.</string>
+    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: ZaloPay sẽ trừ 10.000 VNĐ cho thẻ tín dụng, 20.000 VNĐ cho thẻ ATM để kiểm tra tính hợp lệ của thẻ. Khi giao dịch hoàn thành, thẻ của bạn sẽ được liên kết thành công. Số tiền giao dịch sẽ được chuyển vào số dư tài khoản ZaloPay.</string>
     <string name="link_card_step_three">+ <u><b>Bước 3</b></u> (không bắt buộc): Xác minh chủ thẻ theo hướng dẫn (nếu được ZaloPay yêu cầu) bằng cách kiểm tra với ngân hàng rồi nhập đúng số tiền đã trừ ở bước 2.</string>
     <string name="link_card_step_note"><u><b>Lưu ý</b></u>: Thẻ chưa xác minh chỉ được thanh toán tối đa 500.000 VND.</string>
     <!-- Link CARDS END-->

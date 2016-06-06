@@ -15,6 +15,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
@@ -99,7 +100,12 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
             getZaloProfileInfo();
 
-            mView.gotoHomeScreen();
+            if (userConfig.getCurrentUser() != null && userConfig.getCurrentUser().profilelevel < Constants.PROFILE_LEVEL_MIN) {
+                mView.gotoUpdateProfileLevel2();
+            } else {
+                mView.gotoHomeScreen();
+            }
+
 
         } else {
             if (clearData) {
@@ -114,18 +120,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
             @Override
             public void onResult(JSONObject profile) {
                 try {
-                    JSONObject data = profile.getJSONObject("result");
-
-                    Timber.tag(TAG).d("zalo profile %s", data.toString());
-
-                    long userId = data.getLong("userId");
-                    String displayName = data.getString("displayName");
-                    String avatar = data.getString("largeAvatar");
-                    long birthday = data.getLong("birthDate");
-                    int userGender = data.getInt("userGender");
-
-                    userConfig.saveUserInfo(userId, avatar, displayName, birthday, userGender);
-
+                    userConfig.saveZaloUserInfo(profile);
                 } catch (Exception ex) {
                     Timber.tag(TAG).e(ex, " Exception :");
                 }

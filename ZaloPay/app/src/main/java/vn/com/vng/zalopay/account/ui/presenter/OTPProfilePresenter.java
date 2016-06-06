@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
-import java.util.List;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -68,13 +66,14 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
                 .subscribe(new VerifyOTPProfileSubscriber());
     }
 
-    private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<List<ProfilePermisssion>> {
+    private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<ProfilePermisssion> {
         public VerifyOTPProfileSubscriber() {
         }
 
         @Override
-        public void onNext(List<ProfilePermisssion> permisssions) {
-            Timber.d("confirmOTP success " );
+        public void onNext(ProfilePermisssion permisssions) {
+            Timber.d("confirmOTP success profileLevel: %s", permisssions.profileLevel);
+            Timber.d("confirmOTP success profilePermisssions: %s", permisssions.profilePermisssions);
             OTPProfilePresenter.this.onVerifyOTPSucess();
         }
 

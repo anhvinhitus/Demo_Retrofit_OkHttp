@@ -20,6 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -143,18 +144,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             @Override
             public void onResult(JSONObject profile) {
                 try {
-                    JSONObject data = profile.getJSONObject("result");
-
-                    Timber.tag(TAG).d("zalo profile %s", data.toString());
-
-                    long userId = data.getLong("userId");
-                    String displayName = data.getString("displayName");
-                    String avatar = data.getString("largeAvatar");
-                    long birthday = data.getLong("birthDate");
-                    int userGender = data.getInt("userGender");
-
-                    userConfig.saveUserInfo(userId, avatar, displayName, birthday, userGender);
-
+                    userConfig.saveZaloUserInfo(profile);
                 } catch (Exception ex) {
                     Timber.tag(TAG).e(ex, " Exception :");
                 }
@@ -170,12 +160,20 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         mView.gotoMainActivity();
     }
 
+    private void gotoUpdateProfileLevel2() {
+        mView.gotoUpdateProfileLevel2();
+    }
+
     private final void onLoginSuccess(User user) {
         Timber.d("session " + user.accesstoken);
         Timber.d("uid " + user.uid);
         // Khởi tạo user component
         AndroidApplication.instance().createUserComponent(user);
-        this.gotoHomeScreen();
+        if (user.profilelevel < Constants.PROFILE_LEVEL_MIN) {
+            this.gotoUpdateProfileLevel2();
+        } else {
+            this.gotoHomeScreen();
+        }
     }
 
     private final void onLoginError(Throwable e) {

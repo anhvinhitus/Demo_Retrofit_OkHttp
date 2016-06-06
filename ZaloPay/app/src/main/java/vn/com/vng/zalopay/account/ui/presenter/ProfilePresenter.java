@@ -1,7 +1,13 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -12,6 +18,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     IProfileView mView;
     private UserConfig mUserConfig;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public ProfilePresenter(UserConfig userConfig) {
         mUserConfig = userConfig;
@@ -24,11 +31,13 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void destroyView() {
+        unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }
 
     @Override
     public void resume() {
+        getBalance();
         mView.updateUserInfo(userConfig.getCurrentUser());
     }
 
@@ -40,6 +49,39 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     @Override
     public void destroy() {
 
+    }
+
+    private void onGetBalanceSuccess(Long aLong) {
+        mView.updateBalance(aLong);
+    }
+
+    private class BalanceSubscriber extends DefaultSubscriber<Long> {
+        public BalanceSubscriber() {
+        }
+
+        @Override
+        public void onCompleted() {
+            super.onCompleted();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.tag(TAG).e(e, " exception ");
+        }
+
+        @Override
+        public void onNext(Long aLong) {
+            ProfilePresenter.this.onGetBalanceSuccess(aLong);
+        }
+    }
+
+    private void getBalance() {
+        Subscription subscription = zaloPayRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BalanceSubscriber());
+
+        compositeSubscription.add(subscription);
     }
 
     public void showLoading() {

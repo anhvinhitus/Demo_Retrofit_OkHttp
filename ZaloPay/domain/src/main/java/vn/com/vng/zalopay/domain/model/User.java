@@ -4,6 +4,13 @@ import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by AnhHieu on 3/25/16.
  */
@@ -12,11 +19,14 @@ import android.os.Parcelable;
 *
 * */
 public final class User extends Person {
+
     public long zaloId;
     public String accesstoken;
     public long expirein;
-
     public String email;
+
+    public int profilelevel;
+    public List<ProfilePermisssion.Permission> profilePermisssions;
 
     public User() {
     }
@@ -34,6 +44,16 @@ public final class User extends Person {
 
     public User(long uid) {
         this.uid = uid;
+    }
+
+    public Object fromJson(String jsonString, Type type) {
+        return new Gson().fromJson(jsonString, type);
+    }
+
+    public void setPermissions(String jsonArray) {
+        profilePermisssions = (ArrayList<ProfilePermisssion.Permission>) fromJson(jsonArray,
+                new TypeToken<ArrayList<ProfilePermisssion.Permission>>() {
+                }.getType());
     }
 
     @Override

@@ -63,10 +63,10 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     @BindView(R.id.imgAdsBanner)
     ImageView imgAdsBanner;
 
-    @OnClick(R.id.layoutUser)
-    public void onClickLayoutUser(View view) {
-        navigator.startPreProfileActivity(this);
-    }
+//    @OnClick(R.id.layoutUser)
+//    public void onClickLayoutUser(View view) {
+//        navigator.startPreProfileActivity(this);
+//    }
 
     @OnClick(R.id.layoutSigOutAndDelDB)
     public void onClickSigoutAndDelDB(View view) {
@@ -101,7 +101,7 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     private void sigoutAndCleanData() {
         ZaloSDK.Instance.unauthenticate();
         userConfigFactory.clearAllUserDB();
-        navigator.startLoginActivity(this);
+        navigator.startLoginActivity(this, true);
     }
 
     public void updateUserInfo(User user) {

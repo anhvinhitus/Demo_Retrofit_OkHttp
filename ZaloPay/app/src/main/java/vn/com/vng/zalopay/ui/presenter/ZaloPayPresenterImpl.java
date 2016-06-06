@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +53,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void listAppResouce() {
 
         Subscription subscription = appConfigRepository.listAppResource()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .delaySubscription(3, TimeUnit.SECONDS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResouceSubscriber());
 
         compositeSubscription.add(subscription);
@@ -60,7 +61,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private final void onGetAppResourceSuccess(List<AppResource> resources) {
-         // mZaloPayView.insertApps(resources);
+        // mZaloPayView.insertApps(resources);
     }
 
 

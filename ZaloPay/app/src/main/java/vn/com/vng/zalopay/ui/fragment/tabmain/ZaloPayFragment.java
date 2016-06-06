@@ -22,10 +22,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
@@ -36,6 +34,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 
 /**
  * Created by AnhHieu on 4/11/16.
+ * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener, IZaloPayView {
 
@@ -70,7 +69,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
     /* Advertisement END */
-
 
     private ListAppRecyclerAdapter mAdapter;
 
@@ -153,7 +151,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app) {
 
-        Timber.d("onclick app %s %s ", app.appid, app.appname);
+        Timber.d("request to launch app [appid: %s, appname: %s]", app.appid, app.appname);
 
         navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
     }

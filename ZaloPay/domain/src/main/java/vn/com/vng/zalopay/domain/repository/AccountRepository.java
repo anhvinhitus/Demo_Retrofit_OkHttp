@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.domain.repository;
 
-import java.util.List;
-
 import rx.Observable;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 
@@ -10,5 +8,5 @@ import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
  */
 public interface AccountRepository {
     Observable<Boolean> updateProfile(String pin, String phonenumber);
-    Observable<List<ProfilePermisssion>> verifyOTPProfile(String otp);
+    Observable<ProfilePermisssion> verifyOTPProfile(String otp);
 }

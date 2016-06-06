@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.text.TextUtils;
+
+import java.security.MessageDigest;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -53,9 +57,32 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         this.unsubscribe();
     }
 
+    public String sha256(String base) {
+        if (TextUtils.isEmpty(base)) {
+            return "";
+        }
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            StringBuffer hexString = new StringBuffer();
+
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     public void updateProfile(String pin, String phone) {
         showLoading();
-        subscriptionLogin = accountRepository.updateProfile(pin, phone)
+        String pinSha256 = sha256(pin);
+
+        subscriptionLogin = accountRepository.updateProfile(pinSha256, phone)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new updateProfileSubscriber());
