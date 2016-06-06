@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -8,6 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -174,6 +176,14 @@ public class PaymentWrapper {
         return paymentInfo;
     }
 
+    private void startUpdateProfileLevel() {
+        if (viewListener == null || viewListener.getActivity() == null) {
+            return;
+        }
+        Intent intent = new Intent(viewListener.getActivity(), PreProfileActivity.class);
+        viewListener.getActivity().startActivity(intent);
+    }
+
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
         public void onComplete(ZPPaymentResult pPaymentResult) {
@@ -189,6 +199,9 @@ public class PaymentWrapper {
                     responseListener.onResponseSuccess(pPaymentResult);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                     responseListener.onResponseTokenInvalid();
+                } else if ( resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
+                    //Hien update profile level 2
+                    startUpdateProfileLevel();
                 } else {
                     responseListener.onResponseError(resultStatus);
                 }

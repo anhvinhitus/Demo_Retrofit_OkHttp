@@ -51,15 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.small"
-            android:paddingRight="@dimen/spacing.small"
             app:errorEnabled="false">
 
             <vn.com.vng.zalopay.ui.widget.ClearableEditText
                 android:id="@+id/edtPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/transparent"
                 android:ellipsize="end"
                 android:hint="@string/hint_phone"
                 android:inputType="phone"

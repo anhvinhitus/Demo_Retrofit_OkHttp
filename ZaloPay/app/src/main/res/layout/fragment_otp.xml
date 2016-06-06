@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing.medium.l"
         android:background="@color/white"
+        android:paddingTop="@dimen/spacing.medium"
         app:errorEnabled="false">
 
         <vn.com.vng.zalopay.ui.widget.ClearableEditText
@@ -22,7 +23,9 @@
             android:hint="@string/hint_otp"
             android:inputType="number"
             android:maxLines="1"
-            android:padding="@dimen/spacing.medium"
+            android:paddingBottom="@dimen/spacing.medium"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 

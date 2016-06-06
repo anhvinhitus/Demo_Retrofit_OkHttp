@@ -31,6 +31,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroyView() {
+        unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }
 
