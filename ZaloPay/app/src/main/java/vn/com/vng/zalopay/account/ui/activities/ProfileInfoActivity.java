@@ -65,7 +65,7 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
     @OnClick(R.id.layoutUser)
     public void onClickLayoutUser(View view) {
-        navigator.startPreProfileActivity(this);
+//        navigator.startPreProfileActivity(this);
     }
 
     @OnClick(R.id.layoutSigOutAndDelDB)

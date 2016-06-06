@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 
 /**
@@ -297,6 +298,10 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     private void showEditProfileInfo() {
         mLayoutProfileInfo.setVisibility(View.GONE);
         layoutEditProfileInfo.setVisibility(View.VISIBLE);
+    }
+
+    public void updateBalance(long balance) {
+        tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     public EditProfileFragment() {
