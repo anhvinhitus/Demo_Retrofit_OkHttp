@@ -1,7 +1,7 @@
-package vn.com.vng.zalopay.scanners.ui.beacon;
+package vn.com.vng.zalopay.scanners.beacons;
 
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 
 /**
  * Created by huuhoa on 6/4/16.

@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.utils.FileUtil;
 
 /**
  * Created by longlv on 05/06/2016.
+ * Sound record service
  */
 public class RecordService extends Service {
     private final String TAG = this.getClass().getSimpleName();
@@ -51,41 +52,43 @@ public class RecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "RecordService onStartCommand");
-        if (intent != null) {
-            int commandType = intent.getIntExtra("commandType", 0);
-            if (commandType != 0) {
-                if (commandType == Constants.RECORDING_ENABLED) {
-                    Log.d(TAG, "RecordService RECORDING_ENABLED");
-                    if (!recording)
-                        commandType = Constants.STATE_START_RECORDING;
+        Timber.d("RecordService onStartCommand");
+        if (intent == null) {
+            return super.onStartCommand(intent, flags, startId);
+        }
 
-                } else if (commandType == Constants.RECORDING_DISABLED) {
-                    Log.d(TAG, "RecordService RECORDING_DISABLED");
-                    if (recording)
-                        commandType = Constants.STATE_STOP_RECORDING;
-                }
+        int commandType = intent.getIntExtra("commandType", 0);
+        if (commandType == 0) {
+            return super.onStartCommand(intent, flags, startId);
+        }
 
-				/*if (commandType == Constants.STATE_INCOMING_NUMBER) {
-                    Log.d(TAG, "RecordService STATE_INCOMING_NUMBER");
-					startService();
-				} else */
-                if (commandType == Constants.STATE_START_RECORDING) {
-                    Log.d(TAG, "RecordService STATE_START_RECORDING");
-                    if (!recording) {
-                        recording = true;
-                        startService();
-                        startRecording(intent);
-                    }
-                } else if (commandType == Constants.STATE_STOP_RECORDING) {
-                    Log.d(TAG, "RecordService STATE_STOP_RECORDING");
-                    if (recording) {
-                        recording = false;
-                        stopService();
-                    }
-                }
+        if (commandType == Constants.RECORDING_ENABLED) {
+            Timber.d("RecordService RECORDING_ENABLED");
+            if (!recording) {
+                commandType = Constants.STATE_START_RECORDING;
+            }
+        } else if (commandType == Constants.RECORDING_DISABLED) {
+            Timber.d("RecordService RECORDING_DISABLED");
+            if (recording) {
+                commandType = Constants.STATE_STOP_RECORDING;
             }
         }
+
+        if (commandType == Constants.STATE_START_RECORDING) {
+            Timber.d("RecordService STATE_START_RECORDING");
+            if (!recording) {
+                recording = true;
+                startService();
+                startRecording(intent);
+            }
+        } else if (commandType == Constants.STATE_STOP_RECORDING) {
+            Timber.d("RecordService STATE_STOP_RECORDING");
+            if (recording) {
+                recording = false;
+                stopService();
+            }
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -107,13 +110,13 @@ public class RecordService extends Service {
     }
 
     private void deleteFile() {
-        Log.d(TAG, "RecordService deleteFile");
+        Timber.v("RecordService deleteFile");
         FileUtil.deleteFile(fileName);
         fileName = null;
     }
 
     private void stopAndReleaseRecorder() {
-        Log.v(TAG, "mBufferedOutputStream.close+++++++++++++++++++++++++++++++++++++++");
+        Timber.v("request to stop and release recorder");
         try {
             recording = false;
             if (mBufferedOutputStream != null) {
@@ -124,9 +127,11 @@ public class RecordService extends Service {
                 mAudioRecord.stop();
             }
         } catch (IOException e) {
-            Log.e(TAG, "Error when releasing", e);
+            Timber.e(e, "Error when releasing");
         } finally {
-            mAudioRecord.release();
+            if (mAudioRecord != null) {
+                mAudioRecord.release();
+            }
             mAudioRecord = null;
             mThreadRecord = null;
         }
@@ -134,7 +139,7 @@ public class RecordService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "RecordService onDestroy");
+        Timber.v("begin onDestroy");
         stopAndReleaseRecorder();
         stopService();
         super.onDestroy();
@@ -154,16 +159,16 @@ public class RecordService extends Service {
     }
 
     private void startRecording(Intent intent) {
-        Timber.tag(TAG).d("RecordService startRecording");
+        Timber.d("RecordService startRecording");
         try {
             if (intent != null) {
                 fileName = intent.getStringExtra(Constants.RECORDNAME);
             }
-            Timber.tag(TAG).d("RecordService startRecording fileName: %s", fileName);
+            Timber.d("RecordService startRecording fileName: %s", fileName);
             if (TextUtils.isEmpty(fileName)) {
                 fileName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
             }
-            Timber.tag(TAG).d("fileName: %s", fileName);
+            Timber.d("fileName: %s", fileName);
             mBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(fileName));
         } catch (IOException e) {
             e.printStackTrace();
@@ -235,27 +240,27 @@ public class RecordService extends Service {
 
         while (recording) {
             // gets the voice output from microphone to byte format
-            Timber.tag(TAG).d("read audio data.......time: %s", System.currentTimeMillis());
-            int result =  mAudioRecord.read(audioData, 0, bufferSize);
+            Timber.d("read audio data.......time: %s", System.currentTimeMillis());
+            int result = mAudioRecord.read(audioData, 0, bufferSize);
             if (result > 0) {
                 try {
-                    Log.e("Recording", "write data ngon roi heheehehehe");
+                    Timber.d("write data ngon roi heheehehehe");
 //                    audioTrack.write(audioData, 0, audioData.length);
 
                     // // writes the data to file from buffer
                     // // stores the voice buffer
                     os.write(audioData, 0, audioData.length);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Timber.e(e, "exception in writing data");
                 }
             } else if (result == AudioRecord.ERROR_INVALID_OPERATION) {
-                Log.e("Recording", "Invalid operation error");
+                Timber.d("Invalid operation error");
                 break;
             } else if (result == AudioRecord.ERROR_BAD_VALUE) {
-                Log.e("Recording", "Bad value error");
+                Timber.e("Bad value error");
                 break;
             } else if (result == AudioRecord.ERROR) {
-                Log.e("Recording", "Unknown error");
+                Timber.e("Unknown error");
                 break;
             }
 
@@ -268,11 +273,11 @@ public class RecordService extends Service {
         try {
             recording = false;
             os.close();
-            Log.v(TAG, "mBufferedOutputStream.close+++++++++++++++++++++++++++++++++++++++");
+            Timber.v("about to stop audio record");
             mAudioRecord.stop();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Timber.e(e, "Cannot stop");
         } finally {
             mAudioRecord.release();
             mAudioRecord = null;
@@ -282,7 +287,7 @@ public class RecordService extends Service {
 
     private void startService() {
         if (!onForeground) {
-            Log.d(TAG, "RecordService startService");
+            Timber.d(TAG, "RecordService startService");
             Intent intent = new Intent(this, MainActivity.class);
             // intent.setAction(Intent.ACTION_VIEW);
             // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -1,25 +1,22 @@
-package vn.com.vng.zalopay.scanners.controller;
+package vn.com.vng.zalopay.scanners.nfc;
 
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.scanners.ui.NfcView;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.vng.zalopay.utils.DebugUtils;
 import vn.com.vng.zalopay.utils.MemoryUtils;
 
 /**

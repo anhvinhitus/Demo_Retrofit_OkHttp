@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.controller;
+package vn.com.vng.zalopay.scanners.beacons;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
@@ -14,20 +14,15 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
-import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
-import android.util.ArrayMap;
-import android.util.Base64;
-import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 
 /**
  * Created by huuhoa on 6/3/16.

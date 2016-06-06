@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.controller;
+package vn.com.vng.zalopay.scanners.sound;
 
 /**
  * Created by huuhoa on 6/5/16.

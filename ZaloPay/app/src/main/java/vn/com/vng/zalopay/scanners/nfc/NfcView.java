@@ -1,6 +1,6 @@
-package vn.com.vng.zalopay.scanners.ui;
+package vn.com.vng.zalopay.scanners.nfc;
 
-import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 
 /**
  * Created by huuhoa on 6/1/16.

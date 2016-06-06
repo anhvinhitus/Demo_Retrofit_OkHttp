@@ -11,9 +11,11 @@ import android.support.v4.view.ViewPager;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.scanners.controller.NFCReaderPresenter;
-import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
-import vn.com.vng.zalopay.scanners.ui.fragment.ScanSoundFragment;
+import vn.com.vng.zalopay.scanners.nfc.NFCReaderPresenter;
+import vn.com.vng.zalopay.scanners.beacons.BeaconDevice;
+import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
+import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
+import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -162,7 +164,7 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0: {
-                    ScanNFCFragment fragment = ScanNFCFragment.newInstance("Hello NFC", "abc");
+                    ScanNFCFragment fragment = ScanNFCFragment.newInstance();
                     fragment.setReaderPresenter(mNFCReader);
                     return fragment;
                 }

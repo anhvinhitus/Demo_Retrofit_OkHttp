@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.ui;
+package vn.com.vng.zalopay.scanners.beacons;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.scanners.controller.BeaconScanner;
-import vn.com.vng.zalopay.scanners.controller.PaymentRecord;
-import vn.com.vng.zalopay.scanners.ui.beacon.BeaconDevice;
-import vn.com.vng.zalopay.scanners.ui.dummy.DummyContent;
-import vn.com.vng.zalopay.scanners.ui.dummy.DummyContent.DummyItem;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;

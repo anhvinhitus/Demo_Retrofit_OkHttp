@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.controller;
+package vn.com.vng.zalopay.scanners.models;
 
 import android.util.Base64;
 

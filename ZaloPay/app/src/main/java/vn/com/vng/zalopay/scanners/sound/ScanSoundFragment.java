@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.ui.fragment;
+package vn.com.vng.zalopay.scanners.sound;
 
 import android.content.Context;
 import android.content.Intent;
