@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 public interface AccountService {
 
     @FormUrlEncoded
-    @POST("um//updateprofile")
+    @POST("um/updateprofile")
     Observable<BaseResponse> updateProfile(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
     @FormUrlEncoded
