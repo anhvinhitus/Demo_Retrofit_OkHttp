@@ -4,6 +4,7 @@ package vn.com.vng.zalopay;
  * Created by AnhHieu on 3/25/16.
  */
 public class Constants {
+    public static final int PROFILE_LEVEL_MIN = 2;
     public static final int CONNECTION_POOL_COUNT = 3;
     public static final long KEEP_ALIVE_DURATION_MS = 30000l;
     public static final long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
@@ -19,6 +20,8 @@ public class Constants {
     public static final String PREF_USER_EMAIL = "pref_user_email";
     public static final String PREF_USER_BIRTHDATE = "pref_user_birth_date";
     public static final String PREF_USER_GENDER = "pref_user_gender";
+    public static final String PREF_PROFILELEVEL = "profilelevel";
+    public static final String PREF_PROFILEPERMISSIONS = "profilePermisssions";
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";

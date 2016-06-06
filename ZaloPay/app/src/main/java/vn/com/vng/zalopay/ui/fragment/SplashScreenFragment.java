@@ -104,6 +104,12 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     }
 
     @Override
+    public void gotoUpdateProfileLevel2() {
+        navigator.startUpdateProfileLevel2Activity(getActivity(), false);
+        getActivity().finish();
+    }
+
+    @Override
     public void gotoLoginScreen() {
         navigator.startLoginActivity(getContext(), false);
         getActivity().finish();

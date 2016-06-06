@@ -20,6 +20,8 @@ public class UserEntityDataMapper {
             user.accesstoken = response.accesstoken;
             user.expirein = response.expirein;
             user.uid = response.userid;
+            user.profilelevel = response.profilelevel;
+            user.profilePermisssions = response.profilelevelpermisssion;
         }
 
         return user;

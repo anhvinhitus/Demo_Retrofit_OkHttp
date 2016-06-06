@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay.data.cache;
 
+import java.util.List;
+
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
+import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -22,6 +25,8 @@ public interface UserConfig {
     void saveConfig(LoginResponse response);
 
     void saveConfig(LoginResponse response, long zuid);
+
+    void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions);
 
     void loadConfig();
 

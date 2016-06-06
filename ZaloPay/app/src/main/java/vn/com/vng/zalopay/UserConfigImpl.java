@@ -3,14 +3,20 @@ package vn.com.vng.zalopay;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.utils.JsonUtil;
 
 /**
  * Created by AnhHieu on 4/26/16.
@@ -59,9 +65,23 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_USER_ID, user.uid);
         editor.putString(Constants.PREF_USER_NAME, user.dname);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
+        editor.putInt(Constants.PREF_PROFILELEVEL, user.profilelevel);
+        String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermisssions);
+        Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
+        editor.putString(Constants.PREF_PROFILEPERMISSIONS, permissionsStr);
 
         editor.apply();
 
+    }
+
+    public void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constants.PREF_PROFILELEVEL, profilelevel);
+        Gson gson = new Gson();
+        String permissionsStr = JsonUtil.toJsonArrayString(profilePermisssions);
+        Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
+        editor.putString(Constants.PREF_PROFILEPERMISSIONS, permissionsStr);
+        editor.apply();
     }
 
     public void loadConfig() {
@@ -80,6 +100,8 @@ public class UserConfigImpl implements UserConfig {
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
             currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDATE, 0);
+            currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILELEVEL, 0);
+            currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILEPERMISSIONS, ""));
         }
     }
 
@@ -103,7 +125,7 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveConfig(LoginResponse response) {
-        Timber.tag("##########################@@@@@@@@").d("saveConfig.............");
+        Timber.tag("UserConfig").d("saveConfig.............");
         if (response == null || !response.isSuccessfulResponse()) return;
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);
@@ -114,7 +136,7 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveConfig(LoginResponse response, long zuid) {
-        Timber.tag("##########################@@@@@@@@").d("saveConfig.............zuid:" + zuid);
+        Timber.tag("UserConfig").d("saveConfig.............zuid:" + zuid);
         if (response == null || !response.isSuccessfulResponse()) return;
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_SESSION, response.accesstoken);
