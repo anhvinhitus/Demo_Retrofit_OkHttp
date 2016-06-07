@@ -15,7 +15,7 @@ android {
          * native build settings: taking default for almost everything
          */
         ndk {
-            moduleName = 'crity'
+            moduleName = 'transcoder'
 //        toolchain = 'clang'
 //        CFlags.addAll(['-Wall'])
 //            abiFilters = ["armeabi-v7a", "armeabi", "arm64-v8a", "x86", "x86-64"]

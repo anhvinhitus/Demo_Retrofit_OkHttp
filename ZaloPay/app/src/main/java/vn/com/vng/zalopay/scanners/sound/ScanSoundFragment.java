@@ -5,7 +5,6 @@ import android.view.View;
 
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.crity.CrityWrapper;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
 import vn.com.vng.zalopay.sound.transcoder.RecordService;
@@ -43,8 +42,8 @@ public class ScanSoundFragment extends BaseFragment {
     @OnClick(R.id.btnTestJNI)
     public void onClickTestJNI(View view) {
         Timber.d("Click Test JNI");
-        String crityStr = CrityWrapper.doCreateSecureKeyPart("Hello world", getContext());
-        Timber.d("onClickTestJNI...........crityStr:%s", crityStr);
+//        String crityStr = CrityWrapper.doCreateSecureKeyPart("Hello world", getContext());
+//        Timber.d("onClickTestJNI...........crityStr:%s", crityStr);
     }
 
     public ScanSoundFragment() {

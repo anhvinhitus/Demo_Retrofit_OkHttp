@@ -109,7 +109,7 @@ JNIEXPORT jlong JNICALL Java_vn_com_vng_zalopay_sound_transcoder_Decoder_process
         }
     }
 
-    return 1;
+    return status;
 }
 
 /*
@@ -148,8 +148,9 @@ bool SoundDecoder::initializeConfig() {
     _demoConfig.f0 = 12000;
     _demoConfig.f1 = 17000;
 
-    _demoConfig.bandWidth = 300;
-    _demoConfig.numTaps = 10;
+    _demoConfig.bandWidth = 200;
+    _demoConfig.numTaps = 30;
+
     // in ms
     _demoConfig.enjNSum = (int)(_demoConfig.samplingRate * (_demoConfig.activeTime / 1000.0) / 2);
     _demoConfig.maximumInterval = 64; //TODO: set depend on _demoConfig.*
@@ -159,6 +160,7 @@ bool SoundDecoder::initializeConfig() {
 
     _fskDemodulation = new FSKDemodulation(_demoConfig);
 
+    _status = fskDemodulationStatusStart;
     return true;
 }
 

@@ -25,6 +25,7 @@ public class RecordService {
 
     private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
     private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
+    private static final boolean RECORDER_SAVE_FILE = false;
 
     private String fileName = "";
 
@@ -59,9 +60,11 @@ public class RecordService {
     private void stopService() {
         Timber.d("RecordService stopService");
         stopAndReleaseRecorder();
-        copyWaveFile(getTempFilename(), fileName);
-        Timber.i("Wav was recorded to %s", fileName);
-        deleteFile();
+        if (RECORDER_SAVE_FILE) {
+            copyWaveFile(getTempFilename(), fileName);
+            Timber.i("Wav was recorded to %s", fileName);
+            deleteFile();
+        }
     }
 
     private void deleteFile() {
@@ -161,14 +164,16 @@ public class RecordService {
 
         private boolean initialize() {
             Timber.d("RecordService startRecording");
-            try {
-                outputStream = new FileOutputStream(getTempFilename());
-            } catch (IOException e) {
-                Timber.e(e, "Exception in create new file");
-                return false;
-            } catch (Exception e) {
-                Timber.e(e, "Generic Exception");
-                return false;
+            if (RECORDER_SAVE_FILE) {
+                try {
+                    outputStream = new FileOutputStream(getTempFilename());
+                } catch (IOException e) {
+                    Timber.e(e, "Exception in create new file");
+                    return false;
+                } catch (Exception e) {
+                    Timber.e(e, "Generic Exception");
+                    return false;
+                }
             }
 
             // buffer size in bytes
@@ -204,7 +209,7 @@ public class RecordService {
 
         private boolean writeAudioDataToFile() {
             // gets the voice output from microphone to byte format
-            Timber.d("read audio data.......time: %s", System.currentTimeMillis());
+//            Timber.d("read audio data.......time: %s", System.currentTimeMillis());
             int result = mAudioRecord.read(audioDataBuffer, 0, bufferSize);
             if (result > 0) {
                 try {
@@ -213,9 +218,13 @@ public class RecordService {
 
                     // // writes the data to file from buffer
                     // // stores the voice buffer
-                    outputStream.write(audioDataBuffer);
+                    if (RECORDER_SAVE_FILE) {
+                        outputStream.write(audioDataBuffer);
+                    }
+
                     try {
-                        transcoderDecode.processBuffer(audioDataBuffer);
+                        long processBuffer = transcoderDecode.processBuffer(audioDataBuffer);
+                        Timber.i("processBuffer: %d", processBuffer);
                     } catch (UnsatisfiedLinkError e) {
                         Timber.e(e, "Error in JNI cal processBuffer");
                     }
@@ -249,8 +258,10 @@ public class RecordService {
         private void cleanup() {
             Timber.d("About to cleanup record thread");
             try {
-//                recording = false;
-                outputStream.close();
+                if (RECORDER_SAVE_FILE) {
+                    outputStream.close();
+                }
+
                 Timber.v("about to stop audio record");
                 mAudioRecord.stop();
 
@@ -369,9 +380,9 @@ public class RecordService {
     // Load library
     static {
         try {
-            System.loadLibrary("crity");
+            System.loadLibrary("transcoder");
         } catch (Throwable ex) {
-            Timber.e("Wrapper", "Error loading crity", ex);
+            Timber.e("Wrapper", "Error loading transcoder", ex);
         }
     }
 }
