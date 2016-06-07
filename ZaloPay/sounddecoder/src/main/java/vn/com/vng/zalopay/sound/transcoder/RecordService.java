@@ -30,6 +30,7 @@ public class RecordService {
     private String fileName = "";
 
     private Thread mThreadRecord;
+    private RecordingThread mRecordingThread;
 
     public boolean start(String fileName, DecoderListener decoderListener) {
         Timber.d("RecordService STATE_START_RECORDING");
@@ -93,6 +94,7 @@ public class RecordService {
                 mThreadRecord.join();
             }
             mThreadRecord = null;
+            mRecordingThread = null;
         } catch (InterruptedException e) {
             Timber.e(e, "Error when releasing");
         } finally {
@@ -115,7 +117,8 @@ public class RecordService {
 
     private void startRecording(DecoderListener decoderListener) {
         Timber.d("RecordService startRecording");
-        mThreadRecord = new Thread(new RecordingThread(decoderListener), "AudioRecorder Thread");
+        mRecordingThread = new RecordingThread(decoderListener);
+        mThreadRecord = new Thread(mRecordingThread, "AudioRecorder Thread");
         mThreadRecord.start();
     }
 
@@ -133,6 +136,12 @@ public class RecordService {
             tempFile.delete();
 
         return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
+    }
+
+    public void reset() {
+        if (mRecordingThread != null) {
+            mRecordingThread.resetTranscoder();
+        }
     }
 
     private class RecordingThread implements Runnable {
@@ -284,6 +293,13 @@ public class RecordService {
 //                mThreadRecord = null;
             }
         }
+
+        public void resetTranscoder() {
+            if (transcoderDecode != null) {
+                transcoderDecode.releaseDecoder();
+                transcoderDecode.initializeDecoder();
+            }
+        }
     }
 
     private void copyWaveFile(String inFilename, String outFilename) {
@@ -380,7 +396,9 @@ public class RecordService {
     // Load library
     static {
         try {
+            Timber.i("Loading transcoder service");
             System.loadLibrary("transcoder");
+            Timber.i("DONE Loading transcoder service");
         } catch (Throwable ex) {
             Timber.e("Wrapper", "Error loading transcoder", ex);
         }

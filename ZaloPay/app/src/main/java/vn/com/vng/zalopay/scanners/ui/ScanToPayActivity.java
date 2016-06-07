@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class ScanToPayActivity extends BaseToolBarActivity implements CounterBeaconFragment.OnListFragmentInteractionListener {
+public class ScanToPayActivity extends BaseToolBarActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -144,11 +144,6 @@ public class ScanToPayActivity extends BaseToolBarActivity implements CounterBea
          * In our case this method gets called, when the user attaches a Tag to the device.
          */
         handleIntent(intent);
-    }
-
-    @Override
-    public void onListFragmentInteraction(BeaconDevice item) {
-        Timber.i("Select item: %s", item);
     }
 
     /**

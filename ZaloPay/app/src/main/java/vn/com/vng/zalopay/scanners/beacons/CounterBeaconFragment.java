@@ -39,12 +39,8 @@ import javax.inject.Inject;
  * interface.
  */
 public class CounterBeaconFragment extends BaseFragment {
-
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
     private MenuItem fav;
 
     private BeaconScanner beaconScanner;
@@ -143,7 +139,6 @@ public class CounterBeaconFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Add your menu entries here
         super.onCreateOptionsMenu(menu, inflater);
 
         fav = menu.add("refresh");
@@ -185,26 +180,20 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mMainLooperHandler = new Handler(context.getMainLooper());
-        mMainLooperHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                beaconScanner.startScan();
-            }
-        });
-//        if (context instanceof OnListFragmentInteractionListener) {
-//            mListener = (OnListFragmentInteractionListener) context;
-//        } else {
-//            Timber.w("Activity: %s", context);
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
-//        }
+        if (false) {
+            mMainLooperHandler = new Handler(context.getMainLooper());
+            mMainLooperHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    beaconScanner.startScan();
+                }
+            });
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
         mMainLooperHandler = null;
         beaconScanner.stopScan();
     }
@@ -222,16 +211,16 @@ public class CounterBeaconFragment extends BaseFragment {
 
         beaconScanner.startScan();
     }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (!isVisibleToUser) {
-            beaconScanner.stopScan();
-        } else {
-            beaconScanner.startScan();
-        }
-    }
+//
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (!isVisibleToUser) {
+//            beaconScanner.stopScan();
+//        } else {
+//            beaconScanner.startScan();
+//        }
+//    }
 
     private void resetDeviceList() {
         mDeviceList.clear();

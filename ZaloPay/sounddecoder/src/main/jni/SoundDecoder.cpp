@@ -2,6 +2,7 @@
 // Created by Nguyễn Hữu Hoà on 6/7/16.
 //
 #include <string>
+#include <android/log.h>
 #include "SoundDecoder.h"
 #include "filt.h"
 #include "fskdemodulation++.h"
@@ -173,12 +174,16 @@ void SoundDecoder::releaseSession() {
 
 FSKDemodulationStatus SoundDecoder::detect(const void* bytes, uint32_t length) {
     if (_status == fskDemodulationStatusEnd) {
+        __android_log_write(ANDROID_LOG_WARN, "Transcoder", "transcoder is already ENDED");
         return _status;
     }
 
     for (uint32_t index = 0; index < length/2; index ++) {
         int16_t value = ((int16_t*)bytes)[index];
-        float sample = value / 32768.0;
+        float sample = value / 3276.80;
+//        char result[50];
+//        sprintf(result, "Value: %f", sample);
+//        __android_log_write(ANDROID_LOG_DEBUG, "Transcoder", result);
         _status = _fskDemodulation->processOne(sample);
         if (_status == fskDemodulationStatusEnd) {
             int textLength;

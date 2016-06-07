@@ -3,6 +3,9 @@ package vn.com.vng.zalopay.scanners.sound;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -18,7 +21,7 @@ import vn.com.vng.zalopay.utils.FileUtil;
  * create an instance of this fragment.
  */
 public class ScanSoundFragment extends BaseFragment {
-    private final RecordService recordService;
+    private RecordService recordService;
     private final DecoderListener decoderListener;
 
     @OnClick(R.id.btnStartScanSound)
@@ -30,6 +33,11 @@ public class ScanSoundFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (recordService == null) {
+            this.recordService = new RecordService();
+        }
+
         recordService.start(mRecordName, this.decoderListener);
     }
 
@@ -39,25 +47,21 @@ public class ScanSoundFragment extends BaseFragment {
         recordService.stop();
     }
 
-    @OnClick(R.id.btnTestJNI)
-    public void onClickTestJNI(View view) {
-        Timber.d("Click Test JNI");
-//        String crityStr = CrityWrapper.doCreateSecureKeyPart("Hello world", getContext());
-//        Timber.d("onClickTestJNI...........crityStr:%s", crityStr);
-    }
-
     public ScanSoundFragment() {
         // Required empty public constructor
-        this.recordService = new RecordService();
         this.decoderListener = new DecoderListener() {
             @Override
             public void didDetectData(byte[] data) {
                 Timber.w("Detect data: %s", DebugUtils.bytesToHex(data));
+                Timber.w("Detect data: %s", new String(data, Charset.defaultCharset()));
+
+                recordService.reset();
             }
 
             @Override
             public void errorDetectData() {
                 Timber.w("Error in detecting data");
+                recordService.reset();
             }
         };
     }
