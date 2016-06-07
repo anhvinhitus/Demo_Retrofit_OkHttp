@@ -94,6 +94,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     @Override
     public void destroyView() {
+        this.unsubscribe();
         this.mView = null;
     }
 
@@ -110,7 +111,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     @Override
     public void destroy() {
         this.destroyView();
-        this.unsubscribe();
     }
 
     private void unsubscribe() {

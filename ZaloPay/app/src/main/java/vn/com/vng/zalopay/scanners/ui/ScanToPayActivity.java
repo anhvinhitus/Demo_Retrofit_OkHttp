@@ -18,10 +18,10 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.scanners.nfc.NFCReaderPresenter;
-import vn.com.vng.zalopay.scanners.beacons.BeaconDevice;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
+import vn.com.vng.zalopay.scanners.nfc.NFCReaderPresenter;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
+import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
 import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -42,11 +42,11 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
-    private static final int TAB_TOTAL = 3;
+    private static final int TAB_TOTAL = 4;
     private static final int TAB_NFC = 0;
     private static final int TAB_BEACON = 1;
-    private static final int TAB_SOUND = 2;
-    private static final int TAB_QR = 3;
+    private static final int TAB_SOUND = 3;
+    private static final int TAB_QR = 2;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -96,18 +96,21 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                         mNFCTabActivated = false;
                     }
 
-                    if (position == TAB_BEACON) {
-                        beaconFragment.startScanning();
-                    } else {
-                        beaconFragment.stopScanning();
+                    if (beaconFragment != null) {
+                        if (position == TAB_BEACON) {
+                            beaconFragment.startScanning();
+                        } else {
+                            beaconFragment.stopScanning();
+                        }
                     }
 
-                    if (position == TAB_SOUND) {
-                        soundFragment.startRecording();
-                    } else {
-                        soundFragment.stopRecording();
+                    if (soundFragment != null) {
+                        if (position == TAB_SOUND) {
+                            soundFragment.startRecording();
+                        } else {
+                            soundFragment.stopRecording();
+                        }
                     }
-
                 }
 
                 @Override
@@ -123,8 +126,9 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
         mNFCReader.initialize();
         handleIntent(getIntent());
-
-        checkBluetoothPermission();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkBluetoothPermission();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -221,6 +225,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     private ScanNFCFragment nfcFragment;
     private ScanSoundFragment soundFragment;
     private CounterBeaconFragment beaconFragment;
+    private QRCodeFragment qrCodeFragment;
 
 
     /**
@@ -249,9 +254,15 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                     beaconFragment = CounterBeaconFragment.newInstance(1);
                     return beaconFragment;
                 }
+
+                case TAB_QR:
+                    qrCodeFragment = QRCodeFragment.newInstance();
+                    return qrCodeFragment;
+
                 case TAB_SOUND:
                     soundFragment = ScanSoundFragment.newInstance();
                     return soundFragment;
+
                 default:
                     return null;
             }

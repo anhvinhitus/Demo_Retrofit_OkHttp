@@ -30,11 +30,14 @@ import vn.com.vng.zalopay.scanners.models.PaymentRecord;
  */
 public class BeaconScanner {
     public static boolean INCLUDE_NON_PAYMENT_DEVICE = false;
+
     public interface BeaconListener {
         void shouldRequestEnableBluetooth();
+
         void onDiscoverDevice(String deviceName, int rssi, PaymentRecord data);
 
         void onScanningStarted();
+
         void onScanningStopped();
     }
 
@@ -92,7 +95,7 @@ public class BeaconScanner {
                         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                         .build();
                 filters = new ArrayList<ScanFilter>();
-                mLEScanner.startScan(filters, settings, mLeScanCallback21);
+                mLEScanner.startScan(filters, settings, getScanCallback());
             }
 
             mListener.onScanningStarted();
@@ -114,7 +117,7 @@ public class BeaconScanner {
             if (mLEScanner == null) {
                 return;
             } else {
-                mLEScanner.stopScan(mLeScanCallback21);
+                mLEScanner.stopScan(getScanCallback());
             }
         }
 
@@ -152,7 +155,16 @@ public class BeaconScanner {
 //        super.onActivityResult(requestCode, resultCode, data);
 //    }
 
-    private ScanCallback mLeScanCallback21 = new LeScanCallback21();
+
+    private LeScanCallback21 getScanCallback() {
+        if (mLeScanCallback21 == null) {
+            mLeScanCallback21 = new LeScanCallback21();
+        }
+        return mLeScanCallback21;
+
+    }
+
+    private LeScanCallback21 mLeScanCallback21;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private class LeScanCallback21 extends ScanCallback {
@@ -179,7 +191,7 @@ public class BeaconScanner {
         public void onScanFailed(int errorCode) {
             Timber.e("Scan Failed with Error Code: %d", errorCode);
         }
-    };
+    }
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback18 = new LeScanCallback18();
 
