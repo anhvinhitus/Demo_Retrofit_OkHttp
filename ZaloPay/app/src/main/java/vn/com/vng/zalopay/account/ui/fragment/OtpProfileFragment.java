@@ -125,7 +125,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.destroyView();
     }
 
     @Override
