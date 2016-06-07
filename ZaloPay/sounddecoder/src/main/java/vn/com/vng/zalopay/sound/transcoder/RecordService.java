@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.sound;
+package vn.com.vng.zalopay.sound.transcoder;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -12,9 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.sound.transcoder.Decoder;
-import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
-import vn.com.vng.zalopay.utils.FileUtil;
 
 /**
  * Created by longlv on 05/06/2016.
@@ -69,7 +66,20 @@ public class RecordService {
 
     private void deleteFile() {
         Timber.v("RecordService deleteFile");
-        FileUtil.deleteFile(getTempFilename());
+        String fileName = getTempFilename();
+        if (fileName == null) {
+            return;
+        }
+        Timber.d("FileHelper deleteFile " + fileName);
+        try {
+            File file = new File(fileName);
+
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (Exception e) {
+            Timber.e(e, "Exception");
+        }
     }
 
     private void stopAndReleaseRecorder() {
@@ -198,7 +208,7 @@ public class RecordService {
             int result = mAudioRecord.read(audioDataBuffer, 0, bufferSize);
             if (result > 0) {
                 try {
-                    Timber.d("got audio data: %d-%d", audioDataBuffer.length, result);
+//                    Timber.d("got audio data: %d-%d", audioDataBuffer.length, result);
 //                    audioTrack.write(audioData, 0, audioData.length);
 
                     // // writes the data to file from buffer
@@ -353,6 +363,16 @@ public class RecordService {
         header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
         out.write(header, 0, 44);
+    }
+
+
+    // Load library
+    static {
+        try {
+            System.loadLibrary("crity");
+        } catch (Throwable ex) {
+            Timber.e("Wrapper", "Error loading crity", ex);
+        }
     }
 }
 

@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.sound.transcoder;
 
+import android.util.Log;
+
+import timber.log.Timber;
+
 /**
  * Created by huuhoa on 6/7/16.
  * Transcoder - decoder - native wrapper

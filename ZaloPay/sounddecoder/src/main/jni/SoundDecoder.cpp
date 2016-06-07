@@ -12,8 +12,8 @@ private:
     FSKDemodulation *_fskDemodulation;
     FSKDemodulationStatus _status;
     std::string _outputBuffer;
+
 public:
-    
     bool initializeConfig();
     void releaseSession();
     FSKDemodulationStatus detect(const void* bytes, uint32_t length);
