@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.scanners.beacons;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,11 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
         String amount = "";
         if (holder.mItem.order != null) {
             amount = CurrencyUtil.formatCurrency(holder.mItem.order.getAmount());
-            holder.mDescriptionView.setText(holder.mItem.order.getDescription());
+            String description = holder.mItem.order.getDescription();
+            if (TextUtils.isEmpty(description)) {
+                description = "Thanh toán cho hoá đơn";
+            }
+            holder.mDescriptionView.setText(description);
         } else if (holder.mItem.paymentRecord != null) {
             amount = CurrencyUtil.formatCurrency(holder.mItem.paymentRecord.amount);
             holder.mDescriptionView.setText("Hoá đơn: ");
