@@ -20,7 +20,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -169,11 +168,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         Timber.d("uid " + user.uid);
         // Khởi tạo user component
         AndroidApplication.instance().createUserComponent(user);
-        if (user.profilelevel < Constants.PROFILE_LEVEL_MIN) {
-            this.gotoUpdateProfileLevel2();
-        } else {
-            this.gotoHomeScreen();
-        }
+//        if (user.profilelevel < Constants.PROFILE_LEVEL_MIN) {
+//            this.gotoUpdateProfileLevel2();
+//        } else {
+        this.gotoHomeScreen();
+//        }
     }
 
     private final void onLoginError(Throwable e) {
