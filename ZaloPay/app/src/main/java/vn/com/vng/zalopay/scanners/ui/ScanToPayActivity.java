@@ -160,6 +160,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            Timber.d("SectionsPagerAdapter getItem: %d", position);
             switch (position) {
                 case 0: {
                     ScanNFCFragment fragment = ScanNFCFragment.newInstance();
@@ -169,6 +170,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                 case 1:
                     return ScanSoundFragment.newInstance();
                 case 2: {
+//                    return ScanSoundFragment.newInstance();
                     CounterBeaconFragment fragment = CounterBeaconFragment.newInstance(1);
                     return fragment;
                 }

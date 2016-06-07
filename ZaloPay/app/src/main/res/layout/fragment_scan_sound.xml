@@ -4,25 +4,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".scanners.sound.ScanSoundFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đặt điện thoại ở gần máy tính tiền để bắt đầu giao dịch"
+            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:layout_margin="@dimen/default_margin"
+            />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnStartScanSound"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="@dimen/spacing.medium"
-        android:text="@string/btn_start_scan_sound" />
+        android:text="@string/btn_start_scan_sound"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnStopScanSound"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="@dimen/spacing.medium"
-        android:text="@string/btn_stop_scan_sound" />
-
-    <Button
-        android:id="@+id/btnTestJNI"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_margin="@dimen/spacing.medium"
-        android:text="@string/test_jni" />
+        android:text="@string/btn_stop_scan_sound"
+        android:visibility="gone" />
 </LinearLayout>

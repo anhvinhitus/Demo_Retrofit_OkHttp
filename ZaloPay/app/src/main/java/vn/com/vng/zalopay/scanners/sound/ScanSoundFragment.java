@@ -1,19 +1,26 @@
 package vn.com.vng.zalopay.scanners.sound;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import javax.inject.Inject;
+
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.scanners.models.PaymentRecord;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
 import vn.com.vng.zalopay.sound.transcoder.RecordService;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DebugUtils;
 import vn.com.vng.zalopay.utils.FileUtil;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,27 +30,38 @@ import vn.com.vng.zalopay.utils.FileUtil;
 public class ScanSoundFragment extends BaseFragment {
     private RecordService recordService;
     private final DecoderListener decoderListener;
+    private PaymentWrapper paymentWrapper;
+
+    @Inject
+    ZaloPayRepository zaloPayRepository;
 
     @OnClick(R.id.btnStartScanSound)
     public void onClickStartScanSound(View view) {
         Timber.d("Start scan sound");
+        startTranscoder();
+    }
+
+    @OnClick(R.id.btnStopScanSound)
+    public void onClickStopScanSound(View view) {
+        Timber.d("Stop scan sound");
+        stopTranscoder();
+    }
+
+    private void startTranscoder() {
+        if (recordService == null) {
+            this.recordService = new RecordService();
+        }
+
         String mRecordName = null;
         try {
             mRecordName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if (recordService == null) {
-            this.recordService = new RecordService();
-        }
-
         recordService.start(mRecordName, this.decoderListener);
     }
 
-    @OnClick(R.id.btnStopScanSound)
-    public void onClickStopScanSound(View view) {
-        Timber.d("Stop scan sound");
+    private void stopTranscoder() {
         recordService.stop();
     }
 
@@ -56,6 +74,17 @@ public class ScanSoundFragment extends BaseFragment {
                 Timber.w("Detect data: %s", new String(data, Charset.defaultCharset()));
 
                 recordService.reset();
+                if (data.length < 24) {
+                    return;
+                }
+
+                PaymentRecord paymentRecord = PaymentRecord.from(data);
+                if (paymentRecord == null) {
+                    return;
+                }
+
+                stopTranscoder();
+                paymentWrapper.payWithToken(paymentRecord.appId, paymentRecord.transactionToken);
             }
 
             @Override
@@ -78,11 +107,59 @@ public class ScanSoundFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
 
+        paymentWrapper = new PaymentWrapper(zaloPayRepository,
+                new PaymentWrapper.IViewListener() {
+                    @Override
+                    public Activity getActivity() {
+                        return ScanSoundFragment.this.getActivity();
+                    }
+                },
+                new PaymentWrapper.IResponseListener() {
+                    @Override
+                    public void onParameterError(String param) {
+                        showToast(String.format("Parameter error: %s", param));
+                        startTranscoder();
+                    }
+
+                    @Override
+                    public void onResponseError(int status) {
+                        startTranscoder();
+                    }
+
+                    @Override
+                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                        ScanSoundFragment.this.getActivity().finish();
+                    }
+
+                    @Override
+                    public void onResponseTokenInvalid() {
+
+                    }
+
+                    @Override
+                    public void onResponseCancel() {
+
+                    }
+                }
+        );
     }
 
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_scan_sound;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopTranscoder();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startTranscoder();
     }
 }
