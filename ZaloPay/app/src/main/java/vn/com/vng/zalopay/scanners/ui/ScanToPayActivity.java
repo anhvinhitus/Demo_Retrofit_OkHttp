@@ -124,7 +124,9 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         mNFCReader.initialize();
         handleIntent(getIntent());
 
-        checkBluetoothPermission();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkBluetoothPermission();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
