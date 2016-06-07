@@ -211,22 +211,6 @@ public class CounterBeaconFragment extends BaseFragment {
     }
 
     private Timer timer;
-    private TimerTask cleanupDevice = new TimerTask() {
-        @Override
-        public void run() {
-            List<BeaconDevice> expiredList = new ArrayList<>();
-            for (BeaconDevice device : mDeviceList) {
-                if (device.isExpired()) {
-                    expiredList.add(device);
-                }
-            }
-
-            if (!expiredList.isEmpty()) {
-                mDeviceList.removeAll(expiredList);
-                mMainLooperHandler.post(updateDatasetRunnable);
-            }
-        }
-    };
     private void startBeaconScanner() {
         if (timer == null) {
             timer = new Timer();
@@ -236,7 +220,7 @@ public class CounterBeaconFragment extends BaseFragment {
         }
 
         try {
-            timer.scheduleAtFixedRate(cleanupDevice, 0, 1000);
+            timer.scheduleAtFixedRate(new MyTimerTask(), 0, 1000);
         } catch (Exception e) {
             Timber.e(e, "Exception");
         }
@@ -423,5 +407,22 @@ public class CounterBeaconFragment extends BaseFragment {
 
         public Order order;
         public int status;
+    }
+
+    private class MyTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            List<BeaconDevice> expiredList = new ArrayList<>();
+            for (BeaconDevice device : mDeviceList) {
+                if (device.isExpired()) {
+                    expiredList.add(device);
+                }
+            }
+
+            if (!expiredList.isEmpty()) {
+                mDeviceList.removeAll(expiredList);
+                mMainLooperHandler.post(updateDatasetRunnable);
+            }
+        }
     }
 }
