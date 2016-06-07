@@ -53,7 +53,6 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
-        this.destroyView();
         this.unsubscribe();
     }
 

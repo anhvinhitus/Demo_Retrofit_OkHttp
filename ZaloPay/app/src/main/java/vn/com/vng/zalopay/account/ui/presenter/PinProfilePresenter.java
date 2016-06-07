@@ -53,7 +53,6 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void destroy() {
-        this.destroyView();
         this.unsubscribe();
     }
 
