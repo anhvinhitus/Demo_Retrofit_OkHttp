@@ -4,22 +4,21 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
+import vn.com.vng.zalopay.account.ui.view.IOTPRecoveryPinView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 25/05/2016.
  */
-public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPresenter<IOTPProfileView> {
+public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPresenter<IOTPRecoveryPinView> {
 
-    IOTPProfileView mView;
+    IOTPRecoveryPinView mView;
     private Subscription subscriptionLogin;
 
     @Override
-    public void setView(IOTPProfileView iProfileView) {
+    public void setView(IOTPRecoveryPinView iProfileView) {
         mView = iProfileView;
     }
 
@@ -59,20 +58,18 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
     public void verifyOtp(String otp) {
         showLoading();
-        subscriptionLogin = accountRepository.verifyOTPProfile(otp)
+        subscriptionLogin = accountRepository.recoverypin(null, otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new VerifyOTPProfileSubscriber());
+                .subscribe(new VerifyOTPRecoveryPinSubscriber());
     }
 
-    private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<ProfilePermisssion> {
-        public VerifyOTPProfileSubscriber() {
+    private final class VerifyOTPRecoveryPinSubscriber extends DefaultSubscriber<Boolean> {
+        public VerifyOTPRecoveryPinSubscriber() {
         }
 
         @Override
-        public void onNext(ProfilePermisssion permisssions) {
-            Timber.d("confirmOTP success profileLevel: %s", permisssions.profileLevel);
-            Timber.d("confirmOTP success profilePermisssions: %s", permisssions.profilePermisssions);
+        public void onNext(Boolean result) {
             OTPRecoveryPinPresenter.this.onVerifyOTPSucess();
         }
 

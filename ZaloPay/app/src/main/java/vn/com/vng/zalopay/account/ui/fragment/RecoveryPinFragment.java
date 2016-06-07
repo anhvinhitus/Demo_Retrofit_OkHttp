@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
@@ -65,29 +64,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     TextInputLayout textInputPhone;
     @BindView(R.id.edtPhone)
     ClearableEditText edtPhone;
-
-    @OnTextChanged(R.id.edtPhone)
-    public void onTextChangedPhone(CharSequence charSequence) {
-        if (isValidPhone()) {
-            hidePhoneError();
-        } else {
-            showPhoneError();
-        }
-    }
-
-    private void showPhoneError() {
-        textInputPhone.setErrorEnabled(true);
-        if (TextUtils.isEmpty(edtPhone.getText().toString())) {
-            textInputPhone.setError(getString(R.string.invalid_phone_empty));
-        } else {
-            textInputPhone.setError(getString(R.string.invalid_phone));
-        }
-    }
-
-    private void hidePhoneError() {
-        textInputPhone.setErrorEnabled(false);
-        textInputPhone.setError(null);
-    }
 
     public boolean isValidPhone() {
         String phone = edtPhone.getString();
@@ -253,12 +229,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
             passCodeConfirm.hideError();
         }
 
-        if (!isValidPhone()) {
-            showPhoneError();
-            return;
-        } else {
-            hidePhoneError();
-        }
         presenter.updateProfile(passCode.getText(), edtPhone.getString());
     }
 
@@ -287,6 +257,7 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
         tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel)));
 
+        edtPhone.setVisibility(View.GONE);
         chkShowPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -386,6 +357,7 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     public interface OnPinProfileFragmentListener {
         // TODO: Update argument type and name
         void onUpdatePinSuccess();
+
         void onUpdatePinFail();
     }
 }

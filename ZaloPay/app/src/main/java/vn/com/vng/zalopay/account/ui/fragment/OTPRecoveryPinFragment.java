@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
-import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
+import vn.com.vng.zalopay.account.ui.presenter.OTPRecoveryPinPresenter;
+import vn.com.vng.zalopay.account.ui.view.IOTPRecoveryPinView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 
 /**
@@ -24,11 +24,11 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
  * Use the {@link OTPRecoveryPinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPProfileView {
+public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRecoveryPinView {
     private OnOTPFragmentListener mListener;
 
     @Inject
-    OTPProfilePresenter presenter;
+    OTPRecoveryPinPresenter presenter;
 
     @BindView(R.id.textInputOTP)
     TextInputLayout textInputOTP;

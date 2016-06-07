@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.internal.di.components;
 import dagger.Subcomponent;
 import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
+import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
 import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
@@ -97,4 +98,6 @@ public interface UserComponent {
     void inject(ProfileInfoActivity a);
 
     void inject(PreProfileActivity a);
+
+    void inject(RecoveryPinActivity a);
 }

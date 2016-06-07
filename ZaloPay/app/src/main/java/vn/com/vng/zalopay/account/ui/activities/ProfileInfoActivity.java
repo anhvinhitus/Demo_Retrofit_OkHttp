@@ -70,7 +70,7 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
     @OnClick(R.id.layoutResetPassCode)
     public void onClickResetPassCode(View view) {
-        navigator.startPreProfileActivity(this);
+        navigator.startRecoveryPinActivity(this);
     }
 
     @OnClick(R.id.layoutSigOutAndDelDB)
