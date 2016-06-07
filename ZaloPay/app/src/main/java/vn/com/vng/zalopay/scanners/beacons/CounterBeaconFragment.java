@@ -92,7 +92,7 @@ public class CounterBeaconFragment extends BaseFragment {
                 new PaymentWrapper.IResponseListener() {
                     @Override
                     public void onParameterError(String param) {
-                        showToast("Error in parameter: " + param);
+//                        showToast("Error in parameter: " + param);
                         beaconScanner.startScan();
                     }
 
@@ -299,7 +299,7 @@ public class CounterBeaconFragment extends BaseFragment {
                 title = "<NULL>";
             }
 
-            Timber.d("Found device: %s - rssi: %d", title, rssi);
+            Timber.v("Found device: %s - rssi: %d", title, rssi);
 
             OrderCache cache = mTransactionCache.get(data.transactionToken);
             Order order = null;
