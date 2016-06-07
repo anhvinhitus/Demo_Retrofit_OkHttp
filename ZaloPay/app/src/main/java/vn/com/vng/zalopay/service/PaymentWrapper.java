@@ -140,7 +140,10 @@ public class PaymentWrapper {
             return;
         }
         int profileLevel = user.profilelevel;
-        String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermisssions);
+        String permissionsStr = "{\"profilelevelpermisssion\":";
+        permissionsStr+= JsonUtil.toJsonArrayString(user.profilePermisssions);
+        permissionsStr+="}";
+        Timber.d("permissionsStr====%s", permissionsStr);
         ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, zpPaymentListener);
     }
 
