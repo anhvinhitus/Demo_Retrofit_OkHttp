@@ -185,6 +185,7 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         mMainLooperHandler = new Handler(context.getMainLooper());
     }
 

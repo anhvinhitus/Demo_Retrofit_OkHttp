@@ -158,8 +158,8 @@ public class BeaconScanner {
     private class LeScanCallback21 extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            Timber.i("callbackType: %s", String.valueOf(callbackType));
-            Timber.i("result: %s", result.toString());
+            Timber.v("callbackType: %s", String.valueOf(callbackType));
+            Timber.v("result: %s", result.toString());
 
             BluetoothDevice btDevice = result.getDevice();
             PaymentRecord paymentRecord = parseScanRecord(result.getScanRecord());
@@ -171,7 +171,7 @@ public class BeaconScanner {
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             for (ScanResult sr : results) {
-                Timber.i("ScanResult - Results: %s", sr.toString());
+                Timber.v("ScanResult - Results: %s", sr.toString());
             }
         }
 
@@ -188,7 +188,7 @@ public class BeaconScanner {
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi,
                              byte[] scanRecord) {
-            Timber.i("onLeScan: %s", device.toString());
+            Timber.v("onLeScan: %s", device.toString());
             PaymentRecord paymentRecord = parseScanRecord(scanRecord);
             if (INCLUDE_NON_PAYMENT_DEVICE || paymentRecord != null) {
                 mListener.onDiscoverDevice(device.getAddress(), rssi, paymentRecord);
