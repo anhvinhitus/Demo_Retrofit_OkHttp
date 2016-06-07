@@ -87,7 +87,7 @@ public class AppConfigFactory {
         List<AppResourceEntity> list = sqlitePlatformScope.listAppResourceEntity();
         List<AppResourceEntity> listAppDownload = new ArrayList<>();
         for (AppResourceEntity app : list) {
-            if (app.stateDownload < 2) {
+            if (isNeedRetryDownload(app)) {
                 listAppDownload.add(app);
             }
         }
@@ -96,6 +96,14 @@ public class AppConfigFactory {
             startDownloadService(listAppDownload, null);
         }
     }
+
+    private boolean isNeedRetryDownload(AppResourceEntity appResourceEntity) {
+        if (appResourceEntity.stateDownload < 2) {
+            return true;
+        }
+        return false;
+    }
+
 
     private void processPlatformResp(PlatformInfoResponse response) {
         //  sqlitePlatformScope.put
