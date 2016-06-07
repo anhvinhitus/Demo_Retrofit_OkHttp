@@ -188,7 +188,7 @@ public class RecordService {
             int result = mAudioRecord.read(audioDataBuffer, 0, bufferSize);
             if (result > 0) {
                 try {
-                    Timber.d("write data ngon roi heheehehehe");
+                    Timber.d("got audio data: %d-%d", audioDataBuffer.length, result);
 //                    audioTrack.write(audioData, 0, audioData.length);
 
                     // // writes the data to file from buffer
@@ -246,7 +246,7 @@ public class RecordService {
         long totalAudioLen = 0;
         long totalDataLen = totalAudioLen + 36;
         long longSampleRate = RECORDER_SAMPLERATE;
-        int channels = 2;
+        int channels = (RECORDER_CHANNELS == AudioFormat.CHANNEL_IN_MONO) ? 1: 2;
         long byteRate = RECORDER_BPP * RECORDER_SAMPLERATE * channels / 8;
 
         byte[] data = new byte[8000];
