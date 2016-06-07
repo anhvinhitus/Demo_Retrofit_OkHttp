@@ -74,6 +74,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
+        Timber.w("Begin setupFragmentComponent");
         getUserComponent().inject(this);
 
         if (!beaconScanner.initialize(this.getActivity())) {
@@ -120,6 +121,7 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
                 }
         );
+        Timber.w("Finish setupFragmentComponent");
     }
 
     @Override
@@ -148,6 +150,7 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Timber.w("onCreateView begin");
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         // Set the adapter
@@ -162,6 +165,8 @@ public class CounterBeaconFragment extends BaseFragment {
             mViewAdapter = new CounterBeaconRecyclerViewAdapter(mDeviceList, new SelectDeviceListener());
             recyclerView.setAdapter(mViewAdapter);
         }
+
+        Timber.w("onCreateView finish");
         return view;
     }
 
@@ -180,38 +185,38 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (false) {
-            mMainLooperHandler = new Handler(context.getMainLooper());
-            mMainLooperHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    beaconScanner.startScan();
-                }
-            });
-        }
+        mMainLooperHandler = new Handler(context.getMainLooper());
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mMainLooperHandler = null;
-        beaconScanner.stopScan();
+        stopBeaconScanner();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        beaconScanner.stopScan();
+        stopBeaconScanner();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        beaconScanner.startScan();
+        startBeaconScanner();
     }
-//
+
+    private void startBeaconScanner() {
+        getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                beaconScanner.startScan();
+            }
+        });
+    }
+
+    //
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {
 //        super.setUserVisibleHint(isVisibleToUser);
@@ -221,6 +226,16 @@ public class CounterBeaconFragment extends BaseFragment {
 //            beaconScanner.startScan();
 //        }
 //    }
+    private void stopBeaconScanner() {
+        getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (beaconScanner != null) {
+                    beaconScanner.stopScan();
+                }
+            }
+        });
+    }
 
     private void resetDeviceList() {
         mDeviceList.clear();
