@@ -137,6 +137,10 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         }
     }
 
+    public int getMaxLength() {
+        return length;
+    }
+
     public void setPasscodeFocusChanged(IPasscodeFocusChanged listener) {
         mIPasscodeFocusChanged = listener;
     }
