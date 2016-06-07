@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment.OnListFragmentInteractionListener;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -53,9 +54,10 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
         }
         holder.mAmountView.setText(amount);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.mBeaconLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Timber.i("Click on Beacon");
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
@@ -74,11 +76,13 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
         public final View mView;
         public final TextView mDescriptionView;
         public final TextView mAmountView;
+        public final View mBeaconLayout;
         public BeaconDevice mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mBeaconLayout = (View) view.findViewById(R.id.beacon_layout);
             mDescriptionView = (TextView) view.findViewById(R.id.counter_description);
             mAmountView = (TextView) view.findViewById(R.id.counter_order_amount);
         }
