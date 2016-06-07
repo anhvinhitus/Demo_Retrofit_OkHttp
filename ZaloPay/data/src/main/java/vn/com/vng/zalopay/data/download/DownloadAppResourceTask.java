@@ -66,8 +66,10 @@ public class DownloadAppResourceTask {
             if (callback != null) {
                 callback.onFailure();
             }
+
+            sqlitePlatformScope.increaseRetryDownload(downloadInfo.appid);
         } else {
-            sqlitePlatformScope.setDownloadInfo(downloadInfo.appid, true);
+            sqlitePlatformScope.increaseStateDownload(downloadInfo.appid);
 
             if (callback != null) {
                 callback.onSuccess();

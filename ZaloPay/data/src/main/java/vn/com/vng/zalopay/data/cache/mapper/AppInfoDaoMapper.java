@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.cache.mapper;
 
 import java.util.ArrayList;
@@ -12,9 +13,11 @@ import vn.com.vng.zalopay.data.util.Lists;
 
 import static java.util.Collections.emptyList;
 
+*/
 /**
  * Created by AnhHieu on 5/3/16.
- */
+ *//*
+
 
 @Singleton
 public class AppInfoDaoMapper {
@@ -23,6 +26,7 @@ public class AppInfoDaoMapper {
     public AppInfoDaoMapper() {
     }
 
+*/
 /*    public AppInfo transform(AppInfoEntity appInfoEntity) {
         AppInfo info = null;
         if (appInfoEntity != null) {
@@ -52,6 +56,8 @@ public class AppInfoDaoMapper {
             }
         }
         return appInfos;
-    }*/
+    }*//*
+
 
 }
+*/

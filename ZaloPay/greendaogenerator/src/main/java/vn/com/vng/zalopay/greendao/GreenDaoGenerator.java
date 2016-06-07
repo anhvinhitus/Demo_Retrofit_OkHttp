@@ -33,7 +33,10 @@ public class GreenDaoGenerator {
         appInfoEntity.addStringProperty("jsurl");
         appInfoEntity.addIntProperty("status");
         appInfoEntity.addStringProperty("checksum");
-        appInfoEntity.addBooleanProperty("download");
+
+        appInfoEntity.addIntProperty("stateDownload");
+        appInfoEntity.addLongProperty("timeDownload");
+        appInfoEntity.addIntProperty("numRetry");
 
     }
 

@@ -19,13 +19,14 @@ import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
+import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class, ReactNativeModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();

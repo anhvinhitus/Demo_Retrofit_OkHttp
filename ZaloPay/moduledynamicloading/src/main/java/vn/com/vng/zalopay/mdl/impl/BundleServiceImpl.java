@@ -54,12 +54,11 @@ public class BundleServiceImpl implements BundleService {
     private final String mBundleRootFolder;
     private Gson mGson;
 
-    public BundleServiceImpl(Application application, LocalResourceRepository localResourceRepository, Gson gson) {
-        mApplication = application;
+    public BundleServiceImpl(Application application, LocalResourceRepository localResourceRepository, Gson gson, String rootbundle) {
+        this.mApplication = application;
         this.mLocalResourceRepository = localResourceRepository;
         this.mGson = gson;
-        String packageName = mApplication.getPackageName();
-        mBundleRootFolder = application.getFilesDir().getAbsolutePath() + File.separator + packageName + File.separator + "bundles";
+        this.mBundleRootFolder = rootbundle;
     }
 
     @Override

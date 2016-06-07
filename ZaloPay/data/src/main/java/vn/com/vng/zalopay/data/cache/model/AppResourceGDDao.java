@@ -30,7 +30,9 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         public final static Property Jsurl = new Property(4, String.class, "jsurl", false, "JSURL");
         public final static Property Status = new Property(5, Integer.class, "status", false, "STATUS");
         public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
-        public final static Property Download = new Property(7, Boolean.class, "download", false, "DOWNLOAD");
+        public final static Property StateDownload = new Property(7, Integer.class, "stateDownload", false, "STATE_DOWNLOAD");
+        public final static Property TimeDownload = new Property(8, Long.class, "timeDownload", false, "TIME_DOWNLOAD");
+        public final static Property NumRetry = new Property(9, Integer.class, "numRetry", false, "NUM_RETRY");
     };
 
 
@@ -53,7 +55,9 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
                 "\"JSURL\" TEXT," + // 4: jsurl
                 "\"STATUS\" INTEGER," + // 5: status
                 "\"CHECKSUM\" TEXT," + // 6: checksum
-                "\"DOWNLOAD\" INTEGER);"); // 7: download
+                "\"STATE_DOWNLOAD\" INTEGER," + // 7: stateDownload
+                "\"TIME_DOWNLOAD\" INTEGER," + // 8: timeDownload
+                "\"NUM_RETRY\" INTEGER);"); // 9: numRetry
     }
 
     /** Drops the underlying database table. */
@@ -98,9 +102,19 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(7, checksum);
         }
  
-        Boolean download = entity.getDownload();
-        if (download != null) {
-            stmt.bindLong(8, download ? 1L: 0L);
+        Integer stateDownload = entity.getStateDownload();
+        if (stateDownload != null) {
+            stmt.bindLong(8, stateDownload);
+        }
+ 
+        Long timeDownload = entity.getTimeDownload();
+        if (timeDownload != null) {
+            stmt.bindLong(9, timeDownload);
+        }
+ 
+        Integer numRetry = entity.getNumRetry();
+        if (numRetry != null) {
+            stmt.bindLong(10, numRetry);
         }
     }
 
@@ -121,7 +135,9 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // jsurl
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // status
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // checksum
-            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0 // download
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // stateDownload
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // timeDownload
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9) // numRetry
         );
         return entity;
     }
@@ -136,7 +152,9 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         entity.setJsurl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setStatus(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
         entity.setChecksum(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setDownload(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
+        entity.setStateDownload(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setTimeDownload(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setNumRetry(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
      }
     
     /** @inheritdoc */

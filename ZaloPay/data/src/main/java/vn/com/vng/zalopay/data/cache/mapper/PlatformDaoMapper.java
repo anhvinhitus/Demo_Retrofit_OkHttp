@@ -110,7 +110,9 @@ public class PlatformDaoMapper {
             appResourceEntity.needdownloadrs = appResourceGD.getNeeddownloadrs() == null ? 0 : 1;
             appResourceEntity.status = appResourceGD.getStatus() == null ? 0 : 1;
             appResourceEntity.jsurl = appResourceGD.getJsurl();
-            appResourceEntity.download = appResourceGD.getDownload();
+            appResourceEntity.stateDownload = appResourceGD.getStateDownload();
+            appResourceEntity.numRetry = appResourceGD.getNumRetry();
+            appResourceEntity.timeDownload = appResourceGD.getTimeDownload();
 
         }
         return appResourceEntity;

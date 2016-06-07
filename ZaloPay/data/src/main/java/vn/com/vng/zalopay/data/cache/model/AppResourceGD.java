@@ -13,12 +13,14 @@ public class AppResourceGD {
     private String jsurl;
     private Integer status;
     private String checksum;
-    private Boolean download;
+    private Integer stateDownload;
+    private Long timeDownload;
+    private Integer numRetry;
 
     public AppResourceGD() {
     }
 
-    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Boolean download) {
+    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Integer stateDownload, Long timeDownload, Integer numRetry) {
         this.appid = appid;
         this.appname = appname;
         this.needdownloadrs = needdownloadrs;
@@ -26,7 +28,9 @@ public class AppResourceGD {
         this.jsurl = jsurl;
         this.status = status;
         this.checksum = checksum;
-        this.download = download;
+        this.stateDownload = stateDownload;
+        this.timeDownload = timeDownload;
+        this.numRetry = numRetry;
     }
 
     public int getAppid() {
@@ -85,12 +89,28 @@ public class AppResourceGD {
         this.checksum = checksum;
     }
 
-    public Boolean getDownload() {
-        return download;
+    public Integer getStateDownload() {
+        return stateDownload;
     }
 
-    public void setDownload(Boolean download) {
-        this.download = download;
+    public void setStateDownload(Integer stateDownload) {
+        this.stateDownload = stateDownload;
+    }
+
+    public Long getTimeDownload() {
+        return timeDownload;
+    }
+
+    public void setTimeDownload(Long timeDownload) {
+        this.timeDownload = timeDownload;
+    }
+
+    public Integer getNumRetry() {
+        return numRetry;
+    }
+
+    public void setNumRetry(Integer numRetry) {
+        this.numRetry = numRetry;
     }
 
 }

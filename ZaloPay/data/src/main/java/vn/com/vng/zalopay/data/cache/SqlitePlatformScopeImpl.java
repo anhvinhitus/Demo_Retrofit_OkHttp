@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.util.Lists;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -48,8 +49,12 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
     public void write(List<AppResourceEntity> listApp) {
 
         List<AppResourceGD> list = platformDaoMapper.transformAppResourceEntity(listApp);
+        if (Lists.isEmptyOrNull(list)) return;
+
         for (AppResourceGD appResource : list) {
-            appResource.setDownload(false);
+            appResource.setStateDownload(0);
+            appResource.setNumRetry(0);
+            appResource.setTimeDownload(0l);
         }
 
         getAppInfoDao().insertOrReplaceInTx(list);
@@ -79,16 +84,35 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     @Override
     public void writePaymentTransType(List<PaymentTransTypeEntity> list) {
+        if (Lists.isEmptyOrNull(list)) return;
+
         getPaymentTransDao().insertOrReplaceInTx(platformDaoMapper.transformPaymentTransTypeEntity(list));
     }
 
     @Override
-    public void setDownloadInfo(int appResourceId, boolean download) {
-        Timber.e("setDownloadInfo appResourceId %s", appResourceId);
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appResourceId)).list();
+    public void increaseStateDownload(int appId) {
+        Timber.e("setDownloadInfo appResourceId %s", appId);
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
+        if (Lists.isEmptyOrNull(appResourceGD)) return;
+
         for (AppResourceGD app : appResourceGD) {
-            app.setDownload(download);
+            app.setStateDownload(app.getStateDownload() + 1);
         }
+
+        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
+    }
+
+    @Override
+    public void increaseRetryDownload(long appId) {
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
+        if (Lists.isEmptyOrNull(appResourceGD)) return;
+
+        long currentTime = System.currentTimeMillis() / 1000;
+        for (AppResourceGD app : appResourceGD) {
+            app.setNumRetry(app.getNumRetry() + 1);
+            app.setTimeDownload(currentTime);
+        }
+
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);
     }
 }

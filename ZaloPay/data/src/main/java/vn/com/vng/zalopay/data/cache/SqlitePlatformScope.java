@@ -28,6 +28,9 @@ public interface SqlitePlatformScope extends SqlBaseScope {
 
     void writePaymentTransType(List<PaymentTransTypeEntity> list);
 
-    void setDownloadInfo(int appResourceId, boolean download);
 
+    // 1 appJs gồm 2 resource js, image. Khi app stateDownload = 2 -> download success
+    void increaseStateDownload(int appId);
+
+    void increaseRetryDownload(long appId);
 }
