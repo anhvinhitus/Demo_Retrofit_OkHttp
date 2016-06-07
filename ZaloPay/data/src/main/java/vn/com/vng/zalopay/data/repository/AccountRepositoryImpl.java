@@ -46,7 +46,7 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
                     return profilePermisssion;
                 })
                 .doOnNext(profilePermisssion -> {
-                    userConfig.saveProfilePermissions(profilePermisssion.profileLevel, profilePermisssion.profilePermisssions);
+                    userConfig.updateProfilePermissions(profilePermisssion.profileLevel, profilePermisssion.profilePermisssions);
                 });
     }
 
