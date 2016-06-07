@@ -51,4 +51,5 @@ dependencies {
 
     testCompile tests.junit
     compile libs.support_support_v4
+    compile libs.timber
 }

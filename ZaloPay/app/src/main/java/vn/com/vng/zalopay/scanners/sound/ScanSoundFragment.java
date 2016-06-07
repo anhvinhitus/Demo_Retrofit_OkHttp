@@ -7,7 +7,9 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.crity.CrityWrapper;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.DebugUtils;
 import vn.com.vng.zalopay.utils.FileUtil;
 
 /**
@@ -17,6 +19,7 @@ import vn.com.vng.zalopay.utils.FileUtil;
  */
 public class ScanSoundFragment extends BaseFragment {
     private final RecordService recordService;
+    private final DecoderListener decoderListener;
 
     @OnClick(R.id.btnStartScanSound)
     public void onClickStartScanSound(View view) {
@@ -27,7 +30,7 @@ public class ScanSoundFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        recordService.start(mRecordName);
+        recordService.start(mRecordName, this.decoderListener);
     }
 
     @OnClick(R.id.btnStopScanSound)
@@ -46,6 +49,17 @@ public class ScanSoundFragment extends BaseFragment {
     public ScanSoundFragment() {
         // Required empty public constructor
         this.recordService = new RecordService();
+        this.decoderListener = new DecoderListener() {
+            @Override
+            public void didDetectData(byte[] data) {
+                Timber.w("Detect data: %s", DebugUtils.bytesToHex(data));
+            }
+
+            @Override
+            public void errorDetectData() {
+                Timber.w("Error in detecting data");
+            }
+        };
     }
 
     /**

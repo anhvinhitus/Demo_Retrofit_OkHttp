@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.sound.transcoder.Decoder;
+import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
 import vn.com.vng.zalopay.utils.FileUtil;
 
 /**
@@ -31,7 +33,7 @@ public class RecordService {
 
     private Thread mThreadRecord;
 
-    public boolean start(String fileName) {
+    public boolean start(String fileName, DecoderListener decoderListener) {
         Timber.d("RecordService STATE_START_RECORDING");
         if (mThreadRecord != null && mThreadRecord.isAlive()) {
             Timber.d("RecordService skipped due to existing recording thread is running");
@@ -39,7 +41,7 @@ public class RecordService {
         }
 
         this.fileName = fileName;
-        startRecording();
+        startRecording(decoderListener);
 
         Timber.d("RecordService Started");
         return true;
@@ -98,9 +100,9 @@ public class RecordService {
 
     }
 
-    private void startRecording() {
+    private void startRecording(DecoderListener decoderListener) {
         Timber.d("RecordService startRecording");
-        mThreadRecord = new Thread(new RecordingThread(), "AudioRecorder Thread");
+        mThreadRecord = new Thread(new RecordingThread(decoderListener), "AudioRecorder Thread");
         mThreadRecord.start();
     }
 
@@ -125,8 +127,10 @@ public class RecordService {
         private AudioRecord mAudioRecord;
         private byte audioDataBuffer[];
         private int bufferSize = 0;
+        private Decoder transcoderDecode;
 
-        public RecordingThread() {
+        public RecordingThread(DecoderListener decoderListener) {
+            transcoderDecode = new Decoder(decoderListener);
         }
 
         @Override
@@ -179,6 +183,12 @@ public class RecordService {
                 return false;
             }
 
+            try {
+                transcoderDecode.initializeDecoder();
+            } catch (UnsatisfiedLinkError e) {
+                Timber.e(e, "Exception in initializing transcoder");
+                return false;
+            }
             return true;
         }
 
@@ -194,8 +204,17 @@ public class RecordService {
                     // // writes the data to file from buffer
                     // // stores the voice buffer
                     outputStream.write(audioDataBuffer);
+                    try {
+                        transcoderDecode.processBuffer(audioDataBuffer);
+                    } catch (UnsatisfiedLinkError e) {
+                        Timber.e(e, "Error in JNI cal processBuffer");
+                    }
+
                 } catch (IOException e) {
                     Timber.e(e, "exception in writing data");
+                } catch (Exception e) {
+                    Timber.e(e, "exception in processing buffer");
+                    return false;
                 }
             } else if (result == AudioRecord.ERROR_INVALID_OPERATION) {
                 Timber.d("Invalid operation error");
@@ -225,6 +244,12 @@ public class RecordService {
                 Timber.v("about to stop audio record");
                 mAudioRecord.stop();
 
+                try {
+                    transcoderDecode.releaseDecoder();
+                    transcoderDecode = null;
+                } catch (UnsatisfiedLinkError e) {
+                    Timber.e(e, "Error in JNI");
+                }
             } catch (IOException e) {
                 Timber.e(e, "Cannot stop");
             } catch (IllegalStateException e) {
