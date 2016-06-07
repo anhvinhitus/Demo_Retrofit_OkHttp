@@ -29,6 +29,8 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -132,7 +134,7 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -142,9 +144,9 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
-        fav = menu.add("refresh");
-        fav.setIcon(R.drawable.ic_more_horiz);
+//
+//        fav = menu.add("refresh");
+//        fav.setIcon(R.drawable.ic_more_horiz);
     }
 
     @Override
@@ -205,10 +207,39 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        startBeaconScanner();
+//        startBeaconScanner();
     }
 
+    private Timer timer;
+    private TimerTask cleanupDevice = new TimerTask() {
+        @Override
+        public void run() {
+            List<BeaconDevice> expiredList = new ArrayList<>();
+            for (BeaconDevice device : mDeviceList) {
+                if (device.isExpired()) {
+                    expiredList.add(device);
+                }
+            }
+
+            if (!expiredList.isEmpty()) {
+                mDeviceList.removeAll(expiredList);
+                mMainLooperHandler.post(updateDatasetRunnable);
+            }
+        }
+    };
     private void startBeaconScanner() {
+        if (timer == null) {
+            timer = new Timer();
+        } else {
+            timer.cancel();
+            timer = new Timer();
+        }
+
+        try {
+            timer.scheduleAtFixedRate(cleanupDevice, 0, 1000);
+        } catch (Exception e) {
+            Timber.e(e, "Exception");
+        }
         getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -236,6 +267,10 @@ public class CounterBeaconFragment extends BaseFragment {
                 }
             }
         });
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     private void resetDeviceList() {
@@ -249,6 +284,14 @@ public class CounterBeaconFragment extends BaseFragment {
             mViewAdapter.notifyDataSetChanged();
         }
     };
+
+    public void startScanning() {
+        startBeaconScanner();
+    }
+
+    public void stopScanning() {
+        stopBeaconScanner();
+    }
 
     private class SelectDeviceListener implements OnListFragmentInteractionListener {
         @Override

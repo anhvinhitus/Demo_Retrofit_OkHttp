@@ -76,7 +76,9 @@ public class ScanSoundFragment extends BaseFragment {
         getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                recordService.stop();
+                if (recordService != null) {
+                    recordService.stop();
+                }
             }
         });
     }
@@ -137,8 +139,9 @@ public class ScanSoundFragment extends BaseFragment {
                     public void onParameterError(String param) {
                         if ("token".equalsIgnoreCase(param)) {
                             startTranscoder();
+                        } else {
+                            showToast(String.format("Parameter error: %s", param));
                         }
-                        showToast(String.format("Parameter error: %s", param));
                     }
 
                     @Override
@@ -178,6 +181,14 @@ public class ScanSoundFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+//        startTranscoder();
+    }
+
+    public void startRecording() {
         startTranscoder();
+    }
+
+    public void stopRecording() {
+        stopTranscoder();
     }
 }

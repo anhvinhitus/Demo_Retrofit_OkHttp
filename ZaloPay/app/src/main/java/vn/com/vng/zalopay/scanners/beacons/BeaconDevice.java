@@ -12,12 +12,14 @@ public class BeaconDevice {
     public final int rssi;
     public final PaymentRecord paymentRecord;
     public final Order order;
+    public final long timestamp;
 
     public BeaconDevice(String id, int rssi, PaymentRecord paymentRecord, Order order) {
         this.id = id;
         this.paymentRecord = paymentRecord;
         this.rssi = rssi;
         this.order = order;
+        timestamp = System.currentTimeMillis();
     }
 
     @Override
@@ -30,5 +32,10 @@ public class BeaconDevice {
 
     public BeaconDevice cloneWithOrder(Order newOrder) {
         return new BeaconDevice(id, rssi, paymentRecord, newOrder);
+    }
+
+    boolean isExpired() {
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - timestamp > 4*1000);
     }
 }

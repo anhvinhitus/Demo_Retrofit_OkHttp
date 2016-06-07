@@ -42,6 +42,11 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
+    private static final int TAB_TOTAL = 3;
+    private static final int TAB_NFC = 0;
+    private static final int TAB_BEACON = 1;
+    private static final int TAB_SOUND = 2;
+    private static final int TAB_QR = 3;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -80,7 +85,8 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
                 @Override
                 public void onPageSelected(int position) {
-                    if (position == 0) {
+                    Timber.e("Select page: %d", position);
+                    if (position == TAB_NFC) {
                         // should enable NFC reader handler
                         mNFCTabActivated = true;
                         mNFCReader.setupForegroundDispatch();
@@ -88,6 +94,18 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                         // should disable NFC reader handler
                         mNFCReader.stopForegroundDispatch();
                         mNFCTabActivated = false;
+                    }
+
+                    if (position == TAB_BEACON) {
+                        beaconFragment.startScanning();
+                    } else {
+                        beaconFragment.stopScanning();
+                    }
+
+                    if (position == TAB_SOUND) {
+                        soundFragment.startRecording();
+                    } else {
+                        soundFragment.stopRecording();
                     }
 
                 }
@@ -200,6 +218,11 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         handleIntent(intent);
     }
 
+    private ScanNFCFragment nfcFragment;
+    private ScanSoundFragment soundFragment;
+    private CounterBeaconFragment beaconFragment;
+
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -216,18 +239,19 @@ public class ScanToPayActivity extends BaseToolBarActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             Timber.d("SectionsPagerAdapter getItem: %d", position);
             switch (position) {
-                case 0: {
-                    ScanNFCFragment fragment = ScanNFCFragment.newInstance();
-                    fragment.setReaderPresenter(mNFCReader);
-                    return fragment;
+                case TAB_NFC: {
+                    nfcFragment = ScanNFCFragment.newInstance();
+                    nfcFragment.setReaderPresenter(mNFCReader);
+                    return nfcFragment;
                 }
-                case 1:
-                    return ScanSoundFragment.newInstance();
-                case 2: {
+                case TAB_BEACON: {
 //                    return ScanSoundFragment.newInstance();
-                    CounterBeaconFragment fragment = CounterBeaconFragment.newInstance(1);
-                    return fragment;
+                    beaconFragment = CounterBeaconFragment.newInstance(1);
+                    return beaconFragment;
                 }
+                case TAB_SOUND:
+                    soundFragment = ScanSoundFragment.newInstance();
+                    return soundFragment;
                 default:
                     return null;
             }
@@ -236,18 +260,20 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return TAB_TOTAL;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
+                case TAB_NFC:
                     return "NFC";
-                case 1:
-                    return "SOUND";
-                case 2:
+                case TAB_BEACON:
                     return "BEACON";
+                case TAB_QR:
+                    return "QR";
+                case TAB_SOUND:
+                    return "SOUND";
             }
             return null;
         }

@@ -234,8 +234,7 @@ public class RecordService {
                     }
 
                     try {
-                        long processBuffer = transcoderDecode.processBuffer(audioDataBuffer);
-                        Timber.i("processBuffer: %d", processBuffer);
+                        transcoderDecode.processBuffer(audioDataBuffer);
                     } catch (UnsatisfiedLinkError e) {
                         Timber.e(e, "Error in JNI cal processBuffer");
                     }
