@@ -4,10 +4,12 @@ import dagger.Subcomponent;
 import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
 import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
+import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
+import vn.com.vng.zalopay.account.ui.fragment.RecoveryPinFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.domain.model.User;
@@ -73,6 +75,10 @@ public interface UserComponent {
     void inject(PinProfileFragment f);
 
     void inject(OtpProfileFragment f);
+
+    void inject(RecoveryPinFragment f);
+
+    void inject(OTPRecoveryPinFragment f);
 
     void inject(EditProfileFragment f);
 

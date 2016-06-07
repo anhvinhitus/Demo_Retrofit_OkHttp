@@ -20,4 +20,8 @@ public interface AccountService {
     @FormUrlEncoded
     @POST("um/verifyotpprofile")
     Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
+
+    @FormUrlEncoded
+    @POST("um/recoverypin")
+    Observable<BaseResponse> recoverypin(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("otp") String otp);
 }

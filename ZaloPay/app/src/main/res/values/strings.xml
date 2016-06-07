@@ -140,6 +140,9 @@
     <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
 
+    <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
+    <string name="invalid_otp">OTP không hợp lệ.</string>
+
     <string name="pin_title">Hãy tạo mã số PIN để giao dịch thanh toán AN TOÀN</string>
     <string name="hint_pin">Mã số PIN</string>
     <string name="invalid_pin">Mã số PIN không hợp lệ</string>
@@ -157,6 +160,7 @@
     <string name="user_info">Thông tin cá nhân</string>
     <string name="sigout_and_delete_db">Thoát và xóa dữ liệu</string>
     <string name="title_activity_edit_profile">Thông tin cá nhân</string>
+    <string name="reset_passcode">Thiết lập lại mã PIN.</string>
 
     <string name="not_update">Chưa cập nhật</string>
     <string name="cmnd_passpost">CMND/Hộ chiếu</string>

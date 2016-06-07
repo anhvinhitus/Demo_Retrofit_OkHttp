@@ -68,6 +68,11 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 //        navigator.startPreProfileActivity(this);
 //    }
 
+    @OnClick(R.id.layoutResetPassCode)
+    public void onClickResetPassCode(View view) {
+        navigator.startPreProfileActivity(this);
+    }
+
     @OnClick(R.id.layoutSigOutAndDelDB)
     public void onClickSigoutAndDelDB(View view) {
         sigoutAndCleanData();

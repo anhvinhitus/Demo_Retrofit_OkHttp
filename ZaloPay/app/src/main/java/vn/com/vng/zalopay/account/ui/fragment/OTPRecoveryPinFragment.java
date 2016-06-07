@@ -21,10 +21,10 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
  * Activities that contain this fragment must implement the
  * {@link OnOTPFragmentListener} interface
  * to handle interaction events.
- * Use the {@link OtpProfileFragment#newInstance} factory method to
+ * Use the {@link OTPRecoveryPinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfileView {
+public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPProfileView {
     private OnOTPFragmentListener mListener;
 
     @Inject
@@ -64,8 +64,8 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
      * @return A new instance of fragment PinProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OtpProfileFragment newInstance() {
-        OtpProfileFragment fragment = new OtpProfileFragment();
+    public static OTPRecoveryPinFragment newInstance() {
+        OTPRecoveryPinFragment fragment = new OTPRecoveryPinFragment();
         return fragment;
     }
 
