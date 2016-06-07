@@ -40,8 +40,7 @@ android {
 
         multiDexEnabled true
 
-        buildConfigField "String", "PRODUCTION_FLAVOR", "\"production\""
-        buildConfigField "String", "BETA_FLAVOR", "\"beta\""
+        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -101,6 +100,7 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
         }
 
         sandbox {
@@ -247,7 +247,7 @@ dependencies {
 
     compile libs.play_services_gcm
     compile libs.play_services_analytics
-    compile (libs.crashlytics) {
+    compile(libs.crashlytics) {
         transitive = true;
     }
 
@@ -263,8 +263,8 @@ dependencies {
     compile project(':zalosdk')
     compile project(':reactnativemodules')
 
-    debugCompile(name:'WALLET-debug', ext:'aar')
-    releaseCompile(name:'WALLET-release', ext:'aar')
+    debugCompile(name: 'WALLET-debug', ext: 'aar')
+    releaseCompile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
 }

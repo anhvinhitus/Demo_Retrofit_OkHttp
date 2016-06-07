@@ -48,11 +48,14 @@ public class AppConfigFactory {
 
     private OkHttpClient mOkHttpClient;
 
+    private final boolean mDownloadAppResource;
+
     public AppConfigFactory(Context context, AppConfigService service,
                             User user, SqlitePlatformScope sqlitePlatformScope,
                             HashMap<String, String> paramsReq,
                             DownloadAppResourceTaskQueue taskQueue,
-                            OkHttpClient mOkHttpClient) {
+                            OkHttpClient mOkHttpClient,
+                            boolean download) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -65,6 +68,7 @@ public class AppConfigFactory {
         this.paramsReq = paramsReq;
         this.taskQueue = taskQueue;
         this.mOkHttpClient = mOkHttpClient;
+        this.mDownloadAppResource = download;
     }
 
 
@@ -153,6 +157,9 @@ public class AppConfigFactory {
 
 
     private void startDownloadService(List<AppResourceEntity> resource, String baseUrl) {
+        if (!mDownloadAppResource) {
+            return;
+        }
 
         List<DownloadAppResourceTask> needDownloadList = new ArrayList<>();
         for (AppResourceEntity appResourceEntity : resource) {

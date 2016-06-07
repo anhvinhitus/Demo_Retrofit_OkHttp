@@ -11,6 +11,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
@@ -65,7 +66,7 @@ public class UserControllerModule {
                                              @Named("params_request_default") HashMap<String, String> params,
                                              DownloadAppResourceTaskQueue downloadQueue, OkHttpClient okHttpClient) {
 
-        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient);
+        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient, BuildConfig.DOWNLOAD_APP_RESOURCE);
     }
 
     @UserScope
