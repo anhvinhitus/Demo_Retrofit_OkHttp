@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;

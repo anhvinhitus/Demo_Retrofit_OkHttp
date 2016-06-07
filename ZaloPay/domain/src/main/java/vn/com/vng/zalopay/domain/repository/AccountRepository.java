@@ -9,4 +9,5 @@ import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 public interface AccountRepository {
     Observable<Boolean> updateProfile(String pin, String phonenumber);
     Observable<ProfilePermisssion> verifyOTPProfile(String otp);
+    Observable<Boolean> recoverypin(String pin, String otp);
 }

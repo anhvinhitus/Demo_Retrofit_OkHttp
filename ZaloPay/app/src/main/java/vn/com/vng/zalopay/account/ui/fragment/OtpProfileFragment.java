@@ -38,9 +38,9 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     private void showOTPError() {
         textInputOTP.setErrorEnabled(true);
         if (TextUtils.isEmpty(edtOTP.getText().toString())) {
-            textInputOTP.setError(getString(R.string.invalid_phone_empty));
+            textInputOTP.setError(getString(R.string.invalid_otp_empty));
         } else {
-            textInputOTP.setError(getString(R.string.invalid_phone));
+            textInputOTP.setError(getString(R.string.invalid_otp));
         }
     }
 
@@ -124,8 +124,8 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.destroyView();
+        super.onDestroyView();
     }
 
     @Override
