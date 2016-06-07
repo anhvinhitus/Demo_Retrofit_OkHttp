@@ -58,7 +58,7 @@ public class FileUtil {
             e.printStackTrace();
         }
 
-        return (file.getAbsolutePath() + "/" + fileName + "_day_" + myDate + ".mp3");
+        return (file.getAbsolutePath() + "/" + fileName + "_day_" + myDate + ".wav");
     }
 
     public static String getFilePath() {

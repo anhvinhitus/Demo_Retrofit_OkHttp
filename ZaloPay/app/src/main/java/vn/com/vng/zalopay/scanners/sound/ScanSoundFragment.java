@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.scanners.sound;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import timber.log.Timber;
 import vn.com.vng.grd.crity.CrityWrapper;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.service.RecordService;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.FileUtil;
 
@@ -23,6 +21,8 @@ import vn.com.vng.zalopay.utils.FileUtil;
  * create an instance of this fragment.
  */
 public class ScanSoundFragment extends BaseFragment {
+    private final RecordService recordService;
+
     @OnClick(R.id.btnStartScanSound)
     public void onClickStartScanSound(View view) {
         Timber.d("Start scan sound");
@@ -32,18 +32,13 @@ public class ScanSoundFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Intent myIntent = new Intent(getContext(), RecordService.class);
-        myIntent.putExtra(Constants.COMMANDTYPE, Constants.STATE_START_RECORDING);
-        myIntent.putExtra(Constants.RECORDNAME, mRecordName);
-        getContext().startService(myIntent);
+        recordService.start(mRecordName);
     }
 
     @OnClick(R.id.btnStopScanSound)
     public void onClickStopScanSound(View view) {
         Timber.d("Stop scan sound");
-        Intent myIntent = new Intent(getContext(), RecordService.class);
-        myIntent.putExtra(Constants.COMMANDTYPE, Constants.STATE_STOP_RECORDING);
-        getContext().startService(myIntent);
+        recordService.stop();
     }
 
     @OnClick(R.id.btnTestJNI)
@@ -55,6 +50,7 @@ public class ScanSoundFragment extends BaseFragment {
 
     public ScanSoundFragment() {
         // Required empty public constructor
+        this.recordService = new RecordService();
     }
 
     /**
@@ -64,8 +60,7 @@ public class ScanSoundFragment extends BaseFragment {
      * @return A new instance of fragment ScanSoundFragment.
      */
     public static ScanSoundFragment newInstance() {
-        ScanSoundFragment fragment = new ScanSoundFragment();
-        return fragment;
+        return new ScanSoundFragment();
     }
 
     @Override
@@ -76,26 +71,5 @@ public class ScanSoundFragment extends BaseFragment {
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_scan_sound;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 }
