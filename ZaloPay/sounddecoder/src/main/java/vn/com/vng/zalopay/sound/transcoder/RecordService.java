@@ -150,8 +150,10 @@ public class RecordService {
         private byte audioDataBuffer[];
         private int bufferSize = 0;
         private Decoder transcoderDecode;
+        private final DecoderListener decoderListener;
 
         public RecordingThread(DecoderListener decoderListener) {
+            this.decoderListener = decoderListener;
             transcoderDecode = new Decoder(decoderListener);
         }
 
@@ -297,8 +299,8 @@ public class RecordService {
         public void resetTranscoder() {
             if (transcoderDecode != null) {
                 transcoderDecode.releaseDecoder();
-                transcoderDecode.initializeDecoder();
             }
+            transcoderDecode = new Decoder(this.decoderListener);
         }
     }
 

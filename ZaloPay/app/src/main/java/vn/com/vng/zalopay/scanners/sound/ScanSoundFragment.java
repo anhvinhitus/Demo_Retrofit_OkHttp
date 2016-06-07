@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.scanners.sound;
 
+import android.Manifest;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -48,21 +49,36 @@ public class ScanSoundFragment extends BaseFragment {
     }
 
     private void startTranscoder() {
-        if (recordService == null) {
-            this.recordService = new RecordService();
+        if (!checkAndRequestPermission(Manifest.permission.RECORD_AUDIO, 100)) {
+            return;
         }
 
-        String mRecordName = null;
-        try {
-            mRecordName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        recordService.start(mRecordName, this.decoderListener);
+        getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (recordService == null) {
+                    recordService = new RecordService();
+                }
+
+                String mRecordName = null;
+                try {
+                    mRecordName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                recordService.start(mRecordName, decoderListener);
+            }
+        });
     }
 
     private void stopTranscoder() {
-        recordService.stop();
+        getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                recordService.stop();
+            }
+        });
     }
 
     public ScanSoundFragment() {
@@ -119,8 +135,10 @@ public class ScanSoundFragment extends BaseFragment {
                 new PaymentWrapper.IResponseListener() {
                     @Override
                     public void onParameterError(String param) {
+                        if ("token".equalsIgnoreCase(param)) {
+                            startTranscoder();
+                        }
                         showToast(String.format("Parameter error: %s", param));
-                        startTranscoder();
                     }
 
                     @Override
