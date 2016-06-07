@@ -1,7 +1,9 @@
-package vn.com.vng.grd.crity;
+package vn.com.vng.zalopay.crity;
 
 import android.content.Context;
 import android.util.Log;
+
+import vn.com.vng.grd.crity.BuildConfig;
 
 /**
  * Created by hanv2 on 9/24/15.
@@ -20,18 +22,13 @@ public class CrityWrapper {
         try {
             System.loadLibrary("crity");
         } catch (Throwable ex) {
-            if (BuildConfig.DEBUG) {
-                ex.printStackTrace();
-            }
+            Log.e("Wrapper", "Error loading crity", ex);
             try {
-                System.load("/data/data/vn.com.vng.vmpay/lib/libcrity.so");
+                System.load("/data/data/vn.com.vng.zalopay/lib/libcrity.so");
             } catch (Throwable ex2) {
-                if (BuildConfig.DEBUG) {
-                    ex2.printStackTrace();
-                    Log.e("SecurityWrapper", "Cannot load native libs");
-                }
+                ex2.printStackTrace();
+                Log.e("SecurityWrapper", "Cannot load native libs", ex2);
             }
-
         }
     }
 }

@@ -17,7 +17,7 @@ bool checkPackageSign(JNIEnv*, jobject);
  * Method:    createSecureKeyPart
  * Signature: (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_vn_com_vng_grd_crity_CrityWrapper_createSecureKeyPart(
+JNIEXPORT jstring JNICALL Java_vn_com_vng_zalopay_crity_CrityWrapper_createSecureKeyPart(
 		JNIEnv*, jobject, jobject);
 
 #ifdef __cplusplus

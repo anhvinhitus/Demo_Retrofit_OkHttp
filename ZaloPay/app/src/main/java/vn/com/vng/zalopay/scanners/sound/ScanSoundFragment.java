@@ -1,16 +1,11 @@
 package vn.com.vng.zalopay.scanners.sound;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.grd.crity.CrityWrapper;
-import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.crity.CrityWrapper;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.FileUtil;

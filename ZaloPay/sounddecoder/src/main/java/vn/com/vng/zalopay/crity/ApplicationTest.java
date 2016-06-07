@@ -1,4 +1,4 @@
-package vn.com.vng.grd.crity;
+package vn.com.vng.zalopay.crity;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

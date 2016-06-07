@@ -10,29 +10,37 @@ android {
         targetSdkVersion cfg.targetSdk
         versionCode 1
         versionName "1.0"
+
+        /*
+         * native build settings: taking default for almost everything
+         */
+        ndk {
+            moduleName = 'crity'
+//        toolchain = 'clang'
+//        CFlags.addAll(['-Wall'])
+//            abiFilters = ["armeabi-v7a", "armeabi", "arm64-v8a", "x86", "x86-64"]
+//            abiFilters = ["armeabi-v7a", "armeabi", "arm64-v8a", "x86-64"]
+            ldLibs = ["android", "log"]
+            stl = "gnustl_static"
+        }
+        // We need to set the libs dir for the output and the srcdirs to null to
+        // prevent the gradle ndk hooks from firing.  We need to depend on Android.mk
+        // NOTE: this appears to break the android studio 'android' project view
+        // (at least, it hides the jni directory…)
+        sourceSets.main {
+            //Tell Gradle where to put the compiled library
+            // jniLibs.srcDir 'src/main/libs'
+
+            //hide the ‘jni’ folder so that the automatic gradle build doesn’t try to run
+            //it’s own ndk-build process
+            jni.srcDirs = ['src/main/jni'];
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    /*
-     * native build settings
-     */
-    defaultConfig.ndk {
-        moduleName = "crity"
-        /*
-         * Other ndk flags configurable here are
-         * cppFlags += "-fno-rtti"
-         * cppFlags += "-fno-exceptions"
-         * ldLibs    = ["android", "log"]
-         * stl       = "system"
-         */
-//        abiFilters = ["armeabi-v7a", "armeabi"]
-//        cppFlags += "-std=gnu++11"
-        ldLibs = ["android", "log"]
-        stl = "gnustl_static"
     }
 }
 
