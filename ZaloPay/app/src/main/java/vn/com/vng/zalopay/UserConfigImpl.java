@@ -75,7 +75,16 @@ public class UserConfigImpl implements UserConfig {
 
     }
 
-    public void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+    public void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+        if (currentUser == null) {
+            return;
+        }
+        currentUser.profilelevel = profilelevel;
+        currentUser.profilePermisssions = profilePermisssions;
+        saveProfilePermissions(profilelevel, profilePermisssions);
+    }
+
+    private void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constants.PREF_PROFILELEVEL, profilelevel);
         Gson gson = new Gson();

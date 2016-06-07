@@ -15,7 +15,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
@@ -100,11 +99,11 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
             getZaloProfileInfo();
 
-            if (userConfig.getCurrentUser() != null && userConfig.getCurrentUser().profilelevel < Constants.PROFILE_LEVEL_MIN) {
-                mView.gotoUpdateProfileLevel2();
-            } else {
-                mView.gotoHomeScreen();
-            }
+//            if (userConfig.getCurrentUser() != null && userConfig.getCurrentUser().profilelevel < Constants.PROFILE_LEVEL_MIN) {
+//                mView.gotoUpdateProfileLevel2();
+//            } else {
+            mView.gotoHomeScreen();
+//            }
 
 
         } else {

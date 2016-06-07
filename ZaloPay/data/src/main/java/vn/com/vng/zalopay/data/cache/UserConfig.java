@@ -1,7 +1,8 @@
 package vn.com.vng.zalopay.data.cache;
 
-import java.util.List;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
@@ -27,7 +28,7 @@ public interface UserConfig {
 
     void saveConfig(LoginResponse response, long zuid);
 
-    void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions);
+    void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions);
 
     void loadConfig();
 
