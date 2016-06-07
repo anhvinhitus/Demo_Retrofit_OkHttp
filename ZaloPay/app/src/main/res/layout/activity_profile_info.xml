@@ -300,6 +300,42 @@
                 android:background="@color/separate" />
 
             <LinearLayout
+                android:id="@+id/layoutResetPassCode"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/spacing.medium.l"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_user_info" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/spacing.medium.l"
+                    android:layout_weight="1.0"
+                    android:text="@string/reset_passcode" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separate" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/spacing.medium.s"
+                android:background="@color/separate" />
+
+            <LinearLayout
                 android:id="@+id/layoutUserInfo"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

@@ -3,11 +3,14 @@ package vn.com.vng.zalopay.internal.di.components;
 import dagger.Subcomponent;
 import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
+import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
 import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
+import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
+import vn.com.vng.zalopay.account.ui.fragment.RecoveryPinFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.domain.model.User;
@@ -38,9 +41,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 UserModule.class,
                 ApiUserModule.class,
                 UserControllerModule.class,
-                UserPresenterModule.class,
-                ReactNativeModule.class,
-
+                UserPresenterModule.class
         }
 )
 public interface UserComponent {
@@ -76,6 +77,10 @@ public interface UserComponent {
 
     void inject(OtpProfileFragment f);
 
+    void inject(RecoveryPinFragment f);
+
+    void inject(OTPRecoveryPinFragment f);
+
     void inject(EditProfileFragment f);
 
     /* inject activity */
@@ -97,4 +102,6 @@ public interface UserComponent {
     void inject(CounterBeaconFragment fragment);
 
     void inject(PreProfileActivity a);
+
+    void inject(RecoveryPinActivity a);
 }

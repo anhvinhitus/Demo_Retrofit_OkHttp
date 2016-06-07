@@ -147,7 +147,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (s != null && s.length() == passCode.getMaxLength()) {
 
+            }
         }
     };
 

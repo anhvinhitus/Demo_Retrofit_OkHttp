@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
+import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -156,6 +157,11 @@ public class Navigator {
 
     public void startEditProfileActivity(Activity activity) {
         Intent intent = new Intent(activity, EditProfileActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startRecoveryPinActivity(Activity activity) {
+        Intent intent = new Intent(activity, RecoveryPinActivity.class);
         activity.startActivity(intent);
     }
 }

@@ -44,7 +44,6 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void destroy() {
-        this.destroyView();
         this.unsubscribe();
     }
 

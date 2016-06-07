@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.JsonUtil;
 import vn.com.zalopay.wallet.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
@@ -154,7 +155,16 @@ public class PaymentWrapper {
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo) {
         EPaymentChannel forcedPaymentChannel = null;
-        ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (user == null) {
+            return;
+        }
+        int profileLevel = user.profilelevel;
+        String permissionsStr = "{\"profilelevelpermisssion\":";
+        permissionsStr+= JsonUtil.toJsonArrayString(user.profilePermisssions);
+        permissionsStr+="}";
+        Timber.d("permissionsStr====%s", permissionsStr);
+        ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, zpPaymentListener);
     }
 
     @NonNull

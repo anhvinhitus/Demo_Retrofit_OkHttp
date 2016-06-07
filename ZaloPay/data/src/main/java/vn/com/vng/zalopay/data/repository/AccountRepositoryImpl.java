@@ -49,4 +49,16 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
                     userConfig.saveProfilePermissions(profilePermisssion.profileLevel, profilePermisssion.profilePermisssions);
                 });
     }
+
+    @Override
+    public Observable<Boolean> recoverypin(String pin, String otp) {
+        long uid = -1;
+        String accesstoken = "";
+        if (userConfig.getCurrentUser() != null) {
+            uid = userConfig.getCurrentUser().uid;
+            accesstoken = userConfig.getCurrentUser().accesstoken;
+        }
+        return accountService.recoverypin(uid, accesstoken, pin, otp)
+                .map(baseResponse -> Boolean.TRUE);
+    }
 }

@@ -83,7 +83,7 @@ public class AppConfigFactory {
         List<AppResourceEntity> list = sqlitePlatformScope.listAppResourceEntity();
         List<AppResourceEntity> listAppDownload = new ArrayList<>();
         for (AppResourceEntity app : list) {
-            if (!app.download) {
+            if (app.stateDownload < 2) {
                 listAppDownload.add(app);
             }
         }

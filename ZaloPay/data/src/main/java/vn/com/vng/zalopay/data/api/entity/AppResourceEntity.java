@@ -30,6 +30,13 @@ public class AppResourceEntity {
     public String checksum;
 
     @Expose(deserialize = false, serialize = false)
-    public boolean download;
+    public int stateDownload;
+
+    @Expose(deserialize = false, serialize = false)
+    public long timeDownload;
+
+    @Expose(deserialize = false, serialize = false)
+    public int numRetry;
+
 
 }

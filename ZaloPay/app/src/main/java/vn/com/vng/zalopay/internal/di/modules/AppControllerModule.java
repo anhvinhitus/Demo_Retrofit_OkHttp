@@ -37,11 +37,6 @@ public class AppControllerModule {
         return passportRepository;
     }
 
-    @Provides
-    @Singleton
-    BundleService providesBundleService(Context context, LocalResourceRepository localResourceRepository, Gson gson) {
-        return new BundleServiceImpl((Application) context, localResourceRepository, gson);
-    }
 
     @Provides
     @Singleton
@@ -50,9 +45,4 @@ public class AppControllerModule {
     }
 
 
-    @Singleton
-    @Provides
-    LocalResourceRepository providesLocalResourceRepository(@Named("daosession") DaoSession daoSession) {
-        return new LocalResourceRepositoryImpl(new LocalResourceFactory(daoSession));
-    }
 }

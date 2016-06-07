@@ -72,7 +72,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -83,7 +82,6 @@
                     android:host="post"
                     android:scheme="zalopay-1" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".account.ui.activities.LoginZaloActivity"
@@ -193,6 +191,8 @@
             android:name=".service.DownloadService"
             android:exported="false"
             android:label="DownloadService" />
+
+        <activity android:name=".account.ui.activities.RecoveryPinActivity"></activity>
     </application>
 
 </manifest>
