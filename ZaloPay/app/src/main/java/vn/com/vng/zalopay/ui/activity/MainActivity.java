@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import java.lang.ref.WeakReference;
 
@@ -115,8 +116,20 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.e("Select menu item: %d", item.getItemId());
+        if (item.getItemId() == R.id.layoutNotification) {
+            navigator.startMiniAppActivity(this, "Notifications");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
     }
 
     @Override

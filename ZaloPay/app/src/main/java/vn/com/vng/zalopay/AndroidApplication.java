@@ -60,16 +60,20 @@ public class AndroidApplication extends MultiDexApplication {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
             Timber.tag(TAG);
-            AndroidDevMetrics.initWith(this);
-            StrictMode.enableDefaults();
-            LeakCanary.install(this);
-            DebugViewer.registerInstance(this);
-            Timber.plant(new Timber.DebugTree() {
-                @Override
-                protected void log(int priority, String tag, String message, Throwable t) {
-                    DebugViewer.postLog(priority, tag, message);
-                }
-            });
+            AndroidDevMetrics.Builder builder = new AndroidDevMetrics.Builder(this);
+            if (!BuildConfig.FLAVOR.equalsIgnoreCase("production")) {
+                builder.showNotification(false);
+                StrictMode.enableDefaults();
+                LeakCanary.install(this);
+                DebugViewer.registerInstance(this);
+                Timber.plant(new Timber.DebugTree() {
+                    @Override
+                    protected void log(int priority, String tag, String message, Throwable t) {
+                        DebugViewer.postLog(priority, tag, message);
+                    }
+                });
+            }
+            AndroidDevMetrics.initWith(builder);
         } else {
             Timber.plant(new CrashlyticsTree());
         }
