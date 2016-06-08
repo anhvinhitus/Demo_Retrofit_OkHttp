@@ -43,16 +43,18 @@ public class DownloadAppResourceTask {
     private final String mBundleRootFolder;
 
     public DownloadAppResourceTask(Context context,
-                                   DownloadInfo appResourceEntity,
+                                   DownloadInfo downloadInfo,
                                    OkHttpClient mOkHttpClient,
-                                   SqlitePlatformScope sqlitePlatformScope) {
+                                   SqlitePlatformScope sqlitePlatformScope,
+                                   String rootbundle
+    ) {
 
-        this.downloadInfo = appResourceEntity;
+        this.downloadInfo = downloadInfo;
         this.context = context;
         this.httpClient = mOkHttpClient;
         this.sqlitePlatformScope = sqlitePlatformScope;
 
-        mBundleRootFolder = context.getFilesDir().getAbsolutePath() + File.separator + context.getPackageName() + File.separator + "bundles";
+        mBundleRootFolder = rootbundle;
     }
 
     public void execute(Callback callback) {

@@ -48,11 +48,13 @@ public class AppConfigFactory {
 
     private OkHttpClient mOkHttpClient;
 
+    private final String rootBundle;
+
     public AppConfigFactory(Context context, AppConfigService service,
                             User user, SqlitePlatformScope sqlitePlatformScope,
                             HashMap<String, String> paramsReq,
                             DownloadAppResourceTaskQueue taskQueue,
-                            OkHttpClient mOkHttpClient) {
+                            OkHttpClient mOkHttpClient, String rootBundle) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -65,6 +67,7 @@ public class AppConfigFactory {
         this.paramsReq = paramsReq;
         this.taskQueue = taskQueue;
         this.mOkHttpClient = mOkHttpClient;
+        this.rootBundle = rootBundle;
     }
 
 
@@ -178,14 +181,14 @@ public class AppConfigFactory {
         DownloadAppResourceTask taskJs = new DownloadAppResourceTask(context,
                 new DownloadInfo(appResourceEntity.jsurl, appResourceEntity.appname,
                         appResourceEntity.appid, appResourceEntity.checksum),
-                mOkHttpClient, sqlitePlatformScope);
+                mOkHttpClient, sqlitePlatformScope, rootBundle);
 
         listTask.add(taskJs);
 
         DownloadAppResourceTask taskImgUrl = new DownloadAppResourceTask(context,
                 new DownloadInfo(appResourceEntity.imageurl, appResourceEntity.appname,
                         appResourceEntity.appid, appResourceEntity.checksum),
-                mOkHttpClient, sqlitePlatformScope);
+                mOkHttpClient, sqlitePlatformScope, rootBundle);
 
         listTask.add(taskImgUrl);
     }
