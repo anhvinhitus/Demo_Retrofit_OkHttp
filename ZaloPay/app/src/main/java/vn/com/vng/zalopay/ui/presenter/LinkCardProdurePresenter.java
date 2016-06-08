@@ -6,9 +6,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -16,14 +14,10 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.wallet.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 12/05/2016.
@@ -54,9 +48,10 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
             public void onResponseError(int status) {
                 if (status == PaymentError.ERR_CODE_INTERNET) {
                     mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-                } else {
-                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
                 }
+//                else {
+//                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+//                }
             }
 
             @Override
@@ -108,7 +103,15 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
     }
 
     public void addLinkCard() {
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, 10000, ETransactionType.LINK_CARD.toString())
+        long value = 10000;
+        if (mView.getActivity()!= null) {
+            try {
+                value = CShareData.getInstance(mView.getActivity()).getLinkCardValue();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
