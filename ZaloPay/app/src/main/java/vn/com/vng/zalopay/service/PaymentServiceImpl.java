@@ -1,9 +1,6 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
@@ -15,21 +12,14 @@ import java.util.Locale;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
-import vn.com.zalopay.wallet.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 /**
  * Created by longlv on 02/06/2016.
@@ -59,7 +49,7 @@ public class PaymentServiceImpl implements IPaymentService {
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
-                reportInvalidParameter(promise, Constants.APPID);
+                reportInvalidParameter(promise, param);
             }
 
             @Override
