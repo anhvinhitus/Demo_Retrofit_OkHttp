@@ -175,13 +175,16 @@ android {
         exclude 'META-INF/LGPL2.1'
         exclude 'LICENSE.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/maven/jaxen/jaxen/pom.properties'
+        exclude 'META-INF/maven/jaxen/jaxen/pom.xml'
+
 
     }
 
     dexOptions {
         jumboMode = true
 
-//        preDexLibraries = false
+        preDexLibraries = false
         javaMaxHeapSize "2g"
     }
 
@@ -260,7 +263,8 @@ dependencies {
     compile project(':data')
     compile project(':uicomponent')
     compile project(':qrcodecore')
-    compile project(':zalosdk')
+    compile project(':zalosdk') {
+    }
     compile project(':reactnativemodules')
 
     debugCompile(name: 'WALLET-debug', ext: 'aar')

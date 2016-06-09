@@ -217,12 +217,8 @@
 -keep public class org.dom4j.swing.** { *; }
 -dontwarn org.dom4j.swing.**
 
-
 -keep class com.android.vending.billing.**
 -dontwarn com.android.vending.billing.**
-
-#-keep public class com.zing.zalo.zalosdk.oauth.** { *; }
-#-dontwarn com.zing.zalo.zalosdk.oauth.**
 
 -keep public class org.w3c.dom.** { *; }
 -dontwarn org.w3c.dom.**
@@ -279,22 +275,53 @@
 -keep public interface javax.swing.table.** { *; }
 -keep public interface org.gjt.xpp.** { *; }
 
+
+-keepattributes InnerClasses
+
+-keep class **.R
+-keep class **.R$* {
+    <fields>;
+}
+
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+-adaptresourcefilenames
+
+-adaptclassstrings
+-adaptresourcefilecontents **.xml
+
+-dontskipnonpubliclibraryclassmembers
+
 -dontwarn android.support.**
 
-#-keepclassmembers class * extends java.lang.Enum {
-#    <fields>;
-#    public static **[] values();
-#    public static ** valueOf(java.lang.String);
-#}
-
-#-keep public class vn.com.zalopay.wallet.data.Constants { *; }
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 
+#Payment SDK
 
--dontwarn vn.com.zalopay.wallet.entity.**
+-keep public class vn.com.zalopay.wallet.** {
+  public protected *;
+}
 
-#-keep class **.R
-#
-#-keep class **.R$* {
-#    <fields>;
-#}
+-keep public class io.card.payment.** {
+  public protected *;
+}
+
+-dontwarn vn.com.zalopay.wallet.**
+
+#Zalo SDK
+
+-keep public class com.zing.zalo.zalosdk.** {
+    public protected *;
+}
+-dontwarn com.zing.zalo.zalosdk.**
+
+-keepclassmembers class com.zing.zalo.zalosdk.resource.R {
+    *;
+}

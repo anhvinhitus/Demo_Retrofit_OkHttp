@@ -24,7 +24,6 @@ import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 
 /**
  * Created by longlv on 09/05/2016.
- *
  */
 
 public final class QRCodePresenter extends BaseZaloPayPresenter implements IPresenter<IQRScanView> {
@@ -145,13 +144,11 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     private boolean zpTransaction(String jsonOrder) {
         Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonOrder);
-        JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject(jsonOrder);
-            long appId = jsonObject.getLong(Constants.APPID);
-            String zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+            JSONObject jsonObject = new JSONObject(jsonOrder);
+            long appId = jsonObject.optInt(Constants.APPID);
+            String zptranstoken = jsonObject.optString(Constants.ZPTRANSTOKEN);
             paymentWrapper.payWithToken(appId, zptranstoken);
-//            getOrder(appId, zptranstoken);
             return true;
         } catch (JSONException e) {
             Timber.e(e, "JSON error");
