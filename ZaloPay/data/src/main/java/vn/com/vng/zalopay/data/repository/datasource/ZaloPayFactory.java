@@ -122,8 +122,8 @@ public class ZaloPayFactory {
         return zaloPayService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
     }
 
-    public Observable<GetOrderResponse> createwalletorder(long appId, long amount, String transtype) {
-        return zaloPayService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype);
+    public Observable<GetOrderResponse> createwalletorder(long appId, long amount, String transtype, long appUser) {
+        return zaloPayService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype, appUser);
     }
 
     public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {

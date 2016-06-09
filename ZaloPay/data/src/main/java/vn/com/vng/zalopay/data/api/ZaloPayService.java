@@ -5,7 +5,6 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BalanceResponse;
-import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 
@@ -25,6 +24,6 @@ public interface ZaloPayService {
     Observable<GetOrderResponse> getorder(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
     @GET("tpe/createwalletorder")
-    Observable<GetOrderResponse> createwalletorder(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.AMOUNT) long amount, @Query(Constants.TRANSTYPE) String transtype);
+    Observable<GetOrderResponse> createwalletorder(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.AMOUNT) long amount, @Query(Constants.TRANSTYPE) String transtype, @Query(Constants.APPUSER) long appUser);
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 
@@ -29,7 +28,7 @@ public interface ZaloPayRepository {
 
     Observable<Order> getOrder(long appId, String zptranstoken);
 
-    Observable<Order> createwalletorder(long appId, long amount, String transtype);
+    Observable<Order> createwalletorder(long appId, long amount, String transtype, long appUser);
 
     //thread react-native
     void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber);
