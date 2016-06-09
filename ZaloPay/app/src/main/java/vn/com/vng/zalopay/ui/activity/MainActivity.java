@@ -220,8 +220,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     private void sigoutAndCleanData() {
         ZaloSDK.Instance.unauthenticate();
         userConfigFactory.clearAllUserDB();
+
         AndroidApplication.instance().releaseUserComponent();
         navigator.startLoginActivity(this, true);
+        finish();
     }
 
     private void startQRCodeActivity() {
