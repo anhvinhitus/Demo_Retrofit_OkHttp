@@ -9,6 +9,7 @@ import android.view.View;
 
 import javax.inject.Inject;
 
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -18,7 +19,7 @@ import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
 
-public class LoginZaloActivity extends BaseActivity implements ILoginView, View.OnClickListener {
+public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
 
     @Override
@@ -53,19 +54,10 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
-        findViewById(R.id.layoutLoginZalo).setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View v) {
-        int itemId = v.getId();
-        if (itemId == R.id.layoutLoginZalo) {
-            startLoginZalo();
-        }
-    }
-
-    private void startLoginZalo() {
-        showLoading();
+    @OnClick(R.id.layoutLoginZalo)
+    public void onClickLogin(View v) {
         loginPresenter.loginZalo(this);
     }
 
@@ -83,8 +75,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         loginPresenter.destroy();
+        super.onDestroy();
     }
 
     @Override
@@ -108,12 +100,13 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void showLoading() {
-        if (isFinishing()) {
-            return;
+        Timber.d("showLoading");
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(getActivity(), getString(R.string.login), getString(R.string.loading));
+            mProgressDialog.setCanceledOnTouchOutside(false);
         }
-        hideLoading();
-        mProgressDialog = ProgressDialog.show(this, getString(R.string.login), getString(R.string.loading));
-        mProgressDialog.setCanceledOnTouchOutside(false);
+
+        mProgressDialog.show();
     }
 
     public void hideLoading() {

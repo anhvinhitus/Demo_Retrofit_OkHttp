@@ -30,6 +30,7 @@ import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
 
@@ -210,6 +211,7 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                     try {
                         subscriber.onError(t);
                     } catch (Exception ex) {
+                        Timber.e(ex, "Exception OnError :");
                     }
                 }
                 return;
