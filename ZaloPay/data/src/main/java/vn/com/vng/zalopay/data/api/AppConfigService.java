@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
-import retrofit2.http.Url;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
@@ -31,7 +29,7 @@ public interface AppConfigService {
 
     @FormUrlEncoded
     @POST("tpe/getplatforminfo")
-    Observable<PlatformInfoResponse> platforminfo(@Field("userid") long userid,
+    Observable<PlatformInfoResponse> platforminfo(@Field("userid") String userid,
                                                   @Field("accesstoken") String accesstoken,
                                                   @Field("platformcode") String platformcode,
                                                   @Field("dscreentype") String dscreentype,

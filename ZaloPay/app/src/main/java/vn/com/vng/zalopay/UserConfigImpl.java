@@ -63,7 +63,7 @@ public class UserConfigImpl implements UserConfig {
 
         editor.putString(Constants.PREF_USER_EMAIL, user.email);
         editor.putString(Constants.PREF_USER_SESSION, user.accesstoken);
-        editor.putLong(Constants.PREF_USER_ID, user.uid);
+        editor.putString(Constants.PREF_USER_ID, user.uid);
         editor.putString(Constants.PREF_USER_NAME, user.dname);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
         editor.putInt(Constants.PREF_PROFILELEVEL, user.profilelevel);
@@ -104,7 +104,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser = new User();
             currentUser.accesstoken = session;
             currentUser.expirein = preferences.getLong(Constants.PREF_USER_EXPIREIN, -1);
-            currentUser.uid = preferences.getLong(Constants.PREF_USER_ID, -1);
+            currentUser.uid = preferences.getString(Constants.PREF_USER_ID, "");
             currentUser.zaloId = preferences.getLong(Constants.PREF_ZALO_ID, -1);
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
@@ -157,11 +157,11 @@ public class UserConfigImpl implements UserConfig {
 
 
     @Override
-    public long getUserId() {
+    public String getUserId() {
         if (isClientActivated()) {
             return getCurrentUser().uid;
         }
-        return -1;
+        return "";
     }
 
     @Override

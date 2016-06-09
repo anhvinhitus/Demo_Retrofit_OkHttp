@@ -60,7 +60,7 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
     }
 
     @Override
-    public Observable<Order> createwalletorder(long appId, long amount, String transtype, long appUser) {
+    public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser) {
         return zaloPayFactory.createwalletorder(appId, amount, transtype, appUser).map(new Func1<GetOrderResponse, Order>() {
             @Override
             public Order call(GetOrderResponse getOrderResponse) {

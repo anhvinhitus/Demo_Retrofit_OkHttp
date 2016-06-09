@@ -18,7 +18,7 @@ public class LoginResponse extends BaseResponse {
     public long expirein;
 
     @SerializedName("userid")
-    public long userid;
+    public String userid;
 
     @SerializedName("profilelevel")
     public int profilelevel;

@@ -36,7 +36,7 @@ public interface UserConfig {
 
     String getSession();
 
-    long getUserId();
+    String getUserId();
 
     long getZaloId();
 

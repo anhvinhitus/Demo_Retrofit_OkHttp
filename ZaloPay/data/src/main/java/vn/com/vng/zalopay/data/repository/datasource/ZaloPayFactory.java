@@ -122,7 +122,7 @@ public class ZaloPayFactory {
         return zaloPayService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
     }
 
-    public Observable<GetOrderResponse> createwalletorder(long appId, long amount, String transtype, long appUser) {
+    public Observable<GetOrderResponse> createwalletorder(long appId, long amount, String transtype, String appUser) {
         return zaloPayService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype, appUser);
     }
 
