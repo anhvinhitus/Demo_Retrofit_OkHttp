@@ -48,6 +48,9 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.layoutProfileInfo)
     View mLayoutProfileInfo;
 
+    @BindView(R.id.layoutUser)
+    View layoutUser;
+
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
     @BindView(R.id.tvName)
@@ -302,6 +305,17 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
 
     public void updateBalance(long balance) {
         tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
+    }
+
+    public void showHideProfileInfo(boolean isShow) {
+        if (layoutUser == null) {
+            return;
+        }
+        if (isShow) {
+            layoutUser.setVisibility(View.VISIBLE);
+        } else {
+            layoutUser.setVisibility(View.GONE);
+        }
     }
 
     public EditProfileFragment() {

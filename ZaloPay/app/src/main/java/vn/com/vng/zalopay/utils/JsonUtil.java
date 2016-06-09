@@ -53,10 +53,13 @@ public class JsonUtil {
     }
 
     public static <T> String toJsonArrayString(List<T> list) {
+        if (list == null || list.size() <=0) {
+            return "[]";
+        }
         Gson gson = new Gson();
         JsonElement element = gson.toJsonTree(list, new TypeToken<List<T>>() {}.getType());
 
-        if (! element.isJsonArray()) {
+        if (!element.isJsonArray()) {
             return null;
         }
         return element.getAsJsonArray().toString();

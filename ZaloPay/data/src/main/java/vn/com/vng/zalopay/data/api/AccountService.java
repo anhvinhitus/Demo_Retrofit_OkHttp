@@ -15,13 +15,13 @@ public interface AccountService {
 
     @FormUrlEncoded
     @POST("um/updateprofile")
-    Observable<BaseResponse> updateProfile(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
+    Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
     @FormUrlEncoded
     @POST("um/verifyotpprofile")
-    Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
+    Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
 
     @FormUrlEncoded
     @POST("um/recoverypin")
-    Observable<BaseResponse> recoverypin(@Query("userid") long userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("otp") String otp);
+    Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("otp") String otp);
 }

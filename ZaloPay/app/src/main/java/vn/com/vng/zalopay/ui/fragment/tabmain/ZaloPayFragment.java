@@ -121,9 +121,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void showAdsBanner() {
         //Glide.with(this).load(url).asBitmap().into(mImgAdsBanner);
         List<Integer> bannerResource = new ArrayList<>();
-        bannerResource.add(R.drawable.ic_banner_full_screen1);
-        bannerResource.add(R.drawable.ic_banner_full_screen2);
-        bannerResource.add(R.drawable.ic_banner_full_screen3);
+        bannerResource.add(R.drawable.bn_1);
+        bannerResource.add(R.drawable.bn_2);
+        bannerResource.add(R.drawable.bn_3);
         mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource);
         mBannerViewpager.setAdapter(mBannerPagerAdapter);
         mBannerIndicator.setViewPager(mBannerViewpager);
