@@ -24,10 +24,6 @@ public interface UserConfig {
 
     void saveConfig(UserEntity user);
 
-    void saveConfig(LoginResponse response);
-
-    void saveConfig(LoginResponse response, long zuid);
-
     void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions);
 
     void loadConfig();
