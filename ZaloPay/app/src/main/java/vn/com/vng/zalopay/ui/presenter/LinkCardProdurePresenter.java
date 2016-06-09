@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -12,6 +14,7 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
@@ -30,6 +33,9 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
     private PaymentWrapper paymentWrapper;
 
     User user;
+
+    @Inject
+    Navigator navigator;
 
     public LinkCardProdurePresenter(User user) {
         this.user = user;
@@ -103,21 +109,25 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
     }
 
     public void addLinkCard() {
-        long value = 10000;
-        if (mView.getActivity()!= null) {
-            try {
-                value = CShareData.getInstance(mView.getActivity()).getLinkCardValue();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (user.profilelevel < 2) {
+            navigator.startUpdateProfileLevel2Activity(mView.getContext(), false);
+        } else {
+            long value = 10000;
+            if (mView.getActivity() != null) {
+                try {
+                    value = CShareData.getInstance(mView.getActivity()).getLinkCardValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            if (user == null) {
+                return;
+            }
+            subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CreateWalletOrderSubscriber());
         }
-        if (user == null) {
-            return;
-        }
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CreateWalletOrderSubscriber());
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
@@ -150,7 +160,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.tag("onCreateWalletOrderSuccess").d("session =========" + order.getItem());
-        paymentWrapper.payWithOrder(order);
+        paymentWrapper.linkCard(order);
         hideLoadingView();
     }
 //

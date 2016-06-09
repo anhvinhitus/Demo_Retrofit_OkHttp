@@ -18,12 +18,14 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.JsonUtil;
-import vn.com.zalopay.wallet.ZingMobilePayService;
+import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.application.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -135,8 +137,44 @@ public class PaymentWrapper {
         }
     }
 
-    private void callPayAPI(ZPWPaymentInfo paymentInfo) {
-        EPaymentChannel forcedPaymentChannel = null;
+    public void linkCard(Order order) {
+        Timber.d("payWithOrder: Start");
+        if (order == null) {
+            Timber.i("payWithOrder: order is invalid");
+            responseListener.onParameterError("order");
+//            showErrorView(mView.getContext().getString(R.string.order_invalid));
+            return;
+        }
+        Timber.d("payWithOrder: Order is valid");
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (TextUtils.isEmpty(user.uid)) {
+            Timber.i("payWithOrder: Uid is invalid");
+            responseListener.onParameterError("uid");
+//            showErrorView(mView.getContext().getString(R.string.user_invalid));
+            return;
+        }
+        try {
+            ZPWPaymentInfo paymentInfo = transform(order);
+
+            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
+
+//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
+            callPayAPI(paymentInfo, EPaymentChannel.LINK_CARD);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "Exception with number format");
+            responseListener.onParameterError("exception");
+        }
+    }
+
+    public void saveCardMap(ZPWPaymentInfo paymentInfo, ZPWSaveMapCardListener listener) {
+        if (viewListener == null) {
+            return;
+        }
+        ZingMobilePayApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
+    }
+
+    private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
+        EPaymentChannel forcedPaymentChannel = paymentChannel;
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (user == null) {
             return;
@@ -147,6 +185,10 @@ public class PaymentWrapper {
         permissionsStr+="}";
         Timber.d("permissionsStr====%s", permissionsStr);
         ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, zpPaymentListener);
+    }
+
+    private void callPayAPI(ZPWPaymentInfo paymentInfo) {
+        callPayAPI(paymentInfo, null);
     }
 
     @NonNull
@@ -188,11 +230,12 @@ public class PaymentWrapper {
         return paymentInfo;
     }
 
-    private void startUpdateProfileLevel() {
+    private void startUpdateProfileLevel(String walletTransID) {
         if (viewListener == null || viewListener.getActivity() == null) {
             return;
         }
         Intent intent = new Intent(viewListener.getActivity(), PreProfileActivity.class);
+        intent.putExtra(Constants.WALLETTRANSID, walletTransID);
         viewListener.getActivity().startActivity(intent);
     }
 
@@ -213,7 +256,14 @@ public class PaymentWrapper {
                     responseListener.onResponseTokenInvalid();
                 } else if ( resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
                     //Hien update profile level 2
-                    startUpdateProfileLevel();
+                    startUpdateProfileLevel(null);
+                } else if ( resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD.getNum()) {
+                        String walletTransId = null;
+                        if (pPaymentResult.paymentInfo != null) {
+                            walletTransId = pPaymentResult.paymentInfo.walletTransID;
+                        }
+                        //Hien update profile level 2
+                        startUpdateProfileLevel(walletTransId);
                 } else {
                     responseListener.onResponseError(resultStatus);
                 }
