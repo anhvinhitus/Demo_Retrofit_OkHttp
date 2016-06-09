@@ -11,6 +11,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
@@ -67,7 +68,7 @@ public class UserControllerModule {
                                              OkHttpClient okHttpClient,
                                              @Named("rootbundle") String rootBundle) {
 
-        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient, rootBundle);
+        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient, rootBundle, BuildConfig.DOWNLOAD_APP_RESOURCE);
     }
 
     @UserScope

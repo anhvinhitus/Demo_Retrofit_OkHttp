@@ -50,14 +50,14 @@ public class PassportFactory {
         return passportService.login(payAppId, zuid, zAuthCode);
     }
 
-    public Observable<LogoutResponse> logout(long uid, String accesstoken) {
+    public Observable<LogoutResponse> logout(String uid, String accesstoken) {
 
         //K nen lay uid,accesstoken  tu userconfig.
         return passportService.logout(payAppId, uid, accesstoken)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
     }
 
-    public Observable<BaseResponse> verifyAccessToken(long uid, String token) {
+    public Observable<BaseResponse> verifyAccessToken(String uid, String token) {
         return passportService.verifyAccessToken(payAppId, uid, token);
     }
 }

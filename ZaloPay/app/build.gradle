@@ -40,8 +40,7 @@ android {
 
         multiDexEnabled true
 
-        buildConfigField "String", "PRODUCTION_FLAVOR", "\"production\""
-        buildConfigField "String", "BETA_FLAVOR", "\"beta\""
+        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -101,6 +100,7 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
         }
 
         sandbox {
@@ -175,13 +175,16 @@ android {
         exclude 'META-INF/LGPL2.1'
         exclude 'LICENSE.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/maven/jaxen/jaxen/pom.properties'
+        exclude 'META-INF/maven/jaxen/jaxen/pom.xml'
+
 
     }
 
     dexOptions {
         jumboMode = true
 
-//        preDexLibraries = false
+        preDexLibraries = false
         javaMaxHeapSize "2g"
     }
 
@@ -260,11 +263,12 @@ dependencies {
     compile project(':data')
     compile project(':uicomponent')
     compile project(':qrcodecore')
-    compile project(':zalosdk')
+    compile project(':zalosdk') {
+    }
     compile project(':reactnativemodules')
 
-    debugCompile(name:'WALLET-debug', ext:'aar')
-    releaseCompile(name:'WALLET-release', ext:'aar')
+    debugCompile(name: 'WALLET-debug', ext: 'aar')
+    releaseCompile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
 

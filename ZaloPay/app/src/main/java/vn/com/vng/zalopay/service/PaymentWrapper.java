@@ -65,6 +65,8 @@ public class PaymentWrapper {
     }
 
     public void payWithDetail(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
+        Timber.d("payWithDetail start.......");
+        Timber.d("appID %s appTransId: %s appUser:%s appTime:%s amount:%s itemName:%s itemNam:%s description:%s embedData:%s mac:%s", appID, appTransID, appUser, appTime, amount, itemName, amount, itemName, description, embedData, mac);
         if (appID < 0) {
             responseListener.onParameterError(Constants.APPID);
             return;
@@ -99,7 +101,7 @@ public class PaymentWrapper {
         }
 
         User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user == null || user.uid <= 0 || TextUtils.isEmpty(user.accesstoken)) {
+        if (user == null || TextUtils.isEmpty(user.uid)|| TextUtils.isEmpty(user.accesstoken)) {
             responseListener.onParameterError("uid");
             return;
         }
@@ -118,7 +120,7 @@ public class PaymentWrapper {
         }
         Timber.d("payWithOrder: Order is valid");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user.uid <= 0) {
+        if (TextUtils.isEmpty(user.uid)) {
             Timber.i("payWithOrder: Uid is invalid");
             responseListener.onParameterError("uid");
 //            showErrorView(mView.getContext().getString(R.string.user_invalid));

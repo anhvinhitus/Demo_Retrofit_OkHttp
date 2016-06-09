@@ -21,7 +21,7 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
 
     @Override
     public Observable<Boolean> updateProfile(String pin, String phonenumber) {
-        long uid = -1;
+        String uid = "";
         String accesstoken = "";
         if (userConfig.getCurrentUser() != null) {
             uid = userConfig.getCurrentUser().uid;
@@ -32,7 +32,7 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
 
     @Override
     public Observable<ProfilePermisssion> verifyOTPProfile(String otp) {
-        long uid = -1;
+        String uid = "";
         String accesstoken = "";
         if (userConfig.getCurrentUser() != null) {
             uid = userConfig.getCurrentUser().uid;
@@ -52,7 +52,7 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
 
     @Override
     public Observable<Boolean> recoverypin(String pin, String otp) {
-        long uid = -1;
+        String uid = "";
         String accesstoken = "";
         if (userConfig.getCurrentUser() != null) {
             uid = userConfig.getCurrentUser().uid;

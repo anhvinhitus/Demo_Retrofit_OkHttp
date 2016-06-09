@@ -21,9 +21,9 @@ public interface PassportService {
 
     @FormUrlEncoded
     @POST("um/removeaccesstoken")
-    Observable<LogoutResponse> logout(@Field("appid") long appid, @Field("userid") long uid, @Field("accesstoken") String accesstoken);
+    Observable<LogoutResponse> logout(@Field("appid") long appid, @Field("userid") String uid, @Field("accesstoken") String accesstoken);
 
     @FormUrlEncoded
     @POST("um/verifyaccesstoken")
-    Observable<BaseResponse> verifyAccessToken(@Field("appid") long appid, @Field("userid") long uid, @Field("accesstoken") String accesstoken);
+    Observable<BaseResponse> verifyAccessToken(@Field("appid") long appid, @Field("userid") String uid, @Field("accesstoken") String accesstoken);
 }

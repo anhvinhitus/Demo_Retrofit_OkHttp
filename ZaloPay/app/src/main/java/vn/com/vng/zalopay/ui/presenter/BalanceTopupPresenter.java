@@ -6,7 +6,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
@@ -16,14 +15,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.wallet.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 /**
  * Created by longlv on 10/05/2016.
@@ -34,12 +27,12 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
     private Subscription subscriptionGetOrder;
 
-//    private User user;
+    private User user;
 
     private PaymentWrapper paymentWrapper;
 
     public BalanceTopupPresenter(User user) {
-//        this.user = user;
+        this.user = user;
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -130,7 +123,10 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private void createWalletorder(long amount) {
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString())
+        if (userConfig == null || userConfig.getCurrentUser() == null) {
+            return;
+        }
+        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString(), userConfig.getCurrentUser().uid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());

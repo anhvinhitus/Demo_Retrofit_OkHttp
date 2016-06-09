@@ -263,12 +263,10 @@
 -keep public class  org.w3c.dom.** { *; }
 -dontwarn  org.w3c.dom.**
 
--keep public class com.zing.zalo.zalosdk.** { *; }
+-keep public class com.zing.zalo.zalosdk.** {
+    public protected *;
+}
 -dontwarn com.zing.zalo.zalosdk.**
-
--keep public class com.zing.zalo.zalosdk.resource.** { *; }
--dontwarn com.zing.zalo.zalosdk.resource.**
-
 
 -keepattributes InnerClasses
 
@@ -276,3 +274,61 @@
 -keep class **.R$* {
     <fields>;
 }
+
+-adaptresourcefilenames
+
+-adaptclassstrings
+-adaptresourcefilecontents **.xml
+
+
+# Also keep - Swing UI L&F. Keep all extensions of javax.swing.plaf.ComponentUI,
+# along with the special 'createUI' method.
+-keep class * extends javax.swing.plaf.ComponentUI {
+    public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
+}
+
+-keep public class com.zing.zalo.zalosdk.oauth.** {
+    public protected *;
+}
+-dontwarn com.zing.zalo.zalosdk.oauth.**
+
+-keep public class com.zing.zalo.zalosdk.payment.** {
+    public protected *;
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keep public class com.zing.zalo.zalosdk.resource.R {
+    public protected *;
+}
+
+-keep public class com.zing.zalo.zalosdk.resource.R$id {
+    public protected *;
+}
+
+-keep public class com.zing.zalo.zalosdk.resource.R$drawable {
+    public protected *;
+}
+
+-dontwarn com.zing.zalo.zalosdk.resource.**
+
+
+-keepclassmembers class com.zing.zalo.zalosdk.resource.R {
+    *;
+}
+
+-keepclassmembers class **.R$* {
+     public static <fields>;
+}
+
+-dontobfuscate

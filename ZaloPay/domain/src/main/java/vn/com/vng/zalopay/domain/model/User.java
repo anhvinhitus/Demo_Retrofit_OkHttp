@@ -42,7 +42,7 @@ public final class User extends Person {
         return accesstoken;
     }
 
-    public User(long uid) {
+    public User(String uid) {
         this.uid = uid;
     }
 

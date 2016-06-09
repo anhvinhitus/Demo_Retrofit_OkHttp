@@ -2,13 +2,14 @@ package vn.com.vng.zalopay.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by AnhHieu on 3/25/16.
  */
 public class Person extends AbstractData {
 
-    public long uid;
+    public String uid;
 
     public String dname;
 
@@ -22,20 +23,20 @@ public class Person extends AbstractData {
     }
 
     public Person(Parcel source) {
-        uid = source.readLong();
+        uid = source.readString();
         dname = source.readString();
         avatar = source.readString();
         birthDate = source.readLong();
         userGender =source.readInt();
     }
 
-    public Person(long uid, String dname, String avatar) {
+    public Person(String uid, String dname, String avatar) {
         this.uid = uid;
         this.dname = dname;
         this.avatar = avatar;
     }
 
-    public Person(long uid, String dname, String avatar, long birthDate, int userGender) {
+    public Person(String uid, String dname, String avatar, long birthDate, int userGender) {
         this.uid = uid;
         this.dname = dname;
         this.avatar = avatar;
@@ -54,7 +55,7 @@ public class Person extends AbstractData {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(uid);
+        dest.writeString(uid);
         dest.writeString(dname);
         dest.writeString(avatar);
         dest.writeLong(birthDate);
@@ -76,7 +77,7 @@ public class Person extends AbstractData {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Person) {
-            return uid == ((Person) o).uid && uid > 0;
+            return uid == ((Person) o).uid && !TextUtils.isEmpty(uid);
         }
         return false;
     }

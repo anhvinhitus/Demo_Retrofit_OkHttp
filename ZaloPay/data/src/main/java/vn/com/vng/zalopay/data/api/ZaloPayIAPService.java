@@ -12,9 +12,9 @@ import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 public interface ZaloPayIAPService {
 
     @GET("um/getmerchantuserinfo")
-    Observable<GetMerchantUserInfoResponse> getmerchantuserinfo(@Query("appid") long appid, @Query("userid") long userid, @Query("accesstoken") String accesstoken);
+    Observable<GetMerchantUserInfoResponse> getmerchantuserinfo(@Query("appid") long appid, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
     @GET("um/verifymerchantaccesstoken")
-    Observable<BaseResponse> verifymerchantaccesstoken(@Query("muid") String appid, @Query("maccesstoken") String maccesstoken, @Query("systemlogin") int systemlogin);
+    Observable<BaseResponse> verifymerchantaccesstoken(@Query("muid") String muid, @Query("maccesstoken") String maccesstoken, @Query("systemlogin") int systemlogin);
 
 }

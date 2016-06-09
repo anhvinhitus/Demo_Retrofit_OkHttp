@@ -17,4 +17,5 @@ public class Constants {
 
     public static final String AMOUNT = "amount";
     public static final String TRANSTYPE = "transtype";
+    public static final String APPUSER = "appuser";
 }

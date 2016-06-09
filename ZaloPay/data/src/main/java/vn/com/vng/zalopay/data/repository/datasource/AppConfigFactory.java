@@ -49,12 +49,15 @@ public class AppConfigFactory {
     private OkHttpClient mOkHttpClient;
 
     private final String rootBundle;
+    private final boolean mDownloadAppResource;
 
     public AppConfigFactory(Context context, AppConfigService service,
                             User user, SqlitePlatformScope sqlitePlatformScope,
                             HashMap<String, String> paramsReq,
                             DownloadAppResourceTaskQueue taskQueue,
-                            OkHttpClient mOkHttpClient, String rootBundle) {
+                            OkHttpClient mOkHttpClient,
+                            String rootBundle,
+                            boolean download) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -67,6 +70,7 @@ public class AppConfigFactory {
         this.paramsReq = paramsReq;
         this.taskQueue = taskQueue;
         this.mOkHttpClient = mOkHttpClient;
+        this.mDownloadAppResource = download;
         this.rootBundle = rootBundle;
     }
 
@@ -86,7 +90,7 @@ public class AppConfigFactory {
         List<AppResourceEntity> list = sqlitePlatformScope.listAppResourceEntity();
         List<AppResourceEntity> listAppDownload = new ArrayList<>();
         for (AppResourceEntity app : list) {
-            if (app.stateDownload < 2) {
+            if (isNeedRetryDownload(app)) {
                 listAppDownload.add(app);
             }
         }
@@ -95,6 +99,14 @@ public class AppConfigFactory {
             startDownloadService(listAppDownload, null);
         }
     }
+
+    private boolean isNeedRetryDownload(AppResourceEntity appResourceEntity) {
+        if (appResourceEntity.stateDownload < 2) {
+            return true;
+        }
+        return false;
+    }
+
 
     private void processPlatformResp(PlatformInfoResponse response) {
         //  sqlitePlatformScope.put
@@ -156,6 +168,9 @@ public class AppConfigFactory {
 
 
     private void startDownloadService(List<AppResourceEntity> resource, String baseUrl) {
+        if (!mDownloadAppResource) {
+            return;
+        }
 
         List<DownloadAppResourceTask> needDownloadList = new ArrayList<>();
         for (AppResourceEntity appResourceEntity : resource) {

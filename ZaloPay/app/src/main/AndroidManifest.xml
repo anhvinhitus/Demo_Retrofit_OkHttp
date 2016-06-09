@@ -195,7 +195,8 @@
             android:exported="false"
             android:label="DownloadService" />
 
-        <activity android:name=".account.ui.activities.RecoveryPinActivity"></activity>
+        <activity android:name=".account.ui.activities.RecoveryPinActivity" />
+        <activity android:name=".account.ui.activities.ProfileInfo2Activity"></activity>
     </application>
 
 </manifest>
