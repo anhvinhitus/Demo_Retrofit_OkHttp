@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay;
 
+import android.app.Activity;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -9,20 +10,25 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.iot.debugviewer.DebugViewer;
 import vn.com.vng.zalopay.app.AppLifeCycle;
+import vn.com.vng.zalopay.data.repository.datasource.UserConfigFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
@@ -47,6 +53,11 @@ public class AndroidApplication extends MultiDexApplication {
         return _instance;
     }
 
+    @Inject
+    UserConfigFactory userConfigFactory;
+
+    @Inject
+    Navigator navigator;
 
     @Override
     public void onCreate() {
@@ -118,6 +129,18 @@ public class AndroidApplication extends MultiDexApplication {
 
     public void releaseUserComponent() {
         userComponent = null;
+    }
+
+    public void sigoutAndCleanData(Activity activity) {
+        if (activity == null) {
+            return;
+        }
+        ZaloSDK.Instance.unauthenticate();
+        userConfigFactory.clearAllUserDB();
+
+        AndroidApplication.instance().releaseUserComponent();
+        navigator.startLoginActivity(activity, true);
+        activity.finish();
     }
 
     public ApplicationComponent getAppComponent() {

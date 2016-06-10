@@ -15,8 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.Menu;
 
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
@@ -204,7 +202,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 startQRCodeActivity();
                 break;
             case MenuItemUtil.SIGOUT_ID:
-                sigoutAndCleanData();
+                AndroidApplication.instance().sigoutAndCleanData(this);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, "TransactionLogs");
@@ -215,15 +213,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 break;
 
         }
-    }
-
-    private void sigoutAndCleanData() {
-        ZaloSDK.Instance.unauthenticate();
-        userConfigFactory.clearAllUserDB();
-
-        AndroidApplication.instance().releaseUserComponent();
-        navigator.startLoginActivity(this, true);
-        finish();
     }
 
     private void startQRCodeActivity() {

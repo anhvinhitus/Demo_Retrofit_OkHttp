@@ -9,8 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -119,13 +117,11 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
 
     @Override
     public void onTokenInvalid() {
-        ZaloSDK.Instance.unauthenticate();
-        navigator.startLoginActivity(this);
-        finish();
+        AndroidApplication.instance().sigoutAndCleanData(this);
     }
 
     /*@Override
-    public void showLoading() {
+    public void swLoading() {
         if(mProgressDialog == null) {
             mProgressDialog = new SweetAlertDialog(getContext(), 5);
         }
