@@ -252,11 +252,12 @@ public class UserConfigImpl implements UserConfig {
         }
 
         activity.startActivity(intent);
-        activity.finish();
     }
 
     public void clearAllUserDB() {
         Timber.tag("UserConfigFactory").d("clearAllUserDB..............");
+        clearConfig();
+        setCurrentUser(null);
         clearAllCacheDatabase();
         clearAllDatabase();
     }
@@ -267,7 +268,7 @@ public class UserConfigImpl implements UserConfig {
 
     private void clearAllDatabase() {
         Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
-        for (AbstractDao<?,?> dao: daoCollection) {
+        for (AbstractDao<?, ?> dao : daoCollection) {
             if (dao != null) {
                 dao.deleteAll();
             }
