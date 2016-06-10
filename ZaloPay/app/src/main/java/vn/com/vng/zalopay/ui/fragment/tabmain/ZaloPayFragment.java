@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -76,6 +78,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.listView)
     RecyclerView listView;
 
+    /*
+    * View của menu
+    * */
+    TextView mNotifyView;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -109,19 +116,19 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_notifications) {
-            navigator.startMiniAppActivity(getActivity(), "Notifications");
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_notifications);
+        View view = menuItem.getActionView();
+        mNotifyView = (TextView) view.findViewById(R.id.tvNotificationCount);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.startMiniAppActivity(getActivity(), "Notifications");
+            }
+        });
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -167,9 +174,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onClickAppListener(AppResource app) {
-
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-
         navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
     }
 
@@ -214,6 +219,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void setTotalNotify(int total) {
-
+        mNotifyView.setText(String.valueOf(total));
     }
 }
