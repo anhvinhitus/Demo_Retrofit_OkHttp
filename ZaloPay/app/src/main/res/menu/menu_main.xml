@@ -1,11 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_notifications"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_thongbao"
         android:title="@string/action_notifications"
         app:actionLayout="@layout/notification_menu_item"
         app:showAsAction="always" />

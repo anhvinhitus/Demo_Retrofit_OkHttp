@@ -33,8 +33,9 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
-        eventBus.register(this);
         menuView = iLeftMenuView;
+        menuView.setUserInfo(user);
+        eventBus.register(this);
     }
 
     @Override
@@ -45,8 +46,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initialize() {
-        menuView.setUserInfo(user);
-
         appConfigRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
@@ -105,16 +104,27 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
-        menuView.setAvatar(event.avatar);
-        menuView.setDisplayName(event.displayName);
+
+        //UPDATE USERINFO
+        user.avatar = event.avatar;
+        user.dname = event.displayName;
+
+        if (menuView != null) {
+            menuView.setAvatar(event.avatar);
+            menuView.setDisplayName(event.displayName);
+        }
+
+        eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ChangeBalanceEvent event) {
         //Timber.d("event bus test %s; ThreadName:%s", event.balance, Thread.currentThread().getName());
-        menuView.setBalance(event.balance);
+        if (menuView != null) {
+            menuView.setBalance(event.balance);
+        }
     }
 }

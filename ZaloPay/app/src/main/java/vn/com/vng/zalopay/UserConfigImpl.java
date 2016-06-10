@@ -185,7 +185,7 @@ public class UserConfigImpl implements UserConfig {
         }
 
         Timber.d("save EventBus post ");
-        eventBus.post(new ZaloProfileInfoEvent(zaloId, displayName, avatar));
+        eventBus.postSticky(new ZaloProfileInfoEvent(zaloId, displayName, avatar));
     }
 
 

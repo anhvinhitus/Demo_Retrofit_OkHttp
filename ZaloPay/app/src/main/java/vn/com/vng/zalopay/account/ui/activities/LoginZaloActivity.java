@@ -80,6 +80,13 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
+    public void onBackPressed() {
+        //   super.onBackPressed();
+        finish();
+        System.exit(0);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.tag(TAG).d("onActivityResult................" + requestCode + ";" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);

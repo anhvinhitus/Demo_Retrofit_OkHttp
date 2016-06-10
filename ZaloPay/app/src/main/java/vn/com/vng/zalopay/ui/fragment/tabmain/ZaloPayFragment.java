@@ -8,10 +8,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +78,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.listView)
     RecyclerView listView;
 
+    /*
+    * View của menu
+    * */
+    TextView mNotifyView;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -86,6 +96,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
     }
 
@@ -103,6 +114,21 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         showAdsBanner();
         showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_notifications);
+        View view = menuItem.getActionView();
+        mNotifyView = (TextView) view.findViewById(R.id.tvNotificationCount);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.startMiniAppActivity(getActivity(), "Notifications");
+            }
+        });
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -148,9 +174,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onClickAppListener(AppResource app) {
-
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-
         navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
     }
 
@@ -177,19 +201,25 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     //Test
     private List<AppResource> getListData() {
-        return Arrays.asList(new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
+        return Arrays.asList(
+//                new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
                 new AppResource(11, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
                 new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)),
-                new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)),
-                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien), 1),
-                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet), 1),
-                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi), 1),
-                new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc), 1)
+                new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame))
+//                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien), 1),
+//                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet), 1),
+//                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi), 1),
+//                new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc), 1)
         );
     }
 
     @Override
     public void insertApps(List<AppResource> list) {
         mAdapter.insertItems(list);
+    }
+
+    @Override
+    public void setTotalNotify(int total) {
+        mNotifyView.setText(String.valueOf(total));
     }
 }
