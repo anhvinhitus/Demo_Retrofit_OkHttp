@@ -8,6 +8,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -86,6 +89,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
     }
 
@@ -102,6 +106,21 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
         showAdsBanner();
         showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_notifications) {
+            navigator.startMiniAppActivity(getActivity(), "Notifications");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
@@ -191,5 +210,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void insertApps(List<AppResource> list) {
         mAdapter.insertItems(list);
+    }
+
+    @Override
+    public void setTotalNotify(int total) {
+
     }
 }

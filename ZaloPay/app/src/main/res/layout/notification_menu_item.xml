@@ -4,8 +4,6 @@
     android:id="@+id/layoutNotification"
     android:layout_width="48dp"
     android:layout_height="48dp"
-    android:background="?selectableItemBackground"
-    android:clickable="true"
     android:padding="@dimen/spacing.tiny">
 
     <ImageView

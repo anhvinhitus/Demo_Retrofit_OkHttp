@@ -9,4 +9,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  */
 public interface IZaloPayView {
     void insertApps(List<AppResource> list);
+
+    void setTotalNotify(int total);
 }
