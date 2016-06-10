@@ -27,6 +27,7 @@ public class UserConfigFactory {
     public void clearAllUserDB() {
         Timber.tag("UserConfigFactory").d("clearAllUserDB..............");
         userConfig.clearConfig();
+        userConfig.setCurrentUser(null);
         clearAllCacheDatabase();
         clearAllDatabase();
     }
@@ -37,7 +38,7 @@ public class UserConfigFactory {
 
     private void clearAllDatabase() {
         Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
-        for (AbstractDao<?,?> dao: daoCollection) {
+        for (AbstractDao<?, ?> dao : daoCollection) {
             if (dao != null) {
                 dao.deleteAll();
             }

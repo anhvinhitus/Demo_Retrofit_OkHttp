@@ -286,12 +286,12 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
         }
 
         if (mInstance != null && mInstance.containsKey(mapping)) {
-            Timber.e("reuse react instance manager");
+            Timber.i("reuse react instance manager");
 //            mInstance.onHostResume(activity, activity);
             return mInstance.get(mapping);
         }
 
-        Timber.e("create new react instance manager");
+        Timber.i("create new react instance manager");
 
         ReactInstanceManager.Builder builder = ReactInstanceManager.builder()
                 .setApplication(activity.getApplication())
@@ -321,7 +321,7 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return;
         }
 
-        Timber.e("release react instance manager");
+        Timber.i("release react instance manager");
         final ReactBasedActivity activity = activityReference.get();
         if (activity != null) {
             String mapping = activity.getJSBundleFile();
