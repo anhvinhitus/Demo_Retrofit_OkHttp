@@ -121,12 +121,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     protected void onDestroy() {
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();

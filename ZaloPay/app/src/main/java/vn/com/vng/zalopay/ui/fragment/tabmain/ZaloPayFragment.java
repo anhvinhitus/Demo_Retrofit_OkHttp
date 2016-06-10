@@ -8,10 +8,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +78,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.listView)
     RecyclerView listView;
 
+    /*
+    * View của menu
+    * */
+    TextView mNotifyView;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -86,6 +96,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
     }
 
@@ -103,6 +114,21 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         showAdsBanner();
         showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_notifications);
+        View view = menuItem.getActionView();
+        mNotifyView = (TextView) view.findViewById(R.id.tvNotificationCount);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.startMiniAppActivity(getActivity(), "Notifications");
+            }
+        });
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -148,9 +174,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onClickAppListener(AppResource app) {
-
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-
         navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
     }
 
@@ -192,5 +216,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void insertApps(List<AppResource> list) {
         mAdapter.insertItems(list);
+    }
+
+    @Override
+    public void setTotalNotify(int total) {
+        mNotifyView.setText(String.valueOf(total));
     }
 }
