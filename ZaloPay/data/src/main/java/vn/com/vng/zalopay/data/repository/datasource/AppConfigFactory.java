@@ -97,9 +97,16 @@ public class AppConfigFactory {
         }
     }
 
-    private boolean isNeedRetryDownload(AppResourceEntity appResourceEntity) {
-        if (appResourceEntity.stateDownload < 2) {
-            return true;
+    private boolean isNeedRetryDownload(AppResourceEntity app) {
+        if (app.stateDownload < 2) {
+            if (app.numRetry < 3) {
+                return true;
+            } else {
+                long currentTime = System.currentTimeMillis() / 1000;
+                if (currentTime - app.timeDownload >= 4 * 60 * 60) {
+                    return true;
+                }
+            }
         }
         return false;
     }
