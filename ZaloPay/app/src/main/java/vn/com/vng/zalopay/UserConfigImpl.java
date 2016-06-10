@@ -1,18 +1,25 @@
 package vn.com.vng.zalopay;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
+import java.util.Collection;
 import java.util.List;
 
+import de.greenrobot.dao.AbstractDao;
 import timber.log.Timber;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
@@ -25,15 +32,17 @@ public class UserConfigImpl implements UserConfig {
 
     private final SharedPreferences preferences;
 
+    private final DaoSession daoSession;
     User currentUser;
 
     EventBus eventBus;
 
     private final static Object sync = new Object();
 
-    public UserConfigImpl(SharedPreferences pref, EventBus eventBus) {
+    public UserConfigImpl(DaoSession daoSession, SharedPreferences pref, EventBus eventBus) {
         this.preferences = pref;
         this.eventBus = eventBus;
+        this.daoSession = daoSession;
     }
 
 
@@ -220,5 +229,48 @@ public class UserConfigImpl implements UserConfig {
         return preferences.getString(Constants.PREF_USER_NAME, "");
     }
 
+    @Override
+    public void sigoutAndCleanData(Activity activity) {
+        clearConfig();
+        clearAllUserDB();
+        ZaloSDK.Instance.unauthenticate();
+        AndroidApplication.instance().releaseUserComponent();
+        startLoginActivity(activity, true);
+        activity.finish();
+    }
 
+    private void startLoginActivity(Activity activity, boolean clearTop) {
+        if (activity == null) {
+            return;
+        }
+        Intent intent = new Intent(activity, LoginZaloActivity.class);
+        if (clearTop) {
+            intent.putExtra("finish", true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        }
+
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    public void clearAllUserDB() {
+        Timber.tag("UserConfigFactory").d("clearAllUserDB..............");
+        clearAllCacheDatabase();
+        clearAllDatabase();
+    }
+
+    private void clearAllCacheDatabase() {
+        daoSession.clear();
+    }
+
+    private void clearAllDatabase() {
+        Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
+        for (AbstractDao<?,?> dao: daoCollection) {
+            if (dao != null) {
+                dao.deleteAll();
+            }
+        }
+    }
 }

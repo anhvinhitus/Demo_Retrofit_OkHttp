@@ -38,8 +38,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    BalanceTopupPresenter provideBalanceTopupPresenter(User user) {
-        return new BalanceTopupPresenter(user);
+    BalanceTopupPresenter provideBalanceTopupPresenter(UserConfig userConfig) {
+        return new BalanceTopupPresenter(userConfig);
     }
 
     @UserScope

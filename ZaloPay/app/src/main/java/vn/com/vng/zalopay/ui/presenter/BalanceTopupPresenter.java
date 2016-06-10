@@ -9,9 +9,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
+import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
@@ -27,12 +29,12 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
     private Subscription subscriptionGetOrder;
 
-    private User user;
+    private UserConfig userConfig;
 
     private PaymentWrapper paymentWrapper;
 
-    public BalanceTopupPresenter(User user) {
-        this.user = user;
+    public BalanceTopupPresenter(UserConfig userConfig) {
+        this.userConfig = userConfig;
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -68,6 +70,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseTokenInvalid() {
+                BalanceTopupPresenter.this.userConfig.sigoutAndCleanData(mView.getActivity());
                 mView.onTokenInvalid();
             }
 
@@ -149,6 +152,12 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "onError " + e);
+            if (e != null && e instanceof BodyException) {
+                if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
+                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    return;
+                }
+            }
             BalanceTopupPresenter.this.onCreateWalletOrderError(e);
         }
     }

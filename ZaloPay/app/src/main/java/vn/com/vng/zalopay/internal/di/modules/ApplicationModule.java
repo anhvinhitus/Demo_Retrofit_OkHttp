@@ -71,8 +71,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
-        return new UserConfigImpl(sharedPreferences, eventBus);
+    UserConfig providesUserConfig(@Named("daosession") DaoSession daoSession, SharedPreferences sharedPreferences, EventBus eventBus) {
+        return new UserConfigImpl(daoSession, sharedPreferences, eventBus);
     }
 
     @Provides

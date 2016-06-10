@@ -1,11 +1,12 @@
 package vn.com.vng.zalopay.data.cache;
 
+import android.app.Activity;
+
 import org.json.JSONObject;
 
 import java.util.List;
 
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
-import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -47,4 +48,8 @@ public interface UserConfig {
     String getDisPlayName();
 
     boolean isSignIn();
+
+    void clearAllUserDB();
+
+    void sigoutAndCleanData(Activity activity);
 }

@@ -10,7 +10,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
@@ -78,6 +77,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
+                userConfig.sigoutAndCleanData(mView.getActivity());
             }
 
             @Override

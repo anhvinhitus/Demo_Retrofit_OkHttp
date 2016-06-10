@@ -9,6 +9,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -73,6 +75,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
+                userConfig.sigoutAndCleanData(mView.getActivity());
             }
 
             @Override
@@ -147,6 +150,12 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "CreateWalletOrderSubscriber onError " + e);
+            if (e != null && e instanceof BodyException) {
+                if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
+                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    return;
+                }
+            }
             LinkCardProdurePresenter.this.onCreateWalletOrderError(e);
         }
     }

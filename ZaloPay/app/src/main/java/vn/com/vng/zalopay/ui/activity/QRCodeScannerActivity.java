@@ -117,7 +117,6 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
 
     @Override
     public void onTokenInvalid() {
-        AndroidApplication.instance().sigoutAndCleanData(this);
     }
 
     /*@Override

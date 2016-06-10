@@ -100,4 +100,8 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
             ProfileInfoPresenter.this.onGetBalanceSuccess(aLong);
         }
     }
+
+    public void sigoutAndCleanData() {
+        userConfig.sigoutAndCleanData(mView.getActivity());
+    }
 }

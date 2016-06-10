@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ProfileSlidePagerAdapter;
@@ -132,7 +131,7 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
 
             @Override
             public void onResponseTokenInvalid() {
-                AndroidApplication.instance().sigoutAndCleanData(PreProfileActivity.this);
+                userConfig.sigoutAndCleanData(PreProfileActivity.this);
             }
 
             @Override
