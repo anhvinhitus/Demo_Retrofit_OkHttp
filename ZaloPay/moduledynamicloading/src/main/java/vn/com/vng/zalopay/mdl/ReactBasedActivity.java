@@ -170,14 +170,14 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mReactInstanceManager != null) {
-            mNativeInstanceManager.releaseReactInstanceManager(mReactInstanceManager);
-            mReactInstanceManager = null;
-        }
-
         if (mReactRootView != null) {
             mReactRootView.unmountReactApplication();
             mReactRootView = null;
+        }
+
+        if (mReactInstanceManager != null) {
+            mNativeInstanceManager.releaseReactInstanceManager(mReactInstanceManager);
+            mReactInstanceManager = null;
         }
     }
 
@@ -351,12 +351,8 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return;
         }
 
-        if (activity.mReactRootView != null) {
-            instance.detachRootView(activity.mReactRootView);
-        }
-
         instance.onHostDestroy();
-        
+
         instance.destroy();
         mInstance.remove(mapping);
     }
