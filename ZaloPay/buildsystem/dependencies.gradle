@@ -53,7 +53,7 @@ ext {
     aviVersion = '1.0.5'
     nineoldVersion = '2.4.0'
 
-    reactNativeVersion = "0.25.1"
+    reactNativeVersion = "0.27.2"
 
     roundedimageviewVersion = "2.2.1"
 

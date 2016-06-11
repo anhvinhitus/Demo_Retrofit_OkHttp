@@ -134,7 +134,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         unsubscribeIfNotNull(compositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
-        getReactApplicationContext().removeActivityEventListener(this);
+        getReactApplicationContext().removeLifecycleEventListener(this);
         Timber.d("Actvity `onDestroy");
     }
 

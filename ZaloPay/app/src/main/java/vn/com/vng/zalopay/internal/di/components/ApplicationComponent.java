@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.service.DownloadService;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
@@ -50,6 +51,8 @@ public interface ApplicationComponent {
     PassportRepository passportRepository();
 
     LocalResourceRepository localResourceRepository();
+
+    GlobalEventHandlingService globalEventService();
 
     /*INJECT*/
 

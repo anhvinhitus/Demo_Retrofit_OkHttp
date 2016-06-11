@@ -13,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
-import android.view.Menu;
 
 import java.lang.ref.WeakReference;
 
@@ -24,6 +23,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.ui.view.IHomeView;
 
 /**
  * Created by AnhHieu on 5/24/16.
+ * Main Application activity
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
 
@@ -67,6 +68,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Inject
     MainPresenter presenter;
 
+    @Inject
+    GlobalEventHandlingService globalEventHandlingService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +103,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         //init SDK
         presenter.loadGatewayInfoPaymentSDK();
+        globalEventHandlingService.setMainActivity(this);
     }
 
     @Override
@@ -117,6 +122,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     protected void onDestroy() {
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
+        globalEventHandlingService.setMainActivity(null);
         super.onDestroy();
     }
 

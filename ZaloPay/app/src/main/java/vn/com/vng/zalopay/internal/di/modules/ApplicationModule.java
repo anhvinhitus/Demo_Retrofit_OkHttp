@@ -28,6 +28,8 @@ import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.service.DownloadService;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 
@@ -127,4 +129,9 @@ public class ApplicationModule {
     }
 
 
+    @Provides
+    @Singleton
+    GlobalEventHandlingService providesGlobalEventService() {
+        return new GlobalEventHandlingServiceImpl();
+    }
 }

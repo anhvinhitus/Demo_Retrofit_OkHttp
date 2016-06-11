@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,8 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 4/26/16.
@@ -27,6 +30,9 @@ import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     BundleReactConfig bundleReactConfig;
+
+    @Inject
+    GlobalEventHandlingService globalEventHandlingService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +60,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.asList(
                 new MainReactPackage(),
-                reactInternalPackage());
+                reactInternalPackage(),
+                new RNDeviceInfo());
     }
 
     protected ReactInternalPackage reactInternalPackage() {
@@ -80,5 +87,16 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
+    }
+
+    @Override
+    protected void handleException(Exception e) {
+        getAppComponent().globalEventService().
+                showMessage(
+                        SweetAlertDialog.ERROR_TYPE,
+                        "",
+                        "Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
+
+        super.handleException(e);
     }
 }
