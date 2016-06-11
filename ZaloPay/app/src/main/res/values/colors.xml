@@ -54,4 +54,8 @@
 
     <color name="edt_control_normal">#e3e6e7</color>
     <color name="avatar_border_transparent">#c8ffffff</color>
+
+    <color name="txt_item_main">#24272b</color>
+    <color name="txt_item_sub">#727f8c</color>
+    <color name="txt_group_title">#727f8c</color>
 </resources>

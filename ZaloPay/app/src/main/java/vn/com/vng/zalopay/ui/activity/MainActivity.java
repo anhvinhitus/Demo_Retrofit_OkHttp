@@ -13,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
-import android.view.Menu;
 
 import java.lang.ref.WeakReference;
 
@@ -199,6 +198,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             case MenuItemUtil.TRANSACTION_ID:
                 break;
             case MenuItemUtil.TRANSFER_ID:
+                navigator.startTrasferActivity(this);
                 break;
 
         }

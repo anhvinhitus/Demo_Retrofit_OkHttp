@@ -17,6 +17,8 @@ import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
+import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -154,6 +156,16 @@ public class Navigator {
 
     public void startRecoveryPinActivity(Activity activity) {
         Intent intent = new Intent(activity, RecoveryPinActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startTrasferActivity(Activity activity) {
+        Intent intent = new Intent(activity, TransferActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startZaloContactActivity(Activity activity) {
+        Intent intent = new Intent(activity, ZaloContactActivity.class);
         activity.startActivity(intent);
     }
 }

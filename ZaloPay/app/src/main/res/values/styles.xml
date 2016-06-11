@@ -48,6 +48,24 @@
         <item name="android:textSize">@dimen/font_size_medium</item>
     </style>
 
+    <style name="TextView.Group.Title" parent="android:Widget.TextView">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/txt_group_title</item>
+        <item name="android:textSize">@dimen/textsize.normal.s</item>
+    </style>
+
+    <style name="TextView.Item.Main" parent="android:Widget.TextView">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/txt_item_main</item>
+        <item name="android:textSize">@dimen/textsize.small</item>
+    </style>
+
+    <style name="TextView.Item.Sub" parent="android:Widget.TextView">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/txt_item_sub</item>
+        <item name="android:textSize">@dimen/textsize.tiny</item>
+    </style>
+
     <style name="Button.Default" parent="android:Widget.TextView">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/font_size_large</item>

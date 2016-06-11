@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edtSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawableLeft="@drawable/ic_seach"
+        android:drawablePadding="@dimen/spacing.medium.t"
+        android:hint="@string/hint_zalo_contact"
+        android:padding="@dimen/spacing.medium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separate" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
+        tools:listitem="@layout/fragment_zalo_contact_item" />
+
+</LinearLayout>

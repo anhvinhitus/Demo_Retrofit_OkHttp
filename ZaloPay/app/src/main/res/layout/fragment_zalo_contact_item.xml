@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <vn.vng.uicomponent.widget.image.BezelImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginBottom="@dimen/spacing.small"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginTop="@dimen/spacing.small"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_avatar_default"
+            app:borderDrawable="@color/transparent"
+            app:maskDrawable="@drawable/circle_mask" />
+
+        <TextView
+            android:id="@+id/tvDisplayName"
+            style="@style/TextView.Item.Main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.medium.t"
+            android:layout_weight="1.0"
+            android:textAppearance="?attr/textAppearanceListItem"
+            tools:text="A.Hoanh" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_weight="0.0"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/spacing.medium.s"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_zalopay" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="60dp"
+        android:background="@color/separate" />
+</LinearLayout>

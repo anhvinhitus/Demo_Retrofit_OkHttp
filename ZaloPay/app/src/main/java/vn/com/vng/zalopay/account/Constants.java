@@ -18,6 +18,7 @@ public class Constants {
     public static final String FACEBOOKID = "facebookId";
     public static final String TWITTERID = "twitterId";
     public static final String GOOGLEID = "googleId";
+    public static final String USINGAPP = "usingApp";
     /* Zalo profile END */
 
     /* ZaloProfile Preferences start */

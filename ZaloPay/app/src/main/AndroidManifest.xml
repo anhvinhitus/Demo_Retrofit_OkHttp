@@ -168,7 +168,9 @@
             android:label="DownloadService" />
 
         <activity android:name=".account.ui.activities.RecoveryPinActivity" />
-        <activity android:name=".account.ui.activities.ProfileInfo2Activity"></activity>
+        <activity android:name=".account.ui.activities.ProfileInfo2Activity" />
+        <activity android:name=".transfer.ui.activities.TransferActivity" />
+        <activity android:name=".transfer.ui.activities.ZaloContactActivity" />
     </application>
 
 </manifest>

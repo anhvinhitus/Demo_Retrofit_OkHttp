@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <vn.vng.uicomponent.widget.image.BezelImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="@dimen/spacing.small"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginTop="@dimen/spacing.small"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_avatar_default"
+            app:borderDrawable="@color/transparent"
+            app:maskDrawable="@drawable/circle_mask" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.medium.t"
+            android:layout_weight="1.0"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDisplayName"
+                style="@style/TextView.Item.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceListItem"
+                tools:text="A.Hoanh" />
+
+            <TextView
+                android:id="@+id/tvPhone"
+                style="@style/TextView.Item.Sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.tiny"
+                android:text="SDT: 0988888888"
+                android:textAppearance="?attr/textAppearanceListItem" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgTransferType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/spacing.medium.s"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_tkzalopay_small" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/viewSeparate"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="78dp"
+        android:background="@color/separate" />
+</LinearLayout>
