@@ -15,6 +15,7 @@ import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
@@ -37,6 +38,9 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     }
 
     protected abstract void doInjection();
+    protected void handleException(Exception e) {
+        finish();
+    }
 
     private static final String REDBOX_PERMISSION_MESSAGE =
             "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
@@ -172,6 +176,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         }
 
         if (mReactRootView != null) {
+            mReactRootView.unmountReactApplication();
             mReactRootView = null;
         }
     }
@@ -297,7 +302,13 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
                 .setApplication(activity.getApplication())
                 .setJSMainModuleName(activity.getJSMainModuleName())
                 .setUseDeveloperSupport(activity.getUseDeveloperSupport())
-                .setInitialLifecycleState(activity.mLifecycleState);
+                .setInitialLifecycleState(activity.mLifecycleState)
+                .setNativeModuleCallExceptionHandler(new NativeModuleCallExceptionHandler() {
+                    @Override
+                    public void handleException(Exception e) {
+                        handleJSException(e);
+                    }
+                });
 
         for (ReactPackage reactPackage : activity.getPackages()) {
             builder.addPackage(reactPackage);
@@ -323,27 +334,75 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
 
         Timber.i("release react instance manager");
         final ReactBasedActivity activity = activityReference.get();
-        if (activity != null) {
-            String mapping = activity.getJSBundleFile();
-            if (mapping == null) {
-                mapping = "NULL";
-            }
-
-            if (!mInstance.containsKey(mapping)) {
-                return;
-            }
-
-            ReactInstanceManager i = mInstance.get(mapping);
-            if (i == null) {
-                return;
-            }
-
-            if (activity.mReactRootView != null) {
-                i.detachRootView(activity.mReactRootView);
-            }
-
-            i.onHostDestroy();
+        if (activity == null) {
+            return;
         }
+
+        String mapping = activity.getJSBundleFile();
+        if (mapping == null) {
+            mapping = "NULL";
+        }
+
+        if (!mInstance.containsKey(mapping)) {
+            return;
+        }
+
+        if (instance == null) {
+            return;
+        }
+
+        if (activity.mReactRootView != null) {
+            instance.detachRootView(activity.mReactRootView);
+        }
+
+        instance.onHostDestroy();
+        
+        instance.destroy();
+        mInstance.remove(mapping);
+    }
+
+    private void removeInstance() {
+        if (mInstance == null) {
+            return;
+        }
+
+        Timber.i("release react instance manager");
+        final ReactBasedActivity activity = activityReference.get();
+        if (activity == null) {
+            return;
+        }
+
+        String mapping = activity.getJSBundleFile();
+        if (mapping == null) {
+            mapping = "NULL";
+        }
+
+        if (!mInstance.containsKey(mapping)) {
+            return;
+        }
+
+        ReactInstanceManager i = mInstance.get(mapping);
+        if (i == null) {
+            return;
+        }
+
+//        if (activity.mReactRootView != null) {
+//            i.detachRootView(activity.mReactRootView);
+//        }
+//
+//        i.onHostDestroy();
+        mInstance.remove(mapping);
+    }
+
+    private void handleJSException(Exception e) {
+        Timber.e(e, "Exception! Should not happen with production build");
+        final ReactBasedActivity activity = activityReference.get();
+        if (activity == null) {
+            return;
+        }
+
+        removeInstance();
+        activity.handleException(e);
     }
 }
 
