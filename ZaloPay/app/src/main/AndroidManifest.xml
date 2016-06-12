@@ -109,7 +109,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title_activity_scan_to_pay"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Primary"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />

@@ -13,6 +13,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -44,9 +49,9 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
     private static final int TAB_TOTAL = 4;
     private static final int TAB_NFC = 0;
-    private static final int TAB_BEACON = 1;
+    private static final int TAB_BEACON = 2;
     private static final int TAB_SOUND = 3;
-    private static final int TAB_QR = 2;
+    private static final int TAB_QR = 1;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -119,7 +124,10 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                 }
             });
 
+
             mTabLayout.setupWithViewPager(mViewPager);
+            setupTabIcons();
+
         } catch (NullPointerException e) {
             Timber.e(e, "Null exception");
         }
@@ -129,6 +137,29 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkBluetoothPermission();
         }
+    }
+
+    private void setupTabIcons() {
+
+        TextView tabOne = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
+        tabOne.setText("NFC");
+        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_nfc, 0, 0);
+        mTabLayout.getTabAt(TAB_NFC).setCustomView(tabOne);
+
+        TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
+        tabTwo.setText("QR");
+        tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_qr, 0, 0);
+        mTabLayout.getTabAt(TAB_QR).setCustomView(tabTwo);
+
+        TextView tabThree = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
+        tabThree.setText("Bluetooth");
+        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_bluetooth, 0, 0);
+        mTabLayout.getTabAt(TAB_BEACON).setCustomView(tabThree);
+
+        TextView tabFour = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
+        tabFour.setText("Âm thanh");
+        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_sound, 0, 0);
+        mTabLayout.getTabAt(TAB_SOUND).setCustomView(tabFour);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -272,21 +303,6 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         public int getCount() {
             // Show 3 total pages.
             return TAB_TOTAL;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case TAB_NFC:
-                    return "NFC";
-                case TAB_BEACON:
-                    return "BEACON";
-                case TAB_QR:
-                    return "QR";
-                case TAB_SOUND:
-                    return "SOUND";
-            }
-            return null;
         }
     }
 }
