@@ -110,6 +110,12 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
     }
 
     @Override
+    public void onDestroy() {
+        linkCardProdurePresenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void showLoading() {
         showProgressDialog();
     }

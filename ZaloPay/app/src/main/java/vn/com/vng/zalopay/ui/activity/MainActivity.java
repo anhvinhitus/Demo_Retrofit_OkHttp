@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by AnhHieu on 5/24/16.
@@ -122,6 +123,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     protected void onDestroy() {
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
+        GlobalData.initApplication(null);
         globalEventHandlingService.setMainActivity(null);
         super.onDestroy();
     }

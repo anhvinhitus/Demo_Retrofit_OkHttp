@@ -12,6 +12,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
@@ -43,7 +44,10 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     private OnItemClickListener onItemClickListener = new OnItemClickListener() {
         @Override
         public void onListItemClick(View anchor, int position) {
-            if (listener == null) return;
+            if (listener == null) {
+                return;
+            }
+
             int id = anchor.getId();
 
             if (id == R.id.btn_add_card) {
@@ -69,6 +73,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
         super.onDetachedFromRecyclerView(recyclerView);
         onItemClickListener = null;
         listener = null;
+        Timber.i("Detached");
     }
 
     @Override

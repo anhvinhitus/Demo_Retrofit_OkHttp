@@ -150,6 +150,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        balanceTopupPresenter.destroyView();
         if (inputAmountLayout != null) {
             inputAmountLayout.removeListener();
         }
@@ -158,6 +159,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroy() {
         super.onDestroy();
+        balanceTopupPresenter.destroy();
     }
 
     @Override

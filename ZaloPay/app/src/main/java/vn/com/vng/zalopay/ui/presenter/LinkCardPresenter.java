@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;

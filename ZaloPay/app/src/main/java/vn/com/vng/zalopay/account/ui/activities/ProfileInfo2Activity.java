@@ -164,6 +164,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     @Override
     public void onDestroy() {
+        presenter.destroy();
         super.onDestroy();
     }
 

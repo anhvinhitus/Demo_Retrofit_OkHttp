@@ -49,7 +49,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
-
+        destroyView();
     }
 
     public void showLoading() {
