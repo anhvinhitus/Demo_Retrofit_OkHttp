@@ -106,7 +106,6 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
     public Observable<Boolean> initialize() {
         return makeObservable(() -> {
             requestTransactionsHistory();
-
             return Boolean.TRUE;
         }).delaySubscription(5, TimeUnit.SECONDS);
     }

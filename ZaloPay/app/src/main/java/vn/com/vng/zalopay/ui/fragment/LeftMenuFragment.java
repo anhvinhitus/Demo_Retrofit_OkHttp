@@ -128,11 +128,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         presenter.setView(this);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        presenter.initialize();
-    }
+
+
 
     private void addHeader(ListView listView) {
         viewProfile = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
@@ -153,7 +150,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.getBalance();
+
+        presenter.initialize();
     }
 
 

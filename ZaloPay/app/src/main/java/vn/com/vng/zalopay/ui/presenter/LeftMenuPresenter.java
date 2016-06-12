@@ -46,14 +46,21 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initialize() {
+        this.getBalance();
+        this.initializeAppConfig();
+        this.initializeZaloPay();
+    }
+
+    public void initializeAppConfig() {
         appConfigRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
+    }
 
+    public void initializeZaloPay() {
         zaloPayRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-
     }
 
     @Override
@@ -67,7 +74,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void destroy() {
-
     }
 
     public void getBalance() {
