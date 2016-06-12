@@ -6,6 +6,8 @@ import android.content.Intent;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
+import com.crashlytics.android.answers.LoginEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -75,6 +77,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     public void destroy() {
         this.destroyView();
         this.unsubscribe();
+        Timber.w("Destroy presenter");
     }
 
     private void unsubscribe() {
@@ -123,11 +126,15 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
 
     private void showLoadingView() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     private void hideLoadingView() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 
 
@@ -191,10 +198,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         public void onNext(User user) {
             Timber.d("login success " + user);
             // TODO: Use your own attributes to track content views in your app
-            Answers.getInstance().logContentView(new ContentViewEvent()
-                    .putContentName("Login Success")
-                    .putContentType("Login")
-                    .putContentId(String.valueOf(user.zaloId)));
+            Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
 
             LoginPresenter.this.onLoginSuccess(user);
         }

@@ -52,8 +52,8 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     public void onAuthenError(int errorCode, String message) {
-        Timber.tag("LoginListener").d("onAuthenError............errorCode: %s", errorCode);
-        Timber.tag("LoginListener").d("onAuthenError............message: %s", message);
+        Timber.d("onAuthenError............errorCode: %s", errorCode);
+        Timber.d("onAuthenError............message: %s", message);
         if (mListener != null) {
             mListener.onAuthenError(errorCode, message);
         }
@@ -68,11 +68,13 @@ public class LoginListener extends OAuthCompleteListener {
         String channel = String.valueOf(response.getChannel());
         String oauthCode = String.valueOf(response.getOauthCode());
         //getProfile();
-        Timber.tag("LoginListener").d("onGetOAuthComplete............userId:%s", userId);
-        Timber.tag("LoginListener").d("onGetOAuthComplete............oauthCode:%s", oauthCode);
-        Timber.tag("LoginListener").d("onGetOAuthComplete............channel:%s", channel);
+        Timber.d("onGetOAuthComplete............userId:%s", userId);
+        Timber.d("onGetOAuthComplete............oauthCode:%s", oauthCode);
+        Timber.d("onGetOAuthComplete............channel:%s", channel);
         if (mListener != null) {
             mListener.onGetOAuthComplete(userId, oauthCode, channel);
         }
+
+        mListener = null;
     }
 }
