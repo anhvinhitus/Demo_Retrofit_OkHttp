@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.scanners.sound;
 
 import android.Manifest;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -10,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -19,6 +22,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
 import vn.com.vng.zalopay.sound.transcoder.RecordService;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.WaveView;
 import vn.com.vng.zalopay.utils.DebugUtils;
 import vn.com.vng.zalopay.utils.FileUtil;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
@@ -47,6 +51,10 @@ public class ScanSoundFragment extends BaseFragment {
         Timber.d("Stop scan sound");
         stopTranscoder();
     }
+
+
+    @BindView(R.id.waveView)
+    WaveView waveView;
 
     private void startTranscoder() {
         if (!checkAndRequestPermission(Manifest.permission.RECORD_AUDIO, 100)) {
@@ -190,5 +198,18 @@ public class ScanSoundFragment extends BaseFragment {
 
     public void stopRecording() {
         stopTranscoder();
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        waveView.startRippleAnimation();
+    }
+
+    @Override
+    public void onDestroyView() {
+        waveView.stopRippleAnimation();
+        super.onDestroyView();
     }
 }

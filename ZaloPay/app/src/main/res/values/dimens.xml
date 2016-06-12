@@ -45,4 +45,12 @@
     <dimen name="border_radius">8dp</dimen>
     <dimen name="leftmenu.avatar.radius">35dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="rippleStrokeWidth">2dp</dimen>
+    <dimen name="rippleRadius">64dp</dimen>
+
+    <dimen name="height_tab_pay">72dp</dimen>
+    <dimen name="margin_tab_pay_bottom">10dp</dimen>
+    <dimen name="margin_tab_pay_top">8dp</dimen>
+    <dimen name="height_tab_pay_with_margin">90dp</dimen>
 </resources>
