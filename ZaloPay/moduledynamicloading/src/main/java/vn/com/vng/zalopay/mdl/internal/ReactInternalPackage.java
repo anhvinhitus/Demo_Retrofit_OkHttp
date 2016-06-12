@@ -33,7 +33,7 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, repository));
-
+        modules.add(new ReactNotificationNativeModule(reactContext, repository));
         return modules;
     }
 

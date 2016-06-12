@@ -30,7 +30,7 @@ public abstract class MiniApplicationBaseActivity extends ReactBasedActivity {
     protected String getMainComponentName() {
         String componentName = getIntent().getStringExtra("moduleName");
 
-        Timber.e("Starting module: %s", componentName);
+        Timber.d("Starting module: %s", componentName);
         return componentName;
     }
 

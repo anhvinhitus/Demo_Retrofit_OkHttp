@@ -7,6 +7,7 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.react.bridge.queue.MessageQueueThreadHandler;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
@@ -88,6 +89,8 @@ public class AndroidApplication extends MultiDexApplication {
                 @Override
                 public void uncaughtException(Thread thread, Throwable throwable) {
                     Timber.e(throwable, "UncaughtException!!!");
+//                    if (throwable)
+                    MessageQueueThreadHandler a;
                 }
             });
         }

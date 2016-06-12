@@ -96,7 +96,13 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
         if (Lists.isEmptyOrNull(appResourceGD)) return;
 
         for (AppResourceGD app : appResourceGD) {
-            app.setStateDownload(app.getStateDownload() + 1);
+
+            int state = app.getStateDownload() + 1;
+            app.setStateDownload(state);
+            if (state >= 2) {
+                app.setNumRetry(0);
+                app.setTimeDownload(0l);
+            }
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);
