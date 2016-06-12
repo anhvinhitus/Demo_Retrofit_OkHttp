@@ -96,19 +96,21 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, " onError ");
+            Timber.e(e, "error on getting transaction logs");
         }
 
         @Override
         public void onNext(WritableArray writableArray) {
 
-            Timber.d(" transaction log %s", writableArray);
+            Timber.d("transaction log %s", writableArray);
 
-            if (promiseWeakReference != null) {
-                Promise promise = promiseWeakReference.get();
-                promise.resolve(writableArray);
-                promiseWeakReference.clear();
+            if (promiseWeakReference == null) {
+                return;
             }
+
+            Promise promise = promiseWeakReference.get();
+            promise.resolve(writableArray);
+            promiseWeakReference.clear();
         }
     }
 
@@ -120,12 +122,12 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
     @Override
     public void onHostResume() {
-        Timber.d(" Actvity `onResume`");
+        Timber.d("onResume");
     }
 
     @Override
     public void onHostPause() {
-        Timber.d(" Actvity `onPause`");
+        Timber.d("onPause");
     }
 
     @Override
@@ -135,7 +137,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         getReactApplicationContext().removeActivityEventListener(this);
         getReactApplicationContext().removeLifecycleEventListener(this);
-        Timber.d("Actvity `onDestroy");
+        Timber.d("onDestroy");
     }
 
     public void unsubscribeIfNotNull(CompositeSubscription subscription) {
@@ -145,7 +147,9 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
     private WritableMap transform(TransHistory history) {
-        if (history == null) return null;
+        if (history == null) {
+            return null;
+        }
         WritableMap item = Arguments.createMap();
         item.putDouble("transid", history.transid);
         item.putDouble("reqdate", history.reqdate);
@@ -156,11 +160,13 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
 
-    private WritableArray transform(List<TransHistory> historys) {
+    private WritableArray transform(List<TransHistory> histories) {
         WritableArray result = Arguments.createArray();
-        for (TransHistory history : historys) {
+        for (TransHistory history : histories) {
             WritableMap item = transform(history);
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
             result.pushMap(item);
         }
         return result;

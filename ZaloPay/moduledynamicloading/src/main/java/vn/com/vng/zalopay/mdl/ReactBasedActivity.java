@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.view.KeyEvent;
+import android.view.ViewParent;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
@@ -118,7 +120,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
      */
     protected ReactRootView createRootView() {
-        return new ReactRootView(this);
+        return new ReactRootView(getApplicationContext());
     }
 
     @Override
@@ -168,10 +170,14 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         if (mReactRootView != null) {
             mReactRootView.unmountReactApplication();
+            ViewParent view = mReactRootView.getParent();
+            if (view != null) {
+                Timber.i("View: %s", view);
+                FrameLayout l = (FrameLayout)view;
+                l.removeAllViews();
+            }
             mReactRootView = null;
         }
 
@@ -179,6 +185,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
             mNativeInstanceManager.releaseReactInstanceManager(mReactInstanceManager);
             mReactInstanceManager = null;
         }
+        super.onDestroy();
     }
 
     @Override
@@ -236,6 +243,13 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         void releaseReactInstanceManager(ReactInstanceManager instance);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Timber.i("finalize");
+    }
+
+
     class ReactNativeInstanceManagerShortLife implements ReactNativeInstanceManager {
         @Override
         public ReactInstanceManager acquireReactInstanceManager() {
@@ -276,6 +290,12 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
 
     public ReactNativeInstanceManagerLongLife(ReactBasedActivity activity) {
         activityReference = new WeakReference<>(activity);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Timber.i("finalize");
     }
 
     @Override
@@ -351,7 +371,7 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return;
         }
 
-        instance.onHostDestroy();
+//        instance.onHostDestroy();
 
         instance.destroy();
         mInstance.remove(mapping);
