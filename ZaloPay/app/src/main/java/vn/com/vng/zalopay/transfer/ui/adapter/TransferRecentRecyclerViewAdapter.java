@@ -15,7 +15,7 @@ import java.util.List;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.transfer.models.TransferRecent;
-import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment.OnListFragmentInteractionListener;
+import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment.OnListFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link TransferRecent} and makes a call to the

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
@@ -17,7 +18,9 @@ import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
@@ -159,13 +162,19 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startTrasferActivity(Activity activity) {
-        Intent intent = new Intent(activity, TransferActivity.class);
+    public void startTrasferHomeActivity(Activity activity) {
+        Intent intent = new Intent(activity, TransferHomeActivity.class);
         activity.startActivity(intent);
     }
 
     public void startZaloContactActivity(Activity activity) {
         Intent intent = new Intent(activity, ZaloContactActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startTrasferActivity(Activity activity, ZaloFriend zaloFriend) {
+        Intent intent = new Intent(activity, TransferActivity.class);
+        intent.putExtra(Constants.ARG_ZALO_FRIEND, zaloFriend);
         activity.startActivity(intent);
     }
 }

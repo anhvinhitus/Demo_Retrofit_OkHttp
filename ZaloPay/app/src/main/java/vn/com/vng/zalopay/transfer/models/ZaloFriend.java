@@ -19,17 +19,15 @@ public class ZaloFriend extends AbstractData {
     private String userName;
     private String displayName;
     private String avatar;
-    private String userGender;
-    private String birthday;
-    private String usingApp;
+    private int userGender;
+    private boolean usingApp;
 
-    public ZaloFriend(long userId, String userName, String displayName, String avatar, String userGender, String birthday, String usingApp) {
+    public ZaloFriend(long userId, String userName, String displayName, String avatar, int userGender, boolean usingApp) {
         this.userId = userId;
         this.userName = userName;
         this.displayName = displayName;
         this.avatar = avatar;
         this.userGender = userGender;
-        this.birthday = birthday;
         this.usingApp = usingApp;
     }
 
@@ -43,9 +41,8 @@ public class ZaloFriend extends AbstractData {
         userName = jsonObject.getString(Constants.USERNAME);
         displayName = jsonObject.getString(Constants.DISPLAYNAME);
         avatar = jsonObject.getString(Constants.AVATAR);
-        userGender = jsonObject.getString(Constants.USERGENDER);
-        birthday = jsonObject.getString(Constants.BIRTHDAY);
-        usingApp = jsonObject.getString(Constants.USINGAPP);
+        userGender = jsonObject.getInt(Constants.USERGENDER);
+        usingApp = jsonObject.getBoolean(Constants.USINGAPP);
     }
 
     public static final Parcelable.Creator<ZaloFriend> CREATOR = new Parcelable.Creator<ZaloFriend>() {
@@ -57,10 +54,9 @@ public class ZaloFriend extends AbstractData {
             String userName = parcelSource.readString();
             String displayName = parcelSource.readString();
             String avatar = parcelSource.readString();
-            String userGender = parcelSource.readString();
-            String birthday = parcelSource.readString();
-            String usingApp = parcelSource.readString();
-            ZaloFriend user = new ZaloFriend(userId, userName, displayName, avatar, userGender, birthday, usingApp);
+            int userGender = parcelSource.readInt();
+            boolean usingApp = parcelSource.readInt()==1?true:false;
+            ZaloFriend user = new ZaloFriend(userId, userName, displayName, avatar, userGender, usingApp);
             return user;
         }
 
@@ -77,9 +73,8 @@ public class ZaloFriend extends AbstractData {
         dest.writeString(userName);
         dest.writeString(displayName);
         dest.writeString(avatar);
-        dest.writeString(userGender);
-        dest.writeString(birthday);
-        dest.writeString(usingApp);
+        dest.writeInt(userGender);
+        dest.writeInt(usingApp?1:0);
     }
 
     public long getUserId() {
@@ -98,16 +93,11 @@ public class ZaloFriend extends AbstractData {
         return avatar;
     }
 
-    public String getUserGender() {
+    public int getUserGender() {
         return userGender;
     }
 
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public String getUsingApp() {
+    public boolean isUsingApp() {
         return usingApp;
     }
-
 }

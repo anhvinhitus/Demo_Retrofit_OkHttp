@@ -45,4 +45,5 @@
     <dimen name="border_radius">8dp</dimen>
     <dimen name="leftmenu.avatar.radius">35dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="transfer.avatar">34dp</dimen>
 </resources>

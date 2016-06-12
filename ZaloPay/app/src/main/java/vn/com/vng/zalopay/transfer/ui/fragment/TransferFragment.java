@@ -1,69 +1,127 @@
 package vn.com.vng.zalopay.transfer.ui.fragment;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
-
-import javax.inject.Inject;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.transfer.models.TransferRecent;
-import vn.com.vng.zalopay.transfer.ui.adapter.TransferRecentRecyclerViewAdapter;
-import vn.com.vng.zalopay.transfer.ui.fragment.dummy.DummyContent;
+import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
- * A fragment representing a list of Items.
- * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link TransferFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link TransferFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
 public class TransferFragment extends BaseFragment {
+    private OnFragmentInteractionListener mListener;
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+    private ZaloFriend zaloFriend;
 
-    @Inject
-    Navigator navigator;
+    @BindView(R.id.imgAvatar)
+    ImageView imgAvatar;
 
-    @BindView(R.id.list)
-    RecyclerView mList;
+    @BindView(R.id.tvDisplayName)
+    TextView tvDisplayName;
 
-    @OnClick(R.id.layoutTransferAccZaloPay)
-    public void onClickTransferAccZaloPay(View view) {
-        navigator.startZaloContactActivity(getActivity());
+    @BindView(R.id.tvPhone)
+    TextView tvPhone;
+
+    @BindView(R.id.textInputAmount)
+    TextInputLayout textInputAmount;
+
+    @BindView(R.id.edtAmount)
+    EditText edtAmount;
+
+    @BindView(R.id.textInputTransferMsg)
+    TextInputLayout textInputTransferMsg;
+
+    @BindView(R.id.edtTransferMsg)
+    EditText edtTransferMsg;
+
+    public boolean isValidAmount() {
+        String amount = edtAmount.getText().toString();
+        if (TextUtils.isEmpty(amount)) {
+            return false;
+        }
+        return true;
     }
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+    private void showAmountError() {
+        textInputAmount.setErrorEnabled(true);
+        if (TextUtils.isEmpty(edtAmount.getText().toString())) {
+            textInputAmount.setError(getString(R.string.invalid_amount_empty));
+        }
+    }
+
+    private void hideAmountError() {
+        textInputAmount.setErrorEnabled(false);
+        textInputAmount.setError(null);
+    }
+
+    public boolean isValidTransferMsg() {
+        String transferMsg = edtTransferMsg.getText().toString();
+        if (TextUtils.isEmpty(transferMsg)) {
+            return false;
+        }
+        return true;
+    }
+
+    private void showTransferMsgError() {
+        textInputTransferMsg.setErrorEnabled(true);
+        if (TextUtils.isEmpty(edtTransferMsg.getText().toString())) {
+            textInputTransferMsg.setError(getString(R.string.invalid_transfer_msg_empty));
+        }
+    }
+
+    private void hideTransferMsgError() {
+        textInputAmount.setErrorEnabled(false);
+        textInputAmount.setError(null);
+    }
+
+    @OnClick(R.id.btnContinue)
+    public void onClickContinute(View view) {
+        if (isValidAmount()) {
+            showAmountError();
+        } else {
+            hideAmountError();
+        }
+        if (isValidTransferMsg()) {
+            showTransferMsgError();
+        } else {
+            hideTransferMsgError();
+        }
+
+    }
+
     public TransferFragment() {
+        // Required empty public constructor
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static TransferFragment newInstance(int columnCount) {
+    public static TransferFragment newInstance(Bundle bundle) {
         TransferFragment fragment = new TransferFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
+
     }
 
     @Override
@@ -74,32 +132,32 @@ public class TransferFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            zaloFriend = getArguments().getParcelable(Constants.ARG_ZALO_FRIEND);
         }
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Set the adapter
-        if (mColumnCount <= 1) {
-            mList.setLayoutManager(new LinearLayoutManager(getContext()));
-        } else {
-            mList.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
         }
-        mList.setAdapter(new TransferRecentRecyclerViewAdapter(getContext(), DummyContent.ITEMS_TRANSFER_RECENT, mListener));
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
 //            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -119,8 +177,8 @@ public class TransferFragment extends BaseFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(TransferRecent item);
+        void onFragmentInteraction(Uri uri);
     }
 }

@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 8;
+    private static final int APP_DB_VERSION = 9;
 
 
     public static void main(String[] args) throws Exception {
@@ -19,8 +19,34 @@ public class GreenDaoGenerator {
         addTransactionLog(appSchema);
         addDataManifest(appSchema);
         addCardList(appSchema);
+        addZaloContact(appSchema);
+        addTransferRecent(appSchema);
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
+    }
+
+    private static void addTransferRecent(Schema appSchema) {
+        Entity appInfoEntity = appSchema.addEntity("ZaloFriend");
+        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addStringProperty("userName");
+        appInfoEntity.addIntProperty("displayName");
+        appInfoEntity.addStringProperty("avatar");
+        appInfoEntity.addStringProperty("userGender");
+        appInfoEntity.addIntProperty("birthday");
+        appInfoEntity.addStringProperty("usingApp");
+    }
+
+    private static void addZaloContact(Schema appSchema) {
+        Entity appInfoEntity = appSchema.addEntity("TransferRecent");
+        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addStringProperty("userName");
+        appInfoEntity.addIntProperty("displayName");
+        appInfoEntity.addStringProperty("avatar");
+        appInfoEntity.addStringProperty("userGender");
+        appInfoEntity.addIntProperty("birthday");
+        appInfoEntity.addStringProperty("usingApp");
+        appInfoEntity.addStringProperty("phoneNumber");
+        appInfoEntity.addIntProperty("transferType");
     }
 
     private static void addApplicationInfo(Schema schema) {

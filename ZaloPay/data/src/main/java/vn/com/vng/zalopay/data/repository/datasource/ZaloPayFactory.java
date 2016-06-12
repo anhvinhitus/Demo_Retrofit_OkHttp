@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -150,7 +151,6 @@ public class ZaloPayFactory {
                 .subscribe(new DefaultSubscriber<>());
     }
 
-
     private void writeTransactionResp(TransactionHistoryResponse response) {
         List<TransHistoryEntity> list = response.data;
         int size = list.size();
@@ -182,5 +182,19 @@ public class ZaloPayFactory {
                 });
     }
 
+    public void reloadZaloFriend(Subscriber<List<ZaloFriend>> subscriber) {
+        if (sqlZaloPayScope.isHaveZaloFriendDb()) {
+            long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
+            //check xem moi lay thi thoi
+            if (false) {
+                return;
+            }
+        }
+        getFriendListServer(0, 20, subscriber);
+    }
 
+    private void getFriendListServer(final int pageSize, final int offset, final Subscriber<List<ZaloFriend>> subscriber) {
+        Timber.d("getFriendListServer pageSize:%s ", pageSize);
+        Timber.d("getFriendListServer offset:%s ", offset);
+    }
 }

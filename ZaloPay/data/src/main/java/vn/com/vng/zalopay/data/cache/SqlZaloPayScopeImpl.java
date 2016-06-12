@@ -8,6 +8,8 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -82,6 +84,31 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     public void writeBalance(long balance) {
         Timber.tag("SqlZaloPayScopeImpl").d("writeBalance, balance:" + balance);
         this.insertDataManifest(Constants.MANIF_BALANCE, String.valueOf(balance));
+    }
+
+    @Override
+    public void writeZaloFriends(List<ZaloFriend> val) {
+        getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
+    }
+
+    @Override
+    public void writeZaloFriend(ZaloFriend val) {
+        getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
+    }
+
+    @Override
+    public List<ZaloFriend> listZaloFriend() {
+        return getDaoSession().getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).list();
+    }
+
+    @Override
+    public List<ZaloFriend> listZaloFriend(int limit) {
+        return getDaoSession().getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).limit(limit).list();
+    }
+
+    @Override
+    public boolean isHaveZaloFriendDb() {
+        return getDaoSession().getZaloFriendDao().queryBuilder().count() > 0;
     }
 
     @Override

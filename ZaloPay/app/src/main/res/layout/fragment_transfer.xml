@@ -1,121 +1,137 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/ScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_alignParentTop="true">
 
         <LinearLayout
-            android:id="@+id/layoutTransferAccZaloPay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@color/background"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing.small"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.small"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_tkzalopay" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
-                android:layout_weight="1.0"
-                android:text="@string/transfer_acc_zalopay" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing.medium.s"
+                android:paddingTop="@dimen/spacing.medium.s">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.s"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
+                <vn.vng.uicomponent.widget.image.BezelImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="@dimen/transfer.avatar"
+                    android:layout_height="@dimen/transfer.avatar"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_default"
+                    app:borderDrawable="@drawable/circle_border_profile"
+                    app:maskDrawable="@drawable/circle_mask" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="60dp"
-            android:background="@color/separate" />
+                <TextView
+                    android:id="@+id/tvDisplayName"
+                    style="@style/TextView.Item.Main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.small"
+                    android:text="ThanhPTN" />
 
-        <LinearLayout
-            android:id="@+id/layoutTransferATMVisa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvPhone"
+                    style="@style/TextView.Item.Sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.tiny"
+                    android:text="0987654321" />
+            </LinearLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing.small"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.small"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_the_atm" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separate" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
-                android:layout_weight="1.0"
-                android:text="@string/transfer_atm_visa" />
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/spacing.medium">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.s"
-                android:src="@drawable/ic_arrow_right" />
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing.small"
+                    android:layout_marginRight="@dimen/spacing.small"
+                    android:layout_marginTop="@dimen/spacing.small"
+                    android:orientation="vertical"
+                    app:errorEnabled="false">
+
+                    <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                        android:id="@+id/edtAmount"
+                        style="@style/TextView.Item.Main"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:ellipsize="end"
+                        android:hint="@string/hint_amount"
+                        android:inputType="number"
+                        android:maxLength="17"
+                        android:maxLines="1"
+                        android:paddingTop="@dimen/spacing.small"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/separate" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputTransferMsg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing.small"
+                    android:layout_marginRight="@dimen/spacing.small"
+                    android:layout_marginTop="@dimen/spacing.small"
+                    app:errorEnabled="false">
+
+                    <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                        android:id="@+id/edtTransferMsg"
+                        style="@style/TextView.Item.Main"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:ellipsize="end"
+                        android:hint="@string/hint_message"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingTop="@dimen/spacing.small"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separate" />
         </LinearLayout>
+    </ScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/separate" />
-    </LinearLayout>
-
-    <TextView
-        style="@style/TextView.Group.Title"
+    <Button
+        android:id="@+id/btnContinue"
+        style="@style/Button.Default"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing.medium.t"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium.l"
-        android:text="@string/transaction_recent"
-        android:textAllCaps="true" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/separate" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
-        tools:listitem="@layout/fragment_trasfer_recent_item" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/separate" />
-
-</LinearLayout>
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_btn_gray"
+        android:text="@string/btn_continue" />
+</RelativeLayout>

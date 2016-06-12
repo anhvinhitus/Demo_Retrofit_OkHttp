@@ -32,6 +32,21 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
         mListener = listener;
     }
 
+    public void addItems(List<ZaloFriend> zaloFriends) {
+        if (zaloFriends == null || zaloFriends.size() <=0) {
+            return;
+        }
+        int currentItemIndex = mValues.size() - 1;
+        mValues.addAll(zaloFriends);
+        notifyItemRangeChanged(currentItemIndex, zaloFriends.size());
+    }
+
+    public void setItems(List<ZaloFriend> zaloFriends) {
+        mValues.clear();
+        mValues.addAll(zaloFriends);
+        notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

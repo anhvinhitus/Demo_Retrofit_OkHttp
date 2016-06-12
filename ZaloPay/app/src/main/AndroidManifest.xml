@@ -169,8 +169,15 @@
 
         <activity android:name=".account.ui.activities.RecoveryPinActivity" />
         <activity android:name=".account.ui.activities.ProfileInfo2Activity" />
-        <activity android:name=".transfer.ui.activities.TransferActivity" />
-        <activity android:name=".transfer.ui.activities.ZaloContactActivity" />
+        <activity
+            android:name=".transfer.ui.activities.TransferHomeActivity"
+            android:label="@string/title.activity.transfer" />
+        <activity
+            android:name=".transfer.ui.activities.ZaloContactActivity"
+            android:label="@string/title.activity.zalopay.contact" />
+        <activity
+            android:name=".transfer.ui.activities.TransferActivity"
+            android:label="@string/title.activity.transfer" />
     </application>
 
 </manifest>

@@ -59,6 +59,8 @@
     <string name="amount">Số tiền</string>
     <string name="amount_vnd"> (VND)</string>
     <string name="vnd"> VND</string>
+    <string name="hint_amount">Số tiền (VND)</string>
+    <string name="hint_message">Lời nhắn</string>
 
     <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
@@ -74,6 +76,8 @@
 
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
     <string name="title.activity.link.card">Liên kết thẻ</string>
+    <string name="title.activity.transfer">Chuyển tiền</string>
+    <string name="title.activity.zalopay.contact">Danh bạn ZaloPay</string>
 
     <!--Activity lable END-->
 
@@ -139,6 +143,8 @@
     <string name="invalid_email">Email không hợp lệ.</string>
     <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
+    <string name="invalid_amount_empty">Bạn chưa nhập số tiền</string>
+    <string name="invalid_transfer_msg_empty">Bạn chưa nhập lời nhắn</string>
 
     <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
     <string name="invalid_otp">OTP không hợp lệ.</string>
@@ -183,4 +189,7 @@
     <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

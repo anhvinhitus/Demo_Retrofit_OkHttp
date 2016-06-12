@@ -198,7 +198,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             case MenuItemUtil.TRANSACTION_ID:
                 break;
             case MenuItemUtil.TRANSFER_ID:
-                navigator.startTrasferActivity(this);
+                navigator.startTrasferHomeActivity(this);
                 break;
 
         }

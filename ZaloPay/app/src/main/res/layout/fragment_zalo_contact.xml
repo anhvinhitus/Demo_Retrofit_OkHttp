@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <EditText
+    <vn.com.vng.zalopay.ui.widget.ClearableEditText
         android:id="@+id/edtSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,8 @@
         android:drawableLeft="@drawable/ic_seach"
         android:drawablePadding="@dimen/spacing.medium.t"
         android:hint="@string/hint_zalo_contact"
-        android:padding="@dimen/spacing.medium" />
+        android:padding="@dimen/spacing.medium"
+        android:textSize="@dimen/textsize.small" />
 
     <View
         android:layout_width="match_parent"
@@ -28,7 +29,7 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         app:layoutManager="LinearLayoutManager"
-        tools:context="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
+        tools:context=".transfer.ui.fragment.TransferHomeFragment"
         tools:listitem="@layout/fragment_zalo_contact_item" />
 
 </LinearLayout>

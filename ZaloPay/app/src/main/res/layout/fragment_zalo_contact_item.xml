@@ -16,8 +16,8 @@
 
         <vn.vng.uicomponent.widget.image.BezelImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="@dimen/transfer.avatar"
+            android:layout_height="@dimen/transfer.avatar"
             android:layout_marginBottom="@dimen/spacing.small"
             android:layout_marginLeft="@dimen/spacing.medium"
             android:layout_marginTop="@dimen/spacing.small"
@@ -42,7 +42,7 @@
             android:layout_height="48dp"
             android:layout_weight="0.0"
             android:adjustViewBounds="true"
-            android:padding="@dimen/spacing.medium.s"
+            android:padding="@dimen/spacing.medium"
             android:scaleType="centerInside"
             android:src="@drawable/ic_zalopay" />
     </LinearLayout>

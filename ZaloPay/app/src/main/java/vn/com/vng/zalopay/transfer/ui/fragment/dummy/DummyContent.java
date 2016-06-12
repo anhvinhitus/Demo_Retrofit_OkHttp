@@ -46,7 +46,7 @@ public class DummyContent {
     }
 
     private static ZaloFriend createZaloFriend(int position) {
-        return new ZaloFriend(position, "userName" + position, "displayName" + position, "http://s240.avatar.talk.zdn.vn/b/a/2/b/1/240/fc04313a9e793ace59ed405e00091682.jpg", "Name", "01/01/1990", "true");
+        return new ZaloFriend(position, "userName" + position, "displayName" + position, "http://s240.avatar.talk.zdn.vn/b/a/2/b/1/240/fc04313a9e793ace59ed405e00091682.jpg", 1, true);
     }
 
     private static void addItemTransferRecent(TransferRecent item) {
