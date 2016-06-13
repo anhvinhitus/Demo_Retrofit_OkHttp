@@ -120,7 +120,7 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardProducedureActivity(Fragment activity) {
+    public void startLinkCardProcedureActivity(Fragment activity) {
         Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
         activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
@@ -164,7 +164,7 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startTrasferHomeActivity(Activity activity) {
+    public void startTransferMoneyActivity(Activity activity) {
         Intent intent = new Intent(activity, TransferHomeActivity.class);
         activity.startActivity(intent);
     }
@@ -174,7 +174,7 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startTrasferActivity(ZaloContactFragment fragment, Bundle bundle) {
+    public void startTransferActivity(ZaloContactFragment fragment, Bundle bundle) {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtras(bundle);
         fragment.startActivityForResult(intent, ZaloContactFragment.REQUEST_CODE);
