@@ -23,7 +23,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
             return;
         }
 
-        Timber.w(body);
+        Timber.d(body);
         new SweetAlertDialog(this.activity, messageType).setContentText(body)
             .show();
     }
