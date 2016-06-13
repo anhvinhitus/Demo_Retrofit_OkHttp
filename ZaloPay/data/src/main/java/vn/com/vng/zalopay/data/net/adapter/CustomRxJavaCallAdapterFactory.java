@@ -15,6 +15,8 @@
  */
 package vn.com.vng.zalopay.data.net.adapter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -32,6 +34,7 @@ import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.BodyException;
 
 /**
@@ -223,7 +226,6 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
         }
     }
 
-
     static final class SimpleCallAdapter implements CallAdapter<Observable<?>> {
         private final Type responseType;
         private final Scheduler scheduler;
@@ -248,12 +250,17 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                                 if (((BaseResponse) body).isSuccessfulResponse()) {
                                     return Observable.just(body);
                                 } else {
-                                    return Observable.error(new BodyException(((BaseResponse) body).err, ((BaseResponse) body).message));
+                                    if (((BaseResponse) body).isSessionExpired()) {
+                                        EventBus.getDefault().post(new TokenExpiredEvent(((BaseResponse) body).err));
+                                    } else {
+                                        return Observable.error(new BodyException(((BaseResponse) body).err, ((BaseResponse) body).message));
+                                    }
                                 }
                             } else {
                                 return Observable.just(body);
                             }
                         }
+
                         return Observable.error(new HttpException(response));
                     });
 
