@@ -149,7 +149,11 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (REQUEST_CODE == requestCode) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                mTransferState = data.getExtras();
+                if (data != null) {
+                    mTransferState = data.getExtras();
+                } else {
+                    mTransferState = null;
+                }
                 return;
             }
         }
