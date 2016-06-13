@@ -195,7 +195,7 @@ public class PaymentServiceImpl implements IPaymentService {
         }
 
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
-        Timber.w("Invalid parameter %s", parameterName);
+        Timber.d("Invalid parameter %s", parameterName);
         errorCallback(promise, PaymentError.ERR_CODE_INPUT, message);
     }
 

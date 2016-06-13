@@ -77,7 +77,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     public void destroy() {
         this.destroyView();
         this.unsubscribe();
-        Timber.w("Destroy presenter");
+        Timber.d("Destroy presenter");
     }
 
     private void unsubscribe() {
