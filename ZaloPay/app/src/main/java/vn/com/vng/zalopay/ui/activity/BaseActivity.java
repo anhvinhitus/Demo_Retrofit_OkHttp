@@ -108,15 +108,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-      //  eventBus.unregister(this);
+        eventBus.unregister(this);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-//        eventBus.register(this);
+        eventBus.register(this);
     }
 
     @Override
@@ -195,7 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
 
-        Timber.e("SESSION EXPIRED in Screen %s", TAG);
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
 
         getAppComponent().userConfig().signOutAndCleanData(this);
     }
