@@ -255,11 +255,4 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 //
 //        }
 //    };
-
-    private void transactionUpdate() {
-        zaloPayRepository.transactionUpdate()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Boolean>());
-    }
 }

@@ -267,8 +267,9 @@ dependencies {
     }
     compile project(':reactnativemodules')
 
-    debugCompile(name: 'WALLET-debug', ext: 'aar')
-    releaseCompile(name: 'WALLET-release', ext: 'aar')
+//    debugCompile(name: 'WALLET-debug', ext: 'aar')
+//    releaseCompile(name: 'WALLET-release', ext: 'aar')
+    compile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
     compile 'com.android.support:support-v4:23.4.0'

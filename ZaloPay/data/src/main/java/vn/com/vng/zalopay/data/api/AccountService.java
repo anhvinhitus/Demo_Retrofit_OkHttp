@@ -6,6 +6,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 
 /**
@@ -24,4 +25,8 @@ public interface AccountService {
     @FormUrlEncoded
     @POST("um/recoverypin")
     Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("otp") String otp);
+
+    @FormUrlEncoded
+    @POST("um/getuserinfo")
+    Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("loginuid") long zaloId, @Field("systemlogin") int systemlogin);
 }

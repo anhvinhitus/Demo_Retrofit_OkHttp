@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.transfer.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,9 +16,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
@@ -28,7 +32,9 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ZaloContactFragment extends BaseFragment implements IZaloContactView, ZaloContactPresenter.IZaloFriendListener {
+public class ZaloContactFragment extends BaseFragment implements IZaloContactView, ZaloContactPresenter.IZaloFriendListener,
+        ZaloContactRecyclerViewAdapter.OnItemInteractionListener {
+    public static final int REQUEST_CODE = 124;
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -36,6 +42,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private ZaloContactRecyclerViewAdapter mAdapter;
+    private Bundle mTransferState;
 
     @Inject
     Navigator navigator;
@@ -92,7 +99,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         } else {
             mList.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
         }
-        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), new ArrayList<ZaloFriend>(), mListener);
+        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), new ArrayList<ZaloFriend>(), this);
         mList.setAdapter(mAdapter);
         presenter.getFriendList(this);
     }
@@ -103,8 +110,8 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
@@ -139,6 +146,17 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_CODE == requestCode) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                mTransferState = data.getExtras();
+                return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void showLoading() {
         super.showProgressDialog();
     }
@@ -166,6 +184,15 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
         mAdapter.addItems(zaloFriends);
+    }
+
+    @Override
+    public void onItemClick(ZaloFriend zaloFriend) {
+        if (mTransferState == null) {
+            mTransferState = new Bundle();
+        }
+        mTransferState.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
+        navigator.startTrasferActivity(this, mTransferState);
     }
 
     /**

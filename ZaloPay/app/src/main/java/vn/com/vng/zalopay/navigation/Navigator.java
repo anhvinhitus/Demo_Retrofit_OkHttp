@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.navigation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
@@ -22,6 +23,7 @@ import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
+import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -172,9 +174,9 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startTrasferActivity(Activity activity, ZaloFriend zaloFriend) {
-        Intent intent = new Intent(activity, TransferActivity.class);
-        intent.putExtra(Constants.ARG_ZALO_FRIEND, zaloFriend);
-        activity.startActivity(intent);
+    public void startTrasferActivity(ZaloContactFragment fragment, Bundle bundle) {
+        Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
+        intent.putExtras(bundle);
+        fragment.startActivityForResult(intent, ZaloContactFragment.REQUEST_CODE);
     }
 }

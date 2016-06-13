@@ -33,7 +33,7 @@
                     android:layout_height="@dimen/transfer.avatar"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_avatar_default"
-                    app:borderDrawable="@drawable/circle_border_profile"
+                    app:borderDrawable="@color/transparent"
                     app:maskDrawable="@drawable/circle_mask" />
 
                 <TextView
@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing.small"
-                    android:text="ThanhPTN" />
+                    tools:text="ThanhPTN" />
 
                 <TextView
                     android:id="@+id/tvPhone"
@@ -50,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing.tiny"
-                    android:text="0987654321" />
+                    tools:text="0987654321" />
             </LinearLayout>
 
             <View

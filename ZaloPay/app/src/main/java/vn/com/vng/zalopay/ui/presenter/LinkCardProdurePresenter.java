@@ -27,7 +27,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 /**
  * Created by longlv on 12/05/2016.
  */
-public class LinkCardProdurePresenter extends BaseUserPresenter implements IPresenter<ILinkCardProduceView> {
+public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IPresenter<ILinkCardProduceView> {
 
     private ILinkCardProduceView mView;
     private Subscription subscription;
@@ -108,6 +108,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
 
     @Override
     public void destroy() {
+        super.destroy();
         hideLoadingView();
     }
 
@@ -139,7 +140,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
 
         @Override
         public void onNext(Order order) {
-            Timber.d("CreateWalletOrderSubscriber success " + order);
+            Timber.d("GetUserInfoSubscriber success " + order);
             LinkCardProdurePresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -149,7 +150,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "CreateWalletOrderSubscriber onError " + e);
+            Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
                     userConfig.sigoutAndCleanData(mView.getActivity());
@@ -258,12 +259,5 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
     private void showErrorView(String message) {
         mView.hideLoading();
         mView.showError(message);
-    }
-
-    private void transactionUpdate() {
-        zaloPayRepository.transactionUpdate()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Boolean>());
     }
 }

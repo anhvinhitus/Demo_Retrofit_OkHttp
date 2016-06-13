@@ -4,6 +4,7 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
+import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
 
 /**
@@ -60,5 +61,25 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
         }
         return accountService.recoverypin(uid, accesstoken, pin, otp)
                 .map(baseResponse -> Boolean.TRUE);
+    }
+
+    @Override
+    public Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin) {
+        if (zaloId <= 0) {
+            return null;
+        }
+        String uid = "";
+        String accesstoken = "";
+        if (userConfig.getCurrentUser() != null) {
+            uid = userConfig.getCurrentUser().uid;
+            accesstoken = userConfig.getCurrentUser().accesstoken;
+        }
+        return accountService.getuserinfo(uid, accesstoken, zaloId, systemlogin).map(mappingZaloAndZaloPayResponse -> {
+            MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
+            mappingZaloAndZaloPay.setZaloId(zaloId);
+            mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
+            mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
+            return mappingZaloAndZaloPay;
+        });
     }
 }
