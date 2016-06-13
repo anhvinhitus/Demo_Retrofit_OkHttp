@@ -14,6 +14,7 @@ import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
+import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 3/26/16.
@@ -26,6 +27,8 @@ public abstract class BaseAppPresenter {
 
     protected final PassportRepository passportRepository = AndroidApplication.instance().getAppComponent().passportRepository();
     protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+
+    protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     protected final Context applicationContext = AndroidApplication.instance();
 

@@ -39,9 +39,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     private PaymentWrapper paymentWrapper;
     private User user;
 
-    @Inject
-    Navigator navigator;
-
     public TransferPresenter(User user) {
         this.user = user;
         paymentWrapper = new PaymentWrapper(zaloPayRepository, new PaymentWrapper.IViewListener() {

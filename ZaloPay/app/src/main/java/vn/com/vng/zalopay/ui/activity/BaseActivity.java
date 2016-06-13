@@ -110,13 +110,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        eventBus.unregister(this);
+      //  eventBus.unregister(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        eventBus.register(this);
+//        eventBus.register(this);
     }
 
     @Override
