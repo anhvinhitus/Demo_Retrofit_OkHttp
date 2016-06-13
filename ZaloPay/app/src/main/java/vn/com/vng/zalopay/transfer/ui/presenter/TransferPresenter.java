@@ -82,7 +82,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.sigoutAndCleanData(mView.getActivity());
+                userConfig.signOutAndCleanData(mView.getActivity());
             }
 
             @Override
@@ -111,7 +111,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    userConfig.signOutAndCleanData(mView.getActivity());
                     return;
                 }
             }
@@ -180,7 +180,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    userConfig.signOutAndCleanData(mView.getActivity());
                     return;
                 }
             }

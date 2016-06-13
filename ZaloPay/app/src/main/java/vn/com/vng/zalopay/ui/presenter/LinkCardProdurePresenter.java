@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -30,8 +29,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IPresenter<ILinkCardProduceView> {
 
     private ILinkCardProduceView mView;
-    private Subscription subscription;
-    private Subscription subscriptionGetOrder;
+
     private PaymentWrapper paymentWrapper;
 
     User user;
@@ -93,7 +91,6 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
     @Override
     public void destroyView() {
         mView = null;
-        unsubscribeIfNotNull(subscription);
     }
 
     @Override
@@ -173,84 +170,6 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
         paymentWrapper.linkCard(order);
         hideLoadingView();
     }
-//
-//    //Zalo payment sdk
-//    private void pay(Order order) {
-//        Timber.tag("LinkCardProdurePresenter").d("pay.==============");
-//        if (order == null) {
-//            showErrorView(mView.getContext().getString(R.string.order_invalid));
-//            return;
-//        }
-//        Timber.tag("LinkCardProdurePresenter").d("pay.................2");
-//        User user = AndroidApplication.instance().getUserComponent().currentUser();
-//        if (user.uid <= 0) {
-//            showErrorView(mView.getContext().getString(R.string.user_invalid));
-//            return;
-//        }
-//        try {
-//            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-//            EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
-//            paymentInfo.appID = order.getAppid();
-//            paymentInfo.zaloUserID = String.valueOf(user.uid);
-//            paymentInfo.zaloPayAccessToken = user.accesstoken;
-//            paymentInfo.appTime = Long.valueOf(order.getApptime());
-//            paymentInfo.appTransID = order.getApptransid();
-//            paymentInfo.itemName = order.getItem();
-//            paymentInfo.amount = Long.parseLong(order.getAmount());
-//            paymentInfo.description = order.getDescription();
-//            paymentInfo.embedData = order.getEmbeddata();
-//            //lap vao ví appId = appUser = 1
-//            paymentInfo.appUser = order.getAppuser();
-//            paymentInfo.mac = order.getMac();
-//
-//            Timber.tag("LinkCardProdurePresenter").d("pay.................3");
-//            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
-//        } catch (NumberFormatException e) {
-//            if (BuildConfig.DEBUG) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
-//        @Override
-//        public void onComplete(ZPPaymentResult zpPaymentResult) {
-//            hideLoadingView();
-//            if (zpPaymentResult == null) {
-//                if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
-//                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-//                } else {
-//                    mView.showError("Lỗi xảy ra trong quá trình liên kết thẻ. Vui lòng thử lại sau.");
-//                }
-//            } else {
-//                EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-//                if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-//                    transactionUpdate();
-//                    ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-//                    if (paymentInfo == null) {
-//                        return;
-//                    }
-//                    mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
-//                } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-//                    mView.onTokenInvalid();
-//                }
-//            }
-//        }
-//
-//        @Override
-//        public void onCancel() {
-//            hideLoadingView();
-//        }
-//
-//        @Override
-//        public void onSMSCallBack(String s) {
-//
-//        }
-//    };
-
-//    private void showLoadingView() {
-//        mView.showLoading();
-//    }
 
     private void hideLoadingView() {
         mView.hideLoading();
