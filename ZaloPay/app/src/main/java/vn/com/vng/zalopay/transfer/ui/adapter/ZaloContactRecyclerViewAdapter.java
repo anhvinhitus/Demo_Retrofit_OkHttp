@@ -24,9 +24,13 @@ import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment.OnListFragmen
 public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloContactRecyclerViewAdapter.ViewHolder> {
     private final Context mContext;
     private final List<ZaloFriend> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnItemInteractionListener mListener;
 
-    public ZaloContactRecyclerViewAdapter(Context context, List<ZaloFriend> items, OnListFragmentInteractionListener listener) {
+    public interface OnItemInteractionListener {
+        void onItemClick(ZaloFriend item);
+    }
+
+    public ZaloContactRecyclerViewAdapter(Context context, List<ZaloFriend> items, OnItemInteractionListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
@@ -66,7 +70,7 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onItemClick(holder.mItem);
                 }
             }
         });

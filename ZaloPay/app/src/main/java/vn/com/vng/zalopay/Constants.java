@@ -26,6 +26,7 @@ public class Constants {
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";
     public static final String ARG_ZALO_FRIEND = "zalofriend";
+    public static final String ARG_MESSAGE = "message";
 
     //DATA MANIFESTS DATABASE
     public static final String MANIF_BALANCE = "manif_balance";

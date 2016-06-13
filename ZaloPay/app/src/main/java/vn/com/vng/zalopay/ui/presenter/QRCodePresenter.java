@@ -109,7 +109,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     @Override
     public void destroy() {
-        this.destroyView();
+        super.destroy();
         this.unsubscribe();
     }
 
@@ -209,10 +209,4 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 //        mView.showOrderDetail(order);
 //    }
 
-    private void transactionUpdate() {
-        zaloPayRepository.transactionUpdate()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Boolean>());
-    }
 }

@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
@@ -114,5 +115,11 @@ public class UserPresenterModule {
     @Provides
     ZaloContactPresenter provideZaloContactPresenter() {
         return new ZaloContactPresenter();
+    }
+
+    @UserScope
+    @Provides
+    TransferPresenter provideTransferPresenter(User user) {
+        return new TransferPresenter(user);
     }
 }
