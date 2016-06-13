@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
@@ -192,7 +191,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             mTransferState = new Bundle();
         }
         mTransferState.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
-        navigator.startTrasferActivity(this, mTransferState);
+        navigator.startTransferActivity(this, mTransferState);
     }
 
     /**

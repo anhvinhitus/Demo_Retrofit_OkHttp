@@ -214,7 +214,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void onClickAddBankCard() {
-        navigator.startLinkCardProducedureActivity(this);
+        navigator.startLinkCardProcedureActivity(this);
     }
 
     @Override
