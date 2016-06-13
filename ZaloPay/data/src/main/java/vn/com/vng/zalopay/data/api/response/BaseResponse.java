@@ -16,4 +16,8 @@ public class BaseResponse {
     public boolean isSuccessfulResponse() {
         return err == 1;
     }
+
+    public boolean isSessionExpired() {
+        return err == -77 || err == -78 || err == -73;
+    }
 }

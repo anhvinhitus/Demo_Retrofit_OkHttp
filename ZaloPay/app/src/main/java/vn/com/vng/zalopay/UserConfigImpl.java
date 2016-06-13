@@ -230,7 +230,7 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void sigoutAndCleanData(Activity activity) {
+    public void signOutAndCleanData(Activity activity) {
         clearConfig();
         clearAllUserDB();
         ZaloSDK.Instance.unauthenticate();

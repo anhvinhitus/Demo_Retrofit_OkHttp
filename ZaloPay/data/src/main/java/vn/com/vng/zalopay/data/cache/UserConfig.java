@@ -51,5 +51,5 @@ public interface UserConfig {
 
     void clearAllUserDB();
 
-    void sigoutAndCleanData(Activity activity);
+    void signOutAndCleanData(Activity activity);
 }

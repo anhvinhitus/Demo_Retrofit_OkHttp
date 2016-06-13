@@ -75,7 +75,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.sigoutAndCleanData(mView.getActivity());
+                userConfig.signOutAndCleanData(mView.getActivity());
             }
 
             @Override
@@ -152,7 +152,7 @@ public class LinkCardProdurePresenter extends BaseUserPresenter implements IPres
             Timber.e(e, "CreateWalletOrderSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    userConfig.signOutAndCleanData(mView.getActivity());
                     return;
                 }
             }

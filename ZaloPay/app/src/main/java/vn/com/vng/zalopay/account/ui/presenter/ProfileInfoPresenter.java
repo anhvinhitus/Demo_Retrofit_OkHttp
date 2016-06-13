@@ -102,6 +102,6 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     public void sigoutAndCleanData() {
-        userConfig.sigoutAndCleanData(mView.getActivity());
+        userConfig.signOutAndCleanData(mView.getActivity());
     }
 }

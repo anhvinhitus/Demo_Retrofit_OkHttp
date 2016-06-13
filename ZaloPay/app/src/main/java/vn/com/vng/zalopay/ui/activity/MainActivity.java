@@ -199,7 +199,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 startQRCodeActivity();
                 break;
             case MenuItemUtil.SIGOUT_ID:
-                getAppComponent().userConfig().sigoutAndCleanData(this);
+                getAppComponent().userConfig().signOutAndCleanData(this);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, "TransactionLogs");
