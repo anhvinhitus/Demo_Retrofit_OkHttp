@@ -127,6 +127,7 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
             if (user == null) {
                 return;
             }
+            mView.showLoading();
             subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
