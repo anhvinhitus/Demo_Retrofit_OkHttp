@@ -164,7 +164,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onNext(Order order) {
-            Timber.d("GetUserInfoSubscriber success " + order);
             TransferPresenter.this.onCreateWalletOrderSuccess(order, displayName, avatar, phoneNumber);
         }
 
@@ -174,19 +173,18 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
                     userConfig.signOutAndCleanData(mView.getActivity());
                     return;
                 }
             }
+            Timber.e(e, "Server responses with error");
             TransferPresenter.this.onCreateWalletOrderError(e);
         }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        Timber.tag("onCreateWalletOrderError").d("session =========" + e);
         mView.hideLoading();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         mView.showError(message);

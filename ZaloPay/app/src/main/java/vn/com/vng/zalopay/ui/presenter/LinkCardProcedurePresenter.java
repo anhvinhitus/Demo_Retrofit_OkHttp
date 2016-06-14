@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
+import vn.com.vng.zalopay.ui.view.ILinkCardProcedureView;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
@@ -26,18 +26,18 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 /**
  * Created by longlv on 12/05/2016.
  */
-public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IPresenter<ILinkCardProduceView> {
+public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements IPresenter<ILinkCardProcedureView> {
 
-    private ILinkCardProduceView mView;
+    private ILinkCardProcedureView mView;
 
     private PaymentWrapper paymentWrapper;
 
-    User user;
+    final User user;
 
     @Inject
     Navigator navigator;
 
-    public LinkCardProdurePresenter(User user) {
+    public LinkCardProcedurePresenter(User user) {
         this.user = user;
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
             @Override
@@ -84,7 +84,7 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
     }
 
     @Override
-    public void setView(ILinkCardProduceView iLinkCardProduceView) {
+    public void setView(ILinkCardProcedureView iLinkCardProduceView) {
         this.mView = iLinkCardProduceView;
     }
 
@@ -138,7 +138,7 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
         @Override
         public void onNext(Order order) {
             Timber.d("GetUserInfoSubscriber success " + order);
-            LinkCardProdurePresenter.this.onCreateWalletOrderSuccess(order);
+            LinkCardProcedurePresenter.this.onCreateWalletOrderSuccess(order);
         }
 
         @Override
@@ -154,7 +154,7 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
                     return;
                 }
             }
-            LinkCardProdurePresenter.this.onCreateWalletOrderError(e);
+            LinkCardProcedurePresenter.this.onCreateWalletOrderError(e);
         }
     }
 
