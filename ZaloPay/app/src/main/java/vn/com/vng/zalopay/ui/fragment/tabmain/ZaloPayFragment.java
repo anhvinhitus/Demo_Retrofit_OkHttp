@@ -175,7 +175,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-        navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
+        if (app != null && app.appid == 1) {
+            navigator.startTransferMoneyActivity(getActivity());
+        } else {
+            navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
+        }
     }
 
     @OnClick(R.id.btn_deposit)
@@ -202,7 +206,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     //Test
     private List<AppResource> getListData() {
         return Arrays.asList(
-//                new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
+                new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
                 new AppResource(11, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
                 new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)),
                 new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame))
