@@ -24,6 +24,6 @@ public interface ZaloPayService {
     Observable<GetOrderResponse> getorder(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
     @GET("tpe/createwalletorder")
-    Observable<GetOrderResponse> createwalletorder(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.AMOUNT) long amount, @Query(Constants.TRANSTYPE) String transtype, @Query(Constants.APPUSER) String appUser);
+    Observable<GetOrderResponse> createwalletorder(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.AMOUNT) long amount, @Query(Constants.TRANSTYPE) String transtype, @Query(Constants.APPUSER) String appUser, @Query(Constants.DESCRIPTION) String description);
 
 }

@@ -183,7 +183,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             if (user == null) {
                 return;
             }
-            subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), userMapZaloAndZaloPay.getZaloPayId())
+            subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), userMapZaloAndZaloPay.getZaloPayId(), message)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber(amount, message, zaloFriend, userMapZaloAndZaloPay));
