@@ -135,6 +135,8 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onDestroyView() {
         presenter.destroyView();
+        mAdapter = null;
+        mList.setAdapter(null);
         super.onDestroyView();
     }
 
