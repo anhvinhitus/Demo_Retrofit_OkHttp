@@ -49,13 +49,8 @@ public class ZaloPayFactory {
 
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
-    private BalanceStore.LocalStorage mBalanceLocalStorage;
-    private BalanceStore.RequestService mBalanceRequestService;
-
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope,
-                          BalanceStore.LocalStorage balanceLocalStorage,
-                          BalanceStore.RequestService balanceRequestService,
                           int payAppId, EventBus eventBus) {
 
         if (context == null || service == null) {
@@ -66,8 +61,6 @@ public class ZaloPayFactory {
         this.zaloPayService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
-        this.mBalanceLocalStorage = balanceLocalStorage;
-        this.mBalanceRequestService = balanceRequestService;
         this.payAppId = payAppId;
 
         this.eventBus = eventBus;
@@ -97,33 +90,13 @@ public class ZaloPayFactory {
         return sqlZaloPayScope.transactionHistories(limit);
     }
 
-
-    public Observable<Long> balanceServer() {
-        return mBalanceRequestService.balance(user.uid, user.accesstoken)
-                .doOnNext(response -> mBalanceLocalStorage.putBalance(response.zpwbalance))
-                .map(balanceResponse1 -> balanceResponse1.zpwbalance)
-                .doOnNext(aLong -> eventBus.post(new ChangeBalanceEvent(aLong)))
-                ;
-    }
-
     public Observable<Boolean> transactionUpdate() {
         return ObservableHelper.makeObservable(() -> {
-            // update balance
-            balanceServer().subscribe(new DefaultSubscriber<>());
-
             //update transaction
             reloadListTransactionSync(30, null);
 
             return Boolean.TRUE;
         });
-    }
-
-    private Observable<Long> balanceLocal() {
-        return mBalanceLocalStorage.getBalance();
-    }
-
-    public Observable<Long> balance() {
-        return Observable.merge(balanceLocal(), balanceServer());
     }
 
     public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {

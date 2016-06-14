@@ -27,11 +27,6 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
     }
 
     @Override
-    public Observable<Long> balance() {
-        return zaloPayFactory.balance();
-    }
-
-    @Override
     public Observable<List<TransHistory>> initializeTransHistory() {
         return zaloPayFactory.transactionHistorysServer(0, 1)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));

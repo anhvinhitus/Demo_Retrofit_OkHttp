@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
+import vn.com.vng.zalopay.data.repository.BalanceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayIAPRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
@@ -40,6 +41,7 @@ import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -115,10 +117,8 @@ public class UserControllerModule {
     @Provides
     ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service,
                                          User user, SqlZaloPayScope sqlZaloPayScope,
-                                         BalanceStore.LocalStorage balanceLocalStorage,
-                                         BalanceStore.RequestService balanceRequestService,
                                          @Named("payAppId") int payAppId, EventBus eventBus) {
-        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, balanceLocalStorage, balanceRequestService, payAppId, eventBus);
+        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, payAppId, eventBus);
     }
 
     @UserScope
@@ -135,6 +135,16 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
+    BalanceRepository provideBalanceRepository(
+            BalanceStore.LocalStorage localStorage,
+            BalanceStore.RequestService requestService,
+            User user,
+            EventBus eventBus) {
+        return new BalanceRepositoryImpl(localStorage, requestService, user, eventBus);
+    }
+
+    @UserScope
+    @Provides
     ZaloPayIAPFactory providesZaloPayIAPFactory(ZaloPayIAPService service, User user) {
         return new ZaloPayIAPFactory(service, user);
     }
@@ -147,8 +157,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, User user) {
-        return new PaymentServiceImpl(zaloPayIAPRepository, user);
+    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user) {
+        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user);
     }
 
     @UserScope

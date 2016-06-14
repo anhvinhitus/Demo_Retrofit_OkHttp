@@ -14,8 +14,6 @@ import vn.com.vng.zalopay.domain.model.TransHistory;
  */
 public interface ZaloPayRepository {
 
-    Observable<Long> balance();
-
     Observable<List<TransHistory>> initializeTransHistory();
 
     Observable<List<TransHistory>> loadMoreTransHistory();

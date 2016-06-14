@@ -90,6 +90,8 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 transactionUpdate();
+                updateBalance();
+
                 if (mView != null && mView.getActivity() != null) {
                     mView.getActivity().setResult(Activity.RESULT_OK, null);
                     mView.getActivity().finish();

@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
@@ -60,6 +61,7 @@ public interface UserComponent {
 
     IPaymentService paymentService();
 
+    BalanceRepository balanceRepository();
  /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */
