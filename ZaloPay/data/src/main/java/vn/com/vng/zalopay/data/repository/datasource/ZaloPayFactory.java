@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
+import vn.com.vng.zalopay.data.cache.BalanceContract;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -48,8 +49,12 @@ public class ZaloPayFactory {
 
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
+    private BalanceContract.Repository mBalanceRepository;
+
     public ZaloPayFactory(Context context, ZaloPayService service,
-                          User user, SqlZaloPayScope sqlZaloPayScope, int payAppId, EventBus eventBus) {
+                          User user, SqlZaloPayScope sqlZaloPayScope,
+                          BalanceContract.Repository balanceRepository,
+                          int payAppId, EventBus eventBus) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -59,6 +64,7 @@ public class ZaloPayFactory {
         this.zaloPayService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
+        this.mBalanceRepository = balanceRepository;
         this.payAppId = payAppId;
 
         this.eventBus = eventBus;
@@ -91,7 +97,7 @@ public class ZaloPayFactory {
 
     public Observable<Long> balanceServer() {
         return zaloPayService.balance(user.uid, user.accesstoken)
-                .doOnNext(response -> sqlZaloPayScope.writeBalance(response.zpwbalance))
+                .doOnNext(response -> mBalanceRepository.putBalance(response.zpwbalance))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance)
                 .doOnNext(aLong -> eventBus.post(new ChangeBalanceEvent(aLong)))
                 ;
@@ -111,7 +117,7 @@ public class ZaloPayFactory {
     }
 
     private Observable<Long> balanceLocal() {
-        return sqlZaloPayScope.balance();
+        return mBalanceRepository.getBalance();
     }
 
     public Observable<Long> balance() {

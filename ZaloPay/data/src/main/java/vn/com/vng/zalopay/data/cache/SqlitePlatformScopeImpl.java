@@ -38,7 +38,7 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     @Override
     public Observable<List<CardEntity>> listCard() {
-        return makeObservable(() -> listCardEntity());
+        return RepositoryHelper.makeObservable(() -> listCardEntity());
     }
 
     private List<CardEntity> listCardEntity() {
@@ -62,7 +62,7 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     @Override
     public Observable<List<AppResourceEntity>> listApp() {
-        return makeObservable(() -> listAppResourceEntity());
+        return RepositoryHelper.makeObservable(() -> listAppResourceEntity());
     }
 
     public List<AppResourceEntity> listAppResourceEntity() {

@@ -43,14 +43,14 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistories() {
-        return makeObservable(() -> listTransHistories(Integer.MAX_VALUE))
+        return RepositoryHelper.makeObservable(() -> listTransHistories(Integer.MAX_VALUE))
                 .doOnNext(transHistoryEntities -> Timber.d("transactionHistories %s", transHistoryEntities.size()))
                 ;
     }
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistories(int limit) {
-        return makeObservable(() -> listTransHistories(limit));
+        return RepositoryHelper.makeObservable(() -> listTransHistories(limit));
     }
 
     @Override
@@ -68,25 +68,6 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     public Observable<TransHistoryEntity> transactionHistory() {
         //return makeObservable(() -> zaloCacheMapper.transform(getDaoSession().getTransactionLogDao().queryBuilder().w));
         return null;
-    }
-
-    @Override
-    public Observable<Long> balance() {
-        return makeObservable(() -> {
-            String balance = getDataManifest(Constants.MANIF_BALANCE);
-            Long ret = 0l;
-            try {
-                ret = Long.parseLong(balance);
-            } catch (Exception e) {
-            }
-            return ret;
-        });
-    }
-
-    @Override
-    public void writeBalance(long balance) {
-        Timber.d("writeBalance, balance: %d", balance);
-        this.insertDataManifest(Constants.MANIF_BALANCE, String.valueOf(balance));
     }
 
     @Override

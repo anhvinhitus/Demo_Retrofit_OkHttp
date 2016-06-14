@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
+import vn.com.vng.zalopay.data.ws.parser.MessagerParser;
 import vn.com.vng.zalopay.data.ws.protobuf.LogicMessages;
 
 /**
@@ -26,7 +27,7 @@ public class ZaloPayService extends Service {
     WsConnection mWsConnection;
 
     public ZaloPayService() {
-        mWsConnection = new WsConnection(getApplicationContext());
+        mWsConnection = new WsConnection(getApplicationContext(), new MessagerParser());
         mWsConnection.setHandler(mMessageHandler);
     }
 

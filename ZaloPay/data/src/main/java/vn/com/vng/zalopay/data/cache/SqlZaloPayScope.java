@@ -26,10 +26,6 @@ public interface SqlZaloPayScope extends SqlBaseScope {
 
     Observable<TransHistoryEntity> transactionHistory();
 
-    Observable<Long> balance();
-
-    void writeBalance(long balance);
-
     void writeZaloFriends(List<ZaloFriend> val);
 
     void writeZaloFriend(ZaloFriend val);
