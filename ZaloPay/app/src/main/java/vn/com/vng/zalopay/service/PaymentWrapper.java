@@ -340,7 +340,7 @@ public class PaymentWrapper {
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "onError " + e);
+            Timber.w(e, "onError " + e);
             responseListener.onParameterError("token");
         }
     }
