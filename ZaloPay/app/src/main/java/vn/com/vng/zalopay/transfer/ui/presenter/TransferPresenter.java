@@ -49,9 +49,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     private long mCurrentAmount;
     private String mCurrentMessage;
 
-    @Inject
-    Navigator navigator;
-
     ZaloFriendsFactory zaloFriendsFactory;
 
     private void clearCurrentData() {
