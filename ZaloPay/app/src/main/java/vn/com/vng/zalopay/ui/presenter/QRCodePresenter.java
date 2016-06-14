@@ -152,7 +152,9 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             paymentWrapper.payWithToken(appId, zptranstoken);
             return true;
         } catch (JSONException e) {
-            Timber.e(e, "JSON error");
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
