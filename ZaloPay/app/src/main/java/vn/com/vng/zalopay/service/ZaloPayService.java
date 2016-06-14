@@ -2,7 +2,9 @@ package vn.com.vng.zalopay.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 
 import timber.log.Timber;
@@ -25,6 +27,7 @@ public class ZaloPayService extends Service {
 
     public ZaloPayService() {
         mWsConnection = new WsConnection(getApplicationContext());
+        mWsConnection.setHandler(mMessageHandler);
     }
 
     @Override
@@ -55,4 +58,22 @@ public class ZaloPayService extends Service {
                 .build();
         return mWsConnection.send(MessageType.Request.AUTHEN_LOGIN, loginMsg);
     }
+
+
+    protected final Handler mMessageHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MessageType.MSG_CONNECTED_TO_SERVER:
+
+                    break;
+                case MessageType.MSG_UI_SHOW_PUSH_NOTIFICATION:
+                    LogicMessages.PushNotificationInfo pushMsg = (LogicMessages.PushNotificationInfo) msg.obj;
+
+
+                    break;
+                default:
+            }
+        }
+    };
 }

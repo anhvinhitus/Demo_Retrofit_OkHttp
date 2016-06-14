@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.GeneratedMessage;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -17,11 +18,12 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.ws.parser.Parser;
 
 /**
  * Created by AnhHieu on 6/14/16.
  */
-public class WsConnection extends Connection {
+public class WsConnection extends Connection implements ConnectionListener {
 
     private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     private static final String TAG = "ConnectionManager";
@@ -35,13 +37,15 @@ public class WsConnection extends Connection {
 
     private NioEventLoopGroup group;
     private Channel mChannel;
-    private ChannelFuture cf;
+    private ChannelFuture channelFuture;
 
     private final Context context;
     private Handler messageHandler = null;
+    private final Parser parser;
 
-    public WsConnection(Context context) {
+    public WsConnection(Context context, Parser parser) {
         this.context = context;
+        this.parser = parser;
     }
 
     public void setHandler(Handler handler) {
@@ -67,15 +71,19 @@ public class WsConnection extends Connection {
                     Bootstrap bootstrap = new Bootstrap();
                     bootstrap.group(group);
                     bootstrap.channel(NioSocketChannel.class);
-                    bootstrap.handler(new ChannelFactory(context, messageHandler));
+                    bootstrap.handler(new ChannelFactory(context, WsConnection.this));
                     bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
                     bootstrap.option(ChannelOption.TCP_NODELAY, true);
                     bootstrap.option(ChannelOption.SO_TIMEOUT, 5000);
-                    cf = bootstrap.connect(new InetSocketAddress(HOST, PORT));
-                    mChannel = cf.sync().channel();
+                    channelFuture = bootstrap.connect(new InetSocketAddress(HOST, PORT));
+                    mChannel = channelFuture.sync().channel();
                     mState = Connection.State.Connecting;
+                } catch (InterruptedException e) {
+                    Timber.e(e, "InterruptedException");
+                    mState = Connection.State.Disconnected;
                 } catch (Exception e) {
                     Timber.e(e, "Connect ws Exception");
+                    mState = Connection.State.Disconnected;
                 }
             }
         }.start();
@@ -137,5 +145,32 @@ public class WsConnection extends Connection {
         }
 
         return false;
+    }
+
+
+    @Override
+    public void onConnected() {
+        Timber.d("onConnected");
+        mState = State.Connected;
+    }
+
+    @Override
+    public void onReceived(byte[] data) {
+        Timber.d("onReceived");
+        GeneratedMessage message = parser.parserMessage(data);
+        if (data != null) {
+        }
+    }
+
+    @Override
+    public void onError(int code, String message) {
+        Timber.d("onError %s", code);
+        mState = Connection.State.Disconnected;
+    }
+
+    @Override
+    public void onDisconnected(int code, String message) {
+        Timber.d("onDisconnected %s", code);
+        mState = Connection.State.Disconnected;
     }
 }
