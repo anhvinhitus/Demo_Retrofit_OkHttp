@@ -67,7 +67,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.signOutAndCleanData(mView.getActivity());
+                clearAndLogout();
             }
 
             @Override
@@ -144,7 +144,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.signOutAndCleanData(mView.getActivity());
+                    clearAndLogout();
                     return;
                 }
             }

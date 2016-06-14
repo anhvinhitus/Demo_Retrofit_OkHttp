@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public interface UserConfig {
 
-    boolean isClientActivated();
+    boolean hasCurrentUser();
 
     void setCurrentUser(User user);
 

@@ -42,7 +42,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroyView() {
-
+        mView = null;
     }
 
     @Override

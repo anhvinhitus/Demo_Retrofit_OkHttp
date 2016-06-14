@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -174,9 +175,10 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
             mReactRootView.unmountReactApplication();
             ViewParent view = mReactRootView.getParent();
             if (view != null) {
-                Timber.i("View: %s", view);
-                FrameLayout l = (FrameLayout)view;
-                l.removeAllViews();
+                if (view instanceof ViewGroup) {
+                    ViewGroup l = (ViewGroup) view;
+                    l.removeAllViews();
+                }
             }
             mReactRootView = null;
         }

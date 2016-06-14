@@ -70,4 +70,8 @@ public abstract class BaseAppPresenter {
             AndroidApplication.instance().releaseUserComponent();
         }
     }
+
+    protected void clearAndLogout() {
+        AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+    }
 }

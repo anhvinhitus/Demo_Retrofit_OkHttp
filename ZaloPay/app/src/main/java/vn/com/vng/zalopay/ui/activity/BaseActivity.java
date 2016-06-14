@@ -194,9 +194,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
-
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         showToast(R.string.exception_token_expired_message);
-        getAppComponent().userConfig().signOutAndCleanData(this);
+        getAppComponent().applicationSession().clearUserSession();
     }
 }

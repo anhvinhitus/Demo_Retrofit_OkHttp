@@ -75,7 +75,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.signOutAndCleanData(mView.getActivity());
+                clearAndLogout();
             }
 
             @Override
