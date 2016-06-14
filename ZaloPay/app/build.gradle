@@ -63,11 +63,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             debuggable false
 
             // removes all unused code - http://developer.android.com/tools/help/proguard.html
-            shrinkResources false
+            shrinkResources true
 
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
