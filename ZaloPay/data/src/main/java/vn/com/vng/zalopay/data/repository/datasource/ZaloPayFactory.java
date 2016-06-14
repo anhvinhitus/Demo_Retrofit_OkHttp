@@ -49,12 +49,12 @@ public class ZaloPayFactory {
 
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
-    private BalanceStore.Repository mBalanceRepository;
+    private BalanceStore.LocalStorage mBalanceLocalStorage;
     private BalanceStore.RequestService mBalanceRequestService;
 
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope,
-                          BalanceStore.Repository balanceRepository,
+                          BalanceStore.LocalStorage balanceLocalStorage,
                           BalanceStore.RequestService balanceRequestService,
                           int payAppId, EventBus eventBus) {
 
@@ -66,7 +66,7 @@ public class ZaloPayFactory {
         this.zaloPayService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
-        this.mBalanceRepository = balanceRepository;
+        this.mBalanceLocalStorage = balanceLocalStorage;
         this.mBalanceRequestService = balanceRequestService;
         this.payAppId = payAppId;
 
@@ -100,7 +100,7 @@ public class ZaloPayFactory {
 
     public Observable<Long> balanceServer() {
         return mBalanceRequestService.balance(user.uid, user.accesstoken)
-                .doOnNext(response -> mBalanceRepository.putBalance(response.zpwbalance))
+                .doOnNext(response -> mBalanceLocalStorage.putBalance(response.zpwbalance))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance)
                 .doOnNext(aLong -> eventBus.post(new ChangeBalanceEvent(aLong)))
                 ;
@@ -119,7 +119,7 @@ public class ZaloPayFactory {
     }
 
     private Observable<Long> balanceLocal() {
-        return mBalanceRepository.getBalance();
+        return mBalanceLocalStorage.getBalance();
     }
 
     public Observable<Long> balance() {
