@@ -65,7 +65,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
         Timber.tag(TAG);
         Timber.d("verifyUser");
 
-        if (userConfig.isClientActivated()) {
+        if (userConfig.hasCurrentUser()) {
             mView.showLoading();
 
             User user = userConfig.getCurrentUser();

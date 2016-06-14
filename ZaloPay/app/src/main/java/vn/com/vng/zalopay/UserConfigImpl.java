@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.utils.JsonUtil;
 
 /**
  * Created by AnhHieu on 4/26/16.
+ * Implementation of UserConfig
  */
 public class UserConfigImpl implements UserConfig {
 
@@ -46,7 +47,7 @@ public class UserConfigImpl implements UserConfig {
     }
 
 
-    public boolean isClientActivated() {
+    public boolean hasCurrentUser() {
         synchronized (sync) {
             return currentUser != null;
         }
@@ -65,7 +66,9 @@ public class UserConfigImpl implements UserConfig {
     }
 
     public void saveConfig(User user) {
-        if (user == null || TextUtils.isEmpty(user.accesstoken)) return;
+        if (user == null || TextUtils.isEmpty(user.accesstoken)) {
+            return;
+        }
 
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -143,7 +146,7 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public String getUserId() {
-        if (isClientActivated()) {
+        if (hasCurrentUser()) {
             return getCurrentUser().uid;
         }
         return "";
@@ -155,9 +158,9 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_ZALO_ID, zaloId);
         editor.apply();
 
-        Timber.d("save UserInfo isClientActivated %s", isClientActivated());
+        Timber.d("save UserInfo hasCurrentUser %s", hasCurrentUser());
 
-        if (isClientActivated()) {
+        if (hasCurrentUser()) {
             currentUser.zaloId = zaloId;
         }
     }
@@ -174,9 +177,9 @@ public class UserConfigImpl implements UserConfig {
 //        editor.putLong(Constants.PREF_USER_ID, uid);
         editor.apply();
 
-        Timber.d("save UserInfo isClientActivated %s", isClientActivated());
+        Timber.d("save UserInfo hasCurrentUser %s", hasCurrentUser());
 
-        if (isClientActivated()) {
+        if (hasCurrentUser()) {
             currentUser.avatar = avatar;
             currentUser.dname = displayName;
             currentUser.birthDate = birthData;
