@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.cache;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 
 /**
@@ -22,7 +23,7 @@ public class BalanceRepository extends SqlBaseScopeImpl implements BalanceContra
 
     @Override
     public Observable<Long> getBalance() {
-        return RepositoryHelper.makeObservable(() -> {
+        return ObservableHelper.makeObservable(() -> {
             String balance = getDataManifest(Constants.MANIF_BALANCE);
             Long ret = 0l;
             try {

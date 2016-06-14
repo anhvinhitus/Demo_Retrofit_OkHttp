@@ -4,8 +4,8 @@ import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
@@ -43,14 +43,14 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistories() {
-        return RepositoryHelper.makeObservable(() -> listTransHistories(Integer.MAX_VALUE))
+        return ObservableHelper.makeObservable(() -> listTransHistories(Integer.MAX_VALUE))
                 .doOnNext(transHistoryEntities -> Timber.d("transactionHistories %s", transHistoryEntities.size()))
                 ;
     }
 
     @Override
     public Observable<List<TransHistoryEntity>> transactionHistories(int limit) {
-        return RepositoryHelper.makeObservable(() -> listTransHistories(limit));
+        return ObservableHelper.makeObservable(() -> listTransHistories(limit));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.cache;
+package vn.com.vng.zalopay.data.cache.helper;
 
 import java.util.concurrent.Callable;
 
@@ -9,7 +9,7 @@ import rx.Subscriber;
  * Created by huuhoa on 6/14/16.
  * Static helper for repository implementations
  */
-public class RepositoryHelper {
+public class ObservableHelper {
     public static <T> Observable<T> makeObservable(final Callable<T> func) {
         return Observable.create(
                 new Observable.OnSubscribe<T>() {

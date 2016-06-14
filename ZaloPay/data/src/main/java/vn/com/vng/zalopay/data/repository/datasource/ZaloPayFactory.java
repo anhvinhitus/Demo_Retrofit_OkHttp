@@ -7,7 +7,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -21,6 +20,7 @@ import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.BalanceContract;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -104,10 +104,9 @@ public class ZaloPayFactory {
     }
 
     public Observable<Boolean> transactionUpdate() {
-        return makeObservable(() -> {
+        return ObservableHelper.makeObservable(() -> {
             // update balance
-            balanceServer()
-                    .subscribe(new DefaultSubscriber<>());
+            balanceServer().subscribe(new DefaultSubscriber<>());
 
             //update transaction
             reloadListTransactionSync(30, null);
@@ -167,23 +166,4 @@ public class ZaloPayFactory {
             sqlZaloPayScope.write(response.data);
         }
     }
-
-    private <T> Observable<T> makeObservable(final Callable<T> func) {
-        return Observable.create(
-                new Observable.OnSubscribe<T>() {
-                    @Override
-                    public void call(Subscriber<? super T> subscriber) {
-                        try {
-                            subscriber.onNext(func.call());
-                            subscriber.onCompleted();
-                        } catch (Exception ex) {
-                            try {
-                                subscriber.onError(ex);
-                            } catch (Exception ex2) {
-                            }
-                        }
-                    }
-                });
-    }
-
 }
