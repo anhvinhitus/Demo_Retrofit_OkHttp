@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -82,11 +81,11 @@ public class ZaloPayFactory {
 
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal() {
-        return sqlZaloPayScope.transactionHistorys();
+        return sqlZaloPayScope.transactionHistories();
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int limit) {
-        return sqlZaloPayScope.transactionHistorys(limit);
+        return sqlZaloPayScope.transactionHistories(limit);
     }
 
 

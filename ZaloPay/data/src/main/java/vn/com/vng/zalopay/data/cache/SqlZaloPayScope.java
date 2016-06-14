@@ -16,11 +16,11 @@ public interface SqlZaloPayScope extends SqlBaseScope {
 
     void write(TransHistoryEntity val);
 
-    Observable<List<TransHistoryEntity>> transactionHistorys();
+    Observable<List<TransHistoryEntity>> transactionHistories();
 
-    Observable<List<TransHistoryEntity>> transactionHistorys(int limit);
+    Observable<List<TransHistoryEntity>> transactionHistories(int limit);
 
-    List<TransHistoryEntity> listTransHistorys(int limit);
+    List<TransHistoryEntity> listTransHistories(int limit);
 
     boolean isHaveTransactionInDb();
 
