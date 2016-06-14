@@ -7,9 +7,9 @@ import vn.com.vng.zalopay.data.api.response.BalanceResponse;
 
 /**
  * Created by huuhoa on 6/14/16.
- * BalanceContract interface
+ * BalanceStore interface
  */
-public interface BalanceContract {
+public interface BalanceStore {
     interface Repository {
         void putBalance(long value);
         Observable<Long> getBalance();

@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayIAPEntityDataMapper;
-import vn.com.vng.zalopay.data.cache.BalanceContract;
+import vn.com.vng.zalopay.data.cache.BalanceStore;
 import vn.com.vng.zalopay.data.cache.BalanceRepository;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
@@ -107,7 +107,7 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    BalanceContract.Repository provideBalanceRepository(@Named("daosession") DaoSession session) {
+    BalanceStore.Repository provideBalanceRepository(@Named("daosession") DaoSession session) {
         return new BalanceRepository(session);
     }
 
@@ -115,8 +115,8 @@ public class UserControllerModule {
     @Provides
     ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service,
                                          User user, SqlZaloPayScope sqlZaloPayScope,
-                                         BalanceContract.Repository balanceRepository,
-                                         BalanceContract.RequestService balanceRequestService,
+                                         BalanceStore.Repository balanceRepository,
+                                         BalanceStore.RequestService balanceRequestService,
                                          @Named("payAppId") int payAppId, EventBus eventBus) {
         return new ZaloPayFactory(context, service, user, sqlZaloPayScope, balanceRepository, balanceRequestService, payAppId, eventBus);
     }

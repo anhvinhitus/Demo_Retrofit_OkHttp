@@ -10,7 +10,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
  * Created by huuhoa on 6/14/16.
  * Implementation for balance repository
  */
-public class BalanceRepository extends SqlBaseScopeImpl implements BalanceContract.Repository {
+public class BalanceRepository extends SqlBaseScopeImpl implements BalanceStore.Repository {
     public BalanceRepository(DaoSession daoSession) {
         super(daoSession);
     }

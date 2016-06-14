@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
-import vn.com.vng.zalopay.data.cache.BalanceContract;
+import vn.com.vng.zalopay.data.cache.BalanceStore;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -49,13 +49,13 @@ public class ZaloPayFactory {
 
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
-    private BalanceContract.Repository mBalanceRepository;
-    private BalanceContract.RequestService mBalanceRequestService;
+    private BalanceStore.Repository mBalanceRepository;
+    private BalanceStore.RequestService mBalanceRequestService;
 
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope,
-                          BalanceContract.Repository balanceRepository,
-                          BalanceContract.RequestService balanceRequestService,
+                          BalanceStore.Repository balanceRepository,
+                          BalanceStore.RequestService balanceRequestService,
                           int payAppId, EventBus eventBus) {
 
         if (context == null || service == null) {
