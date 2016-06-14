@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
+import vn.com.vng.zalopay.data.cache.BalanceContract;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
@@ -28,6 +29,12 @@ public class ApiUserModule {
     @UserScope
     ZaloPayService provideZaloPayService(@Named("retrofit") Retrofit retrofit) {
         return retrofit.create(ZaloPayService.class);
+    }
+
+    @Provides
+    @UserScope
+    BalanceContract.RequestService provideBalanceRequestService(@Named("retrofit") Retrofit retrofit) {
+        return retrofit.create(BalanceContract.RequestService.class);
     }
 
     @Provides

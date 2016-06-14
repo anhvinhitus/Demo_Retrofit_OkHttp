@@ -50,10 +50,12 @@ public class ZaloPayFactory {
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
     private BalanceContract.Repository mBalanceRepository;
+    private BalanceContract.RequestService mBalanceRequestService;
 
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope,
                           BalanceContract.Repository balanceRepository,
+                          BalanceContract.RequestService balanceRequestService,
                           int payAppId, EventBus eventBus) {
 
         if (context == null || service == null) {
@@ -65,6 +67,7 @@ public class ZaloPayFactory {
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
         this.mBalanceRepository = balanceRepository;
+        this.mBalanceRequestService = balanceRequestService;
         this.payAppId = payAppId;
 
         this.eventBus = eventBus;
@@ -96,7 +99,7 @@ public class ZaloPayFactory {
 
 
     public Observable<Long> balanceServer() {
-        return zaloPayService.balance(user.uid, user.accesstoken)
+        return mBalanceRequestService.balance(user.uid, user.accesstoken)
                 .doOnNext(response -> mBalanceRepository.putBalance(response.zpwbalance))
                 .map(balanceResponse1 -> balanceResponse1.zpwbalance)
                 .doOnNext(aLong -> eventBus.post(new ChangeBalanceEvent(aLong)))
