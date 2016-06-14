@@ -131,7 +131,7 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
 
             @Override
             public void onResponseTokenInvalid() {
-                userConfig.signOutAndCleanData(PreProfileActivity.this);
+                getAppComponent().applicationSession().clearUserSession();
             }
 
             @Override

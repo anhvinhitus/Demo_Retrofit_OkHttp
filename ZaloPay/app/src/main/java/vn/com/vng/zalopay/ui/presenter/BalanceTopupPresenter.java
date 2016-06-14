@@ -82,7 +82,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
                 if (mView == null) {
                     return;
                 }
-                userConfig.signOutAndCleanData(mView.getActivity());
+                clearAndLogout();
                 mView.onTokenInvalid();
             }
 
@@ -165,7 +165,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             Timber.e(e, "onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.signOutAndCleanData(mView.getActivity());
+                    clearAndLogout();
                     return;
                 }
             }

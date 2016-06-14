@@ -197,6 +197,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
 
-        getAppComponent().userConfig().signOutAndCleanData(this);
+        getAppComponent().applicationSession().clearUserSession();
     }
 }

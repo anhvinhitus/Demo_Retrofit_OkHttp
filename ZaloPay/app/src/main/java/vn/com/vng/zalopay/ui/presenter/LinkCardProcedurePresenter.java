@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
-import javax.inject.Inject;
-
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -15,7 +13,6 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardProcedureView;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
@@ -33,9 +30,6 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
     private PaymentWrapper paymentWrapper;
 
     final User user;
-
-    @Inject
-    Navigator navigator;
 
     public LinkCardProcedurePresenter(User user) {
         this.user = user;
@@ -73,7 +67,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.signOutAndCleanData(mView.getActivity());
+                clearAndLogout();
             }
 
             @Override
@@ -150,7 +144,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.signOutAndCleanData(mView.getActivity());
+                    clearAndLogout();
                     return;
                 }
             }

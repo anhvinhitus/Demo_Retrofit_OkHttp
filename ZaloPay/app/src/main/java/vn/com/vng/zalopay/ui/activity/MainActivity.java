@@ -121,6 +121,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     protected void onDestroy() {
+        Timber.d("destroy main activity");
+
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
         GlobalData.initApplication(null);
@@ -199,7 +201,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 startQRCodeActivity();
                 break;
             case MenuItemUtil.SIGOUT_ID:
-                getAppComponent().userConfig().signOutAndCleanData(this);
+                getAppComponent().applicationSession().clearUserSession();
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, "TransactionLogs");

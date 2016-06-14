@@ -41,6 +41,7 @@ public class Navigator {
         //empty
     }
 
+
     public void startLoginActivity(Context context) {
         startLoginActivity(context, false);
     }

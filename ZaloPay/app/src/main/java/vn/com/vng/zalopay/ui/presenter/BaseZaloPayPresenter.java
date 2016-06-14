@@ -31,5 +31,4 @@ public abstract class BaseZaloPayPresenter extends BaseUserPresenter {
     protected void destroy() {
         unsubscribe();
     }
-
 }
