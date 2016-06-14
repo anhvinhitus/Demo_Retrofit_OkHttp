@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 import vn.com.vng.zalopay.domain.model.User;
@@ -60,6 +61,7 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
                         .getTransactionLogDao()
                         .queryBuilder()
                         .limit(limit)
+                        .orderDesc(TransactionLogDao.Properties.Reqdate)
                         .list());
     }
 
