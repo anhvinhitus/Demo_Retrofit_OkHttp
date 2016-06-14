@@ -22,6 +22,15 @@ public class ZaloFriend extends AbstractData {
     private int userGender;
     private boolean usingApp;
 
+    public ZaloFriend() {
+        this.userId = -1;
+        this.userName = "";
+        this.displayName = "";
+        this.avatar = "";
+        this.userGender = 1;
+        this.usingApp = false;
+    }
+
     public ZaloFriend(long userId, String userName, String displayName, String avatar, int userGender, boolean usingApp) {
         this.userId = userId;
         this.userName = userName;
@@ -99,5 +108,29 @@ public class ZaloFriend extends AbstractData {
 
     public boolean isUsingApp() {
         return usingApp;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setUserGender(int userGender) {
+        this.userGender = userGender;
+    }
+
+    public void setUsingApp(boolean usingApp) {
+        this.usingApp = usingApp;
     }
 }

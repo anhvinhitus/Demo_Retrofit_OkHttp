@@ -38,4 +38,8 @@ public class Constants {
     public static final String STORAGE_KEY_ZALO_GOOGLEID = "STORAGE_KEY_ZALO_GOOGLEID";
 
     /* ZaloProfile Preferences end */
+
+    public static final String ZALOPAYID = "zaloPayId";
+    public static final String AMOUNT = "amount";
+    public static final String MESSAGE = "message";
 }

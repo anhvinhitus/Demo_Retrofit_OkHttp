@@ -75,7 +75,7 @@ public class PaymentWrapper {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
 
-        callPayAPI(paymentInfo, forcedPaymentChannel);
+        callPayAPI(paymentInfo, forcedPaymentChannel, mUserInfo);
     }
 
     public void payWithDetail(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
@@ -197,6 +197,16 @@ public class PaymentWrapper {
             return;
         }
         ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, zpPaymentListener);
+    }
+
+    private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel, UserInfo userInfo) {
+        EPaymentChannel forcedPaymentChannel = paymentChannel;
+        int profileLevel = getUserProfileLevel();
+        String permissionsStr = getUserPermission();
+        if (profileLevel < 0 || TextUtils.isEmpty(permissionsStr)) {
+            return;
+        }
+        ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, userInfo, zpPaymentListener);
     }
 
     private int getUserProfileLevel() {

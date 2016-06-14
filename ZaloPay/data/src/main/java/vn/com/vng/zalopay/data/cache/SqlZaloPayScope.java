@@ -4,6 +4,7 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 
 /**
@@ -38,4 +39,10 @@ public interface SqlZaloPayScope extends SqlBaseScope {
     List<ZaloFriend> listZaloFriend(int limit);
 
     boolean isHaveZaloFriendDb();
+
+    void writeTransferRecent(TransferRecent val);
+
+    List<TransferRecent> listTransferRecent();
+
+    List<TransferRecent> listTransferRecent(int limit);
 }

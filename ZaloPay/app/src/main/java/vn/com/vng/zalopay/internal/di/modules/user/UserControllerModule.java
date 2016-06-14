@@ -43,6 +43,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.service.PaymentServiceImpl;
+import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -137,4 +138,11 @@ public class UserControllerModule {
     IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, User user) {
         return new PaymentServiceImpl(zaloPayIAPRepository, user);
     }
+
+    @UserScope
+    @Provides
+    ZaloFriendsFactory providesZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope) {
+        return new ZaloFriendsFactory(sqlZaloPayScope);
+    }
+
 }

@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
+import vn.com.vng.zalopay.transfer.models.TransferRecent;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
@@ -130,6 +131,10 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @OnClick(R.id.btnContinue)
     public void onClickContinute(View view) {
+        if (userMapZaloAndZaloPay == null || userMapZaloAndZaloPay.getZaloId() <= 0) {
+            showToast("Thông tin tài khoản cần chuyển tiền không chính xác");
+            return;
+        }
 //        if (isValidAmount()) {
 //            showAmountError();
 //        } else {
@@ -146,13 +151,13 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         if (zaloFriend == null) {
             return;
         }
-        String phoneNumber = "";
-        String appUser = "";
-        if (userMapZaloAndZaloPay != null) {
-            appUser = userMapZaloAndZaloPay.getZaloPayId();
-            phoneNumber = userMapZaloAndZaloPay.getPhonenumber();
-        }
-        mPresenter.transferMoney(mAmount, edtTransferMsg.getText().toString(), appUser, zaloFriend.getDisplayName(), zaloFriend.getAvatar(), phoneNumber);
+//        String phoneNumber = "";
+//        String appUser = "";
+//        if (userMapZaloAndZaloPay != null) {
+//            appUser = userMapZaloAndZaloPay.getZaloPayId();
+//            phoneNumber = userMapZaloAndZaloPay.getPhonenumber();
+//        }
+        mPresenter.transferMoney(mAmount, edtTransferMsg.getText().toString(), zaloFriend, userMapZaloAndZaloPay);
     }
 
     public TransferFragment() {
@@ -182,6 +187,21 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             zaloFriend = getArguments().getParcelable(Constants.ARG_ZALO_FRIEND);
             mMessage = getArguments().getString(Constants.ARG_MESSAGE);
             mAmount = getArguments().getLong(Constants.ARG_AMOUNT);
+            TransferRecent transferRecent = getArguments().getParcelable(Constants.ARG_TRANSFERRECENT);
+            if (transferRecent != null && zaloFriend == null) {
+                zaloFriend = new ZaloFriend();
+                zaloFriend.setUserId(transferRecent.getUserId());
+                zaloFriend.setDisplayName(transferRecent.getDisplayName());
+                zaloFriend.setUserName(transferRecent.getUserName());
+                zaloFriend.setAvatar(transferRecent.getAvatar());
+                zaloFriend.setUserGender(transferRecent.getUserGender());
+                zaloFriend.setUsingApp(transferRecent.isUsingApp());
+
+                userMapZaloAndZaloPay = new MappingZaloAndZaloPay(transferRecent.getUserId(), transferRecent.getZaloPayId(), transferRecent.getPhoneNumber());
+
+                mAmount = transferRecent.getAmount();
+                mMessage = transferRecent.getMessage();
+            }
         }
     }
 

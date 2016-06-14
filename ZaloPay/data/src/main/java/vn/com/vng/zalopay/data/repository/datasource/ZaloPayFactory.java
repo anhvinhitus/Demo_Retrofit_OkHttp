@@ -163,7 +163,6 @@ public class ZaloPayFactory {
         }
     }
 
-
     private <T> Observable<T> makeObservable(final Callable<T> func) {
         return Observable.create(
                 new Observable.OnSubscribe<T>() {
@@ -182,19 +181,4 @@ public class ZaloPayFactory {
                 });
     }
 
-    public void reloadZaloFriend(Subscriber<List<ZaloFriend>> subscriber) {
-        if (sqlZaloPayScope.isHaveZaloFriendDb()) {
-            long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
-            //check xem moi lay thi thoi
-            if (false) {
-                return;
-            }
-        }
-        getFriendListServer(0, 20, subscriber);
-    }
-
-    private void getFriendListServer(final int pageSize, final int offset, final Subscriber<List<ZaloFriend>> subscriber) {
-        Timber.d("getFriendListServer pageSize:%s ", pageSize);
-        Timber.d("getFriendListServer offset:%s ", offset);
-    }
 }

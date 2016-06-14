@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 /** 
  * DAO for table "ZALO_FRIEND".
 */
-public class ZaloFriendDao extends AbstractDao<ZaloFriend, Void> {
+public class ZaloFriendDao extends AbstractDao<ZaloFriend, Long> {
 
     public static final String TABLENAME = "ZALO_FRIEND";
 
@@ -23,13 +23,13 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Void> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property UserId = new Property(0, long.class, "userId", false, "USER_ID");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserName = new Property(1, String.class, "userName", false, "USER_NAME");
-        public final static Property DisplayName = new Property(2, Integer.class, "displayName", false, "DISPLAY_NAME");
+        public final static Property DisplayName = new Property(2, String.class, "displayName", false, "DISPLAY_NAME");
         public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
-        public final static Property UserGender = new Property(4, String.class, "userGender", false, "USER_GENDER");
-        public final static Property Birthday = new Property(5, Integer.class, "birthday", false, "BIRTHDAY");
-        public final static Property UsingApp = new Property(6, String.class, "usingApp", false, "USING_APP");
+        public final static Property UserGender = new Property(4, Integer.class, "userGender", false, "USER_GENDER");
+        public final static Property Birthday = new Property(5, String.class, "birthday", false, "BIRTHDAY");
+        public final static Property UsingApp = new Property(6, Boolean.class, "usingApp", false, "USING_APP");
     };
 
 
@@ -45,13 +45,13 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Void> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ZALO_FRIEND\" (" + //
-                "\"USER_ID\" INTEGER NOT NULL UNIQUE ," + // 0: userId
+                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"USER_NAME\" TEXT," + // 1: userName
-                "\"DISPLAY_NAME\" INTEGER," + // 2: displayName
+                "\"DISPLAY_NAME\" TEXT," + // 2: displayName
                 "\"AVATAR\" TEXT," + // 3: avatar
-                "\"USER_GENDER\" TEXT," + // 4: userGender
-                "\"BIRTHDAY\" INTEGER," + // 5: birthday
-                "\"USING_APP\" TEXT);"); // 6: usingApp
+                "\"USER_GENDER\" INTEGER," + // 4: userGender
+                "\"BIRTHDAY\" TEXT," + // 5: birthday
+                "\"USING_APP\" INTEGER);"); // 6: usingApp
     }
 
     /** Drops the underlying database table. */
@@ -64,16 +64,20 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Void> {
     @Override
     protected void bindValues(SQLiteStatement stmt, ZaloFriend entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getUserId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
  
-        Integer displayName = entity.getDisplayName();
+        String displayName = entity.getDisplayName();
         if (displayName != null) {
-            stmt.bindLong(3, displayName);
+            stmt.bindString(3, displayName);
         }
  
         String avatar = entity.getAvatar();
@@ -81,39 +85,39 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Void> {
             stmt.bindString(4, avatar);
         }
  
-        String userGender = entity.getUserGender();
+        Integer userGender = entity.getUserGender();
         if (userGender != null) {
-            stmt.bindString(5, userGender);
+            stmt.bindLong(5, userGender);
         }
  
-        Integer birthday = entity.getBirthday();
+        String birthday = entity.getBirthday();
         if (birthday != null) {
-            stmt.bindLong(6, birthday);
+            stmt.bindString(6, birthday);
         }
  
-        String usingApp = entity.getUsingApp();
+        Boolean usingApp = entity.getUsingApp();
         if (usingApp != null) {
-            stmt.bindString(7, usingApp);
+            stmt.bindLong(7, usingApp ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public ZaloFriend readEntity(Cursor cursor, int offset) {
         ZaloFriend entity = new ZaloFriend( //
-            cursor.getLong(offset + 0), // userId
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // userName
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // displayName
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // displayName
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // userGender
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // birthday
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // usingApp
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // userGender
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // birthday
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // usingApp
         );
         return entity;
     }
@@ -121,26 +125,30 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Void> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, ZaloFriend entity, int offset) {
-        entity.setUserId(cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDisplayName(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setDisplayName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setUserGender(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setBirthday(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setUsingApp(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setUserGender(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
+        entity.setBirthday(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setUsingApp(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
      }
     
     /** @inheritdoc */
     @Override
-    protected Void updateKeyAfterInsert(ZaloFriend entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected Long updateKeyAfterInsert(ZaloFriend entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     /** @inheritdoc */
     @Override
-    public Void getKey(ZaloFriend entity) {
-        return null;
+    public Long getKey(ZaloFriend entity) {
+        if(entity != null) {
+            return entity.getId();
+        } else {
+            return null;
+        }
     }
 
     /** @inheritdoc */

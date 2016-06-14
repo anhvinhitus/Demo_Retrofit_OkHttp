@@ -55,7 +55,7 @@ public class DummyContent {
     }
 
     private static TransferRecent createTransferRecent(int position) {
-        return new TransferRecent(position, "userName" + position, "displayName" + position, "http://s240.avatar.talk.zdn.vn/b/a/2/b/1/240/fc04313a9e793ace59ed405e00091682.jpg", "Name", "01/01/1990", "true", "0988888888", 1);
+        return new TransferRecent(position, ""+position, "userName" + position, "displayName" + position, "http://s240.avatar.talk.zdn.vn/b/a/2/b/1/240/fc04313a9e793ace59ed405e00091682.jpg", 1, "01/01/1990", true, "0988888888", 1, 1000000, "");
     }
 
     private static String makeDetails(int position) {

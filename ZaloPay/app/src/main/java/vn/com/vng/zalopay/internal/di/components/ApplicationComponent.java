@@ -61,4 +61,5 @@ public interface ApplicationComponent {
     void inject(LoginZaloActivity a);
 
     void inject(DownloadService service);
+
 }

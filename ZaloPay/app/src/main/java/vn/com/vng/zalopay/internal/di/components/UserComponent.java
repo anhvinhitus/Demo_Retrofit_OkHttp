@@ -25,6 +25,8 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
@@ -110,4 +112,8 @@ public interface UserComponent {
     void inject(PreProfileActivity a);
 
     void inject(RecoveryPinActivity a);
+
+    void inject(TransferRecentContentProviderImpl contentProvider);
+
+    void inject(TransferHomeActivity activity);
 }

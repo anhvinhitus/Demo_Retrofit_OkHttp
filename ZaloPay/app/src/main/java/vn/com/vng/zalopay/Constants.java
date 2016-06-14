@@ -27,6 +27,7 @@ public class Constants {
     public static final String ARG_PAYEE = "Payee";
     public static final String ARG_ZALO_FRIEND = "zalofriend";
     public static final String ARG_MESSAGE = "message";
+    public static final String ARG_TRANSFERRECENT = "TransferRecent";
 
     //DATA MANIFESTS DATABASE
     public static final String MANIF_BALANCE = "manif_balance";
@@ -43,4 +44,6 @@ public class Constants {
     public static final String PROFILE_TYPE = "profile_type";
     public static final int PRE_PROFILE_TYPE = 1;
     public static final int PIN_PROFILE_TYPE = 2;
+
+    public static final int REQUEST_CODE_TRANSFER = 124;
 }
