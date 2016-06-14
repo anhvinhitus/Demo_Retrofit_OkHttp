@@ -49,7 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="60dp"
-            android:background="@color/separate" />
+            android:background="@color/separate"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layoutTransferATMVisa"
@@ -57,7 +58,8 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -90,20 +92,28 @@
             android:background="@color/separate" />
     </LinearLayout>
 
-    <TextView
-        style="@style/TextView.Group.Title"
+    <LinearLayout
+        android:id="@+id/tvTileTransactionRecent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing.medium.t"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium.l"
-        android:text="@string/transaction_recent"
-        android:textAllCaps="true" />
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/separate" />
+        <TextView
+            style="@style/TextView.Group.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing.medium.t"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.medium.l"
+            android:text="@string/transaction_recent"
+            android:textAllCaps="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/separate" />
+    </LinearLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

@@ -26,12 +26,26 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
 
     private final Context mContext;
     private final List<TransferRecent> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnTransferRecentItemListener mListener;
 
-    public TransferRecentRecyclerViewAdapter(Context context, List<TransferRecent> items, OnListFragmentInteractionListener listener) {
+    public interface OnTransferRecentItemListener {
+        // TODO: Update argument type and name
+        void onItemClick(TransferRecent item);
+    }
+
+    public TransferRecentRecyclerViewAdapter(Context context, List<TransferRecent> items, OnTransferRecentItemListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
+    }
+
+    public void setData(List<TransferRecent> items) {
+        mValues.clear();
+        if (items == null || items.size() <= 0) {
+            return;
+        }
+        mValues.addAll(items);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -66,7 +80,7 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onItemClick(holder.mItem);
                 }
             }
         });

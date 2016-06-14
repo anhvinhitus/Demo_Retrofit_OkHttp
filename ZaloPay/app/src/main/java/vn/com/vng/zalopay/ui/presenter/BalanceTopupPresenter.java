@@ -10,7 +10,6 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.NetworkError;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -29,7 +28,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
     private Subscription subscriptionGetOrder;
 
-    private PaymentWrapper paymentWrapper;
+    private final PaymentWrapper paymentWrapper;
 
     public BalanceTopupPresenter() {
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
@@ -126,22 +125,36 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private void showLoadingView() {
+        if (mView == null) {
+            return;
+        }
+
         mView.showLoading();
     }
 
     private void hideLoadingView() {
+        if (mView == null) {
+            return;
+        }
+
         mView.hideLoading();
     }
 
     private void showErrorView(String message) {
+        if (mView == null) {
+            return;
+        }
+
         mView.showError(message);
     }
 
-    private void createWalletorder(long amount) {
+    private void createWalletOrder(long amount) {
         if (userConfig == null || userConfig.getCurrentUser() == null) {
             return;
         }
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString(), userConfig.getCurrentUser().uid)
+
+        String description = mView.getContext().getString(R.string.deposit);
+        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString(), userConfig.getCurrentUser().uid, description)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
@@ -193,7 +206,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             showErrorView("Số tiền phải là bội của 10.000 VND");
             return;
         }
-        createWalletorder(amount);
+        createWalletOrder(amount);
     }
 
 }

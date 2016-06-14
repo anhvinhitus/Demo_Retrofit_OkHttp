@@ -6,21 +6,29 @@ package vn.com.vng.zalopay.data.cache.model;
  */
 public class TransferRecent {
 
-    private long userId;
+    private Long id;
+    private String zaloPayId;
     private String userName;
-    private Integer displayName;
+    private String displayName;
     private String avatar;
-    private String userGender;
-    private Integer birthday;
-    private String usingApp;
+    private Integer userGender;
+    private String birthday;
+    private Boolean usingApp;
     private String phoneNumber;
     private Integer transferType;
+    private Long amount;
+    private String message;
 
     public TransferRecent() {
     }
 
-    public TransferRecent(long userId, String userName, Integer displayName, String avatar, String userGender, Integer birthday, String usingApp, String phoneNumber, Integer transferType) {
-        this.userId = userId;
+    public TransferRecent(Long id) {
+        this.id = id;
+    }
+
+    public TransferRecent(Long id, String zaloPayId, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String phoneNumber, Integer transferType, Long amount, String message) {
+        this.id = id;
+        this.zaloPayId = zaloPayId;
         this.userName = userName;
         this.displayName = displayName;
         this.avatar = avatar;
@@ -29,14 +37,24 @@ public class TransferRecent {
         this.usingApp = usingApp;
         this.phoneNumber = phoneNumber;
         this.transferType = transferType;
+        this.amount = amount;
+        this.message = message;
     }
 
-    public long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getZaloPayId() {
+        return zaloPayId;
+    }
+
+    public void setZaloPayId(String zaloPayId) {
+        this.zaloPayId = zaloPayId;
     }
 
     public String getUserName() {
@@ -47,11 +65,11 @@ public class TransferRecent {
         this.userName = userName;
     }
 
-    public Integer getDisplayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public void setDisplayName(Integer displayName) {
+    public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
@@ -63,27 +81,27 @@ public class TransferRecent {
         this.avatar = avatar;
     }
 
-    public String getUserGender() {
+    public Integer getUserGender() {
         return userGender;
     }
 
-    public void setUserGender(String userGender) {
+    public void setUserGender(Integer userGender) {
         this.userGender = userGender;
     }
 
-    public Integer getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Integer birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
-    public String getUsingApp() {
+    public Boolean getUsingApp() {
         return usingApp;
     }
 
-    public void setUsingApp(String usingApp) {
+    public void setUsingApp(Boolean usingApp) {
         this.usingApp = usingApp;
     }
 
@@ -101,6 +119,22 @@ public class TransferRecent {
 
     public void setTransferType(Integer transferType) {
         this.transferType = transferType;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }

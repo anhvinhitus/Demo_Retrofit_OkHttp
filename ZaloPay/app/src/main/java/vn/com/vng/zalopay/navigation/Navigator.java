@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
+import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
@@ -170,14 +171,20 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startZaloContactActivity(Activity activity) {
-        Intent intent = new Intent(activity, ZaloContactActivity.class);
-        activity.startActivity(intent);
+    public void startZaloContactActivity(TransferHomeFragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), ZaloContactActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
     }
 
     public void startTransferActivity(ZaloContactFragment fragment, Bundle bundle) {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtras(bundle);
-        fragment.startActivityForResult(intent, ZaloContactFragment.REQUEST_CODE);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    public void startTrasferActivity(TransferHomeFragment fragment, Bundle bundle) {
+        Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
+        intent.putExtras(bundle);
+        fragment.startActivity(intent);
     }
 }

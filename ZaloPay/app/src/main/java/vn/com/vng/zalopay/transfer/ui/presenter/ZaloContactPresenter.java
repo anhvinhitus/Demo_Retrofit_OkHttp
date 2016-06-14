@@ -14,7 +14,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -30,6 +33,9 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     @Inject
     Navigator navigator;
+
+    @Inject
+    ZaloFriendsFactory zaloFriendsFactory;
 
     public interface IZaloFriendListener {
         void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends);
@@ -74,13 +80,16 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                     JSONArray data = arg0.getJSONArray("result");
 //                    Timber.d("getFriendList, data: %s", data.toString());
                     if (data != null && data.length() >= OFFSET_GET_FRIEND) {
-                        mPageIndex++;
+                        mPageIndex+=OFFSET_GET_FRIEND;
                         getFriendList(mPageIndex, listener);
                     }
                     List<ZaloFriend> zaloFriends = zaloFriends(data);
+                    Timber.d("getFriendList, zaloFriends.size: %s", zaloFriends.size());
                     if (listener != null) {
                         listener.onGetZaloFriendSuccess(zaloFriends);
                     }
+                    //save Zalo Friend list to DB
+                    saveZaloFriends(zaloFriends);
                 } catch (JSONException e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
@@ -98,7 +107,6 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         }
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
-                Timber.d("zaloFriends index: %s", i);
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 ZaloFriend zaloFriend = new ZaloFriend(jsonObject);
                 if (zaloFriend.getUserId() > 0 && zaloFriend.isUsingApp()) {
@@ -114,4 +122,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         return zaloFriends;
     }
 
+    private void saveZaloFriends(List<ZaloFriend> zaloFriends) {
+        zaloFriendsFactory.insertZaloFriends(zaloFriends);
+    }
 }

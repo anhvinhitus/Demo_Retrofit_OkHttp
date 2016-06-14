@@ -33,8 +33,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  */
 public class ZaloContactFragment extends BaseFragment implements IZaloContactView, ZaloContactPresenter.IZaloFriendListener,
         ZaloContactRecyclerViewAdapter.OnItemInteractionListener {
-    public static final int REQUEST_CODE = 124;
-
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
@@ -92,6 +90,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        showLoading();
         // Set the adapter
         if (mColumnCount <= 1) {
             mList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -135,6 +134,8 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onDestroyView() {
         presenter.destroyView();
+        mAdapter = null;
+        mList.setAdapter(null);
         super.onDestroyView();
     }
 
@@ -146,10 +147,17 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (REQUEST_CODE == requestCode) {
+        if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                mTransferState = data.getExtras();
+                if (data != null) {
+                    mTransferState = data.getExtras();
+                } else {
+                    mTransferState = null;
+                }
                 return;
+            }else  if (resultCode == Activity.RESULT_OK) {
+                getActivity().setResult(Activity.RESULT_OK, null);
+                getActivity().finish();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -182,6 +190,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @Override
     public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
+        hideLoading();
         mAdapter.addItems(zaloFriends);
     }
 

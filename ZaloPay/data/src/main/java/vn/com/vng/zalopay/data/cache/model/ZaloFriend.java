@@ -6,19 +6,23 @@ package vn.com.vng.zalopay.data.cache.model;
  */
 public class ZaloFriend {
 
-    private long userId;
+    private Long id;
     private String userName;
-    private Integer displayName;
+    private String displayName;
     private String avatar;
-    private String userGender;
-    private Integer birthday;
-    private String usingApp;
+    private Integer userGender;
+    private String birthday;
+    private Boolean usingApp;
 
     public ZaloFriend() {
     }
 
-    public ZaloFriend(long userId, String userName, Integer displayName, String avatar, String userGender, Integer birthday, String usingApp) {
-        this.userId = userId;
+    public ZaloFriend(Long id) {
+        this.id = id;
+    }
+
+    public ZaloFriend(Long id, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp) {
+        this.id = id;
         this.userName = userName;
         this.displayName = displayName;
         this.avatar = avatar;
@@ -27,12 +31,12 @@ public class ZaloFriend {
         this.usingApp = usingApp;
     }
 
-    public long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -43,11 +47,11 @@ public class ZaloFriend {
         this.userName = userName;
     }
 
-    public Integer getDisplayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public void setDisplayName(Integer displayName) {
+    public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
@@ -59,27 +63,27 @@ public class ZaloFriend {
         this.avatar = avatar;
     }
 
-    public String getUserGender() {
+    public Integer getUserGender() {
         return userGender;
     }
 
-    public void setUserGender(String userGender) {
+    public void setUserGender(Integer userGender) {
         this.userGender = userGender;
     }
 
-    public Integer getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Integer birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
-    public String getUsingApp() {
+    public Boolean getUsingApp() {
         return usingApp;
     }
 
-    public void setUsingApp(String usingApp) {
+    public void setUsingApp(Boolean usingApp) {
         this.usingApp = usingApp;
     }
 

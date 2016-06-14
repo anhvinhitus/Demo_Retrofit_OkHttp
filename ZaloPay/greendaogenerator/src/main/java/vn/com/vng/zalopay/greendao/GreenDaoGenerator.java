@@ -7,8 +7,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 9;
-
+    private static final int APP_DB_VERSION = 10;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -25,28 +24,35 @@ public class GreenDaoGenerator {
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
-    private static void addTransferRecent(Schema appSchema) {
+    private static void addZaloContact(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("ZaloFriend");
-        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addIdProperty();//zaloId
+//        appInfoEntity.addLongProperty("userId").notNull().unique();
         appInfoEntity.addStringProperty("userName");
-        appInfoEntity.addIntProperty("displayName");
+        appInfoEntity.addStringProperty("displayName");
         appInfoEntity.addStringProperty("avatar");
-        appInfoEntity.addStringProperty("userGender");
-        appInfoEntity.addIntProperty("birthday");
-        appInfoEntity.addStringProperty("usingApp");
+        appInfoEntity.addIntProperty("userGender");
+        appInfoEntity.addStringProperty("birthday");
+        appInfoEntity.addBooleanProperty("usingApp");
+//        appInfoEntity.addContentProvider();
     }
 
-    private static void addZaloContact(Schema appSchema) {
+    private static void addTransferRecent(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("TransferRecent");
-        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addIdProperty();//zaloId
+//        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addStringProperty("zaloPayId");
         appInfoEntity.addStringProperty("userName");
-        appInfoEntity.addIntProperty("displayName");
+        appInfoEntity.addStringProperty("displayName");
         appInfoEntity.addStringProperty("avatar");
-        appInfoEntity.addStringProperty("userGender");
-        appInfoEntity.addIntProperty("birthday");
-        appInfoEntity.addStringProperty("usingApp");
+        appInfoEntity.addIntProperty("userGender");
+        appInfoEntity.addStringProperty("birthday");
+        appInfoEntity.addBooleanProperty("usingApp");
         appInfoEntity.addStringProperty("phoneNumber");
         appInfoEntity.addIntProperty("transferType");
+        appInfoEntity.addLongProperty("amount");
+        appInfoEntity.addStringProperty("message");
+//        appInfoEntity.addContentProvider();
     }
 
     private static void addApplicationInfo(Schema schema) {

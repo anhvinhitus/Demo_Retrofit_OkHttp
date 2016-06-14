@@ -8,6 +8,9 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.TransferRecent;
+import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 import vn.com.vng.zalopay.domain.model.User;
@@ -58,6 +61,7 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
                         .getTransactionLogDao()
                         .queryBuilder()
                         .limit(limit)
+                        .orderDesc(TransactionLogDao.Properties.Reqdate)
                         .list());
     }
 
@@ -109,6 +113,21 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     @Override
     public boolean isHaveZaloFriendDb() {
         return getDaoSession().getZaloFriendDao().queryBuilder().count() > 0;
+    }
+
+    @Override
+    public void writeTransferRecent(TransferRecent val) {
+        getDaoSession().getTransferRecentDao().insertOrReplaceInTx(val);
+    }
+
+    @Override
+    public List<TransferRecent> listTransferRecent() {
+        return getDaoSession().getTransferRecentDao().queryBuilder().list();
+    }
+
+    @Override
+    public List<TransferRecent> listTransferRecent(int limit) {
+        return getDaoSession().getTransferRecentDao().queryBuilder().limit(limit).list();
     }
 
     @Override

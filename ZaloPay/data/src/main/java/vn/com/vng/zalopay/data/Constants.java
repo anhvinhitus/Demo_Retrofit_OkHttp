@@ -18,6 +18,7 @@ public class Constants {
     public static final String AMOUNT = "amount";
     public static final String TRANSTYPE = "transtype";
     public static final String APPUSER = "appuser";
+    public static final String DESCRIPTION = "description";
 
     public static final String MANIF_LASTTIME_UPDATE_ZALO_FRIEND = "manif_lt_zalo_friend";
 }

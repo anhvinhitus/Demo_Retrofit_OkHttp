@@ -124,7 +124,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 //    }
 
     public void pay(String jsonString) {
-        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonString);
+        Timber.tag(TAG).d("pay................jsonOrder:" + jsonString);
         showLoadingView();
         if (zpTransaction(jsonString)) {
             return;
@@ -138,15 +138,23 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private boolean zpTransaction(String jsonOrder) {
-        Timber.tag(TAG).d("getOrder................jsonOrder:" + jsonOrder);
+        Timber.tag(TAG).d("zpTransaction................jsonOrder:" + jsonOrder);
         try {
             JSONObject jsonObject = new JSONObject(jsonOrder);
             long appId = jsonObject.optInt(Constants.APPID);
             String zptranstoken = jsonObject.optString(Constants.ZPTRANSTOKEN);
+            if (appId < 0) {
+                return false;
+            }
+            if (TextUtils.isEmpty(zptranstoken)) {
+                return false;
+            }
             paymentWrapper.payWithToken(appId, zptranstoken);
             return true;
         } catch (JSONException e) {
-            Timber.e(e, "JSON error");
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
