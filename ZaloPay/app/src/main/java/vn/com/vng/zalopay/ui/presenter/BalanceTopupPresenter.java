@@ -141,7 +141,8 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
         if (userConfig == null || userConfig.getCurrentUser() == null) {
             return;
         }
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString(), userConfig.getCurrentUser().uid)
+        String description = mView.getContext().getString(R.string.deposit);
+        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString(), userConfig.getCurrentUser().uid, description)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
