@@ -16,7 +16,10 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
@@ -27,8 +30,6 @@ import vn.com.vng.zalopay.ui.view.IQRScanView;
  */
 public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanView {
 
-    private long appId;
-    private String zptranstoken;
     private ProgressDialog mProgressDialog;
 
     @BindView(R.id.toolbar)
@@ -43,6 +44,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createUserComponent();
         setupActivityComponent();
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
@@ -119,37 +121,6 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     public void onTokenInvalid() {
     }
 
-    /*@Override
-    public void swLoading() {
-        if(mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), 5);
-        }
-
-        if(!mProgressDialog.isShowing()) {
-            try {
-                mProgressDialog.getProgressHelper().setBarColor(getContext().getResources().getColor(R.color.color_primary));
-                mProgressDialog.setTitle("");
-                mProgressDialog.setContentText(getContext().getResources().getString(R.string.alert_processing));
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.show();
-            } catch (Exception e) {
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            Log.e("DIALOG_MANAGER", "There is a showing process dialog!");
-        }
-    }
-
-    @Override
-    public void hideLoading() {
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            return;
-        }
-        mProgressDialog.hide();
-    }*/
-
     @Override
     public void showLoading() {
         if (mProgressDialog == null) {
@@ -184,4 +155,30 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     public Context getContext() {
         return this;
     }
+
+
+    private void createUserComponent() {
+
+        Timber.d(" user component %s", getUserComponent());
+
+        if (getUserComponent() != null)
+            return;
+
+        UserConfig userConfig = getAppComponent().userConfig();
+        Timber.d(" userConfig %s", userConfig.isSignIn());
+        if (userConfig.isSignIn()) {
+            userConfig.loadConfig();
+            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+        }
+    }
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
+    }
+
+    public UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
+    }
+
 }
+

@@ -2,9 +2,6 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
-import javax.inject.Inject;
-
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -16,9 +13,8 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
+import vn.com.vng.zalopay.ui.view.ILinkCardProcedureView;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
@@ -27,19 +23,15 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 /**
  * Created by longlv on 12/05/2016.
  */
-public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IPresenter<ILinkCardProduceView> {
+public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements IPresenter<ILinkCardProcedureView> {
 
-    private ILinkCardProduceView mView;
-    private Subscription subscription;
-    private Subscription subscriptionGetOrder;
+    private ILinkCardProcedureView mView;
+
     private PaymentWrapper paymentWrapper;
 
-    User user;
+    final User user;
 
-    @Inject
-    Navigator navigator;
-
-    public LinkCardProdurePresenter(User user) {
+    public LinkCardProcedurePresenter(User user) {
         this.user = user;
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
             @Override
@@ -75,7 +67,7 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.sigoutAndCleanData(mView.getActivity());
+                clearAndLogout();
             }
 
             @Override
@@ -86,14 +78,13 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
     }
 
     @Override
-    public void setView(ILinkCardProduceView iLinkCardProduceView) {
+    public void setView(ILinkCardProcedureView iLinkCardProduceView) {
         this.mView = iLinkCardProduceView;
     }
 
     @Override
     public void destroyView() {
         mView = null;
-        unsubscribeIfNotNull(subscription);
     }
 
     @Override
@@ -142,7 +133,7 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
         @Override
         public void onNext(Order order) {
             Timber.d("GetUserInfoSubscriber success " + order);
-            LinkCardProdurePresenter.this.onCreateWalletOrderSuccess(order);
+            LinkCardProcedurePresenter.this.onCreateWalletOrderSuccess(order);
         }
 
         @Override
@@ -154,11 +145,11 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    clearAndLogout();
                     return;
                 }
             }
-            LinkCardProdurePresenter.this.onCreateWalletOrderError(e);
+            LinkCardProcedurePresenter.this.onCreateWalletOrderError(e);
         }
     }
 
@@ -174,84 +165,6 @@ public class LinkCardProdurePresenter extends BaseZaloPayPresenter implements IP
         paymentWrapper.linkCard(order);
         hideLoadingView();
     }
-//
-//    //Zalo payment sdk
-//    private void pay(Order order) {
-//        Timber.tag("LinkCardProdurePresenter").d("pay.==============");
-//        if (order == null) {
-//            showErrorView(mView.getContext().getString(R.string.order_invalid));
-//            return;
-//        }
-//        Timber.tag("LinkCardProdurePresenter").d("pay.................2");
-//        User user = AndroidApplication.instance().getUserComponent().currentUser();
-//        if (user.uid <= 0) {
-//            showErrorView(mView.getContext().getString(R.string.user_invalid));
-//            return;
-//        }
-//        try {
-//            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-//            EPaymentChannel forcedPaymentChannel = EPaymentChannel.LINK_CARD;
-//            paymentInfo.appID = order.getAppid();
-//            paymentInfo.zaloUserID = String.valueOf(user.uid);
-//            paymentInfo.zaloPayAccessToken = user.accesstoken;
-//            paymentInfo.appTime = Long.valueOf(order.getApptime());
-//            paymentInfo.appTransID = order.getApptransid();
-//            paymentInfo.itemName = order.getItem();
-//            paymentInfo.amount = Long.parseLong(order.getAmount());
-//            paymentInfo.description = order.getDescription();
-//            paymentInfo.embedData = order.getEmbeddata();
-//            //lap vao ví appId = appUser = 1
-//            paymentInfo.appUser = order.getAppuser();
-//            paymentInfo.mac = order.getMac();
-//
-//            Timber.tag("LinkCardProdurePresenter").d("pay.................3");
-//            ZingMobilePayService.pay(mView.getActivity(), forcedPaymentChannel, paymentInfo, zpPaymentListener);
-//        } catch (NumberFormatException e) {
-//            if (BuildConfig.DEBUG) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
-//        @Override
-//        public void onComplete(ZPPaymentResult zpPaymentResult) {
-//            hideLoadingView();
-//            if (zpPaymentResult == null) {
-//                if (!AndroidUtils.isNetworkAvailable(mView.getContext())) {
-//                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-//                } else {
-//                    mView.showError("Lỗi xảy ra trong quá trình liên kết thẻ. Vui lòng thử lại sau.");
-//                }
-//            } else {
-//                EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-//                if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-//                    transactionUpdate();
-//                    ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-//                    if (paymentInfo == null) {
-//                        return;
-//                    }
-//                    mView.onAddCardSuccess(paymentInfo.mappedCreditCard);
-//                } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-//                    mView.onTokenInvalid();
-//                }
-//            }
-//        }
-//
-//        @Override
-//        public void onCancel() {
-//            hideLoadingView();
-//        }
-//
-//        @Override
-//        public void onSMSCallBack(String s) {
-//
-//        }
-//    };
-
-//    private void showLoadingView() {
-//        mView.showLoading();
-//    }
 
     private void hideLoadingView() {
         mView.hideLoading();

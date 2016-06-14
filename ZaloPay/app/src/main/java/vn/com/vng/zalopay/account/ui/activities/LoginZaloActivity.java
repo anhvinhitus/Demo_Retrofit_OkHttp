@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -46,11 +45,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     Navigator navigator;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
@@ -61,20 +55,20 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         loginPresenter.loginZalo(this);
     }
 
-    @Override
-    protected void onResume() {
+   /* @Override
+    public void onResume() {
         super.onResume();
         loginPresenter.pause();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         loginPresenter.pause();
-    }
+    }*/
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         loginPresenter.destroy();
         super.onDestroy();
     }
@@ -87,7 +81,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.tag(TAG).d("onActivityResult................" + requestCode + ";" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         loginPresenter.onActivityResult(this, requestCode, resultCode, data);
@@ -119,7 +113,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void hideLoading() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
-            mProgressDialog = null;
         }
     }
 

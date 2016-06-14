@@ -39,19 +39,10 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private ILoginView mView;
 
-    private ZaloProfilePreferences zaloProfilePreferences;
-
     private Subscription subscriptionLogin;
 
-    private Context context;
-
-    private UserConfig userConfig;
-
     @Inject
-    public LoginPresenter(Context context, ZaloProfilePreferences zaloProfilePreferences, UserConfig userConfig) {
-        this.zaloProfilePreferences = zaloProfilePreferences;
-        this.context = context;
-        this.userConfig = userConfig;
+    public LoginPresenter() {
     }
 
     @Override
@@ -147,7 +138,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void getZaloProfileInfo() {
-        ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
+        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
             @Override
             public void onResult(JSONObject profile) {
                 try {

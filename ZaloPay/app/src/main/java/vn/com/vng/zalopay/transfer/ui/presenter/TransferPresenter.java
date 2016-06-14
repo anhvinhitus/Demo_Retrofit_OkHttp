@@ -110,7 +110,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.sigoutAndCleanData(mView.getActivity());
+                clearAndLogout();
             }
 
             @Override
@@ -139,7 +139,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.sigoutAndCleanData(mView.getActivity());
+                    clearAndLogout();
                     return;
                 }
             }
@@ -228,19 +228,18 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
-                if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    userConfig.sigoutAndCleanData(mView.getActivity());
+                if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
+                    clearAndLogout();
                     return;
                 }
             }
+            Timber.e(e, "Server responses with error");
             TransferPresenter.this.onCreateWalletOrderError(e);
         }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        Timber.tag("onCreateWalletOrderError").d("session =========" + e);
         mView.hideLoading();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         mView.showError(message);

@@ -30,8 +30,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     private IQRScanView mView;
 
-    private Subscription subscriptionGetOrder;
-
     private PaymentWrapper paymentWrapper;
 
     private User user;
@@ -77,7 +75,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseTokenInvalid() {
                 mView.onTokenInvalid();
-                userConfig.sigoutAndCleanData(mView.getActivity());
+                clearAndLogout();
             }
 
             @Override
@@ -110,11 +108,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     @Override
     public void destroy() {
         super.destroy();
-        this.unsubscribe();
-    }
-
-    private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionGetOrder);
+        this.destroyView();
     }
 
     private void showLoadingView() {

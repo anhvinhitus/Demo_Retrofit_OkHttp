@@ -5,6 +5,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -102,6 +103,6 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     public void sigoutAndCleanData() {
-        userConfig.sigoutAndCleanData(mView.getActivity());
+        AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 }

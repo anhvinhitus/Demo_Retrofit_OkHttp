@@ -27,6 +27,8 @@ import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
@@ -133,5 +135,11 @@ public class ApplicationModule {
     @Singleton
     GlobalEventHandlingService providesGlobalEventService() {
         return new GlobalEventHandlingServiceImpl();
+    }
+
+    @Provides
+    @Singleton
+    ApplicationSession providesApplicationSession(Context context, Navigator navigator) {
+        return new ApplicationSession(context, navigator);
     }
 }

@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.transfer.ui.presenter;
 
-import android.content.Intent;
-
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
@@ -21,7 +19,6 @@ import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;

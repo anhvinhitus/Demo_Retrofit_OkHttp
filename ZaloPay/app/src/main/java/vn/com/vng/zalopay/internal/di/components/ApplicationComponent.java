@@ -22,6 +22,8 @@ import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
@@ -53,6 +55,10 @@ public interface ApplicationComponent {
     LocalResourceRepository localResourceRepository();
 
     GlobalEventHandlingService globalEventService();
+
+    Navigator navigator();
+
+    ApplicationSession applicationSession();
 
     /*INJECT*/
 

@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 
 /**
  * Created by AnhHieu on 5/13/16.
+ *
  */
 public class SplashScreenFragment extends BaseFragment implements ISplashScreenView {
 
@@ -105,7 +106,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     public void gotoUpdateProfileLevel2() {
-        navigator.startUpdateProfileLevel2Activity(getActivity(), false);
+        navigator.startUpdateProfileLevel2Activity(getContext(), false);
         getActivity().finish();
     }
 

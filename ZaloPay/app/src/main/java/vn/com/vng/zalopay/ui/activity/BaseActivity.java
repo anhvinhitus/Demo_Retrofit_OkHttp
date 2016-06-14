@@ -14,12 +14,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -38,6 +43,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected final String TAG = getClass().getSimpleName();
 
     private Unbinder unbinder;
+
+    EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
     public Activity getActivity() {
         return this;
@@ -98,6 +105,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
         unbinder = ButterKnife.bind(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        eventBus.unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        eventBus.register(this);
     }
 
     @Override
@@ -171,5 +190,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onTokenExpired(TokenExpiredEvent event) {
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
+        showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().clearUserSession();
     }
 }
