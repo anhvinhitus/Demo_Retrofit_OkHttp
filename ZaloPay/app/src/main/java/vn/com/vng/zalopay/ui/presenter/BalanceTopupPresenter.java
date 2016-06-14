@@ -61,9 +61,10 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
                 }
                 if (status == PaymentError.ERR_CODE_INTERNET) {
                     mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-                } else {
-                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
                 }
+                /*else {
+                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+                }*/
             }
 
             @Override

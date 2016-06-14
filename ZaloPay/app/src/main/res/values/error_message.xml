@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="exception.token.expired.message">Token hết hạn, Vui lòng đăng nhập lại!</string>
+    <string name="exception.generic">There was an application error</string>
+    <string name="exception.no.connection">There is no internet connection</string>
+    <string name="exception.no.connection.try.again">No network connection. Please try again.</string>
+    <string name="exception.retry.connection">Can\'t connect\n Tap to Retry</string>
+
+</resources>
