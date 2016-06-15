@@ -40,15 +40,13 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 
     @Override
     public void write(List<TransHistoryEntity> val) {
-        Timber.i("About to write data");
         try {
             List<TransactionLog> logs = mDaoMapper.transform(val);
-            Timber.i("Got transactions: %s", Arrays.toString(logsString(logs).toArray()));
             getDaoSession().getTransactionLogDao().insertOrReplaceInTx(mDaoMapper.transform(val));
 
             Timber.d("write list transaction %s", val.size());
         } catch (Exception e) {
-            Timber.i("Exception: %s", e.getMessage());
+            Timber.w("Exception while trying to write transaction histories to local storage: %s", e.getMessage());
         }
     }
 
