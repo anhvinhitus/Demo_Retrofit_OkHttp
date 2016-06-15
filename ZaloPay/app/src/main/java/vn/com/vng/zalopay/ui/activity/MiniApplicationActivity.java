@@ -65,7 +65,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     protected ReactInternalPackage reactInternalPackage() {
-        return new ReactInternalPackage(AndroidApplication.instance().getUserComponent().zaloPayRepository());
+        return new ReactInternalPackage(AndroidApplication.instance().getUserComponent().transactionRepository(),
+                AndroidApplication.instance().getUserComponent().zaloPayRepository());
     }
 
     private void createUserComponent() {

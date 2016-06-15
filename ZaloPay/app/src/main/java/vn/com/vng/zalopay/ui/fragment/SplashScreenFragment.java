@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.SplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
@@ -57,17 +58,17 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
 
     private void onOpenDeepLinks() {
-        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoke={}"'
+        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoken={}"'
         Uri data = getActivity().getIntent().getData();
 
         if (data != null
             //&& data.isHierarchical()
                 ) {
 
-            String appid = data.getQueryParameter("appid");
-            String zptranstoke = data.getQueryParameter("zptranstoke");
+            String appid = data.getQueryParameter(Constants.APPID);
+            String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
 
-            Timber.d("appid %s zptranstoke %s ", appid, zptranstoke);
+            Timber.d("appid %s zptranstoken %s ", appid, zptranstoken);
         }
     }
 

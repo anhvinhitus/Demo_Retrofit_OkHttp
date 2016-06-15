@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.repository;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayIAPEntityDataMapper;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
@@ -14,11 +15,13 @@ public class ZaloPayIAPRepositoryImpl extends BaseRepository implements ZaloPayI
 
     final ZaloPayIAPFactory zaloPayIAPFactory;
     final ZaloPayFactory zaloPayFactory;
+    final TransactionStore.Repository mTransactionRepository;
 
     final ZaloPayIAPEntityDataMapper mapper;
 
-    public ZaloPayIAPRepositoryImpl(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, ZaloPayIAPEntityDataMapper mapper) {
+    public ZaloPayIAPRepositoryImpl(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, TransactionStore.Repository transactionRepository, ZaloPayIAPEntityDataMapper mapper) {
         this.zaloPayIAPFactory = factory;
+        mTransactionRepository = transactionRepository;
         this.mapper = mapper;
         this.zaloPayFactory = zaloPayFactory;
     }
@@ -35,6 +38,6 @@ public class ZaloPayIAPRepositoryImpl extends BaseRepository implements ZaloPayI
 
     @Override
     public Observable<Boolean> transactionUpdate() {
-       return zaloPayFactory.transactionUpdate();
+       return mTransactionRepository.transactionUpdate();
     }
 }

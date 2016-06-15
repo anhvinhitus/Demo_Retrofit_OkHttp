@@ -12,24 +12,6 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
  */
 public interface SqlZaloPayScope extends SqlBaseScope {
 
-    void write(List<TransHistoryEntity> val);
-
-    void write(TransHistoryEntity val);
-
-    Observable<List<TransHistoryEntity>> transactionHistorys();
-
-    Observable<List<TransHistoryEntity>> transactionHistorys(int limit);
-
-    List<TransHistoryEntity> listTransHistorys(int limit);
-
-    boolean isHaveTransactionInDb();
-
-    Observable<TransHistoryEntity> transactionHistory();
-
-    Observable<Long> balance();
-
-    void writeBalance(long balance);
-
     void writeZaloFriends(List<ZaloFriend> val);
 
     void writeZaloFriend(ZaloFriend val);

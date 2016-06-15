@@ -49,12 +49,6 @@ public class ZaloPayService extends Service {
 
         Timber.d("onStartCommand %s startId %s thread %s", intent, startId, Thread.currentThread().getName());
         this.connectAndSendAuthentication();
-
-     /*   try {
-            Thread.sleep(100000);
-        } catch (Exception ex) {
-
-        }*/
         return START_STICKY;
     }
 

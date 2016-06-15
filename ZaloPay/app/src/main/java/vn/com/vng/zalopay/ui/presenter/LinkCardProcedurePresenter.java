@@ -58,6 +58,8 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 transactionUpdate();
+                updateBalance();
+
                 ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
                 if (paymentInfo == null) {
                     return;

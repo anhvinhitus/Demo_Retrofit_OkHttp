@@ -14,30 +14,27 @@ import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.WeakHashMap;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.internal.operators.OperatorToMultimap;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
 /**
  * Created by huuhoa on 5/8/16.
  */
 public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private ZaloPayRepository repository;
+    private TransactionStore.Repository mRepository;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, ZaloPayRepository repository) {
+    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository) {
         super(reactContext);
-        this.repository = repository;
+        this.mRepository = repository;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -52,7 +49,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         Timber.d("get transaction index %s count %s", pageIndex, count);
 
-        Subscription subscription = repository.getTransactions(pageIndex, count)
+        Subscription subscription = mRepository.getTransactions(pageIndex, count)
                 .map(new Func1<List<TransHistory>, WritableArray>() {
                     @Override
                     public WritableArray call(List<TransHistory> transHistories) {
@@ -67,7 +64,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void reloadListTransaction(int count, Promise promise) {
         Timber.d("reload transaction count %s", count);
-        Subscription subscription = repository.reloadListTransaction(count)
+        Subscription subscription = mRepository.reloadListTransaction(count)
                 .map(new Func1<List<TransHistory>, WritableArray>() {
                     @Override
                     public WritableArray call(List<TransHistory> transHistories) {

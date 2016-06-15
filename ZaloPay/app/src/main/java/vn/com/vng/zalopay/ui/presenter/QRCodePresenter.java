@@ -67,6 +67,8 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 transactionUpdate();
+                updateBalance();
+
                 if (mView != null && mView.getActivity() != null) {
                     mView.getActivity().finish();
                 }
@@ -124,83 +126,64 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 //    }
 
     public void pay(String jsonString) {
-        Timber.tag(TAG).d("pay................jsonOrder:" + jsonString);
-        showLoadingView();
-        if (zpTransaction(jsonString)) {
-            return;
-        }
-        if (orderTransaction(jsonString)) {
-            return;
-        }
-        hideLoadingView();
-        qrDataInvalid();
-        mView.resumeScanner();
-    }
-
-    private boolean zpTransaction(String jsonOrder) {
-        Timber.tag(TAG).d("zpTransaction................jsonOrder:" + jsonOrder);
+        Timber.d("about to process payment with order: %s", jsonString);
         try {
-            JSONObject jsonObject = new JSONObject(jsonOrder);
-            long appId = jsonObject.optInt(Constants.APPID);
-            String zptranstoken = jsonObject.optString(Constants.ZPTRANSTOKEN);
-            if (appId < 0) {
-                return false;
+            showLoadingView();
+            if (zpTransaction(jsonString)) {
+                return;
             }
-            if (TextUtils.isEmpty(zptranstoken)) {
-                return false;
-            }
-            paymentWrapper.payWithToken(appId, zptranstoken);
-            return true;
-        } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
 
-    private boolean orderTransaction(String jsonOrder) {
-        JSONObject jsonObject = null;
-        try {
-            Order order = new Order(jsonOrder);
-            if (order == null || order.getAppid() < 0) {
-                return false;
-            }
-            if (TextUtils.isEmpty(order.getApptransid())) {
-                return false;
-            }
-            if (TextUtils.isEmpty(order.getAppuser())) {
-                return false;
-            }
-            if (TextUtils.isEmpty(order.getApptime())) {
-                return false;
-            }
-            if (TextUtils.isEmpty(order.getItem())) {
-                return false;
-            }
-            if (TextUtils.isEmpty(order.getAmount())) {
-                return false;
-            }
-            long amount = Long.parseLong(order.getAmount());
-            if (TextUtils.isEmpty(order.getEmbeddata())) {
-                return false;
-            }
-            if (TextUtils.isEmpty(order.getMac())) {
-                return false;
-            }
-            paymentWrapper.payWithOrder(order);
+            orderTransaction(jsonString);
+        }
+        catch (JSONException | IllegalArgumentException e) {
+            Timber.i("Invalid JSON input: %s", e.getMessage());
             hideLoadingView();
-            return true;
-        } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            qrDataInvalid();
+            mView.resumeScanner();
         }
-        return false;
+    }
+
+    private boolean zpTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
+        Timber.d("trying to get transaction token from: %s", jsonOrder);
+        JSONObject jsonObject = new JSONObject(jsonOrder);
+        long appId = jsonObject.optInt(Constants.APPID);
+        String transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
+        if (appId < 0 || TextUtils.isEmpty(transactionToken)) {
+            throw new IllegalArgumentException();
+        }
+        paymentWrapper.payWithToken(appId, transactionToken);
+        return true;
+    }
+
+    private void orderTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
+        Order order = new Order(jsonOrder);
+        if (order.getAppid() < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (TextUtils.isEmpty(order.getApptransid())) {
+            throw new IllegalArgumentException();
+        }
+        if (TextUtils.isEmpty(order.getAppuser())) {
+            throw new IllegalArgumentException();
+        }
+        if (TextUtils.isEmpty(order.getApptime())) {
+            throw new IllegalArgumentException();
+        }
+        if (TextUtils.isEmpty(order.getItem())) {
+            throw new IllegalArgumentException();
+        }
+        if (TextUtils.isEmpty(order.getAmount())) {
+            throw new IllegalArgumentException();
+        }
+        long amount = Long.parseLong(order.getAmount());
+        if (TextUtils.isEmpty(order.getEmbeddata())) {
+            throw new IllegalArgumentException();
+        }
+        if (TextUtils.isEmpty(order.getMac())) {
+            throw new IllegalArgumentException();
+        }
+        paymentWrapper.payWithOrder(order);
+        hideLoadingView();
     }
 
     private void qrDataInvalid() {

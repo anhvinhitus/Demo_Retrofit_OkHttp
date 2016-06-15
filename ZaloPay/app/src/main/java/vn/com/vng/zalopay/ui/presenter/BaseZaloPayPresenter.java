@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.presenter;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
@@ -13,10 +14,17 @@ public abstract class BaseZaloPayPresenter extends BaseUserPresenter {
     protected Subscription subscriptionGetOrder;
 
     protected void transactionUpdate() {
-        subscriptionGetOrder = zaloPayRepository.transactionUpdate()
+        subscriptionGetOrder = AndroidApplication.instance().getUserComponent().transactionRepository().transactionUpdate()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Boolean>());
+    }
+
+    protected void updateBalance() {
+        subscriptionGetOrder = AndroidApplication.instance().getUserComponent().balanceRepository().updateBalance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<>());
     }
 
     private void unsubscribe() {

@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
+import vn.com.vng.zalopay.data.cache.BalanceStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**

@@ -8,6 +8,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.api.entity.PaymentTransTypeEntity;
+import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
@@ -38,7 +39,7 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     @Override
     public Observable<List<CardEntity>> listCard() {
-        return makeObservable(() -> listCardEntity());
+        return ObservableHelper.makeObservable(() -> listCardEntity());
     }
 
     private List<CardEntity> listCardEntity() {
@@ -62,7 +63,7 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
 
     @Override
     public Observable<List<AppResourceEntity>> listApp() {
-        return makeObservable(() -> listAppResourceEntity());
+        return ObservableHelper.makeObservable(() -> listAppResourceEntity());
     }
 
     public List<AppResourceEntity> listAppResourceEntity() {
