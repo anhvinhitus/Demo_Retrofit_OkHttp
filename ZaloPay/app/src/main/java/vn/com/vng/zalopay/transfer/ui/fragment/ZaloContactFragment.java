@@ -50,6 +50,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @BindView(R.id.list)
     RecyclerView mList;
 
+    @BindView(R.id.viewSeparate)
+    View viewSeparate;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -155,7 +158,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
                     mTransferState = null;
                 }
                 return;
-            }else  if (resultCode == Activity.RESULT_OK) {
+            } else if (resultCode == Activity.RESULT_OK) {
                 getActivity().setResult(Activity.RESULT_OK, null);
                 getActivity().finish();
             }
@@ -192,6 +195,11 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
         hideLoading();
         mAdapter.addItems(zaloFriends);
+        if (zaloFriends != null && zaloFriends.size() > 0) {
+            viewSeparate.setVisibility(View.VISIBLE);
+        } else {
+            viewSeparate.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -6,32 +6,43 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <vn.com.vng.zalopay.ui.widget.ClearableEditText
-        android:id="@+id/edtSearch"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:drawableLeft="@drawable/ic_seach"
-        android:drawablePadding="@dimen/spacing.medium.t"
-        android:hint="@string/hint_zalo_contact"
-        android:padding="@dimen/spacing.medium"
-        android:textSize="@dimen/textsize.small"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/separate"
-        android:visibility="gone" />
+        <vn.com.vng.zalopay.ui.widget.ClearableEditText
+            android:id="@+id/edtSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/ic_seach"
+            android:drawablePadding="@dimen/spacing.medium.t"
+            android:hint="@string/hint_zalo_contact"
+            android:padding="@dimen/spacing.medium"
+            android:textSize="@dimen/textsize.small" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/separate" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         app:layoutManager="LinearLayoutManager"
         tools:context=".transfer.ui.fragment.TransferHomeFragment"
         tools:listitem="@layout/fragment_zalo_contact_item" />
 
+    <View
+        android:id="@+id/viewSeparate"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separate"
+        android:visibility="visible" />
 </LinearLayout>

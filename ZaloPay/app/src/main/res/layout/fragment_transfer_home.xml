@@ -23,9 +23,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing.small"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.small"
+                android:layout_marginBottom="@dimen/spacing.medium.t"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_tkzalopay" />
@@ -41,7 +41,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.s"
+                android:layout_margin="@dimen/spacing.medium.t"
                 android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
@@ -64,9 +64,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing.small"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.small"
+                android:layout_marginBottom="@dimen/spacing.medium.t"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_the_atm" />
@@ -82,7 +82,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.s"
+                android:layout_margin="@dimen/spacing.medium.t"
                 android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
@@ -102,9 +102,9 @@
             style="@style/TextView.Group.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing.medium.t"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.medium.l"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingLeft="@dimen/spacing.medium.t"
+            android:paddingTop="@dimen/spacing.large.t"
             android:text="@string/transaction_recent"
             android:textAllCaps="true" />
 
@@ -126,8 +126,10 @@
         tools:listitem="@layout/fragment_trasfer_recent_item" />
 
     <View
+        android:id="@+id/viewSeparate"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/separate" />
+        android:background="@color/separate"
+        android:visibility="gone" />
 
 </LinearLayout>

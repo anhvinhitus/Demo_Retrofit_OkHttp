@@ -56,6 +56,9 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
     @BindView(R.id.list)
     RecyclerView mList;
 
+    @BindView(R.id.viewSeparate)
+    View viewSeparate;
+
     @OnClick(R.id.layoutTransferAccZaloPay)
     public void onClickTransferAccZaloPay(View view) {
         navigator.startZaloContactActivity(this);
@@ -189,8 +192,10 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
         mAdapter.setData(transferRecents);
         if (transferRecents != null && transferRecents.size() > 0) {
             mTvTileTransactionRecent.setVisibility(View.VISIBLE);
+            viewSeparate.setVisibility(View.VISIBLE);
         } else {
             mTvTileTransactionRecent.setVisibility(View.GONE);
+            viewSeparate.setVisibility(View.GONE);
         }
     }
 
