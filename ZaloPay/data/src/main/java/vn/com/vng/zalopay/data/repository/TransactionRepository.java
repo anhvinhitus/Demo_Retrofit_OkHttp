@@ -105,7 +105,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
-        return mTransactionRequestService.transactionHistorys(mUser.uid, mUser.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
+        return mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
                 .map(transactionHistoryResponse -> transactionHistoryResponse.data)
                 .doOnNext(transHistoryEntities -> {
                     //(4)
@@ -137,7 +137,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private void transactionHistoryServer(final long timestamp, final int count, final int odder, final Subscriber<List<TransHistory>> subscriber) {
         Timber.d("transactionHistoryServer %s ", timestamp);
-        mTransactionRequestService.transactionHistorys(mUser.uid, mUser.accesstoken, timestamp, count, odder)
+        mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, odder)
                 .doOnNext(response -> writeTransactionResp(response))
                 .doOnNext(new Action1<TransactionHistoryResponse>() {
                     @Override
@@ -153,12 +153,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     private void writeTransactionResp(TransactionHistoryResponse response) {
         List<TransHistoryEntity> list = response.data;
         int size = list.size();
-
-
-        Timber.d("writeTransactionResp %s %s", response.data, Thread.currentThread().getName());
         if (size > 0) {
-            mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
             mTransactionLocalStorage.write(response.data);
+            mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
         }
     }
 }

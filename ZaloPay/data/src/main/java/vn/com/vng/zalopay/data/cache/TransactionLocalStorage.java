@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.data.cache;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import rx.Observable;
@@ -8,6 +11,7 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 
 /**
@@ -22,11 +26,30 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         this.mDaoMapper = zaloCacheMapper;
     }
 
+    String transactionToString(TransactionLog v) {
+        return String.format("\"userid\":\"%s\",\"transid\":%d,\"appid\":%d,\"appuser\":\"%s\",\"platform\":\"%s\",\"description\":\"%s\",\"pmcid\":%d,\"reqdate\":%d,\"userchargeamt\":%d,\"amount\":%d,\"userfeeamt\":%d,\"type\":%d,\"sign\":%d,\"username\":\"%s\",\"appusername\":\"%s\"",
+                v.getUserid(), v.getTransid(), v.getAppid(), v.getAppuser(), v.getPlatform(), v.getDescription(), v.getPmcid(), v.getReqdate(), v.getUserchargeamt(), v.getAmount(), v.getUserfeeamt(), v.getType(), v.getSign(), v.getUsername(), v.getAppusername());
+    }
+    List<String> logsString(Collection<TransactionLog> logs) {
+        List<String> result = new ArrayList<>();
+        for (TransactionLog v : logs) {
+            result.add(transactionToString(v));
+        }
+        return result;
+    }
+
     @Override
     public void write(List<TransHistoryEntity> val) {
-        getDaoSession().getTransactionLogDao().insertOrReplaceInTx(mDaoMapper.transform(val));
+        Timber.i("About to write data");
+        try {
+            List<TransactionLog> logs = mDaoMapper.transform(val);
+            Timber.i("Got transactions: %s", Arrays.toString(logsString(logs).toArray()));
+            getDaoSession().getTransactionLogDao().insertOrReplaceInTx(mDaoMapper.transform(val));
 
-        Timber.d("write list transaction %s", val.size(), listTransHistories(10));
+            Timber.d("write list transaction %s", val.size());
+        } catch (Exception e) {
+            Timber.i("Exception: %s", e.getMessage());
+        }
     }
 
     @Override

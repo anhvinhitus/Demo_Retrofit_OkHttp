@@ -15,6 +15,7 @@ import static java.util.Collections.emptyList;
 
 /**
  * Created by AnhHieu on 5/9/16.
+ * Map data object from server to local storage and vice versa
  */
 @Singleton
 public class ZaloPayDaoMapper {
@@ -38,6 +39,9 @@ public class ZaloPayDaoMapper {
             transDao.setType(transEntity.type);
             transDao.setReqdate(transEntity.reqdate);
             transDao.setUserid(transEntity.userid);
+            transDao.setSign(transEntity.sign);
+            transDao.setUsername(transEntity.username);
+            transDao.setAppusername(transEntity.appusername);
         }
         return transDao;
     }
@@ -58,7 +62,9 @@ public class ZaloPayDaoMapper {
             transHistoryEntity.transid = transDao.getTransid();
             transHistoryEntity.type = transDao.getType();
             transHistoryEntity.userid = transDao.getUserid();
-
+            transHistoryEntity.sign = transDao.getSign();
+            transHistoryEntity.username = transDao.getUsername();
+            transHistoryEntity.appusername = transDao.getAppusername();
         }
         return transHistoryEntity;
     }

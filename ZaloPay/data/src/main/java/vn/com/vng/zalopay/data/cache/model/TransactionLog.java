@@ -18,6 +18,9 @@ public class TransactionLog {
     private Integer userfeeamt;
     private Integer amount;
     private Integer type;
+    private Integer sign;
+    private String username;
+    private String appusername;
 
     public TransactionLog() {
     }
@@ -26,7 +29,7 @@ public class TransactionLog {
         this.transid = transid;
     }
 
-    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer userchargeamt, Integer userfeeamt, Integer amount, Integer type) {
+    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer userchargeamt, Integer userfeeamt, Integer amount, Integer type, Integer sign, String username, String appusername) {
         this.transid = transid;
         this.appid = appid;
         this.userid = userid;
@@ -39,6 +42,9 @@ public class TransactionLog {
         this.userfeeamt = userfeeamt;
         this.amount = amount;
         this.type = type;
+        this.sign = sign;
+        this.username = username;
+        this.appusername = appusername;
     }
 
     public long getTransid() {
@@ -135,6 +141,30 @@ public class TransactionLog {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getSign() {
+        return sign;
+    }
+
+    public void setSign(Integer sign) {
+        this.sign = sign;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getAppusername() {
+        return appusername;
+    }
+
+    public void setAppusername(String appusername) {
+        this.appusername = appusername;
     }
 
 }

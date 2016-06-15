@@ -42,5 +42,13 @@ public class TransHistoryEntity {
 
     @SerializedName("type")
     public int type;
-    
+
+    @SerializedName("sign")
+    public int sign;
+
+    @SerializedName("username")
+    public String username;
+
+    @SerializedName("appusername")
+    public String appusername;
 }

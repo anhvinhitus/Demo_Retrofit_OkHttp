@@ -152,7 +152,11 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         item.putDouble("reqdate", history.reqdate);
         item.putString("description", history.description);
         item.putInt("amount", history.amount);
+        item.putInt("userfeeamt", history.userfeeamt);
         item.putInt("type", history.type);
+        item.putInt("sign", history.sign);
+        item.putString("username", history.username);
+        item.putString("appusername", history.appusername);
         return item;
     }
 
