@@ -71,19 +71,12 @@ android {
 
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            buildConfigField 'String', 'WS_HOST', 'notify.zalopay.com.vn'
-            buildConfigField 'int', 'WS_PORT', '8404'
-
         }
         debug {
             minifyEnabled false
             //  applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
-
-            buildConfigField 'String', 'WS_HOST', 'sandbox.notify.zalopay.com.vn'
-            buildConfigField 'int', 'WS_PORT', '8404'
         }
     }
 
@@ -107,6 +100,8 @@ android {
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+            buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         sandbox {
@@ -115,6 +110,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         internalProduction {
@@ -123,6 +120,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         internalSandbox {
@@ -131,6 +130,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         iapSandbox {
@@ -140,6 +141,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         iapProduction {
@@ -149,6 +152,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
     }
 
