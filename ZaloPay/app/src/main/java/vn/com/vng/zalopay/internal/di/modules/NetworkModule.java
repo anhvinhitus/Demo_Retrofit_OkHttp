@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
-import vn.com.vng.zalopay.data.ws.parser.MessagerParser;
+import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
@@ -107,7 +107,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     WsConnection providesWsConnecttion(Context context, UserConfig userConfig) {
-        return new WsConnection(context, new MessagerParser(), userConfig);
+        return new WsConnection(context, new MessageParser(), userConfig);
     }
 
 }

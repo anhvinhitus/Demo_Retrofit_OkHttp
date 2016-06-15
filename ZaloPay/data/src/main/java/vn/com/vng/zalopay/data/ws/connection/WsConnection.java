@@ -21,7 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
-import vn.com.vng.zalopay.data.ws.protobuf.LogicMessages;
+import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -166,9 +166,9 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         GeneratedMessage message = parser.parserMessage(data);
         if (data != null) {
-            if (message instanceof LogicMessages.LoginSuccess) {
+            if (message instanceof ZPMsgProtos.MessageLogin) {
                 Timber.d("send authentication success");
-            } else if (message instanceof LogicMessages.PushNotificationInfo) {
+            } else if (message instanceof ZPMsgProtos.ResultAuth) {
                 Timber.d("PushNotificationInfo");
 
             }
@@ -188,11 +188,12 @@ public class WsConnection extends Connection implements ConnectionListener {
     }
 
 
-    private boolean sendAuthentication(String token) {
+    private boolean sendAuthentication(String token, long uid) {
         Timber.d("ws authentication %s", token);
 
-        LogicMessages.Login loginMsg = LogicMessages.Login.newBuilder()
-                .setTokenKey(token)
+        ZPMsgProtos.MessageLogin loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
+                .setToken(token)
+                .setUsrid(uid)
                 .build();
         return send(MessageType.Request.AUTHEN_LOGIN, loginMsg);
     }
@@ -200,7 +201,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     public boolean sendAuthentication() {
         if (userConfig.hasCurrentUser()) {
             User user = userConfig.getCurrentUser();
-            return sendAuthentication(user.accesstoken);
+            return sendAuthentication(user.accesstoken, Long.parseLong(user.uid));
         }
         return false;
     }

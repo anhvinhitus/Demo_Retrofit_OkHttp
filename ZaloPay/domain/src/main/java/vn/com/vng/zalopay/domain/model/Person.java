@@ -27,7 +27,7 @@ public class Person extends AbstractData {
         dname = source.readString();
         avatar = source.readString();
         birthDate = source.readLong();
-        userGender =source.readInt();
+        userGender = source.readInt();
     }
 
     public Person(String uid, String dname, String avatar) {
@@ -45,7 +45,7 @@ public class Person extends AbstractData {
     }
 
     public String getGender() {
-        return userGender==1?"Nam":"Nữ";
+        return userGender == 1 ? "Nam" : "Nữ";
     }
 
     @Override

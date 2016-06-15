@@ -15,9 +15,8 @@ public class MessageType {
     }
 
     public static class Response {
-        public static final int   AUTHEN_LOGIN_SUCCESS      = 1;
-        public static final int   AUTHEN_LOGIN_FAIL         = 2;
-
-        public static final int   PUSH_NOTIFICATION         = 100;
+        public static final int   AUTHEN_LOGIN_RESULT       = 1;
+        public static final int   KICK_OUT                  = 51;
+        public static final int   PUSH_NOTIFICATION         = 101;
     }
 }
