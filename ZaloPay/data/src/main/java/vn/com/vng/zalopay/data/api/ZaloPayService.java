@@ -1,6 +1,9 @@
 package vn.com.vng.zalopay.data.api;
 
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
@@ -15,9 +18,19 @@ import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 public interface ZaloPayService {
 
     @GET("tpe/getorderinfo")
-    Observable<GetOrderResponse> getorder(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.ZPTRANSTOKEN) String apptransid);
+    Observable<GetOrderResponse> getorder(@Query("userid") String userid,
+                                          @Query("accesstoken") String accesstoken,
+                                          @Query(Constants.APPID) long appId,
+                                          @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
-    @GET("tpe/createwalletorder")
-    Observable<GetOrderResponse> createwalletorder(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.AMOUNT) long amount, @Query(Constants.TRANSTYPE) String transtype, @Query(Constants.APPUSER) String appUser, @Query(Constants.DESCRIPTION) String description);
+    @FormUrlEncoded
+    @POST("tpe/createwalletorder")
+    Observable<GetOrderResponse> createwalletorder(@Field("userid") String userid,
+                                                   @Field("accesstoken") String accesstoken,
+                                                   @Field(Constants.APPID) long appId,
+                                                   @Field(Constants.AMOUNT) long amount,
+                                                   @Field(Constants.TRANSTYPE) String transtype,
+                                                   @Field(Constants.APPUSER) String appUser,
+                                                   @Field(Constants.DESCRIPTION) String description);
 
 }
