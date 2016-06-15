@@ -4,7 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
-import android.util.Log;
+import android.os.Looper;
+import android.os.Message;
 
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.GeneratedMessage;
@@ -45,7 +46,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     private ChannelFuture channelFuture;
 
     private final Context context;
-    private Handler messageHandler = null;
+
     private final Parser parser;
     private final UserConfig userConfig;
 
@@ -53,10 +54,7 @@ public class WsConnection extends Connection implements ConnectionListener {
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-    }
 
-    public void setHandler(Handler handler) {
-        this.messageHandler = handler;
     }
 
     public void setHostPort(String host, int port) {
@@ -193,8 +191,6 @@ public class WsConnection extends Connection implements ConnectionListener {
 
 
     private boolean sendAuthentication(String token, long uid) {
-        Timber.d("ws authentication %s", token);
-
         ZPMsgProtos.MessageLogin loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
                 .setToken(token)
                 .setUsrid(uid)
@@ -216,5 +212,15 @@ public class WsConnection extends Connection implements ConnectionListener {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+
+    private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+
+
+            super.handleMessage(msg);
+        }
+    };
 
 }

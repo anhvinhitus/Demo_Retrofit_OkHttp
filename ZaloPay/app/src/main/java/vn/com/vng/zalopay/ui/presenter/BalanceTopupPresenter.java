@@ -177,7 +177,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "onError " + e);
+            Timber.w(e, "onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
                     clearAndLogout();

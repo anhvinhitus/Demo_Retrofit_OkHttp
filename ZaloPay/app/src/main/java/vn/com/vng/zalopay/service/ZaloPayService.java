@@ -15,6 +15,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.utils.NotificationHelper;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -32,6 +33,9 @@ public class ZaloPayService extends Service {
 
     @Inject
     EventBus eventBus;
+
+    @Inject
+    NotificationHelper notificationHelper;
 
     public ZaloPayService() {
     }
@@ -76,22 +80,4 @@ public class ZaloPayService extends Service {
             mWsConnection.connect();
         }
     }
-
-/*
-    protected final Handler mMessageHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MessageType.MSG_CONNECTED_TO_SERVER:
-
-                    break;
-                case MessageType.MSG_UI_SHOW_PUSH_NOTIFICATION:
-                    LogicMessages.PushNotificationInfo pushMsg = (LogicMessages.PushNotificationInfo) msg.obj;
-
-
-                    break;
-                default:
-            }
-        }
-    };*/
 }

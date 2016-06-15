@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
@@ -60,7 +61,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initializeZaloPay() {
-        AndroidApplication.instance().getUserComponent().transactionRepository().initialize()
+        transactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
     }
@@ -79,8 +80,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void getBalance() {
-        BalanceRepository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
-        Subscription subscription = repository.balance()
+        Subscription subscription = balanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
@@ -88,8 +88,19 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         compositeSubscription.add(subscription);
     }
 
+    private final void onGetBalanceError(Throwable e) {
+        Timber.w("onGetBalanceError %s", e);
+        String message = ErrorMessageFactory.create(applicationContext, e);
+        showErrorView(message);
+    }
+
+    protected void showErrorView(String message) {
+
+    }
+
+
     private final void onGetBalanceSuccess(Long balance) {
-        Timber.tag(TAG).d("onGetBalanceSuccess %s", balance);
+        Timber.d("onGetBalanceSuccess %s", balance);
         menuView.setBalance(balance);
     }
 
@@ -104,7 +115,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onError(Throwable e) {
-            Timber.tag(TAG).e(e, " exception ");
+            LeftMenuPresenter.this.onGetBalanceError(e);
         }
 
         @Override
@@ -115,8 +126,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
-        Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
-
         //UPDATE USERINFO
         user.avatar = event.avatar;
         user.dname = event.displayName;
@@ -131,7 +140,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ChangeBalanceEvent event) {
-        //Timber.d("event bus test %s; ThreadName:%s", event.balance, Thread.currentThread().getName());
         if (menuView != null) {
             menuView.setBalance(event.balance);
         }

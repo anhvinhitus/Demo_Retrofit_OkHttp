@@ -21,7 +21,7 @@ public class MessageParser implements Parser {
             try {
                 ret = processMessage(msg);
             } catch (Exception ex) {
-                Timber.e(ex, " parserMessage Exception");
+                Timber.w(ex, " parserMessage Exception");
             }
         }
 
@@ -37,7 +37,7 @@ public class MessageParser implements Parser {
             case MessageType.Response.PUSH_NOTIFICATION:
                 return processPushMessage(respMsg.getData().toByteArray());
             case MessageType.Response.AUTHEN_LOGIN_RESULT:
-                return processKickoutUser(respMsg.getData().toByteArray());
+                return processKickOutUser(respMsg.getData().toByteArray());
             default:
         }
 
@@ -49,18 +49,18 @@ public class MessageParser implements Parser {
         try {
 
             ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
-            System.out.print("Result" + res.getResult() + " code " + res.getCode());
-            //   Log.e(TAG, "Resule:"+res.getResult()+"---"+res.getCode());
+            Timber.d("Result" + res.getResult() + " code " + res.getCode());
 
             return res;
         } catch (Exception ex) {
-            //    Log.e(TAG, "Resule error");
+            Timber.w(ex, "processAuthenticationLoginSuccess");
+
         }
         return null;
     }
 
-    public GeneratedMessage processKickoutUser(byte[] data) {
-        System.out.print("You kickedout");
+    public GeneratedMessage processKickOutUser(byte[] data) {
+        Timber.d("You kickedout");
 
         return null;
     }
@@ -68,8 +68,6 @@ public class MessageParser implements Parser {
     public GeneratedMessage processPushMessage(byte[] data) {
         System.out.println("You receive data fom TPE: " + data.toString());
         String str = new String(data);
-        //  Log.e(TAG, "Resule push: "+str.toString());
-
         return null;
     }
 }
