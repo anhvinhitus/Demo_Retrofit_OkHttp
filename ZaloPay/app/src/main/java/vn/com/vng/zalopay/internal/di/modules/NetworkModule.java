@@ -107,7 +107,9 @@ public class NetworkModule {
     @Provides
     @Singleton
     WsConnection providesWsConnecttion(Context context, UserConfig userConfig) {
-        return new WsConnection(context, new MessageParser(), userConfig);
+        WsConnection wsConnection = new WsConnection(context, new MessageParser(), userConfig);
+        wsConnection.setHostPort(BuildConfig.WS_HOST, BuildConfig.WS_PORT);
+        return wsConnection;
     }
 
 }

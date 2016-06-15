@@ -39,7 +39,6 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private int PORT = 8404;
     private String HOST = "sandbox.notify.zalopay.com.vn";
-    private String loginTokenKey = "mytoken";
 
     private NioEventLoopGroup group;
     private Channel mChannel;
