@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
@@ -111,8 +112,9 @@ public class UserControllerModule {
     @Provides
     ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service,
                                          User user, SqlZaloPayScope sqlZaloPayScope,
+                                         TransactionStore.LocalStorage transactionLocalStorage,
                                          @Named("payAppId") int payAppId, EventBus eventBus) {
-        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, payAppId, eventBus);
+        return new ZaloPayFactory(context, service, user, sqlZaloPayScope, transactionLocalStorage, payAppId, eventBus);
     }
 
     @UserScope

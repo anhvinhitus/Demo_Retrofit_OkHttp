@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
@@ -48,7 +49,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 ApiUserModule.class,
                 UserControllerModule.class,
                 UserPresenterModule.class,
-                BalanceModule.class
+                BalanceModule.class,
+                TransactionModule.class
         }
 )
 public interface UserComponent {

@@ -30,47 +30,6 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     }
 
     @Override
-    public void write(List<TransHistoryEntity> val) {
-        getDaoSession().getTransactionLogDao().insertOrReplaceInTx(zaloCacheMapper.transform(val));
-
-        Timber.d("write list transaction %s", val.size(), listTransHistories(10));
-    }
-
-    @Override
-    public void write(TransHistoryEntity val) {
-        getDaoSession().getTransactionLogDao().insertOrReplace(zaloCacheMapper.transform(val));
-    }
-
-    @Override
-    public Observable<List<TransHistoryEntity>> transactionHistories() {
-        return ObservableHelper.makeObservable(() -> listTransHistories(Integer.MAX_VALUE))
-                .doOnNext(transHistoryEntities -> Timber.d("transactionHistories %s", transHistoryEntities.size()))
-                ;
-    }
-
-    @Override
-    public Observable<List<TransHistoryEntity>> transactionHistories(int limit) {
-        return ObservableHelper.makeObservable(() -> listTransHistories(limit));
-    }
-
-    @Override
-    public List<TransHistoryEntity> listTransHistories(int limit) {
-        return zaloCacheMapper.transform2Entity(
-                getDaoSession()
-                        .getTransactionLogDao()
-                        .queryBuilder()
-                        .limit(limit)
-                        .orderDesc(TransactionLogDao.Properties.Reqdate)
-                        .list());
-    }
-
-    @Override
-    public Observable<TransHistoryEntity> transactionHistory() {
-        //return makeObservable(() -> zaloCacheMapper.transform(getDaoSession().getTransactionLogDao().queryBuilder().w));
-        return null;
-    }
-
-    @Override
     public void writeZaloFriends(List<ZaloFriend> val) {
         getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
     }
@@ -109,10 +68,4 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     public List<TransferRecent> listTransferRecent(int limit) {
         return getDaoSession().getTransferRecentDao().queryBuilder().limit(limit).list();
     }
-
-    @Override
-    public boolean isHaveTransactionInDb() {
-        return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
-    }
-
 }

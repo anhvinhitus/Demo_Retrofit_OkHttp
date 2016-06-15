@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.BalanceStore;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -41,6 +42,8 @@ public class ZaloPayFactory {
 
     private SqlZaloPayScope sqlZaloPayScope;
 
+    private TransactionStore.LocalStorage mTransactionLocalStorage;
+
     private final int LENGTH_TRANS_HISTORY = 25;
 
     private final int payAppId;
@@ -51,6 +54,7 @@ public class ZaloPayFactory {
 
     public ZaloPayFactory(Context context, ZaloPayService service,
                           User user, SqlZaloPayScope sqlZaloPayScope,
+                          TransactionStore.LocalStorage transactionLocalStorage,
                           int payAppId, EventBus eventBus) {
 
         if (context == null || service == null) {
@@ -61,6 +65,7 @@ public class ZaloPayFactory {
         this.zaloPayService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
+        this.mTransactionLocalStorage = transactionLocalStorage;
         this.payAppId = payAppId;
 
         this.eventBus = eventBus;
@@ -75,7 +80,7 @@ public class ZaloPayFactory {
                     //(4)
                     if (transHistoryEntities.size() > 0) {
                         sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(transHistoryEntities.get(0).transid));
-                        sqlZaloPayScope.write(transHistoryEntities);
+                        mTransactionLocalStorage.write(transHistoryEntities);
                     }
                 })
                 ;
@@ -83,11 +88,11 @@ public class ZaloPayFactory {
 
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal() {
-        return sqlZaloPayScope.transactionHistories();
+        return mTransactionLocalStorage.transactionHistories();
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int limit) {
-        return sqlZaloPayScope.transactionHistories(limit);
+        return mTransactionLocalStorage.transactionHistories(limit);
     }
 
     public Observable<Boolean> transactionUpdate() {
@@ -108,7 +113,7 @@ public class ZaloPayFactory {
     }
 
     public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {
-        if (sqlZaloPayScope.isHaveTransactionInDb()) {
+        if (mTransactionLocalStorage.isHaveTransactionInDb()) {
             long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
             transactionHistoryServer(lasttime, count, 1, subscriber);
         } else {
@@ -139,7 +144,7 @@ public class ZaloPayFactory {
         Timber.d("writeTransactionResp %s %s", response.data, Thread.currentThread().getName());
         if (size > 0) {
             sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
-            sqlZaloPayScope.write(response.data);
+            mTransactionLocalStorage.write(response.data);
         }
     }
 }
