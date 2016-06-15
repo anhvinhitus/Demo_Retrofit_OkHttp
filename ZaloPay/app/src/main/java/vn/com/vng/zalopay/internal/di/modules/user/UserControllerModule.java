@@ -109,12 +109,6 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    BalanceStore.LocalStorage provideBalanceLocalStorage(@Named("daosession") DaoSession session) {
-        return new BalanceLocalStorage(session);
-    }
-
-    @UserScope
-    @Provides
     ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service,
                                          User user, SqlZaloPayScope sqlZaloPayScope,
                                          @Named("payAppId") int payAppId, EventBus eventBus) {
@@ -131,16 +125,6 @@ public class UserControllerModule {
     @Provides
     AccountRepository provideAccountRepository(AccountService accountService, UserConfig userConfig) {
         return new AccountRepositoryImpl(accountService, userConfig);
-    }
-
-    @UserScope
-    @Provides
-    BalanceRepository provideBalanceRepository(
-            BalanceStore.LocalStorage localStorage,
-            BalanceStore.RequestService requestService,
-            User user,
-            EventBus eventBus) {
-        return new BalanceRepositoryImpl(localStorage, requestService, user, eventBus);
     }
 
     @UserScope

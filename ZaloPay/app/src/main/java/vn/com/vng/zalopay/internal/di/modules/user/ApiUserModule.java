@@ -33,12 +33,6 @@ public class ApiUserModule {
 
     @Provides
     @UserScope
-    BalanceStore.RequestService provideBalanceRequestService(@Named("retrofit") Retrofit retrofit) {
-        return retrofit.create(BalanceStore.RequestService.class);
-    }
-
-    @Provides
-    @UserScope
     AccountService provideAccountService(@Named("retrofit") Retrofit retrofit) {
         return retrofit.create(AccountService.class);
     }
