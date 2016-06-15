@@ -37,7 +37,7 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
     }
 
     public void addItems(List<ZaloFriend> zaloFriends) {
-        if (zaloFriends == null || zaloFriends.size() <=0) {
+        if (zaloFriends == null || zaloFriends.size() <= 0) {
             return;
         }
         int currentItemIndex = mValues.size() - 1;
@@ -63,7 +63,11 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
         holder.mItem = mValues.get(position);
         holder.mTvDisplayName.setText(holder.mItem.getDisplayName());
         loadImage(holder.mImgAvatar, holder.mItem.getAvatar());
-
+        if (position < getItemCount() - 1) {
+            holder.mViewSeparate.setVisibility(View.VISIBLE);
+        } else {
+            holder.mViewSeparate.setVisibility(View.GONE);
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,6 +96,7 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
         public final View mView;
         public final TextView mTvDisplayName;
         public final ImageView mImgAvatar;
+        public final View mViewSeparate;
         public ZaloFriend mItem;
 
         public ViewHolder(View view) {
@@ -99,6 +104,7 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
             mView = view;
             mImgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
             mTvDisplayName = (TextView) view.findViewById(R.id.tvDisplayName);
+            mViewSeparate = view.findViewById(R.id.viewSeparate);
         }
 
         @Override

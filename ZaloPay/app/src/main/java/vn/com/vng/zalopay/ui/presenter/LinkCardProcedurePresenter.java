@@ -109,7 +109,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
     @Override
     public void destroy() {
-        super.destroy();
+//        super.destroy();
     }
 
     public void addLinkCard() {
