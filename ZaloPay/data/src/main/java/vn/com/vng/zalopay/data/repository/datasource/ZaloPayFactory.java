@@ -32,44 +32,23 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public class ZaloPayFactory {
 
-    private Context context;
-
     private ZaloPayService zaloPayService;
 
-    private HashMap<String, String> params;
-
     private User user;
-
-    private SqlZaloPayScope sqlZaloPayScope;
-
-    private final int LENGTH_TRANS_HISTORY = 25;
-
-    private final int payAppId;
-
-    private EventBus eventBus;
 
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
     public ZaloPayFactory(Context context,
                           ZaloPayService service,
-                          User user,
-                          SqlZaloPayScope sqlZaloPayScope,
-                          TransactionStore.LocalStorage transactionLocalStorage,
-                          TransactionStore.RequestService transactionRequestService,
-                          int payAppId,
-                          EventBus eventBus) {
+                          User user) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
         }
 
-        this.context = context;
         this.zaloPayService = service;
         this.user = user;
-        this.sqlZaloPayScope = sqlZaloPayScope;
-        this.payAppId = payAppId;
 
-        this.eventBus = eventBus;
     }
 
 
