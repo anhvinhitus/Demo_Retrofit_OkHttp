@@ -15,3 +15,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepattributes Signature,InnerClasses
+-keepclasseswithmembers class vn.com.vng.zalopay.ui.** {
+    *;
+}
+-keepnames class vn.com.vng.zalopay.ui.** {
+    *;
+}
