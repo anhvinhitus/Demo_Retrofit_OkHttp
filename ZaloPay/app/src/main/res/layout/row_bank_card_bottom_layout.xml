@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_add_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="@dimen/spacing.medium">
 
-    <Button
-        android:id="@+id/btn_add_card"
-        style="@style/Button.Default"
-        android:layout_width="208dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:background="@drawable/bg_btn_blue"
-        android:drawableLeft="@drawable/ic_lc_card_add"
-        android:drawablePadding="8dp"
         android:gravity="center"
-        android:paddingBottom="@dimen/spacing.small"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.small"
-        android:text="@string/link_card_other"
-        android:textAllCaps="false" />
+        android:background="@drawable/bg_btn_blue_border_selector"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_lc_card_add" />
+
+        <TextView
+            style="@style/Button.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing.small"
+            android:gravity="center_vertical"
+            android:text="@string/link_card_other"
+            android:textAllCaps="false" />
+    </LinearLayout>
 </FrameLayout>
 
