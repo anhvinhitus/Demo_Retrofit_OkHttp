@@ -135,8 +135,11 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, ZaloPayIAPEntityDataMapper mapper) {
-        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, mapper);
+    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory,
+                                                      ZaloPayFactory zaloPayFactory,
+                                                      TransactionStore.Repository transactionRepository,
+                                                      ZaloPayIAPEntityDataMapper mapper) {
+        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, transactionRepository, mapper);
     }
 
     @UserScope

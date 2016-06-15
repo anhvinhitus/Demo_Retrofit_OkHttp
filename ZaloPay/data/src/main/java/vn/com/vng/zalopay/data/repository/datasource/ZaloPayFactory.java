@@ -42,10 +42,6 @@ public class ZaloPayFactory {
 
     private SqlZaloPayScope sqlZaloPayScope;
 
-    private TransactionStore.LocalStorage mTransactionLocalStorage;
-
-    private TransactionStore.RequestService mTransactionRequestService;
-
     private final int LENGTH_TRANS_HISTORY = 25;
 
     private final int payAppId;
@@ -71,43 +67,11 @@ public class ZaloPayFactory {
         this.zaloPayService = service;
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
-        this.mTransactionLocalStorage = transactionLocalStorage;
-        this.mTransactionRequestService = transactionRequestService;
         this.payAppId = payAppId;
 
         this.eventBus = eventBus;
     }
 
-    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
-        return mTransactionRequestService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
-                .map(transactionHistoryResponse -> transactionHistoryResponse.data)
-                .doOnNext(transHistoryEntities -> {
-                    //(4)
-                    if (transHistoryEntities.size() > 0) {
-                        sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(transHistoryEntities.get(0).transid));
-                        mTransactionLocalStorage.write(transHistoryEntities);
-                    }
-                })
-                ;
-    }
-
-
-    public Observable<List<TransHistoryEntity>> transactionHistorysLocal() {
-        return mTransactionLocalStorage.transactionHistories();
-    }
-
-    public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int limit) {
-        return mTransactionLocalStorage.transactionHistories(limit);
-    }
-
-    public Observable<Boolean> transactionUpdate() {
-        return ObservableHelper.makeObservable(() -> {
-            //update transaction
-            reloadListTransactionSync(30, null);
-
-            return Boolean.TRUE;
-        });
-    }
 
     public Observable<GetOrderResponse> getOrder(long appId, String zptranstoken) {
         return zaloPayService.getorder(user.uid, user.accesstoken, appId, zptranstoken);
@@ -115,41 +79,5 @@ public class ZaloPayFactory {
 
     public Observable<GetOrderResponse> createwalletorder(long appId, long amount, String transtype, String appUser, String description) {
         return zaloPayService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype, appUser, description);
-    }
-
-    public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {
-        if (mTransactionLocalStorage.isHaveTransactionInDb()) {
-            long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
-            transactionHistoryServer(lasttime, count, 1, subscriber);
-        } else {
-            transactionHistoryServer(0, count, 1, subscriber);
-        }
-    }
-
-    private void transactionHistoryServer(final long timestamp, final int count, final int odder, final Subscriber<List<TransHistory>> subscriber) {
-        Timber.d("transactionHistoryServer %s ", timestamp);
-        mTransactionRequestService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, odder)
-                .doOnNext(response -> writeTransactionResp(response))
-                .doOnNext(new Action1<TransactionHistoryResponse>() {
-                    @Override
-                    public void call(TransactionHistoryResponse response) {
-                        if (response.data.size() >= count) {
-                            transactionHistoryServer(response.data.get(0).reqdate, count, odder, subscriber);
-                        }
-                    }
-                })
-                .subscribe(new DefaultSubscriber<>());
-    }
-
-    private void writeTransactionResp(TransactionHistoryResponse response) {
-        List<TransHistoryEntity> list = response.data;
-        int size = list.size();
-
-
-        Timber.d("writeTransactionResp %s %s", response.data, Thread.currentThread().getName());
-        if (size > 0) {
-            sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
-            mTransactionLocalStorage.write(response.data);
-        }
     }
 }

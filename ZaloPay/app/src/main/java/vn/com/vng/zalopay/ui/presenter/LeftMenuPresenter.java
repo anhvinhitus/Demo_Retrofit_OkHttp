@@ -60,7 +60,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initializeZaloPay() {
-        zaloPayRepository.initialize()
+        AndroidApplication.instance().getUserComponent().transactionRepository().initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
     }

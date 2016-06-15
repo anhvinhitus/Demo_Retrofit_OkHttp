@@ -14,7 +14,7 @@ public abstract class BaseZaloPayPresenter extends BaseUserPresenter {
     protected Subscription subscriptionGetOrder;
 
     protected void transactionUpdate() {
-        subscriptionGetOrder = zaloPayRepository.transactionUpdate()
+        subscriptionGetOrder = AndroidApplication.instance().getUserComponent().transactionRepository().transactionUpdate()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Boolean>());
