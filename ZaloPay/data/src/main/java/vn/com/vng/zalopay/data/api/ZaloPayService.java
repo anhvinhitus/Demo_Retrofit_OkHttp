@@ -14,9 +14,6 @@ import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
  */
 public interface ZaloPayService {
 
-    @GET("tpe/transhistory")
-    Observable<TransactionHistoryResponse> transactionHistorys(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order);
-
     @GET("tpe/getorderinfo")
     Observable<GetOrderResponse> getorder(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query(Constants.APPID) long appId, @Query(Constants.ZPTRANSTOKEN) String apptransid);
 

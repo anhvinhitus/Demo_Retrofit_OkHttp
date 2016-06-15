@@ -4,6 +4,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.cache.TransactionLocalStorage;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
@@ -20,5 +21,11 @@ public class TransactionModule {
     @Provides
     TransactionStore.LocalStorage provideTransactionLocalStorage(@Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
         return new TransactionLocalStorage(session, zaloPayCacheMapper);
+    }
+
+    @Provides
+    @UserScope
+    TransactionStore.RequestService provideTransactionRequestService(@Named("retrofit") Retrofit retrofit) {
+        return retrofit.create(TransactionStore.RequestService.class);
     }
 }

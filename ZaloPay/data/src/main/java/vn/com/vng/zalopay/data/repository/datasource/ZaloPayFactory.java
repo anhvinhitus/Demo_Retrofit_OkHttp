@@ -44,6 +44,8 @@ public class ZaloPayFactory {
 
     private TransactionStore.LocalStorage mTransactionLocalStorage;
 
+    private TransactionStore.RequestService mTransactionRequestService;
+
     private final int LENGTH_TRANS_HISTORY = 25;
 
     private final int payAppId;
@@ -52,10 +54,14 @@ public class ZaloPayFactory {
 
     private LruCache<Long, GetMerchantUserInfoResponse> mCacheMerchantUser = new LruCache<>(10);
 
-    public ZaloPayFactory(Context context, ZaloPayService service,
-                          User user, SqlZaloPayScope sqlZaloPayScope,
+    public ZaloPayFactory(Context context,
+                          ZaloPayService service,
+                          User user,
+                          SqlZaloPayScope sqlZaloPayScope,
                           TransactionStore.LocalStorage transactionLocalStorage,
-                          int payAppId, EventBus eventBus) {
+                          TransactionStore.RequestService transactionRequestService,
+                          int payAppId,
+                          EventBus eventBus) {
 
         if (context == null || service == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
@@ -66,16 +72,15 @@ public class ZaloPayFactory {
         this.user = user;
         this.sqlZaloPayScope = sqlZaloPayScope;
         this.mTransactionLocalStorage = transactionLocalStorage;
+        this.mTransactionRequestService = transactionRequestService;
         this.payAppId = payAppId;
 
         this.eventBus = eventBus;
     }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
-        return zaloPayService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
+        return mTransactionRequestService.transactionHistorys(user.uid, user.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
                 .map(transactionHistoryResponse -> transactionHistoryResponse.data)
-
-
                 .doOnNext(transHistoryEntities -> {
                     //(4)
                     if (transHistoryEntities.size() > 0) {
@@ -123,7 +128,7 @@ public class ZaloPayFactory {
 
     private void transactionHistoryServer(final long timestamp, final int count, final int odder, final Subscriber<List<TransHistory>> subscriber) {
         Timber.d("transactionHistoryServer %s ", timestamp);
-        zaloPayService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, odder)
+        mTransactionRequestService.transactionHistorys(user.uid, user.accesstoken, timestamp, count, odder)
                 .doOnNext(response -> writeTransactionResp(response))
                 .doOnNext(new Action1<TransactionHistoryResponse>() {
                     @Override
