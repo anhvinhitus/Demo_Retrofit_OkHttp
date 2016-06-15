@@ -109,7 +109,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     @Override
     public void destroy() {
-        super.destroy();
         this.destroyView();
     }
 

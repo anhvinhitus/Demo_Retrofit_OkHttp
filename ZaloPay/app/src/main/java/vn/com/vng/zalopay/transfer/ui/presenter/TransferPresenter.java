@@ -288,6 +288,5 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     @Override
     public void destroy() {
         unsubscribeIfNotNull(subscriptionGetOrder);
-        super.destroy();
     }
 }

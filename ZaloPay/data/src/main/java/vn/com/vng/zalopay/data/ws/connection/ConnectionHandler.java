@@ -63,9 +63,5 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
         if (listener != null) {
             listener.onDisconnected(-1, "");
         }
-
-        /*if (isNetworkAvailable(this.ctx)) {
-
-        }*/
     }
 }

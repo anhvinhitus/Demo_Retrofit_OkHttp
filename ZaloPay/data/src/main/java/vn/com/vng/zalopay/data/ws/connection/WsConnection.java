@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.Log;
 
@@ -30,7 +32,6 @@ import vn.com.vng.zalopay.domain.model.User;
 public class WsConnection extends Connection implements ConnectionListener {
 
     private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-    private static final String TAG = "ConnectionManager";
     public static final int TYPE_FIELD_LENGTH = 1;
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
@@ -139,7 +140,7 @@ public class WsConnection extends Connection implements ConnectionListener {
 
         if (isConnected()) {
             try {
-                Log.i(TAG, "send message to server: type = " + msgType);
+                Timber.d("send message to server: type = " + msgType);
                 ByteBuffer bufTemp = ByteBuffer.allocate(HEADER_LENGTH + data.length);
                 bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
                 bufTemp.put((byte) msgType);
@@ -185,6 +186,9 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onDisconnected(int code, String message) {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
+        if (isNetworkAvailable(context)) {
+            connect();
+        }
     }
 
 
@@ -204,6 +208,13 @@ public class WsConnection extends Connection implements ConnectionListener {
             return sendAuthentication(user.accesstoken, Long.parseLong(user.uid));
         }
         return false;
+    }
+
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }
