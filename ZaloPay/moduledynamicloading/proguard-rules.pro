@@ -61,3 +61,12 @@
 # stetho
 
 -dontwarn com.facebook.stetho.**
+
+# mdl
+-keepattributes Signature,InnerClasses
+-keepclasseswithmembers class vn.com.vng.zalopay.mdl.** {
+    *;
+}
+-keepnames class vn.com.vng.zalopay.mdl.** {
+    *;
+}
