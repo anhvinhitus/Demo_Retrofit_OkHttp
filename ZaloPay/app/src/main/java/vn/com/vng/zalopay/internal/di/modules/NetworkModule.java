@@ -24,13 +24,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
+import vn.com.vng.zalopay.data.ws.connection.WsConnection;
+import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 @Module
 public class NetworkModule {
@@ -102,5 +104,10 @@ public class NetworkModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    WsConnection providesWsConnecttion(Context context, UserConfig userConfig) {
+        return new WsConnection(context, new MessageParser(), userConfig);
+    }
 
 }

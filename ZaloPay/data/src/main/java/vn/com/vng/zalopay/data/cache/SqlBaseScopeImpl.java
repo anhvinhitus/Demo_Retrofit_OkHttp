@@ -27,24 +27,6 @@ public class SqlBaseScopeImpl {
         return daoSession;
     }
 
-    public static <T> Observable<T> makeObservable(final Callable<T> func) {
-        return Observable.create(
-                new Observable.OnSubscribe<T>() {
-                    @Override
-                    public void call(Subscriber<? super T> subscriber) {
-                        try {
-                            subscriber.onNext(func.call());
-                            subscriber.onCompleted();
-                        } catch (Exception ex) {
-                            try {
-                                subscriber.onError(ex);
-                            } catch (Exception ex2) {
-                            }
-                        }
-                    }
-                });
-    }
-
     public void insertDataManifest(String key, String values) {
         daoSession.getDataManifestDao().insertOrReplace(new DataManifest(key, values));
     }

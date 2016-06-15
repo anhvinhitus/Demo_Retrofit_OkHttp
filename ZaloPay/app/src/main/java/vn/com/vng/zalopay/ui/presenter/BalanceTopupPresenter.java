@@ -69,6 +69,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 transactionUpdate();
+                updateBalance();
 
                 if (mView == null) {
                     return;

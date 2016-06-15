@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -28,14 +29,16 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 public class PaymentServiceImpl implements IPaymentService {
 
     final ZaloPayIAPRepository zaloPayIAPRepository;
+    final BalanceRepository mBalanceRepository;
     final User user;
 //    private PaymentListener paymentListener;
     private PaymentWrapper paymentWrapper;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, User user) {
+    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user) {
         this.zaloPayIAPRepository = zaloPayIAPRepository;
+        this.mBalanceRepository = balanceRepository;
         this.user = user;
     }
 
@@ -201,6 +204,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private void successCallback(Promise promise, WritableMap object) {
         transactionUpdate();
+        balanceUpdate();
         if (promise == null) {
             return;
         }
@@ -258,6 +262,12 @@ public class PaymentServiceImpl implements IPaymentService {
     private void transactionUpdate() {
         zaloPayIAPRepository.transactionUpdate()
                 .subscribe(new DefaultSubscriber<Boolean>());
+
+    }
+
+    private void balanceUpdate() {
+        // update balance
+        mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
     }
 
     private final class UserInfoSubscriber extends DefaultSubscriber<MerChantUserInfo> {

@@ -182,7 +182,7 @@ public class Navigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
     }
 
-    public void startTrasferActivity(TransferHomeFragment fragment, Bundle bundle) {
+    public void startTransferActivity(TransferHomeFragment fragment, Bundle bundle) {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtras(bundle);
         fragment.startActivity(intent);

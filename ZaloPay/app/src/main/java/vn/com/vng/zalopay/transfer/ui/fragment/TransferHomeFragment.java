@@ -210,7 +210,7 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
         }
         Bundle bundle = new Bundle();
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
-        navigator.startTrasferActivity(this, bundle);
+        navigator.startTransferActivity(this, bundle);
     }
 
     /**

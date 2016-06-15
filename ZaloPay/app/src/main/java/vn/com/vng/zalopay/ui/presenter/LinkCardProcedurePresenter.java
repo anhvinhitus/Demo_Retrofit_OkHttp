@@ -2,8 +2,10 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
@@ -32,6 +34,8 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
     final User user;
 
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     public LinkCardProcedurePresenter(User user) {
         this.user = user;
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
@@ -58,6 +62,8 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 transactionUpdate();
+                updateBalance();
+
                 ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
                 if (paymentInfo == null) {
                     return;
@@ -86,7 +92,9 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
     @Override
     public void destroyView() {
         hideLoadingView();
+        unsubscribeIfNotNull(compositeSubscription);
         mView = null;
+
     }
 
     @Override
@@ -121,10 +129,11 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             }
             showLoadingView();
             String description = mView.getContext().getString(R.string.link_card);
-            subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber());
+            compositeSubscription.add(subscription);
         }
     }
 
@@ -146,7 +155,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
         public void onError(Throwable e) {
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
-                if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
+                if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
                     clearAndLogout();
                     return;
                 }

@@ -7,6 +7,10 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +19,9 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
@@ -25,6 +31,7 @@ import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
+import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -45,6 +52,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Inject
     BundleReactConfig bundleReactConfig;
 
+    @Inject
+    EventBus eventBus;
 
     private AppResource appResource;
 
@@ -66,6 +75,18 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         Timber.d("appResource appname %s", appResource == null ? "" : appResource.appname);
 
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        eventBus.unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        eventBus.register(this);
     }
 
 
@@ -183,5 +204,19 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onTokenExpired(TokenExpiredEvent event) {
+        showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().clearUserSession();
+    }
+
+    public void showToast(String message) {
+        ToastUtil.showToast(this, message);
+    }
+
+    public void showToast(int message) {
+        ToastUtil.showToast(this, message);
     }
 }

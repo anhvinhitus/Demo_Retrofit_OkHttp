@@ -4,11 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +26,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.service.ZaloPayService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -105,6 +108,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         //init SDK
         presenter.loadGatewayInfoPaymentSDK();
         globalEventHandlingService.setMainActivity(this);
+
+        //  startZaloPayService();
     }
 
     @Override
@@ -267,6 +272,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private void startZaloPayService() {
+        AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                startService(new Intent(MainActivity.this.getApplicationContext(), ZaloPayService.class));
+                return null;
+            }
+        });
     }
 
       /*  */
