@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
 import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
 
@@ -107,7 +109,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
         ImageView mLogo;
 
         @BindView(R.id.vg_header)
-        ViewGroup mHeaderView;
+        View mHeaderView;
 
         @BindView(R.id.tv_sub_num_acc)
         TextView mSubAccNumber;
@@ -130,46 +132,49 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             }
         }
 
-        //ef9825 master card
-
-        // 0f7ecd visa
-
-        // 1e3368 jcb
+        public int getColorFromResource(int resource) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return getContext().getColor(resource);
+            } else {
+                return getContext().getResources().getColor(resource);
+            }
+        }
 
         public void bindView(BankCard bankCard) {
+            Timber.d("bindView bankCard.type:%s", bankCard.type);
             GradientDrawable bgShape = (GradientDrawable) mHeaderView.getBackground();
             if (bankCard.type == null) {
                 mLogo.setImageResource(R.color.transparent);
             } else if (bankCard.type.equals(ECardType.JCB.toString())) {
                 mLogo.setImageResource(R.drawable.ic_lc_jcb_card);
-                bgShape.setColor(Color.parseColor("#1e3368"));
+                bgShape.setColor(getColorFromResource(R.color.bg_jcb));
             } else if (bankCard.type.equals(ECardType.VISA.toString())) {
-                bgShape.setColor(Color.parseColor("#0f7ecd"));
+                bgShape.setColor(getColorFromResource(R.color.bg_visa));
                 mLogo.setImageResource(R.drawable.ic_lc_visa_card);
             } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
+                bgShape.setColor(getColorFromResource(R.color.bg_master_card));
                 mLogo.setImageResource(R.drawable.ic_lc_master_card);
             } else if (bankCard.type.equals(ECardType.PVTB.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                bgShape.setColor(getColorFromResource(R.color.bg_vietinbank));
+                mLogo.setImageResource(R.drawable.ic_vietinbank);
             } else if (bankCard.type.equals(ECardType.PBIDV.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                bgShape.setColor(getColorFromResource(R.color.bg_bidv));
+                mLogo.setImageResource(R.drawable.ic_bidv);
             } else if (bankCard.type.equals(ECardType.PVCB.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                bgShape.setColor(getColorFromResource(R.color.bg_vietcombank));
+                mLogo.setImageResource(R.drawable.ic_vietcombank);
             } else if (bankCard.type.equals(ECardType.PEIB.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                bgShape.setColor(getColorFromResource(R.color.bg_eximbank));
+                mLogo.setImageResource(R.drawable.ic_eximbank);
             } else if (bankCard.type.equals(ECardType.PSCB.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                bgShape.setColor(getColorFromResource(R.color.bg_sacombank));
+                mLogo.setImageResource(R.drawable.ic_sacombank);
             } else if (bankCard.type.equals(ECardType.PAGB.toString())) {
-                bgShape.setColor(Color.parseColor("#ef9825"));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                bgShape.setColor(getColorFromResource(R.color.bg_agribank));
+                mLogo.setImageResource(R.drawable.ic_agribank);
             } else if (bankCard.type.equals(ECardType.PTPB.toString())) {
-
-
+                bgShape.setColor(getColorFromResource(R.color.bg_tpbank));
+                mLogo.setImageResource(R.drawable.ic_tpbank);
             } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
                 mLogo.setImageResource(R.color.transparent);
             }
