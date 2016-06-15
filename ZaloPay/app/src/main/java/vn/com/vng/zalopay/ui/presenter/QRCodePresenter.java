@@ -99,7 +99,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     @Override
     public void resume() {
-
+        hideLoadingView();
     }
 
     @Override
