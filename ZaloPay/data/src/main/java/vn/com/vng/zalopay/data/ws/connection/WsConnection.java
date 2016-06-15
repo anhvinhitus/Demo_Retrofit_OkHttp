@@ -18,7 +18,11 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
+import vn.com.vng.zalopay.data.ws.protobuf.LogicMessages;
+import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -42,10 +46,12 @@ public class WsConnection extends Connection implements ConnectionListener {
     private final Context context;
     private Handler messageHandler = null;
     private final Parser parser;
+    private final UserConfig userConfig;
 
-    public WsConnection(Context context, Parser parser) {
+    public WsConnection(Context context, Parser parser, UserConfig config) {
         this.context = context;
         this.parser = parser;
+        this.userConfig = config;
     }
 
     public void setHandler(Handler handler) {
@@ -152,6 +158,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onConnected() {
         Timber.d("onConnected");
         mState = State.Connected;
+        sendAuthentication();
     }
 
     @Override
@@ -159,6 +166,12 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         GeneratedMessage message = parser.parserMessage(data);
         if (data != null) {
+            if (message instanceof LogicMessages.LoginSuccess) {
+                Timber.d("send authentication success");
+            } else if (message instanceof LogicMessages.PushNotificationInfo) {
+                Timber.d("PushNotificationInfo");
+
+            }
         }
     }
 
@@ -173,4 +186,23 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
     }
+
+
+    private boolean sendAuthentication(String token) {
+        Timber.d("ws authentication %s", token);
+
+        LogicMessages.Login loginMsg = LogicMessages.Login.newBuilder()
+                .setTokenKey(token)
+                .build();
+        return send(MessageType.Request.AUTHEN_LOGIN, loginMsg);
+    }
+
+    public boolean sendAuthentication() {
+        if (userConfig.hasCurrentUser()) {
+            User user = userConfig.getCurrentUser();
+            return sendAuthentication(user.accesstoken);
+        }
+        return false;
+    }
+
 }

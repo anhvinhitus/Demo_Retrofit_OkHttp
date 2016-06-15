@@ -31,7 +31,7 @@ public class ChannelFactory extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("framer", new LengthFieldBasedFrameDecoder(ByteOrder.BIG_ENDIAN, 8192, 0, 4, 0, 4, true));
         pipeline.addLast("bytesDecoder", new ByteArrayDecoder());
         pipeline.addLast("bytesEncoder", new ByteArrayEncoder());
-        pipeline.addLast("handler", new ChannelHandler(context, listener));
+        pipeline.addLast("handler", new ConnectionHandler(context, listener));
     }
 
     @Override

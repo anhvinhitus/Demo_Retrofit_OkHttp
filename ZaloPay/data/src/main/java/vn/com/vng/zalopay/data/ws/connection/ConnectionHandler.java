@@ -11,12 +11,12 @@ import timber.log.Timber;
 /**
  * Created by AnhHieu on 6/14/16.
  */
-public class ChannelHandler extends SimpleChannelInboundHandler<byte[]> {
+public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
 
     private final Context ctx;
     private final ConnectionListener listener;
 
-    public ChannelHandler(Context context, ConnectionListener handler) {
+    public ConnectionHandler(Context context, ConnectionListener handler) {
         this.ctx = context;
         this.listener = handler;
     }
@@ -24,6 +24,9 @@ public class ChannelHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) throws Exception {
+
+        Timber.d("channelRead0 %s", Thread.currentThread().getName());
+
         if (listener != null) {
             listener.onReceived(msg);
         }
@@ -64,12 +67,5 @@ public class ChannelHandler extends SimpleChannelInboundHandler<byte[]> {
         /*if (isNetworkAvailable(this.ctx)) {
 
         }*/
-    }
-
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
