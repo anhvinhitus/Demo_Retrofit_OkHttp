@@ -85,6 +85,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
     @Override
     public void destroyView() {
+        hideLoadingView();
         mView = null;
     }
 
@@ -101,7 +102,6 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
     @Override
     public void destroy() {
         super.destroy();
-        hideLoadingView();
     }
 
     public void addLinkCard() {
@@ -119,7 +119,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             if (user == null) {
                 return;
             }
-            mView.showLoading();
+            showLoadingView();
             String description = mView.getContext().getString(R.string.link_card);
             subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
                     .subscribeOn(Schedulers.io())
@@ -168,11 +168,24 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
         hideLoadingView();
     }
 
+    private void showLoadingView() {
+        if (mView == null) {
+            return;
+        }
+        mView.showLoading();
+    }
+
     private void hideLoadingView() {
+        if (mView == null) {
+            return;
+        }
         mView.hideLoading();
     }
 
     private void showErrorView(String message) {
+        if (mView == null) {
+            return;
+        }
         mView.hideLoading();
         mView.showError(message);
     }
