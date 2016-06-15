@@ -18,7 +18,7 @@ public class DownloadAppResourceTaskQueue {
     private final Class<?> cls;
 
     public DownloadAppResourceTaskQueue(Context context, Class<?> cls) {
-        this.tasklist = new LinkedList();
+        this.tasklist = new LinkedList<>();
         this.context = context;
         this.cls = cls;
     }

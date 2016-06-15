@@ -46,12 +46,12 @@ public final class User extends Person {
         this.uid = uid;
     }
 
-    public Object fromJson(String jsonString, Type type) {
+    public <T> T fromJson(String jsonString, Type type) {
         return new Gson().fromJson(jsonString, type);
     }
 
     public void setPermissions(String jsonArray) {
-        profilePermisssions = (ArrayList<ProfilePermisssion.Permission>) fromJson(jsonArray,
+        profilePermisssions = fromJson(jsonArray,
                 new TypeToken<ArrayList<ProfilePermisssion.Permission>>() {
                 }.getType());
     }

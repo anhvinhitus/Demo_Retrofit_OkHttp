@@ -2,9 +2,10 @@
 <resources>
 
     <string name="exception.token.expired.message">Token hết hạn, Vui lòng đăng nhập lại!</string>
-    <string name="exception.generic">There was an application error</string>
-    <string name="exception.no.connection">There is no internet connection</string>
-    <string name="exception.no.connection.try.again">No network connection. Please try again.</string>
-    <string name="exception.retry.connection">Can\'t connect\n Tap to Retry</string>
+    <string name="exception.generic">Ứng dụng xảy ra lỗi, Vui lòng thử lại!</string>
+    <string name="exception.no.connection">Không có kết nối Internet</string>
+    <string name="exception.no.connection.try.again">Không có kết nối Internet, Vui lòng thử lại!</string>
+    <string name="exception.retry.connection">Không thể kết nối\n Nhấn để thử lại</string>
+    <string name="exception.timeout.message">Hết thời gian kết nối, vui lòng thử lại!</string>
 
 </resources>
