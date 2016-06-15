@@ -6,6 +6,10 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,13 +18,16 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -34,10 +41,27 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     GlobalEventHandlingService globalEventHandlingService;
 
+    @Inject
+    EventBus eventBus;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        eventBus.unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        eventBus.register(this);
+    }
+
 
     @Override
     protected void doInjection() {
@@ -99,5 +123,19 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                         "Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
 
         super.handleException(e);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onTokenExpired(TokenExpiredEvent event) {
+        showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().clearUserSession();
+    }
+
+    public void showToast(String message) {
+        ToastUtil.showToast(this, message);
+    }
+
+    public void showToast(int message) {
+        ToastUtil.showToast(this, message);
     }
 }
