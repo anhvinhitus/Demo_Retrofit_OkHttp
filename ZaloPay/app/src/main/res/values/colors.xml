@@ -58,4 +58,21 @@
     <color name="txt_item_main">#24272b</color>
     <color name="txt_item_sub">#727f8c</color>
     <color name="txt_group_title">#727f8c</color>
+
+    <color name="bg_master_card">#ef9825</color>
+    <color name="bg_visa">#0f7ecd</color>
+    <color name="bg_jcb">#1e3368</color>
+    <color name="bg_vietinbank">#d6e0e5</color>
+    <color name="bg_vietcombank">#d6e0e5</color>
+    <color name="bg_vib">#055496</color>
+    <color name="bg_tpbank">#5d2f89</color>
+    <color name="bg_techcombank">#d6e0e5</color>
+    <color name="bg_shb">#2d2a6d</color>
+    <color name="bg_sacombank">#0474bb</color>
+    <color name="bg_mb">#2372b3</color>
+    <color name="bg_maritimebank">#d6e0e5</color>
+    <color name="bg_eximbank">#00a2e2</color>
+    <color name="bg_donga">#2f3293</color>
+    <color name="bg_bidv">#2a419a</color>
+    <color name="bg_agribank">#105c3c</color>
 </resources>
