@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui.presenter;
 
+import android.os.CountDownTimer;
+
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
@@ -28,8 +30,10 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  */
 public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView> {
     private final int OFFSET_GET_FRIEND = 50;
+    private final int TIMEOUT_REQUEST = 10000; //10s
     private int mPageIndex = 0;
     private IZaloContactView mView;
+    private CountDownTimer mCountDownTimer;
 
     @Inject
     Navigator navigator;
@@ -44,10 +48,21 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void setView(IZaloContactView zaloContactView) {
         mView = zaloContactView;
+        mCountDownTimer = new CountDownTimer(TIMEOUT_REQUEST, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                mView.onGetZaloContactError();
+            }
+        };
     }
 
     @Override
     public void destroyView() {
+        mCountDownTimer.cancel();
+        mCountDownTimer = null;
         mView = null;
     }
 
@@ -67,6 +82,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     }
 
     public void getFriendList(final IZaloFriendListener listener) {
+        mView.showLoading();
         mPageIndex = 0;
         getFriendList(mPageIndex, listener);
     }
@@ -82,6 +98,8 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                     if (data != null && data.length() >= OFFSET_GET_FRIEND) {
                         mPageIndex+=OFFSET_GET_FRIEND;
                         getFriendList(mPageIndex, listener);
+                    } else {
+                        mCountDownTimer.cancel();
                     }
                     List<ZaloFriend> zaloFriends = zaloFriends(data);
                     Timber.d("getFriendList, zaloFriends.size: %s", zaloFriends.size());
@@ -97,6 +115,8 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                 }
             }
         });
+        mCountDownTimer.cancel();
+        mCountDownTimer.start();
     }
 
     private List<ZaloFriend> zaloFriends(final JSONArray jsonArray) {
