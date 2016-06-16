@@ -23,8 +23,6 @@ import vn.com.vng.zalopay.domain.model.User;
  * Implementation for transaction repository
  */
 public class TransactionRepository implements TransactionStore.Repository {
-    private static final int LENGTH_TRANS_HISTORY = 25;
-
     private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
     private TransactionStore.LocalStorage mTransactionLocalStorage;
     private TransactionStore.RequestService mTransactionRequestService;
@@ -45,40 +43,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     @Override
-    public Observable<List<TransHistory>> initializeTransHistory() {
-        return transactionHistorysServer(0, 1)
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
-    }
-
-    @Override
-    public Observable<List<TransHistory>> loadMoreTransHistory() {
-        return null;
-    }
-
-    @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
         return transactionHistorysLocal(pageIndex, count)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
-    }
-
-    @Override
-    public Observable<List<TransHistory>> reloadListTransaction(int count) {
-        return transactionHistorysLocal(0, count)
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
-    }
-
-    @Override
-    public void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber) {
-        //   zaloPayFactory.reloadListTransactionSync(count, subscriber);
-    }
-
-    @Override
-    public void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber) {
-        // zaloPayFactory.getTransactions(pageIndex, count, subscriber);
-    }
-
-    public void requestTransactionsHistory() {
-        reloadListTransactionSync(30, null);
     }
 
     @Override
@@ -94,28 +61,23 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Observable<Boolean> initialize() {
         return ObservableHelper.makeObservable(() -> {
-            requestTransactionsHistory();
+            reloadListTransactionSync(30, null);
             return Boolean.TRUE;
         }).delaySubscription(5, TimeUnit.SECONDS);
     }
-
-    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
-        return mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
-                .map(transactionHistoryResponse -> transactionHistoryResponse.data)
-                .doOnNext(transHistoryEntities -> {
-                    //(4)
-                    if (transHistoryEntities.size() > 0) {
-                        mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(transHistoryEntities.get(0).transid));
-                        mTransactionLocalStorage.write(transHistoryEntities);
-                    }
-                })
-                ;
-    }
-
-
-    public Observable<List<TransHistoryEntity>> transactionHistorysLocal() {
-        return mTransactionLocalStorage.transactionHistories();
-    }
+//
+//    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
+//        return mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, LENGTH_TRANS_HISTORY, order)
+//                .map(transactionHistoryResponse -> transactionHistoryResponse.data)
+//                .doOnNext(transHistoryEntities -> {
+//                    //(4)
+//                    if (transHistoryEntities.size() > 0) {
+//                        mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(transHistoryEntities.get(0).transid));
+//                        mTransactionLocalStorage.write(transHistoryEntities);
+//                    }
+//                })
+//                ;
+//    }
 
     public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int pageIndex, int limit) {
         return mTransactionLocalStorage.transactionHistories(pageIndex, limit);
@@ -130,16 +92,13 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
     }
 
-    private void transactionHistoryServer(final long timestamp, final int count, final int odder, final Subscriber<List<TransHistory>> subscriber) {
+    private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, final Subscriber<List<TransHistory>> subscriber) {
         Timber.d("transactionHistoryServer %s ", timestamp);
-        mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, odder)
-                .doOnNext(response -> writeTransactionResp(response))
-                .doOnNext(new Action1<TransactionHistoryResponse>() {
-                    @Override
-                    public void call(TransactionHistoryResponse response) {
-                        if (response.data.size() >= count) {
-                            transactionHistoryServer(response.data.get(0).reqdate, count, odder, subscriber);
-                        }
+        mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, sortOrder)
+                .doOnNext(this::writeTransactionResp)
+                .doOnNext(response -> {
+                    if (response.data.size() >= count) {
+                        transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, subscriber);
                     }
                 })
                 .subscribe(new DefaultSubscriber<>());

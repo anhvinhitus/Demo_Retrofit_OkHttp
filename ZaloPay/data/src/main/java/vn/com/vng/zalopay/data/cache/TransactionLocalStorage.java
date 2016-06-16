@@ -46,20 +46,10 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
-    public void write(TransHistoryEntity val) {
-        getDaoSession().getTransactionLogDao().insertOrReplace(mDaoMapper.transform(val));
-    }
-
-    @Override
     public Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit) {
         return ObservableHelper.makeObservable(() -> listTransHistories(pageIndex, limit))
                 .doOnNext(transHistoryEntities -> Timber.d("transactionHistories %s", transHistoryEntities.size()))
                 ;
-    }
-
-    @Override
-    public Observable<List<TransHistoryEntity>> transactionHistories() {
-        return ObservableHelper.makeObservable(() -> listTransHistories(0, Integer.MAX_VALUE));
     }
 
     @Override
@@ -72,12 +62,6 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                         .offset(pageIndex * limit)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
                         .list());
-    }
-
-    @Override
-    public Observable<TransHistoryEntity> transactionHistory() {
-        //return makeObservable(() -> mDaoMapper.transform(getDaoSession().getTransactionLogDao().queryBuilder().w));
-        return null;
     }
 
     @Override

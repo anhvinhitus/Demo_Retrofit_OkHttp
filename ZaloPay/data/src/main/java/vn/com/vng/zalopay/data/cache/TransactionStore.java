@@ -18,17 +18,12 @@ public interface TransactionStore {
     interface LocalStorage {
         void write(List<TransHistoryEntity> val);
 
-        void write(TransHistoryEntity val);
-
         Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit);
-
-        Observable<List<TransHistoryEntity>> transactionHistories();
 
         List<TransHistoryEntity> listTransHistories(int pageIndex, int limit);
 
         boolean isHaveTransactionInDb();
 
-        Observable<TransHistoryEntity> transactionHistory();
     }
 
     interface RequestService {
@@ -38,22 +33,7 @@ public interface TransactionStore {
 
     interface Repository {
 
-        Observable<List<TransHistory>> initializeTransHistory();
-
-        Observable<List<TransHistory>> loadMoreTransHistory();
-
         Observable<List<TransHistory>> getTransactions(int pageIndex, int count);
-
-        Observable<List<TransHistory>> reloadListTransaction(int count);
-
-        //thread react-native
-        void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber);
-
-        //thread react-native
-        void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber);
-
-        //thread react-native
-        void requestTransactionsHistory();
 
         /*Gọi khi một giao dịch thành công*/
         Observable<Boolean> transactionUpdate();
