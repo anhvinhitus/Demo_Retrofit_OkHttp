@@ -66,7 +66,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
                 try {
                     userConfig.saveZaloUserInfo(profile);
                 } catch (Exception ex) {
-                    Timber.e(ex, "Exception while getting Zalo user profile");
+                    Timber.w(ex, "Exception while getting Zalo user profile");
                 }
             }
         });

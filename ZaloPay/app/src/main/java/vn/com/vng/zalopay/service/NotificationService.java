@@ -118,7 +118,7 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     }
 
     private void showNotification(NotificationData event) {
-        String message = TextUtils.isEmpty(event.message) ? "Thông báo từ Zalo Pay" : event.message;
+        String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
         int notificationId = 1;
 
         notificationHelper.create(getApplicationContext(), notificationId,
@@ -130,7 +130,7 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     protected void transactionUpdate() {
         UserComponent userComponent = getUserComponent();
         if (userComponent != null) {
-            userComponent.transactionRepository().transactionUpdate()
+            userComponent.transactionRepository().updateTransaction()
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());
         }
