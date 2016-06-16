@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -113,6 +114,25 @@ public abstract class BaseFragment extends Fragment {
         if (mProgressDialog != null)
             mProgressDialog.dismiss();
     }
+
+    public void showErrorDialog(String message, String cancelText, final SweetAlertDialog.OnSweetClickListener cancelListener) {
+        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                .setContentText(message)
+                .setConfirmText(cancelText)
+                .setConfirmClickListener(cancelListener)
+                .show();
+    }
+
+    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancellListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retrylListener) {
+        new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setContentText(retryMessage)
+                .setCancelText(cancelBtnText)
+                .setCancelClickListener(cancellListener)
+                .setConfirmText(retryBtnText)
+                .setConfirmClickListener(retrylListener)
+                .show();
+    }
+
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();

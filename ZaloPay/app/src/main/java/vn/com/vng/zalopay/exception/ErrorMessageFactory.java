@@ -4,16 +4,13 @@ package vn.com.vng.zalopay.exception;
 import android.content.Context;
 
 import java.net.SocketTimeoutException;
-import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.HttpException;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-import vn.com.vng.zalopay.data.exception.VideoNotFoundException;
 import vn.vng.uicomponent.widget.errorview.HttpStatusCodes;
 
 public class ErrorMessageFactory {

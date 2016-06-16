@@ -68,9 +68,9 @@
                     android:id="@+id/textInputAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing.small"
-                    android:layout_marginRight="@dimen/spacing.small"
-                    android:layout_marginTop="@dimen/spacing.small"
+                    android:layout_marginBottom="@dimen/spacing.medium.t"
+                    android:layout_marginRight="@dimen/spacing.medium.t"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
                     android:orientation="vertical"
                     app:errorEnabled="false">
 
@@ -81,12 +81,12 @@
                         android:layout_height="wrap_content"
                         android:background="@color/transparent"
                         android:ellipsize="end"
-                        android:gravity="center_vertical"
+                        android:gravity="bottom"
                         android:hint="@string/hint_amount"
                         android:inputType="number"
                         android:maxLength="17"
                         android:maxLines="1"
-                        android:paddingTop="@dimen/spacing.small"
+                        android:paddingTop="@dimen/spacing.tiny"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -99,9 +99,9 @@
                     android:id="@+id/textInputTransferMsg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing.small"
-                    android:layout_marginRight="@dimen/spacing.small"
-                    android:layout_marginTop="@dimen/spacing.small"
+                    android:layout_marginBottom="@dimen/spacing.medium.t"
+                    android:layout_marginRight="@dimen/spacing.medium.t"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
                     app:errorEnabled="false">
 
                     <vn.com.vng.zalopay.ui.widget.ClearableEditText
@@ -111,12 +111,12 @@
                         android:layout_height="wrap_content"
                         android:background="@color/transparent"
                         android:ellipsize="end"
-                        android:gravity="center_vertical"
+                        android:gravity="bottom"
                         android:hint="@string/hint_message"
                         android:inputType="text"
                         android:maxLength="36"
                         android:maxLines="1"
-                        android:paddingTop="@dimen/spacing.small"
+                        android:paddingTop="@dimen/spacing.tiny"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>

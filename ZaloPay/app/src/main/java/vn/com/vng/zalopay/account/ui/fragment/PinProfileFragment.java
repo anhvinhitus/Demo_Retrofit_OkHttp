@@ -112,9 +112,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @OnClick(R.id.tvCancel)
     public void onClickCancel(View view) {
-        navigator.startHomeActivity(getContext(), true);
-        ActivityAnimator anim = new ActivityAnimator();
-        anim.fadeAnimation(getActivity());
+        getActivity().finish();
     }
 
     private boolean isValidPinCompare() {

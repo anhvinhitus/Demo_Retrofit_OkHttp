@@ -16,6 +16,7 @@ import java.util.List;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.transfer.models.TransferRecent;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment.OnListFragmentInteractionListener;
+import vn.com.vng.zalopay.utils.PhoneUtil;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link TransferRecent} and makes a call to the
@@ -59,9 +60,9 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mTvDisplayName.setText(holder.mItem.getDisplayName());
-        String phone = "SĐT: ";
+        String phone = "";
         if (!TextUtils.isEmpty(holder.mItem.getPhoneNumber())) {
-            phone+= holder.mItem.getPhoneNumber();
+            phone= PhoneUtil.formatPhoneNumber(holder.mItem.getPhoneNumber());
             holder.mTvPhone.setText(phone);
             holder.mTvPhone.setVisibility(View.VISIBLE);
         } else {

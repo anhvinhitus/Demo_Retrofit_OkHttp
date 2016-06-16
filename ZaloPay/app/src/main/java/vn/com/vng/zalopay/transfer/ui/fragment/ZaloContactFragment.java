@@ -24,6 +24,8 @@ import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A fragment representing a list of Items.
@@ -93,7 +95,6 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        showLoading();
         // Set the adapter
         if (mColumnCount <= 1) {
             mList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -210,6 +211,40 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         mTransferState.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
         navigator.startTransferActivity(this, mTransferState);
     }
+
+    @Override
+    public void onGetZaloContactError() {
+        hideLoading();
+        if (!AndroidUtils.checkNetwork(getContext())) {
+            SweetAlertDialog.OnSweetClickListener cancelListener = new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    getActivity().finish();
+                    sweetAlertDialog.cancel();
+                }
+            };
+            SweetAlertDialog.OnSweetClickListener retryListener = new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    presenter.getFriendList(ZaloContactFragment.this);
+                    sweetAlertDialog.cancel();
+                }
+            };
+            showRetryDialog(getString(R.string.no_network), getString(R.string.txt_close), cancelListener, getString(R.string.txt_retry), retryListener);
+        } else {
+            showErrorDialog(getString(R.string.get_zalo_contact_error), getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    if (mAdapter == null || mAdapter.getItemCount() <= 0) {
+                        getActivity().finish();
+                    }
+                    sweetAlertDialog.cancel();
+                }
+            });
+        }
+    }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

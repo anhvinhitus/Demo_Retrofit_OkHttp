@@ -76,7 +76,7 @@
             android:layout_weight="1.0"
             android:gravity="top"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <CheckBox
                 android:id="@+id/checkbox"
@@ -86,7 +86,8 @@
                 android:checked="false"
                 android:gravity="center"
                 android:paddingBottom="@dimen/spacing.medium"
-                android:paddingTop="@dimen/spacing.medium" />
+                android:paddingTop="@dimen/spacing.medium"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/tvShowPass"
@@ -95,7 +96,8 @@
                 android:layout_weight="1.0"
                 android:gravity="left|center_vertical"
                 android:padding="@dimen/spacing.small"
-                android:text="@string/show_passcode" />
+                android:text="@string/show_passcode"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/tvCancel"

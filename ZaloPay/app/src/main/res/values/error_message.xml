@@ -8,4 +8,7 @@
     <string name="exception.retry.connection">Không thể kết nối\n Nhấn để thử lại</string>
     <string name="exception.timeout.message">Hết thời gian kết nối, vui lòng thử lại!</string>
 
+    <string name="get_zalo_contact_error">Lấy danh sách bạn Zalo thất bại!</string>
+    <string name="get_mapping_zalo_zalopay_error">Lấy thông tin tài khoản Zalo thất bại!</string>
+    <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
 </resources>

@@ -50,7 +50,7 @@
 
     <string name="appid">19240466928203470</string>
     <string name="zalo_appid">zalo-19240466928203470</string>
-    <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
+
 
     <string name="title_activity_login">Đăng nhập</string>
 
@@ -67,6 +67,8 @@
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
 
+    <string name="txt_close">Đóng</string>
+    <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
     <string name="txt_cancel_html"><u>Bỏ qua</u></string>
 
@@ -194,5 +196,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="deposit">Nạp tiền</string>
+
     <string name="notify.from.zalopay">Thông báo từ Zalo Pay</string>
+    <string name="not_update_phone">Chưa cập nhật SĐT</string>
+
+
 </resources>
