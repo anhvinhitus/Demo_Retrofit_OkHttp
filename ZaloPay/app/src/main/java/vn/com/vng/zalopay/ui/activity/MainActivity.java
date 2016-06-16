@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -186,21 +187,21 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 }
                 break;
             case MenuItemUtil.APPLICATION_INFO_ID:
-                navigator.startMiniAppActivity(this, "About");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
-                navigator.startMiniAppActivity(this, "Help");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
                 break;
             case MenuItemUtil.FAQ_ID:
-                navigator.startMiniAppActivity(this, "FAQ");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
                 break;
             case MenuItemUtil.HOME_ID:
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
-                navigator.startMiniAppActivity(this, "Notifications");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 startQRCodeActivity();
@@ -209,7 +210,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 getAppComponent().applicationSession().clearUserSession();
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startMiniAppActivity(this, "TransactionLogs");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSACTION_ID:
                 break;
