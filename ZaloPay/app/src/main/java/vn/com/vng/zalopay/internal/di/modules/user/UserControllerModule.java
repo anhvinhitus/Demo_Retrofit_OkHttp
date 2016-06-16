@@ -130,15 +130,17 @@ public class UserControllerModule {
     @Provides
     ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory,
                                                       ZaloPayFactory zaloPayFactory,
-                                                      TransactionStore.Repository transactionRepository,
                                                       ZaloPayIAPEntityDataMapper mapper) {
-        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, transactionRepository, mapper);
+        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, mapper);
     }
 
     @UserScope
     @Provides
-    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user) {
-        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user);
+    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository,
+                                            BalanceRepository balanceRepository,
+                                            User user,
+                                            TransactionStore.Repository transactionRepository) {
+        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
     }
 
     @UserScope

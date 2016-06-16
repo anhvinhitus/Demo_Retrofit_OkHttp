@@ -15,13 +15,11 @@ public class ZaloPayIAPRepositoryImpl extends BaseRepository implements ZaloPayI
 
     final ZaloPayIAPFactory zaloPayIAPFactory;
     final ZaloPayFactory zaloPayFactory;
-    final TransactionStore.Repository mTransactionRepository;
 
     final ZaloPayIAPEntityDataMapper mapper;
 
-    public ZaloPayIAPRepositoryImpl(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, TransactionStore.Repository transactionRepository, ZaloPayIAPEntityDataMapper mapper) {
+    public ZaloPayIAPRepositoryImpl(ZaloPayIAPFactory factory, ZaloPayFactory zaloPayFactory, ZaloPayIAPEntityDataMapper mapper) {
         this.zaloPayIAPFactory = factory;
-        mTransactionRepository = transactionRepository;
         this.mapper = mapper;
         this.zaloPayFactory = zaloPayFactory;
     }
@@ -34,10 +32,5 @@ public class ZaloPayIAPRepositoryImpl extends BaseRepository implements ZaloPayI
     @Override
     public Observable<Boolean> verifyMerchantAccessToken(String mUid, String token) {
         return zaloPayIAPFactory.verifyMerchantAccessToken(mUid, token).map(baseResponse -> Boolean.TRUE);
-    }
-
-    @Override
-    public Observable<Boolean> updateTransaction() {
-       return mTransactionRepository.updateTransaction();
     }
 }
