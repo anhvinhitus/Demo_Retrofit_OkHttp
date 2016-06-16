@@ -32,7 +32,7 @@ public interface TransactionStore {
         Observable<List<TransHistory>> getTransactions(int pageIndex, int count);
 
         /*Gọi khi một giao dịch thành công*/
-        Observable<Boolean> transactionUpdate();
+        Observable<Boolean> updateTransaction();
 
         /* Gọi lần mới run app */
         Observable<Boolean> initialize();

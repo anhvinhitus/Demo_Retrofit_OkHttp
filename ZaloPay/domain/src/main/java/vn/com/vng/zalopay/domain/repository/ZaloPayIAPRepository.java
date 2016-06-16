@@ -11,6 +11,6 @@ public interface ZaloPayIAPRepository {
 
     Observable<Boolean> verifyMerchantAccessToken(String mUid, String token);
 
-    Observable<Boolean> transactionUpdate();
+    Observable<Boolean> updateTransaction();
 
 }

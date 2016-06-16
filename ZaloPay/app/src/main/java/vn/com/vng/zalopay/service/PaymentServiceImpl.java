@@ -97,7 +97,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     private void successCallback(Promise promise, WritableMap object) {
-        transactionUpdate();
+        updateTransaction();
         balanceUpdate();
         if (promise == null) {
             return;
@@ -153,8 +153,8 @@ public class PaymentServiceImpl implements IPaymentService {
         unsubscribeIfNotNull(compositeSubscription);
     }
 
-    private void transactionUpdate() {
-        zaloPayIAPRepository.transactionUpdate()
+    private void updateTransaction() {
+        zaloPayIAPRepository.updateTransaction()
                 .subscribe(new DefaultSubscriber<Boolean>());
 
     }

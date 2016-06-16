@@ -47,7 +47,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> transactionUpdate() {
+    public Observable<Boolean> updateTransaction() {
         return ObservableHelper.makeObservable(() -> {
             //update transaction
             reloadListTransactionSync(30);

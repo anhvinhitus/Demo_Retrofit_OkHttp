@@ -37,7 +37,7 @@ public class ZaloPayIAPRepositoryImpl extends BaseRepository implements ZaloPayI
     }
 
     @Override
-    public Observable<Boolean> transactionUpdate() {
-       return mTransactionRepository.transactionUpdate();
+    public Observable<Boolean> updateTransaction() {
+       return mTransactionRepository.updateTransaction();
     }
 }
