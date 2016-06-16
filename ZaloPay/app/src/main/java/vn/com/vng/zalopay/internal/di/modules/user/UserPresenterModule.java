@@ -29,8 +29,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    QRCodePresenter provideProductPresenter(User user) {
-        return new QRCodePresenter(user);
+    QRCodePresenter provideProductPresenter() {
+        return new QRCodePresenter();
     }
 
     @UserScope
