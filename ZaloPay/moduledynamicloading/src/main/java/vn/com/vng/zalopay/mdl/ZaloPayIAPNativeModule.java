@@ -25,7 +25,6 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 
 public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
-    private final String TAG = this.getClass().getSimpleName();
 //    final ZaloPayIAPRepository zaloPayIAPRepository;
     final IPaymentService paymentService;
     final long appId; // AppId này là appid js cắm vào
@@ -56,7 +55,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
      */
     @ReactMethod
     public void payOrder(ReadableMap params, Promise promise) {
-        Timber.tag(TAG).d("payOrder start");
+        Timber.d("payOrder start");
         // verify params parameters
         try {
             long appID = (long) params.getDouble(Constants.APPID);
@@ -104,7 +103,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.tag(TAG).d("requestCode %s resultCode %s ", requestCode, resultCode);
+        Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 
     @Override
@@ -119,7 +118,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @Override
     public void onHostDestroy() {
-        Timber.tag(TAG).d("Actvity `onDestroy");
+        Timber.d("Actvity `onDestroy");
         paymentService.destroyVariable();
     }
 

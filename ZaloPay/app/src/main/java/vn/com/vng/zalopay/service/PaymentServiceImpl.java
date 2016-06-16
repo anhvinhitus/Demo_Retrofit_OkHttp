@@ -13,6 +13,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
@@ -31,7 +32,6 @@ public class PaymentServiceImpl implements IPaymentService {
     final ZaloPayIAPRepository zaloPayIAPRepository;
     final BalanceRepository mBalanceRepository;
     final User user;
-//    private PaymentListener paymentListener;
     private PaymentWrapper paymentWrapper;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -78,113 +78,7 @@ public class PaymentServiceImpl implements IPaymentService {
         });
 
         this.paymentWrapper.payWithDetail(appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
-//
-//        if (appID < 0) {
-//            reportInvalidParameter(promise, Constants.APPID);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(appTransID)) {
-//            reportInvalidParameter(promise, Constants.APPTRANSID);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(appUser)) {
-//            reportInvalidParameter(promise, Constants.APPUSER);
-//            return;
-//        }
-//        if (appTime <= 0) {
-//            reportInvalidParameter(promise, Constants.APPTIME);
-//            return;
-//        }
-//        if (amount <= 0) {
-//            reportInvalidParameter(promise, Constants.AMOUNT);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(itemName)) {
-//            reportInvalidParameter(promise, Constants.ITEM);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(embedData)) {
-//            reportInvalidParameter(promise, Constants.DESCRIPTION);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(mac)) {
-//            reportInvalidParameter(promise, Constants.MAC);
-//            return;
-//        }
-//
-//        if (user == null || user.uid <= 0 || TextUtils.isEmpty(user.accesstoken)) {
-//            errorCallback(promise, PaymentError.ERR_CODE_USER_INFO);
-//            return;
-//        }
-//
-//        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-//        EPaymentChannel forcedPaymentChannel = null;
-//        paymentInfo.appID = appID;
-//        paymentInfo.zaloUserID = String.valueOf(user.uid);
-//        paymentInfo.zaloPayAccessToken = user.accesstoken;
-//        paymentInfo.appTime = appTime;
-//        paymentInfo.appTransID = appTransID;
-//        paymentInfo.itemName = itemName;
-//        paymentInfo.amount = amount;
-//        paymentInfo.description = description;
-//        paymentInfo.embedData = embedData;
-//        //lap vao ví appId = appUser = 1
-//        paymentInfo.appUser = appUser;
-//        paymentInfo.mac = mac;
-//
-//        Timber.tag("@@@@@@@@@@@@@@@@@@@@@").d("pay.................3");
-//        paymentListener = new PaymentListener(promise);
-//        ZingMobilePayService.pay(activity, forcedPaymentChannel, paymentInfo, paymentListener);
     }
-
-//    class PaymentListener implements ZPPaymentListener {
-//
-//        private Promise promise;
-//
-//        public PaymentListener(Promise promise) {
-//            this.promise = promise;
-//        }
-//
-//        @Override
-//        public void onComplete(ZPPaymentResult zpPaymentResult) {
-//            if (zpPaymentResult == null) {
-//                if (!isNetworkAvailable(AndroidApplication.instance().getApplicationContext())) {
-//                    errorCallback(promise, PaymentError.ERR_CODE_INTERNET);
-//                    return;
-//                }
-//
-//                errorCallback(promise, PaymentError.ERR_CODE_SYSTEM);
-//                return;
-//            }
-//
-//            EPaymentStatus paymentStatus = zpPaymentResult.paymentStatus;
-//            if (paymentStatus == null) {
-//                errorCallback(promise, PaymentError.ERR_CODE_SYSTEM, PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
-//            } else if (paymentStatus.getNum() == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-//                successCallback(promise, null);
-//            } else {
-//                errorCallback(promise, paymentStatus.getNum(), paymentStatus.toString());
-//            }
-//        }
-//
-//        @Override
-//        public void onCancel() {
-//            errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL);
-//            destroyVariable();
-//        }
-//
-//        @Override
-//        public void onSMSCallBack(String s) {
-//            //not use
-//        }
-//
-//        private boolean isNetworkAvailable(Context context) {
-//            ConnectivityManager connectivityManager
-//                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-//            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-//        }
-//    }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
         if (subscription != null) {
@@ -280,8 +174,13 @@ public class PaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onError(Throwable e) {
+            if (e instanceof TokenException) {
+                // simply ignore the token error
+                // because it is handled from based activity
+                return;
+            }
 
-            Timber.e(e, "on error ", e);
+            Timber.w(e, "Error on getting merchant user information");
 
             errorCallback(promise, getErrorCode(e));
         }
@@ -333,8 +232,13 @@ public class PaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onError(Throwable e) {
+            if (e instanceof TokenException) {
+                // simply ignore the token error
+                // because it is handled from based activity
+                return;
+            }
 
-            Timber.e("on Error %s", e);
+            Timber.w(e, "Error on verifying merchant access token");
 
             errorCallback(promise, getErrorCode(e));
         }

@@ -73,6 +73,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         Timber.d("Starting module: %s", mComponentName);
         Timber.d("appResource appname %s", appResource == null ? "" : appResource.appname);
+        Timber.d("appResource appid %d", appResource == null ? 0 : appResource.appid);
 
         super.onCreate(savedInstanceState);
     }
