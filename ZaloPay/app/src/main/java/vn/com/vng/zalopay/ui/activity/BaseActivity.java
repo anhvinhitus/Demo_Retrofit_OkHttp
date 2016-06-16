@@ -133,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        Timber.d("onDestroy");
+        Timber.d("%s onDestroy", TAG);
     }
 
 

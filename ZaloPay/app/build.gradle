@@ -101,7 +101,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
-            buildConfigField 'int', 'WS_PORT', '8404'
+            buildConfigField 'int', 'WS_PORT', '8414'
         }
 
         sandbox {
@@ -121,7 +121,7 @@ android {
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
-            buildConfigField 'int', 'WS_PORT', '8404'
+            buildConfigField 'int', 'WS_PORT', '8414'
         }
 
         internalSandbox {
@@ -153,7 +153,7 @@ android {
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
-            buildConfigField 'int', 'WS_PORT', '8404'
+            buildConfigField 'int', 'WS_PORT', '8414'
         }
     }
 
@@ -188,7 +188,7 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/maven/jaxen/jaxen/pom.properties'
         exclude 'META-INF/maven/jaxen/jaxen/pom.xml'
-
+        exclude 'META-INF/INDEX.LIST'
 
     }
 

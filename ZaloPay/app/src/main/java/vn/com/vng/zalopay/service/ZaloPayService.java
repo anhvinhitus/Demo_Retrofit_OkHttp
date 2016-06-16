@@ -69,8 +69,10 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
 
     @Override
     public void onDestroy() {
+        Timber.d("onDestroy");
         eventBus.unregister(this);
         mWsConnection.removeReceiverListener(this);
+        mWsConnection.disconnect();
         super.onDestroy();
     }
 
