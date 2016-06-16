@@ -67,6 +67,8 @@
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
 
+    <string name="txt_close">Đóng</string>
+    <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
     <string name="txt_cancel_html"><u>Bỏ qua</u></string>
 
@@ -194,4 +196,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="deposit">Nạp tiền</string>
+
+    <string name="not_update_phone">Chưa cập nhật SĐT</string>
+    <string name="no_network">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
+    <string name="get_zalo_contact_error">Lấy danh sách bạn Zalo thất bại!</string>
+    <string name="get_mapping_zalo_zalopay_error">Lấy thông tin tài khoản Zalo thất bại!</string>
 </resources>
