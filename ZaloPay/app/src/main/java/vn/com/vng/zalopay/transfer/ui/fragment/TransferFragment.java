@@ -77,7 +77,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     public void onTextChangedAmount(CharSequence charSequence) {
         btnContinue.setEnabled(!TextUtils.isEmpty(charSequence));
     }
-    
+
     public boolean isValidAmount() {
         String amount = edtAmount.getText().toString();
         if (TextUtils.isEmpty(amount) || mAmount <= 0) {

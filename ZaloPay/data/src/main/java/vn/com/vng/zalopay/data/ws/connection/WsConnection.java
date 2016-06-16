@@ -8,11 +8,12 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.GeneratedMessage;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -22,7 +23,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
+import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.model.User;
@@ -48,12 +51,13 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private final Parser parser;
     private final UserConfig userConfig;
+    List<OnReceiverMessageListener> listCallBack;
 
     public WsConnection(Context context, Parser parser, UserConfig config) {
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-
+        this.listCallBack = new ArrayList<>();
     }
 
     public void setHostPort(String host, int port) {
@@ -162,15 +166,19 @@ public class WsConnection extends Connection implements ConnectionListener {
     @Override
     public void onReceived(byte[] data) {
         Timber.d("onReceived");
-        GeneratedMessage message = parser.parserMessage(data);
+        Event message = parser.parserMessage(data);
         if (data != null) {
-            if (message instanceof ZPMsgProtos.MessageLogin) {
-                Timber.d("send authentication success");
-            } else if (message instanceof ZPMsgProtos.ResultAuth) {
-                Timber.d("PushNotificationInfo");
-
-            }
+            postResult(message);
         }
+    }
+
+
+    private Message postResult(Event message) {
+        Message uiMsg = new Message();
+        uiMsg.what = message.msgType;
+        uiMsg.obj = message;
+        messageHandler.sendMessage(uiMsg);
+        return uiMsg;
     }
 
     @Override
@@ -183,13 +191,16 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onDisconnected(int code, String message) {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
-        if (isNetworkAvailable(context)) {
+        if (isNetworkAvailable(context) && userConfig.hasCurrentUser()) {
             connect();
         }
     }
 
 
     private boolean sendAuthentication(String token, long uid) {
+
+        Timber.d("send authentication token %s uid %s", token, uid);
+
         ZPMsgProtos.MessageLogin loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
                 .setToken(token)
                 .setUsrid(uid)
@@ -213,13 +224,37 @@ public class WsConnection extends Connection implements ConnectionListener {
     }
 
 
+    protected final void onPostExecute(Event event) {
+        synchronized (listCallBack) {
+            for (OnReceiverMessageListener listener : listCallBack) {
+                if (listener != null) {
+                    listener.onReceiverEvent(event);
+                }
+            }
+        }
+    }
+
+
     private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-
-
-            super.handleMessage(msg);
+            WsConnection.this.onPostExecute((Event) msg.obj);
         }
     };
+
+
+    public void addReceiverListener(OnReceiverMessageListener listener) {
+        synchronized (listCallBack) {
+            if (!listCallBack.contains(listener)) {
+                listCallBack.add(listener);
+            }
+        }
+    }
+
+    public void removeReceiverListener(OnReceiverMessageListener listener) {
+        synchronized (listCallBack) {
+            listCallBack.remove(listener);
+        }
+    }
 
 }

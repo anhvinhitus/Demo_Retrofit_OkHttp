@@ -4,19 +4,30 @@ package vn.com.vng.zalopay.exception;
 import android.content.Context;
 
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Map;
 
+import retrofit2.adapter.rxjava.HttpException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.exception.VideoNotFoundException;
+import vn.vng.uicomponent.widget.errorview.HttpStatusCodes;
 
 public class ErrorMessageFactory {
 
     private ErrorMessageFactory() {
         //empty
     }
+
+    private final static Map<Integer, String> mHttpStatusCode;
+
+    static {
+        mHttpStatusCode = HttpStatusCodes.getCodesMap();
+    }
+
 
     public static String create(Context context, Throwable exception) {
         if (context == null) {
@@ -31,8 +42,9 @@ public class ErrorMessageFactory {
         } else if (exception instanceof TokenException) {
 
         } else if (exception instanceof SocketTimeoutException) {
-            Timber.w(exception, "SocketTimeoutException");
             message = context.getString(R.string.exception_timeout_message);
+        } else if (exception instanceof HttpException) {
+            message = mHttpStatusCode.get(((HttpException) exception).code());
         }
 
         return message;

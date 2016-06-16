@@ -103,7 +103,7 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                     try {
                         subscriber.onError(t);
                     } catch (Exception ex) {
-                        Timber.e(ex, "Exception OnError :");
+                        Timber.w(ex, "Exception OnError :");
                     }
                 }
                 return;

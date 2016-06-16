@@ -112,9 +112,14 @@ public class Navigator {
     }
 
     public void startMiniAppActivity(Activity activity, String moduleName) {
-        Intent intent = new Intent(activity, MiniApplicationActivity.class);
-        intent.putExtra("moduleName", moduleName);
+        Intent intent = getIntentMiniAppActivity(activity, moduleName);
         activity.startActivity(intent);
+    }
+
+    public Intent getIntentMiniAppActivity(Context context, String moduleName) {
+        Intent intent = new Intent(context, MiniApplicationActivity.class);
+        intent.putExtra("moduleName", moduleName);
+        return intent;
     }
 
     public void startLinkCardActivity(Activity activity) {
@@ -187,4 +192,7 @@ public class Navigator {
         intent.putExtras(bundle);
         fragment.startActivity(intent);
     }
+
+
+
 }
