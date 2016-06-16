@@ -42,7 +42,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        return transactionHistorysLocal(pageIndex, count)
+        return mTransactionLocalStorage.get(pageIndex, count)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
     }
 
@@ -71,15 +71,11 @@ public class TransactionRepository implements TransactionStore.Repository {
 //                    //(4)
 //                    if (transHistoryEntities.size() > 0) {
 //                        mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(transHistoryEntities.get(0).transid));
-//                        mTransactionLocalStorage.write(transHistoryEntities);
+//                        mTransactionLocalStorage.put(transHistoryEntities);
 //                    }
 //                })
 //                ;
 //    }
-
-    public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int pageIndex, int limit) {
-        return mTransactionLocalStorage.transactionHistories(pageIndex, limit);
-    }
 
     public void reloadListTransactionSync(int count) {
         if (mTransactionLocalStorage.isHaveTransactionInDb()) {
@@ -106,7 +102,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         List<TransHistoryEntity> list = response.data;
         int size = list.size();
         if (size > 0) {
-            mTransactionLocalStorage.write(response.data);
+            mTransactionLocalStorage.put(response.data);
             mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
         }
     }

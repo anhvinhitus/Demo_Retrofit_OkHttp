@@ -16,12 +16,10 @@ import vn.com.vng.zalopay.domain.model.TransHistory;
  */
 public interface TransactionStore {
     interface LocalStorage {
-        void write(List<TransHistoryEntity> val);
-
-        Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit);
+        void put(List<TransHistoryEntity> val);
+        Observable<List<TransHistoryEntity>> get(int pageIndex, int limit);
 
         boolean isHaveTransactionInDb();
-
     }
 
     interface RequestService {

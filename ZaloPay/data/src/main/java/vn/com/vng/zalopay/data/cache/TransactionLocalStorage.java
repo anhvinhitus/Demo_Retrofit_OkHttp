@@ -38,20 +38,20 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 //    }
 
     @Override
-    public void write(List<TransHistoryEntity> val) {
+    public void put(List<TransHistoryEntity> val) {
         try {
             getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transform(val));
 
-            Timber.d("write list transaction %s", val.size());
+            Timber.d("put list transaction %s", val.size());
         } catch (Exception e) {
-            Timber.w("Exception while trying to write transaction histories to local storage: %s", e.getMessage());
+            Timber.w("Exception while trying to put transaction histories to local storage: %s", e.getMessage());
         }
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(() -> listTransHistories(pageIndex, limit))
-                .doOnNext(transHistoryEntities -> Timber.d("transactionHistories %s", transHistoryEntities.size()))
+    public Observable<List<TransHistoryEntity>> get(int pageIndex, int limit) {
+        return ObservableHelper.makeObservable(() -> queryList(pageIndex, limit))
+                .doOnNext(transHistoryEntities -> Timber.d("get %s", transHistoryEntities.size()))
                 ;
     }
 
@@ -60,28 +60,34 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
     }
 
-    private List<TransHistoryEntity> listTransHistories(int pageIndex, int limit) {
+    private List<TransHistoryEntity> queryList(int pageIndex, int limit) {
         return transform2Entity(
                 getDaoSession()
-                        .getTransactionLogDao()
-                        .queryBuilder()
+                    .getTransactionLogDao()
+                    .queryBuilder()
                         .limit(limit)
                         .offset(pageIndex * limit)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
                         .list());
     }
 
+    // Data transformation
+
     private List<TransactionLog> transform(Collection<TransHistoryEntity> transHistoryEntities) {
-        if (Lists.isEmptyOrNull(transHistoryEntities))
+        if (Lists.isEmptyOrNull(transHistoryEntities)) {
             return emptyList();
+        }
 
         List<TransactionLog> transactionLogs = new ArrayList<>(transHistoryEntities.size());
         for (TransHistoryEntity transHistoryEntity : transHistoryEntities) {
             TransactionLog transactionLog = transform(transHistoryEntity);
-            if (transactionLog != null) {
-                transactionLogs.add(transactionLog);
+            if (transactionLog == null) {
+                continue;
             }
+
+            transactionLogs.add(transactionLog);
         }
+
         return transactionLogs;
     }
 
@@ -133,15 +139,18 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     private List<TransHistoryEntity> transform2Entity(Collection<TransactionLog> transactionLogs) {
-        if (Lists.isEmptyOrNull(transactionLogs))
+        if (Lists.isEmptyOrNull(transactionLogs)) {
             return emptyList();
+        }
 
         List<TransHistoryEntity> transHistoryEntities = new ArrayList<>(transactionLogs.size());
         for (TransactionLog transactionLog : transactionLogs) {
             TransHistoryEntity transHistoryEntity = transform(transactionLog);
-            if (transHistoryEntity != null) {
-                transHistoryEntities.add(transHistoryEntity);
+            if (transHistoryEntity == null) {
+                continue;
             }
+
+            transHistoryEntities.add(transHistoryEntity);
         }
         return transHistoryEntities;
     }
