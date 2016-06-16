@@ -20,11 +20,11 @@ public interface TransactionStore {
 
         void write(TransHistoryEntity val);
 
+        Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit);
+
         Observable<List<TransHistoryEntity>> transactionHistories();
 
-        Observable<List<TransHistoryEntity>> transactionHistories(int limit);
-
-        List<TransHistoryEntity> listTransHistories(int limit);
+        List<TransHistoryEntity> listTransHistories(int pageIndex, int limit);
 
         boolean isHaveTransactionInDb();
 

@@ -57,13 +57,13 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        return transactionHistorysLocal(count)
+        return transactionHistorysLocal(pageIndex, count)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
     }
 
     @Override
     public Observable<List<TransHistory>> reloadListTransaction(int count) {
-        return transactionHistorysLocal(count)
+        return transactionHistorysLocal(0, count)
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
     }
 
@@ -117,8 +117,8 @@ public class TransactionRepository implements TransactionStore.Repository {
         return mTransactionLocalStorage.transactionHistories();
     }
 
-    public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int limit) {
-        return mTransactionLocalStorage.transactionHistories(limit);
+    public Observable<List<TransHistoryEntity>> transactionHistorysLocal(int pageIndex, int limit) {
+        return mTransactionLocalStorage.transactionHistories(pageIndex, limit);
     }
 
     public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {
