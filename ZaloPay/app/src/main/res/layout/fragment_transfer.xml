@@ -49,13 +49,13 @@
                     style="@style/TextView.Item.Sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing.tiny"
+                    android:layout_marginTop="@dimen/spacing.tiny.s"
                     tools:text="0987654321" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <LinearLayout
@@ -93,7 +93,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/separate_stroke"
                     android:background="@color/separate" />
 
                 <android.support.design.widget.TextInputLayout
@@ -115,6 +115,7 @@
                         android:gravity="center_vertical"
                         android:hint="@string/hint_message"
                         android:inputType="text"
+                        android:maxLength="36"
                         android:maxLines="1"
                         android:paddingTop="@dimen/spacing.small"
                         android:singleLine="true" />
@@ -123,7 +124,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
         </LinearLayout>
     </ScrollView>

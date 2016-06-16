@@ -100,7 +100,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <LinearLayout
@@ -126,7 +126,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -153,7 +153,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -180,7 +180,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -207,7 +207,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -234,7 +234,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -261,7 +261,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -289,7 +289,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
@@ -316,7 +316,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:background="@color/separate" />
         </LinearLayout>
