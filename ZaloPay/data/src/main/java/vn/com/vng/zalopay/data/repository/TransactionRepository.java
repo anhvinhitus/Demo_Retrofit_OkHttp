@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.domain.model.User;
  * Implementation for transaction repository
  */
 public class TransactionRepository implements TransactionStore.Repository {
-    private final int LENGTH_TRANS_HISTORY = 25;
+    private static final int LENGTH_TRANS_HISTORY = 25;
 
     private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
     private TransactionStore.LocalStorage mTransactionLocalStorage;
@@ -52,11 +52,6 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<List<TransHistory>> loadMoreTransHistory() {
-        return null;
-    }
-
-    @Override
-    public Observable<List<TransHistory>> refreshTransHistory() {
         return null;
     }
 

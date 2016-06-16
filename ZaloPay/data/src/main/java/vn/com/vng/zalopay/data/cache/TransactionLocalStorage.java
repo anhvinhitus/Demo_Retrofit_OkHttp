@@ -26,22 +26,21 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         this.mDaoMapper = zaloCacheMapper;
     }
 
-    String transactionToString(TransactionLog v) {
-        return String.format("\"userid\":\"%s\",\"transid\":%d,\"appid\":%d,\"appuser\":\"%s\",\"platform\":\"%s\",\"description\":\"%s\",\"pmcid\":%d,\"reqdate\":%d,\"userchargeamt\":%d,\"amount\":%d,\"userfeeamt\":%d,\"type\":%d,\"sign\":%d,\"username\":\"%s\",\"appusername\":\"%s\"",
-                v.getUserid(), v.getTransid(), v.getAppid(), v.getAppuser(), v.getPlatform(), v.getDescription(), v.getPmcid(), v.getReqdate(), v.getUserchargeamt(), v.getAmount(), v.getUserfeeamt(), v.getType(), v.getSign(), v.getUsername(), v.getAppusername());
-    }
-    List<String> logsString(Collection<TransactionLog> logs) {
-        List<String> result = new ArrayList<>();
-        for (TransactionLog v : logs) {
-            result.add(transactionToString(v));
-        }
-        return result;
-    }
+//    String transactionToString(TransactionLog v) {
+//        return String.format("\"userid\":\"%s\",\"transid\":%d,\"appid\":%d,\"appuser\":\"%s\",\"platform\":\"%s\",\"description\":\"%s\",\"pmcid\":%d,\"reqdate\":%d,\"userchargeamt\":%d,\"amount\":%d,\"userfeeamt\":%d,\"type\":%d,\"sign\":%d,\"username\":\"%s\",\"appusername\":\"%s\"",
+//                v.getUserid(), v.getTransid(), v.getAppid(), v.getAppuser(), v.getPlatform(), v.getDescription(), v.getPmcid(), v.getReqdate(), v.getUserchargeamt(), v.getAmount(), v.getUserfeeamt(), v.getType(), v.getSign(), v.getUsername(), v.getAppusername());
+//    }
+//    List<String> logsString(Collection<TransactionLog> logs) {
+//        List<String> result = new ArrayList<>();
+//        for (TransactionLog v : logs) {
+//            result.add(transactionToString(v));
+//        }
+//        return result;
+//    }
 
     @Override
     public void write(List<TransHistoryEntity> val) {
         try {
-            List<TransactionLog> logs = mDaoMapper.transform(val);
             getDaoSession().getTransactionLogDao().insertOrReplaceInTx(mDaoMapper.transform(val));
 
             Timber.d("write list transaction %s", val.size());

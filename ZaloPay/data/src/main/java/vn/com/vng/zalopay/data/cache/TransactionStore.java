@@ -42,8 +42,6 @@ public interface TransactionStore {
 
         Observable<List<TransHistory>> loadMoreTransHistory();
 
-        Observable<List<TransHistory>> refreshTransHistory();
-
         Observable<List<TransHistory>> getTransactions(int pageIndex, int count);
 
         Observable<List<TransHistory>> reloadListTransaction(int count);
