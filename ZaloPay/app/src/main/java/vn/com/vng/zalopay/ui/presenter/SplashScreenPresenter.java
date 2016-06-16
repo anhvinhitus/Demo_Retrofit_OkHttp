@@ -41,6 +41,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
     @Override
     public void destroyView() {
+        mView.hideLoading();
         mView = null;
         unsubscribeIfNotNull(verifySubscription);
     }
@@ -67,14 +68,13 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
         if (userConfig.hasCurrentUser()) {
             mView.showLoading();
-
-            User user = userConfig.getCurrentUser();
-
-            Timber.d("verifyUser");
-            verifySubscription = passportRepository.verifyAccessToken(user.uid, user.accesstoken)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new VerifySubscriber());
-
+//            User user = userConfig.getCurrentUser();
+//            Timber.d("verifyUser");
+//            verifySubscription = passportRepository.verifyAccessToken(user.uid, user.accesstoken)
+//                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new VerifySubscriber());
+            getZaloProfileInfo();
+            mView.gotoHomeScreen();
         } else {
             verifySubscription = Observable.timer(1, TimeUnit.SECONDS)
                     .subscribe(new DefaultSubscriber<Long>() {
