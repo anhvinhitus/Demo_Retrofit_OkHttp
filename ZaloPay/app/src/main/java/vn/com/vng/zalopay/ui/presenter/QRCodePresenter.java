@@ -57,7 +57,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                transactionUpdate();
+                updateTransaction();
                 updateBalance();
 
                 if (mView != null && mView.getActivity() != null) {

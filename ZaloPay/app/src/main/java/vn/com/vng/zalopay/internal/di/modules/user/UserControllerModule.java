@@ -16,7 +16,6 @@ import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
-import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayIAPEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
@@ -113,17 +112,17 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory,
-                                                      ZaloPayFactory zaloPayFactory,
-                                                      TransactionStore.Repository transactionRepository,
-                                                      ZaloPayIAPEntityDataMapper mapper) {
-        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, transactionRepository, mapper);
+    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory) {
+        return new ZaloPayIAPRepositoryImpl(factory);
     }
 
     @UserScope
     @Provides
-    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user) {
-        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user);
+    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository,
+                                            BalanceRepository balanceRepository,
+                                            User user,
+                                            TransactionStore.Repository transactionRepository) {
+        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
     }
 
     @UserScope
