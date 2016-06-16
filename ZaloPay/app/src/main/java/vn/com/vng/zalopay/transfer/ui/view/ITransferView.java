@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface ITransferView extends ILoadDataView {
     Activity getActivity();
     void onTokenInvalid();
-    void updateUserPhone(MappingZaloAndZaloPay userMapZaloAndZaloPay);
     void setEnableBtnContinue(boolean isEnable);
+    void onGetMappingUserSucess(MappingZaloAndZaloPay userMapZaloAndZaloPay);
+    void onGetMappingUserError();
 }

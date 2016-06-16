@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -28,7 +30,10 @@ import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,7 +74,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @OnTextChanged(R.id.edtAmount)
     public void onTextChangedAmount(CharSequence charSequence) {
-        btnContinue.setEnabled(!TextUtils.isEmpty(charSequence));
+        checkShowBtnContinue();
     }
 
     @BindView(R.id.btnContinue)
@@ -77,10 +82,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @OnClick(R.id.btnContinue)
     public void onClickContinute() {
-        if (userMapZaloAndZaloPay == null || userMapZaloAndZaloPay.getZaloId() <= 0) {
-            showToast("Thông tin tài khoản cần chuyển tiền không chính xác");
-            return;
-        }
         if (edtTransferMsg == null) {
             return;
         }
@@ -144,7 +145,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnContinue.setEnabled(edtAmount.length() > 0);
+        btnContinue.setEnabled(false);
         mPresenter.setView(this);
         edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
             @Override
@@ -158,7 +159,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 showError(null);
             }
         });
-
         Timber.tag(TAG).d("onViewCreated zaloFriend: %s", zaloFriend);
         if (zaloFriend != null) {
             Timber.tag(TAG).d("onViewCreated zaloFriend.uid:%s", zaloFriend.getUserId());
@@ -171,6 +171,19 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         }
 
         initCurrentState();
+        checkShowBtnContinue();
+    }
+
+    private void checkShowBtnContinue() {
+        if (mAmount <= 0) {
+            return;
+        }
+        if (userMapZaloAndZaloPay == null ||
+                TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
+                userMapZaloAndZaloPay.getZaloId() != zaloFriend.getUserId()) {
+            return;
+        }
+        btnContinue.setEnabled(true);
     }
 
     private void initCurrentState() {
@@ -181,6 +194,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             edtAmount.setText(String.valueOf(mAmount));
             edtAmount.setSelection(edtAmount.getText().toString().length());
         }
+        showPhoneNumber();
     }
 
     @Override
@@ -237,12 +251,38 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     public void onTokenInvalid() {
     }
 
-    public void updateUserPhone(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
+    @Override
+    public void onGetMappingUserSucess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
         if (userMapZaloAndZaloPay == null) {
             return;
         }
         this.userMapZaloAndZaloPay = userMapZaloAndZaloPay;
-        tvPhone.setText(this.userMapZaloAndZaloPay.getPhonenumber());
+        showPhoneNumber();
+    }
+
+    private void showPhoneNumber() {
+        Timber.d("showPhoneNumber userMapZaloAndZaloPay:%s", userMapZaloAndZaloPay);
+        if (userMapZaloAndZaloPay == null) {
+            return;
+        }
+        String phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
+        if (PhoneUtil.isPhoneNumber(phoneNumber)) {
+            tvPhone.setText(phoneNumber);
+        } else {
+            tvPhone.setText(getString(R.string.not_update_phone));
+        }
+    }
+
+    @Override
+    public void onGetMappingUserError() {
+        showErrorDialog(getString(R.string.get_mapping_zalo_zalopay_error), getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
+
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                getActivity().finish();
+                sweetAlertDialog.cancel();
+            }
+        });
     }
 
     @Override

@@ -136,22 +136,22 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         @Override
         public void onError(Throwable e) {
             Timber.e(e, "GetUserInfoSubscriber onError " + e);
-            if (e != null && e instanceof BodyException) {
-                if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    clearAndLogout();
-                    return;
-                }
-            }
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }
 
     private void onGetMappingUserError(Throwable e) {
-        mView.showError("Lấy thông tin tài khoản Zalo thất bại.");
+        if (e != null && e instanceof BodyException) {
+            if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
+                clearAndLogout();
+                return;
+            }
+        }
+        mView.onGetMappingUserError();
     }
 
     private void onGetMappingUserSuccess(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
-        mView.updateUserPhone(mappingZaloAndZaloPay);
+        mView.onGetMappingUserSucess(mappingZaloAndZaloPay);
     }
 
     public void getUserMapping(long zaloId) {
