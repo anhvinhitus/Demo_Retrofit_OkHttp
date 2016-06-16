@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -108,7 +109,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         listView.setNestedScrollingEnabled(false);
         listView.addItemDecoration(new GridSpacingItemDecoration(3, 2, false));
-
         listView.setAdapter(mAdapter);
 
         showAdsBanner();
@@ -124,7 +124,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigator.startMiniAppActivity(getActivity(), "Notifications");
+                navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.NOTIFICATIONS);
             }
         });
     }
@@ -184,7 +184,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         if (app.appid == 1) {
             navigator.startTransferMoneyActivity(getActivity());
         } else {
-            navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
+            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
         }
     }
 

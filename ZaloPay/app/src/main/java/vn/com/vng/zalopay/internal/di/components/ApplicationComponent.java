@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
+import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
@@ -27,11 +28,12 @@ import vn.com.vng.zalopay.receiver.NetworkReceiver;
 import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.service.ZaloPayService;
+import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class, ReactNativeModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class,
+        ReactNativeModule.class, WsModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();
@@ -70,7 +72,7 @@ public interface ApplicationComponent {
 
     void inject(DownloadService service);
 
-    void inject(ZaloPayService service);
+    void inject(NotificationService service);
 
     void inject(NetworkReceiver receiver);
 

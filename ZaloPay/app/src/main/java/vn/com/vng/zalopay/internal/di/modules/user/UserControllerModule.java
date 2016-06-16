@@ -65,9 +65,13 @@ public class UserControllerModule {
                                              SqlitePlatformScope sqlitePlatformScope,
                                              @Named("params_request_default") HashMap<String, String> params,
                                              DownloadAppResourceTaskQueue downloadQueue,
-                                             OkHttpClient okHttpClient) {
+                                             OkHttpClient okHttpClient,
+                                             @Named("rootbundle") String rootBundle) {
 
-        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient, BuildConfig.DOWNLOAD_APP_RESOURCE);
+        return new AppConfigFactory(context, service, user,
+                sqlitePlatformScope, params,
+                downloadQueue, okHttpClient,
+                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle);
     }
 
     @UserScope
@@ -76,26 +80,6 @@ public class UserControllerModule {
         return new AppConfigRepositoryImpl(appConfigFactory, mapper);
     }
 
-
-/*    @UserScope
-    @Provides
-    SqlAppListScope provideSqlAppListScope(@Named("daosession") DaoSession session) {
-        return new SqlAppListScopeImpl(session);
-    }*/
-
-    /* @UserScope
-     @Provides
-     AppListFactory provideAppListFactory(Context context, AppConfigService service,
-                                          User user, SqlAppListScope sqlAppListScope) {
-         return new AppListFactory(context, service, user, sqlAppListScope);
-     }
-
-     @UserScope
-     @Provides
-     ApplicationRepository provideApplicationRepository(AppListFactory appConfigFactory, ApplicationEntityDataMapper mapper) {
-         return new ApplicationRepositoryImpl(appConfigFactory, mapper);
-     }
- */
     @UserScope
     @Provides
     SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session) {
