@@ -16,7 +16,6 @@ import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
-import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayIAPEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
@@ -128,10 +127,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory,
-                                                      ZaloPayFactory zaloPayFactory,
-                                                      ZaloPayIAPEntityDataMapper mapper) {
-        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, mapper);
+    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory) {
+        return new ZaloPayIAPRepositoryImpl(factory);
     }
 
     @UserScope
