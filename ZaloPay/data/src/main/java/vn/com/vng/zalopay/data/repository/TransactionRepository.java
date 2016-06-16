@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
@@ -52,7 +50,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     public Observable<Boolean> transactionUpdate() {
         return ObservableHelper.makeObservable(() -> {
             //update transaction
-            reloadListTransactionSync(30, null);
+            reloadListTransactionSync(30);
 
             return Boolean.TRUE;
         });
@@ -61,9 +59,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Observable<Boolean> initialize() {
         return ObservableHelper.makeObservable(() -> {
-            reloadListTransactionSync(30, null);
+            reloadListTransactionSync(30);
             return Boolean.TRUE;
-        }).delaySubscription(5, TimeUnit.SECONDS);
+        }).delaySubscription(10, TimeUnit.SECONDS);
     }
 //
 //    public Observable<List<TransHistoryEntity>> transactionHistorysServer(long timestamp, int order) {
@@ -83,22 +81,22 @@ public class TransactionRepository implements TransactionStore.Repository {
         return mTransactionLocalStorage.transactionHistories(pageIndex, limit);
     }
 
-    public void reloadListTransactionSync(int count, Subscriber<List<TransHistory>> subscriber) {
+    public void reloadListTransactionSync(int count) {
         if (mTransactionLocalStorage.isHaveTransactionInDb()) {
             long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
-            transactionHistoryServer(lasttime, count, 1, subscriber);
+            transactionHistoryServer(lasttime, count, 1);
         } else {
-            transactionHistoryServer(0, count, 1, subscriber);
+            transactionHistoryServer(0, count, 1);
         }
     }
 
-    private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, final Subscriber<List<TransHistory>> subscriber) {
+    private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder) {
         Timber.d("transactionHistoryServer %s ", timestamp);
         mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, sortOrder)
                 .doOnNext(this::writeTransactionResp)
                 .doOnNext(response -> {
                     if (response.data.size() >= count) {
-                        transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, subscriber);
+                        transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder);
                     }
                 })
                 .subscribe(new DefaultSubscriber<>());

@@ -20,8 +20,6 @@ public interface TransactionStore {
 
         Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit);
 
-        List<TransHistoryEntity> listTransHistories(int pageIndex, int limit);
-
         boolean isHaveTransactionInDb();
 
     }
