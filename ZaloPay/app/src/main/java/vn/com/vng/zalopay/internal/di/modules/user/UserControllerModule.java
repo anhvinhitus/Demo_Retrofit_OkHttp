@@ -64,7 +64,8 @@ public class UserControllerModule {
                                              User user,
                                              SqlitePlatformScope sqlitePlatformScope,
                                              @Named("params_request_default") HashMap<String, String> params,
-                                             DownloadAppResourceTaskQueue downloadQueue, OkHttpClient okHttpClient) {
+                                             DownloadAppResourceTaskQueue downloadQueue,
+                                             OkHttpClient okHttpClient) {
 
         return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient, BuildConfig.DOWNLOAD_APP_RESOURCE);
     }
