@@ -1,8 +1,5 @@
 package vn.com.vng.zalopay.data.cache;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import rx.Observable;
@@ -11,7 +8,6 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 
 /**
@@ -55,24 +51,25 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> transactionHistories() {
-        return ObservableHelper.makeObservable(() -> listTransHistories(Integer.MAX_VALUE))
+    public Observable<List<TransHistoryEntity>> transactionHistories(int pageIndex, int limit) {
+        return ObservableHelper.makeObservable(() -> listTransHistories(pageIndex, limit))
                 .doOnNext(transHistoryEntities -> Timber.d("transactionHistories %s", transHistoryEntities.size()))
                 ;
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> transactionHistories(int limit) {
-        return ObservableHelper.makeObservable(() -> listTransHistories(limit));
+    public Observable<List<TransHistoryEntity>> transactionHistories() {
+        return ObservableHelper.makeObservable(() -> listTransHistories(0, Integer.MAX_VALUE));
     }
 
     @Override
-    public List<TransHistoryEntity> listTransHistories(int limit) {
+    public List<TransHistoryEntity> listTransHistories(int pageIndex, int limit) {
         return mDaoMapper.transform2Entity(
                 getDaoSession()
                         .getTransactionLogDao()
                         .queryBuilder()
                         .limit(limit)
+                        .offset(pageIndex * limit)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
                         .list());
     }
