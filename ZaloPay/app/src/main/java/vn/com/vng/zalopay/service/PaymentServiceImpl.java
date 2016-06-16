@@ -12,6 +12,7 @@ import java.util.Locale;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -32,14 +33,16 @@ public class PaymentServiceImpl implements IPaymentService {
     final ZaloPayIAPRepository zaloPayIAPRepository;
     final BalanceRepository mBalanceRepository;
     final User user;
+    final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user) {
+    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
         this.zaloPayIAPRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.user = user;
+        mTransactionRepository = transactionRepository;
     }
 
     @Override
@@ -97,7 +100,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     private void successCallback(Promise promise, WritableMap object) {
-        transactionUpdate();
+        updateTransaction();
         balanceUpdate();
         if (promise == null) {
             return;
@@ -153,10 +156,8 @@ public class PaymentServiceImpl implements IPaymentService {
         unsubscribeIfNotNull(compositeSubscription);
     }
 
-    private void transactionUpdate() {
-        zaloPayIAPRepository.transactionUpdate()
-                .subscribe(new DefaultSubscriber<Boolean>());
-
+    private void updateTransaction() {
+        mTransactionRepository.updateTransaction().subscribe(new DefaultSubscriber<Boolean>());
     }
 
     private void balanceUpdate() {

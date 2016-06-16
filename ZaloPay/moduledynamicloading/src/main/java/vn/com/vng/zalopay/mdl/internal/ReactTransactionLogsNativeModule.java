@@ -61,22 +61,6 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
-    @ReactMethod
-    public void reloadListTransaction(int count, Promise promise) {
-        Timber.d("reload transaction count %s", count);
-        Subscription subscription = mRepository.reloadListTransaction(count)
-                .map(new Func1<List<TransHistory>, WritableArray>() {
-                    @Override
-                    public WritableArray call(List<TransHistory> transHistories) {
-                        Timber.d("list transaction : %d", transHistories.size());
-                        return transform(transHistories);
-                    }
-                })
-                .subscribe(new TransactionLogSubscriber(promise));
-
-        compositeSubscription.add(subscription);
-    }
-
     private class TransactionLogSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;

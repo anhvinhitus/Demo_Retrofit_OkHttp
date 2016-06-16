@@ -67,10 +67,8 @@ public class PassportRepositoryImpl implements PassportRepository {
         return passportFactory.logout(uid, token).map(logoutResponse -> Boolean.TRUE);
     }
 
-    @Override
-    public Observable<Boolean> verifyAccessToken(String userId, String token) {
-        return passportFactory.verifyAccessToken(userId, token).map(baseResponse -> Boolean.TRUE);
-    }
-
-
+//    @Override
+//    public Observable<Boolean> verifyAccessToken(String userId, String token) {
+//        return passportFactory.verifyAccessToken(userId, token).map(baseResponse -> Boolean.TRUE);
+//    }
 }

@@ -21,26 +21,19 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 @Singleton
 public class PassportFactory {
 
-    private Context context;
-
     private PassportService passportService;
-
-    private HashMap<String, String> params;
-
-    private HashMap<String, String> authZaloParams;
 
     private UserConfig userConfig;
 
     private final int payAppId;
 
     @Inject
-    public PassportFactory(Context context, PassportService passportService,
+    public PassportFactory(PassportService passportService,
                            UserConfig userConfig, @Named("payAppId") int payAppId) {
-        if (context == null || passportService == null) {
+        if (passportService == null) {
             throw new IllegalArgumentException("Constructor parameters cannot be null!!!");
         }
 
-        this.context = context;
         this.passportService = passportService;
         this.userConfig = userConfig;
         this.payAppId = payAppId;
@@ -56,8 +49,8 @@ public class PassportFactory {
         return passportService.logout(payAppId, uid, accesstoken)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
     }
-
-    public Observable<BaseResponse> verifyAccessToken(String uid, String token) {
-        return passportService.verifyAccessToken(payAppId, uid, token);
-    }
+//
+//    public Observable<BaseResponse> verifyAccessToken(String uid, String token) {
+//        return passportService.verifyAccessToken(payAppId, uid, token);
+//    }
 }

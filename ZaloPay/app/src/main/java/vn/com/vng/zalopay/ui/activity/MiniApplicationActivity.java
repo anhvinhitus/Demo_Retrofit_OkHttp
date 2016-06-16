@@ -128,8 +128,12 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
-        showToast(R.string.exception_token_expired_message);
         getAppComponent().applicationSession().clearUserSession();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenExpiredMain(TokenExpiredEvent event) {
+        showToast(R.string.exception_token_expired_message);
     }
 
     public void showToast(String message) {

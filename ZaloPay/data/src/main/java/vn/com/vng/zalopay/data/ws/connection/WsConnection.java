@@ -57,7 +57,6 @@ public class WsConnection extends Connection implements ConnectionListener {
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-        this.listCallBack = new ArrayList<>();
     }
 
     public void setHostPort(String host, int port) {
@@ -167,7 +166,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onReceived(byte[] data) {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
-        if (data != null) {
+        if (message != null) {
             postResult(message);
         }
     }
@@ -225,11 +224,9 @@ public class WsConnection extends Connection implements ConnectionListener {
 
 
     protected final void onPostExecute(Event event) {
-        synchronized (listCallBack) {
-            for (OnReceiverMessageListener listener : listCallBack) {
-                if (listener != null) {
-                    listener.onReceiverEvent(event);
-                }
+        if (listCallBack != null) {
+            for (int i = listCallBack.size() - 1; i >= 0; i--) {
+                listCallBack.get(i).onReceiverEvent(event);
             }
         }
     }
@@ -244,16 +241,22 @@ public class WsConnection extends Connection implements ConnectionListener {
 
 
     public void addReceiverListener(OnReceiverMessageListener listener) {
-        synchronized (listCallBack) {
-            if (!listCallBack.contains(listener)) {
-                listCallBack.add(listener);
-            }
+        if (listCallBack == null) {
+            listCallBack = new ArrayList<>();
         }
+
+        listCallBack.add(listener);
     }
 
     public void removeReceiverListener(OnReceiverMessageListener listener) {
-        synchronized (listCallBack) {
+        if (listCallBack != null) {
             listCallBack.remove(listener);
+        }
+    }
+
+    public void clearOnScrollListeners() {
+        if (listCallBack != null) {
+            listCallBack.clear();
         }
     }
 

@@ -17,7 +17,6 @@ import okhttp3.Cache;
 import okhttp3.ConnectionPool;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -30,6 +29,7 @@ import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
 /**
  * Created by AnhHieu on 3/25/16.
@@ -102,14 +102,6 @@ public class NetworkModule {
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
-    }
-
-    @Provides
-    @Singleton
-    WsConnection providesWsConnecttion(Context context, UserConfig userConfig) {
-        WsConnection wsConnection = new WsConnection(context, new MessageParser(), userConfig);
-        wsConnection.setHostPort(BuildConfig.WS_HOST, BuildConfig.WS_PORT);
-        return wsConnection;
     }
 
 }

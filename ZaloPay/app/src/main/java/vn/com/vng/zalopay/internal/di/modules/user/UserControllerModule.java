@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 
 import android.content.Context;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.HashMap;
 
 import javax.inject.Named;
@@ -18,7 +16,6 @@ import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
-import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayIAPEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
@@ -26,7 +23,6 @@ import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
-import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
@@ -68,9 +64,14 @@ public class UserControllerModule {
                                              User user,
                                              SqlitePlatformScope sqlitePlatformScope,
                                              @Named("params_request_default") HashMap<String, String> params,
-                                             DownloadAppResourceTaskQueue downloadQueue, OkHttpClient okHttpClient) {
+                                             DownloadAppResourceTaskQueue downloadQueue,
+                                             OkHttpClient okHttpClient,
+                                             @Named("rootbundle") String rootBundle) {
 
-        return new AppConfigFactory(context, service, user, sqlitePlatformScope, params, downloadQueue, okHttpClient, BuildConfig.DOWNLOAD_APP_RESOURCE);
+        return new AppConfigFactory(context, service, user,
+                sqlitePlatformScope, params,
+                downloadQueue, okHttpClient,
+                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle);
     }
 
     @UserScope
@@ -79,30 +80,10 @@ public class UserControllerModule {
         return new AppConfigRepositoryImpl(appConfigFactory, mapper);
     }
 
-
-/*    @UserScope
-    @Provides
-    SqlAppListScope provideSqlAppListScope(@Named("daosession") DaoSession session) {
-        return new SqlAppListScopeImpl(session);
-    }*/
-
-    /* @UserScope
-     @Provides
-     AppListFactory provideAppListFactory(Context context, AppConfigService service,
-                                          User user, SqlAppListScope sqlAppListScope) {
-         return new AppListFactory(context, service, user, sqlAppListScope);
-     }
-
-     @UserScope
-     @Provides
-     ApplicationRepository provideApplicationRepository(AppListFactory appConfigFactory, ApplicationEntityDataMapper mapper) {
-         return new ApplicationRepositoryImpl(appConfigFactory, mapper);
-     }
- */
     @UserScope
     @Provides
-    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
-        return new SqlZaloPayScopeImpl(user, session, zaloPayCacheMapper);
+    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session) {
+        return new SqlZaloPayScopeImpl(user, session);
     }
 
     @UserScope
@@ -131,17 +112,17 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory,
-                                                      ZaloPayFactory zaloPayFactory,
-                                                      TransactionStore.Repository transactionRepository,
-                                                      ZaloPayIAPEntityDataMapper mapper) {
-        return new ZaloPayIAPRepositoryImpl(factory, zaloPayFactory, transactionRepository, mapper);
+    ZaloPayIAPRepository providesZaloPayIAPRepository(ZaloPayIAPFactory factory) {
+        return new ZaloPayIAPRepositoryImpl(factory);
     }
 
     @UserScope
     @Provides
-    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user) {
-        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user);
+    IPaymentService providesIPaymentService(ZaloPayIAPRepository zaloPayIAPRepository,
+                                            BalanceRepository balanceRepository,
+                                            User user,
+                                            TransactionStore.Repository transactionRepository) {
+        return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
     }
 
     @UserScope

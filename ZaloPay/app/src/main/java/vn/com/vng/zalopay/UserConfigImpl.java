@@ -17,7 +17,6 @@ import java.util.List;
 import de.greenrobot.dao.AbstractDao;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
-import vn.com.vng.zalopay.data.api.entity.UserEntity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
@@ -137,32 +136,6 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_ZALO_ID);
 
         editor.apply();
-    }
-
-    @Override
-    public void saveConfig(UserEntity user) {
-        //empty
-    }
-
-    @Override
-    public String getUserId() {
-        if (hasCurrentUser()) {
-            return getCurrentUser().uid;
-        }
-        return "";
-    }
-
-    @Override
-    public void saveUserInfo(long zaloId) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(Constants.PREF_ZALO_ID, zaloId);
-        editor.apply();
-
-        Timber.d("save UserInfo hasCurrentUser %s", hasCurrentUser());
-
-        if (hasCurrentUser()) {
-            currentUser.zaloId = zaloId;
-        }
     }
 
     @Override

@@ -9,7 +9,6 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.TransactionLocalStorage;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
-import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.TransactionRepository;
 import vn.com.vng.zalopay.domain.model.User;
@@ -34,8 +33,8 @@ public class TransactionModule {
 
     @UserScope
     @Provides
-    TransactionStore.LocalStorage provideTransactionLocalStorage(@Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
-        return new TransactionLocalStorage(session, zaloPayCacheMapper);
+    TransactionStore.LocalStorage provideTransactionLocalStorage(@Named("daosession") DaoSession session) {
+        return new TransactionLocalStorage(session);
     }
 
     @Provides

@@ -8,8 +8,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
  */
 public abstract class BaseZaloPayPresenter extends BaseUserPresenter {
 
-    protected void transactionUpdate() {
-        transactionRepository.transactionUpdate()
+    protected void updateTransaction() {
+        transactionRepository.updateTransaction()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }

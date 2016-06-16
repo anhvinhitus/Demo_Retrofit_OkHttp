@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -12,22 +13,27 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.NotificationHelper;
 
 /**
  * Created by AnhHieu on 6/14/16.
  */
-public class ZaloPayService extends Service implements OnReceiverMessageListener {
+public class NotificationService extends Service implements OnReceiverMessageListener {
 
     @Nullable
     @Override
@@ -47,13 +53,12 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
     @Inject
     Navigator navigator;
 
-    public ZaloPayService() {
+    public NotificationService() {
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Timber.d("onCreate thread %s", Thread.currentThread().getName());
         AndroidApplication.instance().getAppComponent().inject(this);
         eventBus.register(this);
         mWsConnection.addReceiverListener(this);
@@ -62,15 +67,18 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Timber.d("onStartCommand %s startId %s thread %s", intent, startId, Thread.currentThread().getName());
-        this.connectAndSendAuthentication();
+        if (AndroidUtils.isNetworkAvailable(getApplicationContext())) {
+            this.connectAndSendAuthentication();
+        }
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        Timber.d("onDestroy");
         eventBus.unregister(this);
-        mWsConnection.removeReceiverListener(this);
+        mWsConnection.clearOnScrollListeners();
+        mWsConnection.disconnect();
         super.onDestroy();
     }
 
@@ -84,7 +92,6 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
         }
     }
 
-
     private void connectAndSendAuthentication() {
         if (mWsConnection.isConnected()) {
             mWsConnection.sendAuthentication();
@@ -97,9 +104,49 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
     public void onReceiverEvent(Event event) {
         Timber.d("onReceiverEvent %s", event.msgType);
         if (event instanceof NotificationData) {
-            notificationHelper.create(getApplicationContext(), 1, navigator.getIntentMiniAppActivity(getApplicationContext(), "Notifications"), R.mipmap.ic_launcher, "Zalo Pay", ((NotificationData) event).message);
+            onReceiverNotification((NotificationData) event);
         } else if (event instanceof AuthenticationData) {
-            Toast.makeText(ZaloPayService.this, "Authentication success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NotificationService.this, "Authentication success", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    private void onReceiverNotification(NotificationData event) {
+        this.showNotification(event);
+        this.transactionUpdate();
+        this.updateBalance();
+    }
+
+    private void showNotification(NotificationData event) {
+        String message = TextUtils.isEmpty(event.message) ? "Thông báo từ Zalo Pay" : event.message;
+        int notificationId = 1;
+
+        notificationHelper.create(getApplicationContext(), notificationId,
+                navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS),
+                R.mipmap.ic_launcher,
+                getString(R.string.app_name), message);
+    }
+
+    protected void transactionUpdate() {
+        UserComponent userComponent = getUserComponent();
+        if (userComponent != null) {
+            userComponent.transactionRepository().transactionUpdate()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<Boolean>());
+        }
+    }
+
+    protected void updateBalance() {
+        UserComponent userComponent = getUserComponent();
+        if (userComponent != null) {
+            userComponent.balanceRepository().updateBalance()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<>());
+        }
+    }
+
+    protected UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
+    }
+
 }

@@ -23,9 +23,7 @@ public interface UserConfig {
 
     void saveConfig(User user);
 
-    void saveConfig(UserEntity user);
-
-    void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions);
+    void updateProfilePermissions(int profileLevel, List<ProfilePermisssion.Permission> profilePermisssions);
 
     void loadConfig();
 
@@ -33,11 +31,7 @@ public interface UserConfig {
 
     String getSession();
 
-    String getUserId();
-
     long getZaloId();
-
-    void saveUserInfo(long zaloId);
 
     void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
 

@@ -3,8 +3,6 @@ package vn.com.vng.zalopay.transfer.ui.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import javax.inject.Inject;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -18,7 +16,6 @@ import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.models.TransferRecent;
@@ -26,12 +23,9 @@ import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.zalopay.wallet.application.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 13/06/2016.
@@ -89,7 +83,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                transactionUpdate();
+                updateTransaction();
                 updateBalance();
 
                 if (mView != null && mView.getActivity() != null) {
@@ -135,7 +129,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "GetUserInfoSubscriber onError " + e);
+        	Timber.w(e, "GetUserInfoSubscriber onError " + e);
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }

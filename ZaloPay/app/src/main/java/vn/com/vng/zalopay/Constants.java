@@ -46,4 +46,14 @@ public class Constants {
     public static final int PIN_PROFILE_TYPE = 2;
 
     public static final int REQUEST_CODE_TRANSFER = 124;
+
+
+    public static class ModuleName {
+        public static final String NOTIFICATIONS = "Notifications";
+        public static final String PAYMENT_MAIN = "PaymentMain";
+        public static final String ABOUT = "About";
+        public static final String HELP = "Help";
+        public static final String FAQ = "FAQ";
+        public static final String TRANSACTIONLOGS = "TransactionLogs";
+    }
 }
