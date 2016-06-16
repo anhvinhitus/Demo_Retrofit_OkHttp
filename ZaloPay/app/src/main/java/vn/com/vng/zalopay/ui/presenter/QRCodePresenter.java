@@ -6,16 +6,10 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -32,10 +26,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     private PaymentWrapper paymentWrapper;
 
-    private User user;
-
-    public QRCodePresenter(User user) {
-        this.user = user;
+    public QRCodePresenter() {
         paymentWrapper = new PaymentWrapper(zaloPayRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -132,9 +123,14 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
                 return;
             }
 
-            orderTransaction(jsonString);
-        }
-        catch (JSONException | IllegalArgumentException e) {
+            if (orderTransaction(jsonString)) {
+                return;
+            }
+
+            hideLoadingView();
+            qrDataInvalid();
+            mView.resumeScanner();
+        } catch (JSONException | IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
             hideLoadingView();
             qrDataInvalid();
@@ -148,41 +144,41 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         long appId = jsonObject.optInt(Constants.APPID);
         String transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
         if (appId < 0 || TextUtils.isEmpty(transactionToken)) {
-            throw new IllegalArgumentException();
+            return false;
         }
         paymentWrapper.payWithToken(appId, transactionToken);
         return true;
     }
 
-    private void orderTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
+    private boolean orderTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
         Order order = new Order(jsonOrder);
         if (order.getAppid() < 0) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (TextUtils.isEmpty(order.getApptransid())) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (TextUtils.isEmpty(order.getAppuser())) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (TextUtils.isEmpty(order.getApptime())) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (TextUtils.isEmpty(order.getItem())) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (TextUtils.isEmpty(order.getAmount())) {
-            throw new IllegalArgumentException();
+            return false;
         }
-        long amount = Long.parseLong(order.getAmount());
         if (TextUtils.isEmpty(order.getEmbeddata())) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (TextUtils.isEmpty(order.getMac())) {
-            throw new IllegalArgumentException();
+            return false;
         }
         paymentWrapper.payWithOrder(order);
         hideLoadingView();
+        return true;
     }
 
     private void qrDataInvalid() {
