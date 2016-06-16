@@ -222,7 +222,11 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         if (zaloFriend != null) {
             Timber.tag(TAG).d("onViewCreated zaloFriend.uid:%s", zaloFriend.getUserId());
             updateUserInfo(zaloFriend);
-            mPresenter.getUserMapping(zaloFriend.getUserId());
+            if (userMapZaloAndZaloPay == null ||
+                    TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
+                    userMapZaloAndZaloPay.getZaloId() != zaloFriend.getUserId()) {
+                mPresenter.getUserMapping(zaloFriend.getUserId());
+            }
         }
 
         initCurrentState();
