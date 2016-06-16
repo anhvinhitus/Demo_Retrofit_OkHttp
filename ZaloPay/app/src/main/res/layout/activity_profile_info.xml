@@ -154,12 +154,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginTop="@dimen/spacing.medium.s"
                 android:background="@color/separate" />
 
@@ -290,12 +290,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginTop="@dimen/spacing.medium.s"
                 android:background="@color/separate" />
 
@@ -326,12 +326,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginTop="@dimen/spacing.medium.s"
                 android:background="@color/separate" />
 
@@ -369,12 +369,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginTop="@dimen/spacing.medium.s"
                 android:background="@color/separate" />
 
@@ -412,12 +412,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:layout_marginTop="@dimen/spacing.medium.s"
                 android:layout_weight="0.0"
                 android:background="@color/separate"

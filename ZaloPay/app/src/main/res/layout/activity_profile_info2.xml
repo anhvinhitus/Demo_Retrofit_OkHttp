@@ -154,7 +154,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
 
             <FrameLayout
@@ -166,7 +166,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
