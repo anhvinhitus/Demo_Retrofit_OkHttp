@@ -12,4 +12,5 @@ public interface ITransferView extends ILoadDataView {
     Activity getActivity();
     void onTokenInvalid();
     void updateUserPhone(MappingZaloAndZaloPay userMapZaloAndZaloPay);
+    void setEnableBtnContinue(boolean isEnable);
 }

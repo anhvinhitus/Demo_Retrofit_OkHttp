@@ -1,9 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -16,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -36,14 +33,11 @@ import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TransferFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link TransferFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class TransferFragment extends BaseFragment implements ITransferView {
-    private OnFragmentInteractionListener mListener;
-
     private MappingZaloAndZaloPay userMapZaloAndZaloPay;
     private ZaloFriend zaloFriend;
     private long mAmount = 0;
@@ -78,78 +72,28 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         btnContinue.setEnabled(!TextUtils.isEmpty(charSequence));
     }
 
-    public boolean isValidAmount() {
-        String amount = edtAmount.getText().toString();
-        if (TextUtils.isEmpty(amount) || mAmount <= 0) {
-            return false;
-        }
-        return true;
-    }
-
-    private void showAmountError() {
-        textInputAmount.setErrorEnabled(true);
-        if (TextUtils.isEmpty(edtAmount.getText().toString())) {
-            textInputAmount.setError(getString(R.string.invalid_amount_empty));
-        }
-    }
-
-    private void hideAmountError() {
-        textInputAmount.setErrorEnabled(false);
-        textInputAmount.setError(null);
-    }
-
-//    public boolean isValidTransferMsg() {
-//        String transferMsg = edtTransferMsg.getText().toString();
-//        if (TextUtils.isEmpty(transferMsg)) {
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    private void showTransferMsgError() {
-//        textInputTransferMsg.setErrorEnabled(true);
-//        if (TextUtils.isEmpty(edtTransferMsg.getText().toString())) {
-//            textInputTransferMsg.setError(getString(R.string.invalid_transfer_msg_empty));
-//        }
-//    }
-//
-//    private void hideTransferMsgError() {
-//        textInputAmount.setErrorEnabled(false);
-//        textInputAmount.setError(null);
-//    }
-
     @BindView(R.id.btnContinue)
     View btnContinue;
 
     @OnClick(R.id.btnContinue)
-    public void onClickContinute(View view) {
+    public void onClickContinute() {
         if (userMapZaloAndZaloPay == null || userMapZaloAndZaloPay.getZaloId() <= 0) {
             showToast("Thông tin tài khoản cần chuyển tiền không chính xác");
             return;
         }
-//        if (isValidAmount()) {
-//            showAmountError();
-//        } else {
-//            hideAmountError();
-//        }
-//        if (isValidTransferMsg()) {
-//            showTransferMsgError();
-//        } else {
-//            hideTransferMsgError();
-//        }
         if (edtTransferMsg == null) {
             return;
         }
         if (zaloFriend == null) {
             return;
         }
-//        String phoneNumber = "";
-//        String appUser = "";
-//        if (userMapZaloAndZaloPay != null) {
-//            appUser = userMapZaloAndZaloPay.getZaloPayId();
-//            phoneNumber = userMapZaloAndZaloPay.getPhonenumber();
-//        }
         mPresenter.transferMoney(mAmount, edtTransferMsg.getText().toString(), zaloFriend, userMapZaloAndZaloPay);
+        setEnableBtnContinue(false);
+    }
+
+    @Override
+    public void setEnableBtnContinue(boolean isEnable) {
+        btnContinue.setEnabled(isEnable);
     }
 
     public TransferFragment() {
@@ -239,28 +183,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -343,20 +268,5 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void showError(String message) {
         showToast(message);
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

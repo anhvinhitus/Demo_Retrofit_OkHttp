@@ -242,12 +242,14 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         mView.hideLoading();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         mView.showError(message);
+        mView.setEnableBtnContinue(true);
     }
 
     private void onCreateWalletOrderSuccess(Order order, String displayName, String avatar, String phoneNumber) {
         Timber.d("session =========" + order.getItem());
         paymentWrapper.transfer(order, displayName, avatar, phoneNumber);
         mView.hideLoading();
+        mView.setEnableBtnContinue(true);
     }
 
     private void saveTransferRecentToDB(ZaloFriend zaloFriend, MappingZaloAndZaloPay userMapZaloAndZaloPay) {
