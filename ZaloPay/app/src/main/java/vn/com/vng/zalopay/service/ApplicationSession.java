@@ -5,8 +5,6 @@ import android.content.Intent;
 
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
-import javax.inject.Inject;
-
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -37,7 +35,7 @@ public class ApplicationSession {
         ZaloSDK.Instance.unauthenticate();
         AndroidApplication.instance().releaseUserComponent();
         navigator.startLoginActivity(applicationContext, true);
-        applicationContext.stopService(new Intent(applicationContext, ZaloPayService.class));
+        applicationContext.stopService(new Intent(applicationContext, NotificationService.class));
     }
 
     /**

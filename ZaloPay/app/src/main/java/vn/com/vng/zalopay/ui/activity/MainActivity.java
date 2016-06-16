@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.service.ZaloPayService;
+import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -278,7 +278,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                startService(new Intent(MainActivity.this.getApplicationContext(), ZaloPayService.class));
+                startService(new Intent(MainActivity.this.getApplicationContext(), NotificationService.class));
                 return null;
             }
         });

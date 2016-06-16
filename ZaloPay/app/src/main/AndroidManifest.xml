@@ -168,7 +168,7 @@
             android:label="DownloadService" />
 
         <service
-            android:name=".service.ZaloPayService"
+            android:name=".service.NotificationService"
             android:exported="false"
             android:label="Zalo Pay Service" />
 

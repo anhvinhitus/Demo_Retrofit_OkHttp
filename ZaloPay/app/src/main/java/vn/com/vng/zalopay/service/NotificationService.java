@@ -22,12 +22,13 @@ import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.NotificationHelper;
 
 /**
  * Created by AnhHieu on 6/14/16.
  */
-public class ZaloPayService extends Service implements OnReceiverMessageListener {
+public class NotificationService extends Service implements OnReceiverMessageListener {
 
     @Nullable
     @Override
@@ -47,13 +48,12 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
     @Inject
     Navigator navigator;
 
-    public ZaloPayService() {
+    public NotificationService() {
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Timber.d("onCreate thread %s", Thread.currentThread().getName());
         AndroidApplication.instance().getAppComponent().inject(this);
         eventBus.register(this);
         mWsConnection.addReceiverListener(this);
@@ -62,8 +62,9 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Timber.d("onStartCommand %s startId %s thread %s", intent, startId, Thread.currentThread().getName());
-        this.connectAndSendAuthentication();
+        if (AndroidUtils.isNetworkAvailable(getApplicationContext())) {
+            this.connectAndSendAuthentication();
+        }
         return START_STICKY;
     }
 
@@ -71,7 +72,7 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
     public void onDestroy() {
         Timber.d("onDestroy");
         eventBus.unregister(this);
-        mWsConnection.removeReceiverListener(this);
+        mWsConnection.clearOnScrollListeners();
         mWsConnection.disconnect();
         super.onDestroy();
     }
@@ -101,7 +102,7 @@ public class ZaloPayService extends Service implements OnReceiverMessageListener
         if (event instanceof NotificationData) {
             notificationHelper.create(getApplicationContext(), 1, navigator.getIntentMiniAppActivity(getApplicationContext(), "Notifications"), R.mipmap.ic_launcher, "Zalo Pay", ((NotificationData) event).message);
         } else if (event instanceof AuthenticationData) {
-            Toast.makeText(ZaloPayService.this, "Authentication success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NotificationService.this, "Authentication success", Toast.LENGTH_SHORT).show();
         }
     }
 }
