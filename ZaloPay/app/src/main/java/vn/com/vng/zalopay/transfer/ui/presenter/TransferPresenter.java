@@ -135,7 +135,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "GetUserInfoSubscriber onError " + e);
+            Timber.w(e, "GetUserInfoSubscriber onError " + e);
             if (e != null && e instanceof BodyException) {
                 if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
                     clearAndLogout();

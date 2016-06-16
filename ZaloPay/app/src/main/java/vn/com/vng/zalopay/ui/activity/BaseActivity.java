@@ -133,6 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        Timber.d("onDestroy");
     }
 
 
@@ -195,7 +196,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        showToast(R.string.exception_token_expired_message);
+//        showToast(R.string.exception_token_expired_message);
         getAppComponent().applicationSession().clearUserSession();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenExpiredMain(TokenExpiredEvent event) {
+        showToast(R.string.exception_token_expired_message);
     }
 }
