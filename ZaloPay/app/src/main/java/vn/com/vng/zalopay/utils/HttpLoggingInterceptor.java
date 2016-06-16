@@ -228,7 +228,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 logger.log("<-- END HTTP");
             } else if (bodyEncoded(response.headers())) {
                 logger.log("<-- END HTTP (encoded body omitted)");
-            } else if (bodyBinary(request.headers())) {
+            } else if (bodyBinary(response.headers())) {
                 logger.log("--> END HTTP (binary body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
