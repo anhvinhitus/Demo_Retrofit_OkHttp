@@ -61,7 +61,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
     }
 
     public void verifyUser() {
-        Timber.d("verifyUser");
+//        Timber.d("verifyUser");
 
         if (userConfig.hasCurrentUser()) {
             Timber.i("go to Home Screen");
@@ -78,16 +78,17 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 //                    .subscribe(new VerifySubscriber());
 
         } else {
-            verifySubscription = Observable.timer(1, TimeUnit.SECONDS)
-                    .subscribe(new DefaultSubscriber<Long>() {
-
-                        @Override
-                        public void onCompleted() {
-                            SplashScreenPresenter.this.onVerifyComplete(false, false);
-                        }
-                    });
-
+//            verifySubscription = Observable.timer(1, TimeUnit.SECONDS)
+//                    .subscribe(new DefaultSubscriber<Long>() {
+//
+//                        @Override
+//                        public void onCompleted() {
+//                            SplashScreenPresenter.this.onVerifyComplete(false, false);
+//                        }
+//                    });
+//
             Timber.d("gotoLoginScreen");
+            mView.gotoLoginScreen();
         }
     }
 

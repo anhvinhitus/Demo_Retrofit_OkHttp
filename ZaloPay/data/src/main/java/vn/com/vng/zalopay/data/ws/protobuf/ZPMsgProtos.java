@@ -2105,7 +2105,6 @@ public final class ZPMsgProtos {
     }
     public static DataResponseUser parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
-      Log.e("Test ", String.valueOf(data.length));
       return PARSER.parseFrom(data);
     }
     public static DataResponseUser parseFrom(
