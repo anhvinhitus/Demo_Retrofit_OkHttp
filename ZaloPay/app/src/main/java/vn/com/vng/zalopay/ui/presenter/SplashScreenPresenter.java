@@ -61,19 +61,21 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
     }
 
     public void verifyUser() {
-
-        Timber.tag(TAG);
         Timber.d("verifyUser");
 
         if (userConfig.hasCurrentUser()) {
-            mView.showLoading();
+            Timber.i("go to Home Screen");
+            getZaloProfileInfo();
+            mView.gotoHomeScreen();
 
-            User user = userConfig.getCurrentUser();
-
-            Timber.d("verifyUser");
-            verifySubscription = passportRepository.verifyAccessToken(user.uid, user.accesstoken)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new VerifySubscriber());
+//            mView.showLoading();
+//
+//            User user = userConfig.getCurrentUser();
+//
+//            Timber.d("verifyUser");
+//            verifySubscription = passportRepository.verifyAccessToken(user.uid, user.accesstoken)
+//                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new VerifySubscriber());
 
         } else {
             verifySubscription = Observable.timer(1, TimeUnit.SECONDS)
@@ -86,7 +88,6 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
                     });
 
             Timber.d("gotoLoginScreen");
-
         }
     }
 
