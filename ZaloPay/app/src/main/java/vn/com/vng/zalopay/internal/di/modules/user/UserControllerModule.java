@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 
 import android.content.Context;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.HashMap;
 
 import javax.inject.Named;
@@ -26,7 +24,6 @@ import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
-import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
@@ -86,8 +83,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session, ZaloPayDaoMapper zaloPayCacheMapper) {
-        return new SqlZaloPayScopeImpl(user, session, zaloPayCacheMapper);
+    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session) {
+        return new SqlZaloPayScopeImpl(user, session);
     }
 
     @UserScope

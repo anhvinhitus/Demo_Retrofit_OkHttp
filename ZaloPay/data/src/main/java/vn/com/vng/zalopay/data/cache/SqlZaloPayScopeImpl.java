@@ -2,14 +2,8 @@ package vn.com.vng.zalopay.data.cache;
 
 import java.util.List;
 
-import rx.Observable;
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
-import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
-import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
-import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 import vn.com.vng.zalopay.domain.model.User;
@@ -20,13 +14,11 @@ import vn.com.vng.zalopay.domain.model.User;
 public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayScope {
 
     private final User user;
-    private ZaloPayDaoMapper zaloCacheMapper;
     private final int LENGTH_TRANSITION = 30;
 
-    public SqlZaloPayScopeImpl(User user, DaoSession daoSession, ZaloPayDaoMapper zaloCacheMapper) {
+    public SqlZaloPayScopeImpl(User user, DaoSession daoSession) {
         super(daoSession);
         this.user = user;
-        this.zaloCacheMapper = zaloCacheMapper;
     }
 
     @Override
