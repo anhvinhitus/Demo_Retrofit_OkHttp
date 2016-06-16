@@ -12,9 +12,4 @@ public class TransferActivity extends BaseToolBarActivity {
     public BaseFragment getFragmentToHost() {
         return TransferFragment.newInstance(getIntent().getExtras());
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 }

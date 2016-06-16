@@ -245,7 +245,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     }
 
     private void onCreateWalletOrderSuccess(Order order, String displayName, String avatar, String phoneNumber) {
-        Timber.tag("onCreateWalletOrderSuccess").d("session =========" + order.getItem());
+        Timber.d("session =========" + order.getItem());
         paymentWrapper.transfer(order, displayName, avatar, phoneNumber);
         mView.hideLoading();
     }

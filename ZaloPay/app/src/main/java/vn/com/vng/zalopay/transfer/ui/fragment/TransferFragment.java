@@ -75,13 +75,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @OnTextChanged(R.id.edtAmount)
     public void onTextChangedAmount(CharSequence charSequence) {
-        if (TextUtils.isEmpty(charSequence)) {
-            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
-        } else {
-            btnContinue.setBackgroundResource(R.drawable.bg_btn_green);
-        }
+        btnContinue.setEnabled(!TextUtils.isEmpty(charSequence));
     }
-
+    
     public boolean isValidAmount() {
         String amount = edtAmount.getText().toString();
         if (TextUtils.isEmpty(amount) || mAmount <= 0) {
@@ -204,6 +200,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        btnContinue.setEnabled(edtAmount.length() > 0);
         mPresenter.setView(this);
         edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
             @Override
