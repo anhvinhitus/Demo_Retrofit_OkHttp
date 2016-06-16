@@ -34,7 +34,6 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager;
 
 public class PreProfileActivity extends BaseActivity implements IPreProfileView,
@@ -236,12 +235,7 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
             return;
         }
         if (!TextUtils.isEmpty(walletTransId)) {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.zaloUserID = userConfig.getCurrentUser().uid;
-            paymentInfo.zaloPayAccessToken = userConfig.getCurrentUser().accesstoken;
-            paymentInfo.walletTransID = walletTransId;
-
-            paymentWrapper.saveCardMap(paymentInfo, null);
+            paymentWrapper.saveCardMap(walletTransId, null);
         } else if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().finish();
         }

@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
@@ -146,9 +148,18 @@ public class Navigator {
         context.startActivity(intent);
     }
 
-    public void startPreProfileActivity(Activity activity) {
-        Intent intent = new Intent(activity, PreProfileActivity.class);
-        activity.startActivity(intent);
+    public void startPreProfileActivity(Context context, String walletTransID) {
+        if (context == null) {
+            Timber.w("Cannot start pre-profile activity due to NULL context");
+            return;
+        }
+
+        Intent intent = new Intent(context, PreProfileActivity.class);
+        if (!TextUtils.isEmpty(walletTransID)) {
+            intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
+        }
+
+        context.startActivity(intent);
     }
 
     public void startPinProfileActivity(Activity activity) {

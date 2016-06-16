@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -9,13 +8,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.JsonUtil;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
@@ -182,10 +181,17 @@ public class PaymentWrapper {
         }
     }
 
-    public void saveCardMap(ZPWPaymentInfo paymentInfo, ZPWSaveMapCardListener listener) {
+    public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
         if (viewListener == null) {
             return;
         }
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.zaloUserID = user.uid;
+        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        paymentInfo.walletTransID = walletTransId;
+
         ZingMobilePayApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
     }
 
@@ -277,9 +283,9 @@ public class PaymentWrapper {
         if (viewListener == null || viewListener.getActivity() == null) {
             return;
         }
-        Intent intent = new Intent(viewListener.getActivity(), PreProfileActivity.class);
-        intent.putExtra(Constants.WALLETTRANSID, walletTransID);
-        viewListener.getActivity().startActivity(intent);
+
+        Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+        navigator.startPreProfileActivity(viewListener.getActivity(), walletTransID);
     }
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {

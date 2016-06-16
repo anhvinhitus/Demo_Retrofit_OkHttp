@@ -80,7 +80,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     @OnClick(R.id.layoutChangePin)
     public void onClickChangePin(View view) {
-        navigator.startPreProfileActivity(this);
+        navigator.startPreProfileActivity(this, null);
     }
 
     public void updateBalance(long balance) {
