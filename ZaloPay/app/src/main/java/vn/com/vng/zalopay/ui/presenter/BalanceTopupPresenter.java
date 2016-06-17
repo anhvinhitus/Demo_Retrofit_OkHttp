@@ -178,25 +178,19 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "onError " + e);
-            if (e != null && e instanceof BodyException) {
-                if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    clearAndLogout();
-                    return;
-                }
-            }
             BalanceTopupPresenter.this.onCreateWalletOrderError(e);
         }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        Timber.tag("onCreateWalletOrderError").d("session =========" + e);
+        Timber.d("session =========" + e);
         hideLoadingView();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         showErrorView(message);
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        Timber.tag("onCreateWalletOrderSuccess").d("session =========" + order.getItem());
+        Timber.d("session =========" + order.getItem());
 //        pay(order);
         paymentWrapper.payWithOrder(order);
         hideLoadingView();

@@ -37,7 +37,8 @@ public class ErrorMessageFactory {
         } else if (exception instanceof BodyException) {
             message = exception.getMessage();
         } else if (exception instanceof TokenException) {
-
+            //message = context.getString(R.string.exception_token_expired_message);
+            message = null;
         } else if (exception instanceof SocketTimeoutException) {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
