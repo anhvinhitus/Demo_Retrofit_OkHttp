@@ -3,12 +3,18 @@ package vn.com.vng.zalopay.data.appresources;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.domain.model.BankCard;
 
 /**
@@ -18,7 +24,6 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 public interface AppResource {
     interface LocalStorage {
         List<AppResourceEntity> get();
-        Observable<List<AppResourceEntity>> fetch();
         void put(List<AppResourceEntity> resourceEntities);
         void updateAppList(List<Integer> listAppId);
 
@@ -49,6 +54,10 @@ public interface AppResource {
         Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                           @Query(value = "checksumlist", encoded = true) String checksumlist,
                                                           @QueryMap HashMap<String, String> params);
+
+        @GET
+        @Streaming
+        Observable<retrofit2.Response<ResponseBody>> downloadUrl(@Url String url);
     }
 
     interface Repository {

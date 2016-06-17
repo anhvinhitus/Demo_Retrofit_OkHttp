@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.download;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,10 +49,73 @@ public class FileUtil {
 
     }
 
+    public static void decompress(byte[] compressed, String location) throws IOException {
+
+        InputStream is;
+        ZipInputStream zis;
+
+        String filename;
+        is = new ByteArrayInputStream(compressed);
+        zis = new ZipInputStream(new BufferedInputStream(is));
+        ZipEntry ze;
+        byte[] buffer = new byte[1024];
+        int count;
+
+        while ((ze = zis.getNextEntry()) != null)
+        {
+            filename = ze.getName();
+
+            // Need to create directories if not exists, or
+            // it will generate an Exception...
+            if (ze.isDirectory()) {
+                String path = location + File.separator + filename;
+                File fmd = new File(path);
+                fmd.mkdirs();
+
+                hideImageFromGallery(path + File.separator);
+
+                continue;
+            }
+
+            FileOutputStream fout = new FileOutputStream(location + File.separator + filename);
+
+            while ((count = zis.read(buffer)) != -1) {
+                fout.write(buffer, 0, count);
+            }
+
+            fout.close();
+            zis.closeEntry();
+        }
+
+        zis.close();
+
+    }
+
+
+    /**
+     * Create .nomedia file in order to prevent gallery application shows this
+     * folder into album
+     *
+     * @param path
+     *            Local path
+     *
+     * @throws IOException
+     *             if it's not possible to create the file.
+     */
+    public static void hideImageFromGallery(String path) throws IOException {
+        String NOMEDIA = ".nomedia";
+        File nomediaFile = new File(path + NOMEDIA);
+        if (!nomediaFile.exists()) {
+            nomediaFile.createNewFile();
+        }
+    }
+
     public static void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
 
         if (entry.isDirectory()) {
-            createDir(new File(outputDir, entry.getName()));
+            File dir = new File(outputDir, entry.getName());
+            createDir(dir);
+            hideImageFromGallery(dir.getPath() + File.separator);
             return;
         }
 

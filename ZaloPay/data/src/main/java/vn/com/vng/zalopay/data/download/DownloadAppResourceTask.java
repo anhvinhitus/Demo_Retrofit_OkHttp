@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.data.download;
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,12 +14,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.appresources.AppResource;
-import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
-
-import static vn.com.vng.zalopay.data.download.FileUtil.ensureDirectory;
-import static vn.com.vng.zalopay.data.download.FileUtil.unzip;
 
 /**
  * Created by AnhHieu on 5/21/16.
@@ -37,21 +34,16 @@ public class DownloadAppResourceTask {
     }
 
     private final OkHttpClient httpClient;
-
-    private final Context context;
     private final DownloadInfo downloadInfo;
     private final AppResource.LocalStorage mLocalStorage;
-
     private final String mBundleRootFolder;
 
-    public DownloadAppResourceTask(Context context,
-                                   DownloadInfo appResourceEntity,
+    public DownloadAppResourceTask(DownloadInfo appResourceEntity,
                                    OkHttpClient mOkHttpClient,
                                    AppResource.LocalStorage localStorage,
                                    String rootBundle) {
 
         this.downloadInfo = appResourceEntity;
-        this.context = context;
         this.httpClient = mOkHttpClient;
         this.mLocalStorage = localStorage;
         this.mBundleRootFolder = rootBundle;
@@ -65,11 +57,11 @@ public class DownloadAppResourceTask {
         Timber.d("isDownload %s", isDownloadSuccess);
 
         if (!isDownloadSuccess) {
+            mLocalStorage.increaseRetryDownload(downloadInfo.appid);
+
             if (callback != null) {
                 callback.onFailure();
             }
-
-            mLocalStorage.increaseRetryDownload(downloadInfo.appid);
         } else {
             mLocalStorage.increaseStateDownload(downloadInfo.appid);
 
@@ -107,10 +99,7 @@ public class DownloadAppResourceTask {
 
             outputStream.flush();
 
-            if (fileSize != fileSizeDownloaded) {
-                return false;
-            }
-            return true;
+            return fileSize == fileSizeDownloaded;
         } catch (IOException e) {
             Timber.e(e, " download exception %s", e);
             return false;
@@ -132,40 +121,48 @@ public class DownloadAppResourceTask {
     private boolean download(DownloadInfo downloadInfo, Callback callback) {
 
         Timber.d("url download %s", downloadInfo.url);
-        String resourcePath = getResourcePath();
-        ensureDirectory(resourcePath);
-        final File file = new File(resourcePath, "temp.zip");
+        String destinationPath = getExternalBundleFolder(downloadInfo.appid);
+        Timber.d("destinationPath %s", destinationPath);
 
-        final Call call = httpClient.newCall(new Request.Builder().url(downloadInfo.url).get().build());
+        String resourcePath = getResourcePath();
+        FileUtil.ensureDirectory(resourcePath);
+//        final File file = new File(resourcePath, "temp.zip");
+
         boolean result = false;
         try {
+            final Call call = httpClient.newCall(new Request.Builder().url(downloadInfo.url).get().build());
             Response response = call.execute();
-            if (response.code() == 200) {
-                result = writeResponseBodyToDisk(response.body(), file);
+//            retrofit2.Response<ResponseBody> response = executeDownloadRequest(downloadInfo.url);
+
+            if (response != null && response.isSuccessful()) {
+//                result = writeResponseBodyToDisk(response.body(), file);
+                FileUtil.decompress(response.body().bytes(), destinationPath);
+                result = true;
             } else {
-                Timber.e("response.code() %s", response.code());
+                int code = response == null ? -1 : response.code();
+                Timber.w("Response: %d for download URL %s", code, downloadInfo.url);
             }
 
-            response.body().close();
+            if (response != null) {
+                response.body().close();
+            }
         } catch (Exception ex) {
-            Timber.e("download exception %s", ex);
+            Timber.e(ex, "Exception while downloading Apps: %s", downloadInfo.url);
         }
 
         Timber.i("result download %s", result);
-        if (result) {
-            String destinationPath = getExternalBundleFolder(downloadInfo.appid);
-            Timber.d("destinationPath %s", destinationPath);
-            try {
-                unzip(file.getAbsolutePath(), destinationPath);
-            } catch (Exception ex) {
-                Timber.e(ex, "exception unzip ");
-                result = false;
-            }
-        }
-
-        if (file.exists()) {
-            file.delete();
-        }
+//        if (result) {
+//            try {
+//                FileUtil.unzip(file.getAbsolutePath(), destinationPath);
+//            } catch (Exception ex) {
+//                Timber.e(ex, "exception unzip ");
+//                result = false;
+//            }
+//        }
+//
+//        if (file.exists()) {
+//            file.delete();
+//        }
 
         return result;
     }
