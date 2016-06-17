@@ -1,8 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,7 +38,7 @@ public abstract class BaseFragment extends Fragment {
     public final String TAG = getClass().getSimpleName();
 
     private Snackbar mSnackBar;
-    private ProgressDialog mProgressDialog;
+    private SweetAlertDialog mProgressDialog;
     private Unbinder unbinder;
 
     @Override
@@ -104,14 +104,17 @@ public abstract class BaseFragment extends Fragment {
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            mProgressDialog.setContentText("Loading");
+            mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
     }
 
 
     public void hideProgressDialog() {
-        if (mProgressDialog != null)
+        if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
 
@@ -159,6 +162,9 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void hideKeyboard() {
+        if (getView() == null) {
+            return;
+        }
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
