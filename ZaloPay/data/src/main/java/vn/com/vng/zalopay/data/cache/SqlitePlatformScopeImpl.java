@@ -47,79 +47,10 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
     }
 
     @Override
-    public void write(List<AppResourceEntity> listApp) {
-
-        List<AppResourceGD> list = platformDaoMapper.transformAppResourceEntity(listApp);
-        if (Lists.isEmptyOrNull(list)) return;
-
-        for (AppResourceGD appResource : list) {
-            appResource.setStateDownload(0);
-            appResource.setNumRetry(0);
-            appResource.setTimeDownload(0l);
-        }
-
-        getAppInfoDao().insertOrReplaceInTx(list);
-    }
-
-    @Override
-    public Observable<List<AppResourceEntity>> listApp() {
-        return ObservableHelper.makeObservable(() -> listAppResourceEntity());
-    }
-
-    public List<AppResourceEntity> listAppResourceEntity() {
-        try {
-            return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().list());
-        } catch (android.database.sqlite.SQLiteException e) {
-            Timber.e(e, "Exception");
-            return new ArrayList<>();
-        }
-    }
-
-    @Override
-    public void updateAppId(List<Integer> list) {
-        getAppInfoDao().queryBuilder()
-                .where(AppResourceGDDao.Properties.Appid.notIn(list))
-                .buildDelete()
-                .executeDeleteWithoutDetachingEntities(); // TOdo: chú ý có khi trong session/cache van ton tai. (get App !=null)
-    }
-
-    @Override
     public void writePaymentTransType(List<PaymentTransTypeEntity> list) {
         if (Lists.isEmptyOrNull(list)) return;
 
         getPaymentTransDao().insertOrReplaceInTx(platformDaoMapper.transformPaymentTransTypeEntity(list));
     }
 
-    @Override
-    public void increaseStateDownload(int appId) {
-        Timber.e("setDownloadInfo appResourceId %s", appId);
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
-        if (Lists.isEmptyOrNull(appResourceGD)) return;
-
-        for (AppResourceGD app : appResourceGD) {
-
-            int state = app.getStateDownload() + 1;
-            app.setStateDownload(state);
-            if (state >= 2) {
-                app.setNumRetry(0);
-                app.setTimeDownload(0l);
-            }
-        }
-
-        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
-    }
-
-    @Override
-    public void increaseRetryDownload(long appId) {
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
-        if (Lists.isEmptyOrNull(appResourceGD)) return;
-
-        long currentTime = System.currentTimeMillis() / 1000;
-        for (AppResourceGD app : appResourceGD) {
-            app.setNumRetry(app.getNumRetry() + 1);
-            app.setTimeDownload(currentTime);
-        }
-
-        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
-    }
 }

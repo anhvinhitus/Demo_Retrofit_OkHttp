@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
+import vn.com.vng.zalopay.data.appresources.AppResource;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
@@ -62,16 +63,11 @@ public class UserControllerModule {
     AppConfigFactory provideAppConfigFactory(Context context,
                                              AppConfigService service,
                                              User user,
-                                             SqlitePlatformScope sqlitePlatformScope,
-                                             @Named("params_request_default") HashMap<String, String> params,
-                                             DownloadAppResourceTaskQueue downloadQueue,
-                                             OkHttpClient okHttpClient,
-                                             @Named("rootbundle") String rootBundle) {
+                                             SqlitePlatformScope sqlitePlatformScope) {
 
-        return new AppConfigFactory(context, service, user,
-                sqlitePlatformScope, params,
-                downloadQueue, okHttpClient,
-                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle);
+        return new AppConfigFactory(context, service,
+                user,
+                sqlitePlatformScope);
     }
 
     @UserScope
