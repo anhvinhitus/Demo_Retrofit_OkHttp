@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.download;
+package vn.com.vng.zalopay.data.appresources;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

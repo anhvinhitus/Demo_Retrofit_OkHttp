@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.download;
+package vn.com.vng.zalopay.data.appresources;
 
 /**
  * Created by AnhHieu on 5/23/16.

@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.data.appresources.AppResourceLocalStorage;
 import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
+import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**

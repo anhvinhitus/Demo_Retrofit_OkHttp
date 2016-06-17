@@ -15,9 +15,6 @@ import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTask;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
-import vn.com.vng.zalopay.data.download.DownloadInfo;
 import vn.com.vng.zalopay.data.util.Lists;
 
 /**
