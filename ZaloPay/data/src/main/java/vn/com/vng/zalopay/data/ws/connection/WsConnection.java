@@ -163,7 +163,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onConnected() {
         Timber.d("onConnected");
         mState = State.Connected;
-        numRetry = 0;
+        //    numRetry = 0;
         sendAuthentication();
     }
 
@@ -172,6 +172,10 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
         if (message != null) {
+            if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
+                numRetry = 0;
+            }
+
             postResult(message);
         }
     }
@@ -195,7 +199,9 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onDisconnected(int code, String message) {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
-        if (isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry < MAX_NUMBER_RETRY_CONNECT) {
+        disconnect();
+
+        if (isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
             connect();
         }
         numRetry++;
