@@ -65,6 +65,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                updateTransaction();
+                balanceUpdate();
                 successCallback(promise, null);
             }
 
@@ -100,8 +102,6 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     private void successCallback(Promise promise, WritableMap object) {
-        updateTransaction();
-        balanceUpdate();
         if (promise == null) {
             return;
         }
