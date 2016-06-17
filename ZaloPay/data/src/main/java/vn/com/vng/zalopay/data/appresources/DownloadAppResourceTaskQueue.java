@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.download;
+package vn.com.vng.zalopay.data.appresources;
 
 import android.content.Context;
 import android.content.Intent;

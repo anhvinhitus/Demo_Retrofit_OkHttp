@@ -37,11 +37,6 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public Observable<List<AppResourceEntity>> fetch() {
-        return ObservableHelper.makeObservable(() -> get());
-    }
-
-    @Override
     public void put(List<AppResourceEntity> resourceEntities) {
         List<AppResourceGD> list = platformDaoMapper.transformAppResourceEntity(resourceEntities);
         if (Lists.isEmptyOrNull(list)) {
@@ -67,9 +62,11 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
     @Override
     public void increaseStateDownload(int appId) {
-        Timber.e("setDownloadInfo appResourceId %s", appId);
+        Timber.d("increaseStateDownload appId %s", appId);
         List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
-        if (Lists.isEmptyOrNull(appResourceGD)) return;
+        if (Lists.isEmptyOrNull(appResourceGD)) {
+            return;
+        }
 
         for (AppResourceGD app : appResourceGD) {
 

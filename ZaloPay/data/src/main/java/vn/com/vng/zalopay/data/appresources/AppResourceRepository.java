@@ -15,9 +15,6 @@ import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTask;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
-import vn.com.vng.zalopay.data.download.DownloadInfo;
 import vn.com.vng.zalopay.data.util.Lists;
 
 /**
@@ -60,7 +57,7 @@ public class AppResourceRepository implements AppResource.Repository {
     @Override
     public Observable<Boolean> initialize() {
         return ObservableHelper.makeObservable(() -> {
-            checkDownloadAppResource();
+            ensureAppResourceAvailable();
             return Boolean.TRUE;
         });
     }
@@ -68,13 +65,13 @@ public class AppResourceRepository implements AppResource.Repository {
     @Override
     public Observable<List<vn.com.vng.zalopay.domain.model.AppResource>> listAppResource() {
         return Observable.concat(
-                    mLocalStorage.fetch(),
-                    listAppResourceCloud().flatMap(appResourceResponse -> mLocalStorage.fetch()))
+                    ObservableHelper.makeObservable(mLocalStorage::get),
+                    fetchAppResource().flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
                 .delaySubscription(200, TimeUnit.MILLISECONDS)
                 .map(o -> mAppConfigEntityDataMapper.transformAppResourceEntity(o));
     }
 
-    private Observable<AppResourceResponse> listAppResourceCloud() {
+    private Observable<AppResourceResponse> fetchAppResource() {
 
         List<Integer> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
@@ -90,11 +87,11 @@ public class AppResourceRepository implements AppResource.Repository {
                 ;
     }
 
-    private void checkDownloadAppResource() {
+    private void ensureAppResourceAvailable() {
         List<AppResourceEntity> list = mLocalStorage.get();
         List<AppResourceEntity> listAppDownload = new ArrayList<>();
         for (AppResourceEntity app : list) {
-            if (isNeedRetryDownload(app)) {
+            if (shouldDownloadApp(app)) {
                 listAppDownload.add(app);
             }
         }
@@ -104,7 +101,7 @@ public class AppResourceRepository implements AppResource.Repository {
         }
     }
 
-    private boolean isNeedRetryDownload(AppResourceEntity app) {
+    private boolean shouldDownloadApp(AppResourceEntity app) {
         if (app.stateDownload < 2) {
             if (app.numRetry < 3) {
                 return true;
@@ -134,8 +131,6 @@ public class AppResourceRepository implements AppResource.Repository {
         List<Integer> listAppId = resourceResponse.appidlist;
 
         List<AppResourceEntity> resourcelist = resourceResponse.resourcelist;
-
-//        long expiredtime = resourceResponse.expiredtime;
 
         startDownloadService(resourcelist, resourceResponse.baseurl);
 
@@ -174,14 +169,14 @@ public class AppResourceRepository implements AppResource.Repository {
 
     private void createTask(AppResourceEntity appResourceEntity, List<DownloadAppResourceTask> listTask) {
 
-        DownloadAppResourceTask taskJs = new DownloadAppResourceTask(mContext,
+        DownloadAppResourceTask taskJs = new DownloadAppResourceTask(
                 new DownloadInfo(appResourceEntity.jsurl, appResourceEntity.appname,
                         appResourceEntity.appid, appResourceEntity.checksum),
                 mOkHttpClient, mLocalStorage, mRootBundle);
 
         listTask.add(taskJs);
 
-        DownloadAppResourceTask taskImgUrl = new DownloadAppResourceTask(mContext,
+        DownloadAppResourceTask taskImgUrl = new DownloadAppResourceTask(
                 new DownloadInfo(appResourceEntity.imageurl, appResourceEntity.appname,
                         appResourceEntity.appid, appResourceEntity.checksum),
                 mOkHttpClient, mLocalStorage, mRootBundle);

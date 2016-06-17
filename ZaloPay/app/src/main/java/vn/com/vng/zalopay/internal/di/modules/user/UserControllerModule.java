@@ -2,21 +2,16 @@ package vn.com.vng.zalopay.internal.di.modules.user;
 
 import android.content.Context;
 
-import java.util.HashMap;
-
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
-import vn.com.vng.zalopay.data.appresources.AppResource;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
@@ -25,7 +20,6 @@ import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayIAPRepositoryImpl;

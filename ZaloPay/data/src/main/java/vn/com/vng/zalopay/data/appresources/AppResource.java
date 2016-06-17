@@ -9,7 +9,6 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
-import vn.com.vng.zalopay.domain.model.BankCard;
 
 /**
  * Created by huuhoa on 6/17/16.
@@ -18,7 +17,6 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 public interface AppResource {
     interface LocalStorage {
         List<AppResourceEntity> get();
-        Observable<List<AppResourceEntity>> fetch();
         void put(List<AppResourceEntity> resourceEntities);
         void updateAppList(List<Integer> listAppId);
 
