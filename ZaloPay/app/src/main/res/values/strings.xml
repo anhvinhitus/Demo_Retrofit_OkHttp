@@ -129,8 +129,6 @@
     <!-- Link CARDS END-->
 
     <string name="alert_processing">Đang xử lý</string>
-    <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
-    <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
 
     <string name="hint_birthday">Năm sinh</string>
     <string name="note_transaction">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN:</string>

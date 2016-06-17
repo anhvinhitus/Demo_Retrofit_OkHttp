@@ -11,5 +11,8 @@
     <string name="get_zalo_contact_error">Lấy danh sách bạn Zalo thất bại!</string>
     <string name="get_mapping_zalo_zalopay_error">Lấy thông tin tài khoản Zalo thất bại!</string>
     <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
-    
+
+    <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
+    <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
+
 </resources>
