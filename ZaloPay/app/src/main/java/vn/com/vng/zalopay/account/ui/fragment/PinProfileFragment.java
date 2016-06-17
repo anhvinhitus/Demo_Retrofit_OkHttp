@@ -23,8 +23,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
+import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
-import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
@@ -126,6 +126,24 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         return !TextUtils.isEmpty(pin);
     }
 
+    IPassCodeMaxLength passCodeMaxLength = new IPassCodeMaxLength() {
+        @Override
+        public void hasMaxLength() {
+            if (passCodeConfirm != null) {
+                passCodeConfirm.requestFocus();
+            }
+        }
+    };
+
+    IPassCodeMaxLength passCodeConfirmMaxLength = new IPassCodeMaxLength() {
+        @Override
+        public void hasMaxLength() {
+            if (edtPhone != null) {
+                edtPhone.requestFocus();
+            }
+        }
+    };
+
     public PinProfileFragment() {
         // Required empty public constructor
     }
@@ -201,6 +219,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                 }
             }
         });
+
+        passCode.requestFocus();
+        passCode.setPassCodeMaxLength(passCodeMaxLength);
+        passCodeConfirm.setPassCodeMaxLength(passCodeConfirmMaxLength);
 
 //        passCode.setPasscodeChanged(passcodeChanged);
 //        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
