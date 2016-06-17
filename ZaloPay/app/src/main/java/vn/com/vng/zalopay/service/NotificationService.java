@@ -113,7 +113,7 @@ public class NotificationService extends Service implements OnReceiverMessageLis
 
     private void onReceiverNotification(NotificationData event) {
         this.showNotification(event);
-        this.transactionUpdate();
+        this.updateTransaction();
         this.updateBalance();
     }
 
@@ -127,7 +127,7 @@ public class NotificationService extends Service implements OnReceiverMessageLis
                 getString(R.string.app_name), message);
     }
 
-    protected void transactionUpdate() {
+    protected void updateTransaction() {
         UserComponent userComponent = getUserComponent();
         if (userComponent != null) {
             userComponent.transactionRepository().updateTransaction()

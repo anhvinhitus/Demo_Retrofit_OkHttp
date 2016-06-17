@@ -16,10 +16,6 @@ import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +28,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;

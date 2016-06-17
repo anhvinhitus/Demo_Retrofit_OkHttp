@@ -17,20 +17,7 @@ public interface SqlitePlatformScope extends SqlBaseScope {
 
     Observable<List<CardEntity>> listCard();
 
-    void write(List<AppResourceEntity> listApp);
-
-    Observable<List<AppResourceEntity>> listApp();
-
-    List<AppResourceEntity> listAppResourceEntity();
-
-    // Xoá app, nếu không tồn tại trong list này.
-    void updateAppId(List<Integer> list);
 
     void writePaymentTransType(List<PaymentTransTypeEntity> list);
 
-
-    // 1 appJs gồm 2 resource js, image. Khi app stateDownload = 2 -> download success
-    void increaseStateDownload(int appId);
-
-    void increaseRetryDownload(long appId);
 }

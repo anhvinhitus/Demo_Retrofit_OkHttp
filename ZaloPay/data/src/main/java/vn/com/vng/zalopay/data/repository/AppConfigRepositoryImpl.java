@@ -28,26 +28,8 @@ public class AppConfigRepositoryImpl extends BaseRepository implements AppConfig
         this.mapper = mapper;
     }
 
-
-    @Override
-    public Observable<Boolean> initialize() {
-        return makeObservable(() -> {
-            appConfigFactory.checkDownloadAppResource();
-            return Boolean.TRUE;
-        });
-    }
-
     @Override
     public Observable<List<BankCard>> listCardCache() {
         return appConfigFactory.listCardCache().map(cardEntities -> mapper.transform(cardEntities));
-    }
-
-    @Override
-    public Observable<List<AppResource>> listAppResource() {
-        return Observable.concat(appConfigFactory.listAppResourceCache(),
-                appConfigFactory.listAppResourceCloud()
-                        .flatMap(appResourceResponse -> appConfigFactory.listAppResourceCache()))
-                .delaySubscription(200, TimeUnit.MILLISECONDS)
-                .map(o -> mapper.transformAppResourceEntity(o));
     }
 }
