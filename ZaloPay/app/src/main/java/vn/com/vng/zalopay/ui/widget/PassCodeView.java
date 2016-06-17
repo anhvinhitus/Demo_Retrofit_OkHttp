@@ -44,6 +44,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
     private IPasscodeFocusChanged mIPasscodeFocusChanged;
     private IPasscodeChanged mIPasscodeChanged;
+    private IPassCodeMaxLength mIPassCodeMaxLength;
 
     public PassCodeView(Context context) {
         super(context);
@@ -157,6 +158,14 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         mIPasscodeChanged = null;
     }
 
+    public void setPassCodeMaxLength(IPassCodeMaxLength passCodeMaxLength) {
+        this.mIPassCodeMaxLength = passCodeMaxLength;
+    }
+
+    public void removePassCodeMaxLength() {
+        this.mIPassCodeMaxLength = null;
+    }
+
     public void showPasscode() {
         mShowPasscode = true;
         showOrHidePasscode();
@@ -243,6 +252,9 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     public void afterTextChanged(Editable s) {
         if (mIPasscodeChanged != null) {
             mIPasscodeChanged.afterTextChanged(s);
+        }
+        if (mIPassCodeMaxLength != null && s.length() == length && length > 0) {
+            mIPassCodeMaxLength.hasMaxLength();
         }
     }
 

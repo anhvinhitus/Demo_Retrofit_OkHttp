@@ -49,7 +49,7 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
 
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
-        mView.showError("Cập nhật thông tin người dùng thất bại.");
+        mView.confirmOTPError();
     }
 
     private void onVerifyOTPSucess() {

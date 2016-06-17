@@ -10,5 +10,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IOTPProfileView extends ILoadDataView {
     Activity getActivity();
     void confirmOTPSuccess();
+    void confirmOTPError();
 }
 

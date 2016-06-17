@@ -240,9 +240,4 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
             getActivity().finish();
         }
     }
-
-    @Override
-    public void onConfirmOTPFail() {
-
-    }
 }

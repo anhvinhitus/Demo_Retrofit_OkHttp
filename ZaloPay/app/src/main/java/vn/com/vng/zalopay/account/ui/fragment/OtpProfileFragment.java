@@ -51,10 +51,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     public boolean isValidOTP() {
         String otp = edtOTP.getText().toString();
-        if (TextUtils.isEmpty(otp)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(otp);
     }
 
     /**
@@ -63,15 +60,12 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
      *
      * @return A new instance of fragment PinProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static OtpProfileFragment newInstance() {
-        OtpProfileFragment fragment = new OtpProfileFragment();
-        return fragment;
+        return new OtpProfileFragment();
     }
 
     @Override
     public void onClickContinue() {
-        String otp = edtOTP.getText().toString();
         if (!isValidOTP()) {
             showOTPError();
             return;
@@ -94,9 +88,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
     }
 
     @Override
@@ -110,9 +101,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
         super.onAttach(context);
         if (context instanceof OnOTPFragmentListener) {
             mListener = (OnOTPFragmentListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnOTPFragmentListener");
         }
     }
 
@@ -146,6 +134,11 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
             mListener.onConfirmOTPSucess();
         }
         navigator.startHomeActivity(getContext(), true);
+    }
+
+    @Override
+    public void confirmOTPError() {
+        showError("Sai OTP.");
     }
 
     @Override
@@ -184,8 +177,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnOTPFragmentListener {
-        // TODO: Update argument type and name
         void onConfirmOTPSucess();
-        void onConfirmOTPFail();
     }
 }
