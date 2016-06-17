@@ -39,6 +39,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     public static final int TYPE_FIELD_LENGTH = 1;
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
+    private static final int MAX_NUMBER_RETRY_CONNECT = 3;
 
     private int PORT = 8404;
     private String HOST = "sandbox.notify.zalopay.com.vn";
@@ -48,6 +49,9 @@ public class WsConnection extends Connection implements ConnectionListener {
     private ChannelFuture channelFuture;
 
     private final Context context;
+
+    private int numRetry;
+
 
     private final Parser parser;
     private final UserConfig userConfig;
@@ -159,6 +163,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onConnected() {
         Timber.d("onConnected");
         mState = State.Connected;
+        numRetry = 0;
         sendAuthentication();
     }
 
@@ -190,9 +195,10 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void onDisconnected(int code, String message) {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
-        if (isNetworkAvailable(context) && userConfig.hasCurrentUser()) {
+        if (isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry < MAX_NUMBER_RETRY_CONNECT) {
             connect();
         }
+        numRetry++;
     }
 
 

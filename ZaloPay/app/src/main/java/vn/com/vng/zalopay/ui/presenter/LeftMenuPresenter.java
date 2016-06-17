@@ -55,7 +55,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initializeAppConfig() {
-        appConfigRepository.initialize()
+        mAppResourceRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
     }

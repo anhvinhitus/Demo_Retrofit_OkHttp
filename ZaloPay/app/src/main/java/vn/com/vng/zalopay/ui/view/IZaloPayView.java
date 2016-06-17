@@ -11,4 +11,6 @@ public interface IZaloPayView {
     void insertApps(List<AppResource> list);
 
     void setTotalNotify(int total);
+
+    void showNetworkError();
 }

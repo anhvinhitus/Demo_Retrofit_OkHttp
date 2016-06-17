@@ -15,6 +15,10 @@
  */
 package vn.com.vng.zalopay.data.net.adapter;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.annotation.Annotation;
@@ -36,28 +40,32 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 
 public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
     /**
      * TODO
      */
-    public static CustomRxJavaCallAdapterFactory create() {
-        return new CustomRxJavaCallAdapterFactory(null);
+    public static CustomRxJavaCallAdapterFactory create(Context context) {
+        return new CustomRxJavaCallAdapterFactory(null, context);
     }
 
     /**
      * TODO
      */
-    public static CustomRxJavaCallAdapterFactory createWithScheduler(Scheduler scheduler) {
+    public static CustomRxJavaCallAdapterFactory createWithScheduler(Scheduler scheduler, Context context) {
         if (scheduler == null) throw new NullPointerException("scheduler == null");
-        return new CustomRxJavaCallAdapterFactory(scheduler);
+        return new CustomRxJavaCallAdapterFactory(scheduler, context);
     }
 
     private final Scheduler scheduler;
 
-    private CustomRxJavaCallAdapterFactory(Scheduler scheduler) {
+    public static Context applicationContext;
+
+    private CustomRxJavaCallAdapterFactory(Scheduler scheduler, Context context) {
         this.scheduler = scheduler;
+        this.applicationContext = context;
     }
 
     @Override
@@ -101,7 +109,11 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                 Exceptions.throwIfFatal(t);
                 if (!subscriber.isUnsubscribed()) {
                     try {
-                        subscriber.onError(t);
+                        if (isNetworkAvailable(applicationContext)) {
+                            subscriber.onError(t);
+                        } else {
+                            subscriber.onError(new NetworkConnectionException());
+                        }
                     } catch (Exception ex) {
                         Timber.w(ex, "Exception OnError :");
                     }
@@ -113,7 +125,15 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                 subscriber.onCompleted();
             }
         }
+
+        private boolean isNetworkAvailable(Context context) {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
     }
+
 
     static final class SimpleCallAdapter implements CallAdapter<Observable<?>> {
         private final Type responseType;

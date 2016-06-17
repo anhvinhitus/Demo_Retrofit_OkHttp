@@ -16,6 +16,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.appresources.AppResource;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 
 import static vn.com.vng.zalopay.data.download.FileUtil.ensureDirectory;
@@ -23,6 +24,7 @@ import static vn.com.vng.zalopay.data.download.FileUtil.unzip;
 
 /**
  * Created by AnhHieu on 5/21/16.
+ *
  */
 public class DownloadAppResourceTask {
 
@@ -38,20 +40,20 @@ public class DownloadAppResourceTask {
 
     private final Context context;
     private final DownloadInfo downloadInfo;
-    private final SqlitePlatformScope sqlitePlatformScope;
+    private final AppResource.LocalStorage mLocalStorage;
 
     private final String mBundleRootFolder;
 
     public DownloadAppResourceTask(Context context,
                                    DownloadInfo appResourceEntity,
                                    OkHttpClient mOkHttpClient,
-                                   SqlitePlatformScope sqlitePlatformScope,
+                                   AppResource.LocalStorage localStorage,
                                    String rootBundle) {
 
         this.downloadInfo = appResourceEntity;
         this.context = context;
         this.httpClient = mOkHttpClient;
-        this.sqlitePlatformScope = sqlitePlatformScope;
+        this.mLocalStorage = localStorage;
         this.mBundleRootFolder = rootBundle;
     }
 
@@ -67,9 +69,9 @@ public class DownloadAppResourceTask {
                 callback.onFailure();
             }
 
-            sqlitePlatformScope.increaseRetryDownload(downloadInfo.appid);
+            mLocalStorage.increaseRetryDownload(downloadInfo.appid);
         } else {
-            sqlitePlatformScope.increaseStateDownload(downloadInfo.appid);
+            mLocalStorage.increaseStateDownload(downloadInfo.appid);
 
             if (callback != null) {
                 callback.onSuccess();
@@ -147,7 +149,6 @@ public class DownloadAppResourceTask {
             response.body().close();
         } catch (Exception ex) {
             Timber.e("download exception %s", ex);
-        } finally {
         }
 
         Timber.i("result download %s", result);
@@ -162,7 +163,7 @@ public class DownloadAppResourceTask {
             }
         }
 
-        if (file != null && file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
 

@@ -16,8 +16,6 @@ import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,6 +100,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
@@ -134,7 +137,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter.setData(getListData());
-        presenter.listAppResouce();
+        presenter.listAppResource();
     }
 
     @Override
