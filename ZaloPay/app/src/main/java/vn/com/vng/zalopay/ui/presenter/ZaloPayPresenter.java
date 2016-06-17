@@ -6,5 +6,5 @@ package vn.com.vng.zalopay.ui.presenter;
 public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView> {
     void initialize();
 
-    void listAppResouce();
+    void listAppResource();
 }

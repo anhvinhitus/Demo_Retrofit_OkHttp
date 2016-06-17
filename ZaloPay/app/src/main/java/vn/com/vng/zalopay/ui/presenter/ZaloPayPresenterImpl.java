@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +13,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 
 /**
@@ -24,11 +28,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Override
     public void setView(IZaloPayView o) {
         this.mZaloPayView = o;
+        eventBus.register(this);
     }
 
     @Override
     public void destroyView() {
         unsubscribeIfNotNull(compositeSubscription);
+        eventBus.unregister(this);
         this.mZaloPayView = null;
     }
 
@@ -49,12 +55,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void initialize() {
     }
 
-
-    public void listAppResouce() {
+    public void listAppResource() {
 
         Subscription subscription = appConfigRepository.listAppResource()
                 .delaySubscription(3, TimeUnit.SECONDS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AppResouceSubscriber());
+                .subscribe(new AppResourceSubscriber());
 
         compositeSubscription.add(subscription);
 
@@ -64,9 +69,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         // mZaloPayView.insertApps(resources);
     }
 
-
-    private final class AppResouceSubscriber extends DefaultSubscriber<List<AppResource>> {
-        public AppResouceSubscriber() {
+    private final class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
+        public AppResourceSubscriber() {
         }
 
         @Override
@@ -78,7 +82,14 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, " Throwable AppResouceSubscriber ", e);
+            Timber.w(e, " Throwable AppResourceSubscriber ");
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkChange(NetworkChangeEvent event) {
+        if (!event.isOnline && mZaloPayView != null) {
+            mZaloPayView.showNetworkError();
         }
     }
 
