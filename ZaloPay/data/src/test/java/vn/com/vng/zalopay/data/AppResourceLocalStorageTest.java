@@ -11,6 +11,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
@@ -50,6 +51,8 @@ public class AppResourceLocalStorageTest {
         List<AppResourceEntity> resourceEntityList = new ArrayList<>();
 
         resourceEntityList.add(createAppResourceEntity(11));
+        resourceEntityList.add(createAppResourceEntity(12));
+        resourceEntityList.add(createAppResourceEntity(13));
         mLocalStorage.put(resourceEntityList);
 
         List<AppResourceEntity> result = mLocalStorage.get();
@@ -70,5 +73,84 @@ public class AppResourceLocalStorageTest {
         entity.timeDownload = 0;
         entity.stateDownload = 0;
         return entity;
+    }
+
+    @Test
+    public void testIncreaseDownloadAppResource() {
+        List<AppResourceEntity> resourceEntityList = new ArrayList<>();
+
+        resourceEntityList.add(createAppResourceEntity(11));
+        resourceEntityList.add(createAppResourceEntity(12));
+        resourceEntityList.add(createAppResourceEntity(13));
+        mLocalStorage.put(resourceEntityList);
+
+        mLocalStorage.increaseStateDownload(11);
+        mLocalStorage.increaseStateDownload(12);
+        mLocalStorage.increaseStateDownload(13);
+        mLocalStorage.increaseStateDownload(12);
+
+        List<AppResourceEntity> result = mLocalStorage.get();
+        for (AppResourceEntity app : result) {
+            switch (app.appid) {
+                case 11:
+                    assertEquals(app.stateDownload, 1);
+                    break;
+                case 12:
+                    assertEquals(app.stateDownload, 2);
+                    break;
+                case 13:
+                    assertEquals(app.stateDownload, 1);
+            }
+        }
+    }
+
+    @Test
+    public void testIncreaseRetryDownloadAppResource() {
+        List<AppResourceEntity> resourceEntityList = new ArrayList<>();
+
+        resourceEntityList.add(createAppResourceEntity(11));
+        resourceEntityList.add(createAppResourceEntity(12));
+        resourceEntityList.add(createAppResourceEntity(13));
+        mLocalStorage.put(resourceEntityList);
+
+        mLocalStorage.increaseRetryDownload(11);
+        mLocalStorage.increaseRetryDownload(12);
+        mLocalStorage.increaseRetryDownload(13);
+        mLocalStorage.increaseRetryDownload(12);
+
+        List<AppResourceEntity> result = mLocalStorage.get();
+        for (AppResourceEntity app : result) {
+            switch (app.appid) {
+                case 11:
+                    assertEquals(app.numRetry, 1);
+                    break;
+                case 12:
+                    assertEquals(app.numRetry, 2);
+                    break;
+                case 13:
+                    assertEquals(app.numRetry, 1);
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateAppResource() {
+        List<AppResourceEntity> resourceEntityList = new ArrayList<>();
+
+        resourceEntityList.add(createAppResourceEntity(11));
+        resourceEntityList.add(createAppResourceEntity(12));
+        resourceEntityList.add(createAppResourceEntity(13));
+        mLocalStorage.put(resourceEntityList);
+
+        // add app 14, remove app 11
+        resourceEntityList.add(createAppResourceEntity(14));
+        resourceEntityList.remove(0);
+
+        // update new list
+        mLocalStorage.put(resourceEntityList);
+        mLocalStorage.updateAppList(Arrays.asList(12, 13, 14));
+
+        List<AppResourceEntity> result = mLocalStorage.get();
+        assertTrue(resourceEntityList.equals(result));
     }
 }
