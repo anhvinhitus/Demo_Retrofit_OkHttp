@@ -57,6 +57,8 @@ dependencies {
     def tests = rootProject.ext.testingLibraries
 
     testCompile tests.junit
+    testCompile tests.robolectric
+
     compile libs.support_appcompat_v7
     compile libs.support_annotations
     compile libs.dagger

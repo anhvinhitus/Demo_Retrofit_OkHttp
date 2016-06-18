@@ -44,6 +44,8 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
     signingConfigs {
@@ -244,6 +246,7 @@ dependencies {
     def cfgAndroid = rootProject.ext.configurationAndroid;
 
     testCompile tests.junit
+    testCompile tests.robolectric
 
     compile cfgAndroid.multidex
 
