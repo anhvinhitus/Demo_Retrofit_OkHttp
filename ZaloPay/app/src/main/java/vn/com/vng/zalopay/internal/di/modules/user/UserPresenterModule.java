@@ -12,10 +12,13 @@ import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
+import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
+import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
-import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
+import vn.com.vng.zalopay.ui.presenter.LinkCardProcedurePresenter;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
@@ -26,8 +29,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    QRCodePresenter provideProductPresenter(User user) {
-        return new QRCodePresenter(user);
+    QRCodePresenter provideProductPresenter() {
+        return new QRCodePresenter();
     }
 
     @UserScope
@@ -38,8 +41,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    BalanceTopupPresenter provideBalanceTopupPresenter(User user) {
-        return new BalanceTopupPresenter(user);
+    BalanceTopupPresenter provideBalanceTopupPresenter() {
+        return new BalanceTopupPresenter();
     }
 
     @UserScope
@@ -50,8 +53,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    LinkCardProdurePresenter provideLinkCardProcedurePresenter(User user) {
-        return new LinkCardProdurePresenter(user);
+    LinkCardProcedurePresenter provideLinkCardProcedurePresenter(User user) {
+        return new LinkCardProcedurePresenter(user);
     }
 
     @UserScope
@@ -107,5 +110,17 @@ public class UserPresenterModule {
     @Provides
     OTPRecoveryPinPresenter provideOTPResetPassCodePresenter() {
         return new OTPRecoveryPinPresenter();
+    }
+
+    @UserScope
+    @Provides
+    ZaloContactPresenter provideZaloContactPresenter() {
+        return new ZaloContactPresenter();
+    }
+
+    @UserScope
+    @Provides
+    TransferPresenter provideTransferPresenter(User user, ZaloFriendsFactory zaloFriendsFactory) {
+        return new TransferPresenter(user, zaloFriendsFactory);
     }
 }

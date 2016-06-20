@@ -266,54 +266,7 @@ public class AndroidUtils {
     }
 
 
-    public static void showNotification(Context context, int notificationId, Notification notification) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId, notification);
-    }
 
-    public static Notification getBigTextNotification(Context context, int reqCode, Intent target, String title, String content, String bigTitle, String bigText, int iconResource) {
-
-//        Intent intent = new Intent(context, WelcomeActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, target,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.BigTextStyle notiStyle = new
-                NotificationCompat.BigTextStyle();
-        notiStyle.setBigContentTitle(bigTitle);
-        notiStyle.bigText(bigText);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(iconResource)
-//                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_ticket_leftmenu))
-                .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
-                .setContentTitle(title)
-                .setContentText(content)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent)
-                .setStyle(notiStyle);
-        return notificationBuilder.build();
-    }
-
-    public static Notification getDefaultNotification(Context context, String title, String content, int iconResource, Activity activity) {
-
-        Intent intent = new Intent(context, activity.getClass());
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(iconResource)
-//                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_ticket))
-                .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
-                .setContentTitle(title)
-                .setContentText(content)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
-        return notificationBuilder.build();
-    }
 
     @Deprecated
     public static boolean checkNetwork(Context context) {

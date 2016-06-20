@@ -7,6 +7,8 @@
     <dimen name="spacing.medium.s">12dp</dimen>
     <dimen name="spacing.medium">16dp</dimen>
     <dimen name="spacing.medium.l">20dp</dimen>
+    <dimen name="spacing.large.t">24dp</dimen>
+    <dimen name="spacing.large.s">28dp</dimen>
     <dimen name="spacing.large">32dp</dimen>
     <dimen name="spacing.large.l">48dp</dimen>
     <dimen name="spacing.huge">64dp</dimen>

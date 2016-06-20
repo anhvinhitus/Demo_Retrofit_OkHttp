@@ -1,11 +1,12 @@
 package vn.com.vng.zalopay.data.cache;
 
+import android.app.Activity;
+
 import org.json.JSONObject;
 
 import java.util.List;
 
 import vn.com.vng.zalopay.data.api.entity.UserEntity;
-import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -14,7 +15,7 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public interface UserConfig {
 
-    boolean isClientActivated();
+    boolean hasCurrentUser();
 
     void setCurrentUser(User user);
 
@@ -22,9 +23,7 @@ public interface UserConfig {
 
     void saveConfig(User user);
 
-    void saveConfig(UserEntity user);
-
-    void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions);
+    void updateProfilePermissions(int profileLevel, List<ProfilePermisssion.Permission> profilePermisssions);
 
     void loadConfig();
 
@@ -32,11 +31,7 @@ public interface UserConfig {
 
     String getSession();
 
-    String getUserId();
-
     long getZaloId();
-
-    void saveUserInfo(long zaloId);
 
     void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
 
@@ -47,4 +42,8 @@ public interface UserConfig {
     String getDisPlayName();
 
     boolean isSignIn();
+
+    void clearAllUserDB();
+
+    void signOutAndCleanData(Activity activity);
 }

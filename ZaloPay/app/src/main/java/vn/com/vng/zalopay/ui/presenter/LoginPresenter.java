@@ -6,6 +6,8 @@ import android.content.Intent;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
+import com.crashlytics.android.answers.LoginEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -37,19 +39,10 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private ILoginView mView;
 
-    private ZaloProfilePreferences zaloProfilePreferences;
-
     private Subscription subscriptionLogin;
 
-    private Context context;
-
-    private UserConfig userConfig;
-
     @Inject
-    public LoginPresenter(Context context, ZaloProfilePreferences zaloProfilePreferences, UserConfig userConfig) {
-        this.zaloProfilePreferences = zaloProfilePreferences;
-        this.context = context;
-        this.userConfig = userConfig;
+    public LoginPresenter() {
     }
 
     @Override
@@ -75,6 +68,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     public void destroy() {
         this.destroyView();
         this.unsubscribe();
+        Timber.d("Destroy presenter");
     }
 
     private void unsubscribe() {
@@ -85,7 +79,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         try {
             ZaloSDK.Instance.onActivityResult(activity, requestCode, resultCode, data);
         } catch (Exception ex) {
-            Timber.e(ex, " message " + ex.getMessage());
+            Timber.w(ex, " message " + ex.getMessage());
         }
     }
 
@@ -99,7 +93,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
      /*   zaloProfilePreferences.setUserId(0);
         zaloProfilePreferences.setAuthCode("");*/
-        Timber.tag(TAG).d(" Authen Zalo Error message %s error %s", message, errorCode);
+        Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
             showErrorView(message);
             hideLoadingView();
@@ -114,7 +108,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 */
         userConfig.saveUserInfo(uId, "", "", 0, 0);
 
-        Timber.tag(TAG).d("OAuthComplete uid %s authCode %s", uId, authCode);
+        Timber.d("OAuthComplete uid %s authCode %s", uId, authCode);
         if (mView != null) {
             this.getZaloProfileInfo();
             this.loginPayment(uId, authCode);
@@ -123,15 +117,20 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
 
     private void showLoadingView() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     private void hideLoadingView() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 
 
     private void loginPayment(long zuid, String zalooauthcode) {
+        showLoadingView();
         subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -139,13 +138,13 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void getZaloProfileInfo() {
-        ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
+        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
             @Override
             public void onResult(JSONObject profile) {
                 try {
                     userConfig.saveZaloUserInfo(profile);
                 } catch (Exception ex) {
-                    Timber.tag(TAG).e(ex, " Exception :");
+                    Timber.w(ex, " Exception :");
                 }
             }
         });
@@ -164,8 +163,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private final void onLoginSuccess(User user) {
-        Timber.d("session " + user.accesstoken);
-        Timber.d("uid " + user.uid);
+        Timber.d("session %s uid %s", user.accesstoken, user.uid);
         // Khởi tạo user component
         AndroidApplication.instance().createUserComponent(user);
 //        if (user.profilelevel < Constants.PROFILE_LEVEL_MIN) {
@@ -177,7 +175,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private final void onLoginError(Throwable e) {
         hideLoadingView();
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
+        String message = ErrorMessageFactory.create(applicationContext, e);
         showErrorView(message);
     }
 
@@ -190,10 +188,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         public void onNext(User user) {
             Timber.d("login success " + user);
             // TODO: Use your own attributes to track content views in your app
-            Answers.getInstance().logContentView(new ContentViewEvent()
-                    .putContentName("Login Success")
-                    .putContentType("Login")
-                    .putContentId(String.valueOf(user.zaloId)));
+            Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
 
             LoginPresenter.this.onLoginSuccess(user);
         }
@@ -204,7 +199,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "onError " + e);
+            Timber.w(e, "onError " + e);
             LoginPresenter.this.onLoginError(e);
         }
     }

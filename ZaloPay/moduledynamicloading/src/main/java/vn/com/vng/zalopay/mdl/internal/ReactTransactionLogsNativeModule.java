@@ -14,30 +14,27 @@ import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.WeakHashMap;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.internal.operators.OperatorToMultimap;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
 /**
  * Created by huuhoa on 5/8/16.
  */
 public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private ZaloPayRepository repository;
+    private TransactionStore.Repository mRepository;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, ZaloPayRepository repository) {
+    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository) {
         super(reactContext);
-        this.repository = repository;
+        this.mRepository = repository;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -52,26 +49,10 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         Timber.d("get transaction index %s count %s", pageIndex, count);
 
-        Subscription subscription = repository.getTransactions(pageIndex, count)
+        Subscription subscription = mRepository.getTransactions(pageIndex, count)
                 .map(new Func1<List<TransHistory>, WritableArray>() {
                     @Override
                     public WritableArray call(List<TransHistory> transHistories) {
-                        return transform(transHistories);
-                    }
-                })
-                .subscribe(new TransactionLogSubscriber(promise));
-
-        compositeSubscription.add(subscription);
-    }
-
-    @ReactMethod
-    public void reloadListTransaction(int count, Promise promise) {
-        Timber.d("reload transaction count %s", count);
-        Subscription subscription = repository.reloadListTransaction(count)
-                .map(new Func1<List<TransHistory>, WritableArray>() {
-                    @Override
-                    public WritableArray call(List<TransHistory> transHistories) {
-                        Timber.d("list transaction : %s", transHistories);
                         return transform(transHistories);
                     }
                 })
@@ -96,19 +77,21 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, " onError ");
+            Timber.e(e, "error on getting transaction logs");
         }
 
         @Override
         public void onNext(WritableArray writableArray) {
 
-            Timber.d(" transaction log %s", writableArray);
+            Timber.d("transaction log %s", writableArray);
 
-            if (promiseWeakReference != null) {
-                Promise promise = promiseWeakReference.get();
-                promise.resolve(writableArray);
-                promiseWeakReference.clear();
+            if (promiseWeakReference == null) {
+                return;
             }
+
+            Promise promise = promiseWeakReference.get();
+            promise.resolve(writableArray);
+            promiseWeakReference.clear();
         }
     }
 
@@ -120,12 +103,12 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
     @Override
     public void onHostResume() {
-        Timber.d(" Actvity `onResume`");
+        Timber.d("onResume");
     }
 
     @Override
     public void onHostPause() {
-        Timber.d(" Actvity `onPause`");
+        Timber.d("onPause");
     }
 
     @Override
@@ -134,8 +117,8 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         unsubscribeIfNotNull(compositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
-        getReactApplicationContext().removeActivityEventListener(this);
-        Timber.d("Actvity `onDestroy");
+        getReactApplicationContext().removeLifecycleEventListener(this);
+        Timber.d("onDestroy");
     }
 
     public void unsubscribeIfNotNull(CompositeSubscription subscription) {
@@ -145,22 +128,30 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
     private WritableMap transform(TransHistory history) {
-        if (history == null) return null;
+        if (history == null) {
+            return null;
+        }
         WritableMap item = Arguments.createMap();
         item.putDouble("transid", history.transid);
         item.putDouble("reqdate", history.reqdate);
         item.putString("description", history.description);
         item.putInt("amount", history.amount);
+        item.putInt("userfeeamt", history.userfeeamt);
         item.putInt("type", history.type);
+        item.putInt("sign", history.sign);
+        item.putString("username", history.username);
+        item.putString("appusername", history.appusername);
         return item;
     }
 
 
-    private WritableArray transform(List<TransHistory> historys) {
+    private WritableArray transform(List<TransHistory> histories) {
         WritableArray result = Arguments.createArray();
-        for (TransHistory history : historys) {
+        for (TransHistory history : histories) {
             WritableMap item = transform(history);
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
             result.pushMap(item);
         }
         return result;

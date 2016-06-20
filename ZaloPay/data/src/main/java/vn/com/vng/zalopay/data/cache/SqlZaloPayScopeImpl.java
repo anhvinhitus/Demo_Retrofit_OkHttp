@@ -2,14 +2,12 @@ package vn.com.vng.zalopay.data.cache;
 
 import java.util.List;
 
-import rx.Observable;
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
-import vn.com.vng.zalopay.data.cache.mapper.ZaloPayDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.domain.model.TransHistory;
+import vn.com.vng.zalopay.data.cache.model.TransferRecent;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -18,78 +16,50 @@ import vn.com.vng.zalopay.domain.model.User;
 public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayScope {
 
     private final User user;
-    private ZaloPayDaoMapper zaloCacheMapper;
     private final int LENGTH_TRANSITION = 30;
 
-    public SqlZaloPayScopeImpl(User user, DaoSession daoSession, ZaloPayDaoMapper zaloCacheMapper) {
+    public SqlZaloPayScopeImpl(User user, DaoSession daoSession) {
         super(daoSession);
         this.user = user;
-        this.zaloCacheMapper = zaloCacheMapper;
     }
 
     @Override
-    public void write(List<TransHistoryEntity> val) {
-        getDaoSession().getTransactionLogDao().insertOrReplaceInTx(zaloCacheMapper.transform(val));
-
-        Timber.d("write list transaction %s", val.size(), listTransHistorys(10));
+    public void writeZaloFriends(List<ZaloFriend> val) {
+        getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
     }
 
     @Override
-    public void write(TransHistoryEntity val) {
-        getDaoSession().getTransactionLogDao().insertOrReplace(zaloCacheMapper.transform(val));
+    public void writeZaloFriend(ZaloFriend val) {
+        getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> transactionHistorys() {
-        return makeObservable(() -> listTransHistorys(Integer.MAX_VALUE))
-                .doOnNext(transHistoryEntities -> Timber.d("transactionHistorys %s", transHistoryEntities.size()))
-                ;
+    public List<ZaloFriend> listZaloFriend() {
+        return getDaoSession().getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).list();
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> transactionHistorys(int limit) {
-        return makeObservable(() -> listTransHistorys(limit));
+    public List<ZaloFriend> listZaloFriend(int limit) {
+        return getDaoSession().getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).limit(limit).list();
     }
 
     @Override
-    public List<TransHistoryEntity> listTransHistorys(int limit) {
-        return zaloCacheMapper.transform2Entity(
-                getDaoSession()
-                        .getTransactionLogDao()
-                        .queryBuilder()
-                        .orderDesc(TransactionLogDao.Properties.Reqdate)
-                        .limit(limit)
-                        .list());
+    public boolean isHaveZaloFriendDb() {
+        return getDaoSession().getZaloFriendDao().queryBuilder().count() > 0;
     }
 
     @Override
-    public Observable<TransHistoryEntity> transactionHistory() {
-        //return makeObservable(() -> zaloCacheMapper.transform(getDaoSession().getTransactionLogDao().queryBuilder().w));
-        return null;
+    public void writeTransferRecent(TransferRecent val) {
+        getDaoSession().getTransferRecentDao().insertOrReplaceInTx(val);
     }
 
     @Override
-    public Observable<Long> balance() {
-        return makeObservable(() -> {
-            String balance = getDataManifest(Constants.MANIF_BALANCE);
-            Long ret = 0l;
-            try {
-                ret = Long.parseLong(balance);
-            } catch (Exception e) {
-            }
-            return ret;
-        });
+    public List<TransferRecent> listTransferRecent() {
+        return getDaoSession().getTransferRecentDao().queryBuilder().list();
     }
 
     @Override
-    public void writeBalance(long balance) {
-        Timber.tag("SqlZaloPayScopeImpl").d("writeBalance, balance:" + balance);
-        this.insertDataManifest(Constants.MANIF_BALANCE, String.valueOf(balance));
+    public List<TransferRecent> listTransferRecent(int limit) {
+        return getDaoSession().getTransferRecentDao().queryBuilder().limit(limit).list();
     }
-
-    @Override
-    public boolean isHaveTransactionInDb() {
-        return getDaoSession().getTransactionLogDao().queryBuilder().count() > 0;
-    }
-
 }

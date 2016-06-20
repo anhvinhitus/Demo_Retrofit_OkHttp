@@ -35,6 +35,9 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         public final static Property Userfeeamt = new Property(9, Integer.class, "userfeeamt", false, "USERFEEAMT");
         public final static Property Amount = new Property(10, Integer.class, "amount", false, "AMOUNT");
         public final static Property Type = new Property(11, Integer.class, "type", false, "TYPE");
+        public final static Property Sign = new Property(12, Integer.class, "sign", false, "SIGN");
+        public final static Property Username = new Property(13, String.class, "username", false, "USERNAME");
+        public final static Property Appusername = new Property(14, String.class, "appusername", false, "APPUSERNAME");
     };
 
 
@@ -61,7 +64,10 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
                 "\"USERCHARGEAMT\" INTEGER," + // 8: userchargeamt
                 "\"USERFEEAMT\" INTEGER," + // 9: userfeeamt
                 "\"AMOUNT\" INTEGER," + // 10: amount
-                "\"TYPE\" INTEGER);"); // 11: type
+                "\"TYPE\" INTEGER," + // 11: type
+                "\"SIGN\" INTEGER," + // 12: sign
+                "\"USERNAME\" TEXT," + // 13: username
+                "\"APPUSERNAME\" TEXT);"); // 14: appusername
     }
 
     /** Drops the underlying database table. */
@@ -126,6 +132,21 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         if (type != null) {
             stmt.bindLong(12, type);
         }
+ 
+        Integer sign = entity.getSign();
+        if (sign != null) {
+            stmt.bindLong(13, sign);
+        }
+ 
+        String username = entity.getUsername();
+        if (username != null) {
+            stmt.bindString(14, username);
+        }
+ 
+        String appusername = entity.getAppusername();
+        if (appusername != null) {
+            stmt.bindString(15, appusername);
+        }
     }
 
     /** @inheritdoc */
@@ -149,7 +170,10 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // userchargeamt
             cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // userfeeamt
             cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // amount
-            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11) // type
+            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // type
+            cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // sign
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // username
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // appusername
         );
         return entity;
     }
@@ -169,6 +193,9 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         entity.setUserfeeamt(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
         entity.setAmount(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
         entity.setType(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+        entity.setSign(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
+        entity.setUsername(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setAppusername(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
      }
     
     /** @inheritdoc */

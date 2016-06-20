@@ -20,7 +20,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
-import vn.com.vng.zalopay.data.repository.datasource.UserConfigFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
@@ -32,9 +31,6 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
     @Inject
     Navigator navigator;
-
-    @Inject
-    UserConfigFactory userConfigFactory;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -75,7 +71,7 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
     @OnClick(R.id.layoutSigOutAndDelDB)
     public void onClickSigoutAndDelDB(View view) {
-        sigoutAndCleanData();
+        presenter.sigoutAndCleanData();
     }
 
     @OnClick(R.id.layoutTransactionHistory)
@@ -101,12 +97,6 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     @OnClick(R.id.layoutMyQRCode)
     public void onClickMyQRCode(View view) {
         ToastUtil.showToast(this, "My QRCode");
-    }
-
-    private void sigoutAndCleanData() {
-        ZaloSDK.Instance.unauthenticate();
-        userConfigFactory.clearAllUserDB();
-        navigator.startLoginActivity(this, true);
     }
 
     public void updateUserInfo(User user) {

@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,10 +26,14 @@ import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager;
 
 public class PreProfileActivity extends BaseActivity implements IPreProfileView,
@@ -36,9 +42,14 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
 
     private int profileType = 0;
     private ProfileSlidePagerAdapter adapter;
+    private String walletTransId = null;
+    private PaymentWrapper paymentWrapper;
 
     @Inject
     Navigator navigator;
+
+    @Inject
+    UserConfig userConfig;
 
     @Inject
     PreProfilePresenter presenter;
@@ -89,7 +100,53 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.setView(this);
+        initData();
         initContent();
+        initPaymentWrapper();
+    }
+
+    private void initPaymentWrapper() {
+        paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+            @Override
+            public Activity getActivity() {
+                return PreProfileActivity.this;
+            }
+        }, new PaymentWrapper.IResponseListener() {
+            @Override
+            public void onParameterError(String param) {
+                showToast(param);
+            }
+
+            @Override
+            public void onResponseError(int status) {
+                if (status == PaymentError.ERR_CODE_INTERNET) {
+                    showToast("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                }
+            }
+
+            @Override
+            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            }
+
+            @Override
+            public void onResponseTokenInvalid() {
+                getAppComponent().applicationSession().clearUserSession();
+            }
+
+            @Override
+            public void onResponseCancel() {
+
+            }
+        });
+    }
+
+    private void initData() {
+        Bundle bundle = this.getIntent().getExtras();
+
+        if (bundle == null) {
+            return;
+        }
+        walletTransId = bundle.getString(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID);
     }
 
     private void initContent() {
@@ -174,13 +231,13 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
     @Override
     public void onConfirmOTPSucess() {
         showToast("Cập nhật thông tin thành công.");
-        if (getActivity() != null && !getActivity().isFinishing()) {
+        if (userConfig == null || userConfig.getCurrentUser() == null) {
+            return;
+        }
+        if (!TextUtils.isEmpty(walletTransId)) {
+            paymentWrapper.saveCardMap(walletTransId, null);
+        } else if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().finish();
         }
-    }
-
-    @Override
-    public void onConfirmOTPFail() {
-
     }
 }

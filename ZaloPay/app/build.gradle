@@ -35,8 +35,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 12
-        versionName "1.0.${versionCode}"
+        versionCode 29
+        versionName "1.1.${versionCode}"
 
         multiDexEnabled true
 
@@ -44,6 +44,8 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
     signingConfigs {
@@ -71,7 +73,6 @@ android {
 
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
         debug {
             minifyEnabled false
@@ -101,6 +102,8 @@ android {
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+            buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8414'
         }
 
         sandbox {
@@ -109,6 +112,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         internalProduction {
@@ -117,6 +122,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8414'
         }
 
         internalSandbox {
@@ -125,6 +132,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         iapSandbox {
@@ -134,6 +143,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8404'
         }
 
         iapProduction {
@@ -143,6 +154,8 @@ android {
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8414'
         }
     }
 
@@ -177,7 +190,7 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/maven/jaxen/jaxen/pom.properties'
         exclude 'META-INF/maven/jaxen/jaxen/pom.xml'
-
+        exclude 'META-INF/INDEX.LIST'
 
     }
 
@@ -233,6 +246,7 @@ dependencies {
     def cfgAndroid = rootProject.ext.configurationAndroid;
 
     testCompile tests.junit
+    testCompile tests.robolectric
 
     compile cfgAndroid.multidex
 

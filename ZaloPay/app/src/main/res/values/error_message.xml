@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="exception.token.expired.message">Token hết hạn, Vui lòng đăng nhập lại!</string>
+    <string name="exception.generic">Ứng dụng xảy ra lỗi, Vui lòng thử lại!</string>
+    <string name="exception.no.connection">Không có kết nối Internet</string>
+    <string name="exception.no.connection.try.again">Không có kết nối Internet, Vui lòng thử lại!</string>
+    <string name="exception.retry.connection">Không thể kết nối\n Nhấn để thử lại</string>
+    <string name="exception.timeout.message">Hết thời gian kết nối, vui lòng thử lại!</string>
+
+    <string name="get_zalo_contact_error">Lấy danh sách bạn Zalo thất bại!</string>
+    <string name="get_mapping_zalo_zalopay_error">Lấy thông tin tài khoản Zalo thất bại!</string>
+    <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
+
+    <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
+    <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
+
+</resources>

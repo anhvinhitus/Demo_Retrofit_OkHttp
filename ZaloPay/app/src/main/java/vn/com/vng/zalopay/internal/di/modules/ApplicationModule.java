@@ -23,11 +23,15 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.download.DownloadAppResourceTaskQueue;
+import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 
@@ -71,8 +75,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
-        return new UserConfigImpl(sharedPreferences, eventBus);
+    UserConfig providesUserConfig(@Named("daosession") DaoSession daoSession, SharedPreferences sharedPreferences, EventBus eventBus) {
+        return new UserConfigImpl(daoSession, sharedPreferences, eventBus);
     }
 
     @Provides
@@ -127,4 +131,15 @@ public class ApplicationModule {
     }
 
 
+    @Provides
+    @Singleton
+    GlobalEventHandlingService providesGlobalEventService() {
+        return new GlobalEventHandlingServiceImpl();
+    }
+
+    @Provides
+    @Singleton
+    ApplicationSession providesApplicationSession(Context context, Navigator navigator) {
+        return new ApplicationSession(context, navigator);
+    }
 }

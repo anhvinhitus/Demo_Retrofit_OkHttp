@@ -26,26 +26,6 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
         this.zaloPayEntityDataMapper = zaloPayEntityDataMapper;
     }
 
-    @Override
-    public Observable<Long> balance() {
-        return zaloPayFactory.balance();
-    }
-
-    @Override
-    public Observable<List<TransHistory>> initializeTransHistory() {
-        return zaloPayFactory.transactionHistorysServer(0, 1)
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
-    }
-
-    @Override
-    public Observable<List<TransHistory>> loadMoreTransHistory() {
-        return null;
-    }
-
-    @Override
-    public Observable<List<TransHistory>> refreshTransHistory() {
-        return null;
-    }
 
     @Override
     public Observable<Order> getOrder(long appId, String zptranstoken) {
@@ -60,8 +40,8 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
     }
 
     @Override
-    public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser) {
-        return zaloPayFactory.createwalletorder(appId, amount, transtype, appUser).map(new Func1<GetOrderResponse, Order>() {
+    public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description) {
+        return zaloPayFactory.createwalletorder(appId, amount, transtype, appUser, description).map(new Func1<GetOrderResponse, Order>() {
             @Override
             public Order call(GetOrderResponse getOrderResponse) {
                 getOrderResponse.setAppid(appId);
@@ -69,45 +49,5 @@ public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepo
                 return zaloPayEntityDataMapper.transform(getOrderResponse);
             }
         });
-    }
-
-    @Override
-    public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        return zaloPayFactory.transactionHistorysLocal(count)
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
-    }
-
-    @Override
-    public Observable<List<TransHistory>> reloadListTransaction(int count) {
-        return zaloPayFactory.transactionHistorysLocal(count)
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
-    }
-
-    @Override
-    public void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber) {
-        //   zaloPayFactory.reloadListTransactionSync(count, subscriber);
-    }
-
-    @Override
-    public void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber) {
-        // zaloPayFactory.getTransactions(pageIndex, count, subscriber);
-    }
-
-    public void requestTransactionsHistory() {
-        zaloPayFactory.reloadListTransactionSync(30, null);
-    }
-
-    @Override
-    public Observable<Boolean> transactionUpdate() {
-        return zaloPayFactory.transactionUpdate();
-    }
-
-    @Override
-    public Observable<Boolean> initialize() {
-        return makeObservable(() -> {
-            requestTransactionsHistory();
-
-            return Boolean.TRUE;
-        }).delaySubscription(5, TimeUnit.SECONDS);
     }
 }

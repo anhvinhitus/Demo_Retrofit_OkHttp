@@ -155,6 +155,36 @@
 
 -keep class com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
 
+#Netty
+
+-keepattributes Signature,InnerClasses
+-keepclasseswithmembers class io.netty.** {
+    *;
+}
+-keepnames class io.netty.** {
+    *;
+}
+
+-dontwarn io.netty.**
+
+-keep class org.apache.log4j.* {*;}
+
+-keep class org.slf4j.Logger {*;}
+-keep class org.slf4j.LoggerFactory {*;}
+-keep class  org.slf4j.helpers.NOPLoggerFactory {*;}
+-keep class org.slf4j.LoggerFactory {*;}
+
+#
+#-keep class java.util.concurrent.atomic.AtomicReferenceFieldUpdater {*;}
+#-keep class java.util.concurrent.atomic.AtomicReferenceFieldUpdaterImpl{*;}
+#
+#-keep class org.jboss.netty.channel.DefaultChannelPipeline{volatile <fields>;}
+#
+#-keep class org.jboss.netty.util.internal.QueueFactory{static <fields>;}
+#
+#-keepclassmembernames class org.jboss.netty.util.internal.**{*;}
+
+
 #leakcanary
 
 -keep class org.eclipse.mat.** { *; }

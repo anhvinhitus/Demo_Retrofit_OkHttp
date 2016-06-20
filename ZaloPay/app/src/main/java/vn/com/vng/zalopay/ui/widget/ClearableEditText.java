@@ -17,15 +17,14 @@ import android.widget.EditText;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.wallet.business.AdapterBase;
+import vn.com.zalopay.wallet.business.factory.AdapterBase;
 import vn.com.zalopay.wallet.data.ResourceManager;
 import vn.com.zalopay.wallet.entity.staticconfig.page.DDynamicEditText;
 import vn.com.zalopay.wallet.listener.ZPOnSelectionChangeListener;
-import vn.com.zalopay.wallet.view.PaymentChannelActivity;
+import vn.com.zalopay.wallet.view.screen.PaymentChannelActivity;
 
 /**
  * Created by longlv on 23/05/2016.
- *
  */
 public class ClearableEditText extends EditText {
     private static final String TAG = ClearableEditText.class.getName();

@@ -22,6 +22,7 @@
             android:ellipsize="end"
             android:hint="@string/hint_otp"
             android:inputType="number"
+            android:maxLength="6"
             android:maxLines="1"
             android:paddingBottom="@dimen/spacing.medium"
             android:paddingLeft="@dimen/spacing.medium"

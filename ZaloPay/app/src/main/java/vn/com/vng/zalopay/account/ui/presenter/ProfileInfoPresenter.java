@@ -5,9 +5,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -49,7 +51,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
-
+        destroyView();
     }
 
     public void showLoading() {
@@ -69,7 +71,8 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     private void getBalance() {
-        Subscription subscription = zaloPayRepository.balance()
+        BalanceRepository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
+        Subscription subscription = repository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
@@ -99,5 +102,9 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
         public void onNext(Long aLong) {
             ProfileInfoPresenter.this.onGetBalanceSuccess(aLong);
         }
+    }
+
+    public void sigoutAndCleanData() {
+        AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 }

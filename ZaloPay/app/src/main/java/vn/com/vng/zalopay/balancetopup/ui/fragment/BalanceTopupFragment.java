@@ -10,11 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
 import javax.inject.Inject;
-
-import butterknife.BindView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -24,7 +20,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -44,9 +39,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     private OnFragmentInteractionListener mListener;
     private String mValidAmount = "";
-
-    @Inject
-    Navigator navigator;
 
     @Inject
     BalanceTopupPresenter balanceTopupPresenter;
@@ -158,6 +150,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        balanceTopupPresenter.destroyView();
         if (inputAmountLayout != null) {
             inputAmountLayout.removeListener();
         }
@@ -166,6 +159,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroy() {
         super.onDestroy();
+        balanceTopupPresenter.destroy();
     }
 
     @Override
@@ -204,9 +198,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @Override
     public void onTokenInvalid() {
-        ZaloSDK.Instance.unauthenticate();
-        navigator.startLoginActivity(getContext());
-        getActivity().finish();
     }
 
     /**

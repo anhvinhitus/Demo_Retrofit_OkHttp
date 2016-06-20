@@ -65,15 +65,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     @BindView(R.id.edtPhone)
     ClearableEditText edtPhone;
 
-    public boolean isValidPhone() {
-        String phone = edtPhone.getString();
-        if (TextUtils.isEmpty(phone)) {
-            return false;
-        }
-        return ValidateUtil.isMobileNumber(phone);
-    }
-
-
     @OnClick(R.id.tvShowPass)
     public void onClickShowPass(View view) {
         boolean isChecked = chkShowPass.isChecked();
@@ -93,109 +84,15 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
         anim.fadeAnimation(getActivity());
     }
 
-    private IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            onTextChangePin(s);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    private IPasscodeChanged confirmPasscodeChanged = new IPasscodeChanged() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            onTextChangePinCompare(s);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (s != null && s.length() == passCode.getMaxLength()) {
-
-            }
-        }
-    };
-
-    private IPasscodeFocusChanged passcodeFocusChanged = new IPasscodeFocusChanged() {
-        @Override
-        public void onFocusChangedPin(boolean isFocus) {
-            onFocusChangedPin(isFocus);
-        }
-    };
-
-    private IPasscodeFocusChanged confirmPasscodeFocusChanged = new IPasscodeFocusChanged() {
-        @Override
-        public void onFocusChangedPin(boolean isFocus) {
-            onFocusChangedPinCompare(isFocus);
-        }
-    };
-
-    public void onFocusChangedPin(boolean isFocus) {
-        if (!isFocus) {
-            if (isValidPin()) {
-                passCode.hideError();
-            } else {
-                passCode.showError(getString(R.string.invalid_pin));
-            }
-        }
-    }
-
-    public void onFocusChangedPinCompare(boolean isFocus) {
-        if (!isFocus) {
-            if (isValidPinCompare()) {
-                passCodeConfirm.hideError();
-            } else {
-                passCode.showError(getString(R.string.invalid_pin));
-            }
-        }
-    }
-
-    public void onTextChangePin(CharSequence text) {
-        if (isValidPin()) {
-            passCode.hideError();
-            if (isValidPinCompare()) {
-                passCodeConfirm.hideError();
-            }
-        }
-    }
-
-    public void onTextChangePinCompare(CharSequence text) {
-        if (isValidPinCompare()) {
-            passCode.hideError();
-            passCodeConfirm.hideError();
-        } else {
-            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
-        }
-    }
-
     private boolean isValidPinCompare() {
         String pin = passCode.getText();
-        String pinCompare = passCodeConfirm.getText().toString();
-        if (TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin)) {
-            return false;
-        }
-        return true;
+        String pinCompare = passCodeConfirm.getText();
+        return !(TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin));
     }
 
     private boolean isValidPin() {
         String pin = passCode.getText();
-        if (TextUtils.isEmpty(pin)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(pin);
     }
 
     public RecoveryPinFragment() {
@@ -210,8 +107,7 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
      */
     // TODO: Rename and change types and number of parameters
     public static RecoveryPinFragment newInstance() {
-        RecoveryPinFragment fragment = new RecoveryPinFragment();
-        return fragment;
+        return new RecoveryPinFragment();
     }
 
     @Override
@@ -245,9 +141,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
     }
 
     @Override
@@ -282,9 +175,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
         super.onAttach(context);
         if (context instanceof OnPinProfileFragmentListener) {
             mListener = (OnPinProfileFragmentListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnPinProfileFragmentListener");
         }
     }
 

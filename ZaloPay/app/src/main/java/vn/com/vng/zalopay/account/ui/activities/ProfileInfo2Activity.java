@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
@@ -22,7 +21,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
-import vn.com.vng.zalopay.data.repository.datasource.UserConfigFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
@@ -33,9 +31,6 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     @Inject
     Navigator navigator;
-
-    @Inject
-    UserConfigFactory userConfigFactory;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -67,12 +62,6 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 //        navigator.startPreProfileActivity(this);
 //    }
 
-    private void sigoutAndCleanData() {
-        ZaloSDK.Instance.unauthenticate();
-        userConfigFactory.clearAllUserDB();
-        navigator.startLoginActivity(this, true);
-    }
-
     public void updateUserInfo(User user) {
         if (user == null) {
             return;
@@ -91,7 +80,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     @OnClick(R.id.layoutChangePin)
     public void onClickChangePin(View view) {
-        navigator.startPreProfileActivity(this);
+        navigator.startPreProfileActivity(this, null);
     }
 
     public void updateBalance(long balance) {
@@ -175,6 +164,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     @Override
     public void onDestroy() {
+        presenter.destroy();
         super.onDestroy();
     }
 

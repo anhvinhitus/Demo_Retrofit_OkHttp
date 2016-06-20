@@ -8,6 +8,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
@@ -75,6 +79,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.listView)
     RecyclerView listView;
 
+    /*
+    * View của menu
+    * */
+    TextView mNotifyView;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -88,7 +97,13 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -99,7 +114,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         listView.setNestedScrollingEnabled(false);
         listView.addItemDecoration(new GridSpacingItemDecoration(3, 2, false));
-
         listView.setAdapter(mAdapter);
 
         showAdsBanner();
@@ -107,10 +121,25 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_notifications);
+        View view = menuItem.getActionView();
+        mNotifyView = (TextView) view.findViewById(R.id.tvNotificationCount);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.NOTIFICATIONS);
+            }
+        });
+    }
+
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter.setData(getListData());
-        presenter.listAppResouce();
+        presenter.listAppResource();
     }
 
     @Override
@@ -151,9 +180,16 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app) {
 
+        if (app == null) {
+            return;
+        }
         Timber.d("request to launch app [appid: %s, appname: %s]", app.appid, app.appname);
 
-        navigator.startPaymentApplicationActivity(getActivity(), app, "PaymentMain");
+        if (app.appid == 1) {
+            navigator.startTransferMoneyActivity(getActivity());
+        } else {
+            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
+        }
     }
 
     @OnClick(R.id.btn_deposit)
@@ -189,7 +225,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     //Test
     private List<AppResource> getListData() {
         return Arrays.asList(
-//                new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
+                new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
                 new AppResource(11, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
                 new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)),
                 new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame))
@@ -203,5 +239,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void insertApps(List<AppResource> list) {
         mAdapter.insertItems(list);
+    }
+
+    @Override
+    public void setTotalNotify(int total) {
+        mNotifyView.setText(String.valueOf(total));
     }
 }

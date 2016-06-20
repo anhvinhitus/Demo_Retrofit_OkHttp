@@ -14,36 +14,12 @@ import vn.com.vng.zalopay.domain.model.TransHistory;
  */
 public interface ZaloPayRepository {
 
-    Observable<Long> balance();
-
-    Observable<List<TransHistory>> initializeTransHistory();
-
-    Observable<List<TransHistory>> loadMoreTransHistory();
-
-    Observable<List<TransHistory>> refreshTransHistory();
-
-    Observable<List<TransHistory>> getTransactions(int pageIndex, int count);
-
-    Observable<List<TransHistory>> reloadListTransaction(int count);
-
     Observable<Order> getOrder(long appId, String zptranstoken);
 
-    Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser);
-
-    //thread react-native
-    void reloadListTransaction(int count, Subscriber<List<TransHistory>> subscriber);
-
-    //thread react-native
-    void getTransactions(int pageIndex, int count, Subscriber<List<TransHistory>> subscriber);
-
-    //thread react-native
-    void requestTransactionsHistory();
-
-    /*Gọi khi một giao dịch thành công*/
-    Observable<Boolean> transactionUpdate();
+    Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description);
 
     /* Gọi lần mới run app */
-    Observable<Boolean> initialize();
+//    Observable<Boolean> initialize();
 
 
     /*

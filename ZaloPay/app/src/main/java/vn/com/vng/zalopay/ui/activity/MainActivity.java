@@ -4,17 +4,17 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import java.lang.ref.WeakReference;
 
@@ -22,18 +22,23 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by AnhHieu on 5/24/16.
+ * Main Application activity
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
 
@@ -68,6 +73,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Inject
     MainPresenter presenter;
 
+    @Inject
+    GlobalEventHandlingService globalEventHandlingService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +107,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
 
         //init SDK
-        presenter.loadGatewayInfoPaymentSDK();
+        presenter.initialize();
+        globalEventHandlingService.setMainActivity(this);
+
+        startZaloPayService();
     }
 
     @Override
@@ -115,27 +126,13 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Timber.e("Select menu item: %d", item.getItemId());
-        if (item.getItemId() == R.id.layoutNotification) {
-            navigator.startMiniAppActivity(this, "Notifications");
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
-    @Override
     protected void onDestroy() {
+        Timber.d("destroy main activity");
+
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
+        GlobalData.initApplication(null);
+        globalEventHandlingService.setMainActivity(null);
         super.onDestroy();
     }
 
@@ -190,33 +187,35 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 }
                 break;
             case MenuItemUtil.APPLICATION_INFO_ID:
-                navigator.startMiniAppActivity(this, "About");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
-                navigator.startMiniAppActivity(this, "Help");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
                 break;
             case MenuItemUtil.FAQ_ID:
-                navigator.startMiniAppActivity(this, "FAQ");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
                 break;
             case MenuItemUtil.HOME_ID:
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
-                navigator.startMiniAppActivity(this, "Notifications");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 startQRCodeActivity();
                 break;
             case MenuItemUtil.SIGOUT_ID:
+                getAppComponent().applicationSession().clearUserSession();
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startMiniAppActivity(this, "TransactionLogs");
+                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSACTION_ID:
                 break;
             case MenuItemUtil.TRANSFER_ID:
+                navigator.startTransferMoneyActivity(this);
                 break;
 
         }
@@ -274,6 +273,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private void startZaloPayService() {
+        AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                startService(new Intent(MainActivity.this.getApplicationContext(), NotificationService.class));
+                return null;
+            }
+        });
     }
 
       /*  */

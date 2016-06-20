@@ -23,8 +23,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
+import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
-import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
@@ -112,115 +112,37 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @OnClick(R.id.tvCancel)
     public void onClickCancel(View view) {
-        navigator.startHomeActivity(getContext(), true);
-        ActivityAnimator anim = new ActivityAnimator();
-        anim.fadeAnimation(getActivity());
-    }
-
-    private IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            onTextChangePin(s);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    private IPasscodeChanged confirmPasscodeChanged = new IPasscodeChanged() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            onTextChangePinCompare(s);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (s != null && s.length() == passCode.getMaxLength()) {
-
-            }
-        }
-    };
-
-    private IPasscodeFocusChanged passcodeFocusChanged = new IPasscodeFocusChanged() {
-        @Override
-        public void onFocusChangedPin(boolean isFocus) {
-            onFocusChangedPin(isFocus);
-        }
-    };
-
-    private IPasscodeFocusChanged confirmPasscodeFocusChanged = new IPasscodeFocusChanged() {
-        @Override
-        public void onFocusChangedPin(boolean isFocus) {
-            onFocusChangedPinCompare(isFocus);
-        }
-    };
-
-    public void onFocusChangedPin(boolean isFocus) {
-        if (!isFocus) {
-            if (isValidPin()) {
-                passCode.hideError();
-            } else {
-                passCode.showError(getString(R.string.invalid_pin));
-            }
-        }
-    }
-
-    public void onFocusChangedPinCompare(boolean isFocus) {
-        if (!isFocus) {
-            if (isValidPinCompare()) {
-                passCodeConfirm.hideError();
-            } else {
-                passCode.showError(getString(R.string.invalid_pin));
-            }
-        }
-    }
-
-    public void onTextChangePin(CharSequence text) {
-        if (isValidPin()) {
-            passCode.hideError();
-            if (isValidPinCompare()) {
-                passCodeConfirm.hideError();
-            }
-        }
-    }
-
-    public void onTextChangePinCompare(CharSequence text) {
-        if (isValidPinCompare()) {
-            passCode.hideError();
-            passCodeConfirm.hideError();
-        } else {
-            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
-        }
+        getActivity().finish();
     }
 
     private boolean isValidPinCompare() {
         String pin = passCode.getText();
-        String pinCompare = passCodeConfirm.getText().toString();
-        if (TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin)) {
-            return false;
-        }
-        return true;
+        String pinCompare = passCodeConfirm.getText();
+        return (!TextUtils.isEmpty(pinCompare) && pinCompare.equals(pin));
     }
 
     private boolean isValidPin() {
         String pin = passCode.getText();
-        if (TextUtils.isEmpty(pin)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(pin);
     }
+
+    IPassCodeMaxLength passCodeMaxLength = new IPassCodeMaxLength() {
+        @Override
+        public void hasMaxLength() {
+            if (passCodeConfirm != null) {
+                passCodeConfirm.requestFocus();
+            }
+        }
+    };
+
+    IPassCodeMaxLength passCodeConfirmMaxLength = new IPassCodeMaxLength() {
+        @Override
+        public void hasMaxLength() {
+            if (edtPhone != null) {
+                edtPhone.requestFocus();
+            }
+        }
+    };
 
     public PinProfileFragment() {
         // Required empty public constructor
@@ -232,10 +154,8 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
      *
      * @return A new instance of fragment PinProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PinProfileFragment newInstance() {
-        PinProfileFragment fragment = new PinProfileFragment();
-        return fragment;
+        return new PinProfileFragment();
     }
 
     @Override
@@ -299,6 +219,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                 }
             }
         });
+
+        passCode.requestFocus();
+        passCode.setPassCodeMaxLength(passCodeMaxLength);
+        passCodeConfirm.setPassCodeMaxLength(passCodeConfirmMaxLength);
 
 //        passCode.setPasscodeChanged(passcodeChanged);
 //        passCode.setPasscodeFocusChanged(passcodeFocusChanged);

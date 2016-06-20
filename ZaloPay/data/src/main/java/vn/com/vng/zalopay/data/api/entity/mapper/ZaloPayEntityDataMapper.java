@@ -41,6 +41,9 @@ public class ZaloPayEntityDataMapper {
             transHistory.type = val.type;
             transHistory.reqdate = val.reqdate;
             transHistory.userid = val.userid;
+            transHistory.sign = val.sign;
+            transHistory.username = val.username;
+            transHistory.appusername = val.appusername;
         }
 
         return transHistory;

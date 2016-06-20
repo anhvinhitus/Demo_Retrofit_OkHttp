@@ -162,6 +162,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
     @Override
+    public void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void setData(List<BankCard> bankCards) {
         mAdapter.setData(bankCards);
         showOrHidekLinkCardEmpty();
@@ -208,7 +214,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void onClickAddBankCard() {
-        navigator.startLinkCardProducedureActivity(this);
+        navigator.startLinkCardProcedureActivity(this);
     }
 
     @Override

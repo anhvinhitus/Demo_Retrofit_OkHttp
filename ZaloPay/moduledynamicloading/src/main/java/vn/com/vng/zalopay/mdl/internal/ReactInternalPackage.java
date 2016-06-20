@@ -4,15 +4,14 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.uimanager.ViewManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -20,10 +19,12 @@ import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
  */
 public class ReactInternalPackage implements ReactPackage {
 
-    private ZaloPayRepository repository;
+    private TransactionStore.Repository mRepository;
+    private ZaloPayRepository mZaloPayRepository;
 
-    public ReactInternalPackage(ZaloPayRepository repository) {
-        this.repository = repository;
+    public ReactInternalPackage(TransactionStore.Repository repository, ZaloPayRepository zaloPayRepository) {
+        this.mRepository = repository;
+        mZaloPayRepository = zaloPayRepository;
     }
 
     @Override
@@ -32,8 +33,8 @@ public class ReactInternalPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new ReactInternalNativeModule(reactContext));
-        modules.add(new ReactTransactionLogsNativeModule(reactContext, repository));
-
+        modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
+        modules.add(new ReactNotificationNativeModule(reactContext, mZaloPayRepository));
         return modules;
     }
 

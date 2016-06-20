@@ -20,16 +20,23 @@ import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.MonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
+import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.receiver.NetworkReceiver;
+import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class, MonitorModule.class, ReactNativeModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class,
+        MonitorModule.class, ReactNativeModule.class, WsModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();
@@ -57,6 +64,12 @@ public interface ApplicationComponent {
     IMonitorTiming monitorTiming();
     IMonitorReport monitorReport();
 
+    GlobalEventHandlingService globalEventService();
+
+    Navigator navigator();
+
+    ApplicationSession applicationSession();
+
     /*INJECT*/
 
     void inject(SplashScreenFragment f);
@@ -64,4 +77,9 @@ public interface ApplicationComponent {
     void inject(LoginZaloActivity a);
 
     void inject(DownloadService service);
+
+    void inject(NotificationService service);
+
+    void inject(NetworkReceiver receiver);
+
 }

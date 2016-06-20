@@ -18,7 +18,8 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.wallet.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
@@ -57,7 +58,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         subscription = makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance(linkCardView.getActivity()).getMappedCardList();
+                List<DMappedCard> mapCardLis = CShareData.getInstance(linkCardView.getActivity()).getMappedCardList(user.uid);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

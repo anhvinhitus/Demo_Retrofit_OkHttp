@@ -9,7 +9,7 @@
         android:id="@+id/tvHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="4dp"
         android:textSize="@dimen/textsize.tiny"
         android:visibility="visible" />
 
@@ -29,6 +29,7 @@
                 style="@style/Passcode.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_passcode"
                 android:clickable="@null"
                 android:cursorVisible="false"
                 android:ellipsize="end"

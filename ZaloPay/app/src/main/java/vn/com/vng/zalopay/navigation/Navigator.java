@@ -3,11 +3,15 @@ package vn.com.vng.zalopay.navigation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
@@ -18,12 +22,19 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
+
+import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
+import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
+import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
+import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
+
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
-import vn.com.zalopay.wallet.data.Constants;
 
 /*
 * Navigator
@@ -35,6 +46,7 @@ public class Navigator {
     public Navigator() {
         //empty
     }
+
 
     public void startLoginActivity(Context context) {
         startLoginActivity(context, false);
@@ -110,9 +122,14 @@ public class Navigator {
     }
 
     public void startMiniAppActivity(Activity activity, String moduleName) {
-        Intent intent = new Intent(activity, MiniApplicationActivity.class);
-        intent.putExtra("moduleName", moduleName);
+        Intent intent = getIntentMiniAppActivity(activity, moduleName);
         activity.startActivity(intent);
+    }
+
+    public Intent getIntentMiniAppActivity(Context context, String moduleName) {
+        Intent intent = new Intent(context, MiniApplicationActivity.class);
+        intent.putExtra("moduleName", moduleName);
+        return intent;
     }
 
     public void startLinkCardActivity(Activity activity) {
@@ -120,7 +137,7 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardProducedureActivity(Fragment activity) {
+    public void startLinkCardProcedureActivity(Fragment activity) {
         Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
         activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
@@ -139,9 +156,18 @@ public class Navigator {
         context.startActivity(intent);
     }
 
-    public void startPreProfileActivity(Activity activity) {
-        Intent intent = new Intent(activity, PreProfileActivity.class);
-        activity.startActivity(intent);
+    public void startPreProfileActivity(Context context, String walletTransID) {
+        if (context == null) {
+            Timber.w("Cannot start pre-profile activity due to NULL context");
+            return;
+        }
+
+        Intent intent = new Intent(context, PreProfileActivity.class);
+        if (!TextUtils.isEmpty(walletTransID)) {
+            intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
+        }
+
+        context.startActivity(intent);
     }
 
     public void startPinProfileActivity(Activity activity) {
@@ -163,4 +189,29 @@ public class Navigator {
         Intent intent = new Intent(activity, RecoveryPinActivity.class);
         activity.startActivity(intent);
     }
+
+    public void startTransferMoneyActivity(Activity activity) {
+        Intent intent = new Intent(activity, TransferHomeActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public void startZaloContactActivity(TransferHomeFragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), ZaloContactActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    public void startTransferActivity(ZaloContactFragment fragment, Bundle bundle) {
+        Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
+        intent.putExtras(bundle);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    public void startTransferActivity(TransferHomeFragment fragment, Bundle bundle) {
+        Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
+        intent.putExtras(bundle);
+        fragment.startActivity(intent);
+    }
+
+
+
 }

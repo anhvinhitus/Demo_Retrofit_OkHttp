@@ -4,27 +4,27 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
+import vn.com.vng.zalopay.data.cache.model.TransferRecent;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 
 /**
  * Created by AnhHieu on 5/4/16.
  */
 public interface SqlZaloPayScope extends SqlBaseScope {
 
-    void write(List<TransHistoryEntity> val);
+    void writeZaloFriends(List<ZaloFriend> val);
 
-    void write(TransHistoryEntity val);
+    void writeZaloFriend(ZaloFriend val);
 
-    Observable<List<TransHistoryEntity>> transactionHistorys();
+    List<ZaloFriend> listZaloFriend();
 
-    Observable<List<TransHistoryEntity>> transactionHistorys(int limit);
+    List<ZaloFriend> listZaloFriend(int limit);
 
-    List<TransHistoryEntity> listTransHistorys(int limit);
+    boolean isHaveZaloFriendDb();
 
-    boolean isHaveTransactionInDb();
+    void writeTransferRecent(TransferRecent val);
 
-    Observable<TransHistoryEntity> transactionHistory();
+    List<TransferRecent> listTransferRecent();
 
-    Observable<Long> balance();
-
-    void writeBalance(long balance);
+    List<TransferRecent> listTransferRecent(int limit);
 }

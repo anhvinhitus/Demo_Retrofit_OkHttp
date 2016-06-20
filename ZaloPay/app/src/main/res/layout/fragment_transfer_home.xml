@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layoutTransferAccZaloPay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing.medium.t"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_tkzalopay" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_weight="1.0"
+                android:text="@string/transfer_acc_zalopay"
+                android:textColor="@color/txt_item_main" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing.medium.t"
+                android:src="@drawable/ic_arrow_right" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:layout_marginLeft="60dp"
+            android:background="@color/separate"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/layoutTransferATMVisa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing.medium.t"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_the_atm" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_weight="1.0"
+                android:text="@string/transfer_atm_visa"
+                android:textColor="@color/txt_item_main" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing.medium.t"
+                android:src="@drawable/ic_arrow_right" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:background="@color/separate" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tvTileTransactionRecent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.Group.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingLeft="@dimen/spacing.medium.t"
+            android:paddingTop="@dimen/spacing.large.t"
+            android:text="@string/transaction_recent"
+            android:textAllCaps="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:background="@color/separate" />
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".transfer.ui.fragment.TransferHomeFragment"
+        tools:listitem="@layout/fragment_trasfer_recent_item" />
+
+    <View
+        android:id="@+id/viewSeparate"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate_stroke"
+        android:background="@color/separate"
+        android:visibility="gone" />
+
+</LinearLayout>

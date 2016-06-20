@@ -1,8 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -38,7 +39,7 @@ public abstract class BaseFragment extends Fragment {
     public final String TAG = getClass().getSimpleName();
 
     private Snackbar mSnackBar;
-    private ProgressDialog mProgressDialog;
+    private SweetAlertDialog mProgressDialog;
     private Unbinder unbinder;
 
     @Override
@@ -104,16 +105,38 @@ public abstract class BaseFragment extends Fragment {
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            mProgressDialog.setContentText("Loading");
+            mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
     }
 
 
     public void hideProgressDialog() {
-        if (mProgressDialog != null)
+        if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
+
+    public void showErrorDialog(String message, String cancelText, final SweetAlertDialog.OnSweetClickListener cancelListener) {
+        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                .setContentText(message)
+                .setConfirmText(cancelText)
+                .setConfirmClickListener(cancelListener)
+                .show();
+    }
+
+    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancellListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retrylListener) {
+        new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setContentText(retryMessage)
+                .setCancelText(cancelBtnText)
+                .setCancelClickListener(cancellListener)
+                .setConfirmText(retryBtnText)
+                .setConfirmClickListener(retrylListener)
+                .show();
+    }
+
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
@@ -144,6 +167,9 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void hideKeyboard() {
+        if (getView() == null) {
+            return;
+        }
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }

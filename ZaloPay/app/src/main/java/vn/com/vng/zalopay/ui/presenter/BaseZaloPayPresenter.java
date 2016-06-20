@@ -1,13 +1,22 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import rx.schedulers.Schedulers;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
  * Created by AnhHieu on 3/26/16.
  */
-public abstract class BaseZaloPayPresenter extends BaseAppPresenter {
+public abstract class BaseZaloPayPresenter extends BaseUserPresenter {
 
-    ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
+    protected void updateTransaction() {
+        transactionRepository.updateTransaction()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+    }
 
+    protected void updateBalance() {
+        balanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+    }
 }

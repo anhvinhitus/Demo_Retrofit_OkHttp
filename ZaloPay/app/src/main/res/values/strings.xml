@@ -50,7 +50,7 @@
 
     <string name="appid">19240466928203470</string>
     <string name="zalo_appid">zalo-19240466928203470</string>
-    <string name="profile_json_exception">Có lỗi xảy ra trong quá trình lấy thông tin người dùng.</string>
+
 
     <string name="title_activity_login">Đăng nhập</string>
 
@@ -59,12 +59,16 @@
     <string name="amount">Số tiền</string>
     <string name="amount_vnd"> (VND)</string>
     <string name="vnd"> VND</string>
+    <string name="hint_amount">Số tiền (VND)</string>
+    <string name="hint_message">Lời nhắn</string>
 
     <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
 
+    <string name="txt_close">Đóng</string>
+    <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
     <string name="txt_cancel_html"><u>Bỏ qua</u></string>
 
@@ -73,7 +77,9 @@
     <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
 
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
-    <string name="title.activity.link.card">Liên kết thẻ</string>
+    <string name="title.activity.link.card">Quản lý thẻ</string>
+    <string name="title.activity.transfer">Chuyển tiền</string>
+    <string name="title.activity.zalopay.contact">Danh bạ ZaloPay</string>
 
     <!--Activity lable END-->
 
@@ -100,12 +106,12 @@
     <string name="txt_home_qrcode">QUÉT MÃ QR</string>
     <string name="txt_home_scantopay">TRẢ TIỀN</string>
     <string name="txt_home_deposit">NẠP TIỀN</string>
-    <string name="txt_home_link_card">THẺ</string>
+    <string name="txt_home_link_card">LƯU THẺ</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="link.card">Liên kết thẻ</string>
+    <string name="link.card">Lưu thẻ</string>
 
     <string name="action_notifications">Thông báo</string>
 
@@ -113,7 +119,7 @@
     <string name="input_amount">Nhập số tiền</string>
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
-    <string name="link_card_other">Liên kết thẻ khác</string>
+    <string name="link_card_other">Thêm thẻ</string>
 
     <!-- Link CARDS START-->
     <string name="link_card_title">Quy trình liên kết thẻ Visa/Master/JCB</string>
@@ -124,8 +130,6 @@
     <!-- Link CARDS END-->
 
     <string name="alert_processing">Đang xử lý</string>
-    <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
-    <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
 
     <string name="hint_birthday">Năm sinh</string>
     <string name="note_transaction">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN:</string>
@@ -140,6 +144,8 @@
     <string name="invalid_email">Email không hợp lệ.</string>
     <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
+    <string name="invalid_amount_empty">Bạn chưa nhập số tiền</string>
+    <string name="invalid_transfer_msg_empty">Bạn chưa nhập lời nhắn</string>
 
     <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
     <string name="invalid_otp">OTP không hợp lệ.</string>
@@ -193,4 +199,17 @@
     <string name="btn_start_scan_sound">Start scan</string>
     <string name="btn_stop_scan_sound">Stop scan</string>
     <string name="test_jni">Test JNI</string>
+
+    <string name="transfer_acc_zalopay">Đến tài khoản Zalo Pay</string>
+    <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
+    <string name="transaction_recent">Giao dịch gần đây</string>
+    <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="deposit">Nạp tiền</string>
+
+    <string name="notify.from.zalopay">Thông báo từ Zalo Pay</string>
+    <string name="not_update_phone">Chưa cập nhật SĐT</string>
 </resources>

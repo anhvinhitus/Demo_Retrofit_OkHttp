@@ -14,11 +14,17 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.RecoveryPinFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
+import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
+import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
+import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
@@ -29,6 +35,12 @@ import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
 import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
+import vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
+import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
+import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
+import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
+import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -43,20 +55,27 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 UserModule.class,
                 ApiUserModule.class,
                 UserControllerModule.class,
-                UserPresenterModule.class
+                UserPresenterModule.class,
+                BalanceModule.class,
+                TransactionModule.class,
+                AppResourceModule.class
         }
 )
 public interface UserComponent {
 
     User currentUser();
 
-    AppConfigRepository appConfigRepository();
+    AppResource.Repository appResourceRepository();
 
     AccountRepository accountRepository();
 
     ZaloPayRepository zaloPayRepository();
 
     IPaymentService paymentService();
+
+    BalanceRepository balanceRepository();
+
+    TransactionStore.Repository transactionRepository();
 
  /*   ApplicationRepository applicationRepository();*/
 
@@ -85,6 +104,12 @@ public interface UserComponent {
 
     void inject(EditProfileFragment f);
 
+    void inject(TransferHomeFragment f);
+
+    void inject(ZaloContactFragment f);
+
+    void inject(TransferFragment f);
+
     /* inject activity */
 
     void inject(QRCodeScannerActivity activity);
@@ -112,4 +137,8 @@ public interface UserComponent {
     void inject(ScanSoundFragment fragment);
 
     void inject(QRCodeFragment f);
+
+    void inject(TransferRecentContentProviderImpl contentProvider);
+
+    void inject(TransferHomeActivity activity);
 }

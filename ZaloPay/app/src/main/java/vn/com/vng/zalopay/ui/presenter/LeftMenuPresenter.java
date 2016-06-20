@@ -10,9 +10,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
+import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
@@ -27,14 +31,17 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private User user;
 
+    private boolean isInitiated;
+
     public LeftMenuPresenter(User user) {
         this.user = user;
     }
 
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
-        eventBus.register(this);
         menuView = iLeftMenuView;
+        menuView.setUserInfo(user);
+        eventBus.register(this);
     }
 
     @Override
@@ -45,16 +52,14 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initialize() {
-        menuView.setUserInfo(user);
+        this.getBalance();
+        this.initializeZaloPay();
+    }
 
-        appConfigRepository.initialize()
+    public void initializeZaloPay() {
+        transactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-
-        zaloPayRepository.initialize()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-
     }
 
     @Override
@@ -63,16 +68,14 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void destroy() {
-
     }
 
     public void getBalance() {
-        Subscription subscription = zaloPayRepository.balance()
+        Subscription subscription = balanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
@@ -80,8 +83,18 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         compositeSubscription.add(subscription);
     }
 
+    private final void onGetBalanceError(Throwable e) {
+        Timber.w("onGetBalanceError %s", e);
+        String message = ErrorMessageFactory.create(applicationContext, e);
+        showErrorView(message);
+    }
+
+    protected void showErrorView(String message) {
+    }
+
+
     private final void onGetBalanceSuccess(Long balance) {
-        Timber.tag(TAG).d("onGetBalanceSuccess %s", balance);
+        Timber.d("onGetBalanceSuccess %s", balance);
         menuView.setBalance(balance);
     }
 
@@ -91,12 +104,12 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onCompleted() {
-            super.onCompleted();
+            isInitiated = true;
         }
 
         @Override
         public void onError(Throwable e) {
-            Timber.tag(TAG).e(e, " exception ");
+            LeftMenuPresenter.this.onGetBalanceError(e);
         }
 
         @Override
@@ -105,16 +118,32 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
-        Timber.tag(TAG).d("avatar %s displayName %s", event.avatar, event.displayName);
-        menuView.setAvatar(event.avatar);
-        menuView.setDisplayName(event.displayName);
+        //UPDATE USERINFO
+        user.avatar = event.avatar;
+        user.dname = event.displayName;
+
+        if (menuView != null) {
+            menuView.setAvatar(event.avatar);
+            menuView.setDisplayName(event.displayName);
+        }
+
+        eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ChangeBalanceEvent event) {
-        //Timber.d("event bus test %s; ThreadName:%s", event.balance, Thread.currentThread().getName());
-        menuView.setBalance(event.balance);
+        if (menuView != null) {
+            menuView.setBalance(event.balance);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNetworkChange(NetworkChangeEvent event) {
+        if (event.isOnline && !isInitiated) {
+            this.getBalance();
+            this.initializeZaloPay();
+        }
     }
 }

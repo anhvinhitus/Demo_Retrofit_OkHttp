@@ -17,20 +17,22 @@ import okhttp3.Cache;
 import okhttp3.ConnectionPool;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.net.adapter.CustomRxJavaCallAdapterFactory;
+import vn.com.vng.zalopay.data.ws.connection.WsConnection;
+import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 @Module
 public class NetworkModule {
@@ -85,8 +87,8 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    CallAdapter.Factory provideCallAdapter(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
-        return CustomRxJavaCallAdapterFactory.create();
+    CallAdapter.Factory provideCallAdapter(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, Context context) {
+        return CustomRxJavaCallAdapterFactory.create(context);
     }
 
     @Provides
@@ -101,6 +103,5 @@ public class NetworkModule {
                 .client(okHttpClient)
                 .build();
     }
-
 
 }

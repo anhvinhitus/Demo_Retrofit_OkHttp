@@ -45,7 +45,9 @@ ext {
     dexmakerVersion = '1.0'
     espressoVersion = '2.0'
     testingSupportLibVersion = '0.1'
-    leakCanaryVersion = "1.4-beta2"
+    leakCanaryVersion = '1.4-beta2'
+    robolectricVersion = '3.0'
+
     zxingVersion = "3.2.1"
     zxingAndroidCoreVersion = "3.2.1"
     zxingAndroidEmbeddedVersion = "3.2.0@aar"
@@ -53,7 +55,7 @@ ext {
     aviVersion = '1.0.5'
     nineoldVersion = '2.4.0'
 
-    reactNativeVersion = "0.25.1"
+    reactNativeVersion = "0.27.2"
 
     roundedimageviewVersion = "2.2.1"
 
@@ -104,7 +106,8 @@ ext {
     ]
 
     testingLibraries = [
-            junit: "junit:junit:${jUnitVersion}"
+            junit: "junit:junit:${jUnitVersion}",
+            robolectric: "org.robolectric:robolectric:${robolectricVersion}"
     ]
 
     developmentDependencies = [

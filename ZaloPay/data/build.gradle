@@ -57,6 +57,8 @@ dependencies {
     def tests = rootProject.ext.testingLibraries
 
     testCompile tests.junit
+    testCompile tests.robolectric
+
     compile libs.support_appcompat_v7
     compile libs.support_annotations
     compile libs.dagger
@@ -76,4 +78,7 @@ dependencies {
     compile libs.eventbus
     compile libs.gson
     compile project(':domain')
+
+    compile 'io.netty:netty-all:4.1.0.CR4'
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '2.6.1'
 }

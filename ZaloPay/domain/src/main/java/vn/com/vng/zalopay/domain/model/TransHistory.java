@@ -38,6 +38,12 @@ public class TransHistory extends AbstractData {
 
     public int type;
 
+    public int sign;
+
+    public String username;
+
+    public String appusername;
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 

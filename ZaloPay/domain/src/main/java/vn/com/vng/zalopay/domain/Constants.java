@@ -20,4 +20,7 @@ public class Constants {
     public static final String MAC = "mac";
     public static final String CHARGEINFO = "chargeinfo";
     /* Object Order END */
+
+    //BundleName
+    public static final String WALLETTRANSID = "walletTransID";
 }

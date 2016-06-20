@@ -210,7 +210,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         /**
@@ -223,7 +223,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         /**
          * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
          */

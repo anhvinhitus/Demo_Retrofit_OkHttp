@@ -8,7 +8,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.repository.datasource.PassportFactory;
-import vn.com.vng.zalopay.data.repository.datasource.UserConfigFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 
@@ -23,14 +22,12 @@ public class PassportRepositoryImpl implements PassportRepository {
     private UserEntityDataMapper userEntityDataMapper;
 
     private UserConfig userConfig;
-    private UserConfigFactory userConfigFactory;
 
     @Inject
-    public PassportRepositoryImpl(PassportFactory passportFactory, UserEntityDataMapper userEntityDataMapper, UserConfig userConfig, UserConfigFactory userConfigFactory) {
+    public PassportRepositoryImpl(PassportFactory passportFactory, UserEntityDataMapper userEntityDataMapper, UserConfig userConfig) {
         this.passportFactory = passportFactory;
         this.userEntityDataMapper = userEntityDataMapper;
         this.userConfig = userConfig;
-        this.userConfigFactory = userConfigFactory;
     }
 
     @Override
@@ -55,7 +52,7 @@ public class PassportRepositoryImpl implements PassportRepository {
                                 Timber.d("PassportRepositoryImpl before cleanup user oldUser: " + oldUser.uid);
                             }
                             if (oldUser == null || oldUser.uid != user.uid) {
-                                userConfigFactory.clearAllUserDB();
+                                userConfig.clearAllUserDB();
                             }
 
                             Timber.d("save User");
@@ -70,10 +67,8 @@ public class PassportRepositoryImpl implements PassportRepository {
         return passportFactory.logout(uid, token).map(logoutResponse -> Boolean.TRUE);
     }
 
-    @Override
-    public Observable<Boolean> verifyAccessToken(String userId, String token) {
-        return passportFactory.verifyAccessToken(userId, token).map(baseResponse -> Boolean.TRUE);
-    }
-
-
+//    @Override
+//    public Observable<Boolean> verifyAccessToken(String userId, String token) {
+//        return passportFactory.verifyAccessToken(userId, token).map(baseResponse -> Boolean.TRUE);
+//    }
 }

@@ -195,8 +195,41 @@
             android:exported="false"
             android:label="DownloadService" />
 
+        <service
+            android:name=".service.NotificationService"
+            android:exported="false"
+            android:label="Zalo Pay Service" />
+
+        <receiver
+            android:name=".receiver.NetworkReceiver"
+            android:label="NetworkReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".account.ui.activities.RecoveryPinActivity" />
-        <activity android:name=".account.ui.activities.ProfileInfo2Activity"></activity>
+        <activity android:name=".account.ui.activities.ProfileInfo2Activity" />
+        <activity
+            android:name=".transfer.ui.activities.TransferHomeActivity"
+            android:label="@string/title.activity.transfer" />
+        <activity
+            android:name=".transfer.ui.activities.ZaloContactActivity"
+            android:label="@string/title.activity.zalopay.contact" />
+        <activity
+            android:name=".transfer.ui.activities.TransferActivity"
+            android:label="@string/title.activity.transfer" />
+
+        <!-- Content Providers for DAO -->
+        <provider
+            android:name="vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl"
+            android:authorities="vn.com.vng.zalopay.data.cache.model.zalofriendprovider"
+            android:exported="false" />
+        <provider
+            android:name="vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl"
+            android:authorities="vn.com.vng.zalopay.data.cache.model.transferrecentprovider"/>
+        <!-- END Content Providers -->
     </application>
 
 </manifest>

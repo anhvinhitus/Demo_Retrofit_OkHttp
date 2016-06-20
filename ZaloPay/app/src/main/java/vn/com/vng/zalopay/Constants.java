@@ -25,6 +25,9 @@ public class Constants {
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";
+    public static final String ARG_ZALO_FRIEND = "zalofriend";
+    public static final String ARG_MESSAGE = "message";
+    public static final String ARG_TRANSFERRECENT = "TransferRecent";
 
     //DATA MANIFESTS DATABASE
     public static final String MANIF_BALANCE = "manif_balance";
@@ -47,4 +50,16 @@ public class Constants {
 
     public static final String COMMANDTYPE = "commandType";
     public static final String RECORDNAME = "recordName";
+
+    public static final int REQUEST_CODE_TRANSFER = 124;
+
+
+    public static class ModuleName {
+        public static final String NOTIFICATIONS = "Notifications";
+        public static final String PAYMENT_MAIN = "PaymentMain";
+        public static final String ABOUT = "About";
+        public static final String HELP = "Help";
+        public static final String FAQ = "FAQ";
+        public static final String TRANSACTIONLOGS = "TransactionLogs";
+    }
 }

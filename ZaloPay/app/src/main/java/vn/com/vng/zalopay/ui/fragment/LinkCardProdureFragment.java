@@ -9,16 +9,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
 import javax.inject.Inject;
 
 import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.presenter.LinkCardProdurePresenter;
-import vn.com.vng.zalopay.ui.view.ILinkCardProduceView;
+import vn.com.vng.zalopay.ui.presenter.LinkCardProcedurePresenter;
+import vn.com.vng.zalopay.ui.view.ILinkCardProcedureView;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 
 /**
@@ -29,7 +27,7 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
  * Use the {@link LinkCardProdureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkCardProdureFragment extends BaseFragment implements ILinkCardProduceView {
+public class LinkCardProdureFragment extends BaseFragment implements ILinkCardProcedureView {
 
     private OnFragmentInteractionListener mListener;
 
@@ -37,7 +35,7 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
     Navigator navigator;
 
     @Inject
-    LinkCardProdurePresenter linkCardProdurePresenter;
+    LinkCardProcedurePresenter linkCardProdurePresenter;
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnContinute(View view) {
@@ -112,6 +110,12 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
     }
 
     @Override
+    public void onDestroy() {
+        linkCardProdurePresenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void showLoading() {
         showProgressDialog();
     }
@@ -152,9 +156,7 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
 
     @Override
     public void onTokenInvalid() {
-        ZaloSDK.Instance.unauthenticate();
-        navigator.startLoginActivity(getActivity());
-        getActivity().finish();
+
     }
 
     /**

@@ -1,4 +1,8 @@
 <resources>
+    <dimen name="textsize.text.main">15sp</dimen>
+    <dimen name="textsize.text.sub">12sp</dimen>
+    <dimen name="textsize.group.title">12sp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -53,4 +57,7 @@
     <dimen name="margin_tab_pay_bottom">10dp</dimen>
     <dimen name="margin_tab_pay_top">8dp</dimen>
     <dimen name="height_tab_pay_with_margin">90dp</dimen>
+    <dimen name="transfer.avatar">34dp</dimen>
+
+    <dimen name="separate_stroke">0.5dp</dimen>
 </resources>

@@ -4,36 +4,17 @@ import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.os.Environment;
-import android.text.TextUtils;
 
-import com.facebook.react.ReactInstanceManager;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.download.FileUtil;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.mdl.MiniApplicationException;
 import vn.com.vng.zalopay.mdl.internal.FileUtils;
 import vn.com.vng.zalopay.mdl.model.ReactBundleAssetData;
 

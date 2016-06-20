@@ -4,11 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 
 import javax.inject.Inject;
 
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
 
-public class LoginZaloActivity extends BaseActivity implements ILoginView, View.OnClickListener {
+public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
 
     @Override
@@ -45,50 +45,43 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
     Navigator navigator;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
-        findViewById(R.id.layoutLoginZalo).setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View v) {
-        int itemId = v.getId();
-        if (itemId == R.id.layoutLoginZalo) {
-            startLoginZalo();
-        }
-    }
-
-    private void startLoginZalo() {
-        showLoading();
+    @OnClick(R.id.layoutLoginZalo)
+    public void onClickLogin(View v) {
         loginPresenter.loginZalo(this);
     }
 
-    @Override
-    protected void onResume() {
+   /* @Override
+    public void onResume() {
         super.onResume();
         loginPresenter.pause();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         loginPresenter.pause();
-    }
+    }*/
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroy() {
         loginPresenter.destroy();
+        super.onDestroy();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onBackPressed() {
+        //   super.onBackPressed();
+        finish();
+        System.exit(0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.tag(TAG).d("onActivityResult................" + requestCode + ";" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         loginPresenter.onActivityResult(this, requestCode, resultCode, data);
@@ -108,18 +101,18 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView, View.
 
     @Override
     public void showLoading() {
-        if (isFinishing()) {
-            return;
+        Timber.d("showLoading");
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(getActivity(), getString(R.string.login), getString(R.string.loading));
+            mProgressDialog.setCanceledOnTouchOutside(false);
         }
-        hideLoading();
-        mProgressDialog = ProgressDialog.show(this, getString(R.string.login), getString(R.string.loading));
-        mProgressDialog.setCanceledOnTouchOutside(false);
+
+        mProgressDialog.show();
     }
 
     public void hideLoading() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
-            mProgressDialog = null;
         }
     }
 

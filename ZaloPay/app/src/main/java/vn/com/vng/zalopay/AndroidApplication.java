@@ -7,6 +7,7 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.react.bridge.queue.MessageQueueThreadHandler;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
@@ -23,7 +24,7 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
-import vn.com.zalopay.wallet.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
 /**
@@ -46,7 +47,6 @@ public class AndroidApplication extends MultiDexApplication {
     public static AndroidApplication instance() {
         return _instance;
     }
-
 
     @Override
     public void onCreate() {
@@ -93,6 +93,8 @@ public class AndroidApplication extends MultiDexApplication {
                 @Override
                 public void uncaughtException(Thread thread, Throwable throwable) {
                     Timber.e(throwable, "UncaughtException!!!");
+//                    if (throwable)
+                    MessageQueueThreadHandler a;
                 }
             });
         }

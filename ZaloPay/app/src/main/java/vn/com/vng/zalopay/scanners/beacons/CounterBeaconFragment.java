@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
@@ -55,6 +56,9 @@ public class CounterBeaconFragment extends BaseFragment {
 
     @Inject
     ZaloPayRepository zaloPayRepository;
+
+    @Inject
+    TransactionStore.Repository mTransactionRepository;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -107,7 +111,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
                     @Override
                     public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        zaloPayRepository.transactionUpdate();
+                        mTransactionRepository.updateTransaction();
                         CounterBeaconFragment.this.getActivity().finish();
                     }
 
