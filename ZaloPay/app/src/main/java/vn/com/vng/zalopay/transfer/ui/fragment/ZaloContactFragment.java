@@ -11,7 +11,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
@@ -21,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -51,6 +54,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     private final int LOADER_ZALO_FRIEND = 2;
     private final int PAGE_SIZE = 50;
     private final String LIMIT_ITEMS = "limit_items";
+    private final String TEXT_SEARCH = "text_search";
     private int mColumnCount = 1;
     private ZaloContactRecyclerViewAdapter mAdapter;
     private Bundle mTransferState;
@@ -64,8 +68,20 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @BindView(R.id.list)
     UltimateRecyclerView mList;
 
+    @BindView(R.id.edtSearch)
+    EditText edtSearch;
+
     @BindView(R.id.viewSeparate)
     View viewSeparate;
+
+    @OnTextChanged(R.id.edtSearch)
+    public void onTextChangedEdtSearch(CharSequence charSequence) {
+        Bundle bundle = new Bundle();
+        if (charSequence != null) {
+            bundle.putString(TEXT_SEARCH, charSequence.toString());
+        }
+        getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, this);
+    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -201,13 +217,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @Override
     public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
-        hideLoading();
-        mAdapter.addItems(zaloFriends);
-        if (zaloFriends != null && zaloFriends.size() > 0) {
-            viewSeparate.setVisibility(View.VISIBLE);
-        } else {
-            viewSeparate.setVisibility(View.GONE);
-        }
+//        hideLoading();
     }
 
     @Override
@@ -265,14 +275,22 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         int limitItem = PAGE_SIZE;
+        String txtSearch = "";
         if (args != null) {
-            limitItem = args.getInt(LIMIT_ITEMS);
+            limitItem = args.getInt(LIMIT_ITEMS, PAGE_SIZE);
+            txtSearch = args.getString(TEXT_SEARCH, "");
         }
-        String orderByWithLimit = ZaloFriendDao.Properties.Id.columnName +
+        String selection = "";
+        if (!TextUtils.isEmpty(txtSearch)) {
+            selection+= ZaloFriendDao.Properties.DisplayName.columnName + " like '%" + txtSearch.toLowerCase() + "%'";
+        }
+        String orderByWithLimit = ZaloFriendDao.Properties.DisplayName.columnName +
                 " ASC" +
                 " LIMIT " +
                 limitItem;
-        return new CursorLoader(getActivity(), ZaloFriendContentProviderImpl.CONTENT_URI, null, null, null, orderByWithLimit);
+        Timber.d("onCreateLoader, selection: %s", selection);
+        Timber.d("onCreateLoader, orderByWithLimit: %s", orderByWithLimit);
+        return new CursorLoader(getActivity(), ZaloFriendContentProviderImpl.CONTENT_URI, null, selection, null, orderByWithLimit);
     }
 
     @Override
@@ -288,6 +306,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Timber.d("onLoaderReset");
         mAdapter.setData(null);
     }
 
@@ -307,10 +326,16 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     private void onGetDataDBSuccess(List<ZaloFriend> zaloFriends) {
+        hideLoading();
         if (mAdapter == null) {
             return;
         }
         mAdapter.setData(zaloFriends);
+        if (zaloFriends != null && zaloFriends.size() > 0) {
+            viewSeparate.setVisibility(View.VISIBLE);
+        } else {
+            viewSeparate.setVisibility(View.GONE);
+        }
     }
 
     private void onGetDataDBEmpty() {

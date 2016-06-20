@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.transfer;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -30,7 +31,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
  */
 public class ZaloFriendsFactory {
     private final int OFFSET_FRIEND_LIST = 50;
-    private final int TIME_RELOAD = 5 * 60;
+    private final int TIME_RELOAD = 5/* * 60*/; //5'
 
     private SqlZaloPayScope sqlZaloPayScope;
 
@@ -55,6 +56,8 @@ public class ZaloFriendsFactory {
             long currentTime = System.currentTimeMillis() / 1000;
             if (currentTime - lasttime >= TIME_RELOAD) {
                 getFriendListServer(context, 0, subscriber);
+            } else {
+                Toast.makeText(context, "reloadZaloFriend vua download xong roi down j nua ku", Toast.LENGTH_LONG).show();
             }
         } else {
             getFriendListServer(context, 0, subscriber);
@@ -70,7 +73,7 @@ public class ZaloFriendsFactory {
                     JSONArray data = arg0.getJSONArray("result");
                     Timber.d("getFriendListServer, result: %s", data.toString());
                     if (data != null && data.length() >= OFFSET_FRIEND_LIST) {
-                        getFriendListServer(context, (pageIndex + 1), subscriber);
+                        getFriendListServer(context, (pageIndex + OFFSET_FRIEND_LIST), subscriber);
                     } else {
                         sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
                     }
@@ -95,7 +98,7 @@ public class ZaloFriendsFactory {
                 Timber.d("zaloFriends index: %s", i);
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend = new vn.com.vng.zalopay.transfer.models.ZaloFriend(jsonObject);
-                if (zaloFriend.getUserId() > 0 && zaloFriend.isUsingApp()) {
+                if (zaloFriend.getUserId() > 0 /*&& zaloFriend.isUsingApp()*/) {
                     zaloFriends.add(zaloFriend);
                 }
             }
