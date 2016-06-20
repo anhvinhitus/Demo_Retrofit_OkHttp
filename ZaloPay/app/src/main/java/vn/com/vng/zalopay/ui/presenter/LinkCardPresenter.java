@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +14,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -22,6 +25,7 @@ import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -72,7 +76,9 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         if (card != null) {
             bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, card.expiretime);
             try {
-                bankCard.type = CShareData.getInstance(linkCardView.getActivity()).detectCardType(card.first6cardno).toString();
+                Timber.d("transform card.first6cardno:%s", card.first6cardno);
+                bankCard.type = detectCardType(card.cardname, card.first6cardno);
+                Timber.d("transform bankCard.type:%s", bankCard.type);
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     e.printStackTrace();
@@ -127,14 +133,15 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         mapCard.cardname = bankCard.cardname;
         mapCard.first6cardno = bankCard.first6cardno;
         mapCard.last4cardno = bankCard.last4cardno;
-        mapCard.bankcode   = bankCard.bankcode;
+        mapCard.bankcode = bankCard.bankcode;
 
         if (user == null) {
             linkCardView.showError("Thông tin người dùng không hợp lệ.");
             linkCardView.hideLoading();
             return;
         }
-        params.accessToken = user.accesstoken;;
+        params.accessToken = user.accesstoken;
+        ;
         params.userID = String.valueOf(user.uid);
         params.mapCard = mapCard;
 
@@ -182,6 +189,37 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         public void onNext(List<BankCard> bankCards) {
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
+    }
+
+    public String detectCardType(String cardName, String first6cardno) {
+        if (TextUtils.isEmpty(cardName)) {
+            return ECardType.UNDEFINE.toString();
+        } else if (cardName.equals(ECardType.PVTB.toString())) {
+            return ECardType.PVTB.toString();
+        } else if (cardName.equals(ECardType.PBIDV.toString())) {
+            return ECardType.PBIDV.toString();
+        } else if (cardName.equals(ECardType.PVCB.toString())) {
+            return ECardType.PVCB.toString();
+        } else if (cardName.equals(ECardType.PEIB.toString())) {
+            return ECardType.PEIB.toString();
+        } else if (cardName.equals(ECardType.PSCB.toString())) {
+            return ECardType.PSCB.toString();
+        } else if (cardName.equals(ECardType.PAGB.toString())) {
+            return ECardType.PAGB.toString();
+        } else if (cardName.equals(ECardType.PTPB.toString())) {
+            return ECardType.PTPB.toString();
+        } else if (cardName.equals(ECardType.UNDEFINE.toString())) {
+            return ECardType.UNDEFINE.toString();
+        } else {
+            try {
+                return CShareData.getInstance(linkCardView.getActivity()).detectCardType(first6cardno).toString();
+            } catch (Exception e) {
+                if (BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return ECardType.UNDEFINE.toString();
     }
 
 }
