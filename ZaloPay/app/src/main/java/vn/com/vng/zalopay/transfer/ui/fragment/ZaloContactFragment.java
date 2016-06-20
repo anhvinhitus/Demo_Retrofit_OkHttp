@@ -131,6 +131,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), new ArrayList<ZaloFriend>(), this);
         mList.setAdapter(mAdapter);
         presenter.getFriendList(this);
+        mList.reenableLoadmore();
         mList.setOnLoadMoreListener(this);
     }
 
@@ -264,7 +265,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void loadMore(int itemsCount, int maxLastVisiblePosition) {
         Timber.d("loadMore, itemsCount: %s maxLastVisiblePosition: %s", itemsCount, maxLastVisiblePosition);
-        if (itemsCount > maxLastVisiblePosition) {
+        if (itemsCount <= maxLastVisiblePosition) {
             return;
         }
         Bundle bundle = new Bundle();
@@ -339,6 +340,11 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     private void onGetDataDBEmpty() {
-
+        hideLoading();
+        if (mAdapter == null) {
+            return;
+        }
+        mAdapter.setData(null);
+        viewSeparate.setVisibility(View.GONE);
     }
 }

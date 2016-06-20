@@ -20,6 +20,7 @@
             android:drawableLeft="@drawable/ic_seach"
             android:drawablePadding="@dimen/spacing.medium.t"
             android:hint="@string/hint_zalo_contact"
+            android:lines="1"
             android:padding="@dimen/spacing.medium"
             android:textSize="@dimen/textsize.small" />
 
