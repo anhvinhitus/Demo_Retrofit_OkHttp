@@ -13,18 +13,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import rx.Subscriber;
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 
 /**
@@ -71,7 +65,7 @@ public class ZaloFriendsFactory {
                 try {
                     JSONArray data = arg0.getJSONArray("result");
                     Timber.d("getFriendListServer, result: %s", data.toString());
-                    if (data != null && data.length() >= OFFSET_FRIEND_LIST) {
+                    if (data.length() >= OFFSET_FRIEND_LIST) {
                         getFriendListServer(context, (pageIndex + OFFSET_FRIEND_LIST), listener);
                     } else {
                         sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
