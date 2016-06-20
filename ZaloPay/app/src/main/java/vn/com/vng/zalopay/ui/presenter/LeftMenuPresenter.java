@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
+import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
@@ -29,6 +30,8 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private User user;
+
+    private boolean isInitiated;
 
     public LeftMenuPresenter(User user) {
         this.user = user;
@@ -50,14 +53,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void initialize() {
         this.getBalance();
-        this.initializeAppConfig();
         this.initializeZaloPay();
-    }
-
-    public void initializeAppConfig() {
-        mAppResourceRepository.initialize()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
     }
 
     public void initializeZaloPay() {
@@ -72,7 +68,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void pause() {
-
     }
 
     @Override
@@ -95,7 +90,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     protected void showErrorView(String message) {
-
     }
 
 
@@ -110,7 +104,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onCompleted() {
-            super.onCompleted();
+            isInitiated = true;
         }
 
         @Override
@@ -142,6 +136,14 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     public void onEventMainThread(ChangeBalanceEvent event) {
         if (menuView != null) {
             menuView.setBalance(event.balance);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNetworkChange(NetworkChangeEvent event) {
+        if (event.isOnline && !isInitiated) {
+            this.getBalance();
+            this.initializeZaloPay();
         }
     }
 }
