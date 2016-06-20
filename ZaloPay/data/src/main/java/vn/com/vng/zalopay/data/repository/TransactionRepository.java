@@ -109,6 +109,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<TransHistory> getTransaction(long id) {
-        return Observable.just(null);
+        return mTransactionLocalStorage.getTransaction(id)
+                .map(transHistoryEntity -> zaloPayEntityDataMapper.transform(transHistoryEntity)); //Todo: Test lại trường hợp result = null
     }
 }
