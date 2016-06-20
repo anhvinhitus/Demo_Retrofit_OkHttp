@@ -71,7 +71,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     public void getFriendList(final IZaloFriendListener listener) {
 //        mView.showLoading();
-        zaloFriendsFactory.reloadZaloFriend(mView.getContext(), null);
+        zaloFriendsFactory.reloadZaloFriend(mView.getContext(), listener);
     }
 
     private void saveZaloFriends(List<ZaloFriend> zaloFriends) {

@@ -219,6 +219,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
 //        hideLoading();
+        if (mAdapter != null) {
+            getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, new Bundle(), this);
+        }
     }
 
     @Override
@@ -309,7 +312,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Timber.d("onLoaderReset");
-        mAdapter.setData(null);
+        if (mAdapter != null) {
+            mAdapter.setData(new ArrayList<ZaloFriend>());
+        }
     }
 
     private List<ZaloFriend> convertCursorToList(Cursor cursor) {
