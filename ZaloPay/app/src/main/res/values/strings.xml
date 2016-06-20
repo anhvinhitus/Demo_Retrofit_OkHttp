@@ -73,7 +73,7 @@
     <string name="txt_cancel_html"><u>Bỏ qua</u></string>
 
     <!--Activity lable START-->
-    <string name="title_activity_balance_topup">Nạp tiền</string>
+    <string name="title_activity_balance_topup">Gửi tiền</string>
     <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
 
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
