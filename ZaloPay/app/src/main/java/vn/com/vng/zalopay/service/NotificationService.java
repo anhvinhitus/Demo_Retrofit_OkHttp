@@ -18,13 +18,17 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.cache.NotificationStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
+import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -53,13 +57,16 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Inject
     Navigator navigator;
 
+    @Inject
+    NotificationStore.LocalStorage localStorage;
+
     public NotificationService() {
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        AndroidApplication.instance().getAppComponent().inject(this);
+        doInject();
         eventBus.register(this);
         mWsConnection.addReceiverListener(this);
     }
@@ -103,28 +110,29 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Override
     public void onReceiverEvent(Event event) {
         Timber.d("onReceiverEvent %s", event.msgType);
-        if (event instanceof NotificationData) {
-            onReceiverNotification((NotificationData) event);
+        if (event instanceof NotificationEntity) {
+            onReceiverNotification((NotificationEntity) event);
         } else if (event instanceof AuthenticationData) {
             Toast.makeText(NotificationService.this, "Authentication success", Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    private void onReceiverNotification(NotificationData event) {
+    private void onReceiverNotification(NotificationEntity event) {
         this.showNotification(event);
         this.updateTransaction();
         this.updateBalance();
+        localStorage.put(event);
     }
 
-    private void showNotification(NotificationData event) {
+    private void showNotification(NotificationEntity event) {
         String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
         int notificationId = 1;
 
         notificationHelper.create(getApplicationContext(), notificationId,
                 navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS),
                 R.mipmap.ic_launcher,
-                getString(R.string.app_name), message);
+                TransactionType.getTitle(event.transtype), message);
     }
 
     protected void updateTransaction() {
@@ -149,4 +157,27 @@ public class NotificationService extends Service implements OnReceiverMessageLis
         return AndroidApplication.instance().getUserComponent();
     }
 
+    private void doInject() {
+        createUserComponent();
+        getUserComponent().inject(this);
+
+    }
+
+    private void createUserComponent() {
+        Timber.d(" user component %s", getUserComponent());
+        if (getUserComponent() != null)
+            return;
+
+        UserConfig userConfig = getAppComponent().userConfig();
+        Timber.d(" userConfig %s", userConfig.isSignIn());
+        if (userConfig.isSignIn()) {
+            userConfig.loadConfig();
+            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+        }
+    }
+
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
+    }
 }

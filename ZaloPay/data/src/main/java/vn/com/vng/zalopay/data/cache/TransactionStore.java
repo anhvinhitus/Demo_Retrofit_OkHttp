@@ -17,9 +17,12 @@ import vn.com.vng.zalopay.domain.model.TransHistory;
 public interface TransactionStore {
     interface LocalStorage {
         void put(List<TransHistoryEntity> val);
+
         Observable<List<TransHistoryEntity>> get(int pageIndex, int limit);
 
         boolean isHaveTransactionInDb();
+
+        Observable<TransHistoryEntity> getTransaction(long id);
     }
 
     interface RequestService {
@@ -36,5 +39,7 @@ public interface TransactionStore {
 
         /* Gọi lần mới run app */
         Observable<Boolean> initialize();
+
+        Observable<TransHistory> getTransaction(long id);
     }
 }

@@ -19,6 +19,9 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.cache.NotificationStore;
+import vn.com.vng.zalopay.data.cache.TransactionLocalStorage;
+import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -44,6 +47,11 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     EventBus eventBus;
 
+    @Inject
+    NotificationStore.Repository notificationRepository;
+
+    @Inject
+    TransactionStore.Repository transactionRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +97,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     protected ReactPackage reactInternalPackage() {
-        return new ReactInternalPackage(AndroidApplication.instance().getUserComponent().transactionRepository(),
-                AndroidApplication.instance().getUserComponent().zaloPayRepository());
+        return new ReactInternalPackage(transactionRepository,
+                notificationRepository);
     }
 
     private void createUserComponent() {

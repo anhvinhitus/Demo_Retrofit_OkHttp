@@ -13,12 +13,16 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.cache.NotificationStore;
+import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -29,11 +33,11 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
  */
 public class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private ZaloPayRepository repository;
+    private NotificationStore.Repository repository;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactNotificationNativeModule(ReactApplicationContext reactContext, ZaloPayRepository repository) {
+    public ReactNotificationNativeModule(ReactApplicationContext reactContext, NotificationStore.Repository repository) {
         super(reactContext);
         this.repository = repository;
         getReactApplicationContext().addLifecycleEventListener(this);
@@ -47,22 +51,75 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
     @ReactMethod
     public void getNotification(int pageIndex, int count, Promise promise) {
-
         Timber.d("get transaction index %s count %s", pageIndex, count);
+        Subscription subscription = repository.getNotification(pageIndex, count)
+                .map(new Func1<List<NotificationEntity>, WritableArray>() {
 
-        WritableArray result = Arguments.createArray();
-        for (int i = 0;i < 20; i ++) {
-            WritableMap item = Arguments.createMap();
-            item.putBoolean("read", (i % 2 == 0));
-            item.putString("title", "Mua thẻ điện thoại");
-            item.putString("desc", "Bạn đã mua thẻ Mobifone thành công mệnh giá 50.000 VND");
-            item.putInt("time", (int)System.currentTimeMillis() / 1000);
-            item.putInt("type", i % 4 + 1);
+                    @Override
+                    public WritableArray call(List<NotificationEntity> transHistory) {
+                        return transform(transHistory);
+                    }
+                }).subscribe(new NotificationSubscriber(promise));
 
-            result.pushMap(item);
+        compositeSubscription.add(subscription);
+    }
+
+    private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
+
+        WeakReference<Promise> promiseWeakReference;
+
+
+        public NotificationSubscriber(Promise promise) {
+            promiseWeakReference = new WeakReference<>(promise);
         }
 
-        promise.resolve(result);
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.w(e, "error on getting transaction logs");
+        }
+
+        @Override
+        public void onNext(WritableArray writableArray) {
+
+            Timber.d("transaction log %s", writableArray);
+
+            Promise promise = promiseWeakReference.get();
+            if (promise != null) {
+                promise.resolve(writableArray);
+            }
+        }
+    }
+
+    /* transtype : 1 , thanh toan, 2 :  nap tien vao vi, 3 lien ket the, 4 : chuyen tien vao tai khoan zalopay*/
+    private WritableMap transform(NotificationEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putBoolean("read", entity.read);
+        item.putString("title", TransactionType.getTitle(entity.transtype));
+        item.putString("desc", entity.message);
+        item.putInt("time", (int) entity.timestamp);
+        item.putInt("type", entity.transtype);
+
+        return item;
+    }
+
+    private WritableArray transform(List<NotificationEntity> notificationEntities) {
+        WritableArray result = Arguments.createArray();
+        for (NotificationEntity entity : notificationEntities) {
+            WritableMap item = transform(entity);
+            if (item == null) {
+                continue;
+            }
+            result.pushMap(item);
+        }
+        return result;
     }
 
     @Override
@@ -95,5 +152,6 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
             subscription.clear();
         }
     }
+
 
 }

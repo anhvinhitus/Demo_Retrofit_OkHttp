@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class,
-        ReactNativeModule.class, WsModule.class})
+        ReactNativeModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();
@@ -71,8 +71,6 @@ public interface ApplicationComponent {
     void inject(LoginZaloActivity a);
 
     void inject(DownloadService service);
-
-    void inject(NotificationService service);
 
     void inject(NetworkReceiver receiver);
 

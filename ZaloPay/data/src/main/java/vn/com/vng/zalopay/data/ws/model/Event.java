@@ -9,4 +9,10 @@ public class Event {
     public Event(int msgType) {
         this.msgType = msgType;
     }
+
+    public Event(){}
+
+    public void setMsgType(int msgType) {
+        this.msgType = msgType;
+    }
 }
