@@ -1,6 +1,13 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
@@ -12,6 +19,8 @@ import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 public class MainPresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
 
     IHomeView homeView;
+
+    private boolean isLoadedGateWayInfo;
 
     @Override
     public void setView(IHomeView iHomeView) {
@@ -38,6 +47,17 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     }
 
+    public void initialize() {
+        this.initializeAppConfig();
+        this.loadGatewayInfoPaymentSDK();
+    }
+
+    public void initializeAppConfig() {
+        mAppResourceRepository.initialize()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+    }
+
     public void loadGatewayInfoPaymentSDK() {
         User user = userConfig.getCurrentUser();
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
@@ -46,6 +66,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         ZingMobilePayApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
             @Override
             public void onFinish() {
+                Timber.d("loadGatewayInfoPaymentSDK finish");
+                isLoadedGateWayInfo = true;
             }
 
             @Override
@@ -54,7 +76,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onError(String pMessage) {
+                Timber.w("loadGatewayInfoPaymentSDK error %s", pMessage);
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNetworkChange(NetworkChangeEvent event) {
+        if (event.isOnline && !isLoadedGateWayInfo) {
+            loadGatewayInfoPaymentSDK();
+        }
     }
 }

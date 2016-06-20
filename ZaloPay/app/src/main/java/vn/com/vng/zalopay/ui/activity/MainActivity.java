@@ -107,7 +107,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
 
         //init SDK
-        presenter.loadGatewayInfoPaymentSDK();
+        presenter.initialize();
         globalEventHandlingService.setMainActivity(this);
 
         startZaloPayService();

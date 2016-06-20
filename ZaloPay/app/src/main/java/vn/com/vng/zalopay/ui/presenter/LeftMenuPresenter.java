@@ -31,6 +31,8 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private User user;
 
+    private boolean isInitiated;
+
     public LeftMenuPresenter(User user) {
         this.user = user;
     }
@@ -51,14 +53,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void initialize() {
         this.getBalance();
-        this.initializeAppConfig();
         this.initializeZaloPay();
-    }
-
-    public void initializeAppConfig() {
-        mAppResourceRepository.initialize()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
     }
 
     public void initializeZaloPay() {
@@ -73,7 +68,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void pause() {
-
     }
 
     @Override
@@ -96,7 +90,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     protected void showErrorView(String message) {
-
     }
 
 
@@ -111,7 +104,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onCompleted() {
-            super.onCompleted();
+            isInitiated = true;
         }
 
         @Override
@@ -148,7 +141,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
-        if (event.isOnline) {
+        if (event.isOnline && !isInitiated) {
             this.getBalance();
             this.initializeZaloPay();
         }
