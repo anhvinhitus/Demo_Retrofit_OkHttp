@@ -29,7 +29,8 @@
             android:background="@color/separate" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <!--<android.support.v7.widget.RecyclerView-->
+    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
         android:id="@+id/list"
         android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
         android:layout_width="match_parent"

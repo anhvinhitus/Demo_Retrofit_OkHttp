@@ -9,19 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment.OnListFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ZaloFriend} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * specified {}.
  */
-public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloContactRecyclerViewAdapter.ViewHolder> {
+public class ZaloContactRecyclerViewAdapter extends UltimateViewAdapter<ZaloContactRecyclerViewAdapter.ViewHolder> {
     private final Context mContext;
     private final List<ZaloFriend> mValues;
     private final OnItemInteractionListener mListener;
@@ -34,6 +33,16 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
         mContext = context;
         mValues = items;
         mListener = listener;
+    }
+
+    public void setData(List<ZaloFriend> zaloFriends) {
+        mValues.clear();
+        if (zaloFriends == null || zaloFriends.size() <= 0) {
+            return;
+        } else {
+            mValues.addAll(zaloFriends);
+        }
+        notifyDataSetChanged();
     }
 
     public void addItems(List<ZaloFriend> zaloFriends) {
@@ -52,44 +61,75 @@ public class ZaloContactRecyclerViewAdapter extends RecyclerView.Adapter<ZaloCon
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder newFooterHolder(View view) {
+        return null;
+    }
+
+    @Override
+    public ViewHolder newHeaderHolder(View view) {
+        return null;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_zalo_contact_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mTvDisplayName.setText(holder.mItem.getDisplayName());
-        loadImage(holder.mImgAvatar, holder.mItem.getAvatar());
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        return null;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder viewHolder, int position) {
+        viewHolder.mItem = mValues.get(position);
+        viewHolder.mTvDisplayName.setText(viewHolder.mItem.getDisplayName());
+        loadImage(viewHolder.mImgAvatar, viewHolder.mItem.getAvatar());
         if (position < getItemCount() - 1) {
-            holder.mViewSeparate.setVisibility(View.VISIBLE);
+            viewHolder.mViewSeparate.setVisibility(View.VISIBLE);
         } else {
-            holder.mViewSeparate.setVisibility(View.GONE);
+            viewHolder.mViewSeparate.setVisibility(View.GONE);
         }
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onItemClick(holder.mItem);
+                    mListener.onItemClick(viewHolder.mItem);
                 }
             }
         });
     }
 
-    private final void loadImage(ImageView image, String url) {
+    @Override
+    public int getItemCount() {
+        return mValues.size();
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return mValues == null ? 0 : mValues.size();
+    }
+
+    @Override
+    public long generateHeaderId(int position) {
+        return 0;
+    }
+
+
+    private void loadImage(ImageView image, String url) {
         if (mContext == null) {
             return;
         }
         Glide.with(mContext).load(url).centerCrop().placeholder(R.color.silver).into(image);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mValues.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

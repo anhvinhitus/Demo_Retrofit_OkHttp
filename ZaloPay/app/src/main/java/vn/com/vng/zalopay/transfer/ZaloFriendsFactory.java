@@ -74,8 +74,7 @@ public class ZaloFriendsFactory {
                     } else {
                         sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
                     }
-                    List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = zaloFriends(data);
-                    sqlZaloPayScope.writeZaloFriends(convertZaloFriend(zaloFriends));
+                    insertZaloFriends(zaloFriends(data));
                 } catch (JSONException e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
@@ -110,6 +109,7 @@ public class ZaloFriendsFactory {
     }
 
     private ZaloFriend convertZaloFriend(vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend) {
+        Timber.d("convertZaloFriend, size: %s", zaloFriend);
         if (zaloFriend == null) {
             return null;
         }

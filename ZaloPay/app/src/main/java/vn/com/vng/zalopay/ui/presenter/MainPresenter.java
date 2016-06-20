@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.text.TextUtils;
+
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
@@ -18,7 +20,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.homeView = iHomeView;
     }
 
-    @Override
+    @Override   
     public void destroyView() {
         this.homeView = null;
     }
@@ -54,6 +56,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onError(String pMessage) {
+                if (TextUtils.isEmpty(pMessage)) {
+                    //Network error
+                }
             }
         });
     }
