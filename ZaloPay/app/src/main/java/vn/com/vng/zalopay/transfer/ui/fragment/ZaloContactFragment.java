@@ -270,6 +270,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         }
         Bundle bundle = new Bundle();
         bundle.putInt(LIMIT_ITEMS, itemsCount + PAGE_SIZE);
+        bundle.putString(TEXT_SEARCH, edtSearch.getText().toString());
         getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, this);
     }
 
