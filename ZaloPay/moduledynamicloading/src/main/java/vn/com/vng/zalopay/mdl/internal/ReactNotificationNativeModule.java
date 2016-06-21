@@ -86,7 +86,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         @Override
         public void onNext(WritableArray writableArray) {
 
-            Timber.d("transaction log %s", writableArray);
+            Timber.d("notification array %s", writableArray);
 
             Promise promise = promiseWeakReference.get();
             if (promise != null) {

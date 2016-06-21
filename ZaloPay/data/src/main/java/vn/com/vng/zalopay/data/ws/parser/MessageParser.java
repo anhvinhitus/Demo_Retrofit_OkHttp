@@ -60,7 +60,7 @@ public class MessageParser implements Parser {
         try {
             AuthenticationData event = new AuthenticationData(msgType);
             ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
-            Timber.d("Result" + res.getResult() + " code " + res.getCode());
+            Timber.d("Result %s code %s", res.getResult(), res.getCode());
 
             event.code = res.getCode();
             event.uid = res.getUsrid();

@@ -191,6 +191,7 @@ android {
         exclude 'META-INF/maven/jaxen/jaxen/pom.properties'
         exclude 'META-INF/maven/jaxen/jaxen/pom.xml'
         exclude 'META-INF/INDEX.LIST'
+        exclude "META-INF/io.netty.versions.properties"
 
     }
 
