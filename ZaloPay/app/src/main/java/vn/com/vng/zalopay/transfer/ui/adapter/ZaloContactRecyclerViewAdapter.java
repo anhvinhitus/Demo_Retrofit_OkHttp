@@ -37,9 +37,7 @@ public class ZaloContactRecyclerViewAdapter extends UltimateViewAdapter<ZaloCont
 
     public void setData(List<ZaloFriend> zaloFriends) {
         mValues.clear();
-        if (zaloFriends == null || zaloFriends.size() <= 0) {
-            return;
-        } else {
+        if (zaloFriends != null && zaloFriends.size() > 0) {
             mValues.addAll(zaloFriends);
         }
         notifyDataSetChanged();

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -58,6 +59,8 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     private int mColumnCount = 1;
     private ZaloContactRecyclerViewAdapter mAdapter;
     private Bundle mTransferState;
+    private CountDownTimer mSearchTimer;
+    private int mCurrentItem = 0;
 
     @Inject
     Navigator navigator;
@@ -76,11 +79,10 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @OnTextChanged(R.id.edtSearch)
     public void onTextChangedEdtSearch(CharSequence charSequence) {
-        Bundle bundle = new Bundle();
-        if (charSequence != null) {
-            bundle.putString(TEXT_SEARCH, charSequence.toString());
+        if (mSearchTimer != null) {
+            mSearchTimer.cancel();
+            mSearchTimer.start();
         }
-        getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, this);
     }
 
     /**
@@ -129,10 +131,28 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             mList.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
         }
         mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), new ArrayList<ZaloFriend>(), this);
-        mList.setAdapter(mAdapter);
         presenter.getFriendList(this);
-        mList.reenableLoadmore();
         mList.setOnLoadMoreListener(this);
+        mList.setEmptyView(R.layout.layout_no_data, UltimateRecyclerView.EMPTY_KEEP_HEADER_AND_LOARMORE);
+//        mList.setLoadMoreView(R.layout.layout_loadmore);
+        mList.reenableLoadmore();
+        mList.setAdapter(mAdapter);
+        mSearchTimer = new CountDownTimer(500,500) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                String textSearch = edtSearch.getText().toString();
+                Bundle bundle = new Bundle();
+                if (textSearch != null) {
+                    bundle.putString(TEXT_SEARCH, textSearch.toString());
+                }
+                getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, ZaloContactFragment.this);
+            }
+        };
     }
 
     @Override
@@ -268,10 +288,11 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void loadMore(int itemsCount, int maxLastVisiblePosition) {
         Timber.d("loadMore, itemsCount: %s maxLastVisiblePosition: %s", itemsCount, maxLastVisiblePosition);
-        if (itemsCount <= maxLastVisiblePosition) {
+        if (itemsCount % PAGE_SIZE != 0 || itemsCount <= maxLastVisiblePosition) {
             return;
         }
         Bundle bundle = new Bundle();
+        mCurrentItem = itemsCount + PAGE_SIZE;
         bundle.putInt(LIMIT_ITEMS, itemsCount + PAGE_SIZE);
         bundle.putString(TEXT_SEARCH, edtSearch.getText().toString());
         getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, this);
@@ -285,11 +306,12 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             limitItem = args.getInt(LIMIT_ITEMS, PAGE_SIZE);
             txtSearch = args.getString(TEXT_SEARCH, "");
         }
+        mCurrentItem = limitItem;
         String selection = "";
         if (!TextUtils.isEmpty(txtSearch)) {
-            selection+= ZaloFriendDao.Properties.DisplayName.columnName + " like '%" + txtSearch.toLowerCase() + "%'";
+            selection += ZaloFriendDao.Properties.Fulltextsearch.columnName + " like '%" + txtSearch.toLowerCase() + "%'";
         }
-        String orderByWithLimit = ZaloFriendDao.Properties.DisplayName.columnName +
+        String orderByWithLimit = ZaloFriendDao.Properties.Fulltextsearch.columnName +
                 " ASC" +
                 " LIMIT " +
                 limitItem;

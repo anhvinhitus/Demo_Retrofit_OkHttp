@@ -22,7 +22,9 @@
             android:hint="@string/hint_zalo_contact"
             android:lines="1"
             android:padding="@dimen/spacing.medium"
-            android:textSize="@dimen/textsize.small" />
+            android:singleLine="true"
+            android:textSize="@dimen/textsize.small"
+            app:recyclerviewEmptyView="@layout/layout_no_data" />
 
         <View
             android:layout_width="match_parent"
