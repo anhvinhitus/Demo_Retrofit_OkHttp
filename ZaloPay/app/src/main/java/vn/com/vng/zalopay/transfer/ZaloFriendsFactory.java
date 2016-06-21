@@ -97,7 +97,7 @@ public class ZaloFriendsFactory {
                 Timber.d("zaloFriends index: %s", i);
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend = new vn.com.vng.zalopay.transfer.models.ZaloFriend(jsonObject);
-                if (zaloFriend.getUserId() > 0 /*&& zaloFriend.isUsingApp()*/) {
+                if (zaloFriend.getUserId() > 0 && zaloFriend.isUsingApp()) {
                     zaloFriends.add(zaloFriend);
                 }
             }
