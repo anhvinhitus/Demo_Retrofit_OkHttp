@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
  * Created by huuhoa on 4/25/16.
+ * Internal API
  */
 public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
@@ -55,21 +56,27 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void closeModule() {
         Timber.d("close Module");
-        getCurrentActivity().finish();
+        if (getCurrentActivity() != null) {
+            getCurrentActivity().finish();
+        }
     }
 
     @ReactMethod
     public void navigateLinkCard() {
         Timber.d("navigateLinkCard");
-        Intent intent = navigator.intentLinkCard(getCurrentActivity());
-        getCurrentActivity().startActivity(intent);
+        if (getCurrentActivity() != null) {
+            Intent intent = navigator.intentLinkCard(getCurrentActivity());
+            getCurrentActivity().startActivity(intent);
+        }
     }
 
     @ReactMethod
     public void navigateProfile() {
         Timber.d("navigateProfile");
-        Intent intent = navigator.intentProfile(getCurrentActivity());
-        getCurrentActivity().startActivity(intent);
+        if (getCurrentActivity() != null) {
+            Intent intent = navigator.intentProfile(getCurrentActivity());
+            getCurrentActivity().startActivity(intent);
+        }
     }
 }
 

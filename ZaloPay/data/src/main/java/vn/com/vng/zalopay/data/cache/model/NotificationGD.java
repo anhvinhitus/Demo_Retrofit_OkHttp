@@ -11,10 +11,10 @@ public class NotificationGD {
     private Integer appid;
     private Long timestamp;
     private String message;
-    private Integer transtype;
     private String userid;
     private String destuserid;
     private Boolean read;
+    private String embeddata;
 
     public NotificationGD() {
     }
@@ -23,16 +23,16 @@ public class NotificationGD {
         this.id = id;
     }
 
-    public NotificationGD(long id, Long transid, Integer appid, Long timestamp, String message, Integer transtype, String userid, String destuserid, Boolean read) {
+    public NotificationGD(long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Boolean read, String embeddata) {
         this.id = id;
         this.transid = transid;
         this.appid = appid;
         this.timestamp = timestamp;
         this.message = message;
-        this.transtype = transtype;
         this.userid = userid;
         this.destuserid = destuserid;
         this.read = read;
+        this.embeddata = embeddata;
     }
 
     public long getId() {
@@ -75,14 +75,6 @@ public class NotificationGD {
         this.message = message;
     }
 
-    public Integer getTranstype() {
-        return transtype;
-    }
-
-    public void setTranstype(Integer transtype) {
-        this.transtype = transtype;
-    }
-
     public String getUserid() {
         return userid;
     }
@@ -105,6 +97,14 @@ public class NotificationGD {
 
     public void setRead(Boolean read) {
         this.read = read;
+    }
+
+    public String getEmbeddata() {
+        return embeddata;
+    }
+
+    public void setEmbeddata(String embeddata) {
+        this.embeddata = embeddata;
     }
 
 }

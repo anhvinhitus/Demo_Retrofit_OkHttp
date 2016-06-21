@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
-import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -127,12 +126,15 @@ public class NotificationService extends Service implements OnReceiverMessageLis
 
     private void showNotification(NotificationEntity event) {
         String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
+        String title = getString(R.string.app_name);
+
         int notificationId = 1;
+
 
         notificationHelper.create(getApplicationContext(), notificationId,
                 navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS),
                 R.mipmap.ic_launcher,
-                TransactionType.getTitle(event.transtype), message);
+                title, message);
     }
 
     protected void updateTransaction() {

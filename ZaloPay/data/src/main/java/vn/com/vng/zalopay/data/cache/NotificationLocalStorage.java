@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.data.cache;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -81,7 +84,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationEntity.getDestuserid());
         _notification.setMessage(notificationEntity.getMessage());
         _notification.setTimestamp(notificationEntity.getTimestamp());
-        _notification.setTranstype(notificationEntity.getTranstype());
+
+        String embeddata = notificationEntity.getEmbeddata().toString();
+
+        Timber.d("embeddata put %s ", embeddata);
+        _notification.setEmbeddata(embeddata);
+
+
         _notification.setUserid(notificationEntity.getUserid());
         _notification.setTransid(notificationEntity.getTransid());
         _notification.setRead(notificationEntity.isRead());
@@ -99,7 +108,16 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationGD.getDestuserid());
         _notification.setMessage(notificationGD.getMessage());
         _notification.setTimestamp(notificationGD.getTimestamp());
-        _notification.setTranstype(notificationGD.getTranstype());
+        String embeddata = notificationGD.getEmbeddata();
+        Timber.d("embeddata get %s ", embeddata.replace("\\", ""));
+
+        try {
+            _notification.setEmbeddata(new JsonPrimitive(embeddata).getAsJsonObject());
+        } catch (Exception ex) {
+            _notification.setEmbeddata(new JsonObject());
+            Timber.w(ex, " parse exception Notification Entity");
+        }
+
         _notification.setUserid(notificationGD.getUserid());
         _notification.setTransid(notificationGD.getTransid());
         _notification.setRead(notificationGD.getRead());

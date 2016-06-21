@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.api.entity;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,19 +10,26 @@ import vn.com.vng.zalopay.data.ws.model.Event;
  * Created by AnhHieu on 6/20/16.
  */
 public class NotificationEntity extends Event {
-    
+
     @SerializedName("transid")
+
     public long transid;
+
     @SerializedName("appid")
     public int appid;
+
     @SerializedName("timestamp")
     public long timestamp;
+
     @SerializedName("message")
     public String message;
-    @SerializedName("transtype")
-    public int transtype;
+
+    @SerializedName("embeddata")
+    public JsonObject embeddata;
+
     @SerializedName("userid")
     public String userid;
+
     @SerializedName("destuserid")
     public String destuserid;
 
@@ -60,14 +68,6 @@ public class NotificationEntity extends Event {
         this.message = message;
     }
 
-    public int getTranstype() {
-        return transtype;
-    }
-
-    public void setTranstype(int transtype) {
-        this.transtype = transtype;
-    }
-
     public String getUserid() {
         return userid;
     }
@@ -90,5 +90,13 @@ public class NotificationEntity extends Event {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public JsonObject getEmbeddata() {
+        return embeddata;
+    }
+
+    public void setEmbeddata(JsonObject embeddata) {
+        this.embeddata = embeddata;
     }
 }

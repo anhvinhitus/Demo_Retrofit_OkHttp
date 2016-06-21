@@ -108,14 +108,16 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         listView.setNestedScrollingEnabled(false);
         listView.addItemDecoration(new GridSpacingItemDecoration(3, 2, false));
         listView.setAdapter(mAdapter);
 
-        showAdsBanner();
-        showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
+        showBannerAds();
+//        showTextAds("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
+        hideTextAds();
     }
 
     @Override
@@ -147,7 +149,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     /* Show|Hide Banner START */
-    public void showAdsBanner() {
+    public void showBannerAds() {
         //Glide.with(this).load(url).asBitmap().into(mImgAdsBanner);
         List<Integer> bannerResource = new ArrayList<>();
         bannerResource.add(R.drawable.bn_1);
@@ -161,17 +163,23 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         }
     }
 
-    public void hideAdsBanner() {
+    public void hideBannerAds() {
         if (mLayoutBannerFullScreen != null) {
             mLayoutBannerFullScreen.setVisibility(View.GONE);
         }
     }
 
-    public void showAdsSub(String content) {
+    public void showTextAds(String content) {
         if (TextUtils.isEmpty(content)) {
-            hideAdsBanner();
+            hideTextAds();
         } else {
             mTvAdsSubContent.setText(Html.fromHtml(content));
+        }
+    }
+
+    private void hideTextAds() {
+        if (mTvAdsSubContent != null) {
+            mTvAdsSubContent.setVisibility(View.GONE);
         }
     }
 
@@ -217,8 +225,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         return Arrays.asList(
                 new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
                 new AppResource(11, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
-                new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)),
-                new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame))
+                new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt))
+//                new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)),
 //                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien), 1),
 //                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet), 1),
 //                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi), 1),
