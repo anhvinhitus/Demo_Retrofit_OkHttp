@@ -155,7 +155,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         @Override
         public void onSuccess(DMappedCard mapCard) {
             Timber.tag("LinkCardPresenter").d("removed map card: %s", mapCard);
-            linkCardView.hideLoading();
+            mLinkCardView.hideLoading();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
                 mLinkCardView.removeData(bankCard);
