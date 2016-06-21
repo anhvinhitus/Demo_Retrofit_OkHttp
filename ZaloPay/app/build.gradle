@@ -25,6 +25,7 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "http://dl.bintray.com/jjhesk/maven" }
 }
 
 android {
@@ -262,6 +263,8 @@ dependencies {
     compile libs.dagger
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
+
+    compile libs.ultimaterecyclerview
 
     compile libs.play_services_gcm
     compile libs.play_services_analytics

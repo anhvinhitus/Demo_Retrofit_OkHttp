@@ -32,8 +32,4 @@ public class ZaloPayIAPFactory {
                     ;
         }
     }
-
-    public Observable<BaseResponse> verifyMerchantAccessToken(String muid, String maccesstoken) {
-        return service.verifymerchantaccesstoken(muid, maccesstoken, 1);
-    }
 }

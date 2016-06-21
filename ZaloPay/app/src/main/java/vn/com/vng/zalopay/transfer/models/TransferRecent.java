@@ -21,7 +21,7 @@ public class TransferRecent extends AbstractData {
 
         private final int value;
 
-        private TransferType(int value) {
+        TransferType(int value) {
             this.value = value;
         }
 
@@ -88,7 +88,7 @@ public class TransferRecent extends AbstractData {
         avatar = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.Avatar.columnName));
         userGender = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.UserGender.columnName));
         birthday = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.Birthday.columnName));
-        usingApp = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.UsingApp.columnName)) ==1?true:false;
+        usingApp = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.UsingApp.columnName)) == 1;
         phoneNumber = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.PhoneNumber.columnName));
         transferType = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.TransferType.columnName));
         amount = cursor.getLong(cursor.getColumnIndex(TransferRecentDao.Properties.Amount.columnName));
@@ -107,13 +107,12 @@ public class TransferRecent extends AbstractData {
             String avatar = parcelSource.readString();
             int userGender = parcelSource.readInt();
             String birthday = parcelSource.readString();
-            boolean usingApp = parcelSource.readInt() == 1 ? true : false;
+            boolean usingApp = parcelSource.readInt() == 1;
             String phoneNumber = parcelSource.readString();
             int transferType = parcelSource.readInt();
             long amount= parcelSource.readLong();
             String message = parcelSource.readString();
-            TransferRecent user = new TransferRecent(userId, zaloPayId, userName, displayName, avatar, userGender, birthday, usingApp, phoneNumber, transferType, amount, message);
-            return user;
+            return new TransferRecent(userId, zaloPayId, userName, displayName, avatar, userGender, birthday, usingApp, phoneNumber, transferType, amount, message);
         }
 
         @Override

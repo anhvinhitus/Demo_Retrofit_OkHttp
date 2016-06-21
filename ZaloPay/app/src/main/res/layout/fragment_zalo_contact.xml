@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <vn.com.vng.zalopay.ui.widget.ClearableEditText
             android:id="@+id/edtSearch"
@@ -20,6 +20,7 @@
             android:drawableLeft="@drawable/ic_seach"
             android:drawablePadding="@dimen/spacing.medium.t"
             android:hint="@string/hint_zalo_contact"
+            android:lines="1"
             android:padding="@dimen/spacing.medium"
             android:textSize="@dimen/textsize.small" />
 
@@ -29,7 +30,8 @@
             android:background="@color/separate" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <!--<android.support.v7.widget.RecyclerView-->
+    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
         android:id="@+id/list"
         android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
         android:layout_width="match_parent"

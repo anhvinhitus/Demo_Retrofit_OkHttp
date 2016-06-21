@@ -57,6 +57,8 @@ public abstract class ZaloFriendContentProvider extends ContentProvider {
 //    public static DaoSession daoSession;
     public abstract DaoSession getDaoSession();
 
+    public abstract void injection();
+
     @Override
     public boolean onCreate() {
         // if(daoSession == null) {
@@ -67,6 +69,7 @@ public abstract class ZaloFriendContentProvider extends ContentProvider {
     }
 
     protected SQLiteDatabase getDatabase() {
+        injection();
         if (getDaoSession() == null) {
             throw new IllegalStateException("DaoSession must be set during content provider is active");
         }

@@ -71,6 +71,8 @@ public class PaymentWrapper {
         mUserInfo.phonenumber = phoneNumber;
         mUserInfo.userimage = avatar;
         mUserInfo.username = displayName;
+        mUserInfo.level = getUserProfileLevel();
+        mUserInfo.userProfile = getUserPermission();
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
 
@@ -196,23 +198,18 @@ public class PaymentWrapper {
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
-        EPaymentChannel forcedPaymentChannel = paymentChannel;
-        int profileLevel = getUserProfileLevel();
-        String permissionsStr = getUserPermission();
-        if (profileLevel < 0 || TextUtils.isEmpty(permissionsStr)) {
-            return;
-        }
-        ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, zpPaymentListener);
+        UserInfo userInfo = new UserInfo();
+        userInfo.level = getUserProfileLevel();
+        userInfo.userProfile = getUserPermission();
+        callPayAPI(paymentInfo, paymentChannel, userInfo);
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel, UserInfo userInfo) {
-        EPaymentChannel forcedPaymentChannel = paymentChannel;
-        int profileLevel = getUserProfileLevel();
-        String permissionsStr = getUserPermission();
-        if (profileLevel < 0 || TextUtils.isEmpty(permissionsStr)) {
+        if (userInfo == null || userInfo.level < 0 || TextUtils.isEmpty(userInfo.userProfile)) {
+            zpPaymentListener.onCancel();
             return;
         }
-        ZingMobilePayService.pay(viewListener.getActivity(), forcedPaymentChannel, paymentInfo, profileLevel, permissionsStr, userInfo, zpPaymentListener);
+        ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, userInfo, zpPaymentListener);
     }
 
     private int getUserProfileLevel() {
@@ -228,7 +225,6 @@ public class PaymentWrapper {
         if (user == null) {
             return null;
         }
-        int profileLevel = user.profilelevel;
         String permissionsStr = "{\"profilelevelpermisssion\":";
         permissionsStr += JsonUtil.toJsonArrayString(user.profilePermisssions);
         permissionsStr += "}";

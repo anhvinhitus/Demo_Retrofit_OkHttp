@@ -38,7 +38,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class TransferHomeFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>, TransferRecentRecyclerViewAdapter.OnTransferRecentItemListener {
+public class TransferHomeFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        TransferRecentRecyclerViewAdapter.OnTransferRecentItemListener {
     private final int LOADER_TRANSACTION_RECENT = 1;
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -166,9 +167,18 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        List<TransferRecent> transferRecents = convertCursorToList(cursor);
+        if (transferRecents == null || transferRecents.size() <= 0) {
+            onGetDataDBEmpty();
+        } else {
+            onGetDataDBSuccess(transferRecents);
+        }
+    }
+
+    private List<TransferRecent> convertCursorToList(Cursor cursor) {
         List<TransferRecent> transferRecents = new ArrayList<>();
         if (cursor == null || cursor.getCount() <= 0) {
-            return;
+            return transferRecents;
         }
         if (cursor.moveToFirst()) {
             do {
@@ -178,11 +188,7 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
                 }
             } while (cursor.moveToNext());
         }
-        if (transferRecents == null || transferRecents.size() <= 0) {
-            onGetDataDBEmpty();
-        } else {
-            onGetDataDBSuccess(transferRecents);
-        }
+        return transferRecents;
     }
 
     private void onGetDataDBSuccess(List<TransferRecent> transferRecents) {
