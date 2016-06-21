@@ -97,11 +97,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
-    public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
-        paymentService.verifyAccessToken(mUid, mAccessToken, promise);
-    }
-
-    @ReactMethod
     public void closeModule() {
         Timber.d("close Module");
         if (getCurrentActivity() != null) {
