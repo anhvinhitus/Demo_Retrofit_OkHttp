@@ -212,16 +212,13 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
             return;
         }
         Date date = new Date(user.birthDate*1000);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        tvBirthday.setText(simpleDateFormat.format(date));
+        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
         tvName.setText(user.dname);
         tvSex.setText(user.getGender());
         Glide.with(this).load(user.avatar)
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
-//        tvTermsOfUser1.setClickable(true);
-//        tvTermsOfUser1.setMovementMethod (LinkMovementMethod.getInstance());
         tvTermsOfUser1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
