@@ -164,6 +164,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Override
     public void onDestroy() {
         presenter.destroy();
+        // break circular link between this and mAdapter
+        mAdapter = null;
         super.onDestroy();
     }
 

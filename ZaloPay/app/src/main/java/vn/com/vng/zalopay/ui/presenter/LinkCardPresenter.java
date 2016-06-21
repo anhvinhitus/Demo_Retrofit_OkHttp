@@ -14,7 +14,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -35,7 +34,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
 
-    private ILinkCardView linkCardView;
+    private ILinkCardView mLinkCardView;
     private Subscription subscription;
 
     @Inject
@@ -47,22 +46,23 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void setView(ILinkCardView iLinkCardView) {
-        linkCardView = iLinkCardView;
+        mLinkCardView = iLinkCardView;
     }
 
     @Override
     public void destroyView() {
-        linkCardView = null;
-        this.zpwRemoveMapCardListener = null;
+        mLinkCardView = null;
+//        this.zpwRemoveMapCardListener = null;
         unsubscribeIfNotNull(subscription);
+        subscription = null;
     }
 
     public void getListCard() {
-        linkCardView.showLoading();
+        mLinkCardView.showLoading();
         subscription = makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance(linkCardView.getActivity()).getMappedCardList(user.uid);
+                List<DMappedCard> mapCardLis = CShareData.getInstance(mLinkCardView.getActivity()).getMappedCardList(user.uid);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -118,15 +118,16 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     public void destroy() {
         //release cache
         CShareData.dispose();
+        GlobalData.initApplication(null);
     }
 
     protected final void onGetLinkCardSuccess(List<BankCard> list) {
-        linkCardView.setData(list);
-        linkCardView.hideLoading();
+        mLinkCardView.setData(list);
+        mLinkCardView.hideLoading();
     }
 
     public void removeLinkCard(BankCard bankCard) {
-        linkCardView.showLoading();
+        mLinkCardView.showLoading();
 
         ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
         DMappedCard mapCard = new DMappedCard();
@@ -136,8 +137,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         mapCard.bankcode = bankCard.bankcode;
 
         if (user == null) {
-            linkCardView.showError("Thông tin người dùng không hợp lệ.");
-            linkCardView.hideLoading();
+            mLinkCardView.showError("Thông tin người dùng không hợp lệ.");
+            mLinkCardView.hideLoading();
             return;
         }
         params.accessToken = user.accesstoken;
@@ -145,33 +146,35 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         params.userID = String.valueOf(user.uid);
         params.mapCard = mapCard;
 
-        ZingMobilePayApplication.removeCardMap(linkCardView.getActivity(), params, zpwRemoveMapCardListener);
+        ZingMobilePayApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
     }
 
-    ZPWRemoveMapCardListener zpwRemoveMapCardListener = new ZPWRemoveMapCardListener() {
+//    ZPWRemoveMapCardListener zpwRemoveMapCardListener = new RemoveMapCardListener();
+
+    private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
         public void onSuccess(DMappedCard mapCard) {
             Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard);
-            linkCardView.hideLoading();
+            mLinkCardView.hideLoading();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
-                linkCardView.removeData(bankCard);
+                mLinkCardView.removeData(bankCard);
             }
         }
 
         @Override
         public void onError(BaseResponse pMessage) {
             Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
-            linkCardView.hideLoading();
+            mLinkCardView.hideLoading();
             if (pMessage == null) {
-                if (!AndroidUtils.isNetworkAvailable(linkCardView.getContext())) {
-                    linkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                if (!AndroidUtils.isNetworkAvailable(mLinkCardView.getContext())) {
+                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 } else {
-                    linkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+                    mLinkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
                 }
             } else {
                 Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
-//                linkCardView.showError(pMessage.returnmessage);
+//                mLinkCardView.showError(pMessage.returnmessage);
             }
         }
     };
@@ -212,7 +215,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             return ECardType.UNDEFINE.toString();
         } else {
             try {
-                return CShareData.getInstance(linkCardView.getActivity()).detectCardType(first6cardno).toString();
+                return CShareData.getInstance(mLinkCardView.getActivity()).detectCardType(first6cardno).toString();
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     e.printStackTrace();
