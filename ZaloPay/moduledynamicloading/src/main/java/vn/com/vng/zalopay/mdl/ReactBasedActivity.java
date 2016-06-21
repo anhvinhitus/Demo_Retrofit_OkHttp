@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -307,10 +308,7 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return null;
         }
 
-        String mapping = activity.getJSBundleFile();
-        if (mapping == null) {
-            mapping = "NULL";
-        }
+        String mapping = getMappingString(activity);
 
         if (mInstance != null && mInstance.containsKey(mapping)) {
             Timber.i("reuse react instance manager");
@@ -360,10 +358,7 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return;
         }
 
-        String mapping = activity.getJSBundleFile();
-        if (mapping == null) {
-            mapping = "NULL";
-        }
+        String mapping = getMappingString(activity);
 
         if (!mInstance.containsKey(mapping)) {
             return;
@@ -373,10 +368,10 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return;
         }
 
-//        instance.onHostDestroy();
+        instance.onHostDestroy();
 
-        instance.destroy();
-        mInstance.remove(mapping);
+//        instance.destroy();
+//        mInstance.remove(mapping);
     }
 
     private void removeInstance() {
@@ -390,10 +385,7 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
             return;
         }
 
-        String mapping = activity.getJSBundleFile();
-        if (mapping == null) {
-            mapping = "NULL";
-        }
+        String mapping = getMappingString(activity);
 
         if (!mInstance.containsKey(mapping)) {
             return;
@@ -410,6 +402,15 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
 //
 //        i.onHostDestroy();
         mInstance.remove(mapping);
+    }
+
+    @NonNull
+    private String getMappingString(ReactBasedActivity activity) {
+        String mapping = activity.getJSBundleFile();
+        if (mapping == null) {
+            mapping = "NULL";
+        }
+        return mapping;
     }
 
     private void handleJSException(Exception e) {
