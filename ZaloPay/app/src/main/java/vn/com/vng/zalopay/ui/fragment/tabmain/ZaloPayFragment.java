@@ -108,15 +108,16 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         listView.setNestedScrollingEnabled(false);
         listView.addItemDecoration(new GridSpacingItemDecoration(3, 2, false));
         listView.setAdapter(mAdapter);
 
-        showAdsBanner();
-//        showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
-        showAdsSub(null);
+        showBannerAds();
+//        showTextAds("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
+        hideTextAds();
     }
 
     @Override
@@ -148,7 +149,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     /* Show|Hide Banner START */
-    public void showAdsBanner() {
+    public void showBannerAds() {
         //Glide.with(this).load(url).asBitmap().into(mImgAdsBanner);
         List<Integer> bannerResource = new ArrayList<>();
         bannerResource.add(R.drawable.bn_1);
@@ -168,7 +169,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         }
     }
 
-    public void showAdsSub(String content) {
+    public void showTextAds(String content) {
         if (TextUtils.isEmpty(content)) {
             hideTextAds();
         } else {
