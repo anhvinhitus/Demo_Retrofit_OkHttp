@@ -21,10 +21,12 @@ import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
+import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigExternalDev;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigInternalDev;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigRelease;
 import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
+import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 5/12/16.
@@ -81,4 +83,11 @@ public class ReactNativeModule {
                 return null;
         }
     }
+
+    @Provides
+    @Singleton
+    INavigator providesNavigator(Navigator navigator){
+        return navigator;
+    }
+
 }

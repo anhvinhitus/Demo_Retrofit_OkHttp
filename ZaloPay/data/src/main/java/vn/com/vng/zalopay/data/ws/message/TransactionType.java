@@ -14,11 +14,11 @@ public class TransactionType {
         if (type == THANH_TOAN) {
             return "Thanh Toán";
         } else if (type == NAP_TIEN_VAO_VI) {
-            return "Nạp Tiền Vào Ví";
+            return " Gửi tiền vào tài khoản Zalo Pay";
         } else if (type == LIEN_KET_THE) {
-            return "Liên Kết Thẻ";
+            return "Đã lưu thẻ";
         } else if (type == CHUYEN_TIEN_VAO_ZALO_PAY) {
-            return "Chuyển Tiền Vào Tài Khoản Zalo Pay";
+            return "Gửi tiền vào tài khoản Zalo Pay";
         }
         return "Zalo Pay";
     }

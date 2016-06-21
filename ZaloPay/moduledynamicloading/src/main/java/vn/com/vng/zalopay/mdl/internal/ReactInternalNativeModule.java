@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl.internal;
 
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -11,13 +12,18 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
  * Created by huuhoa on 4/25/16.
  */
 public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
-    public ReactInternalNativeModule(ReactApplicationContext reactContext) {
+
+    INavigator navigator;
+
+    public ReactInternalNativeModule(ReactApplicationContext reactContext, INavigator navigator) {
         super(reactContext);
+        this.navigator = navigator;
     }
 
     /// The purpose of this method is to return the string name of the NativeModule
@@ -50,6 +56,20 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     public void closeModule() {
         Timber.d("close Module");
         getCurrentActivity().finish();
+    }
+
+    @ReactMethod
+    public void navigateLinkCard() {
+        Timber.d("navigateLinkCard");
+        Intent intent = navigator.intentLinkCard(getCurrentActivity());
+        getCurrentActivity().startActivity(intent);
+    }
+
+    @ReactMethod
+    public void navigateProfile() {
+        Timber.d("navigateProfile");
+        Intent intent = navigator.intentProfile(getCurrentActivity());
+        getCurrentActivity().startActivity(intent);
     }
 }
 

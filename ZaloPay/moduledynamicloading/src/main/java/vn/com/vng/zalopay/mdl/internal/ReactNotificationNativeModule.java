@@ -95,7 +95,6 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
     }
 
-    /* transtype : 1 , thanh toan, 2 :  nap tien vao vi, 3 lien ket the, 4 : chuyen tien vao tai khoan zalopay*/
     private WritableMap transform(NotificationEntity entity) {
         if (entity == null) {
             return null;
@@ -104,8 +103,10 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putBoolean("read", entity.read);
         item.putString("title", TransactionType.getTitle(entity.transtype));
         item.putString("desc", entity.message);
-        item.putInt("time", (int) entity.timestamp);
+        item.putDouble("time", entity.timestamp);
         item.putInt("type", entity.transtype);
+        item.putInt("appid", entity.appid);
+        item.putString("destuserid", entity.destuserid);
 
         return item;
     }

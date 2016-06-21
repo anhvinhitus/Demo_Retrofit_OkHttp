@@ -13,6 +13,7 @@ import java.util.List;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -22,10 +23,12 @@ public class ReactInternalPackage implements ReactPackage {
 
     private TransactionStore.Repository mRepository;
     private NotificationStore.Repository mNotificationRepository;
+    private INavigator navigator;
 
-    public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository) {
+    public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository, INavigator navigator) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
+        this.navigator = navigator;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext));
+        modules.add(new ReactInternalNativeModule(reactContext, navigator));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
         return modules;

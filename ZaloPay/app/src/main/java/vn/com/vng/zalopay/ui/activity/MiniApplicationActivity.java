@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
+import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -52,6 +53,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     TransactionStore.Repository transactionRepository;
+
+    @Inject
+    INavigator navigator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     protected ReactPackage reactInternalPackage() {
         return new ReactInternalPackage(transactionRepository,
-                notificationRepository);
+                notificationRepository, navigator);
     }
 
     private void createUserComponent() {

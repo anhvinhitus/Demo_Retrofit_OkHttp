@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
 import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
@@ -37,7 +38,7 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 * Navigator
 * */
 @Singleton
-public class Navigator {
+public class Navigator implements INavigator {
 
     @Inject
     public Navigator() {
@@ -125,8 +126,7 @@ public class Navigator {
     }
 
     public void startLinkCardActivity(Activity activity) {
-        Intent intent = new Intent(activity, LinkCardActivity.class);
-        activity.startActivity(intent);
+        activity.startActivity(intentLinkCard(activity));
     }
 
     public void startLinkCardProcedureActivity(Fragment activity) {
@@ -168,8 +168,7 @@ public class Navigator {
     }
 
     public void startProfileInfoActivity(Activity activity) {
-        Intent intent = new Intent(activity, ProfileInfo2Activity.class);
-        activity.startActivity(intent);
+        activity.startActivity(intentProfile(activity));
     }
 
     public void startEditProfileActivity(Activity activity) {
@@ -204,6 +203,15 @@ public class Navigator {
         fragment.startActivity(intent);
     }
 
+    @Override
+    public Intent intentProfile(Context context) {
+        Intent intent = new Intent(context, ProfileInfo2Activity.class);
+        return intent;
+    }
 
-
+    @Override
+    public Intent intentLinkCard(Context context) {
+        Intent intent = new Intent(context, LinkCardActivity.class);
+        return intent;
+    }
 }
