@@ -37,7 +37,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager;
 
-public class PreProfileActivity extends BaseActivity implements IPreProfileView,
+public class UpdateProfileLevel2Activity extends BaseActivity implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
@@ -114,7 +114,7 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
         paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
-                return PreProfileActivity.this;
+                return UpdateProfileLevel2Activity.this;
             }
         }, new PaymentWrapper.IResponseListener() {
             @Override
@@ -222,7 +222,7 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
         tvTermsOfUser1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigator.startProfileInfoActivity(PreProfileActivity.this);
+                navigator.startProfileInfoActivity(UpdateProfileLevel2Activity.this);
             }
         });
         tvTermsOfUser2.setClickable(true);

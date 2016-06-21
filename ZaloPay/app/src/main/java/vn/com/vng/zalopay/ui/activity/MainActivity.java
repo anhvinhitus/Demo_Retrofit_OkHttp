@@ -161,7 +161,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void onClickProfile() {
-//        navigator.startPreProfileActivity(this);
+//        navigator.startUpdateProfileLevel2Activity(this);
         navigator.startProfileInfoActivity(this);
     }
 

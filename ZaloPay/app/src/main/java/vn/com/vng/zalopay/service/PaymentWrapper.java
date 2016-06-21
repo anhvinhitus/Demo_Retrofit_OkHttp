@@ -281,7 +281,7 @@ public class PaymentWrapper {
         }
 
         Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-        navigator.startPreProfileActivity(viewListener.getActivity(), walletTransID);
+        navigator.startUpdateProfileLevel2Activity(viewListener.getActivity(), walletTransID);
     }
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {

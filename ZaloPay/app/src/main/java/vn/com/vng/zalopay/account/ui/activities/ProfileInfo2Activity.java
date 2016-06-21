@@ -59,7 +59,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
     private EditProfileFragment mEditProfileFragment;
 //    @OnClick(R.id.layoutUser)
 //    public void onClickLayoutUser(View view) {
-//        navigator.startPreProfileActivity(this);
+//        navigator.startUpdateProfileLevel2Activity(this);
 //    }
 
     public void updateUserInfo(User user) {
@@ -83,7 +83,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     @OnClick(R.id.layoutChangePin)
     public void onClickChangePin(View view) {
-        navigator.startPreProfileActivity(this, null);
+        navigator.startChangePinActivity(this);
     }
 
     public void updateBalance(long balance) {

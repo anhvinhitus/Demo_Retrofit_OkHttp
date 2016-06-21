@@ -15,14 +15,13 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
-import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
+import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
@@ -80,7 +79,7 @@ public class Navigator implements INavigator {
     }
 
     public void startUpdateProfileLevel2Activity(Context context, boolean clearTop) {
-        Intent intent = new Intent(context, PreProfileActivity.class);
+        Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
 
         if (clearTop) {
             intent.putExtra("finish", true);
@@ -148,13 +147,13 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startPreProfileActivity(Context context, String walletTransID) {
+    public void startUpdateProfileLevel2Activity(Context context, String walletTransID) {
         if (context == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
             return;
         }
 
-        Intent intent = new Intent(context, PreProfileActivity.class);
+        Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
         if (!TextUtils.isEmpty(walletTransID)) {
             intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
         }
@@ -176,8 +175,8 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    public void startRecoveryPinActivity(Activity activity) {
-        Intent intent = new Intent(activity, RecoveryPinActivity.class);
+    public void startChangePinActivity(Activity activity) {
+        Intent intent = new Intent(activity, ChangePinActivity.class);
         activity.startActivity(intent);
     }
 

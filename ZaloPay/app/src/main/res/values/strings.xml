@@ -80,6 +80,7 @@
     <string name="title.activity.link.card">Quản lý thẻ</string>
     <string name="title.activity.transfer">Chuyển tiền</string>
     <string name="title.activity.zalopay.contact">Danh bạ Zalo Pay</string>
+    <string name="title.activity.change.pin">Đổi mã PIN</string>
 
     <!--Activity lable END-->
 
@@ -185,7 +186,7 @@
     <string name="hide">Ẩn</string>
 
     <string name="hint_otp">Mã OTP</string>
-    <string name="change_pin">Đổi mã pin</string>
+    <string name="change_pin">Đổi mã PIN</string>
     <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
 
     <string name="transfer_acc_zalopay">Đến tài khoản Zalo Pay</string>
