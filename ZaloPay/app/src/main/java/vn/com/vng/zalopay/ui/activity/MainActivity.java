@@ -111,6 +111,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         globalEventHandlingService.setMainActivity(this);
 
         startZaloPayService();
+        presenter.getZaloFriend();
     }
 
     @Override

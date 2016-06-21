@@ -119,6 +119,11 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
         tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
+    @Override
+    public void showHideChangePinView(boolean isShow) {
+
+    }
+
     public void updateBannerView(String bannerUrl) {
         Glide.with(this).load(bannerUrl).placeholder(R.color.separate).centerCrop().into(imgAdsBanner);
     }

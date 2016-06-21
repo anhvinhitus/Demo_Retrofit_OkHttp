@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -66,8 +67,12 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
     @BindView(R.id.tv_name)
     TextView tvName;
 
-    @BindView(R.id.tvTermsOfUser)
-    TextView tvTermsOfUser;
+    @BindView(R.id.tvTermsOfUser1)
+    TextView tvTermsOfUser1;
+    @BindView(R.id.tvTermsOfUser2)
+    TextView tvTermsOfUser2;
+    @BindView(R.id.tvTermsOfUser3)
+    TextView tvTermsOfUser3;
 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
@@ -149,6 +154,18 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
         walletTransId = bundle.getString(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID);
     }
 
+    private void showHideTermOfUser(boolean isShow) {
+        if (isShow) {
+            tvTermsOfUser1.setVisibility(View.VISIBLE);
+            tvTermsOfUser2.setVisibility(View.VISIBLE);
+            tvTermsOfUser3.setVisibility(View.VISIBLE);
+        } else {
+            tvTermsOfUser1.setVisibility(View.GONE);
+            tvTermsOfUser2.setVisibility(View.GONE);
+            tvTermsOfUser3.setVisibility(View.GONE);
+        }
+    }
+
     private void initContent() {
         adapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
 
@@ -160,6 +177,23 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
         } else if (profileType == Constants.PIN_PROFILE_TYPE) {
             viewPager.setCurrentItem(1);
         }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                showHideTermOfUser(position == 0);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     public void nextPager() {
@@ -186,8 +220,19 @@ public class PreProfileActivity extends BaseActivity implements IPreProfileView,
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
-        tvTermsOfUser.setClickable(true);
-        tvTermsOfUser.setMovementMethod (LinkMovementMethod.getInstance());
+//        tvTermsOfUser1.setClickable(true);
+//        tvTermsOfUser1.setMovementMethod (LinkMovementMethod.getInstance());
+        tvTermsOfUser1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.startProfileInfoActivity(PreProfileActivity.this);
+            }
+        });
+        tvTermsOfUser2.setClickable(true);
+        tvTermsOfUser2.setMovementMethod (LinkMovementMethod.getInstance());
+        tvTermsOfUser3.setClickable(true);
+        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
+
     }
 
     @Override

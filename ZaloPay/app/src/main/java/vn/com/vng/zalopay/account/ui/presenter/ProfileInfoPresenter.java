@@ -42,6 +42,18 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
         mView.updateUserInfo(userConfig.getCurrentUser());
         mView.updateBannerView("http://vn-live.slatic.net/cms/landing-page-banner/bank/1200x250-123pay-birthday.jpg");
         getBalance();
+        checkShowOrHideChangePinView();
+    }
+
+    private void checkShowOrHideChangePinView() {
+        if (mUserConfig == null || mUserConfig.getCurrentUser() == null) {
+            mView.showHideChangePinView(false);
+        }
+        if (mUserConfig.getCurrentUser().profilelevel < 2) {
+            mView.showHideChangePinView(false);
+        } else {
+            mView.showHideChangePinView(true);
+        }
     }
 
     @Override

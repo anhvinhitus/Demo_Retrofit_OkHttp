@@ -45,9 +45,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
 
-    @BindView(R.id.passcodeConfirm)
-    PassCodeView passCodeConfirm;
-
     @BindView(R.id.checkbox)
     CheckBox chkShowPass;
 
@@ -66,28 +63,22 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     ClearableEditText edtPhone;
 
     @OnClick(R.id.tvShowPass)
-    public void onClickShowPass(View view) {
+    public void onClickShowPass() {
         boolean isChecked = chkShowPass.isChecked();
         chkShowPass.setChecked(!isChecked);
     }
 
     @Nullable
     @OnClick(R.id.btnContinue)
-    public void onClickBtnContinute(View view) {
+    public void onClickBtnContinute() {
         onClickContinue();
     }
 
     @OnClick(R.id.tvCancel)
-    public void onClickCancel(View view) {
+    public void onClickCancel() {
         navigator.startHomeActivity(getContext(), true);
         ActivityAnimator anim = new ActivityAnimator();
         anim.fadeAnimation(getActivity());
-    }
-
-    private boolean isValidPinCompare() {
-        String pin = passCode.getText();
-        String pinCompare = passCodeConfirm.getText();
-        return !(TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin));
     }
 
     private boolean isValidPin() {
@@ -105,7 +96,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
      *
      * @return A new instance of fragment PinProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static RecoveryPinFragment newInstance() {
         return new RecoveryPinFragment();
     }
@@ -117,12 +107,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
             return;
         } else {
             passCode.hideError();
-        }
-        if (!isValidPinCompare()) {
-            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
-            return;
-        } else {
-            passCodeConfirm.hideError();
         }
 
         presenter.updateProfile(passCode.getText(), edtPhone.getString());
@@ -156,18 +140,11 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     passCode.showPasscode();
-                    passCodeConfirm.showPasscode();
                 } else {
                     passCode.hidePasscode();
-                    passCodeConfirm.hidePasscode();
                 }
             }
         });
-
-//        passCode.setPasscodeChanged(passcodeChanged);
-//        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
-//        passCodeConfirm.setPasscodeChanged(confirmPasscodeChanged);
-//        passCodeConfirm.setPasscodeFocusChanged(confirmPasscodeFocusChanged);
     }
 
     @Override
@@ -245,7 +222,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPinProfileFragmentListener {
-        // TODO: Update argument type and name
         void onUpdatePinSuccess();
 
         void onUpdatePinFail();

@@ -13,5 +13,6 @@ public interface IProfileInfoView extends ILoadDataView {
     void updateUserInfo(User user);
     void updateBannerView(String bannerUrl);
     void updateBalance(long balance);
+    void showHideChangePinView(boolean isShow);
 }
 

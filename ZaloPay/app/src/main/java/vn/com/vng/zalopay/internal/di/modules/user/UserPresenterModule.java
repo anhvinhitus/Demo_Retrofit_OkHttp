@@ -65,8 +65,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter() {
-        return new MainPresenter();
+    MainPresenter providerMainPresenter(ZaloFriendsFactory zaloFriendsFactory) {
+        return new MainPresenter(zaloFriendsFactory);
     }
 
     @UserScope

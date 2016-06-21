@@ -78,6 +78,9 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     }
 
+    @BindView(R.id.layoutChangePin)
+    View layoutChangePin;
+
     @OnClick(R.id.layoutChangePin)
     public void onClickChangePin(View view) {
         navigator.startPreProfileActivity(this, null);
@@ -103,6 +106,15 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
         getUserComponent().inject(this);
         initView();
         initFragment(savedInstanceState);
+    }
+
+    @Override
+    public void showHideChangePinView(boolean isShow) {
+        if (isShow) {
+            layoutChangePin.setVisibility(View.VISIBLE);
+        } else {
+            layoutChangePin.setVisibility(View.GONE);
+        }
     }
 
     private void initFragment(Bundle savedInstanceState) {
