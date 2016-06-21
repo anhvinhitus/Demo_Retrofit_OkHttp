@@ -88,6 +88,12 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return bundleReactConfig.getInternalJsBundle();
     }
 
+    protected @Nullable Bundle getLaunchOptions() {
+        Bundle bundle = new Bundle();
+        bundle.putString("zalopay_userid", getUserComponent().currentUser().uid);
+        return bundle;
+    }
+
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.asList(
