@@ -115,7 +115,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setAdapter(mAdapter);
 
         showAdsBanner();
-        showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
+//        showAdsSub("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
+        showAdsSub(null);
     }
 
     @Override
@@ -161,7 +162,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         }
     }
 
-    public void hideAdsBanner() {
+    public void hideBannerAds() {
         if (mLayoutBannerFullScreen != null) {
             mLayoutBannerFullScreen.setVisibility(View.GONE);
         }
@@ -169,9 +170,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     public void showAdsSub(String content) {
         if (TextUtils.isEmpty(content)) {
-            hideAdsBanner();
+            hideTextAds();
         } else {
             mTvAdsSubContent.setText(Html.fromHtml(content));
+        }
+    }
+
+    private void hideTextAds() {
+        if (mTvAdsSubContent != null) {
+            mTvAdsSubContent.setVisibility(View.GONE);
         }
     }
 
