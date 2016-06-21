@@ -13,6 +13,7 @@ public class ZaloFriend {
     private Integer userGender;
     private String birthday;
     private Boolean usingApp;
+    private String fulltextsearch;
 
     public ZaloFriend() {
     }
@@ -21,7 +22,7 @@ public class ZaloFriend {
         this.id = id;
     }
 
-    public ZaloFriend(Long id, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp) {
+    public ZaloFriend(Long id, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String fulltextsearch) {
         this.id = id;
         this.userName = userName;
         this.displayName = displayName;
@@ -29,6 +30,7 @@ public class ZaloFriend {
         this.userGender = userGender;
         this.birthday = birthday;
         this.usingApp = usingApp;
+        this.fulltextsearch = fulltextsearch;
     }
 
     public Long getId() {
@@ -85,6 +87,14 @@ public class ZaloFriend {
 
     public void setUsingApp(Boolean usingApp) {
         this.usingApp = usingApp;
+    }
+
+    public String getFulltextsearch() {
+        return fulltextsearch;
+    }
+
+    public void setFulltextsearch(String fulltextsearch) {
+        this.fulltextsearch = fulltextsearch;
     }
 
 }

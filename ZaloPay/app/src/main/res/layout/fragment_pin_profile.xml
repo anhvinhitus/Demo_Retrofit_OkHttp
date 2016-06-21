@@ -38,8 +38,7 @@
                 android:layout_height="wrap_content"
                 android:maxLength="4"
                 zalopay:hint="@string/hint_pin"
-                zalopay:length="4"
-                zalopay:note="@string/note_pin" />
+                zalopay:length="4" />
 
             <vn.com.vng.zalopay.ui.widget.PassCodeView
                 android:id="@+id/passcodeConfirm"

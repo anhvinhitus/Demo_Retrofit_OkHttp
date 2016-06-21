@@ -20,6 +20,8 @@ import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
+import vn.com.zalopay.wallet.utils.StringUtil;
+import vn.vng.uicomponent.widget.util.StringUtils;
 
 /**
  * Created by longlv on 13/06/2016.
@@ -95,7 +97,7 @@ public class ZaloFriendsFactory {
                 Timber.d("zaloFriends index: %s", i);
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend = new vn.com.vng.zalopay.transfer.models.ZaloFriend(jsonObject);
-                if (zaloFriend.getUserId() > 0 && zaloFriend.isUsingApp()) {
+                if (zaloFriend.getUserId() > 0 /*&& zaloFriend.isUsingApp()*/) {
                     zaloFriends.add(zaloFriend);
                 }
             }
@@ -113,7 +115,8 @@ public class ZaloFriendsFactory {
         if (zaloFriend == null) {
             return null;
         }
-        return new ZaloFriend(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp());
+        String fullTextSearch = StringUtils.diacriticsInVietnameseLowerCase(zaloFriend.getDisplayName());
+        return new ZaloFriend(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
     }
 
     private List<ZaloFriend> convertZaloFriend(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
