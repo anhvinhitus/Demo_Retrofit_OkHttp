@@ -13,6 +13,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Subscription;
@@ -61,6 +62,23 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
+    @ReactMethod
+    public void loadTransactionWithId(double id, Promise promise) {
+
+        Timber.d("loadTransactionWithId %s", id);
+
+        Subscription subscription = mRepository.getTransaction((long) id)
+                .map(new Func1<TransHistory, WritableArray>() {
+
+                    @Override
+                    public WritableArray call(TransHistory transHistory) {
+                        return transform(Arrays.asList(transHistory));
+                    }
+                }).subscribe(new TransactionLogSubscriber(promise));
+
+        compositeSubscription.add(subscription);
+    }
+
     private class TransactionLogSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;
@@ -77,7 +95,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "error on getting transaction logs");
+            Timber.w(e, "error on getting transaction logs");
         }
 
         @Override

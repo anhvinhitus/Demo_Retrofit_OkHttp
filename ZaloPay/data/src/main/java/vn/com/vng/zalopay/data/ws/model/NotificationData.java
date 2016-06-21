@@ -1,8 +1,11 @@
+/*
 package vn.com.vng.zalopay.data.ws.model;
 
+*/
 /**
  * Created by AnhHieu on 6/16/16.
- */
+ *//*
+
 public class NotificationData extends Event {
 
     public long transid;
@@ -16,3 +19,4 @@ public class NotificationData extends Event {
         super(msgType);
     }
 }
+*/

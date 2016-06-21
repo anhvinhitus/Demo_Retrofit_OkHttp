@@ -21,9 +21,11 @@ import vn.com.vng.zalopay.domain.repository.AccountRepository;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.user.NotificationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
@@ -31,6 +33,7 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
@@ -55,7 +58,9 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 UserPresenterModule.class,
                 BalanceModule.class,
                 TransactionModule.class,
-                AppResourceModule.class
+                AppResourceModule.class,
+                NotificationModule.class,
+                WsModule.class
         }
 )
 public interface UserComponent {
@@ -132,4 +137,6 @@ public interface UserComponent {
     void inject(ZaloFriendContentProviderImpl contentProvider);
 
     void inject(TransferHomeActivity activity);
+
+    void inject(NotificationService service);
 }

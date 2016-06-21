@@ -106,4 +106,10 @@ public class TransactionRepository implements TransactionStore.Repository {
             mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
         }
     }
+
+    @Override
+    public Observable<TransHistory> getTransaction(long id) {
+        return mTransactionLocalStorage.getTransaction(id)
+                .map(transHistoryEntity -> zaloPayEntityDataMapper.transform(transHistoryEntity)); //Todo: Test lại trường hợp result = null
+    }
 }

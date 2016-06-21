@@ -1,9 +1,5 @@
 package vn.com.vng.zalopay.data.cache;
 
-import java.util.concurrent.Callable;
-
-import rx.Observable;
-import rx.Subscriber;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;

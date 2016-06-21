@@ -63,8 +63,8 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     private List<TransHistoryEntity> queryList(int pageIndex, int limit) {
         return transform2Entity(
                 getDaoSession()
-                    .getTransactionLogDao()
-                    .queryBuilder()
+                        .getTransactionLogDao()
+                        .queryBuilder()
                         .limit(limit)
                         .offset(pageIndex * limit)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
@@ -153,6 +153,21 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
             transHistoryEntities.add(transHistoryEntity);
         }
         return transHistoryEntities;
+    }
+
+    @Override
+    public Observable<TransHistoryEntity> getTransaction(long id) {
+        return Observable.just(getTransactionById(id));
+    }
+
+
+    private TransHistoryEntity getTransactionById(long id) {
+        List<TransactionLog> list = getDaoSession().getTransactionLogDao().queryBuilder().where(TransactionLogDao.Properties.Transid.eq(id)).list();
+        if (Lists.isEmptyOrNull(list)) {
+            return null;
+        }
+        TransactionLog transactionLog = list.get(0);
+        return transform(transactionLog);
     }
 }
 
