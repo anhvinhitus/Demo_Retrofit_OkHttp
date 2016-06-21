@@ -64,6 +64,9 @@ ext {
 
     crashlyticsVersion = "2.5.5@aar"
 
+    protobufVersion = "2.6.1"
+    nettyVesion = "4.1.1.Final"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
@@ -104,12 +107,15 @@ ext {
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
 
-            crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}"
+            crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
+            protobuf               : "com.google.protobuf:protobuf-java:${protobufVersion}",
+            netty_transport        : "io.netty:netty-transport:${nettyVesion}",
+            netty_codec            : "io.netty:netty-codec:${nettyVesion}"
 
     ]
 
     testingLibraries = [
-            junit: "junit:junit:${jUnitVersion}",
+            junit      : "junit:junit:${jUnitVersion}",
             robolectric: "org.robolectric:robolectric:${robolectricVersion}"
     ]
 

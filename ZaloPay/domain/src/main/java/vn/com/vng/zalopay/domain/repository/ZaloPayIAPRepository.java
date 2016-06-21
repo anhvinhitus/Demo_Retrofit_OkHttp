@@ -8,6 +8,4 @@ import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
  */
 public interface ZaloPayIAPRepository {
     Observable<MerChantUserInfo> getMerchantUserInfo(long appId);
-
-    Observable<Boolean> verifyMerchantAccessToken(String mUid, String token);
 }

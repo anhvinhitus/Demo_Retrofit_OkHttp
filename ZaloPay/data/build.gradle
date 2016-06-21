@@ -40,6 +40,7 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+        exclude "META-INF/io.netty.versions.properties"
     }
 
     lintOptions {
@@ -79,6 +80,8 @@ dependencies {
     compile libs.gson
     compile project(':domain')
 
-    compile 'io.netty:netty-all:4.1.0.CR4'
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '2.6.1'
+    // compile 'io.netty:netty-all:4.1.0.CR4'
+    compile libs.netty_codec
+    compile libs.netty_transport
+    compile libs.protobuf
 }
