@@ -11,6 +11,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.google.gson.JsonObject;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -99,15 +100,37 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         if (entity == null) {
             return null;
         }
+
         WritableMap item = Arguments.createMap();
         item.putBoolean("read", entity.read);
-        item.putString("title", TransactionType.getTitle(entity.transtype));
-        item.putString("desc", entity.message);
-        item.putDouble("time", entity.timestamp / 1000);
-        item.putInt("type", entity.transtype);
+
+        item.putString("message", entity.message);
+        item.putDouble("timestamp", entity.timestamp / 1000);
+
         item.putInt("appid", entity.appid);
         item.putString("destuserid", entity.destuserid);
 
+        int transtype = 0;
+        int notificationtype = 1;
+
+        try {
+            JsonObject embeddata = entity.getEmbeddata();
+            if (embeddata.has("notificationtype")) {
+                notificationtype = embeddata.get("notificationtype").getAsInt();
+            }
+
+            if (embeddata.has("transtype")) {
+                transtype = embeddata.get("transtype").getAsInt();
+            }
+        } catch (Exception ex) {
+            Timber.w(ex, " exception parse");
+        }
+
+        Timber.d("transtype %s notificationtype %s", transtype, notificationtype);
+
+        item.putString("title", TransactionType.getTitle(transtype));
+        item.putInt("transtype", transtype);
+        item.putInt("notificationtype", notificationtype);
         return item;
     }
 

@@ -28,10 +28,10 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
         public final static Property Appid = new Property(2, Integer.class, "appid", false, "APPID");
         public final static Property Timestamp = new Property(3, Long.class, "timestamp", false, "TIMESTAMP");
         public final static Property Message = new Property(4, String.class, "message", false, "MESSAGE");
-        public final static Property Transtype = new Property(5, Integer.class, "transtype", false, "TRANSTYPE");
-        public final static Property Userid = new Property(6, String.class, "userid", false, "USERID");
-        public final static Property Destuserid = new Property(7, String.class, "destuserid", false, "DESTUSERID");
-        public final static Property Read = new Property(8, Boolean.class, "read", false, "READ");
+        public final static Property Userid = new Property(5, String.class, "userid", false, "USERID");
+        public final static Property Destuserid = new Property(6, String.class, "destuserid", false, "DESTUSERID");
+        public final static Property Read = new Property(7, Boolean.class, "read", false, "READ");
+        public final static Property Embeddata = new Property(8, String.class, "embeddata", false, "EMBEDDATA");
     };
 
 
@@ -52,10 +52,10 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
                 "\"APPID\" INTEGER," + // 2: appid
                 "\"TIMESTAMP\" INTEGER," + // 3: timestamp
                 "\"MESSAGE\" TEXT," + // 4: message
-                "\"TRANSTYPE\" INTEGER," + // 5: transtype
-                "\"USERID\" TEXT," + // 6: userid
-                "\"DESTUSERID\" TEXT," + // 7: destuserid
-                "\"READ\" INTEGER);"); // 8: read
+                "\"USERID\" TEXT," + // 5: userid
+                "\"DESTUSERID\" TEXT," + // 6: destuserid
+                "\"READ\" INTEGER," + // 7: read
+                "\"EMBEDDATA\" TEXT);"); // 8: embeddata
     }
 
     /** Drops the underlying database table. */
@@ -90,24 +90,24 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
             stmt.bindString(5, message);
         }
  
-        Integer transtype = entity.getTranstype();
-        if (transtype != null) {
-            stmt.bindLong(6, transtype);
-        }
- 
         String userid = entity.getUserid();
         if (userid != null) {
-            stmt.bindString(7, userid);
+            stmt.bindString(6, userid);
         }
  
         String destuserid = entity.getDestuserid();
         if (destuserid != null) {
-            stmt.bindString(8, destuserid);
+            stmt.bindString(7, destuserid);
         }
  
         Boolean read = entity.getRead();
         if (read != null) {
-            stmt.bindLong(9, read ? 1L: 0L);
+            stmt.bindLong(8, read ? 1L: 0L);
+        }
+ 
+        String embeddata = entity.getEmbeddata();
+        if (embeddata != null) {
+            stmt.bindString(9, embeddata);
         }
     }
 
@@ -126,10 +126,10 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // appid
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // timestamp
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // message
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // transtype
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // userid
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // destuserid
-            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0 // read
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // userid
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // destuserid
+            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0, // read
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // embeddata
         );
         return entity;
     }
@@ -142,10 +142,10 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
         entity.setAppid(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setTimestamp(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setMessage(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTranstype(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setUserid(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setDestuserid(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setRead(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
+        entity.setUserid(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDestuserid(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setRead(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
+        entity.setEmbeddata(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     /** @inheritdoc */
