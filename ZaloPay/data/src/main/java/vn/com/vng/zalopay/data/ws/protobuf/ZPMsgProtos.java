@@ -140,14 +140,14 @@ public final class ZPMsgProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.Builder.class);
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.Builder.class);
     }
 
     public static com.google.protobuf.Parser<MessageSendUser> PARSER =
@@ -329,53 +329,53 @@ public final class ZPMsgProtos {
       return super.writeReplace();
     }
 
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(byte[] data)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseDelimitedFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseDelimitedFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -384,7 +384,7 @@ public final class ZPMsgProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -401,20 +401,20 @@ public final class ZPMsgProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:protobuf.MessageSendUser)
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUserOrBuilder {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUserOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.Builder.class);
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -451,23 +451,23 @@ public final class ZPMsgProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser getDefaultInstanceForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.getDefaultInstance();
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser build() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser buildPartial() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser result = new vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -492,16 +492,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser) {
-          return mergeFrom((vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser other) {
-        if (other == vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.getDefaultInstance()) return this;
         if (other.hasData()) {
           setData(other.getData());
         }
@@ -536,11 +536,11 @@ public final class ZPMsgProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser parsedMessage = null;
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -841,14 +841,14 @@ public final class ZPMsgProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.Builder.class);
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.Builder.class);
     }
 
     public static com.google.protobuf.Parser<MessageLogin> PARSER =
@@ -984,53 +984,53 @@ public final class ZPMsgProtos {
       return super.writeReplace();
     }
 
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(byte[] data)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseDelimitedFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseDelimitedFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1039,7 +1039,7 @@ public final class ZPMsgProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -1056,20 +1056,20 @@ public final class ZPMsgProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:protobuf.MessageLogin)
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLoginOrBuilder {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLoginOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.Builder.class);
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1102,23 +1102,23 @@ public final class ZPMsgProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin getDefaultInstanceForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.getDefaultInstance();
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin build() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin buildPartial() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin result = new vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1135,16 +1135,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin) {
-          return mergeFrom((vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin other) {
-        if (other == vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.getDefaultInstance()) return this;
         if (other.hasUsrid()) {
           setUsrid(other.getUsrid());
         }
@@ -1173,11 +1173,11 @@ public final class ZPMsgProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin parsedMessage = null;
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1419,14 +1419,14 @@ public final class ZPMsgProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.Builder.class);
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.Builder.class);
     }
 
     public static com.google.protobuf.Parser<ResultAuth> PARSER =
@@ -1558,53 +1558,53 @@ public final class ZPMsgProtos {
       return super.writeReplace();
     }
 
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(byte[] data)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseDelimitedFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseDelimitedFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1613,7 +1613,7 @@ public final class ZPMsgProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -1630,20 +1630,20 @@ public final class ZPMsgProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:protobuf.ResultAuth)
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuthOrBuilder {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuthOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.Builder.class);
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1678,23 +1678,23 @@ public final class ZPMsgProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth getDefaultInstanceForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.getDefaultInstance();
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth build() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth buildPartial() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth result = new vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1715,16 +1715,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth) {
-          return mergeFrom((vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth other) {
-        if (other == vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.getDefaultInstance()) return this;
         if (other.hasUsrid()) {
           setUsrid(other.getUsrid());
         }
@@ -1754,11 +1754,11 @@ public final class ZPMsgProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth parsedMessage = null;
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1974,14 +1974,14 @@ public final class ZPMsgProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.Builder.class);
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.Builder.class);
     }
 
     public static com.google.protobuf.Parser<DataResponseUser> PARSER =
@@ -2090,53 +2090,53 @@ public final class ZPMsgProtos {
       return super.writeReplace();
     }
 
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(byte[] data)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseDelimitedFrom(java.io.InputStream input)
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseDelimitedFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parseFrom(
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2145,7 +2145,7 @@ public final class ZPMsgProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -2162,20 +2162,20 @@ public final class ZPMsgProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:protobuf.DataResponseUser)
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUserOrBuilder {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUserOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.class, vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.Builder.class);
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2208,23 +2208,23 @@ public final class ZPMsgProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser getDefaultInstanceForType() {
-        return vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.getDefaultInstance();
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser build() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser buildPartial() {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser result = new vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2241,16 +2241,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser) {
-          return mergeFrom((vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser other) {
-        if (other == vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.getDefaultInstance()) return this;
         if (other.hasMsgtype()) {
           setMsgtype(other.getMsgtype());
         }
@@ -2277,11 +2277,11 @@ public final class ZPMsgProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser parsedMessage = null;
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2405,9 +2405,9 @@ public final class ZPMsgProtos {
       "ssageLogin\022\r\n\005usrid\030\001 \002(\004\022\r\n\005token\030\002 \002(\t" +
       "\"9\n\nResultAuth\022\r\n\005usrid\030\001 \002(\004\022\016\n\006result\030" +
       "\002 \002(\005\022\014\n\004code\030\003 \001(\005\"1\n\020DataResponseUser\022" +
-      "\017\n\007msgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014B:\n+vn.com" +
-      ".zalopay.wallet.notificataion.messageB\013Z" +
-      "PMsgProtos"
+      "\017\n\007msgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014B2\n#vn.com" +
+      ".vng.zalopay.data.ws.protobufB\013ZPMsgProt" +
+      "os"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
