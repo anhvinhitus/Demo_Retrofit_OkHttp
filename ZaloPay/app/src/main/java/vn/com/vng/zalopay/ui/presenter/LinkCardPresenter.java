@@ -154,8 +154,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
         public void onSuccess(DMappedCard mapCard) {
-            Timber.tag("LinkCardPresenter").d("removed map card: ", mapCard);
-            mLinkCardView.hideLoading();
+            Timber.tag("LinkCardPresenter").d("removed map card: %s", mapCard);
+            linkCardView.hideLoading();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
                 mLinkCardView.removeData(bankCard);
