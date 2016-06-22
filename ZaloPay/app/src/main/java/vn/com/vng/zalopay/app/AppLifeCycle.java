@@ -65,7 +65,7 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     private short mLastState;
 
     private void applicationStatus() {
-        Timber.tag("ApplicationStatus").i("Is application background " + isBackGround());
+        Timber.i("Is application background " + isBackGround());
         if (isBackGround()) {
             //Do something if the application is in background
             if (mLastState == 0) {
