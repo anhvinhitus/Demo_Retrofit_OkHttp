@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.cache;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
 import java.util.ArrayList;
@@ -24,8 +25,11 @@ import static java.util.Collections.emptyList;
  */
 public class NotificationLocalStorage extends SqlBaseScopeImpl implements NotificationStore.LocalStorage {
 
+    final JsonParser jsonParser;
+
     public NotificationLocalStorage(DaoSession daoSession) {
         super(daoSession);
+        jsonParser = new JsonParser();
     }
 
     @Override
@@ -109,10 +113,11 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setMessage(notificationGD.getMessage());
         _notification.setTimestamp(notificationGD.getTimestamp());
         String embeddata = notificationGD.getEmbeddata();
-        Timber.d("embeddata get %s ", embeddata.replace("\\", ""));
-
+     /*   embeddata = embeddata.replaceAll("\\\\", "");*/
+        
+        Timber.d("embeddata get %s ", embeddata);
         try {
-            _notification.setEmbeddata(new JsonPrimitive(embeddata).getAsJsonObject());
+            _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
         } catch (Exception ex) {
             _notification.setEmbeddata(new JsonObject());
             Timber.w(ex, " parse exception Notification Entity");
