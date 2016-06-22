@@ -7,7 +7,7 @@
     tools:context="vn.com.vng.zalopay.account.ui.activities.ChangePinActivity">
 
     <include
-        android:id="@+id/toolbarLayout"
+        android:id="@+id/toolbar"
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:id="@+id/ScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbarLayout"
+        android:layout_below="@id/toolbar"
         android:fillViewport="true">
 
         <LinearLayout

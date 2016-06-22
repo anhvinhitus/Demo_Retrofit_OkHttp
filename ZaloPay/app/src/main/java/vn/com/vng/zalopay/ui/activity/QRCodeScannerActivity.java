@@ -37,10 +37,6 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
-    @Nullable
-    @BindView(R.id.title_toolbar)
-    TextView mTitleToolbar;
-
     @Inject
     Navigator navigator;
 
@@ -58,29 +54,19 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         setupActivityComponent();
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        customToolbar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         qrCodePresenter.setView(this);
     }
 
-    private void customToolbar() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(getToolbar().getTitle());
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
-
     @Override
     public void setTitle(CharSequence title) {
-        if (mTitleToolbar != null) {
-            mTitleToolbar.setText(title);
-        }
+        getSupportActionBar().setTitle(title);
     }
 
     @Override
     public void setTitle(int titleId) {
-        if (mTitleToolbar != null) {
-            mTitleToolbar.setText(titleId);
-        }
+        getSupportActionBar().setTitle(titleId);
     }
 
     public Toolbar getToolbar() {

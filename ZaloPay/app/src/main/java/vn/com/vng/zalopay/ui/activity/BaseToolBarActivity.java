@@ -18,22 +18,11 @@ public abstract class BaseToolBarActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
-    @Nullable
-    @BindView(R.id.title_toolbar)
-    TextView mTitleToolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setSupportActionBar(mToolbar);
-
-        customToolbar();
-    }
-
-    private void customToolbar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(getToolbar().getTitle());
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     protected int getResLayoutId() {
@@ -42,16 +31,12 @@ public abstract class BaseToolBarActivity extends BaseActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        if (mTitleToolbar != null) {
-            mTitleToolbar.setText(title);
-        }
+       getSupportActionBar().setTitle(title);
     }
 
     @Override
     public void setTitle(int titleId) {
-        if (mTitleToolbar != null) {
-            mTitleToolbar.setText(titleId);
-        }
+        getSupportActionBar().setTitle(titleId);
     }
 
     public Toolbar getToolbar() {
