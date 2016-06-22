@@ -10,6 +10,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -158,13 +159,13 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
         @Override
         public void onError(Throwable e) {
-            Timber.e(e, "GetUserInfoSubscriber onError " + e);
-            if (e != null && e instanceof BodyException) {
-                if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                    clearAndLogout();
-                    return;
-                }
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
             }
+
+            Timber.e(e, "GetUserInfoSubscriber onError " + e);
             LinkCardProcedurePresenter.this.onCreateWalletOrderError(e);
         }
     }

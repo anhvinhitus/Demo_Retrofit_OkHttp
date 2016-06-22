@@ -134,7 +134,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
         if (mListener!=null) {
             mListener.onConfirmOTPSucess();
         }
-        navigator.startHomeActivity(getContext(), true);
     }
 
     @Override

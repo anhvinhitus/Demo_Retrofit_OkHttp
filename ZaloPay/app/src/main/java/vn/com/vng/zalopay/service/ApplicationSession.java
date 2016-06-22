@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
@@ -16,6 +17,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 public class ApplicationSession {
     Navigator navigator;
     Context applicationContext;
+    private String mLoginMessage;
 
     public ApplicationSession(Context applicationContext, Navigator navigator) {
         this.applicationContext = applicationContext;
@@ -34,10 +36,20 @@ public class ApplicationSession {
         // move to login
         ZaloSDK.Instance.unauthenticate();
         AndroidApplication.instance().releaseUserComponent();
-        navigator.startLoginActivity(applicationContext, true);
         applicationContext.stopService(new Intent(applicationContext, NotificationService.class));
+
+        if (TextUtils.isEmpty(mLoginMessage)) {
+            navigator.startLoginActivity(applicationContext, true);
+        } else {
+            navigator.startLoginActivity(applicationContext, mLoginMessage);
+            mLoginMessage = null;
+        }
     }
 
+    public void setMessageAtLogin(String message) {
+
+        mLoginMessage = message;
+    }
     /**
      * New user session and move to main state
      */

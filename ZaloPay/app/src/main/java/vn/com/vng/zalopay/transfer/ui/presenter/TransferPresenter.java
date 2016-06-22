@@ -10,6 +10,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
@@ -130,7 +131,13 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
-        	Timber.w(e, "GetUserInfoSubscriber onError " + e);
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            Timber.w(e, "GetUserInfoSubscriber onError " + e);
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }
@@ -222,12 +229,12 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
-            if (e != null && e instanceof BodyException) {
-                if (((BodyException)e).errorCode == NetworkError.TOKEN_INVALID) {
-                    clearAndLogout();
-                    return;
-                }
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
             }
+
             Timber.e(e, "Server responses with error");
             TransferPresenter.this.onCreateWalletOrderError(e);
         }
