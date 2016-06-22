@@ -63,11 +63,19 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void loadTransactionWithId(double id, Promise promise) {
+    public void loadTransactionWithId(String id, Promise promise) {
 
         Timber.d("loadTransactionWithId %s", id);
 
-        Subscription subscription = mRepository.getTransaction((long) id)
+        long value = 0;
+        try {
+            value = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            Timber.i("Invalid format for number: %s", id);
+            promise.reject("-1", "Invalid input");
+            return;
+        }
+        Subscription subscription = mRepository.getTransaction(value)
                 .map(new Func1<TransHistory, WritableArray>() {
 
                     @Override

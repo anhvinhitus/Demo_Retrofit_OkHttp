@@ -131,6 +131,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putString("title", TransactionType.getTitle(transtype));
         item.putInt("transtype", transtype);
         item.putInt("notificationtype", notificationtype);
+        item.putDouble("transid", entity.getTransid());
         return item;
     }
 
