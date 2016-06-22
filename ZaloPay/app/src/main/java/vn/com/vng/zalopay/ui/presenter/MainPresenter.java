@@ -3,7 +3,14 @@ package vn.com.vng.zalopay.ui.presenter;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
@@ -18,6 +25,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     IHomeView homeView;
 
     ZaloFriendsFactory zaloFriendsFactory;
+
+    private boolean isLoadedGateWayInfo;
+
 
     public MainPresenter(ZaloFriendsFactory zaloFriendsFactory) {
         this.zaloFriendsFactory = zaloFriendsFactory;
@@ -57,7 +67,18 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     }
 
-    public void loadGatewayInfoPaymentSDK() {
+    public void initialize() {
+        this.initializeAppConfig();
+        this.loadGatewayInfoPaymentSDK();
+    }
+
+    private void initializeAppConfig() {
+        mAppResourceRepository.initialize()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+    }
+
+    private void loadGatewayInfoPaymentSDK() {
         User user = userConfig.getCurrentUser();
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         paymentInfo.zaloUserID = String.valueOf(user.uid);
@@ -65,6 +86,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         ZingMobilePayApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
             @Override
             public void onFinish() {
+                Timber.d("loadGatewayInfoPaymentSDK finish");
+                isLoadedGateWayInfo = true;
             }
 
             @Override
@@ -73,10 +96,16 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onError(String pMessage) {
-                if (TextUtils.isEmpty(pMessage)) {
-                    //Network error
-                }
+                Timber.w("loadGatewayInfoPaymentSDK error %s", pMessage);
             }
         });
     }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNetworkChange(NetworkChangeEvent event) {
+        if (event.isOnline && !isLoadedGateWayInfo) {
+            loadGatewayInfoPaymentSDK();
+        }
+    }
+
 }

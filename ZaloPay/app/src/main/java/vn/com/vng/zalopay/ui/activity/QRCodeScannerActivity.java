@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -35,11 +37,19 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
+    @Nullable
+    @BindView(R.id.title_toolbar)
+    TextView mTitleToolbar;
+
     @Inject
     Navigator navigator;
 
     @Inject
     QRCodePresenter qrCodePresenter;
+
+    public int getResLayoutId() {
+        return R.layout.activity_qr_scaner;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,12 +58,33 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         setupActivityComponent();
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        customToolbar();
+
         qrCodePresenter.setView(this);
     }
 
-    public int getResLayoutId() {
-        return R.layout.activity_qr_scaner;
+    private void customToolbar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(getToolbar().getTitle());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if (mTitleToolbar != null) {
+            mTitleToolbar.setText(title);
+        }
+    }
+
+    @Override
+    public void setTitle(int titleId) {
+        if (mTitleToolbar != null) {
+            mTitleToolbar.setText(titleId);
+        }
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 
     @Override

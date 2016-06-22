@@ -105,7 +105,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putBoolean("read", entity.read);
 
         item.putString("message", entity.message);
-        item.putDouble("timestamp", entity.timestamp / 1000);
+        item.putDouble("timestamp", entity.timestamp);
 
         item.putInt("appid", entity.appid);
         item.putString("destuserid", entity.destuserid);
@@ -131,6 +131,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putString("title", TransactionType.getTitle(transtype));
         item.putInt("transtype", transtype);
         item.putInt("notificationtype", notificationtype);
+        item.putDouble("transid", entity.getTransid());
         return item;
     }
 

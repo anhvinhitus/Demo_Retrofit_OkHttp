@@ -185,7 +185,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         showErrorView(message);
     }
 
-
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
         public LoginPaymentSubscriber() {
         }

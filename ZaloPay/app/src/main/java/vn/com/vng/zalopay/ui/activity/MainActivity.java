@@ -98,7 +98,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             add.commit();
         }
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setTitle(null);
 
         toggle = new ActionBarDrawerToggle(
                 this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -107,7 +107,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
 
         //init SDK
-        presenter.loadGatewayInfoPaymentSDK();
+        presenter.initialize();
         globalEventHandlingService.setMainActivity(this);
 
         startZaloPayService();
