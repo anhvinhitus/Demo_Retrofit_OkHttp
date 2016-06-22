@@ -56,7 +56,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         this.initializeZaloPay();
     }
 
-    public void initializeZaloPay() {
+    private void initializeZaloPay() {
         transactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
@@ -74,7 +74,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     public void destroy() {
     }
 
-    public void getBalance() {
+    private void getBalance() {
         Subscription subscription = balanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
