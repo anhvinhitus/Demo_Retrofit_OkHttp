@@ -21,11 +21,17 @@ public class BannerPagerAdapter extends PagerAdapter {
     Context mContext;
     LayoutInflater mLayoutInflater;
     List<Integer> mResources = new ArrayList<Integer>();
+    private IBannerClick mListener;
 
-    public BannerPagerAdapter(Context context, List<Integer> resources) {
+    public interface IBannerClick {
+        void onItemClick(int position);
+    };
+
+    public BannerPagerAdapter(Context context, List<Integer> resources, IBannerClick iBannerClick) {
         mContext = context;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResources = resources;
+        mListener = iBannerClick;
     }
 
     @Override
@@ -39,12 +45,19 @@ public class BannerPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         View itemView = mLayoutInflater.inflate(R.layout.row_banner_image, container, false);
 
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
         imageView.setImageResource(mResources.get(position));
-
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onItemClick(position);
+                }
+            }
+        });
         container.addView(itemView);
 
         return itemView;
