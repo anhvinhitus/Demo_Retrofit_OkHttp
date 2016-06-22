@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -226,6 +227,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
             navigator.startQrCodeActivity(this);
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return this.getContext();
     }
 
     private final class OpenMenuRunnable implements Runnable {

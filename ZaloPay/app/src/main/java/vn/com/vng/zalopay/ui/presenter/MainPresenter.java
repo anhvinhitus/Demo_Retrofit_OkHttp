@@ -49,7 +49,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 if (homeView == null || homeView.getActivity() == null) {
                     return;
                 }
-                zaloFriendsFactory.reloadZaloFriend(homeView.getActivity(), null);
+                zaloFriendsFactory.reloadZaloFriend(homeView.getContext(), null);
             }
         }).start();
     }
@@ -61,6 +61,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroyView() {
+        this.zaloFriendsFactory = null;
         this.homeView = null;
     }
 
