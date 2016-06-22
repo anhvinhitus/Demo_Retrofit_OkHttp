@@ -1,42 +1,29 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
-import vn.com.vng.zalopay.ui.widget.ClearableEditText;
-import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
-import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
-import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RecoveryPinFragment.OnPinProfileFragmentListener} interface
+ * {@link ChangePinFragment.OnPinProfileFragmentListener} interface
  * to handle interaction events.
- * Use the {@link RecoveryPinFragment#newInstance} factory method to
+ * Use the {@link ChangePinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecoveryPinFragment extends AbsProfileFragment implements IRecoveryPinView {
+public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPinView {
     private OnPinProfileFragmentListener mListener;
 
     @Inject
@@ -45,57 +32,12 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
 
-    @BindView(R.id.passcodeConfirm)
-    PassCodeView passCodeConfirm;
-
-    @BindView(R.id.checkbox)
-    CheckBox chkShowPass;
-
-    @BindView(R.id.tvShowPass)
-    TextView tvShowPass;
-
-    @BindView(R.id.tvCancel)
-    TextView tvCancel;
-
-    @BindView(R.id.layoutAction)
-    View layoutAction;
-
-    @BindView(R.id.textInputPhone)
-    TextInputLayout textInputPhone;
-    @BindView(R.id.edtPhone)
-    ClearableEditText edtPhone;
-
-    @OnClick(R.id.tvShowPass)
-    public void onClickShowPass(View view) {
-        boolean isChecked = chkShowPass.isChecked();
-        chkShowPass.setChecked(!isChecked);
-    }
-
-    @Nullable
-    @OnClick(R.id.btnContinue)
-    public void onClickBtnContinute(View view) {
-        onClickContinue();
-    }
-
-    @OnClick(R.id.tvCancel)
-    public void onClickCancel(View view) {
-        navigator.startHomeActivity(getContext(), true);
-        ActivityAnimator anim = new ActivityAnimator();
-        anim.fadeAnimation(getActivity());
-    }
-
-    private boolean isValidPinCompare() {
-        String pin = passCode.getText();
-        String pinCompare = passCodeConfirm.getText();
-        return !(TextUtils.isEmpty(pinCompare) || !pinCompare.equals(pin));
-    }
-
     private boolean isValidPin() {
         String pin = passCode.getText();
-        return !TextUtils.isEmpty(pin);
+        return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
 
-    public RecoveryPinFragment() {
+    public ChangePinFragment() {
         // Required empty public constructor
     }
 
@@ -105,9 +47,8 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
      *
      * @return A new instance of fragment PinProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static RecoveryPinFragment newInstance() {
-        return new RecoveryPinFragment();
+    public static ChangePinFragment newInstance() {
+        return new ChangePinFragment();
     }
 
     @Override
@@ -118,14 +59,8 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
         } else {
             passCode.hideError();
         }
-        if (!isValidPinCompare()) {
-            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
-            return;
-        } else {
-            passCodeConfirm.hideError();
-        }
 
-        presenter.updateProfile(passCode.getText(), edtPhone.getString());
+        presenter.updateProfile(passCode.getText(), null);
     }
 
     @Override
@@ -135,7 +70,7 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_pin_profile;
+        return R.layout.fragment_change_pin;
     }
 
     @Override
@@ -147,27 +82,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel)));
-
-        edtPhone.setVisibility(View.GONE);
-        chkShowPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    passCode.showPasscode();
-                    passCodeConfirm.showPasscode();
-                } else {
-                    passCode.hidePasscode();
-                    passCodeConfirm.hidePasscode();
-                }
-            }
-        });
-
-//        passCode.setPasscodeChanged(passcodeChanged);
-//        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
-//        passCodeConfirm.setPasscodeChanged(confirmPasscodeChanged);
-//        passCodeConfirm.setPasscodeFocusChanged(confirmPasscodeFocusChanged);
     }
 
     @Override
@@ -245,7 +159,6 @@ public class RecoveryPinFragment extends AbsProfileFragment implements IRecovery
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPinProfileFragmentListener {
-        // TODO: Update argument type and name
         void onUpdatePinSuccess();
 
         void onUpdatePinFail();

@@ -111,6 +111,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         globalEventHandlingService.setMainActivity(this);
 
         startZaloPayService();
+        presenter.getZaloFriend();
     }
 
     @Override
@@ -160,7 +161,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void onClickProfile() {
-//        navigator.startPreProfileActivity(this);
+//        navigator.startUpdateProfileLevel2Activity(this);
         navigator.startProfileInfoActivity(this);
     }
 

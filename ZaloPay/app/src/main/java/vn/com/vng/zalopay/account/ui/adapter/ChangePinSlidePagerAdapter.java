@@ -10,19 +10,19 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import vn.com.vng.zalopay.account.ui.fragment.AbsProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
-import vn.com.vng.zalopay.account.ui.fragment.RecoveryPinFragment;
+import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 
 /**
  * A simple pager adapter that represents 2 ProfileSlidePagerAdapter objects, in
  * sequence.
  */
-public class RecoveryPinSlidePagerAdapter extends FragmentStatePagerAdapter {
+public class ChangePinSlidePagerAdapter extends FragmentStatePagerAdapter {
 
     private final int NUM_PAGES = 2;
-    private AbsProfileFragment recoveryPinFragment;
+    private AbsProfileFragment changePinFragment;
     private AbsProfileFragment otpRecoveryPinFragment;
 
-    public RecoveryPinSlidePagerAdapter(FragmentManager fm) {
+    public ChangePinSlidePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -34,10 +34,10 @@ public class RecoveryPinSlidePagerAdapter extends FragmentStatePagerAdapter {
             }
             return otpRecoveryPinFragment;
         } else {
-            if (recoveryPinFragment == null) {
-                recoveryPinFragment = RecoveryPinFragment.newInstance();
+            if (changePinFragment == null) {
+                changePinFragment = ChangePinFragment.newInstance();
             }
-            return recoveryPinFragment;
+            return changePinFragment;
         }
     }
 
