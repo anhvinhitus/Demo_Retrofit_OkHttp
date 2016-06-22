@@ -142,6 +142,11 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             public void onResponseCancel() {
 
             }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(UpdateProfileLevel2Activity.this);
+            }
         });
     }
 

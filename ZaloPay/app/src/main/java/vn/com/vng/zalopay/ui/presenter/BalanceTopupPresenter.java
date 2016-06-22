@@ -91,6 +91,11 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             public void onResponseCancel() {
 
             }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(mView.getContext());
+            }
         });
     }
 

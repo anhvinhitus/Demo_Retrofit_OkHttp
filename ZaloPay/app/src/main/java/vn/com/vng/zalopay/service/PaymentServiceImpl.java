@@ -12,6 +12,7 @@ import java.util.Locale;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.TokenException;
@@ -22,6 +23,7 @@ import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
@@ -35,6 +37,7 @@ public class PaymentServiceImpl implements IPaymentService {
     final User user;
     final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
+    protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -79,6 +82,11 @@ public class PaymentServiceImpl implements IPaymentService {
             public void onResponseCancel() {
                 errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL);
                 destroyVariable();
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
             }
         });
 

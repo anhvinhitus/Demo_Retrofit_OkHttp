@@ -74,11 +74,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
             @Override
             public void onResponseError(int status) {
-                if (status == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
-                    mView.getActivity().finish();
-                } else {
-                    mView.hideLoading();
-                }
+                mView.hideLoading();
             }
 
             @Override
@@ -109,6 +105,11 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             @Override
             public void onResponseCancel() {
                 mView.hideLoading();
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(mView.getContext());
             }
         });
     }

@@ -81,6 +81,11 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
             public void onResponseCancel() {
 
             }
+
+            @Override
+            public void onNotEnoughMoney() {
+
+            }
         });
     }
 
