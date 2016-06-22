@@ -128,11 +128,15 @@ public class Navigator implements INavigator {
         activity.startActivity(intentLinkCard(activity));
     }
 
+    public void startLinkCardProcedureActivity(Activity activity) {
+        Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
+        activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+    }
+
     public void startLinkCardProcedureActivity(Fragment activity) {
         Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
         activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
-
 
     public void startPaymentApplicationActivity(Context context, String name) {
         Intent intent = new Intent(context, PaymentApplicationActivity.class);

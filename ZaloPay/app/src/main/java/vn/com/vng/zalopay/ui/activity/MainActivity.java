@@ -231,7 +231,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public Context getContext() {
-        return this.getContext();
+        return this;
     }
 
     private final class OpenMenuRunnable implements Runnable {
