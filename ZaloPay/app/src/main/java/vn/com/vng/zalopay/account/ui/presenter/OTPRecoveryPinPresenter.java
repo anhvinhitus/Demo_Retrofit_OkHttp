@@ -48,7 +48,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
-        mView.showError("Đổi mã PIN thất bại.");
+        mView.confirmOTPError();
     }
 
     private void onVerifyOTPSucess() {
