@@ -186,6 +186,7 @@ public class PaymentWrapper {
     }
 
     public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
+        Timber.d("saveCardMap, viewListener: %s", viewListener);
         if (viewListener == null) {
             return;
         }
@@ -196,6 +197,7 @@ public class PaymentWrapper {
         paymentInfo.zaloPayAccessToken = user.accesstoken;
         paymentInfo.walletTransID = walletTransId;
 
+        Timber.d("saveCardMap, start paymentsdk");
         ZingMobilePayApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
     }
 
