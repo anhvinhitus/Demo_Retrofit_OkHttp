@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.activity;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             hostFragment(getFragmentToHost());
         }
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected int getResLayoutId() {
