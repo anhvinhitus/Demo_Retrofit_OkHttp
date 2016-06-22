@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -8,6 +9,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
@@ -34,12 +36,22 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     public void getZaloFriend() {
-        new Handler().postDelayed(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
+                    if (BuildConfig.DEBUG) {
+                        e.printStackTrace();
+                    }
+                }
+                if (homeView == null || homeView.getActivity() == null) {
+                    return;
+                }
                 zaloFriendsFactory.reloadZaloFriend(homeView.getActivity(), null);
             }
-        }, 20000);
+        }).start();
     }
 
     @Override
