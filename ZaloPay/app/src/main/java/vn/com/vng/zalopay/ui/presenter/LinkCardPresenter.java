@@ -13,7 +13,10 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -172,12 +175,17 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
                 } else {
                     mLinkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
                 }
-            } else {
+            } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
+                mLinkCardView.showError(mLinkCardView.getContext().getString(R.string.exception_token_expired_message));
+                AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+            } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
-//                mLinkCardView.showError(pMessage.returnmessage);
+                mLinkCardView.showError(pMessage.returnmessage);
             }
         }
-    };
+    }
+
+    ;
 
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
         public LinkCardSubscriber() {

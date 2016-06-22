@@ -22,6 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -29,6 +30,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILoginView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 3/26/16.
@@ -95,7 +97,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         zaloProfilePreferences.setAuthCode("");*/
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
-            showErrorView(message);
+            if (mView.getContext() != null && !AndroidUtils.checkNetwork(mView.getContext())) {
+                showErrorView(mView.getContext().getString(R.string.exception_no_connection_try_again));
+            } else {
+                showErrorView(message);
+            }
             hideLoadingView();
         }
     }
