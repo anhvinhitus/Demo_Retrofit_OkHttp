@@ -184,8 +184,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         String message = ErrorMessageFactory.create(applicationContext, e);
         showErrorView(message);
     }
-
-
+    
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
         public LoginPaymentSubscriber() {
         }
