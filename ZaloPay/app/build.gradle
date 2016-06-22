@@ -49,6 +49,13 @@ android {
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
+    sourceSets {
+        production.assets.srcDirs += '../../paymentapps/production'
+        sandbox.assets.srcDirs += '../../paymentapps/sandbox'
+        internalProduction.assets.srcDirs += '../../paymentapps/production'
+        internalSandbox.assets.srcDirs += '../../paymentapps/sandbox'
+    }
+
     signingConfigs {
         debug {
             storeFile file("../../publish/zalopay-debug.jks")
