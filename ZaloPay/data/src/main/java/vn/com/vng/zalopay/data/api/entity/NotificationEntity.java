@@ -36,6 +36,10 @@ public class NotificationEntity extends Event {
     @Expose(deserialize = false, serialize = false)
     public boolean read;
 
+    @Expose(deserialize = false, serialize = false)
+    public long notificationId;
+
+
     public long getTransid() {
         return transid;
     }
@@ -98,5 +102,13 @@ public class NotificationEntity extends Event {
 
     public void setEmbeddata(JsonObject embeddata) {
         this.embeddata = embeddata;
+    }
+
+    public long getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(long notificationId) {
+        this.notificationId = notificationId;
     }
 }

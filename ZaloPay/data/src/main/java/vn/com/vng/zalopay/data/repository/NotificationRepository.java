@@ -22,4 +22,13 @@ public class NotificationRepository implements NotificationStore.Repository {
         return localStorage.get(pageIndex, count);
     }
 
+    @Override
+    public Observable<Integer> totalNotificationUnRead() {
+        return localStorage.totalNotificationUnRead();
+    }
+
+    @Override
+    public void markAsRead(long nId) {
+        localStorage.markAsRead(nId);
+    }
 }
