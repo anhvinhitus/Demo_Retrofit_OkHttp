@@ -37,7 +37,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                zaloFriendsFactory.reloadZaloFriend(homeView.getActivity(), null);
+                if (homeView != null) {
+                    zaloFriendsFactory.reloadZaloFriend(homeView.getActivity(), null);
+                }
             }
         }, 20000);
     }

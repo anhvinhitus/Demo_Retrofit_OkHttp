@@ -25,11 +25,13 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -204,5 +206,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpiredMain(TokenExpiredEvent event) {
         showToast(R.string.exception_token_expired_message);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onServerMaintain(ServerMaintainEvent event) {
+        Timber.i("Receive server maintain event");
+        getAppComponent().applicationSession().setMessageAtLogin("Hệ thống đang bảo trì. Vui lòng thử lại sau.");
+        getAppComponent().applicationSession().clearUserSession();
     }
 }
