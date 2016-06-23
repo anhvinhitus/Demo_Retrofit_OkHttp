@@ -9,6 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -103,6 +104,10 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
             Timber.e(e, "onError " + e);
             PinProfilePresenter.this.onUpdateProfileError(e);
         }

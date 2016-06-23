@@ -139,7 +139,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter.setData(getListData());
-        presenter.listAppResource();
+        presenter.initialize();
     }
 
     @Override

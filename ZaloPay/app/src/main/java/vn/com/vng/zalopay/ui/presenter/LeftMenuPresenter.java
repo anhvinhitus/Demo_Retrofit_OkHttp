@@ -11,6 +11,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -109,6 +110,12 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
             LeftMenuPresenter.this.onGetBalanceError(e);
         }
 

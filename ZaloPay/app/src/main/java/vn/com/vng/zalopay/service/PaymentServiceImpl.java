@@ -13,8 +13,10 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
@@ -173,8 +175,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onError(Throwable e) {
-            if (e instanceof TokenException) {
-                // simply ignore the token error
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
                 // because it is handled from based activity
                 return;
             }

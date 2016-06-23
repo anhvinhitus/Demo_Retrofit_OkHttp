@@ -1,9 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.text.TextUtils;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 

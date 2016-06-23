@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,12 +13,16 @@ import java.util.List;
 import de.greenrobot.dao.async.AsyncSession;
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.domain.model.User;
 
 import static java.util.Collections.emptyList;
 
@@ -26,16 +32,23 @@ import static java.util.Collections.emptyList;
 public class NotificationLocalStorage extends SqlBaseScopeImpl implements NotificationStore.LocalStorage {
 
     final JsonParser jsonParser;
+    final AsyncSession asyncSession;
 
-    public NotificationLocalStorage(DaoSession daoSession) {
+    final User user;
+    final EventBus eventBus;
+
+    public NotificationLocalStorage(DaoSession daoSession, User user, EventBus eventBus) {
         super(daoSession);
         jsonParser = new JsonParser();
+        asyncSession = getDaoSession().getNotificationGDDao().getSession().startAsyncSession();
+        this.user = user;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void put(List<NotificationEntity> val) {
         List<NotificationGD> list = transform(val);
-        if (Lists.isEmptyOrNull(list)) {
+        if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
         }
     }
@@ -46,6 +59,9 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (item != null) {
             Timber.d("Put item %s", item.getMessage());
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, item);
+            if (!item.getRead()) {
+                eventBus.post(new NotificationChangeEvent());
+            }
         }
     }
 
@@ -56,7 +72,6 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     AsyncSession getAsyncSession() {
-        AsyncSession asyncSession = getDaoSession().getNotificationGDDao().getSession().startAsyncSession();
         return asyncSession;
     }
 
@@ -88,16 +103,38 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationEntity.getDestuserid());
         _notification.setMessage(notificationEntity.getMessage());
         _notification.setTimestamp(notificationEntity.getTimestamp());
+        JsonObject embeddataJson = notificationEntity.getEmbeddata();
 
-        String embeddata = notificationEntity.getEmbeddata().toString();
+        int notificationtype = -1;
+        int transtype = -1;
+
+        try {
+            if (embeddataJson.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
+                notificationtype = embeddataJson.getAsJsonObject(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
+            }
+
+            if (embeddataJson.has(Constants.TRANSTYPE)) {
+                transtype = embeddataJson.getAsJsonObject(Constants.TRANSTYPE).getAsInt();
+            }
+        } catch (Exception ex) {
+        }
+
+        boolean isRead;
+
+        if (notificationtype != transtype || !user.uid.equals(notificationEntity.userid)) {
+            isRead = false;
+        } else {
+            isRead = true;
+        }
+
+        String embeddata = embeddataJson.toString();
 
         Timber.d("embeddata put %s ", embeddata);
+
         _notification.setEmbeddata(embeddata);
-
-
         _notification.setUserid(notificationEntity.getUserid());
         _notification.setTransid(notificationEntity.getTransid());
-        _notification.setRead(notificationEntity.isRead());
+        _notification.setRead(isRead);
 
         return _notification;
     }
@@ -108,13 +145,15 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
 
         NotificationEntity _notification = new NotificationEntity();
+
+        _notification.setNotificationId(notificationGD.getId()); // FIXME: 6/22/16 Change Id
+
         _notification.setAppid(notificationGD.getAppid());
         _notification.setDestuserid(notificationGD.getDestuserid());
         _notification.setMessage(notificationGD.getMessage());
         _notification.setTimestamp(notificationGD.getTimestamp());
         String embeddata = notificationGD.getEmbeddata();
-     /*   embeddata = embeddata.replaceAll("\\\\", "");*/
-        
+
         Timber.d("embeddata get %s ", embeddata);
         try {
             _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
@@ -159,4 +198,66 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
                         .list());
     }
 
+    private List<NotificationGD> queryList() {
+        return getDaoSession()
+                .getNotificationGDDao()
+                .queryBuilder()
+                .list();
+    }
+
+    private List<NotificationGD> queryListUnRead() {
+        return getDaoSession()
+                .getNotificationGDDao()
+                .queryBuilder()
+                .where(NotificationGDDao.Properties.Read.eq(false))
+                .list();
+    }
+
+    private long totalUnRead() {
+        return getDaoSession()
+                .getNotificationGDDao()
+                .queryBuilder()
+                .where(NotificationGDDao.Properties.Read.eq(false))
+                .count();
+    }
+
+    private List<NotificationGD> queryNotification(long id) {
+        return getDaoSession()
+                .getNotificationGDDao()
+                .queryBuilder()
+                .where(NotificationGDDao.Properties.Id.eq(id)) //// FIXME: 6/22/16 Change id
+                .list();
+    }
+
+    @Override
+    public void markAsRead(long nId) {
+
+        List<NotificationGD> list = queryNotification(nId);
+        for (NotificationGD notify : list) {
+            notify.setRead(true);
+        }
+
+        if (!Lists.isEmptyOrNull(list)) {
+            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
+            eventBus.post(new NotificationChangeEvent());
+        }
+    }
+
+    @Override
+    public void markAsReadAll() {
+        List<NotificationGD> list = queryListUnRead();
+        for (NotificationGD notify : list) {
+            notify.setRead(true);
+        }
+
+        if (!Lists.isEmptyOrNull(list)) {
+            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
+            eventBus.post(new NotificationChangeEvent());
+        }
+    }
+
+    @Override
+    public Observable<Integer> totalNotificationUnRead() {
+        return ObservableHelper.makeObservable(() -> (int) totalUnRead());
+    }
 }
