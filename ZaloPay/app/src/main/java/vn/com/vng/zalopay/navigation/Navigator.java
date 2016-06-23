@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import org.w3c.dom.Text;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -57,6 +59,19 @@ public class Navigator implements INavigator {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
+
+        context.startActivity(intent);
+    }
+
+    public void startLoginActivity(Context context, String message) {
+        Intent intent = new Intent(context, LoginZaloActivity.class);
+        intent.putExtra("finish", true);
+        if (!TextUtils.isEmpty(message)) {
+            intent.putExtra(Constants.ARG_MESSAGE, message);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
 
         context.startActivity(intent);
     }
@@ -128,11 +143,15 @@ public class Navigator implements INavigator {
         activity.startActivity(intentLinkCard(activity));
     }
 
+    public void startLinkCardProcedureActivity(Activity activity) {
+        Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
+        activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+    }
+
     public void startLinkCardProcedureActivity(Fragment activity) {
         Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
         activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
     }
-
 
     public void startPaymentApplicationActivity(Context context, String name) {
         Intent intent = new Intent(context, PaymentApplicationActivity.class);

@@ -3,13 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical">
+
+    <TextView
+        style="@style/TextView.Group.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing.small"
+        android:paddingLeft="@dimen/spacing.medium.t"
+        android:paddingTop="@dimen/spacing.large.t"
+        android:text="@string/otp_note" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputOTP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing.medium.l"
         android:background="@color/white"
         android:paddingTop="@dimen/spacing.medium"
         app:errorEnabled="false">
@@ -29,12 +38,4 @@
             android:paddingRight="@dimen/spacing.medium"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing.medium"
-        android:layout_marginTop="@dimen/spacing.small"
-        android:text="@string/otp_note"
-        android:textSize="@dimen/textsize.tiny" />
 </LinearLayout>

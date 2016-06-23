@@ -20,10 +20,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
-import vn.com.vng.zalopay.data.cache.TransactionLocalStorage;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
+import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
@@ -32,7 +33,6 @@ import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 4/26/16.
@@ -134,13 +134,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    protected void handleException(Exception e) {
-        getAppComponent().globalEventService().
-                showMessage(
-                        SweetAlertDialog.ERROR_TYPE,
-                        "",
-                        "Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
-
+    protected void handleException(Throwable e) {
+        eventBus.post(new InternalAppExceptionEvent(e));
         super.handleException(e);
     }
 
@@ -152,6 +147,12 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpiredMain(TokenExpiredEvent event) {
         showToast(R.string.exception_token_expired_message);
+    }
+
+    @Subscribe
+    public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {
+        reactInstanceCaughtError();
+        handleException(event.getInnerException());
     }
 
     public void showToast(String message) {

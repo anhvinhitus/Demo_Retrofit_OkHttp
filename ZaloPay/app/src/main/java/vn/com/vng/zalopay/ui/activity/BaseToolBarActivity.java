@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.ui.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
@@ -29,7 +31,7 @@ public abstract class BaseToolBarActivity extends BaseActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        getSupportActionBar().setTitle(title);
+       getSupportActionBar().setTitle(title);
     }
 
     @Override
@@ -40,4 +42,6 @@ public abstract class BaseToolBarActivity extends BaseActivity {
     public Toolbar getToolbar() {
         return mToolbar;
     }
+
+
 }

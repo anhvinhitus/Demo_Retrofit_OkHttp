@@ -21,6 +21,7 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.ws.message.TransactionType;
@@ -65,6 +66,16 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         compositeSubscription.add(subscription);
     }
 
+    @ReactMethod
+    public void updateStateReadWithTransid(String transid) {
+        Timber.d("updateStateReadWithTransid %s ", transid);
+        try {
+            repository.markAsRead(Long.parseLong(transid));
+        } catch (Exception ex) {
+            Timber.w(ex, "message exception");
+        }
+    }
+
     private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;
@@ -102,10 +113,10 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
 
         WritableMap item = Arguments.createMap();
-        item.putBoolean("read", entity.read);
+        item.putInt("read", entity.read ? 0 : 1);
 
         item.putString("message", entity.message);
-        item.putDouble("timestamp", entity.timestamp / 1000);
+        item.putDouble("timestamp", entity.timestamp);
 
         item.putInt("appid", entity.appid);
         item.putString("destuserid", entity.destuserid);
@@ -115,12 +126,12 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
         try {
             JsonObject embeddata = entity.getEmbeddata();
-            if (embeddata.has("notificationtype")) {
-                notificationtype = embeddata.get("notificationtype").getAsInt();
+            if (embeddata.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
+                notificationtype = embeddata.get(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
             }
 
-            if (embeddata.has("transtype")) {
-                transtype = embeddata.get("transtype").getAsInt();
+            if (embeddata.has(Constants.TRANSTYPE)) {
+                transtype = embeddata.get(Constants.TRANSTYPE).getAsInt();
             }
         } catch (Exception ex) {
             Timber.w(ex, " exception parse");
@@ -131,6 +142,8 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putString("title", TransactionType.getTitle(transtype));
         item.putInt("transtype", transtype);
         item.putInt("notificationtype", notificationtype);
+        item.putDouble("transid", entity.getTransid());
+        item.putDouble("notificationid", entity.notificationId);
         return item;
     }
 

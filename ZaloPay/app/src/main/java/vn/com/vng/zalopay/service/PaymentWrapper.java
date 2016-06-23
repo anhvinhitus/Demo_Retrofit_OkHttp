@@ -8,10 +8,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -47,13 +49,17 @@ public class PaymentWrapper {
         void onResponseTokenInvalid();
 
         void onResponseCancel();
+
+        void onNotEnoughMoney();
     }
 
     private final IViewListener viewListener;
     private final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
+    private final BalanceRepository balanceRepository;
 
-    public PaymentWrapper(ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+    public PaymentWrapper(BalanceRepository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+        this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
         this.responseListener = responseListener;
@@ -184,6 +190,7 @@ public class PaymentWrapper {
     }
 
     public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
+        Timber.d("saveCardMap, viewListener: %s", viewListener);
         if (viewListener == null) {
             return;
         }
@@ -194,6 +201,7 @@ public class PaymentWrapper {
         paymentInfo.zaloPayAccessToken = user.accesstoken;
         paymentInfo.walletTransID = walletTransId;
 
+        Timber.d("saveCardMap, start paymentsdk");
         ZingMobilePayApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
     }
 
@@ -208,6 +216,9 @@ public class PaymentWrapper {
         if (userInfo == null || userInfo.level < 0 || TextUtils.isEmpty(userInfo.userProfile)) {
             zpPaymentListener.onCancel();
             return;
+        }
+        if (balanceRepository!=null) {
+            userInfo.balance = balanceRepository.currentBalance();
         }
         ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, userInfo, zpPaymentListener);
     }
@@ -309,6 +320,8 @@ public class PaymentWrapper {
                     }
                     //Hien update profile level 2
                     startUpdateProfileLevel(walletTransId);
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
+                    responseListener.onNotEnoughMoney();
                 } else {
                     responseListener.onResponseError(resultStatus);
                 }
@@ -342,6 +355,12 @@ public class PaymentWrapper {
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
             Timber.w(e, "onError " + e);
             responseListener.onParameterError("token");
         }

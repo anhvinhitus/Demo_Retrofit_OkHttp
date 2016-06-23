@@ -25,12 +25,15 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
+import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
+import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
+import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
@@ -75,7 +78,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         Timber.d("appResource appname %s", appResource == null ? "" : appResource.appname);
         Timber.d("appResource appid %d", appResource == null ? 0 : appResource.appid);
 
-        super.onCreate(savedInstanceState);
+        try {
+            super.onCreate(savedInstanceState);
+        } catch (Exception e) {
+            Timber.e(e, "Caught exception while initializing Payment App");
+        }
     }
 
     @Override
@@ -217,6 +224,17 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         showToast(R.string.exception_token_expired_message);
     }
 
+    @Subscribe
+    public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {
+        reactInstanceCaughtError();
+        handleException(event.getInnerException());
+    }
+
+    @Override
+    protected void handleException(Throwable e) {
+        eventBus.post(new PaymentAppExceptionEvent(e, appResource.appid));
+        super.handleException(e);
+    }
 
     public void showToast(String message) {
         ToastUtil.showToast(this, message);

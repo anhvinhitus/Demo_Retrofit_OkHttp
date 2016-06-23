@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
  */
 public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRecoveryPinView {
     private OnOTPFragmentListener mListener;
+    private int mRetryOtp = 0;
 
     @Inject
     OTPRecoveryPinPresenter presenter;
@@ -51,10 +52,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
     public boolean isValidOTP() {
         String otp = edtOTP.getText().toString();
-        if (TextUtils.isEmpty(otp)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(otp);
     }
 
     /**
@@ -63,15 +61,12 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
      *
      * @return A new instance of fragment PinProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static OTPRecoveryPinFragment newInstance() {
-        OTPRecoveryPinFragment fragment = new OTPRecoveryPinFragment();
-        return fragment;
+        return new OTPRecoveryPinFragment();
     }
 
     @Override
     public void onClickContinue() {
-        String otp = edtOTP.getText().toString();
         if (!isValidOTP()) {
             showOTPError();
             return;
@@ -94,9 +89,6 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
     }
 
     @Override
@@ -110,9 +102,6 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
         super.onAttach(context);
         if (context instanceof OnOTPFragmentListener) {
             mListener = (OnOTPFragmentListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnOTPFragmentListener");
         }
     }
 
@@ -146,6 +135,16 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
             mListener.onConfirmOTPSucess();
         }
         navigator.startHomeActivity(getContext(), true);
+    }
+
+    @Override
+    public void confirmOTPError() {
+        showError("Đổi mã PIN thất bại.");
+        if (mRetryOtp < 3) {
+            mRetryOtp++;
+        } else {
+            navigator.startHomeActivity(getContext(), true);
+        }
     }
 
     @Override
@@ -184,7 +183,6 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnOTPFragmentListener {
-        // TODO: Update argument type and name
         void onConfirmOTPSucess();
         void onConfirmOTPFail();
     }

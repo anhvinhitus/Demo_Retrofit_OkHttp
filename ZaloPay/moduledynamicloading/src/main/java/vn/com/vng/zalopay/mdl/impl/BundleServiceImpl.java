@@ -61,7 +61,7 @@ public class BundleServiceImpl implements BundleService {
             ensureInternalLocalResources(packageInfo);
             ensurePaymentAppLocalResources(packageInfo);
         } catch (PackageManager.NameNotFoundException e) {
-            Timber.e(e, "Error!!!");
+            Timber.w(e, "Error!!!");
         }
     }
 
@@ -95,7 +95,7 @@ public class BundleServiceImpl implements BundleService {
             AssetManager assetManager = mApplication.getAssets();
             bundle = FileUtils.loadStringFromStream(assetManager.open("bundle.json"));
         } catch (IOException ex) {
-            Timber.e(ex, "IOException loadStringFromStream");
+            Timber.w(ex, "IOException loadStringFromStream");
             return;
         }
 
@@ -144,7 +144,7 @@ public class BundleServiceImpl implements BundleService {
             FileUtils.unzipFile(stream, dstPath, true);
             return true;
         } catch (Exception e) {
-            Timber.e(e, "exception %s", e);
+            Timber.w(e, "exception %s", e);
             return false;
         }
     }

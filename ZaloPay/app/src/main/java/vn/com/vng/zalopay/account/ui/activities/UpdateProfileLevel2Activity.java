@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ProfileSlidePagerAdapter;
@@ -35,6 +37,8 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 import vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager;
 
 public class UpdateProfileLevel2Activity extends BaseActivity implements IPreProfileView,
@@ -45,12 +49,10 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     private ProfileSlidePagerAdapter adapter;
     private String walletTransId = null;
     private PaymentWrapper paymentWrapper;
+    private SweetAlertDialog mProgressDialog;
 
     @Inject
     Navigator navigator;
-
-    @Inject
-    UserConfig userConfig;
 
     @Inject
     PreProfilePresenter presenter;
@@ -111,7 +113,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     }
 
     private void initPaymentWrapper() {
-        paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(null, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return UpdateProfileLevel2Activity.this;
@@ -142,6 +144,11 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             public void onResponseCancel() {
 
             }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(UpdateProfileLevel2Activity.this);
+            }
         });
     }
 
@@ -152,6 +159,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             return;
         }
         walletTransId = bundle.getString(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID);
+        Timber.d("initData, walletTransId %s", walletTransId);
     }
 
     private void showHideTermOfUser(boolean isShow) {
@@ -207,10 +215,18 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
         presenter.resume();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideLoading();
+        mProgressDialog = null;
+    }
+
     public void updateUserInfo(User user) {
         if (user == null) {
             return;
         }
+        Timber.d("updateUserInfo, birthday: %s", user.birthDate);
         Date date = new Date(user.birthDate*1000);
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
         tvName.setText(user.dname);
@@ -229,15 +245,24 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
         tvTermsOfUser2.setMovementMethod (LinkMovementMethod.getInstance());
         tvTermsOfUser3.setClickable(true);
         tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
-
     }
 
     @Override
     public void showLoading() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            mProgressDialog.setContentText("Loading");
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
     }
+
 
     @Override
     public void hideLoading() {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
     }
 
     @Override
@@ -272,12 +297,23 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
 
     @Override
     public void onConfirmOTPSucess() {
+        Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
-        if (userConfig == null || userConfig.getCurrentUser() == null) {
-            return;
-        }
         if (!TextUtils.isEmpty(walletTransId)) {
-            paymentWrapper.saveCardMap(walletTransId, null);
+            showLoading();
+            paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {
+                @Override
+                public void onSuccess() {
+                    showToast("Lưu thẻ thành công.");
+                    getActivity().finish();
+                }
+
+                @Override
+                public void onError(String s) {
+                    showToast("Lưu thẻ thất bại.");
+                    getActivity().finish();
+                }
+            });
         } else if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().finish();
         }

@@ -271,7 +271,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
                     sweetAlertDialog.cancel();
                 }
             };
-            showRetryDialog(getString(R.string.exception_no_connection), getString(R.string.txt_close), cancelListener, getString(R.string.txt_retry), retryListener);
+            showRetryDialog(getString(R.string.exception_no_connection_try_again), getString(R.string.txt_close), cancelListener, getString(R.string.txt_retry), retryListener);
         } else {
             showErrorDialog(getString(R.string.get_zalo_contact_error), getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
                 @Override
