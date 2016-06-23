@@ -7,6 +7,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
@@ -68,6 +69,10 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
             Timber.tag(TAG).e(e, " exception ");
         }
 

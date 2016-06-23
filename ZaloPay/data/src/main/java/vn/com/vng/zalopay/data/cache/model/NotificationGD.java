@@ -6,7 +6,7 @@ package vn.com.vng.zalopay.data.cache.model;
  */
 public class NotificationGD {
 
-    private long id;
+    private Long id;
     private Long transid;
     private Integer appid;
     private Long timestamp;
@@ -19,11 +19,11 @@ public class NotificationGD {
     public NotificationGD() {
     }
 
-    public NotificationGD(long id) {
+    public NotificationGD(Long id) {
         this.id = id;
     }
 
-    public NotificationGD(long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Boolean read, String embeddata) {
+    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Boolean read, String embeddata) {
         this.id = id;
         this.transid = transid;
         this.appid = appid;
@@ -35,11 +35,11 @@ public class NotificationGD {
         this.embeddata = embeddata;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

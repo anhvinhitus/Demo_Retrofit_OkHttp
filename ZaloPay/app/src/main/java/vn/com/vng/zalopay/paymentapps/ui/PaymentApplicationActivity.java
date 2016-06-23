@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
+import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
@@ -217,6 +218,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         showToast(R.string.exception_token_expired_message);
     }
 
+    @Override
+    protected void handleException(Exception e) {
+        eventBus.post(new InternalAppExceptionEvent(e));
+        super.handleException(e);
+    }
 
     public void showToast(String message) {
         ToastUtil.showToast(this, message);

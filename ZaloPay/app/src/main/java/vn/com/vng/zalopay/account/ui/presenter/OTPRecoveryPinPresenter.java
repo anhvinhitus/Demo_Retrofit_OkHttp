@@ -5,6 +5,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPRecoveryPinView;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -79,6 +80,10 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
             Timber.e(e, "onError " + e);
             OTPRecoveryPinPresenter.this.onConfirmOTPError(e);
         }

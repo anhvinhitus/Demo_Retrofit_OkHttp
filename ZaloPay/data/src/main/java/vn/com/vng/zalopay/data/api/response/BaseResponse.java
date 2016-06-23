@@ -16,10 +16,14 @@ public class BaseResponse {
     public String message;
 
     public boolean isSuccessfulResponse() {
-        return err == 1;
+        return err == NetworkError.SUCCESSFUL;
     }
 
     public boolean isSessionExpired() {
         return err == NetworkError.UM_TOKEN_NOT_FOUND || err == NetworkError.UM_TOKEN_EXPIRE || err == NetworkError.TOKEN_INVALID;
+    }
+
+    public boolean isServerMaintain() {
+        return err == NetworkError.SERVER_MAINTAIN;
     }
 }

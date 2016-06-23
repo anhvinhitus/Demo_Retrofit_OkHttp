@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,6 +17,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
@@ -24,6 +28,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -35,6 +40,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.data.GlobalData;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 5/24/16.
@@ -98,7 +104,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             add.commit();
         }
 
-        setTitle(null);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toggle = new ActionBarDrawerToggle(
                 this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -228,6 +234,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
     private final class OpenMenuRunnable implements Runnable {
         final int id;
         final WeakReference<MainActivity> act;
@@ -319,4 +330,12 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             startService(intent);
         }
     }*/
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInternalAppException(InternalAppExceptionEvent event) {
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
+        alertDialog.setContentText("Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
+        alertDialog.setConfirmText("Đồng ý");
+        alertDialog.show();
+    }
 }

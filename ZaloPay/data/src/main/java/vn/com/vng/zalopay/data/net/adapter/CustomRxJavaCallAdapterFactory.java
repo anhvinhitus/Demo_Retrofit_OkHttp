@@ -38,10 +38,13 @@ import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
+import vn.com.vng.zalopay.data.ws.model.Event;
 
 public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
     /**
@@ -156,12 +159,16 @@ public final class CustomRxJavaCallAdapterFactory extends CallAdapter.Factory {
                         if (response.isSuccessful()) {
                             R body = response.body();
                             if (body instanceof BaseResponse) {
-                                if (((BaseResponse) body).isSuccessfulResponse()) {
+                                BaseResponse baseResponse = (BaseResponse) body;
+                                if (baseResponse.isSuccessfulResponse()) {
                                     return Observable.just(body);
                                 } else {
-                                    if (((BaseResponse) body).isSessionExpired()) {
-                                        EventBus.getDefault().post(new TokenExpiredEvent(((BaseResponse) body).err));
+                                    if (baseResponse.isSessionExpired()) {
+                                        EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
                                         return Observable.error(new TokenException());
+                                    } else if (baseResponse.isServerMaintain()) {
+                                        EventBus.getDefault().post(new ServerMaintainEvent());
+                                        return Observable.error(new ServerMaintainException());
                                     } else {
                                         return Observable.error(new BodyException(((BaseResponse) body).err, ((BaseResponse) body).message));
                                     }

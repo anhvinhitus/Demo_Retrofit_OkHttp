@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules.user;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -8,6 +10,7 @@ import vn.com.vng.zalopay.data.cache.NotificationLocalStorage;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.NotificationRepository;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
@@ -18,8 +21,8 @@ public class NotificationModule {
 
     @UserScope
     @Provides
-    NotificationStore.LocalStorage provideNotificationLocalStorage(@Named("daosession") DaoSession session) {
-        return new NotificationLocalStorage(session);
+    NotificationStore.LocalStorage provideNotificationLocalStorage(@Named("daosession") DaoSession session, User user, EventBus eventBus) {
+        return new NotificationLocalStorage(session, user, eventBus);
     }
 
     @UserScope
