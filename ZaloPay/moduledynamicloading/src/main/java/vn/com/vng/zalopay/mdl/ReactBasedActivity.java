@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
@@ -22,7 +21,6 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
-import com.facebook.react.shell.MainReactPackage;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -31,18 +29,20 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 
 /**
  * Created by huuhoa on 5/16/16.
  * Based activity for hosting react native components
  */
 public abstract class ReactBasedActivity extends Activity implements DefaultHardwareBackBtnHandler {
+    private boolean mReactInstanceError;
+
     public ReactBasedActivity() {
+        mReactInstanceError = false;
     }
 
     protected abstract void doInjection();
-    protected void handleException(Exception e) {
+    protected void handleException(Throwable e) {
         finish();
     }
 
@@ -142,6 +142,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         }
 
         mReactInstanceManager = mNativeInstanceManager.acquireReactInstanceManager();
+        Timber.i("ReactInstanceManager currently has context: %s", mReactInstanceManager.hasStartedCreatingInitialContext());
 //        mReactInstanceManager.createReactContextInBackground();
         mReactRootView = createRootView();
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
@@ -185,7 +186,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         }
 
         if (mReactInstanceManager != null) {
-            mNativeInstanceManager.releaseReactInstanceManager(mReactInstanceManager);
+            mNativeInstanceManager.releaseReactInstanceManager(mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
         }
         super.onDestroy();
@@ -241,17 +242,20 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         super.onBackPressed();
     }
 
-    interface ReactNativeInstanceManager {
-        ReactInstanceManager acquireReactInstanceManager();
-        void releaseReactInstanceManager(ReactInstanceManager instance);
-    }
-
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
         Timber.i("finalize");
     }
 
+    protected void reactInstanceCaughtError() {
+        mReactInstanceError = true;
+    }
+
+    interface ReactNativeInstanceManager {
+        ReactInstanceManager acquireReactInstanceManager();
+        void releaseReactInstanceManager(ReactInstanceManager instance, boolean forceRemove);
+    }
 
     class ReactNativeInstanceManagerShortLife implements ReactNativeInstanceManager {
         @Override
@@ -278,7 +282,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         }
 
         @Override
-        public void releaseReactInstanceManager(ReactInstanceManager instance) {
+        public void releaseReactInstanceManager(ReactInstanceManager instance, boolean forceRemove) {
             if (instance != null) {
                 instance.onHostDestroy();
                 instance.destroy();
@@ -347,7 +351,7 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
     }
 
     @Override
-    public void releaseReactInstanceManager(ReactInstanceManager instance) {
+    public void releaseReactInstanceManager(ReactInstanceManager instance, boolean forceRemove) {
         if (mInstance == null) {
             return;
         }
@@ -370,8 +374,10 @@ class ReactNativeInstanceManagerLongLife implements ReactBasedActivity.ReactNati
 
         instance.onHostDestroy();
 
-//        instance.destroy();
-//        mInstance.remove(mapping);
+        if (forceRemove) {
+            instance.destroy();
+            mInstance.remove(mapping);
+        }
     }
 
     private void removeInstance() {

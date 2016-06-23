@@ -44,11 +44,11 @@ public class MessageParser implements Parser {
         ZPMsgProtos.DataResponseUser respMsg = ZPMsgProtos.DataResponseUser.parseFrom(msg);
         switch (respMsg.getMsgtype()) {
             case MessageType.Response.KICK_OUT:
-                return processAuthenticationLoginSuccess(respMsg.getMsgtype(), respMsg.getData().toByteArray());
+                return processKickOutUser(respMsg.getMsgtype(), respMsg.getData().toByteArray());
             case MessageType.Response.PUSH_NOTIFICATION:
                 return processPushMessage(respMsg.getMsgtype(), respMsg.getData().toByteArray());
             case MessageType.Response.AUTHEN_LOGIN_RESULT:
-                return processKickOutUser(respMsg.getMsgtype(), respMsg.getData().toByteArray());
+                return processAuthenticationLoginSuccess(respMsg.getMsgtype(), respMsg.getData().toByteArray());
             default:
         }
 
@@ -58,9 +58,10 @@ public class MessageParser implements Parser {
 
     public Event processAuthenticationLoginSuccess(int msgType, byte[] data) {
         try {
+            Timber.d("data %s", new String(data));
             AuthenticationData event = new AuthenticationData(msgType);
             ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
-            Timber.d("Result %s code %s", res.getResult(), res.getCode());
+            Timber.d("Result %s code %s data %s", res.getResult(), res.getCode(), new String(data));
 
             event.code = res.getCode();
             event.uid = res.getUsrid();

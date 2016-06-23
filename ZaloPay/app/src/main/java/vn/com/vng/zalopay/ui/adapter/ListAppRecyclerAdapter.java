@@ -64,7 +64,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Timber.d("on bindview holder %s", position);
 
         AppResource item = getItem(position);
         if (item != null) {
@@ -105,7 +104,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         @OnClick(R.id.itemLayout)
         public void onClickItem(View v) {
 
-            Timber.d("on click item %s", getAdapterPosition());
 
             if (listener != null) {
                 listener.onListItemClick(v, getAdapterPosition());
