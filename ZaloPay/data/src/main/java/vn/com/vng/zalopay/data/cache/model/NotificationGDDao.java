@@ -23,7 +23,7 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Transid = new Property(1, Long.class, "transid", false, "TRANSID");
         public final static Property Appid = new Property(2, Integer.class, "appid", false, "APPID");
         public final static Property Timestamp = new Property(3, Long.class, "timestamp", false, "TIMESTAMP");
@@ -47,7 +47,7 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"NOTIFICATION_GD\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"TRANSID\" INTEGER," + // 1: transid
                 "\"APPID\" INTEGER," + // 2: appid
                 "\"TIMESTAMP\" INTEGER," + // 3: timestamp
@@ -68,7 +68,11 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, NotificationGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         Long transid = entity.getTransid();
         if (transid != null) {
@@ -114,14 +118,14 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public NotificationGD readEntity(Cursor cursor, int offset) {
         NotificationGD entity = new NotificationGD( //
-            cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // transid
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // appid
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // timestamp
@@ -137,7 +141,7 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, NotificationGD entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setTransid(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
         entity.setAppid(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setTimestamp(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
