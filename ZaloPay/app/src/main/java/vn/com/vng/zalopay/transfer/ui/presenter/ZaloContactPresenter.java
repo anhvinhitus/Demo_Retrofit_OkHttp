@@ -15,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -72,7 +73,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     public void getFriendList(final IZaloFriendListener listener) {
 //        mView.showLoading();
-        new Thread(new Runnable() {
+        AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 if (zaloFriendsFactory == null || mView == null) {
@@ -80,7 +81,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                 }
                 zaloFriendsFactory.reloadZaloFriend(mView.getContext(), listener);
             }
-        }).start();
+        });
     }
 
     private void saveZaloFriends(List<ZaloFriend> zaloFriends) {

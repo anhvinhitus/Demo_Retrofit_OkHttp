@@ -81,6 +81,12 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
+    Navigator provideNavigator(UserConfig userConfig) {
+        return new Navigator(userConfig);
+    }
+
+    @Provides
+    @Singleton
     @Named("daosession")
     DaoSession provideDaoSession(Context context) {
         DaoMaster.OpenHelper helper = new DBOpenHelper(context, "zalopay.db");
