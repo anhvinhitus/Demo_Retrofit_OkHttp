@@ -113,7 +113,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     }
 
     private void initPaymentWrapper() {
-        paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(null, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return UpdateProfileLevel2Activity.this;

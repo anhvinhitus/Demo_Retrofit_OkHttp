@@ -55,7 +55,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     public TransferPresenter(User user, ZaloFriendsFactory zaloFriendsFactory) {
         this.user = user;
         this.zaloFriendsFactory = zaloFriendsFactory;
-        paymentWrapper = new PaymentWrapper(zaloPayRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
