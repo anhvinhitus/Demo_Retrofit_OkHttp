@@ -47,7 +47,7 @@ public class ZaloFriendsFactory {
     }
 
     public void reloadZaloFriend(Context context, final ZaloContactPresenter.IZaloFriendListener listener) {
-        if (sqlZaloPayScope.isHaveZaloFriendDb()) {
+        if (sqlZaloPayScope != null && sqlZaloPayScope.isHaveZaloFriendDb()) {
             long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
             //check xem moi lay thi thoi
             long currentTime = System.currentTimeMillis() / 1000;
@@ -70,7 +70,9 @@ public class ZaloFriendsFactory {
                     if (data.length() >= OFFSET_FRIEND_LIST) {
                         getFriendListServer(context, (pageIndex + OFFSET_FRIEND_LIST), listener);
                     } else {
-                        sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
+                        if (sqlZaloPayScope != null) {
+                            sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
+                        }
                     }
                     List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = zaloFriends(data);
                     insertZaloFriends(zaloFriends);
