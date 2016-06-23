@@ -104,7 +104,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             add.commit();
         }
 
-        setTitle(null);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toggle = new ActionBarDrawerToggle(
                 this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);

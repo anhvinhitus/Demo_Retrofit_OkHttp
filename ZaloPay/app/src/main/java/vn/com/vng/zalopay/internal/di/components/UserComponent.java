@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
@@ -76,6 +77,8 @@ public interface UserComponent {
     BalanceRepository balanceRepository();
 
     TransactionStore.Repository transactionRepository();
+
+    NotificationStore.Repository notificationRepository();
 
  /*   ApplicationRepository applicationRepository();*/
 

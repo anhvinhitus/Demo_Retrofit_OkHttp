@@ -46,6 +46,14 @@ public class SqlBaseScopeImpl {
         return def;
     }
 
+    public int getDataManifest(String key, int def) {
+        try {
+            def = Integer.valueOf(getDataManifest(key));
+        } catch (Exception e) {
+        }
+        return def;
+    }
+
     public AppResourceGDDao getAppInfoDao() {
         return daoSession.getAppResourceGDDao();
     }

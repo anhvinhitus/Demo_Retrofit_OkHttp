@@ -139,7 +139,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter.setData(getListData());
-        presenter.listAppResource();
+        presenter.initialize();
     }
 
     @Override
@@ -222,6 +222,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     //Test
     List<AppResource> mListApps = null;
+
     private List<AppResource> getListData() {
         if (mListApps == null || mListApps.size() <= 0) {
             mListApps = Arrays.asList(
@@ -245,7 +246,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void setTotalNotify(int total) {
-        mNotifyView.setText(String.valueOf(total));
+        if (total > 0) {
+            mNotifyView.setText(String.valueOf(total));
+            mNotifyView.setVisibility(View.VISIBLE);
+        } else {
+            mNotifyView.setVisibility(View.GONE);
+        }
     }
 
     @Override
