@@ -110,8 +110,6 @@ public class NotificationService extends Service implements OnReceiverMessageLis
         Timber.d("onReceiverEvent %s", event.msgType);
         if (event instanceof NotificationData) {
             onReceiverNotification((NotificationData) event);
-        } else if (event instanceof AuthenticationData) {
-            Toast.makeText(NotificationService.this, "Authentication success", Toast.LENGTH_SHORT).show();
         }
     }
 
