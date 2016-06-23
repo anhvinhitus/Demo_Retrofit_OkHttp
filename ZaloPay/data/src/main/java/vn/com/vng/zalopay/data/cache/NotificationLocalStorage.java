@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.data.cache;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -14,14 +13,13 @@ import de.greenrobot.dao.async.AsyncSession;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static java.util.Collections.emptyList;
@@ -46,7 +44,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     @Override
-    public void put(List<NotificationEntity> val) {
+    public void put(List<NotificationData> val) {
         List<NotificationGD> list = transform(val);
         if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
@@ -56,7 +54,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     @Override
-    public void put(NotificationEntity val) {
+    public void put(NotificationData val) {
         NotificationGD item = transform(val);
         if (item != null) {
             Timber.d("Put item %s", item.getMessage());
@@ -69,7 +67,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
 
     @Override
-    public Observable<List<NotificationEntity>> get(int pageIndex, int limit) {
+    public Observable<List<NotificationData>> get(int pageIndex, int limit) {
         return ObservableHelper.makeObservable(() -> queryList(pageIndex, limit));
     }
 
@@ -77,13 +75,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return asyncSession;
     }
 
-    private List<NotificationGD> transform(Collection<NotificationEntity> notificationEntities) {
+    private List<NotificationGD> transform(Collection<NotificationData> notificationEntities) {
         if (Lists.isEmptyOrNull(notificationEntities)) {
             return emptyList();
         }
 
         List<NotificationGD> notificationGDs = new ArrayList<>(notificationEntities.size());
-        for (NotificationEntity notificationEntity : notificationEntities) {
+        for (NotificationData notificationEntity : notificationEntities) {
             NotificationGD notificationGD = transform(notificationEntity);
             if (notificationGD == null) {
                 continue;
@@ -95,7 +93,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return notificationGDs;
     }
 
-    private NotificationGD transform(NotificationEntity notificationEntity) {
+    private NotificationGD transform(NotificationData notificationEntity) {
         if (notificationEntity == null) {
             return null;
         }
@@ -143,12 +141,12 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return _notification;
     }
 
-    private NotificationEntity transform(NotificationGD notificationGD) {
+    private NotificationData transform(NotificationGD notificationGD) {
         if (notificationGD == null) {
             return null;
         }
 
-        NotificationEntity _notification = new NotificationEntity();
+        NotificationData _notification = new NotificationData();
 
         _notification.setNotificationId(notificationGD.getId()); // FIXME: 6/22/16 Change Id
 
@@ -173,14 +171,14 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return _notification;
     }
 
-    private List<NotificationEntity> transformEntity(Collection<NotificationGD> notificationGDs) {
+    private List<NotificationData> transformEntity(Collection<NotificationGD> notificationGDs) {
         if (Lists.isEmptyOrNull(notificationGDs)) {
             return emptyList();
         }
 
-        List<NotificationEntity> notificationEntities = new ArrayList<>();
+        List<NotificationData> notificationEntities = new ArrayList<>();
         for (NotificationGD notificationGD : notificationGDs) {
-            NotificationEntity entity = transform(notificationGD);
+            NotificationData entity = transform(notificationGD);
             if (entity == null) {
                 continue;
             }
@@ -191,7 +189,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return notificationEntities;
     }
 
-    private List<NotificationEntity> queryList(int pageIndex, int limit) {
+    private List<NotificationData> queryList(int pageIndex, int limit) {
         return transformEntity(
                 getDaoSession()
                         .getNotificationGDDao()

@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.data.cache;
 import java.util.List;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 
 /**
  * Created by AnhHieu on 6/20/16.
@@ -11,15 +11,15 @@ import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
 public interface NotificationStore {
 
     interface LocalStorage {
-        void put(List<NotificationEntity> val);
+        void put(List<NotificationData> val);
 
-        void put(NotificationEntity val);
+        void put(NotificationData val);
 
         void markAsRead(long nId);
 
         void markAsReadAll();
 
-        Observable<List<NotificationEntity>> get(int pageIndex, int limit);
+        Observable<List<NotificationData>> get(int pageIndex, int limit);
 
         Observable<Integer> totalNotificationUnRead();
     }
@@ -28,7 +28,7 @@ public interface NotificationStore {
     }
 
     interface Repository {
-        Observable<List<NotificationEntity>> getNotification(int pageIndex, int count);
+        Observable<List<NotificationData>> getNotification(int pageIndex, int count);
 
         Observable<Integer> totalNotificationUnRead();
 
