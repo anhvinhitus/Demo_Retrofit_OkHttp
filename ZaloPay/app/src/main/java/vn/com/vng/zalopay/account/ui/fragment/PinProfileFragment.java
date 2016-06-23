@@ -67,8 +67,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     public void onTextChangedPhone() {
         if (isValidPhone()) {
             hidePhoneError();
-        } else {
-            showPhoneError();
         }
     }
 
@@ -131,9 +129,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (!isValidPin()) {
-                passCode.showError(getString(R.string.invalid_pin));
-            } else {
+            if (isValidPin()) {
                 passCode.hideError();
             }
         }

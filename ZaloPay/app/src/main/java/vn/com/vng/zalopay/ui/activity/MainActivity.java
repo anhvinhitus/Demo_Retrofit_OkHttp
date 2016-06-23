@@ -218,6 +218,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
                 break;
+            case MenuItemUtil.SAVE_CARD_ID:
+                navigator.startLinkCardActivity(this);
+                break;
 
         }
     }
