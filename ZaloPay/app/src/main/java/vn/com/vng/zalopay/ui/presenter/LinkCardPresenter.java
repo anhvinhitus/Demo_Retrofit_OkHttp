@@ -81,7 +81,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, card.expiretime);
             try {
                 Timber.d("transform card.first6cardno:%s", card.first6cardno);
-                bankCard.type = detectCardType(card.cardname, card.first6cardno);
+                bankCard.type = detectCardType(card.bankcode, card.first6cardno);
                 Timber.d("transform bankCard.type:%s", bankCard.type);
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
@@ -209,24 +209,24 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
-    public String detectCardType(String cardName, String first6cardno) {
-        if (TextUtils.isEmpty(cardName)) {
+    public String detectCardType(String bankcode, String first6cardno) {
+        if (TextUtils.isEmpty(bankcode)) {
             return ECardType.UNDEFINE.toString();
-        } else if (cardName.equals(ECardType.PVTB.toString())) {
+        } else if (bankcode.equals(ECardType.PVTB.toString())) {
             return ECardType.PVTB.toString();
-        } else if (cardName.equals(ECardType.PBIDV.toString())) {
+        } else if (bankcode.equals(ECardType.PBIDV.toString())) {
             return ECardType.PBIDV.toString();
-        } else if (cardName.equals(ECardType.PVCB.toString())) {
+        } else if (bankcode.equals(ECardType.PVCB.toString())) {
             return ECardType.PVCB.toString();
-        } else if (cardName.equals(ECardType.PEIB.toString())) {
+        } else if (bankcode.equals(ECardType.PEIB.toString())) {
             return ECardType.PEIB.toString();
-        } else if (cardName.equals(ECardType.PSCB.toString())) {
+        } else if (bankcode.equals(ECardType.PSCB.toString())) {
             return ECardType.PSCB.toString();
-        } else if (cardName.equals(ECardType.PAGB.toString())) {
+        } else if (bankcode.equals(ECardType.PAGB.toString())) {
             return ECardType.PAGB.toString();
-        } else if (cardName.equals(ECardType.PTPB.toString())) {
+        } else if (bankcode.equals(ECardType.PTPB.toString())) {
             return ECardType.PTPB.toString();
-        } else if (cardName.equals(ECardType.UNDEFINE.toString())) {
+        } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
             return ECardType.UNDEFINE.toString();
         } else {
             try {

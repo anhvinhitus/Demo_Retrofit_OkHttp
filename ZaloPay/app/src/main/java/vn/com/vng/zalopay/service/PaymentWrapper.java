@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -55,8 +56,10 @@ public class PaymentWrapper {
     private final IViewListener viewListener;
     private final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
+    private final BalanceRepository balanceRepository;
 
-    public PaymentWrapper(ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+    public PaymentWrapper(BalanceRepository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+        this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
         this.responseListener = responseListener;
@@ -213,6 +216,9 @@ public class PaymentWrapper {
         if (userInfo == null || userInfo.level < 0 || TextUtils.isEmpty(userInfo.userProfile)) {
             zpPaymentListener.onCancel();
             return;
+        }
+        if (balanceRepository!=null) {
+            userInfo.balance = balanceRepository.currentBalance();
         }
         ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, userInfo, zpPaymentListener);
     }

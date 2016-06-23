@@ -39,7 +39,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
     public LinkCardProcedurePresenter(User user) {
         this.user = user;
-        paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(null, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();

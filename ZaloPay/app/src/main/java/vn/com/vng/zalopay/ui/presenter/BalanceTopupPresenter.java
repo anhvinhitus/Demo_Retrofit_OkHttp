@@ -32,7 +32,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
     private final PaymentWrapper paymentWrapper;
 
     public BalanceTopupPresenter() {
-        paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();

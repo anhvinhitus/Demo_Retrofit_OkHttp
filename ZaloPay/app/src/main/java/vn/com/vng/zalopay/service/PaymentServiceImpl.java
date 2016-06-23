@@ -52,7 +52,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public void pay(final Activity activity, final Promise promise, long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
-        this.paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+        this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return activity;
