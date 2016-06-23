@@ -108,12 +108,15 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         int notificationtype = -1;
         int transtype = -1;
 
-        if (embeddataJson.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
-            notificationtype = embeddataJson.getAsJsonObject(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
-        }
+        try {
+            if (embeddataJson.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
+                notificationtype = embeddataJson.getAsJsonObject(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
+            }
 
-        if (embeddataJson.has(Constants.TRANSTYPE)) {
-            transtype = embeddataJson.getAsJsonArray(Constants.TRANSTYPE).getAsInt();
+            if (embeddataJson.has(Constants.TRANSTYPE)) {
+                transtype = embeddataJson.getAsJsonObject(Constants.TRANSTYPE).getAsInt();
+            }
+        } catch (Exception ex) {
         }
 
         boolean isRead;
