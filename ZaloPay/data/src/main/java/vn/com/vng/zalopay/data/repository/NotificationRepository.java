@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.data.repository;
 import java.util.List;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 
 /**
@@ -18,7 +18,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public Observable<List<NotificationEntity>> getNotification(int pageIndex, int count) {
+    public Observable<List<NotificationData>> getNotification(int pageIndex, int count) {
         return localStorage.get(pageIndex, count);
     }
 

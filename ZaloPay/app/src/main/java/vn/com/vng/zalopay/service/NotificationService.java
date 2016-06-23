@@ -18,7 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
@@ -92,7 +92,6 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
         Timber.d("onNetworkChange %s", event.isOnline);
-
         if (event.isOnline) {
             this.connectAndSendAuthentication();
         }
@@ -109,22 +108,20 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Override
     public void onReceiverEvent(Event event) {
         Timber.d("onReceiverEvent %s", event.msgType);
-        if (event instanceof NotificationEntity) {
-            onReceiverNotification((NotificationEntity) event);
-        } else if (event instanceof AuthenticationData) {
-            Toast.makeText(NotificationService.this, "Authentication success", Toast.LENGTH_SHORT).show();
+        if (event instanceof NotificationData) {
+            onReceiverNotification((NotificationData) event);
         }
     }
 
 
-    private void onReceiverNotification(NotificationEntity event) {
+    private void onReceiverNotification(NotificationData event) {
         this.showNotification(event);
         this.updateTransaction();
         this.updateBalance();
         localStorage.put(event);
     }
 
-    private void showNotification(NotificationEntity event) {
+    private void showNotification(NotificationData event) {
         String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
         String title = getString(R.string.app_name);
 

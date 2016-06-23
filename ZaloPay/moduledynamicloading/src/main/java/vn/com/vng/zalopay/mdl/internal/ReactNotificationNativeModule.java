@@ -14,7 +14,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.google.gson.JsonObject;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.List;
 
 import rx.Subscription;
@@ -22,12 +21,10 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.TransHistory;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
 /**
  * Created by huuhoa on 6/10/16.
@@ -55,10 +52,10 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
     public void getNotification(int pageIndex, int count, Promise promise) {
         Timber.d("get transaction index %s count %s", pageIndex, count);
         Subscription subscription = repository.getNotification(pageIndex, count)
-                .map(new Func1<List<NotificationEntity>, WritableArray>() {
+                .map(new Func1<List<NotificationData>, WritableArray>() {
 
                     @Override
-                    public WritableArray call(List<NotificationEntity> transHistory) {
+                    public WritableArray call(List<NotificationData> transHistory) {
                         return transform(transHistory);
                     }
                 }).subscribe(new NotificationSubscriber(promise));
@@ -107,7 +104,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
     }
 
-    private WritableMap transform(NotificationEntity entity) {
+    private WritableMap transform(NotificationData entity) {
         if (entity == null) {
             return null;
         }
@@ -147,9 +144,9 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         return item;
     }
 
-    private WritableArray transform(List<NotificationEntity> notificationEntities) {
+    private WritableArray transform(List<NotificationData> notificationEntities) {
         WritableArray result = Arguments.createArray();
-        for (NotificationEntity entity : notificationEntities) {
+        for (NotificationData entity : notificationEntities) {
             WritableMap item = transform(entity);
             if (item == null) {
                 continue;
