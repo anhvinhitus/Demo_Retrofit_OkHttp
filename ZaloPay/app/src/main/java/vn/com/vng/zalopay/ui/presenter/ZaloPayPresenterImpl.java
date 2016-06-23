@@ -55,21 +55,23 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void initialize() {
-        this.getTotalNotification();
+        this.getTotalNotification(500);
         this.listAppResource();
     }
 
     @Override
     public void listAppResource() {
         Subscription subscription = mAppResourceRepository.listAppResource()
-                .delaySubscription(3, TimeUnit.SECONDS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .delaySubscription(3, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
 
         compositeSubscription.add(subscription);
     }
 
-    private void getTotalNotification() {
+    private void getTotalNotification(long delay) {
         Subscription subscription = notificationRepository.totalNotificationUnRead()
+                .delay(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
         compositeSubscription.add(subscription);
@@ -112,7 +114,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationChangeEventChange(NotificationChangeEvent event) {
         Timber.d("onNotificationChangeEventChange");
-        getTotalNotification();
+        getTotalNotification(0);
     }
 
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
@@ -120,6 +122,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         public void onNext(Integer integer) {
             Timber.d("NotificationSubscriber %s", integer);
             mZaloPayView.setTotalNotify(integer);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.w(e, "onError ");
         }
     }
 

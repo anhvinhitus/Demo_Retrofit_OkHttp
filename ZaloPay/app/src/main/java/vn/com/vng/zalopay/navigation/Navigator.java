@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import org.w3c.dom.Text;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
@@ -21,6 +20,7 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -34,16 +34,21 @@ import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
 * Navigator
 * */
 @Singleton
 public class Navigator implements INavigator {
+    private final int MIN_PROFILE_LEVEL = 2;
+
+    UserConfig userConfig;
 
     @Inject
-    public Navigator() {
+    public Navigator(UserConfig userConfig) {
         //empty
+        this.userConfig = userConfig;
     }
 
 
@@ -116,6 +121,56 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    private void showRequireCreatePinDialog(final Context context) {
+        if (context == null) {
+            return;
+        }
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+//                .setTitle(context.getString(R.string.action_notifications))
+                .setContentText(context.getString(R.string.txt_need_create_pin))
+                .setCancelText(context.getString(R.string.txt_close))
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmText(context.getString(R.string.txt_create_pin))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        startUpdateProfileLevel2Activity(context, false);
+                    }
+                });
+        sweetAlertDialog.show();
+    }
+
+    private void showUpdateProfileInfoDialog(final Context context) {
+        if (context == null) {
+            return;
+        }
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+//                .setTitle(context.getString(R.string.action_notifications))
+                .setContentText(context.getString(R.string.txt_need_input_userinfo))
+                .setCancelText(context.getString(R.string.txt_close))
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmText(context.getString(R.string.txt_input_userinfo))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        startUpdateProfileLevel2Activity(context, false);
+                    }
+                });
+        sweetAlertDialog.show();
+    }
+
     public void startActivity(Fragment fragment, Intent intent) {
         fragment.startActivity(intent);
     }
@@ -140,17 +195,31 @@ public class Navigator implements INavigator {
     }
 
     public void startLinkCardActivity(Activity activity) {
-        activity.startActivity(intentLinkCard(activity));
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showRequireCreatePinDialog(activity);
+        } else {
+            activity.startActivity(intentLinkCard(activity));
+        }
     }
 
     public void startLinkCardProcedureActivity(Activity activity) {
-        Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
-        activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showRequireCreatePinDialog(activity);
+        } else {
+            Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
+            activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        }
     }
 
     public void startLinkCardProcedureActivity(Fragment activity) {
-        Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
-        activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            if (activity != null) {
+                showRequireCreatePinDialog(activity.getContext());
+            }
+        } else {
+            Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
+            activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        }
     }
 
     public void startPaymentApplicationActivity(Context context, String name) {
@@ -200,8 +269,14 @@ public class Navigator implements INavigator {
     }
 
     public void startTransferMoneyActivity(Activity activity) {
-        Intent intent = new Intent(activity, TransferHomeActivity.class);
-        activity.startActivity(intent);
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            if (activity != null) {
+                showUpdateProfileInfoDialog(activity);
+            }
+        } else {
+            Intent intent = new Intent(activity, TransferHomeActivity.class);
+            activity.startActivity(intent);
+        }
     }
 
     public void startZaloContactActivity(TransferHomeFragment fragment) {
