@@ -42,7 +42,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         e.printStackTrace();
                     }
                 }
-                if (homeView == null || homeView.getActivity() == null) {
+                if (homeView == null || homeView.getActivity() == null || zaloFriendsFactory == null) {
                     return;
                 }
                 zaloFriendsFactory.reloadZaloFriend(homeView.getContext(), null);
