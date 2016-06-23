@@ -5,13 +5,13 @@ package vn.com.vng.zalopay.event;
  * Internal react-native app exception event
  */
 public class InternalAppExceptionEvent {
-    private final Exception mInnerException;
+    private final Throwable mInnerException;
 
-    public InternalAppExceptionEvent(Exception e) {
+    public InternalAppExceptionEvent(Throwable e) {
         mInnerException = e;
     }
 
-    public Exception getInnerException() {
+    public Throwable getInnerException() {
         return mInnerException;
     }
 }

@@ -133,8 +133,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GlobalEventHandlingService providesGlobalEventService() {
-        return new GlobalEventHandlingServiceImpl();
+    GlobalEventHandlingService providesGlobalEventService(EventBus eventBus) {
+        return new GlobalEventHandlingServiceImpl(eventBus);
     }
 
     @Provides

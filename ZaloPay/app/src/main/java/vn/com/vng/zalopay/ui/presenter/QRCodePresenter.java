@@ -27,7 +27,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     private PaymentWrapper paymentWrapper;
 
     public QRCodePresenter() {
-        paymentWrapper = new PaymentWrapper(zaloPayRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();

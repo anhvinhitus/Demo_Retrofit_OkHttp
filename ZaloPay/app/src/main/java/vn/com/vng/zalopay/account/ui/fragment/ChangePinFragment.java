@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
+import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 
 /**
@@ -31,6 +33,25 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
+
+    IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (isValidPin()) {
+                passCode.hideError();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private boolean isValidPin() {
         String pin = passCode.getText();
@@ -82,6 +103,7 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        passCode.setPasscodeChanged(passcodeChanged);
     }
 
     @Override

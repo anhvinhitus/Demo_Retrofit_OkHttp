@@ -90,7 +90,7 @@ public class ChangePinActivity extends BaseToolBarActivity implements
 
     @Override
     public void onConfirmOTPSucess() {
-        showToast("Đôi mã PIN thành công.");
+        showToast("Tạo lại mã PIN thành công.");
         if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().finish();
         }

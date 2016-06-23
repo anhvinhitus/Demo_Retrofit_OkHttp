@@ -8,5 +8,6 @@ import rx.Observable;
  */
 public interface BalanceRepository {
     Observable<Long> balance();
+    Long currentBalance();
     Observable<Long> updateBalance();
 }
