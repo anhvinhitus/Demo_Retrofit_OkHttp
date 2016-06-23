@@ -2,12 +2,12 @@ package vn.com.vng.zalopay.event;
 
 /**
  * Created by huuhoa on 6/23/16.
- * Internal react-native app exception event
+ * Maybe react-native related exception
  */
-public class InternalAppExceptionEvent {
+public class UncaughtRuntimeExceptionEvent {
     private final Throwable mInnerException;
 
-    public InternalAppExceptionEvent(Throwable e) {
+    public UncaughtRuntimeExceptionEvent(Throwable e) {
         mInnerException = e;
     }
 

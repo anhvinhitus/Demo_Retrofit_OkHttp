@@ -17,9 +17,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
@@ -28,7 +25,6 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -114,7 +110,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         //init SDK
         presenter.initialize();
-        globalEventHandlingService.setMainActivity(this);
 
         startZaloPayService();
         presenter.getZaloFriend();
@@ -139,7 +134,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
         GlobalData.initApplication(null);
-        globalEventHandlingService.setMainActivity(null);
         super.onDestroy();
     }
 
@@ -331,11 +325,27 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }*/
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onInternalAppException(InternalAppExceptionEvent event) {
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
-        alertDialog.setContentText("Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
-        alertDialog.setConfirmText("Đồng ý");
+
+    @Override
+    public void onPause() {
+        Timber.i("MainActivity is pausing");
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        Timber.i("MainActivity is resuming");
+        super.onResume();
+
+        GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
+        if (message == null) {
+            return;
+        }
+
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType);
+        alertDialog.setConfirmText(message.title);
+        alertDialog.setContentText(message.content);
         alertDialog.show();
     }
+
 }
