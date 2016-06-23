@@ -109,14 +109,16 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationChangeEventChange(NotificationChangeEvent event) {
+        Timber.d("onNotificationChangeEventChange");
         getTotalNotification();
     }
 
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
         @Override
         public void onNext(Integer integer) {
+            Timber.d("NotificationSubscriber %s", integer);
             mZaloPayView.setTotalNotify(integer);
         }
     }

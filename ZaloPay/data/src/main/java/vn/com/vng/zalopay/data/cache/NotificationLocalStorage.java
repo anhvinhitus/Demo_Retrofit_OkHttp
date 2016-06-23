@@ -51,6 +51,8 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
         }
+
+
     }
 
     @Override
@@ -58,7 +60,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         NotificationGD item = transform(val);
         if (item != null) {
             Timber.d("Put item %s", item.getMessage());
-            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, item);
+            getAsyncSession().insertInTx(NotificationGD.class, item);
             if (!item.getRead()) {
                 eventBus.post(new NotificationChangeEvent());
             }
@@ -129,12 +131,14 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         String embeddata = embeddataJson.toString();
 
-        Timber.d("embeddata put %s ", embeddata);
+        Timber.d("embeddata put %s isRead %s  ", embeddata, isRead);
 
         _notification.setEmbeddata(embeddata);
         _notification.setUserid(notificationEntity.getUserid());
         _notification.setTransid(notificationEntity.getTransid());
         _notification.setRead(isRead);
+
+        _notification.setId(null);
 
         return _notification;
     }
