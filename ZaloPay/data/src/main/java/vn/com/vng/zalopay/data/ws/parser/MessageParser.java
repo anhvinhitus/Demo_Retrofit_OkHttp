@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.NotificationEntity;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -84,11 +84,11 @@ public class MessageParser implements Parser {
     public Event processPushMessage(int msgType, byte[] data) {
         String str = new String(data);
         Timber.d("notification %s", str);
-        NotificationEntity event = null;
+        NotificationData event = null;
         if (!TextUtils.isEmpty(str)) {
 
             try {
-                event = mGson.fromJson(str, NotificationEntity.class);
+                event = mGson.fromJson(str, NotificationData.class);
                 event.setMsgType(msgType);
 
             } catch (Exception ex) {

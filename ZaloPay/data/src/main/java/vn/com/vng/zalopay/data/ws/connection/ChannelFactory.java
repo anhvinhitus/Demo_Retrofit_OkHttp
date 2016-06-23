@@ -34,7 +34,7 @@ public class ChannelFactory extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("handler", new ConnectionHandler(context, listener));
     }
 
-    @Override
+/*    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         Timber.d("channelRead");
@@ -51,6 +51,6 @@ public class ChannelFactory extends ChannelInitializer<SocketChannel> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Timber.d("channelActive");
         super.channelActive(ctx);
-    }
+    }*/
 
 }
