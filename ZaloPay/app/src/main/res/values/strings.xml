@@ -105,12 +105,8 @@
     <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
 
     <string name="txt_home_qrcode">QUÉT MÃ QR</string>
-<<<<<<< HEAD
     <string name="txt_home_scantopay">TRẢ TIỀN</string>
-    <string name="txt_home_deposit">NẠP TIỀN</string>
-=======
     <string name="txt_home_deposit">GỬI TIỀN</string>
->>>>>>> 5a2729ed8f9684cc66f1ca58cb8ec3aa8536538a
     <string name="txt_home_link_card">LƯU THẺ</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
