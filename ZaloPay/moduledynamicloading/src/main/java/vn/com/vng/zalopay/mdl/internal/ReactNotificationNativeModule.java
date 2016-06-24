@@ -64,10 +64,10 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
     }
 
     @ReactMethod
-    public void updateStateReadWithNotificationId(String transid) {
-        Timber.d("updateStateReadWithNotificationId %s ", transid);
+    public void updateStateReadWithNotificationId(String notificationid, Promise promise) {
+        Timber.d("updateStateReadWithNotificationId %s ", notificationid);
         try {
-            repository.markAsRead(Long.parseLong(transid));
+            repository.markAsRead(Long.parseLong(notificationid));
         } catch (Exception ex) {
             Timber.w(ex, "message exception");
         }
@@ -110,7 +110,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
 
         WritableMap item = Arguments.createMap();
-        item.putInt("read", entity.read ? 0 : 1);
+        item.putBoolean("unread", !entity.read);
 
         item.putString("message", entity.message);
         item.putDouble("timestamp", entity.timestamp);
