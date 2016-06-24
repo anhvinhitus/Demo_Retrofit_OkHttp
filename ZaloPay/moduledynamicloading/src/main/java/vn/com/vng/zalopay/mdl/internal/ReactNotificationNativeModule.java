@@ -64,8 +64,8 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
     }
 
     @ReactMethod
-    public void updateStateReadWithTransid(String transid) {
-        Timber.d("updateStateReadWithTransid %s ", transid);
+    public void updateStateReadWithNotificationId(String transid) {
+        Timber.d("updateStateReadWithNotificationId %s ", transid);
         try {
             repository.markAsRead(Long.parseLong(transid));
         } catch (Exception ex) {
