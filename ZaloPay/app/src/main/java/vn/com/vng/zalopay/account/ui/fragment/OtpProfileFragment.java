@@ -131,14 +131,14 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     @Override
     public void confirmOTPSuccess() {
-        if (mListener!=null) {
+        if (mListener != null) {
             mListener.onConfirmOTPSucess();
         }
     }
 
     @Override
     public void confirmOTPError() {
-        showError("Sai OTP.");
+        showError(R.string.otp_invalid);
         if (mRetryOtp < 3) {
             mRetryOtp++;
             onClickContinue();
@@ -170,6 +170,10 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     @Override
     public void showError(String message) {
         showToast(message);
+    }
+
+    public void showError(int messageResource) {
+        showToast(messageResource);
     }
 
     /**
