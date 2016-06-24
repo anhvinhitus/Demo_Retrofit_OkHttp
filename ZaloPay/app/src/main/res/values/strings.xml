@@ -212,4 +212,5 @@
     <string name="reset_pin_success">Tạo lại mã PIN thành công.</string>
 
     <string name="otp_invalid">Sai OTP.</string>
+    <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
 </resources>

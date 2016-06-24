@@ -132,4 +132,26 @@
         android:background="@color/separate"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/layoutIntroduction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_chuyentien_empty" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:gravity="center"
+            android:padding="@dimen/spacing.large"
+            android:text="@string/transfer_money_note" />
+    </LinearLayout>
+
 </LinearLayout>
