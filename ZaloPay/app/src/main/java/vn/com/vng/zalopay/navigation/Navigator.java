@@ -118,32 +118,8 @@ public class Navigator implements INavigator {
 
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-    }
-
-    private void showRequireCreatePinDialog(final Context context) {
-        if (context == null) {
-            return;
-        }
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-//                .setTitle(context.getString(R.string.action_notifications))
-                .setContentText(context.getString(R.string.txt_need_create_pin))
-                .setCancelText(context.getString(R.string.txt_close))
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                    }
-                })
-                .setConfirmText(context.getString(R.string.txt_create_pin))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        startUpdateProfileLevel2Activity(context, false);
-                    }
-                });
-        sweetAlertDialog.show();
     }
 
     private void showUpdateProfileInfoDialog(final Context context) {
@@ -196,7 +172,7 @@ public class Navigator implements INavigator {
 
     public void startLinkCardActivity(Activity activity) {
         if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showRequireCreatePinDialog(activity);
+            showUpdateProfileInfoDialog(activity);
         } else {
             activity.startActivity(intentLinkCard(activity));
         }
@@ -204,7 +180,7 @@ public class Navigator implements INavigator {
 
     public void startLinkCardProcedureActivity(Activity activity) {
         if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showRequireCreatePinDialog(activity);
+            showUpdateProfileInfoDialog(activity);
         } else {
             Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
             activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
@@ -214,7 +190,7 @@ public class Navigator implements INavigator {
     public void startLinkCardProcedureActivity(Fragment activity) {
         if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             if (activity != null) {
-                showRequireCreatePinDialog(activity.getContext());
+                showUpdateProfileInfoDialog(activity.getContext());
             }
         } else {
             Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
