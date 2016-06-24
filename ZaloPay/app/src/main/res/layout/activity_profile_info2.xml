@@ -142,7 +142,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/spacing.medium.l"
                     android:layout_weight="1.0"
-                    android:text="@string/change_pin" />
+                    android:text="@string/reset_pin"
+                    android:textColor="@color/black" />
 
                 <ImageView
                     android:layout_width="wrap_content"

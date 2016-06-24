@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="1dp"
     android:layout_marginRight="1dp"
-    android:background="@drawable/bg_card"
+    android:background="@drawable/bg_link_card"
     android:baselineAligned="false"
     android:orientation="vertical">
 
@@ -57,6 +57,7 @@
             android:textAllCaps="true"
             android:textColor="#acb3ba"
             android:textSize="@dimen/textsize.small"
+            android:visibility="gone"
             tools:text="Pham Thi Ngoc Thanh" />
 
     </LinearLayout>

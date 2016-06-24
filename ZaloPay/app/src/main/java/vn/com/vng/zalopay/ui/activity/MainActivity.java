@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -35,6 +36,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.data.GlobalData;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 5/24/16.
@@ -108,9 +110,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         //init SDK
         presenter.initialize();
-        globalEventHandlingService.setMainActivity(this);
 
         startZaloPayService();
+        presenter.getZaloFriend();
     }
 
     @Override
@@ -132,7 +134,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
         GlobalData.initApplication(null);
-        globalEventHandlingService.setMainActivity(null);
         super.onDestroy();
     }
 
@@ -160,7 +161,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void onClickProfile() {
-//        navigator.startPreProfileActivity(this);
+//        navigator.startUpdateProfileLevel2Activity(this);
         navigator.startProfileInfoActivity(this);
     }
 
@@ -217,6 +218,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
                 break;
+            case MenuItemUtil.SAVE_CARD_ID:
+                navigator.startLinkCardActivity(this);
+                break;
 
         }
     }
@@ -225,6 +229,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
             navigator.startQrCodeActivity(this);
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     private final class OpenMenuRunnable implements Runnable {
@@ -318,4 +327,28 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             startService(intent);
         }
     }*/
+
+
+    @Override
+    public void onPause() {
+        Timber.i("MainActivity is pausing");
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        Timber.i("MainActivity is resuming");
+        super.onResume();
+
+        GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
+        if (message == null) {
+            return;
+        }
+
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType);
+        alertDialog.setConfirmText(message.title);
+        alertDialog.setContentText(message.content);
+        alertDialog.show();
+    }
+
 }

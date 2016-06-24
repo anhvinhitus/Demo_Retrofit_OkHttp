@@ -14,11 +14,10 @@ import java.util.List;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment.OnListFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ZaloFriend} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class ZaloContactContenProviderAdapter extends RecyclerView.Adapter<ZaloContactContenProviderAdapter.ViewHolder> {
@@ -76,7 +75,7 @@ public class ZaloContactContenProviderAdapter extends RecyclerView.Adapter<ZaloC
         });
     }
 
-    private final void loadImage(ImageView image, String url) {
+    private void loadImage(ImageView image, String url) {
         if (mContext == null) {
             return;
         }

@@ -57,6 +57,8 @@ public class WsConnection extends Connection implements ConnectionListener {
     private final UserConfig userConfig;
     List<OnReceiverMessageListener> listCallBack;
 
+    private boolean isAuthenticated;
+
     public WsConnection(Context context, Parser parser, UserConfig config) {
         this.context = context;
         this.parser = parser;
@@ -128,6 +130,7 @@ public class WsConnection extends Connection implements ConnectionListener {
         return false;
     }
 
+
     @Override
     public boolean send(int msgType, String data) {
         return false;
@@ -174,6 +177,13 @@ public class WsConnection extends Connection implements ConnectionListener {
         if (message != null) {
             if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
+
+
+
+            } else if (message.msgType == MessageType.Response.KICK_OUT) {
+
+                disconnect();
+                return;
             }
 
             postResult(message);
@@ -217,6 +227,10 @@ public class WsConnection extends Connection implements ConnectionListener {
                 .setUsrid(uid)
                 .build();
         return send(MessageType.Request.AUTHEN_LOGIN, loginMsg);
+    }
+
+    public boolean isAuthenticated() {
+        return isAuthenticated;
     }
 
     public boolean sendAuthentication() {

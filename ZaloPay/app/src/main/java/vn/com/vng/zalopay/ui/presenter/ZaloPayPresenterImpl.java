@@ -11,6 +11,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
@@ -53,16 +55,26 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void initialize() {
+        this.getTotalNotification(500);
+        this.listAppResource();
     }
 
+    @Override
     public void listAppResource() {
-
         Subscription subscription = mAppResourceRepository.listAppResource()
-                .delaySubscription(3, TimeUnit.SECONDS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .delaySubscription(3, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
 
         compositeSubscription.add(subscription);
+    }
 
+    private void getTotalNotification(long delay) {
+        Subscription subscription = notificationRepository.totalNotificationUnRead()
+                .delay(delay, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NotificationSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private final void onGetAppResourceSuccess(List<AppResource> resources) {
@@ -82,6 +94,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
             Timber.w(e, " Throwable AppResourceSubscriber ");
         }
     }
@@ -90,6 +108,25 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void onNetworkChange(NetworkChangeEvent event) {
         if (!event.isOnline && mZaloPayView != null) {
             mZaloPayView.showNetworkError();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNotificationChangeEventChange(NotificationChangeEvent event) {
+        Timber.d("onNotificationChangeEventChange");
+        getTotalNotification(0);
+    }
+
+    private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
+        @Override
+        public void onNext(Integer integer) {
+            Timber.d("NotificationSubscriber %s", integer);
+            mZaloPayView.setTotalNotify(integer);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.w(e, "onError ");
         }
     }
 

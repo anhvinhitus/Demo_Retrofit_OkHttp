@@ -12,8 +12,11 @@ import java.util.Locale;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
@@ -22,6 +25,7 @@ import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
@@ -35,6 +39,7 @@ public class PaymentServiceImpl implements IPaymentService {
     final User user;
     final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
+    protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -47,7 +52,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public void pay(final Activity activity, final Promise promise, long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
-        this.paymentWrapper = new PaymentWrapper(null, new PaymentWrapper.IViewListener() {
+        this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return activity;
@@ -79,6 +84,11 @@ public class PaymentServiceImpl implements IPaymentService {
             public void onResponseCancel() {
                 errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL);
                 destroyVariable();
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
             }
         });
 
@@ -140,16 +150,6 @@ public class PaymentServiceImpl implements IPaymentService {
         compositeSubscription.add(subscription);
     }
 
-    @Override
-    public void verifyAccessToken(String mUid, String mAccessToken, Promise promise) {
-
-        Timber.d("verifyAccessToken %s %s", mUid, mAccessToken);
-
-        Subscription subscription = zaloPayIAPRepository.verifyMerchantAccessToken(mUid, mAccessToken)
-                .subscribe(new VerifyAccessToken(promise));
-        compositeSubscription.add(subscription);
-    }
-
     public void destroyVariable() {
 //        paymentListener = null;
         paymentWrapper = null;
@@ -175,8 +175,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onError(Throwable e) {
-            if (e instanceof TokenException) {
-                // simply ignore the token error
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
                 // because it is handled from based activity
                 return;
             }
@@ -206,42 +206,6 @@ public class PaymentServiceImpl implements IPaymentService {
             data.putString("dateOfBirth", merChantUserInfo.birthdate);
             data.putString("gender", String.valueOf(merChantUserInfo.usergender));
             return data;
-        }
-
-        private int getErrorCode(Throwable e) {
-            if (e instanceof BodyException) {
-                return ((BodyException) e).errorCode;
-            } else {
-                return PaymentError.ERR_CODE_UNKNOWN;
-            }
-        }
-    }
-
-    private final class VerifyAccessToken extends DefaultSubscriber<Boolean> {
-        private Promise promise;
-
-        public VerifyAccessToken(Promise promise) {
-            this.promise = promise;
-        }
-
-        @Override
-        public void onNext(Boolean aBoolean) {
-
-            Timber.d("verifyAccessToken onNext");
-            successCallback(promise, null);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (e instanceof TokenException) {
-                // simply ignore the token error
-                // because it is handled from based activity
-                return;
-            }
-
-            Timber.w(e, "Error on verifying merchant access token");
-
-            errorCallback(promise, getErrorCode(e));
         }
 
         private int getErrorCode(Throwable e) {

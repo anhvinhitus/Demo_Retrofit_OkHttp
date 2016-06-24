@@ -9,7 +9,6 @@ public class Constants {
     public static final long KEEP_ALIVE_DURATION_MS = 30000l;
     public static final long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
 
-
     public static final String PREF_USER_SESSION = "pref_user_session";
     public static final String PREF_USER_EXPIREIN = "pref_user_expirein";
 

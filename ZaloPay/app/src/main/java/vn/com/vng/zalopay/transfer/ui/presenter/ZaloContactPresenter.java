@@ -15,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -29,40 +30,29 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  * Created by longlv on 11/06/2016.
  */
 public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView> {
-    private final int OFFSET_GET_FRIEND = 50;
-    private final int TIMEOUT_REQUEST = 10000; //10s
-    private int mPageIndex = 0;
     private IZaloContactView mView;
-    private CountDownTimer mCountDownTimer;
 
     @Inject
     Navigator navigator;
 
-    @Inject
     ZaloFriendsFactory zaloFriendsFactory;
 
     public interface IZaloFriendListener {
         void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends);
     }
 
+    public ZaloContactPresenter(ZaloFriendsFactory zaloFriendsFactory) {
+        this.zaloFriendsFactory = zaloFriendsFactory;
+    }
+
     @Override
     public void setView(IZaloContactView zaloContactView) {
         mView = zaloContactView;
-        mCountDownTimer = new CountDownTimer(TIMEOUT_REQUEST, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
-                mView.onGetZaloContactError();
-            }
-        };
     }
 
     @Override
     public void destroyView() {
-        mCountDownTimer.cancel();
-        mCountDownTimer = null;
+        zaloFriendsFactory = null;
         mView = null;
     }
 
@@ -82,64 +72,16 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     }
 
     public void getFriendList(final IZaloFriendListener listener) {
-        mView.showLoading();
-        mPageIndex = 0;
-        getFriendList(mPageIndex, listener);
-    }
-
-    private void getFriendList(int pageIndex, final IZaloFriendListener listener) {
-        Timber.d("getFriendList, pageIndex: %s", pageIndex);
-        ZaloSDK.Instance.getFriendList(mView.getContext(), pageIndex, OFFSET_GET_FRIEND, new ZaloOpenAPICallback() {
+//        mView.showLoading();
+        AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
-            public void onResult(final JSONObject arg0) {
-                try {
-                    JSONArray data = arg0.getJSONArray("result");
-//                    Timber.d("getFriendList, data: %s", data.toString());
-                    if (data != null && data.length() >= OFFSET_GET_FRIEND) {
-                        mPageIndex+=OFFSET_GET_FRIEND;
-                        getFriendList(mPageIndex, listener);
-                    } else {
-                        mCountDownTimer.cancel();
-                    }
-                    List<ZaloFriend> zaloFriends = zaloFriends(data);
-                    Timber.d("getFriendList, zaloFriends.size: %s", zaloFriends.size());
-                    if (listener != null) {
-                        listener.onGetZaloFriendSuccess(zaloFriends);
-                    }
-                    //save Zalo Friend list to DB
-                    saveZaloFriends(zaloFriends);
-                } catch (JSONException e) {
-                    if (BuildConfig.DEBUG) {
-                        e.printStackTrace();
-                    }
+            public void run() {
+                if (zaloFriendsFactory == null || mView == null) {
+                    return;
                 }
+                zaloFriendsFactory.reloadZaloFriend(mView.getContext(), listener);
             }
         });
-        mCountDownTimer.cancel();
-        mCountDownTimer.start();
-    }
-
-    private List<ZaloFriend> zaloFriends(final JSONArray jsonArray) {
-        Timber.d("zaloFriends start........");
-        List<ZaloFriend> zaloFriends = new ArrayList<>();
-        if (jsonArray == null || jsonArray.length() <= 0) {
-            return zaloFriends;
-        }
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                ZaloFriend zaloFriend = new ZaloFriend(jsonObject);
-                if (zaloFriend.getUserId() > 0 && zaloFriend.isUsingApp()) {
-                    zaloFriends.add(zaloFriend);
-                }
-            }
-        } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-
-        return zaloFriends;
     }
 
     private void saveZaloFriends(List<ZaloFriend> zaloFriends) {

@@ -30,6 +30,7 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Long> {
         public final static Property UserGender = new Property(4, Integer.class, "userGender", false, "USER_GENDER");
         public final static Property Birthday = new Property(5, String.class, "birthday", false, "BIRTHDAY");
         public final static Property UsingApp = new Property(6, Boolean.class, "usingApp", false, "USING_APP");
+        public final static Property Fulltextsearch = new Property(7, String.class, "fulltextsearch", false, "FULLTEXTSEARCH");
     };
 
 
@@ -51,7 +52,8 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Long> {
                 "\"AVATAR\" TEXT," + // 3: avatar
                 "\"USER_GENDER\" INTEGER," + // 4: userGender
                 "\"BIRTHDAY\" TEXT," + // 5: birthday
-                "\"USING_APP\" INTEGER);"); // 6: usingApp
+                "\"USING_APP\" INTEGER," + // 6: usingApp
+                "\"FULLTEXTSEARCH\" TEXT);"); // 7: fulltextsearch
     }
 
     /** Drops the underlying database table. */
@@ -99,6 +101,11 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Long> {
         if (usingApp != null) {
             stmt.bindLong(7, usingApp ? 1L: 0L);
         }
+ 
+        String fulltextsearch = entity.getFulltextsearch();
+        if (fulltextsearch != null) {
+            stmt.bindString(8, fulltextsearch);
+        }
     }
 
     /** @inheritdoc */
@@ -117,7 +124,8 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // userGender
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // birthday
-            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // usingApp
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0, // usingApp
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // fulltextsearch
         );
         return entity;
     }
@@ -132,6 +140,7 @@ public class ZaloFriendDao extends AbstractDao<ZaloFriend, Long> {
         entity.setUserGender(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setBirthday(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setUsingApp(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
+        entity.setFulltextsearch(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     /** @inheritdoc */

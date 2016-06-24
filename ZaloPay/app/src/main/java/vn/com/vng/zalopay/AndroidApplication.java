@@ -13,6 +13,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
@@ -88,16 +89,7 @@ public class AndroidApplication extends MultiDexApplication {
         Constants.IS_RELEASE = BuildConfig.ENV_LIVE;
         Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
 
-        if (BuildConfig.DEBUG) {
-            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread thread, Throwable throwable) {
-                    Timber.e(throwable, "UncaughtException!!!");
-//                    if (throwable)
-                    MessageQueueThreadHandler a;
-                }
-            });
-        }
+        Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
     }
 
 

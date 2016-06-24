@@ -8,6 +8,7 @@ public class Constants {
     public static final String MANIF_LASTTIME_UPDATE_TRANSACTION = "manif_lt_trans";
     public static final String MANIF_PLATFORM_INFO_CHECKSUM = "manif_pfinfochecksum";
     public static final String MANIF_RESOURCE_VERSION = "manif_resource_version";
+    public static final String MANIF_NOTIFICATION_COUNT = "manif_notification_count";
 
     public static final String MANIFEST_RESOURCE_INTERNAL_VERSION = "manifest_resource_internal_version";
     public static final String MANIFEST_RESOURCE_EXTERNAL_VERSION = "manifest_resource_internal_version";
@@ -21,4 +22,7 @@ public class Constants {
     public static final String DESCRIPTION = "description";
 
     public static final String MANIF_LASTTIME_UPDATE_ZALO_FRIEND = "manif_lt_zalo_friend";
+
+    public static final String PARAM_RESPONSE_NOTIFICATION_TYPE = "notificationtype";
+
 }

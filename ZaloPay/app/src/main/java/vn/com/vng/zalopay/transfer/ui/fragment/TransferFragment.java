@@ -258,6 +258,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         }
         this.userMapZaloAndZaloPay = userMapZaloAndZaloPay;
         showPhoneNumber();
+        checkShowBtnContinue();
     }
 
     private void showPhoneNumber() {

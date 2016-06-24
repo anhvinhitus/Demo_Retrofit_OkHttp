@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -42,6 +44,10 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Inject
     QRCodePresenter qrCodePresenter;
 
+    public int getResLayoutId() {
+        return R.layout.activity_qr_scaner;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +56,22 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         qrCodePresenter.setView(this);
     }
 
-    public int getResLayoutId() {
-        return R.layout.activity_qr_scaner;
+    @Override
+    public void setTitle(CharSequence title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void setTitle(int titleId) {
+        getSupportActionBar().setTitle(titleId);
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 
     @Override

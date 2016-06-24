@@ -134,16 +134,16 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
         if (mListener!=null) {
             mListener.onConfirmOTPSucess();
         }
-        navigator.startHomeActivity(getContext(), true);
     }
 
     @Override
     public void confirmOTPError() {
         showError("Sai OTP.");
-        if (mRetryOtp <= 3) {
+        if (mRetryOtp < 3) {
+            mRetryOtp++;
             onClickContinue();
         } else {
-            getActivity().finish();
+            navigator.startHomeActivity(getContext(), true);
         }
     }
 

@@ -192,7 +192,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         if (TextUtils.isEmpty(amount)) {
             btnDeposit.setBackgroundResource(R.color.bg_btn_gray);
         } else {
-            btnDeposit.setBackgroundResource(R.drawable.bg_btn_green);
+            btnDeposit.setBackgroundResource(R.drawable.bg_btn_blue);
         }
     }
 

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,7 +26,8 @@ import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.com.zalopay.wallet.view.animation.ActivityAnimator;
+
+import static android.text.Html.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,9 +45,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
-
-    @BindView(R.id.passcodeConfirm)
-    PassCodeView passCodeConfirm;
 
     @BindView(R.id.checkbox)
     CheckBox chkShowPass;
@@ -67,11 +64,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     ClearableEditText edtPhone;
 
     @OnTextChanged(R.id.edtPhone)
-    public void onTextChangedPhone(CharSequence charSequence) {
+    public void onTextChangedPhone() {
         if (isValidPhone()) {
             hidePhoneError();
-        } else {
-            showPhoneError();
         }
     }
 
@@ -91,56 +86,57 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     public boolean isValidPhone() {
         String phone = edtPhone.getString();
-        if (TextUtils.isEmpty(phone)) {
-            return false;
-        }
-        return ValidateUtil.isMobileNumber(phone);
+        return !TextUtils.isEmpty(phone) && ValidateUtil.isMobileNumber(phone);
     }
 
 
     @OnClick(R.id.tvShowPass)
-    public void onClickShowPass(View view) {
+    public void onClickShowPass() {
         boolean isChecked = chkShowPass.isChecked();
         chkShowPass.setChecked(!isChecked);
     }
 
     @Nullable
     @OnClick(R.id.btnContinue)
-    public void onClickBtnContinute(View view) {
+    public void onClickBtnContinute() {
         onClickContinue();
     }
 
     @OnClick(R.id.tvCancel)
-    public void onClickCancel(View view) {
+    public void onClickCancel() {
         getActivity().finish();
-    }
-
-    private boolean isValidPinCompare() {
-        String pin = passCode.getText();
-        String pinCompare = passCodeConfirm.getText();
-        return (!TextUtils.isEmpty(pinCompare) && pinCompare.equals(pin));
     }
 
     private boolean isValidPin() {
         String pin = passCode.getText();
-        return !TextUtils.isEmpty(pin);
+        return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
 
     IPassCodeMaxLength passCodeMaxLength = new IPassCodeMaxLength() {
         @Override
         public void hasMaxLength() {
-            if (passCodeConfirm != null) {
-                passCodeConfirm.requestFocus();
+            if (edtPhone != null) {
+                edtPhone.requestFocus();
             }
         }
     };
 
-    IPassCodeMaxLength passCodeConfirmMaxLength = new IPassCodeMaxLength() {
+    IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
         @Override
-        public void hasMaxLength() {
-            if (edtPhone != null) {
-                edtPhone.requestFocus();
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (isValidPin()) {
+                passCode.hideError();
             }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
         }
     };
 
@@ -166,12 +162,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         } else {
             passCode.hideError();
         }
-        if (!isValidPinCompare()) {
-            passCodeConfirm.showError(getString(R.string.invalid_pin_compare));
-            return;
-        } else {
-            passCodeConfirm.hideError();
-        }
 
         if (!isValidPhone()) {
             showPhoneError();
@@ -195,9 +185,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
     }
 
     @Override
@@ -205,29 +192,22 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tvCancel.setText(Html.fromHtml(getString(R.string.txt_cancel)));
+        tvCancel.setText(fromHtml(getString(R.string.txt_cancel)));
 
         chkShowPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     passCode.showPasscode();
-                    passCodeConfirm.showPasscode();
                 } else {
                     passCode.hidePasscode();
-                    passCodeConfirm.hidePasscode();
                 }
             }
         });
 
         passCode.requestFocus();
         passCode.setPassCodeMaxLength(passCodeMaxLength);
-        passCodeConfirm.setPassCodeMaxLength(passCodeConfirmMaxLength);
-
-//        passCode.setPasscodeChanged(passcodeChanged);
-//        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
-//        passCodeConfirm.setPasscodeChanged(confirmPasscodeChanged);
-//        passCodeConfirm.setPasscodeFocusChanged(confirmPasscodeFocusChanged);
+        passCode.setPasscodeChanged(passcodeChanged);
     }
 
     @Override
@@ -235,9 +215,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         super.onAttach(context);
         if (context instanceof OnPinProfileFragmentListener) {
             mListener = (OnPinProfileFragmentListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnPinProfileFragmentListener");
         }
     }
 
@@ -308,8 +285,8 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPinProfileFragmentListener {
-        // TODO: Update argument type and name
         void onUpdatePinSuccess();
+
         void onUpdatePinFail();
     }
 }

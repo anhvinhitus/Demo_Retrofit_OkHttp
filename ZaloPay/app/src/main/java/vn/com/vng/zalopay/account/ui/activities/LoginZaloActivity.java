@@ -4,18 +4,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import javax.inject.Inject;
 
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
@@ -48,6 +51,17 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
+
+        String message = getIntent().getStringExtra(Constants.ARG_MESSAGE);
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
+        alertDialog.setContentText(message);
+        alertDialog.setConfirmText("Đồng ý");
+        alertDialog.show();
     }
 
     @OnClick(R.id.layoutLoginZalo)

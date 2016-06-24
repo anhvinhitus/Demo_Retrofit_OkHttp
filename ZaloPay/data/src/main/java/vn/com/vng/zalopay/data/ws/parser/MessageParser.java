@@ -2,15 +2,13 @@ package vn.com.vng.zalopay.data.ws.parser;
 
 import android.text.TextUtils;
 
-import com.google.protobuf.GeneratedMessage;
-
-import org.json.JSONObject;
+import com.google.gson.Gson;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 
 
@@ -18,6 +16,12 @@ import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
  * Created by AnhHieu on 6/14/16.
  */
 public class MessageParser implements Parser {
+
+    final Gson mGson;
+
+    public MessageParser() {
+        mGson = new Gson();
+    }
 
     @Override
     public Event parserMessage(byte[] msg) {
@@ -40,11 +44,11 @@ public class MessageParser implements Parser {
         ZPMsgProtos.DataResponseUser respMsg = ZPMsgProtos.DataResponseUser.parseFrom(msg);
         switch (respMsg.getMsgtype()) {
             case MessageType.Response.KICK_OUT:
-                return processAuthenticationLoginSuccess(respMsg.getMsgtype(), respMsg.getData().toByteArray());
+                return processKickOutUser(respMsg.getMsgtype(), respMsg.getData().toByteArray());
             case MessageType.Response.PUSH_NOTIFICATION:
                 return processPushMessage(respMsg.getMsgtype(), respMsg.getData().toByteArray());
             case MessageType.Response.AUTHEN_LOGIN_RESULT:
-                return processKickOutUser(respMsg.getMsgtype(), respMsg.getData().toByteArray());
+                return processAuthenticationLoginSuccess(respMsg.getMsgtype(), respMsg.getData().toByteArray());
             default:
         }
 
@@ -54,9 +58,10 @@ public class MessageParser implements Parser {
 
     public Event processAuthenticationLoginSuccess(int msgType, byte[] data) {
         try {
+            Timber.d("data %s", new String(data));
             AuthenticationData event = new AuthenticationData(msgType);
             ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
-            Timber.d("Result" + res.getResult() + " code " + res.getCode());
+            Timber.d("Result %s code %s data %s", res.getResult(), res.getCode(), new String(data));
 
             event.code = res.getCode();
             event.uid = res.getUsrid();
@@ -81,15 +86,11 @@ public class MessageParser implements Parser {
         Timber.d("notification %s", str);
         NotificationData event = null;
         if (!TextUtils.isEmpty(str)) {
-            event = new NotificationData(msgType);
+
             try {
-                JSONObject _data = new JSONObject(str);
-                event.appid = _data.optLong("appid");
-                event.message = _data.optString("message");
-                event.transtype = _data.optInt("transtype");
-                event.timestamp = _data.optLong("timestamp");
-                event.userid = _data.optString("userid");
-                event.transid = _data.optLong("transid");
+                event = mGson.fromJson(str, NotificationData.class);
+                event.setMsgType(msgType);
+
             } catch (Exception ex) {
                 Timber.w(ex, " Parse error");
                 event = null;

@@ -1,9 +1,5 @@
 package vn.com.vng.zalopay.data.cache;
 
-import java.util.concurrent.Callable;
-
-import rx.Observable;
-import rx.Subscriber;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -47,6 +43,14 @@ public class SqlBaseScopeImpl {
         } catch (Exception e) {
         }
 
+        return def;
+    }
+
+    public int getDataManifest(String key, int def) {
+        try {
+            def = Integer.valueOf(getDataManifest(key));
+        } catch (Exception e) {
+        }
         return def;
     }
 

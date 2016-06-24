@@ -102,4 +102,5 @@ public class NetworkError {
     public static final int APPTRANSID_INVALID = -92;
     public static final int TRANSTYPE_AMOUNT_INVALID = -94;
     public static final int CARD_ALREADY_MAP = -95;
+    public static final int SERVER_MAINTAIN = -999;
 }

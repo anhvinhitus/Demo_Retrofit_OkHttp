@@ -7,6 +7,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
@@ -42,6 +43,18 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
         mView.updateUserInfo(userConfig.getCurrentUser());
         mView.updateBannerView("http://vn-live.slatic.net/cms/landing-page-banner/bank/1200x250-123pay-birthday.jpg");
         getBalance();
+        checkShowOrHideChangePinView();
+    }
+
+    private void checkShowOrHideChangePinView() {
+        if (mUserConfig == null || mUserConfig.getCurrentUser() == null) {
+            mView.showHideChangePinView(false);
+        }
+        if (mUserConfig.getCurrentUser().profilelevel < 2) {
+            mView.showHideChangePinView(false);
+        } else {
+            mView.showHideChangePinView(true);
+        }
     }
 
     @Override
@@ -95,6 +108,10 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
             Timber.tag(TAG).e(e, " exception ");
         }
 

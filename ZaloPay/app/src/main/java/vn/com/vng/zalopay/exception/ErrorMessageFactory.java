@@ -10,6 +10,7 @@ import retrofit2.adapter.rxjava.HttpException;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.vng.uicomponent.widget.errorview.HttpStatusCodes;
 
@@ -43,6 +44,8 @@ public class ErrorMessageFactory {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
             message = mHttpStatusCode.get(((HttpException) exception).code());
+        } else if (exception instanceof ServerMaintainException) {
+            message = null;
         }
 
         return message;

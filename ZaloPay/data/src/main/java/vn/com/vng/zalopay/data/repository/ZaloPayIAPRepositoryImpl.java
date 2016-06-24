@@ -22,11 +22,6 @@ public class ZaloPayIAPRepositoryImpl implements ZaloPayIAPRepository {
         return zaloPayIAPFactory.getMerchantUserInfo(appId).map(this::transform);
     }
 
-    @Override
-    public Observable<Boolean> verifyMerchantAccessToken(String mUid, String token) {
-        return zaloPayIAPFactory.verifyMerchantAccessToken(mUid, token).map(baseResponse -> Boolean.TRUE);
-    }
-
     private MerChantUserInfo transform(GetMerchantUserInfoResponse response) {
         MerChantUserInfo ret = new MerChantUserInfo();
         ret.birthdate = response.birthdate;

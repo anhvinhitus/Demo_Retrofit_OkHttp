@@ -27,7 +27,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     private PaymentWrapper paymentWrapper;
 
     public QRCodePresenter() {
-        paymentWrapper = new PaymentWrapper(zaloPayRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -48,11 +48,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseError(int status) {
-                if (status == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
-                    mView.getActivity().finish();
-                } else {
-                    hideLoadingView();
-                }
+                hideLoadingView();
             }
 
             @Override
@@ -74,6 +70,11 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseCancel() {
                 hideLoadingView();
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+                navigator.startDepositActivity(mView.getContext());
             }
         });
     }

@@ -1,29 +1,31 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
-import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
-import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
+import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
-import vn.com.vng.zalopay.account.ui.fragment.RecoveryPinFragment;
+import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
-import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.user.NotificationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
@@ -35,12 +37,13 @@ import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
 import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
+import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl;
+import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
-import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -58,7 +61,9 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 UserPresenterModule.class,
                 BalanceModule.class,
                 TransactionModule.class,
-                AppResourceModule.class
+                AppResourceModule.class,
+                NotificationModule.class,
+                WsModule.class
         }
 )
 public interface UserComponent {
@@ -76,6 +81,8 @@ public interface UserComponent {
     BalanceRepository balanceRepository();
 
     TransactionStore.Repository transactionRepository();
+
+    NotificationStore.Repository notificationRepository();
 
  /*   ApplicationRepository applicationRepository();*/
 
@@ -98,7 +105,7 @@ public interface UserComponent {
 
     void inject(OtpProfileFragment f);
 
-    void inject(RecoveryPinFragment f);
+    void inject(ChangePinFragment f);
 
     void inject(OTPRecoveryPinFragment f);
 
@@ -130,9 +137,9 @@ public interface UserComponent {
 
     void inject(ProfileInfo2Activity a);
 
-    void inject(PreProfileActivity a);
+    void inject(UpdateProfileLevel2Activity a);
 
-    void inject(RecoveryPinActivity a);
+    void inject(ChangePinActivity a);
 
     void inject(ScanSoundFragment fragment);
 
@@ -140,5 +147,9 @@ public interface UserComponent {
 
     void inject(TransferRecentContentProviderImpl contentProvider);
 
+    void inject(ZaloFriendContentProviderImpl contentProvider);
+
     void inject(TransferHomeActivity activity);
+
+    void inject(NotificationService service);
 }

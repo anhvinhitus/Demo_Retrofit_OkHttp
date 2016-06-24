@@ -174,7 +174,7 @@
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".account.ui.activities.PreProfileActivity"
+            android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:theme="@style/AppTheme.NoActionBar.AppColor" />
         <activity
             android:name=".account.ui.activities.PinProfileActivity"
@@ -209,7 +209,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".account.ui.activities.RecoveryPinActivity" />
+        <activity
+            android:name=".account.ui.activities.ChangePinActivity"
+            android:label="@string/title.activity.change.pin" />
         <activity android:name=".account.ui.activities.ProfileInfo2Activity" />
         <activity
             android:name=".transfer.ui.activities.TransferHomeActivity"
@@ -228,7 +230,7 @@
             android:exported="false" />
         <provider
             android:name="vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl"
-            android:authorities="vn.com.vng.zalopay.data.cache.model.transferrecentprovider"/>
+            android:authorities="vn.com.vng.zalopay.data.cache.model.transferrecentprovider" />
         <!-- END Content Providers -->
     </application>
 

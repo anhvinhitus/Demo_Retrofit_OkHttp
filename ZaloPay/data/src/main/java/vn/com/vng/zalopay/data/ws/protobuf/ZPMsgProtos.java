@@ -3,16 +3,14 @@
 
 package vn.com.vng.zalopay.data.ws.protobuf;
 
-import android.util.Log;
-
 public final class ZPMsgProtos {
   private ZPMsgProtos() {}
   public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistry registry) {
+      com.google.protobuf.ExtensionRegistry registry) {
   }
   public interface MessageSendUserOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protobuf.MessageSendUser)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protobuf.MessageSendUser)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>required bytes data = 1;</code>
@@ -30,12 +28,12 @@ public final class ZPMsgProtos {
     /**
      * <code>required string signature = 2;</code>
      */
-    String getSignature();
+    java.lang.String getSignature();
     /**
      * <code>required string signature = 2;</code>
      */
     com.google.protobuf.ByteString
-    getSignatureBytes();
+        getSignatureBytes();
 
     /**
      * <code>optional int64 expiretime = 3;</code>
@@ -59,9 +57,9 @@ public final class ZPMsgProtos {
    * Protobuf type {@code protobuf.MessageSendUser}
    */
   public static final class MessageSendUser extends
-          com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:protobuf.MessageSendUser)
-          MessageSendUserOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:protobuf.MessageSendUser)
+      MessageSendUserOrBuilder {
     // Use MessageSendUser.newBuilder() to construct.
     private MessageSendUser(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -79,19 +77,19 @@ public final class ZPMsgProtos {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private MessageSendUser(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -102,7 +100,7 @@ public final class ZPMsgProtos {
               break;
             default: {
               if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
+                                     extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -134,35 +132,35 @@ public final class ZPMsgProtos {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
     }
 
-    protected FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      MessageSendUser.class, Builder.class);
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.Builder.class);
     }
 
     public static com.google.protobuf.Parser<MessageSendUser> PARSER =
-            new com.google.protobuf.AbstractParser<MessageSendUser>() {
-              public MessageSendUser parsePartialFrom(
-                      com.google.protobuf.CodedInputStream input,
-                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                      throws com.google.protobuf.InvalidProtocolBufferException {
-                return new MessageSendUser(input, extensionRegistry);
-              }
-            };
+        new com.google.protobuf.AbstractParser<MessageSendUser>() {
+      public MessageSendUser parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MessageSendUser(input, extensionRegistry);
+      }
+    };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<MessageSendUser> getParserForType() {
       return PARSER;
     }
@@ -184,7 +182,7 @@ public final class ZPMsgProtos {
     }
 
     public static final int SIGNATURE_FIELD_NUMBER = 2;
-    private Object signature_;
+    private java.lang.Object signature_;
     /**
      * <code>required string signature = 2;</code>
      */
@@ -194,14 +192,14 @@ public final class ZPMsgProtos {
     /**
      * <code>required string signature = 2;</code>
      */
-    public String getSignature() {
-      Object ref = signature_;
-      if (ref instanceof String) {
-        return (String) ref;
+    public java.lang.String getSignature() {
+      java.lang.Object ref = signature_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           signature_ = s;
         }
@@ -212,12 +210,12 @@ public final class ZPMsgProtos {
      * <code>required string signature = 2;</code>
      */
     public com.google.protobuf.ByteString
-    getSignatureBytes() {
-      Object ref = signature_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (String) ref);
+        getSignatureBytes() {
+      java.lang.Object ref = signature_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         signature_ = b;
         return b;
       } else {
@@ -280,7 +278,7 @@ public final class ZPMsgProtos {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(1, data_);
@@ -305,19 +303,19 @@ public final class ZPMsgProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(1, data_);
+          .computeBytesSize(1, data_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getSignatureBytes());
+          .computeBytesSize(2, getSignatureBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(3, expiretime_);
+          .computeInt64Size(3, expiretime_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeUInt64Size(4, usrid_);
+          .computeUInt64Size(4, usrid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -325,75 +323,75 @@ public final class ZPMsgProtos {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
-            throws java.io.ObjectStreamException {
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static MessageSendUser parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static MessageSendUser parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static MessageSendUser parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static MessageSendUser parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static MessageSendUser parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static MessageSendUser parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static MessageSendUser parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static MessageSendUser parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static MessageSendUser parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static MessageSendUser parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(MessageSendUser prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-            BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -401,28 +399,28 @@ public final class ZPMsgProtos {
      * Protobuf type {@code protobuf.MessageSendUser}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protobuf.MessageSendUser)
-            MessageSendUserOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protobuf.MessageSendUser)
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUserOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-        return ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
+          getDescriptor() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
       }
 
-      protected FieldAccessorTable
-      internalGetFieldAccessorTable() {
-        return ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        MessageSendUser.class, Builder.class);
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageSendUser.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
       private Builder(
-              BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -452,24 +450,24 @@ public final class ZPMsgProtos {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
-        return ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
+          getDescriptorForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageSendUser_descriptor;
       }
 
-      public MessageSendUser getDefaultInstanceForType() {
-        return MessageSendUser.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.getDefaultInstance();
       }
 
-      public MessageSendUser build() {
-        MessageSendUser result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public MessageSendUser buildPartial() {
-        MessageSendUser result = new MessageSendUser(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -494,16 +492,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof MessageSendUser) {
-          return mergeFrom((MessageSendUser)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(MessageSendUser other) {
-        if (other == MessageSendUser.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser.getDefaultInstance()) return this;
         if (other.hasData()) {
           setData(other.getData());
         }
@@ -524,25 +522,25 @@ public final class ZPMsgProtos {
 
       public final boolean isInitialized() {
         if (!hasData()) {
-
+          
           return false;
         }
         if (!hasSignature()) {
-
+          
           return false;
         }
         return true;
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-        MessageSendUser parsedMessage = null;
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (MessageSendUser) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageSendUser) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -571,9 +569,9 @@ public final class ZPMsgProtos {
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000001;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
         data_ = value;
         onChanged();
         return this;
@@ -588,7 +586,7 @@ public final class ZPMsgProtos {
         return this;
       }
 
-      private Object signature_ = "";
+      private java.lang.Object signature_ = "";
       /**
        * <code>required string signature = 2;</code>
        */
@@ -598,30 +596,30 @@ public final class ZPMsgProtos {
       /**
        * <code>required string signature = 2;</code>
        */
-      public String getSignature() {
-        Object ref = signature_;
-        if (!(ref instanceof String)) {
+      public java.lang.String getSignature() {
+        java.lang.Object ref = signature_;
+        if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
             signature_ = s;
           }
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
       /**
        * <code>required string signature = 2;</code>
        */
       public com.google.protobuf.ByteString
-      getSignatureBytes() {
-        Object ref = signature_;
+          getSignatureBytes() {
+        java.lang.Object ref = signature_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           signature_ = b;
           return b;
         } else {
@@ -632,11 +630,11 @@ public final class ZPMsgProtos {
        * <code>required string signature = 2;</code>
        */
       public Builder setSignature(
-              String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000002;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
         signature_ = value;
         onChanged();
         return this;
@@ -654,11 +652,11 @@ public final class ZPMsgProtos {
        * <code>required string signature = 2;</code>
        */
       public Builder setSignatureBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000002;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
         signature_ = value;
         onChanged();
         return this;
@@ -740,8 +738,8 @@ public final class ZPMsgProtos {
   }
 
   public interface MessageLoginOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protobuf.MessageLogin)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protobuf.MessageLogin)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>required uint64 usrid = 1;</code>
@@ -759,20 +757,20 @@ public final class ZPMsgProtos {
     /**
      * <code>required string token = 2;</code>
      */
-    String getToken();
+    java.lang.String getToken();
     /**
      * <code>required string token = 2;</code>
      */
     com.google.protobuf.ByteString
-    getTokenBytes();
+        getTokenBytes();
   }
   /**
    * Protobuf type {@code protobuf.MessageLogin}
    */
   public static final class MessageLogin extends
-          com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:protobuf.MessageLogin)
-          MessageLoginOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:protobuf.MessageLogin)
+      MessageLoginOrBuilder {
     // Use MessageLogin.newBuilder() to construct.
     private MessageLogin(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -790,19 +788,19 @@ public final class ZPMsgProtos {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private MessageLogin(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -813,7 +811,7 @@ public final class ZPMsgProtos {
               break;
             default: {
               if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
+                                     extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -835,35 +833,35 @@ public final class ZPMsgProtos {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
     }
 
-    protected FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      MessageLogin.class, Builder.class);
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.Builder.class);
     }
 
     public static com.google.protobuf.Parser<MessageLogin> PARSER =
-            new com.google.protobuf.AbstractParser<MessageLogin>() {
-              public MessageLogin parsePartialFrom(
-                      com.google.protobuf.CodedInputStream input,
-                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                      throws com.google.protobuf.InvalidProtocolBufferException {
-                return new MessageLogin(input, extensionRegistry);
-              }
-            };
+        new com.google.protobuf.AbstractParser<MessageLogin>() {
+      public MessageLogin parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MessageLogin(input, extensionRegistry);
+      }
+    };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<MessageLogin> getParserForType() {
       return PARSER;
     }
@@ -885,7 +883,7 @@ public final class ZPMsgProtos {
     }
 
     public static final int TOKEN_FIELD_NUMBER = 2;
-    private Object token_;
+    private java.lang.Object token_;
     /**
      * <code>required string token = 2;</code>
      */
@@ -895,14 +893,14 @@ public final class ZPMsgProtos {
     /**
      * <code>required string token = 2;</code>
      */
-    public String getToken() {
-      Object ref = token_;
-      if (ref instanceof String) {
-        return (String) ref;
+    public java.lang.String getToken() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           token_ = s;
         }
@@ -913,12 +911,12 @@ public final class ZPMsgProtos {
      * <code>required string token = 2;</code>
      */
     public com.google.protobuf.ByteString
-    getTokenBytes() {
-      Object ref = token_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (String) ref);
+        getTokenBytes() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         token_ = b;
         return b;
       } else {
@@ -949,7 +947,7 @@ public final class ZPMsgProtos {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeUInt64(1, usrid_);
@@ -968,11 +966,11 @@ public final class ZPMsgProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeUInt64Size(1, usrid_);
+          .computeUInt64Size(1, usrid_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, getTokenBytes());
+          .computeBytesSize(2, getTokenBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -980,75 +978,75 @@ public final class ZPMsgProtos {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
-            throws java.io.ObjectStreamException {
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static MessageLogin parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static MessageLogin parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static MessageLogin parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static MessageLogin parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static MessageLogin parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static MessageLogin parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static MessageLogin parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static MessageLogin parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static MessageLogin parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static MessageLogin parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(MessageLogin prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-            BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1056,28 +1054,28 @@ public final class ZPMsgProtos {
      * Protobuf type {@code protobuf.MessageLogin}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protobuf.MessageLogin)
-            MessageLoginOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protobuf.MessageLogin)
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLoginOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-        return ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
+          getDescriptor() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
       }
 
-      protected FieldAccessorTable
-      internalGetFieldAccessorTable() {
-        return ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        MessageLogin.class, Builder.class);
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.MessageLogin.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
       private Builder(
-              BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1103,24 +1101,24 @@ public final class ZPMsgProtos {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
-        return ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
+          getDescriptorForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageLogin_descriptor;
       }
 
-      public MessageLogin getDefaultInstanceForType() {
-        return MessageLogin.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.getDefaultInstance();
       }
 
-      public MessageLogin build() {
-        MessageLogin result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public MessageLogin buildPartial() {
-        MessageLogin result = new MessageLogin(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1137,16 +1135,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof MessageLogin) {
-          return mergeFrom((MessageLogin)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(MessageLogin other) {
-        if (other == MessageLogin.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin.getDefaultInstance()) return this;
         if (other.hasUsrid()) {
           setUsrid(other.getUsrid());
         }
@@ -1161,25 +1159,25 @@ public final class ZPMsgProtos {
 
       public final boolean isInitialized() {
         if (!hasUsrid()) {
-
+          
           return false;
         }
         if (!hasToken()) {
-
+          
           return false;
         }
         return true;
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-        MessageLogin parsedMessage = null;
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (MessageLogin) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageLogin) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1222,7 +1220,7 @@ public final class ZPMsgProtos {
         return this;
       }
 
-      private Object token_ = "";
+      private java.lang.Object token_ = "";
       /**
        * <code>required string token = 2;</code>
        */
@@ -1232,30 +1230,30 @@ public final class ZPMsgProtos {
       /**
        * <code>required string token = 2;</code>
        */
-      public String getToken() {
-        Object ref = token_;
-        if (!(ref instanceof String)) {
+      public java.lang.String getToken() {
+        java.lang.Object ref = token_;
+        if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
             token_ = s;
           }
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
       /**
        * <code>required string token = 2;</code>
        */
       public com.google.protobuf.ByteString
-      getTokenBytes() {
-        Object ref = token_;
+          getTokenBytes() {
+        java.lang.Object ref = token_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           token_ = b;
           return b;
         } else {
@@ -1266,11 +1264,11 @@ public final class ZPMsgProtos {
        * <code>required string token = 2;</code>
        */
       public Builder setToken(
-              String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000002;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
         token_ = value;
         onChanged();
         return this;
@@ -1288,11 +1286,11 @@ public final class ZPMsgProtos {
        * <code>required string token = 2;</code>
        */
       public Builder setTokenBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000002;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
         token_ = value;
         onChanged();
         return this;
@@ -1310,8 +1308,8 @@ public final class ZPMsgProtos {
   }
 
   public interface ResultAuthOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protobuf.ResultAuth)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protobuf.ResultAuth)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>required uint64 usrid = 1;</code>
@@ -1344,9 +1342,9 @@ public final class ZPMsgProtos {
    * Protobuf type {@code protobuf.ResultAuth}
    */
   public static final class ResultAuth extends
-          com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:protobuf.ResultAuth)
-          ResultAuthOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:protobuf.ResultAuth)
+      ResultAuthOrBuilder {
     // Use ResultAuth.newBuilder() to construct.
     private ResultAuth(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -1364,19 +1362,19 @@ public final class ZPMsgProtos {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ResultAuth(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -1387,7 +1385,7 @@ public final class ZPMsgProtos {
               break;
             default: {
               if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
+                                     extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -1413,35 +1411,35 @@ public final class ZPMsgProtos {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
     }
 
-    protected FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      ResultAuth.class, Builder.class);
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.Builder.class);
     }
 
     public static com.google.protobuf.Parser<ResultAuth> PARSER =
-            new com.google.protobuf.AbstractParser<ResultAuth>() {
-              public ResultAuth parsePartialFrom(
-                      com.google.protobuf.CodedInputStream input,
-                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                      throws com.google.protobuf.InvalidProtocolBufferException {
-                return new ResultAuth(input, extensionRegistry);
-              }
-            };
+        new com.google.protobuf.AbstractParser<ResultAuth>() {
+      public ResultAuth parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ResultAuth(input, extensionRegistry);
+      }
+    };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<ResultAuth> getParserForType() {
       return PARSER;
     }
@@ -1516,7 +1514,7 @@ public final class ZPMsgProtos {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeUInt64(1, usrid_);
@@ -1538,15 +1536,15 @@ public final class ZPMsgProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeUInt64Size(1, usrid_);
+          .computeUInt64Size(1, usrid_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(2, result_);
+          .computeInt32Size(2, result_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(3, code_);
+          .computeInt32Size(3, code_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1554,75 +1552,75 @@ public final class ZPMsgProtos {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
-            throws java.io.ObjectStreamException {
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static ResultAuth parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static ResultAuth parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static ResultAuth parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static ResultAuth parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static ResultAuth parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static ResultAuth parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static ResultAuth parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static ResultAuth parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static ResultAuth parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static ResultAuth parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(ResultAuth prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-            BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1630,28 +1628,28 @@ public final class ZPMsgProtos {
      * Protobuf type {@code protobuf.ResultAuth}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protobuf.ResultAuth)
-            ResultAuthOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protobuf.ResultAuth)
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuthOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-        return ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
+          getDescriptor() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
       }
 
-      protected FieldAccessorTable
-      internalGetFieldAccessorTable() {
-        return ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        ResultAuth.class, Builder.class);
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.ResultAuth.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
       private Builder(
-              BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1679,24 +1677,24 @@ public final class ZPMsgProtos {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
-        return ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
+          getDescriptorForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_ResultAuth_descriptor;
       }
 
-      public ResultAuth getDefaultInstanceForType() {
-        return ResultAuth.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.getDefaultInstance();
       }
 
-      public ResultAuth build() {
-        ResultAuth result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public ResultAuth buildPartial() {
-        ResultAuth result = new ResultAuth(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1717,16 +1715,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof ResultAuth) {
-          return mergeFrom((ResultAuth)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(ResultAuth other) {
-        if (other == ResultAuth.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth.getDefaultInstance()) return this;
         if (other.hasUsrid()) {
           setUsrid(other.getUsrid());
         }
@@ -1742,25 +1740,25 @@ public final class ZPMsgProtos {
 
       public final boolean isInitialized() {
         if (!hasUsrid()) {
-
+          
           return false;
         }
         if (!hasResult()) {
-
+          
           return false;
         }
         return true;
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-        ResultAuth parsedMessage = null;
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (ResultAuth) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.ResultAuth) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1879,8 +1877,8 @@ public final class ZPMsgProtos {
   }
 
   public interface DataResponseUserOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protobuf.DataResponseUser)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protobuf.DataResponseUser)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>required int32 msgtype = 1;</code>
@@ -1904,9 +1902,9 @@ public final class ZPMsgProtos {
    * Protobuf type {@code protobuf.DataResponseUser}
    */
   public static final class DataResponseUser extends
-          com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:protobuf.DataResponseUser)
-          DataResponseUserOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:protobuf.DataResponseUser)
+      DataResponseUserOrBuilder {
     // Use DataResponseUser.newBuilder() to construct.
     private DataResponseUser(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -1924,19 +1922,19 @@ public final class ZPMsgProtos {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @Override
+    @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private DataResponseUser(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -1947,7 +1945,7 @@ public final class ZPMsgProtos {
               break;
             default: {
               if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
+                                     extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -1968,35 +1966,35 @@ public final class ZPMsgProtos {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
     }
 
-    protected FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      DataResponseUser.class, Builder.class);
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.Builder.class);
     }
 
     public static com.google.protobuf.Parser<DataResponseUser> PARSER =
-            new com.google.protobuf.AbstractParser<DataResponseUser>() {
-              public DataResponseUser parsePartialFrom(
-                      com.google.protobuf.CodedInputStream input,
-                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                      throws com.google.protobuf.InvalidProtocolBufferException {
-                return new DataResponseUser(input, extensionRegistry);
-              }
-            };
+        new com.google.protobuf.AbstractParser<DataResponseUser>() {
+      public DataResponseUser parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new DataResponseUser(input, extensionRegistry);
+      }
+    };
 
-    @Override
+    @java.lang.Override
     public com.google.protobuf.Parser<DataResponseUser> getParserForType() {
       return PARSER;
     }
@@ -2055,7 +2053,7 @@ public final class ZPMsgProtos {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeInt32(1, msgtype_);
@@ -2074,11 +2072,11 @@ public final class ZPMsgProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt32Size(1, msgtype_);
+          .computeInt32Size(1, msgtype_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, data_);
+          .computeBytesSize(2, data_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2086,75 +2084,75 @@ public final class ZPMsgProtos {
     }
 
     private static final long serialVersionUID = 0L;
-    @Override
-    protected Object writeReplace()
-            throws java.io.ObjectStreamException {
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static DataResponseUser parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static DataResponseUser parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static DataResponseUser parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static DataResponseUser parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static DataResponseUser parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static DataResponseUser parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static DataResponseUser parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static DataResponseUser parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static DataResponseUser parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static DataResponseUser parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(DataResponseUser prototype) {
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @Override
+    @java.lang.Override
     protected Builder newBuilderForType(
-            BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2162,28 +2160,28 @@ public final class ZPMsgProtos {
      * Protobuf type {@code protobuf.DataResponseUser}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protobuf.DataResponseUser)
-            DataResponseUserOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protobuf.DataResponseUser)
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUserOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-        return ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
+          getDescriptor() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
       }
 
-      protected FieldAccessorTable
-      internalGetFieldAccessorTable() {
-        return ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        DataResponseUser.class, Builder.class);
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.Builder.class);
       }
 
-      // Construct using vn.com.zalopay.wallet.notificataion.message.ZPMsgProtos.DataResponseUser.newBuilder()
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
       private Builder(
-              BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2209,24 +2207,24 @@ public final class ZPMsgProtos {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
-        return ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
+          getDescriptorForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_DataResponseUser_descriptor;
       }
 
-      public DataResponseUser getDefaultInstanceForType() {
-        return DataResponseUser.getDefaultInstance();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.getDefaultInstance();
       }
 
-      public DataResponseUser build() {
-        DataResponseUser result = buildPartial();
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public DataResponseUser buildPartial() {
-        DataResponseUser result = new DataResponseUser(this);
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2243,16 +2241,16 @@ public final class ZPMsgProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof DataResponseUser) {
-          return mergeFrom((DataResponseUser)other);
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(DataResponseUser other) {
-        if (other == DataResponseUser.getDefaultInstance()) return this;
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser.getDefaultInstance()) return this;
         if (other.hasMsgtype()) {
           setMsgtype(other.getMsgtype());
         }
@@ -2265,25 +2263,25 @@ public final class ZPMsgProtos {
 
       public final boolean isInitialized() {
         if (!hasMsgtype()) {
-
+          
           return false;
         }
         if (!hasData()) {
-
+          
           return false;
         }
         return true;
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-        DataResponseUser parsedMessage = null;
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (DataResponseUser) e.getUnfinishedMessage();
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.DataResponseUser) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2344,9 +2342,9 @@ public final class ZPMsgProtos {
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000002;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
         data_ = value;
         onChanged();
         return this;
@@ -2373,80 +2371,80 @@ public final class ZPMsgProtos {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protobuf_MessageSendUser_descriptor;
+    internal_static_protobuf_MessageSendUser_descriptor;
   private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_protobuf_MessageSendUser_fieldAccessorTable;
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_protobuf_MessageSendUser_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protobuf_MessageLogin_descriptor;
+    internal_static_protobuf_MessageLogin_descriptor;
   private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_protobuf_MessageLogin_fieldAccessorTable;
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_protobuf_MessageLogin_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protobuf_ResultAuth_descriptor;
+    internal_static_protobuf_ResultAuth_descriptor;
   private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_protobuf_ResultAuth_fieldAccessorTable;
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_protobuf_ResultAuth_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protobuf_DataResponseUser_descriptor;
+    internal_static_protobuf_DataResponseUser_descriptor;
   private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_protobuf_DataResponseUser_fieldAccessorTable;
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_protobuf_DataResponseUser_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
-  getDescriptor() {
+      getDescriptor() {
     return descriptor;
   }
   private static com.google.protobuf.Descriptors.FileDescriptor
-          descriptor;
+      descriptor;
   static {
-    String[] descriptorData = {
-            "\n\017zpmsguser.proto\022\010protobuf\"U\n\017MessageSe" +
-                    "ndUser\022\014\n\004data\030\001 \002(\014\022\021\n\tsignature\030\002 \002(\t\022" +
-                    "\022\n\nexpiretime\030\003 \001(\003\022\r\n\005usrid\030\004 \001(\004\",\n\014Me" +
-                    "ssageLogin\022\r\n\005usrid\030\001 \002(\004\022\r\n\005token\030\002 \002(\t" +
-                    "\"9\n\nResultAuth\022\r\n\005usrid\030\001 \002(\004\022\016\n\006result\030" +
-                    "\002 \002(\005\022\014\n\004code\030\003 \001(\005\"1\n\020DataResponseUser\022" +
-                    "\017\n\007msgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014B:\n+vn.com" +
-                    ".zalopay.wallet.notificataion.messageB\013Z" +
-                    "PMsgProtos"
+    java.lang.String[] descriptorData = {
+      "\n\017zpmsguser.proto\022\010protobuf\"U\n\017MessageSe" +
+      "ndUser\022\014\n\004data\030\001 \002(\014\022\021\n\tsignature\030\002 \002(\t\022" +
+      "\022\n\nexpiretime\030\003 \001(\003\022\r\n\005usrid\030\004 \001(\004\",\n\014Me" +
+      "ssageLogin\022\r\n\005usrid\030\001 \002(\004\022\r\n\005token\030\002 \002(\t" +
+      "\"9\n\nResultAuth\022\r\n\005usrid\030\001 \002(\004\022\016\n\006result\030" +
+      "\002 \002(\005\022\014\n\004code\030\003 \001(\005\"1\n\020DataResponseUser\022" +
+      "\017\n\007msgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014B2\n#vn.com" +
+      ".vng.zalopay.data.ws.protobufB\013ZPMsgProt" +
+      "os"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-            new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-              public com.google.protobuf.ExtensionRegistry assignDescriptors(
-                      com.google.protobuf.Descriptors.FileDescriptor root) {
-                descriptor = root;
-                return null;
-              }
-            };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
-            .internalBuildGeneratedFileFrom(descriptorData,
-                    new com.google.protobuf.Descriptors.FileDescriptor[] {
-                    }, assigner);
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+        }, assigner);
     internal_static_protobuf_MessageSendUser_descriptor =
-            getDescriptor().getMessageTypes().get(0);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_protobuf_MessageSendUser_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-            internal_static_protobuf_MessageSendUser_descriptor,
-            new String[] { "Data", "Signature", "Expiretime", "Usrid", });
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_protobuf_MessageSendUser_descriptor,
+        new java.lang.String[] { "Data", "Signature", "Expiretime", "Usrid", });
     internal_static_protobuf_MessageLogin_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_protobuf_MessageLogin_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-            internal_static_protobuf_MessageLogin_descriptor,
-            new String[] { "Usrid", "Token", });
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_protobuf_MessageLogin_descriptor,
+        new java.lang.String[] { "Usrid", "Token", });
     internal_static_protobuf_ResultAuth_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_protobuf_ResultAuth_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-            internal_static_protobuf_ResultAuth_descriptor,
-            new String[] { "Usrid", "Result", "Code", });
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_protobuf_ResultAuth_descriptor,
+        new java.lang.String[] { "Usrid", "Result", "Code", });
     internal_static_protobuf_DataResponseUser_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_protobuf_DataResponseUser_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-            internal_static_protobuf_DataResponseUser_descriptor,
-            new String[] { "Msgtype", "Data", });
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_protobuf_DataResponseUser_descriptor,
+        new java.lang.String[] { "Msgtype", "Data", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

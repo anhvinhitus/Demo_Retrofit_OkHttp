@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import javax.inject.Inject;
 
@@ -61,12 +60,12 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
 //    @OnClick(R.id.layoutUser)
 //    public void onClickLayoutUser(View view) {
-//        navigator.startPreProfileActivity(this);
+//        navigator.startUpdateProfileLevel2Activity(this);
 //    }
 
     @OnClick(R.id.layoutResetPassCode)
     public void onClickResetPassCode(View view) {
-        navigator.startRecoveryPinActivity(this);
+        navigator.startChangePinActivity(this);
     }
 
     @OnClick(R.id.layoutSigOutAndDelDB)
@@ -117,6 +116,11 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
     public void updateBalance(long balance) {
         tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
+    }
+
+    @Override
+    public void showHideChangePinView(boolean isShow) {
+
     }
 
     public void updateBannerView(String bannerUrl) {

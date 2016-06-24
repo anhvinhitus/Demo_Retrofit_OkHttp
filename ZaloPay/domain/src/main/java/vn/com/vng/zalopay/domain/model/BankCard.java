@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.domain.model;
 
+import android.text.TextUtils;
+
 /**
  * Created by AnhHieu on 5/10/16.
  */
@@ -19,5 +21,20 @@ public class BankCard {
         this.last4cardno = last4cardno;
         this.bankcode = bankcode;
         this.expiretime = expiretime;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object instanceof BankCard)) {
+            return false;
+        }
+        BankCard bankCardTmp = (BankCard) object;
+        if (TextUtils.isEmpty(bankCardTmp.first6cardno) || TextUtils.isEmpty(bankCardTmp.last4cardno)) {
+            return false;
+        }
+        if (bankCardTmp.first6cardno.equals(this.first6cardno) && bankCardTmp.last4cardno.equals(bankCardTmp.last4cardno)) {
+            return true;
+        }
+        return false;
     }
 }

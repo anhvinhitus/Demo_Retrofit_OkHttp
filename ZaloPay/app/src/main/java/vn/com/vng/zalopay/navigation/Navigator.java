@@ -12,18 +12,19 @@ import javax.inject.Singleton;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.PreProfileActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
-import vn.com.vng.zalopay.account.ui.activities.RecoveryPinActivity;
+import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
-
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
@@ -35,16 +36,21 @@ import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
 * Navigator
 * */
 @Singleton
-public class Navigator {
+public class Navigator implements INavigator {
+    private final int MIN_PROFILE_LEVEL = 2;
+
+    UserConfig userConfig;
 
     @Inject
-    public Navigator() {
+    public Navigator(UserConfig userConfig) {
         //empty
+        this.userConfig = userConfig;
     }
 
 
@@ -60,6 +66,19 @@ public class Navigator {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
+
+        context.startActivity(intent);
+    }
+
+    public void startLoginActivity(Context context, String message) {
+        Intent intent = new Intent(context, LoginZaloActivity.class);
+        intent.putExtra("finish", true);
+        if (!TextUtils.isEmpty(message)) {
+            intent.putExtra(Constants.ARG_MESSAGE, message);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
 
         context.startActivity(intent);
     }
@@ -82,7 +101,7 @@ public class Navigator {
     }
 
     public void startUpdateProfileLevel2Activity(Context context, boolean clearTop) {
-        Intent intent = new Intent(context, PreProfileActivity.class);
+        Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
 
         if (clearTop) {
             intent.putExtra("finish", true);
@@ -109,6 +128,56 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
+    private void showRequireCreatePinDialog(final Context context) {
+        if (context == null) {
+            return;
+        }
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+//                .setTitle(context.getString(R.string.action_notifications))
+                .setContentText(context.getString(R.string.txt_need_create_pin))
+                .setCancelText(context.getString(R.string.txt_close))
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmText(context.getString(R.string.txt_create_pin))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        startUpdateProfileLevel2Activity(context, false);
+                    }
+                });
+        sweetAlertDialog.show();
+    }
+
+    private void showUpdateProfileInfoDialog(final Context context) {
+        if (context == null) {
+            return;
+        }
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+//                .setTitle(context.getString(R.string.action_notifications))
+                .setContentText(context.getString(R.string.txt_need_input_userinfo))
+                .setCancelText(context.getString(R.string.txt_close))
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmText(context.getString(R.string.txt_input_userinfo))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        startUpdateProfileLevel2Activity(context, false);
+                    }
+                });
+        sweetAlertDialog.show();
+    }
+
     public void startActivity(Fragment fragment, Intent intent) {
         fragment.startActivity(intent);
     }
@@ -133,15 +202,32 @@ public class Navigator {
     }
 
     public void startLinkCardActivity(Activity activity) {
-        Intent intent = new Intent(activity, LinkCardActivity.class);
-        activity.startActivity(intent);
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showRequireCreatePinDialog(activity);
+        } else {
+            activity.startActivity(intentLinkCard(activity));
+        }
+    }
+
+    public void startLinkCardProcedureActivity(Activity activity) {
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showRequireCreatePinDialog(activity);
+        } else {
+            Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
+            activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        }
     }
 
     public void startLinkCardProcedureActivity(Fragment activity) {
-        Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
-        activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            if (activity != null) {
+                showRequireCreatePinDialog(activity.getContext());
+            }
+        } else {
+            Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
+            activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
+        }
     }
-
 
     public void startPaymentApplicationActivity(Context context, String name) {
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
@@ -156,13 +242,13 @@ public class Navigator {
         context.startActivity(intent);
     }
 
-    public void startPreProfileActivity(Context context, String walletTransID) {
+    public void startUpdateProfileLevel2Activity(Context context, String walletTransID) {
         if (context == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
             return;
         }
 
-        Intent intent = new Intent(context, PreProfileActivity.class);
+        Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
         if (!TextUtils.isEmpty(walletTransID)) {
             intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
         }
@@ -176,8 +262,7 @@ public class Navigator {
     }
 
     public void startProfileInfoActivity(Activity activity) {
-        Intent intent = new Intent(activity, ProfileInfo2Activity.class);
-        activity.startActivity(intent);
+        activity.startActivity(intentProfile(activity));
     }
 
     public void startEditProfileActivity(Activity activity) {
@@ -185,14 +270,20 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startRecoveryPinActivity(Activity activity) {
-        Intent intent = new Intent(activity, RecoveryPinActivity.class);
+    public void startChangePinActivity(Activity activity) {
+        Intent intent = new Intent(activity, ChangePinActivity.class);
         activity.startActivity(intent);
     }
 
     public void startTransferMoneyActivity(Activity activity) {
-        Intent intent = new Intent(activity, TransferHomeActivity.class);
-        activity.startActivity(intent);
+        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            if (activity != null) {
+                showUpdateProfileInfoDialog(activity);
+            }
+        } else {
+            Intent intent = new Intent(activity, TransferHomeActivity.class);
+            activity.startActivity(intent);
+        }
     }
 
     public void startZaloContactActivity(TransferHomeFragment fragment) {
@@ -212,6 +303,15 @@ public class Navigator {
         fragment.startActivity(intent);
     }
 
+    @Override
+    public Intent intentProfile(Context context) {
+        Intent intent = new Intent(context, ProfileInfo2Activity.class);
+        return intent;
+    }
 
-
+    @Override
+    public Intent intentLinkCard(Context context) {
+        Intent intent = new Intent(context, LinkCardActivity.class);
+        return intent;
+    }
 }

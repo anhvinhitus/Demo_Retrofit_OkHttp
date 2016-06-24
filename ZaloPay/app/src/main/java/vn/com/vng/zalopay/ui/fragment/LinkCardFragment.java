@@ -164,6 +164,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Override
     public void onDestroy() {
         presenter.destroy();
+        // break circular link between this and mAdapter
+        mAdapter = null;
         super.onDestroy();
     }
 
@@ -240,7 +242,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
                 BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
                 try {
                     Timber.tag("LinkCardFragment").d("onActivityResult first6CardNo: %s", first6CardNo);
-                    bankCard.type = CShareData.getInstance(getActivity()).detectCardType(first6CardNo).toString();
+                    bankCard.type = presenter.detectCardType(bankcode, first6CardNo);
+                    Timber.tag("LinkCardFragment").d("onActivityResult bankCard.type: %s", bankCard.type);
                 } catch (Exception e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
