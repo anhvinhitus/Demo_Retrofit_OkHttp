@@ -170,7 +170,7 @@ public class UserConfigImpl implements UserConfig {
         JSONObject json = profile.optJSONObject("result");
 
         if (json == null) return;
-        long userId = json.optInt("userId");
+        long userId = json.optLong("userId");
         String displayName = json.optString("displayName");
         String avatar = json.optString("largeAvatar");
         long birthday = json.optInt("birthDate");
