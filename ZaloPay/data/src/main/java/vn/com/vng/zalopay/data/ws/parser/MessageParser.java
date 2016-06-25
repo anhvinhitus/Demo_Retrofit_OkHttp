@@ -58,15 +58,12 @@ public class MessageParser implements Parser {
 
     public Event processAuthenticationLoginSuccess(int msgType, byte[] data) {
         try {
-            Timber.d("data %s", new String(data));
             AuthenticationData event = new AuthenticationData(msgType);
             ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
-            Timber.d("Result %s code %s data %s", res.getResult(), res.getCode(), new String(data));
-
+            Timber.d("Result %s code %s", res.getResult(), res.getCode());
             event.code = res.getCode();
             event.uid = res.getUsrid();
             event.result = res.getResult();
-
             return event;
         } catch (Exception ex) {
             Timber.w(ex, "processAuthenticationLoginSuccess");

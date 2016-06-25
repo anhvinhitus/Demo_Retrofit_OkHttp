@@ -99,8 +99,6 @@ public class AndroidApplication extends MultiDexApplication {
             @Override
             public void run() {
                 appComponent.bundleService().ensureLocalResources();
-//                appComponent.bundleService().prepareInternalBundle();
-//                appComponent.bundleService().extractAllExternalApplication();
             }
         });
     }

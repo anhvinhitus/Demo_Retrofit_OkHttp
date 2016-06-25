@@ -14,7 +14,7 @@ public class NonLoggerFactory extends InternalLoggerFactory {
         return new InternalLogger() {
             @Override
             public String name() {
-                return null;
+                return "";
             }
 
             @Override
