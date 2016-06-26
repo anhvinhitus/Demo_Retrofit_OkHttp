@@ -30,10 +30,9 @@ import vn.com.zalopay.wallet.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public class AndroidApplication extends MultiDexApplication {
-
-    public static final String TAG = "AndroidApplication";
 
     public static File extStorageAppBasePath;
     public static File extStorageAppCachePath;
@@ -58,7 +57,6 @@ public class AndroidApplication extends MultiDexApplication {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-            Timber.tag(TAG);
             AndroidDevMetrics.initWith(this);
             StrictMode.enableDefaults();
             LeakCanary.install(this);
