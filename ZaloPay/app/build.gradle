@@ -298,3 +298,5 @@ dependencies {
     compile project(':moduledynamicloading')
 
 }
+
+apply plugin: 'com.google.gms.google-services'

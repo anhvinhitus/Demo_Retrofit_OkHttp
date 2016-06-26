@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.analytics.Tracker;
+
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Singleton;
@@ -63,6 +65,8 @@ public interface ApplicationComponent {
     Navigator navigator();
 
     ApplicationSession applicationSession();
+
+    Tracker defaultTracker();
 
     /*INJECT*/
 

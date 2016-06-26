@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
@@ -17,6 +20,7 @@ import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -147,5 +151,14 @@ public class ApplicationModule {
     @Singleton
     ApplicationSession providesApplicationSession(Context context, Navigator navigator) {
         return new ApplicationSession(context, navigator);
+    }
+
+    @Provides
+    @Singleton
+    Tracker provideDefaultTracker() {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(application);
+        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+        return analytics.newTracker(R.xml.global_tracker);
+
     }
 }
