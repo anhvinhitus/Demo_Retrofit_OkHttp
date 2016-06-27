@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -13,6 +14,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +60,9 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
 
     @BindView(R.id.layoutIntroduction)
     View layoutIntroduction;
+
+    @BindView(R.id.imgIntroduction)
+    ImageView imgIntroduction;
 
     @OnClick(R.id.layoutTransferAccZaloPay)
     public void onClickTransferAccZaloPay() {
@@ -113,6 +120,9 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
         } else {
             mTvTileTransactionRecent.setVisibility(View.GONE);
             layoutIntroduction.setVisibility(View.VISIBLE);
+            imgIntroduction.setBackgroundResource(R.drawable.anim_transfer);
+            AnimationDrawable animationDrawable = (AnimationDrawable)imgIntroduction.getBackground();
+            animationDrawable.start();
         }
     }
 
