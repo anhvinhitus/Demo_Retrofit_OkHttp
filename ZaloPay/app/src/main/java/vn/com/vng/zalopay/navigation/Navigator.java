@@ -118,7 +118,7 @@ public class Navigator implements INavigator {
 
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -127,7 +127,6 @@ public class Navigator implements INavigator {
             return;
         }
         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-//                .setTitle(context.getString(R.string.action_notifications))
                 .setContentText(context.getString(R.string.txt_need_input_userinfo))
                 .setCancelText(context.getString(R.string.txt_close))
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
