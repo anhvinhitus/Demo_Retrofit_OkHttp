@@ -33,24 +33,4 @@ public class ChannelFactory extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("bytesEncoder", new ByteArrayEncoder());
         pipeline.addLast("handler", new ConnectionHandler(context, listener));
     }
-
-/*    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-            throws Exception {
-        Timber.d("channelRead");
-        super.channelRead(ctx, msg);
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        Timber.d("channelReadComplete");
-        super.channelReadComplete(ctx);
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Timber.d("channelActive");
-        super.channelActive(ctx);
-    }*/
-
 }

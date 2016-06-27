@@ -279,6 +279,9 @@ dependencies {
         transitive = true;
     }
 
+    compile libs.parceler
+    apt libs.parceler_apt
+
     compile libs.avi
     compile libs.nineoldandroids
 
@@ -296,7 +299,7 @@ dependencies {
     releaseCompile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
-
+    compile project(':zalopayanalytics')
 }
 
 apply plugin: 'com.google.gms.google-services'

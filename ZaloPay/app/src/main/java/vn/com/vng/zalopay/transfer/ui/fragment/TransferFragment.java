@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.parceler.Parcels;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -124,7 +126,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             zaloFriend = getArguments().getParcelable(Constants.ARG_ZALO_FRIEND);
             mMessage = getArguments().getString(Constants.ARG_MESSAGE);
             mAmount = getArguments().getLong(Constants.ARG_AMOUNT);
-            TransferRecent transferRecent = getArguments().getParcelable(Constants.ARG_TRANSFERRECENT);
+            TransferRecent transferRecent = Parcels.unwrap(getArguments().getParcelable(Constants.ARG_TRANSFERRECENT));
             if (transferRecent != null && zaloFriend == null) {
                 zaloFriend = new ZaloFriend();
                 zaloFriend.setUserId(transferRecent.getUserId());

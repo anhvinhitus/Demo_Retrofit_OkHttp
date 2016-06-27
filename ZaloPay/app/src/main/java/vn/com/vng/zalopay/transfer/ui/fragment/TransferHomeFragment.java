@@ -18,6 +18,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,7 +223,7 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
+        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
         navigator.startTransferActivity(this, bundle);
     }
 
