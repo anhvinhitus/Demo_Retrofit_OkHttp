@@ -1,24 +1,10 @@
 package vn.com.vng.zalopay.transfer.ui.presenter;
 
-import android.os.CountDownTimer;
-
-import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
@@ -63,12 +49,10 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void destroy() {
-
     }
 
     public void getFriendList(final IZaloFriendListener listener) {
@@ -79,7 +63,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                 if (zaloFriendsFactory == null || mView == null) {
                     return;
                 }
-                zaloFriendsFactory.reloadZaloFriend(mView.getContext(), listener);
+                zaloFriendsFactory.reloadZaloFriend(applicationContext, listener);
             }
         });
     }

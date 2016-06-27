@@ -30,6 +30,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @Override
     protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
     }
 
 
