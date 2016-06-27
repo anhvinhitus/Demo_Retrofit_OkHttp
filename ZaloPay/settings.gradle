@@ -1,1 +1,1 @@
-include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator', ':qrcodecore', ':zalosdk', ':moduledynamicloading', ':debugviewer', ':debugviewer-release', ':reactnativemodules'
+include ':app', ':domain', ':data', ':uicomponent', ':greendaogenerator', ':qrcodecore', ':zalosdk', ':moduledynamicloading', ':debugviewer', ':debugviewer-release', ':reactnativemodules', ':zalopayanalytics'

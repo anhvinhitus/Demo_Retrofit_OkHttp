@@ -7,6 +7,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,6 +24,8 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.analytics.ZPTracker;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
@@ -36,6 +39,7 @@ import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
+import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 
@@ -160,5 +164,18 @@ public class ApplicationModule {
         // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
         return analytics.newTracker(R.xml.global_tracker);
 
+    }
+
+    @Provides
+    @Singleton
+    ZPAnalytics provideZPAnalytics() {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(application);
+        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+        final Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+
+        ZPAnalytics.Builder builder = new ZPAnalytics.Builder();
+        builder.addDefaultTracker();
+        builder.addTracker(new ZPTrackerGA(tracker));
+        return builder.build();
     }
 }

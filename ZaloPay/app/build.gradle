@@ -296,7 +296,7 @@ dependencies {
     releaseCompile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
-
+    compile project(':zalopayanalytics')
 }
 
 apply plugin: 'com.google.gms.google-services'
