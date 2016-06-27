@@ -1,13 +1,9 @@
 package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -16,8 +12,8 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
 import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
 
@@ -35,11 +31,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 1) {
-            return new BottomHolder(mInflater.inflate(R.layout.row_bank_card_bottom_layout, parent, false), onItemClickListener);
-        } else {
-            return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
-        }
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
     }
 
 
@@ -52,9 +44,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
             int id = anchor.getId();
 
-            if (id == R.id.btn_add_card) {
-                listener.onClickAddBankCard();
-            } else if (id == R.id.btn_more) {
+            if (id == R.id.root) {
                 BankCard bankCard = getItem(position);
                 if (bankCard != null) {
                     listener.onClickMenu(bankCard);
@@ -85,37 +75,20 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             if (bankCard != null) {
                 ((ViewHolder) holder).bindView(bankCard);
             }
-        } else {
-
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == getItemCount() - 1) {
-            return 1;
-        } else {
-            return 2;
         }
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size() + 1;
+        return mItems.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.iv_logo)
-        ImageView mLogo;
+        @BindView(R.id.root)
+        View mRoot;
 
-        @BindView(R.id.vg_header)
-        View mHeaderView;
-
-        @BindView(R.id.tv_sub_num_acc)
-        TextView mSubAccNumber;
-
-        @BindView(R.id.tv_username)
-        TextView mUserName;
+        @BindView(R.id.tv_num_acc)
+        TextView mCardNumber;
 
         OnItemClickListener listener;
 
@@ -125,61 +98,41 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.btn_more)
+        @OnClick(R.id.root)
         public void onClickMore(View v) {
             if (listener != null) {
                 listener.onListItemClick(v, getAdapterPosition());
             }
         }
 
-        public int getColorFromResource(int resource) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return getContext().getColor(resource);
-            } else {
-                return getContext().getResources().getColor(resource);
-            }
-        }
-
         public void bindView(BankCard bankCard) {
             Timber.d("bindView bankCard.type:%s", bankCard.type);
-            GradientDrawable bgShape = (GradientDrawable) mHeaderView.getBackground();
             if (bankCard.type == null) {
-                mLogo.setImageResource(R.color.transparent);
+                mRoot.setBackgroundResource(R.color.transparent);
             } else if (bankCard.type.equals(ECardType.JCB.toString())) {
-                mLogo.setImageResource(R.drawable.ic_lc_jcb_card);
-                bgShape.setColor(getColorFromResource(R.color.bg_jcb));
+                mRoot.setBackgroundResource(R.drawable.ic_jcb);
             } else if (bankCard.type.equals(ECardType.VISA.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_visa));
-                mLogo.setImageResource(R.drawable.ic_lc_visa_card);
+                mRoot.setBackgroundResource(R.drawable.ic_visa);
             } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_master_card));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
+                mRoot.setBackgroundResource(R.drawable.ic_mastercard);
             } else if (bankCard.type.equals(ECardType.PVTB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_vietinbank));
-                mLogo.setImageResource(R.drawable.ic_vietinbank);
+                mRoot.setBackgroundResource(R.drawable.ic_vietinbank);
             } else if (bankCard.type.equals(ECardType.PBIDV.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_bidv));
-                mLogo.setImageResource(R.drawable.ic_bidv);
+                mRoot.setBackgroundResource(R.drawable.ic_bidv);
             } else if (bankCard.type.equals(ECardType.PVCB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_vietcombank));
-                mLogo.setImageResource(R.drawable.ic_vietcombank);
+                mRoot.setBackgroundResource(R.drawable.ic_vietcombank);
             } else if (bankCard.type.equals(ECardType.PEIB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_eximbank));
-                mLogo.setImageResource(R.drawable.ic_eximbank);
+                mRoot.setBackgroundResource(R.drawable.ic_eximbank);
             } else if (bankCard.type.equals(ECardType.PSCB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_sacombank));
-                mLogo.setImageResource(R.drawable.ic_sacombank);
+                mRoot.setBackgroundResource(R.drawable.ic_sacombank);
             } else if (bankCard.type.equals(ECardType.PAGB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_agribank));
-                mLogo.setImageResource(R.drawable.ic_agribank);
+                mRoot.setBackgroundResource(R.drawable.ic_agribank);
             } else if (bankCard.type.equals(ECardType.PTPB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_tpbank));
-                mLogo.setImageResource(R.drawable.ic_tpbank);
+                mRoot.setBackgroundResource(R.drawable.ic_tpbank);
             } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
-                mLogo.setImageResource(R.color.transparent);
+                mRoot.setBackgroundResource(R.color.transparent);
             }
-            mUserName.setText(bankCard.cardname);
-            mSubAccNumber.setText("*** " + bankCard.last4cardno);
+            mCardNumber.setText(BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno));
         }
     }
 
@@ -202,8 +155,6 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     }
 
     public interface OnClickBankCardListener {
-        void onClickAddBankCard();
-
         void onClickMenu(BankCard bankCard);
     }
 }
