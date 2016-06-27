@@ -133,6 +133,12 @@
             android:label="@string/title_activity_balance_topup"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateVisible" />
+
+        <activity
+            android:name=".ui.activity.InvitationCodeActivity"
+            android:label="@string/title.activity.invitation.code"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="" />
         <activity
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"

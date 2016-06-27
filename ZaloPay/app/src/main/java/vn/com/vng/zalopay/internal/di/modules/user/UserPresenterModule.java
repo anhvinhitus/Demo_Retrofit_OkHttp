@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
+import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardProcedurePresenter;
@@ -122,5 +123,11 @@ public class UserPresenterModule {
     @Provides
     TransferPresenter provideTransferPresenter(User user, ZaloFriendsFactory zaloFriendsFactory) {
         return new TransferPresenter(user, zaloFriendsFactory);
+    }
+
+    @UserScope
+    @Provides
+    InvitationCodePresenter providesInvitationCodePresenter() {
+        return new InvitationCodePresenter();
     }
 }

@@ -1,11 +1,7 @@
 package vn.com.vng.zalopay.domain.repository;
 
-import java.util.List;
-
 import rx.Observable;
-import rx.Subscriber;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.model.TransHistory;
 
 /**
  * Created by AnhHieu on 5/4/16.

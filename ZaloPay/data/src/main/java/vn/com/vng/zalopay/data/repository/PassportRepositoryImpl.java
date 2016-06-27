@@ -33,9 +33,10 @@ public class PassportRepositoryImpl implements PassportRepository {
     @Override
     public Observable<User> login(final long zuid, String zAuthCode) {
         return passportFactory.login(zuid, zAuthCode)
-                .map(userEntity -> {
-                    User user = userEntityDataMapper.transform(userEntity);
+                .map(response -> {
+                    User user = userEntityDataMapper.transform(response);
 
+                    user.need_invitation = response.need_invitation;
 
                     user.dname = userConfig.getDisPlayName();
                     user.avatar = userConfig.getAvatar();
