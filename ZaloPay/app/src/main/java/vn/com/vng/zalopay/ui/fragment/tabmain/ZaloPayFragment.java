@@ -27,6 +27,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
@@ -130,6 +131,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             @Override
             public void onClick(View v) {
                 navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.NOTIFICATIONS);
+                zpAnalytics.logEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
             }
         });
     }
@@ -196,16 +198,19 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @OnClick(R.id.btn_deposit)
     public void onBtnDepositClick(View view) {
         navigator.startDepositActivity(getActivity());
+        zpAnalytics.logEvent(ZPEvents.TAPADDCASH);
     }
 
     @OnClick(R.id.btn_link_card)
     public void onBtnLinkCardClick(View view) {
         navigator.startLinkCardActivity(getActivity());
+        zpAnalytics.logEvent(ZPEvents.TAPMANAGECARDS);
     }
 
     @OnClick(R.id.btn_qr_code)
     public void onBtnQrCodeClick(View view) {
         startQRCodeActivity();
+        zpAnalytics.logEvent(ZPEvents.TAPSCANQR);
     }
 
     private void startQRCodeActivity() {
