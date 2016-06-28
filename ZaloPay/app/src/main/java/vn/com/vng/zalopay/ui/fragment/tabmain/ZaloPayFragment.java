@@ -52,6 +52,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     protected void onScreenVisible() {
     }
 
+
+    private final static int SPAN_COUNT_APPLICATION = 3;
+
     @Inject
     Navigator navigator;
 
@@ -111,9 +114,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         presenter.setView(this);
 
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
         listView.setNestedScrollingEnabled(false);
-        listView.addItemDecoration(new GridSpacingItemDecoration(3, 2, false));
+        listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
 
         showBannerAds();
@@ -186,13 +189,33 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void onClickAppListener(AppResource app) {
+    public void onClickAppListener(AppResource app, int position) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
         if (app.appid == 1) {
             navigator.startTransferMoneyActivity(getActivity());
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
         }
+
+        this.logActionApp(position);
+    }
+
+    // FIXME: 6/28/16 
+    private void logActionApp(int position) {
+        int action = ZPEvents.TAPAPPICON_1_1;
+
+        switch (position) {
+            case 0:
+                action = ZPEvents.TAPAPPICON_1_1;
+                break;
+            case 1:
+                action = ZPEvents.TAPAPPICON_1_2;
+                break;
+            case 2:
+                action = ZPEvents.TAPAPPICON_1_3;
+                break;
+        }
+        zpAnalytics.logEvent(action);
     }
 
     @OnClick(R.id.btn_deposit)
@@ -256,11 +279,20 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onItemClick(int position) {
         if (position == 0) {
-            onClickAppListener(getListData().get(1));
+
+            AppResource app = getListData().get(1);
+            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
+
+            zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
             navigator.startLinkCardProcedureActivity(getActivity());
+            zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-            onClickAppListener(getListData().get(2));
+
+            AppResource app = getListData().get(2);
+            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
+
+            zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION3);
         }
     }
 }

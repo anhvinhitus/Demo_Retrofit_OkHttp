@@ -16,7 +16,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
@@ -41,7 +40,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
             AppResource app = getItem(position);
             if (listener != null && app != null) {
-                listener.onClickAppListener(app);
+                listener.onClickAppListener(app, position);
             }
         }
 
@@ -146,6 +145,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     }
 
     public interface OnClickAppListener {
-        void onClickAppListener(AppResource app);
+        void onClickAppListener(AppResource app, int position);
     }
 }

@@ -25,7 +25,7 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     public interface IBannerClick {
         void onItemClick(int position);
-    };
+    }
 
     public BannerPagerAdapter(Context context, List<Integer> resources, IBannerClick iBannerClick) {
         mContext = context;
