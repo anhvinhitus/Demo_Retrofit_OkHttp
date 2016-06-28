@@ -38,8 +38,10 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     public OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onListItemClick(View anchor, int position) {
-            if (listener != null) {
-                listener.onClickAppListener(getItem(position));
+
+            AppResource app = getItem(position);
+            if (listener != null && app != null) {
+                listener.onClickAppListener(app);
             }
         }
 
@@ -103,8 +105,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
         @OnClick(R.id.itemLayout)
         public void onClickItem(View v) {
-
-
             if (listener != null) {
                 listener.onListItemClick(v, getAdapterPosition());
             }
