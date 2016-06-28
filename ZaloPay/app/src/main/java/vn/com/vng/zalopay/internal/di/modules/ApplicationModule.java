@@ -175,7 +175,7 @@ public class ApplicationModule {
 
         ZPAnalytics.Builder builder = new ZPAnalytics.Builder();
         builder.addDefaultTracker();
-        builder.addTracker(new ZPTrackerGA(tracker));
+        builder.addTracker(new ZPTrackerGA(tracker, application));
         return builder.build();
     }
 }

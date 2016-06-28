@@ -9,11 +9,12 @@ public class ZPAnalytics {
     private final List<ZPTracker> mTrackerList;
 
     ZPAnalytics(List<ZPTracker> trackerList) {
-        mTrackerList = new ArrayList<>();
+        this.mTrackerList = trackerList;
     }
 
     /**
      * Log custom event. Events are defined in https://docs.google.com/spreadsheets/d/1kdqC78-qMsRGY_n4hMyzUsbHlS3Gl4yWwgr62qLO8Co/edit#gid=0
+     *
      * @param eventId Id of the event that we want to log
      */
     public void logEvent(int eventId) {
@@ -22,7 +23,8 @@ public class ZPAnalytics {
 
     /**
      * Log custom event. Events are defined in https://docs.google.com/spreadsheets/d/1kdqC78-qMsRGY_n4hMyzUsbHlS3Gl4yWwgr62qLO8Co/edit#gid=0
-     * @param eventId Id of the event that we want to log
+     *
+     * @param eventId    Id of the event that we want to log
      * @param eventValue (optional) provide value for a given event
      */
     public void logEvent(int eventId, Long eventValue) {
@@ -31,8 +33,15 @@ public class ZPAnalytics {
         }
     }
 
+    public void logScreenView(String screenName) {
+        for (ZPTracker tracker : mTrackerList) {
+            tracker.logScreenView(screenName);
+        }
+    }
+
     public static class Builder {
         private final List<ZPTracker> mTrackerList;
+
         public Builder() {
             mTrackerList = new ArrayList<>();
         }
@@ -67,6 +76,11 @@ public class ZPAnalytics {
             }
 
             Timber.tag("ZPAnalytics").i(message);
+        }
+
+        @Override
+        public void logScreenView(String screenName) {
+            //Timber.tag("ZPAnalytics").d(screenName);
         }
     }
 }

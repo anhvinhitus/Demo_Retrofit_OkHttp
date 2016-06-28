@@ -11,4 +11,6 @@ public interface ZPTracker {
      * @param eventValue (optional) provide value for a given event
      */
     void logEvent(int eventId, Long eventValue);
+
+    void logScreenView(String screenName);
 }

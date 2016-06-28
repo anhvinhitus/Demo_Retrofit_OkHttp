@@ -24,6 +24,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
@@ -47,7 +48,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
 
-    EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+    final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+
+    final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
 
     public Activity getActivity() {
         return this;
@@ -126,6 +129,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        zpAnalytics.logScreenView(TAG);
     }
 
     @Override
