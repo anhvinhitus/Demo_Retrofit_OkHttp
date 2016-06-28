@@ -1,0 +1,89 @@
+EventId,Category,Action
+1000,Startup,App_Launch
+1100,Login,Tap_Login
+1101,Login,LoginFailed_NoNetwork
+1102,Login,LoginFailed_UserDenied
+1110,Login,LoginSuccess_Zalo
+1111,Login,LoginFailed_API_Error
+1112,Login,NeedInvitationCode
+1113,Login,AppLaunchHomeFromLogin
+1114,Login,InvitationFromLogin
+1200,Invitation,InputInvitationCode
+1201,Invitation,InvitationCodeWrong
+1202,Invitation,InvitationCodeReused
+1203,Invitation,InvitationCodeSuccess
+1204,Invitation,AppLaunchHomeFromInvitation
+1300,Home,AppLaunchHome
+1301,Home,TapScanQR
+1302,Home,TapAddCash
+1303,Home,TapManageCards
+1304,Home,TapMenuButton
+1305,Home,TapNotificationButton
+1306,Home,TapBannerPosition1
+1307,Home,TapBannerPosition2
+1308,Home,TapBannerPosition3
+1309,Home,TapAppIcon_1_1
+1310,Home,TapAppIcon_1_2
+1311,Home,TapAppIcon_1_3
+1312,Home,TapAppIcon_1_4
+1313,Home,TapAppIcon_2_1
+1314,Home,TapAppIcon_2_2
+1315,Home,TapAppIcon_2_3
+1316,Home,TapAppIcon_2_4
+1317,Home,TapAppIcon_3_1
+1318,Home,TapAppIcon_3_2
+1319,Home,TapAppIcon_3_3
+1320,Home,TapAppIcon_3_4
+1321,Home,TapAppIcon_4_1
+1322,Home,TapAppIcon_4_2
+1323,Home,TapAppIcon_4_3
+1324,Home,TapAppIcon_4_4
+1325,Home,TapAppIcon_5_1
+1326,Home,TapAppIcon_5_2
+1327,Home,TapAppIcon_5_3
+1328,Home,TapAppIcon_5_4
+1400,Left Menu,OpenLeftMenu
+1401,Left Menu,TapLeftMenuUserProfile
+1402,Left Menu,TapLeftMenuHome
+1403,Left Menu,TapLeftMenuNotification
+1404,Left Menu,TapLeftMenuScanQR
+1405,Left Menu,TapLeftMenuAddCash
+1406,Left Menu,TapLeftMenuTransferMoney
+1407,Left Menu,TapLeftMenuAddCard
+1408,Left Menu,TapLeftMenuTransactionLogs
+1409,Left Menu,TapLeftMenuFAQ
+1410,Left Menu,TapLeftMenuHelp
+1411,Left Menu,TapLeftMenuAbout
+1412,Left Menu,TapLeftMenuLogout
+1500,Scan QR,ScanQR_Launch
+1501,Scan QR,ScanQR_AccessDenied
+1502,Scan QR,ScanQR_NavigateBack
+1503,Scan QR,ScanQR_GetCode
+1504,Scan QR,ScanQR_WrongCode
+1505,Scan QR,ScanQR_GetOrder
+1506,Scan QR,ScanQR_NoOrder
+1600,Money Transfer,MoneyTransfer_Launch
+1601,Money Transfer,MoneyTransfer_NavigateBack
+1602,Money Transfer,MoneyTransfer_ChooseRecentTransaction
+1603,Money Transfer,MoneyTransfer_InputSmallAmount
+1604,Money Transfer,MoneyTransfer_InputBigAmount
+1605,Money Transfer,MoneyTransfer_InputNoDescription
+1606,Money Transfer,MoneyTransfer_InputDescription
+1607,Money Transfer,MoneyTransfer_TapContinue
+1608,Money Transfer,MoneyTransfer_ChangeReceiver
+1700,Add Cash,AddCash_Launch
+1701,Add Cash,AddCash_NavigateBack
+1702,Add Cash,AddCash_InputSmallAmount
+1703,Add Cash,AddCash_InputBigAmount
+1704,Add Cash,AddCash_InputWrongAmount
+1705,Add Cash,AddCash_InputAmountOK
+1800,Manage Card,ManageCard_Launch
+1801,Manage Card,ManageCard_NavigateBack
+1802,Manage Card,ManageCard_AddCard_Launch
+1803,Manage Card,ManageCard_DeleteCard
+1804,Manage Card,ManageCard_TapAddCard
+1900,Notifications,Notifications_Launch
+1901,Notifications,Notifications_NavigateBack
+1902,Notifications,Notifications_TapTransactionItem
+1903,Notifications,Notifications_TapProfileItem
+1904,Notifications,Notifications_TapPromotionItem
