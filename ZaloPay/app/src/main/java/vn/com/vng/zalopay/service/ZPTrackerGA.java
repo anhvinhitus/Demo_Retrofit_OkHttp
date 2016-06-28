@@ -5,6 +5,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.analytics.ZPTracker;
 
 /**
@@ -21,29 +22,10 @@ public class ZPTrackerGA implements ZPTracker {
     @Override
     public void logEvent(int eventId, Long eventValue) {
         mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(getEventCategory(eventId))
-                .setAction(getEventAction(eventId))
+                .setCategory(ZPEvents.categoryFromEventId(eventId))
+                .setAction(ZPEvents.actionFromEventId(eventId))
                 .setLabel("")
                 .setValue(eventValue)
                 .build());
-    }
-
-    private String getEventAction(int eventId) {
-        switch (eventId) {
-            case ZPAnalytics.APP_LAUNCH:
-                return "App Launch";
-            default:
-                return String.valueOf(eventId);
-        }
-    }
-
-    private String getEventCategory(int eventId) {
-        if (eventId < ZPAnalytics.END_STARTUP) {
-            return "Startup";
-        } else if (eventId < ZPAnalytics.END_LOGIN) {
-            return "Login";
-        } else {
-            return "Unknown Category";
-        }
     }
 }

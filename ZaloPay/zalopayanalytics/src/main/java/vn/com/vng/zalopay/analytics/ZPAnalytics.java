@@ -6,12 +6,6 @@ import java.util.List;
 import timber.log.Timber;
 
 public class ZPAnalytics {
-    public static final int END_STARTUP = 1100;
-    public static final int END_LOGIN = 1200;
-
-    public static final int APP_LAUNCH = 1000;
-    public static final int TAP_LOGIN = 1100;
-
     private final List<ZPTracker> mTrackerList;
 
     ZPAnalytics(List<ZPTracker> trackerList) {
