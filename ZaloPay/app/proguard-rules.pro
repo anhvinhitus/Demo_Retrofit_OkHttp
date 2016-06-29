@@ -385,6 +385,8 @@ public protected *;
 # required to suppress errors when building on android 22
 -dontwarn io.card.payment.CardIOActivity
 
+-keep class io.card.payment.OverlayView
+-keep class io.card.payment.Util
 
 #Zalo SDK
 
