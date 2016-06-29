@@ -12,6 +12,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -31,6 +32,8 @@ public abstract class BaseAppPresenter {
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     protected final Context applicationContext = AndroidApplication.instance();
+
+    protected final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
 
     protected void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {

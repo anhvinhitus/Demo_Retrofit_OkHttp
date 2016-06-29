@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
-    final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
+    protected final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
 
     public Activity getActivity() {
         return this;
