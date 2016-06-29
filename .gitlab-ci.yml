@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - archive
 
 before_script:  
   - export ANDROID_HOME=/home/gitlab-runner/android-sdk-linux
@@ -16,4 +17,14 @@ test_project:
   script:
     - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionReleaseUnitTest
 
+archive_project:
+  stage: archive
+  script:
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleRelease
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ZaloPay/app/build/outputs/apk/app-sandbox-release.apk
+      - ZaloPay/app/build/outputs/apk/app-production-release.apk
 
