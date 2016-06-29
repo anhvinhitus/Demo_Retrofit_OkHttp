@@ -1,6 +1,19 @@
-before_script:  
-  - export ANDROID_HOME="/opt/android-sdk"
+stages:
+  - build
+  - test
 
-dev:  
+before_script:  
+  - export ANDROID_HOME=/home/gitlab-runner/android-sdk-linux
+  - export GRADLE_USER_HOME=/home/gitlab-runner/gradle
+
+build_project:
+  stage: build  
   script:
     - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleProductionDebug
+
+test_project:
+  stage: test
+  script:
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionReleaseUnitTest
+
+
