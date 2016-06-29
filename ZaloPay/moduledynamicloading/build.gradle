@@ -51,4 +51,5 @@ dependencies {
     compile libs.react_native
 
     compile project(':data')
+    compile project(':zalopayanalytics')
 }

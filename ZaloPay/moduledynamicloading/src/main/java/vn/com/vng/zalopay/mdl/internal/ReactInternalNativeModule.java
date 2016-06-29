@@ -12,6 +12,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
@@ -21,10 +22,14 @@ import vn.com.vng.zalopay.mdl.INavigator;
 public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     INavigator navigator;
+    private ZPAnalytics zpAnalytics;
 
-    public ReactInternalNativeModule(ReactApplicationContext reactContext, INavigator navigator) {
+    public ReactInternalNativeModule(ReactApplicationContext reactContext,
+                                     INavigator navigator,
+                                     ZPAnalytics zpAnalytics) {
         super(reactContext);
         this.navigator = navigator;
+        this.zpAnalytics = zpAnalytics;
     }
 
     /// The purpose of this method is to return the string name of the NativeModule
@@ -77,6 +82,14 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             Intent intent = navigator.intentProfile(getCurrentActivity());
             getCurrentActivity().startActivity(intent);
         }
+    }
+
+    @ReactMethod
+    public void trackEvent(int eventId, long eventValue) {
+
+        Timber.d("trackEvent eventId %s eventValue %s");
+
+        zpAnalytics.logEvent(eventId, eventValue);
     }
 }
 

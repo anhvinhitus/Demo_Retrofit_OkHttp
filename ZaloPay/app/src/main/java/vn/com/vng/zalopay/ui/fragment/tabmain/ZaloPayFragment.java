@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -293,6 +295,19 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
 
             zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION3);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                navigator.startQrCodeActivity(getActivity());
+            } else {
+                zpAnalytics.logEvent(ZPEvents.SCANQR_ACCESSDENIED);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

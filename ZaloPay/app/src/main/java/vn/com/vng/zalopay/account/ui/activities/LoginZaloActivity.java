@@ -98,7 +98,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("onActivityResult requestCode %s resultCode %", requestCode, resultCode);
+        Timber.d("onActivityResult requestCode %s resultCode %s", requestCode, resultCode);
         super.onActivityResult(requestCode, resultCode, data);
         loginPresenter.onActivityResult(this, requestCode, resultCode, data);
     }
