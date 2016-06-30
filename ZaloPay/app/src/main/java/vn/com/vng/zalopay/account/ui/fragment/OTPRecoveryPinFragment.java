@@ -139,7 +139,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
     @Override
     public void confirmOTPError() {
-        showError(getContext().getString(R.string.reset_pin_error));
+        showError(getContext().getString(R.string.otp_invalid));
         if (mRetryOtp < 3) {
             mRetryOtp++;
         } else {
