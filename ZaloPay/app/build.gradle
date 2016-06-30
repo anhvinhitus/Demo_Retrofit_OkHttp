@@ -52,6 +52,9 @@ android {
     sourceSets {
         production.assets.srcDirs += '../../paymentapps/production'
         sandbox.assets.srcDirs += '../../paymentapps/sandbox'
+
+        staging.assets.srcDirs += '../../paymentapps/production'
+
         internalProduction.assets.srcDirs += '../../paymentapps/production'
         internalSandbox.assets.srcDirs += '../../paymentapps/sandbox'
     }
@@ -122,6 +125,17 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
+        }
+
+        staging {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
+            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'true'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+            buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8424'
         }
 
         internalProduction {
