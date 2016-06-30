@@ -165,7 +165,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
                 return;
             }
 
-            Timber.e(e, "GetUserInfoSubscriber onError " + e);
+            Timber.w(e, "GetUserInfoSubscriber onError " + e);
             LinkCardProcedurePresenter.this.onCreateWalletOrderError(e);
         }
     }

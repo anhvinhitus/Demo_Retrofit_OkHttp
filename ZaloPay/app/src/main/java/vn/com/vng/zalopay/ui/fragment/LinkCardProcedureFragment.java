@@ -22,12 +22,12 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LinkCardProdureFragment.OnFragmentInteractionListener} interface
+ * {@link LinkCardProcedureFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LinkCardProdureFragment#newInstance} factory method to
+ * Use the {@link LinkCardProcedureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkCardProdureFragment extends BaseFragment implements ILinkCardProcedureView {
+public class LinkCardProcedureFragment extends BaseFragment implements ILinkCardProcedureView {
 
     private OnFragmentInteractionListener mListener;
 
@@ -42,7 +42,7 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
         linkCardProdurePresenter.addLinkCard();
     }
 
-    public LinkCardProdureFragment() {
+    public LinkCardProcedureFragment() {
         // Required empty public constructor
     }
 
@@ -50,11 +50,12 @@ public class LinkCardProdureFragment extends BaseFragment implements ILinkCardPr
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment LinkCardProdureFragment.
+     * @return A new instance of fragment LinkCardProcedureFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LinkCardProdureFragment newInstance() {
-        LinkCardProdureFragment fragment = new LinkCardProdureFragment();
+    public static LinkCardProcedureFragment newInstance() {
+
+        LinkCardProcedureFragment fragment = new LinkCardProcedureFragment();
         return fragment;
     }
 

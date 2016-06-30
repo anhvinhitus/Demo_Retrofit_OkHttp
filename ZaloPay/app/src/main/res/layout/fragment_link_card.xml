@@ -54,7 +54,7 @@
         <include
             layout="@layout/row_bank_card_bottom_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_gravity="bottom" />
     </FrameLayout>
 </LinearLayout>
