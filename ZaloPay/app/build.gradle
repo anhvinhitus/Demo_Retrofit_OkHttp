@@ -36,7 +36,7 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 3
+        versionCode 4
         versionName "1.6.${versionCode}"
 
         multiDexEnabled true
@@ -215,7 +215,7 @@ android {
         // ./gradlew clean assemble -PCI_BUILD=true
         def clientBuildDate = new Date().format('yyyyMMddHHmm')
         // def newName = defaultConfig.versionName.replace(".", "_") + "-" + clientBuildDate
-        def newName = defaultConfig.versionName
+        def newName = "v" + defaultConfig.versionName
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
                 output.outputFile = new File("../../releases", output.outputFile.name.replace(".apk", "-" + newName + ".apk").replace("app-", "ZaloPay-"));
