@@ -38,7 +38,7 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
     LinkCardProcedurePresenter linkCardProdurePresenter;
 
     @OnClick(R.id.btnContinue)
-    public void onClickBtnContinute(View view) {
+    public void onClickBtnContinue(View view) {
         linkCardProdurePresenter.addLinkCard();
     }
 

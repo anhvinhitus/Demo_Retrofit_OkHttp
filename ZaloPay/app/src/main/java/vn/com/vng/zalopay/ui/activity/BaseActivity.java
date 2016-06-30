@@ -12,8 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,14 +23,17 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -68,6 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             hostFragment(getFragmentToHost());
         }
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        this.logActionLaunch();
     }
 
     protected int getResLayoutId() {
@@ -150,6 +152,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         BaseFragment activeFragment = getActiveFragment();
         if (activeFragment == null || !activeFragment.onBackPressed()) {
             super.onBackPressed();
+            this.logActionNavigationBack();
         }
     }
 
@@ -218,4 +221,29 @@ public abstract class BaseActivity extends AppCompatActivity {
         getAppComponent().applicationSession().setMessageAtLogin("Hệ thống đang bảo trì. Vui lòng thử lại sau.");
         getAppComponent().applicationSession().clearUserSession();
     }
+
+
+    private void logActionLaunch() {
+//        if (TAG.equals(QRCodeScannerActivity.class.getSimpleName())) {
+//            zpAnalytics.logEvent(SCANQR_LAUNCH);
+//        } else
+        if (TAG.equals(LinkCardActivity.class.getSimpleName())) {
+            zpAnalytics.logEvent(ZPEvents.MANAGECARD_LAUNCH);
+        } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
+            zpAnalytics.logEvent(ZPEvents.ADDCASH_LAUNCH);
+        } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
+            zpAnalytics.logEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
+        }
+    }
+
+    private void logActionNavigationBack() {
+        if (TAG.equals(LinkCardActivity.class.getSimpleName())) {
+            zpAnalytics.logEvent(ZPEvents.MANAGECARD_NAVIGATEBACK);
+        } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
+            zpAnalytics.logEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
+        } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
+            zpAnalytics.logEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
+        }
+    }
+
 }

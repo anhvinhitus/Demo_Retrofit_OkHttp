@@ -30,6 +30,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
@@ -230,6 +231,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @OnClick(R.id.btn_add_card)
     public void onClickAddBankCard() {
         navigator.startLinkCardProcedureActivity(this);
+
     }
 
     @Override
@@ -254,9 +256,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
                 long expiretime = bundle.getLong(Constants.EXPIRETIME);
                 BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
                 try {
-                    Timber.tag("LinkCardFragment").d("onActivityResult first6CardNo: %s", first6CardNo);
+                    Timber.d("onActivityResult first6CardNo: %s", first6CardNo);
                     bankCard.type = presenter.detectCardType(bankcode, first6CardNo);
-                    Timber.tag("LinkCardFragment").d("onActivityResult bankCard.type: %s", bankCard.type);
+                    Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
                 } catch (Exception e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
@@ -278,31 +280,10 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
             presenter.removeLinkCard(mCurrentBankCard);
+            zpAnalytics.logEvent(ZPEvents.MANAGECARD_DELETECARD);
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.root) {
             mBottomSheetDialog.dismiss();
-        }
-    }
-
-    private static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int spaceHorizontal;
-        private int spaceVertical;
-
-        public SpacesItemDecoration(int spaceHorizontal, int spaceVertical) {
-            this.spaceHorizontal = spaceHorizontal;
-            this.spaceVertical = spaceVertical;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
-            outRect.left = spaceHorizontal;
-            outRect.right = spaceHorizontal;
-            outRect.bottom = spaceVertical;
-            outRect.top = spaceVertical;
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.top = 2 * spaceVertical;
-            }
         }
     }
 
