@@ -9,8 +9,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -37,9 +35,7 @@ import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.BankCardUtil;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -122,6 +118,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
             window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
             View root = mBottomSheetDialog.findViewById(R.id.root);
             View layoutMoneySource = mBottomSheetDialog.findViewById(R.id.layoutMoneySource);
             View layoutDetail = mBottomSheetDialog.findViewById(R.id.layoutDetail);
@@ -133,6 +130,11 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             layoutRemoveLink.setOnClickListener(this);
         }
 
+        View layoutLinkCard = mBottomSheetDialog.findViewById(R.id.layoutLinkCard);
+        ImageView imgLogo = (ImageView)mBottomSheetDialog.findViewById(R.id.iv_logo);
+        if (mAdapter != null) {
+            mAdapter.bindBankCard(layoutLinkCard, imgLogo, mCurrentBankCard);
+        }
 //        mBottomSheetDialog.show();
 //        mBottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 //            @Override
@@ -295,6 +297,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         if (mCurrentBankCard != null && tvCardNum != null) {
             tvCardNum.setText(BankCardUtil.formatBankCardNumber(mCurrentBankCard.first6cardno, mCurrentBankCard.last4cardno));
         }
+        initBottomSheet();
         mBottomSheetDialog.show();
     }
 

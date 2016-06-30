@@ -1,9 +1,13 @@
 package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -87,6 +91,9 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
         @BindView(R.id.root)
         View mRoot;
 
+        @BindView(R.id.iv_logo)
+        ImageView imgLogo;
+
         @BindView(R.id.tv_num_acc)
         TextView mCardNumber;
 
@@ -105,35 +112,62 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             }
         }
 
-        public void bindView(BankCard bankCard) {
+        public void bindView(final BankCard bankCard) {
             Timber.d("bindView bankCard.type:%s", bankCard.type);
-            if (bankCard.type == null) {
-                mRoot.setBackgroundResource(R.color.transparent);
-            } else if (bankCard.type.equals(ECardType.JCB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_jcb);
-            } else if (bankCard.type.equals(ECardType.VISA.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_visa);
-            } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_mastercard);
-            } else if (bankCard.type.equals(ECardType.PVTB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_vietinbank);
-            } else if (bankCard.type.equals(ECardType.PBIDV.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_bidv);
-            } else if (bankCard.type.equals(ECardType.PVCB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_vietcombank);
-            } else if (bankCard.type.equals(ECardType.PEIB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_eximbank);
-            } else if (bankCard.type.equals(ECardType.PSCB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_sacombank);
-            } else if (bankCard.type.equals(ECardType.PAGB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_agribank);
-            } else if (bankCard.type.equals(ECardType.PTPB.toString())) {
-                mRoot.setBackgroundResource(R.drawable.ic_tpbank);
-            } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
-                mRoot.setBackgroundResource(R.color.transparent);
-            }
+            bindBankCard(mRoot, imgLogo, bankCard);
             mCardNumber.setText(BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno));
         }
+    }
+
+    public int getColorFromResource(int resource) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getContext().getColor(resource);
+        } else {
+            return getContext().getResources().getColor(resource);
+        }
+    }
+
+    public void bindBankCard(View mRoot, ImageView imgLogo, BankCard bankCard) {
+        GradientDrawable bgShape = (GradientDrawable) mRoot.getBackground();
+        int[] colors = new int[3];
+        if (bankCard == null || TextUtils.isEmpty(bankCard.type)) {
+            imgLogo.setImageDrawable(null);
+            colors = new int[]{getColorFromResource(R.color.bg_vietinbank_start), getColorFromResource(R.color.bg_vietinbank_end), getColorFromResource(R.color.bg_vietinbank_start)};
+        } else if (bankCard.type.equals(ECardType.JCB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_jcb);
+            colors = new int[]{getColorFromResource(R.color.bg_jcb_start), getColorFromResource(R.color.bg_jcb_end), getColorFromResource(R.color.bg_jcb_start)};
+        } else if (bankCard.type.equals(ECardType.VISA.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_visa);
+            colors = new int[]{getColorFromResource(R.color.bg_visa_start), getColorFromResource(R.color.bg_visa_end), getColorFromResource(R.color.bg_visa_start)};
+        } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_mastercard);
+            colors = new int[]{getColorFromResource(R.color.bg_master_card_start), getColorFromResource(R.color.bg_master_card_end), getColorFromResource(R.color.bg_master_card_start)};
+        } else if (bankCard.type.equals(ECardType.PVTB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_vietinbank);
+            colors = new int[]{getColorFromResource(R.color.bg_vietinbank_start), getColorFromResource(R.color.bg_vietinbank_end), getColorFromResource(R.color.bg_vietinbank_start)};
+        } else if (bankCard.type.equals(ECardType.PBIDV.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_bidv);
+            colors = new int[]{getColorFromResource(R.color.bg_bidv_start), getColorFromResource(R.color.bg_bidv_end), getColorFromResource(R.color.bg_bidv_start)};
+        } else if (bankCard.type.equals(ECardType.PVCB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_vietcombank);
+            colors = new int[]{getColorFromResource(R.color.bg_vietcombank_start), getColorFromResource(R.color.bg_vietcombank_end), getColorFromResource(R.color.bg_vietcombank_start)};
+        } else if (bankCard.type.equals(ECardType.PEIB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_eximbank);
+            colors = new int[]{getColorFromResource(R.color.bg_eximbank_start), getColorFromResource(R.color.bg_eximbank_end), getColorFromResource(R.color.bg_eximbank_start)};
+        } else if (bankCard.type.equals(ECardType.PSCB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_sacombank);
+            colors = new int[]{getColorFromResource(R.color.bg_sacombank_start), getColorFromResource(R.color.bg_sacombank_end), getColorFromResource(R.color.bg_sacombank_start)};
+        } else if (bankCard.type.equals(ECardType.PAGB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_agribank);
+            colors = new int[]{getColorFromResource(R.color.bg_agribank_start), getColorFromResource(R.color.bg_agribank_end), getColorFromResource(R.color.bg_agribank_start)};
+        } else if (bankCard.type.equals(ECardType.PTPB.toString())) {
+            imgLogo.setImageResource(R.drawable.ic_tpbank);
+            colors = new int[]{getColorFromResource(R.color.bg_tpbank_start), getColorFromResource(R.color.bg_tpbank_end), getColorFromResource(R.color.bg_tpbank_start)};
+        } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
+            imgLogo.setImageDrawable(null);
+            colors = new int[]{getColorFromResource(R.color.bg_vietinbank_start), getColorFromResource(R.color.bg_vietinbank_end), getColorFromResource(R.color.bg_vietinbank_start)};
+        }
+        bgShape.setColors(colors);
     }
 
     public class BottomHolder extends RecyclerView.ViewHolder {
