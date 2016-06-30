@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.data.repository;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.AccountService;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -81,5 +85,22 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
             mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
             return mappingZaloAndZaloPay;
         });
+    }
+
+    @Override
+    public Observable<Boolean> updateProfile3(long uId, String accessToken, String identityNumber, String email, String fimgPath, String bimgPath, String avatarPath) {
+
+        RequestBody fimg = requestBodyFromPathFile(fimgPath);
+        RequestBody bimg = requestBodyFromPathFile(bimgPath);
+        RequestBody avatar = requestBodyFromPathFile(avatarPath);
+
+        return accountService.updateProfile3(uId, accessToken, identityNumber, email, fimg, bimg, avatar)
+                .map(baseResponse -> Boolean.TRUE);
+    }
+
+    private RequestBody requestBodyFromPathFile(String filePath) {
+        File file = new File(filePath);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        return requestBody;
     }
 }

@@ -1,8 +1,11 @@
 package vn.com.vng.zalopay.data.api;
 
+import okhttp3.RequestBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
@@ -29,4 +32,16 @@ public interface AccountService {
     @FormUrlEncoded
     @POST("um/getuserinfo")
     Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("loginuid") long zaloId, @Field("systemlogin") int systemlogin);
+
+    @Multipart
+    @POST("umupload/preupdateprofilelevel3")
+    Observable<BaseResponse> updateProfile3(@Part("userid") long userid,
+                                            @Part("accesstoken") String accesstoken,
+                                            @Part("identitynumber") String identitynumber,
+                                            @Part("email") String email,
+                                            @Part("fimg") RequestBody fimg,
+                                            @Part("bimg") RequestBody bimg,
+                                            @Part("avataimg") RequestBody avataimg
+    );
+
 }

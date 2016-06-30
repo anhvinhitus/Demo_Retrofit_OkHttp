@@ -9,7 +9,18 @@ import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
  */
 public interface AccountRepository {
     Observable<Boolean> updateProfile(String pin, String phonenumber);
+
     Observable<ProfilePermisssion> verifyOTPProfile(String otp);
+
     Observable<Boolean> recoverypin(String pin, String otp);
+
     Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin);
+
+    Observable<Boolean> updateProfile3(long userId,
+                                       String accessToken,
+                                       String identityNumber,
+                                       String email,
+                                       String fimgPath,
+                                       String bimgPath,
+                                       String avatarPath);
 }
