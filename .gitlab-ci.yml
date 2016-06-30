@@ -11,12 +11,16 @@ before_script:
   - mkdir -p ./releases
 
 build:
-  stage: build  
+  stage: build
+  except:
+    - tags  
   script:
     - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleProductionDebug
 
 test:
   stage: test
+  except:
+    - tags
   script:
     - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionReleaseUnitTest
 
