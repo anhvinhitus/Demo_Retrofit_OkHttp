@@ -250,7 +250,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     private List<AppResource> getListData() {
         if (Lists.isEmptyOrNull(mListApps)) {
-            mListApps = new ArrayList<>(ReactAppConfig.APP_RESOURCE_MAP.values());
+            mListApps = new ArrayList<>(ReactAppConfig.APP_RESOURCE_LIST);
         }
         return mListApps;
     }

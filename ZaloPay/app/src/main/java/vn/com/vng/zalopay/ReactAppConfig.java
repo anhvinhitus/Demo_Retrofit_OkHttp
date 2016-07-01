@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
 
@@ -9,7 +11,8 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  */
 public class ReactAppConfig {
 
-    public static final HashMap<Integer, AppResource> APP_RESOURCE_MAP;
+    static final HashMap<Integer, AppResource> APP_RESOURCE_MAP;
+    public static final List<AppResource> APP_RESOURCE_LIST;
 
     static {
         APP_RESOURCE_MAP = new HashMap<>();
@@ -18,6 +21,11 @@ public class ReactAppConfig {
         APP_RESOURCE_MAP.put(12, new AppResource(12, AndroidApplication.instance().getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)));
         APP_RESOURCE_MAP.put(14, new AppResource(14, AndroidApplication.instance().getString(R.string.zing_xu), String.valueOf(R.drawable.ic_zingxu)));
 
+        APP_RESOURCE_LIST = new ArrayList<>();
+        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(1));
+        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(11));
+        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(12));
+        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(14));
               /*  new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)),
                 new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien), 1),
                 new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet), 1),
