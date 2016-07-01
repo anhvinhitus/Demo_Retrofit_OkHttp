@@ -214,7 +214,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 zpAnalytics.logEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTIONLOGS);
+                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTION_LOGS);
                 zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:

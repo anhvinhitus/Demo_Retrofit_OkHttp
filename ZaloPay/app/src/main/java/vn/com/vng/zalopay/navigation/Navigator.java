@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.ReactAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
@@ -19,6 +20,7 @@ import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -271,6 +273,11 @@ public class Navigator implements INavigator {
         fragment.startActivity(intent);
     }
 
+    public void startUpdateProfile3Activity(Context context) {
+        Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     public Intent intentProfile(Context context) {
         Intent intent = new Intent(context, ProfileInfo2Activity.class);
@@ -280,6 +287,19 @@ public class Navigator implements INavigator {
     @Override
     public Intent intentLinkCard(Context context) {
         Intent intent = new Intent(context, LinkCardActivity.class);
+        return intent;
+    }
+
+    @Override
+    public Intent intentPaymentApp(Context context, int appId, String view) {
+        AppResource appResource = ReactAppConfig.getAppResource(appId);
+        if (appResource == null) {
+            return null;
+        }
+        Intent intent = new Intent(context, PaymentApplicationActivity.class);
+        intent.putExtra("moduleName", Constants.ModuleName.PAYMENT_MAIN);
+        intent.putExtra("appResource", appResource);
+        intent.putExtra("view", view);
         return intent;
     }
 }

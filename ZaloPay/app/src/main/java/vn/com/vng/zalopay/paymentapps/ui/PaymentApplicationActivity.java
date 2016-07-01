@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -33,7 +35,6 @@ import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
-import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
@@ -60,29 +61,40 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     private AppResource appResource;
 
+    private String viewOption;
+
     public PaymentApplicationActivity() {
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        if (savedInstanceState == null) {
-            appResource = getIntent().getParcelableExtra("appResource");
-            mComponentName = getIntent().getStringExtra("moduleName");
-        } else {
-            appResource = savedInstanceState.getParcelable("appResource");
-            mComponentName = savedInstanceState.getString("moduleName");
-        }
-
-        Timber.d("Starting module: %s", mComponentName);
-        Timber.d("appResource appname %s", appResource == null ? "" : appResource.appname);
-        Timber.d("appResource appid %d", appResource == null ? 0 : appResource.appid);
+        initArgs(savedInstanceState);
 
         try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             Timber.e(e, "Caught exception while initializing Payment App");
         }
+    }
+
+    private void initArgs(Bundle savedInstanceState) {
+
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+
+            appResource = intent.getParcelableExtra("appResource");
+            mComponentName = intent.getStringExtra("moduleName");
+            viewOption = intent.getStringExtra("view");
+        } else {
+            appResource = savedInstanceState.getParcelable("appResource");
+            mComponentName = savedInstanceState.getString("moduleName");
+            viewOption = savedInstanceState.getString("view");
+        }
+
+        Timber.d("Starting module: %s", mComponentName);
+        Timber.d("appResource appid %d % appname %s", appResource == null ? 0 : appResource.appid,
+                appResource == null ? "" : appResource.appname);
     }
 
     @Override
@@ -108,6 +120,10 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         if (mComponentName != null) {
             outState.putString("moduleName", mComponentName);
+        }
+
+        if (viewOption != null) {
+            outState.putString("viewOption", viewOption);
         }
     }
 
@@ -161,7 +177,16 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     Bundle getLaunchOptions() {
-        return null;
+        Bundle bundle = null;
+
+        if (!TextUtils.isEmpty(viewOption)) {
+            bundle = new Bundle();
+            bundle.putString("view", viewOption);
+            return bundle;
+        }
+
+        return bundle;
+
     }
 
     /**

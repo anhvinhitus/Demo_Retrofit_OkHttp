@@ -53,6 +53,6 @@ public class Constants {
         public static final String ABOUT = "About";
         public static final String HELP = "Help";
         public static final String FAQ = "FAQ";
-        public static final String TRANSACTIONLOGS = "TransactionLogs";
+        public static final String TRANSACTION_LOGS = "TransactionLogs";
     }
 }

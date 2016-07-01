@@ -95,6 +95,10 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void showDetail(int appid, String transid) {
         Timber.d("show Detail appid %s transid %s", appid, transid);
+        Intent intent = navigator.intentPaymentApp(getCurrentActivity(), appid, "history");
+        if (intent != null) {
+            getCurrentActivity().startActivity(intent);
+        }
     }
 }
 
