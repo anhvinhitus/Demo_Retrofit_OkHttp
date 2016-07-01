@@ -51,7 +51,7 @@ android {
 
     sourceSets {
         main {
-            assets.srcDirs = ['src/main/assets', '../../internalapps']
+            assets.srcDirs += '../../internalapps'
         }
 
         production {
