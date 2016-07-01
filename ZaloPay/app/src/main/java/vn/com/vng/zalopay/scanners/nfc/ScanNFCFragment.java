@@ -13,8 +13,10 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -32,6 +34,12 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
     @Inject
     ZaloPayRepository zaloPayRepository;
+
+    @Inject
+    BalanceRepository mBalanceRepository;
+
+    @Inject
+    Navigator mNavigator;
 
     public ScanNFCFragment() {
         // Required empty public constructor
@@ -77,8 +85,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ScanNFCFragment.
      */
     public static ScanNFCFragment newInstance() {
@@ -95,7 +101,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
 
-        paymentWrapper = new PaymentWrapper(zaloPayRepository,
+        paymentWrapper = new PaymentWrapper(mBalanceRepository, zaloPayRepository,
                 new PaymentWrapper.IViewListener() {
                     @Override
                     public Activity getActivity() {
@@ -127,6 +133,11 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                     @Override
                     public void onResponseCancel() {
 
+                    }
+
+                    @Override
+                    public void onNotEnoughMoney() {
+                        mNavigator.startDepositActivity(ScanNFCFragment.this.getContext());
                     }
                 });
     }

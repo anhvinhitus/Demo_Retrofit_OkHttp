@@ -20,8 +20,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -60,6 +62,12 @@ public class CounterBeaconFragment extends BaseFragment {
     @Inject
     TransactionStore.Repository mTransactionRepository;
 
+    @Inject
+    BalanceRepository mBalanceRepository;
+
+    @Inject
+    Navigator mNavigator;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -88,7 +96,8 @@ public class CounterBeaconFragment extends BaseFragment {
             return;
         }
 
-        mPaymentWrapper = new PaymentWrapper(zaloPayRepository,
+        mPaymentWrapper = new PaymentWrapper(mBalanceRepository,
+                zaloPayRepository,
                 new PaymentWrapper.IViewListener() {
                     @Override
                     public Activity getActivity() {
@@ -124,6 +133,11 @@ public class CounterBeaconFragment extends BaseFragment {
                     public void onResponseCancel() {
                         Timber.d("User cancel transaction");
                         beaconScanner.startScan();
+                    }
+
+                    @Override
+                    public void onNotEnoughMoney() {
+                        mNavigator.startDepositActivity(CounterBeaconFragment.this.getContext());
                     }
                 }
         );
