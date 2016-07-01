@@ -112,7 +112,7 @@
 
                 <data
                     android:host="oauthcode"
-                    android:scheme="@string/zalo_appid" /> <!-- Thay 12345 bằng zalo app id -->
+                    android:scheme="@string/zalo_appid" />
             </intent-filter>
         </activity>
 
