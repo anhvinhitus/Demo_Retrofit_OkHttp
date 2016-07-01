@@ -15,6 +15,14 @@
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
+    },
+    {
+      "appid": 14,
+      "appname": "Zing Xu",
+      "asset": "android.014.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
     }
   ],
   "internal_bundle": {
