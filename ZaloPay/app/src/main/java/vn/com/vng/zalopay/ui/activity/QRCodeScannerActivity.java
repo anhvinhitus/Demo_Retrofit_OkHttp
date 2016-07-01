@@ -18,6 +18,8 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -44,6 +46,9 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Inject
     QRCodePresenter qrCodePresenter;
 
+    @Inject
+    ZPAnalytics zpAnalytics;
+
     public int getResLayoutId() {
         return R.layout.activity_qr_scaner;
     }
@@ -58,6 +63,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         qrCodePresenter.setView(this);
+        zpAnalytics.logEvent(ZPEvents.SCANQR_LAUNCH);
     }
 
     @Override
@@ -89,6 +95,12 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     protected void onPause() {
         super.onPause();
         qrCodePresenter.pause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        zpAnalytics.logEvent(ZPEvents.SCANQR_NAVIGATEBACK);
     }
 
     @Override

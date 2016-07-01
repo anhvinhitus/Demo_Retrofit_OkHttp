@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -57,6 +58,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     INavigator navigator;
 
+    @Inject
+    ZPAnalytics zpAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +96,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return bundleReactConfig.getInternalJsBundle();
     }
 
-    protected @Nullable Bundle getLaunchOptions() {
+    protected
+    @Nullable
+    Bundle getLaunchOptions() {
         Bundle bundle = new Bundle();
         bundle.putString("zalopay_userid", getUserComponent().currentUser().uid);
         return bundle;
@@ -108,7 +114,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     protected ReactPackage reactInternalPackage() {
         return new ReactInternalPackage(transactionRepository,
-                notificationRepository, navigator);
+                notificationRepository, navigator, zpAnalytics);
     }
 
     private void createUserComponent() {

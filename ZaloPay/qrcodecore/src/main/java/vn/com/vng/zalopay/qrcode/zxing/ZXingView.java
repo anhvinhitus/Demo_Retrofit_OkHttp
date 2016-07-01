@@ -102,7 +102,7 @@ public class ZXingView extends QRCodeView {
 
                 }
             }
-        }, null);
+        });
     }
 
     public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {

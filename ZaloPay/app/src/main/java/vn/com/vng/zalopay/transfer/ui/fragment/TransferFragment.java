@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.parceler.Parcels;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -72,11 +74,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @BindView(R.id.edtTransferMsg)
     EditText edtTransferMsg;
 
-    @OnTextChanged(R.id.edtAmount)
-    public void onTextChangedAmount(CharSequence charSequence) {
-        checkShowBtnContinue();
-    }
-
     @BindView(R.id.btnContinue)
     View btnContinue;
 
@@ -124,7 +121,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             zaloFriend = getArguments().getParcelable(Constants.ARG_ZALO_FRIEND);
             mMessage = getArguments().getString(Constants.ARG_MESSAGE);
             mAmount = getArguments().getLong(Constants.ARG_AMOUNT);
-            TransferRecent transferRecent = getArguments().getParcelable(Constants.ARG_TRANSFERRECENT);
+            TransferRecent transferRecent = Parcels.unwrap(getArguments().getParcelable(Constants.ARG_TRANSFERRECENT));
             if (transferRecent != null && zaloFriend == null) {
                 zaloFriend = new ZaloFriend();
                 zaloFriend.setUserId(transferRecent.getUserId());
@@ -157,6 +154,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             public void afterTextChanged(Editable s) {
                 super.afterTextChanged(s);
                 showError(null);
+                checkShowBtnContinue();
             }
         });
         Timber.tag(TAG).d("onViewCreated zaloFriend: %s", zaloFriend);
@@ -176,14 +174,15 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     private void checkShowBtnContinue() {
         if (mAmount <= 0) {
-            return;
+            btnContinue.setEnabled(false);
+        } else {
+            if (userMapZaloAndZaloPay == null ||
+                    TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
+                    userMapZaloAndZaloPay.getZaloId() != zaloFriend.getUserId()) {
+                return;
+            }
+            btnContinue.setEnabled(true);
         }
-        if (userMapZaloAndZaloPay == null ||
-                TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
-                userMapZaloAndZaloPay.getZaloId() != zaloFriend.getUserId()) {
-            return;
-        }
-        btnContinue.setEnabled(true);
     }
 
     private void initCurrentState() {

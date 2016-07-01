@@ -341,6 +341,7 @@ public class PaymentWrapper {
                     //Hien update profile level 2
                     startUpdateProfileLevel(walletTransId);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
+                    responseListener.onResponseError(resultStatus);
                     responseListener.onNotEnoughMoney();
                 } else {
                     responseListener.onResponseError(resultStatus);

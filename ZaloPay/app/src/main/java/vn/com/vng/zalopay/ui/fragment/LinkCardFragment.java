@@ -1,17 +1,20 @@
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,26 +23,26 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.vng.zalopay.utils.BankCardUtil;
 
 /**
  * Created by AnhHieu on 5/10/16.
  */
 public class LinkCardFragment extends BaseFragment implements ILinkCardView, LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
 
-    private BottomSheetDialog mBottomSheetDialog;
-    private BottomSheetBehavior mDialogBehavior;
+    private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
 
     public static LinkCardFragment newInstance() {
@@ -98,7 +101,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
+//        recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         recyclerView.setAdapter(mAdapter);
 
         initBottomSheet();
@@ -106,19 +109,32 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
     private void initBottomSheet() {
-        View view = View.inflate(getContext(), R.layout.bottom_sheet_link_card_layout, null);
-        View layoutMoneySource = view.findViewById(R.id.layoutMoneySource);
-        View layoutDetail = view.findViewById(R.id.layoutDetail);
-        View layoutRemoveLink = view.findViewById(R.id.layoutRemoveLink);
+        if (mBottomSheetDialog == null) {
+            mBottomSheetDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar);
+            mBottomSheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mBottomSheetDialog.setContentView(R.layout.bottom_sheet_link_card_layout);
+            mBottomSheetDialog.setTitle("");
+            final Window window = mBottomSheetDialog.getWindow();
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        layoutMoneySource.setOnClickListener(this);
-        layoutDetail.setOnClickListener(this);
-        layoutRemoveLink.setOnClickListener(this);
+            View root = mBottomSheetDialog.findViewById(R.id.root);
+            View layoutMoneySource = mBottomSheetDialog.findViewById(R.id.layoutMoneySource);
+            View layoutDetail = mBottomSheetDialog.findViewById(R.id.layoutDetail);
+            View layoutRemoveLink = mBottomSheetDialog.findViewById(R.id.layoutRemoveLink);
 
-        mBottomSheetDialog = new BottomSheetDialog(getContext());
-        mBottomSheetDialog.setContentView(view);
-        mDialogBehavior = BottomSheetBehavior.from((View) view.getParent());
+            root.setOnClickListener(this);
+            layoutMoneySource.setOnClickListener(this);
+            layoutDetail.setOnClickListener(this);
+            layoutRemoveLink.setOnClickListener(this);
+        }
 
+        View layoutLinkCard = mBottomSheetDialog.findViewById(R.id.layoutLinkCard);
+        ImageView imgLogo = (ImageView)mBottomSheetDialog.findViewById(R.id.iv_logo);
+        if (mAdapter != null) {
+            mAdapter.bindBankCard(layoutLinkCard, imgLogo, mCurrentBankCard);
+        }
 //        mBottomSheetDialog.show();
 //        mBottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 //            @Override
@@ -128,7 +144,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
     private void showOrHidekLinkCardEmpty() {
-        if (mAdapter == null || mAdapter.getItemCount() <= 1) {
+        if (mAdapter == null || mAdapter.getItemCount() <= 0) {
             showLinkCardEmpty();
         } else {
             hideLinkCardEmpty();
@@ -214,9 +230,10 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         showToast(message);
     }
 
-    @Override
+    @OnClick(R.id.btn_add_card)
     public void onClickAddBankCard() {
         navigator.startLinkCardProcedureActivity(this);
+
     }
 
     @Override
@@ -241,9 +258,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
                 long expiretime = bundle.getLong(Constants.EXPIRETIME);
                 BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
                 try {
-                    Timber.tag("LinkCardFragment").d("onActivityResult first6CardNo: %s", first6CardNo);
+                    Timber.d("onActivityResult first6CardNo: %s", first6CardNo);
                     bankCard.type = presenter.detectCardType(bankcode, first6CardNo);
-                    Timber.tag("LinkCardFragment").d("onActivityResult bankCard.type: %s", bankCard.type);
+                    Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
                 } catch (Exception e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
@@ -265,33 +282,22 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
             presenter.removeLinkCard(mCurrentBankCard);
+            zpAnalytics.logEvent(ZPEvents.MANAGECARD_DELETECARD);
+            mBottomSheetDialog.dismiss();
+        } else if (itemId == R.id.root) {
             mBottomSheetDialog.dismiss();
         }
     }
 
-    private static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-        private int spaceHorizontal;
-        private int spaceVertical;
-
-        public SpacesItemDecoration(int spaceHorizontal, int spaceVertical) {
-            this.spaceHorizontal = spaceHorizontal;
-            this.spaceVertical = spaceVertical;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
-            outRect.left = spaceHorizontal;
-            outRect.right = spaceHorizontal;
-            outRect.bottom = spaceVertical;
-            outRect.top = spaceVertical;
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.top = 2 * spaceVertical;
-            }
-        }
-    }
-
     private void showBottomSheetDialog() {
+        if (mBottomSheetDialog == null) {
+            initBottomSheet();
+        }
+        TextView tvCardNum = (TextView) mBottomSheetDialog.findViewById(R.id.tv_num_acc);
+        if (mCurrentBankCard != null && tvCardNum != null) {
+            tvCardNum.setText(BankCardUtil.formatBankCardNumber(mCurrentBankCard.first6cardno, mCurrentBankCard.last4cardno));
+        }
+        initBottomSheet();
         mBottomSheetDialog.show();
     }
 

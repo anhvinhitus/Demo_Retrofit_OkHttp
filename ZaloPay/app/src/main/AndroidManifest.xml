@@ -140,7 +140,7 @@
 
                 <data
                     android:host="oauthcode"
-                    android:scheme="@string/zalo_appid" /> <!-- Thay 12345 bằng zalo app id -->
+                    android:scheme="@string/zalo_appid" />
             </intent-filter>
         </activity>
 
@@ -161,6 +161,12 @@
             android:label="@string/title_activity_balance_topup"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateVisible" />
+
+        <activity
+            android:name=".ui.activity.InvitationCodeActivity"
+            android:label="@string/title.activity.invitation.code"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="" />
         <activity
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
@@ -176,6 +182,11 @@
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:theme="@style/AppTheme.NoActionBar.AppColor" />
+
+        <activity
+            android:name=".account.ui.activities.UpdateProfileLevel3Activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".account.ui.activities.PinProfileActivity"
             android:theme="@style/AppTheme.NoActionBar.AppColor" />

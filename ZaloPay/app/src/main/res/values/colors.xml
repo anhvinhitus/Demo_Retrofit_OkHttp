@@ -76,4 +76,37 @@
     <color name="bg_donga">#2f3293</color>
     <color name="bg_bidv">#2a419a</color>
     <color name="bg_agribank">#105c3c</color>
+
+    <color name="bg_master_card_start">#2d294e</color>
+    <color name="bg_master_card_end">#555177</color>
+    <color name="bg_visa_start">#bf903f</color>
+    <color name="bg_visa_end">#eed86f</color>
+    <color name="bg_jcb_start">#00134e</color>
+    <color name="bg_jcb_end">#0053ab</color>
+    <color name="bg_vietinbank_start">#afb5b5</color>
+    <color name="bg_vietinbank_end">#d7d8d3</color>
+    <color name="bg_vietcombank_start">#137a37</color>
+    <color name="bg_vietcombank_end">#6ac79f</color>
+    <color name="bg_vib_start">#07308d</color>
+    <color name="bg_vib_end">#1454a2</color>
+    <color name="bg_tpbank_start">#4b075f</color>
+    <color name="bg_tpbank_end">#6a0b7e</color>
+    <color name="bg_techcombank_start">#afb5b5</color>
+    <color name="bg_techcombank_end">#d7d8d3</color>
+    <color name="bg_shb_start">#ec981e</color>
+    <color name="bg_shb_end">#ffc601</color>
+    <color name="bg_sacombank_start">#0b6198</color>
+    <color name="bg_sacombank_end">#047dbb</color>
+    <color name="bg_mb_start">#0066b4</color>
+    <color name="bg_mb_end">#1472d1</color>
+    <color name="bg_maritimebank_start">#afb5b5</color>
+    <color name="bg_maritimebank_end">#d7d8d3</color>
+    <color name="bg_eximbank_start">#006c97</color>
+    <color name="bg_eximbank_end">#00a2e2</color>
+    <color name="bg_donga_start">#273468</color>
+    <color name="bg_donga_end">#2f3d6f</color>
+    <color name="bg_bidv_start">#010044</color>
+    <color name="bg_bidv_end">#1b2f7b</color>
+    <color name="bg_agribank_start">#9f303a</color>
+    <color name="bg_agribank_end">#b3343f</color>
 </resources>

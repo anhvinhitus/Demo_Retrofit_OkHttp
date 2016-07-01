@@ -1,16 +1,11 @@
 package vn.com.vng.zalopay.data.repository.datasource;
 
-import android.content.Context;
-
-import java.util.HashMap;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.PassportService;
-import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;

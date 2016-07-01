@@ -65,9 +65,12 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Override
     public void onCreate() {
         super.onCreate();
-        doInject();
-        eventBus.register(this);
-        mWsConnection.addReceiverListener(this);
+        boolean isInject = doInject();
+
+        if (isInject) {
+            eventBus.register(this);
+            mWsConnection.addReceiverListener(this);
+        }
     }
 
     @Override
@@ -76,15 +79,23 @@ public class NotificationService extends Service implements OnReceiverMessageLis
         if (AndroidUtils.isNetworkAvailable(getApplicationContext())) {
             this.connectAndSendAuthentication();
         }
+
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         Timber.d("onDestroy");
-        eventBus.unregister(this);
-        mWsConnection.clearOnScrollListeners();
-        mWsConnection.disconnect();
+
+        try {
+            eventBus.unregister(this);
+            mWsConnection.clearOnScrollListeners();
+            mWsConnection.disconnect();
+
+        } catch (Exception ex) {
+            Timber.w(ex, " onDestroy");
+        }
+
         super.onDestroy();
     }
 
@@ -98,10 +109,14 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     }
 
     private void connectAndSendAuthentication() {
-        if (mWsConnection.isConnected()) {
-            mWsConnection.sendAuthentication();
-        } else {
-            mWsConnection.connect();
+        try {
+            if (mWsConnection.isConnected()) {
+                mWsConnection.sendAuthentication();
+            } else {
+                mWsConnection.connect();
+            }
+        } catch (Exception ex) {
+            Timber.w(ex, " onStartCommand");
         }
     }
 
@@ -156,9 +171,17 @@ public class NotificationService extends Service implements OnReceiverMessageLis
         return AndroidApplication.instance().getUserComponent();
     }
 
-    private void doInject() {
+    private boolean doInject() {
         createUserComponent();
-        getUserComponent().inject(this);
+
+        if (getUserComponent() != null) {
+            getUserComponent().inject(this);
+        } else {
+            stopSelf();
+            return false;
+        }
+
+        return true;
 
     }
 

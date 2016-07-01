@@ -42,6 +42,7 @@
     <string name="tel_card">Thẻ cào</string>
     <string name="buy.phone.card">Thẻ ĐT</string>
     <string name="buy.game.card">Thẻ Game</string>
+    <string name="zing.xu">Zing Xu</string>
     <string name="transfer.to.mobile">Đến số điện thoại di động</string>
     <string name="transfer.to.atm.visa">Đến số thẻ ATM / VISA</string>
     <string name="transfer.to.bank.account">Đến tài khoản ngân hàng</string>
@@ -81,7 +82,7 @@
     <string name="title.activity.transfer">Chuyển tiền</string>
     <string name="title.activity.zalopay.contact">Danh bạ Zalo Pay</string>
     <string name="title.activity.change.pin">Tạo lại mã PIN</string>
-
+    <string name="title.activity.invitation.code">Invitation Code</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -219,9 +220,12 @@
 
     <string name="txt_no_data">Không có dữ liệu</string>
 
-    <string name="txt_create_pin">Tạo mã PIN</string>
-    <string name="txt_need_create_pin">Giao dịch/Tác vụ yêu cầu số PIN, vui lòng tạo số PIN để tiếp tục</string>
-
     <string name="txt_input_userinfo">Nhập thông tin</string>
     <string name="txt_need_input_userinfo">Bạn cần cập nhật thông tin để sử dụng tính năng này. Bạn có muốn cập nhật thông tin không?</string>
+
+    <string name="reset_pin_error">Tạo lại mã PIN thất bại.</string>
+    <string name="reset_pin_success">Tạo lại mã PIN thành công.</string>
+
+    <string name="otp_invalid">Sai mã OTP.</string>
+    <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
 </resources>

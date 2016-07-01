@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.ReactAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
@@ -19,6 +20,7 @@ import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -120,6 +122,7 @@ public class Navigator implements INavigator {
 
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -128,37 +131,11 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    private void showRequireCreatePinDialog(final Context context) {
-        if (context == null) {
-            return;
-        }
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-//                .setTitle(context.getString(R.string.action_notifications))
-                .setContentText(context.getString(R.string.txt_need_create_pin))
-                .setCancelText(context.getString(R.string.txt_close))
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                    }
-                })
-                .setConfirmText(context.getString(R.string.txt_create_pin))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        startUpdateProfileLevel2Activity(context, false);
-                    }
-                });
-        sweetAlertDialog.show();
-    }
-
     private void showUpdateProfileInfoDialog(final Context context) {
         if (context == null) {
             return;
         }
         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-//                .setTitle(context.getString(R.string.action_notifications))
                 .setContentText(context.getString(R.string.txt_need_input_userinfo))
                 .setCancelText(context.getString(R.string.txt_close))
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -203,7 +180,7 @@ public class Navigator implements INavigator {
 
     public void startLinkCardActivity(Activity activity) {
         if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showRequireCreatePinDialog(activity);
+            showUpdateProfileInfoDialog(activity);
         } else {
             activity.startActivity(intentLinkCard(activity));
         }
@@ -211,7 +188,7 @@ public class Navigator implements INavigator {
 
     public void startLinkCardProcedureActivity(Activity activity) {
         if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showRequireCreatePinDialog(activity);
+            showUpdateProfileInfoDialog(activity);
         } else {
             Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
             activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
@@ -221,7 +198,7 @@ public class Navigator implements INavigator {
     public void startLinkCardProcedureActivity(Fragment activity) {
         if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             if (activity != null) {
-                showRequireCreatePinDialog(activity.getContext());
+                showUpdateProfileInfoDialog(activity.getContext());
             }
         } else {
             Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
@@ -303,6 +280,11 @@ public class Navigator implements INavigator {
         fragment.startActivity(intent);
     }
 
+    public void startUpdateProfile3Activity(Context context) {
+        Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     public Intent intentProfile(Context context) {
         Intent intent = new Intent(context, ProfileInfo2Activity.class);
@@ -312,6 +294,19 @@ public class Navigator implements INavigator {
     @Override
     public Intent intentLinkCard(Context context) {
         Intent intent = new Intent(context, LinkCardActivity.class);
+        return intent;
+    }
+
+    @Override
+    public Intent intentPaymentApp(Context context, int appId, String view) {
+        AppResource appResource = ReactAppConfig.getAppResource(appId);
+        if (appResource == null) {
+            return null;
+        }
+        Intent intent = new Intent(context, PaymentApplicationActivity.class);
+        intent.putExtra("moduleName", Constants.ModuleName.PAYMENT_MAIN);
+        intent.putExtra("appResource", appResource);
+        intent.putExtra("view", view);
         return intent;
     }
 }

@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
+import vn.com.vng.zalopay.menu.model.MenuItemType;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
@@ -129,8 +130,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     }
 
 
-
-
     private void addHeader(ListView listView) {
         viewProfile = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
         imageAvatar = (ImageView) viewProfile.findViewById(R.id.im_avatar);
@@ -172,11 +171,10 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         if (position == 0) {
             return; // Header
         }
-
         MenuItem item = mAdapter.getItem(position - 1);
         if (item == null) return;
 
-        if (mMenuListener != null) {
+        if (mMenuListener != null && item.getItemType() == MenuItemType.ITEM) {
             mMenuListener.onMenuItemClick(item.getId());
         }
 

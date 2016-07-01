@@ -22,6 +22,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -42,10 +43,11 @@ public abstract class BaseFragment extends Fragment {
     private SweetAlertDialog mProgressDialog;
     private Unbinder unbinder;
 
+    protected final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.tag(TAG);
     }
 
     @Nullable
@@ -126,11 +128,11 @@ public abstract class BaseFragment extends Fragment {
                 .show();
     }
 
-    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancellListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retrylListener) {
+    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retrylListener) {
         new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
                 .setContentText(retryMessage)
                 .setCancelText(cancelBtnText)
-                .setCancelClickListener(cancellListener)
+                .setCancelClickListener(cancelListener)
                 .setConfirmText(retryBtnText)
                 .setConfirmClickListener(retrylListener)
                 .show();

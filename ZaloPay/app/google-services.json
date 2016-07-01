@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "386726389536",
+    "project_id": "zalo-pay"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386726389536:android:bbd78b7b2e42c826",
+        "android_client_info": {
+          "package_name": "vn.com.vng.zalopay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKM_WVOFUvEsePdKKOwJPLBv_ZRRhLmcQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-79910400-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

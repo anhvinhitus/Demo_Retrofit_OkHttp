@@ -29,7 +29,8 @@
             android:id="@+id/listview"
             style="@style/RecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="48dp" />
 
         <LinearLayout
             android:id="@+id/progressContainer"
@@ -48,7 +49,12 @@
                 android:singleLine="true"
                 android:text="@string/loading"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
         </LinearLayout>
+
+        <include
+            layout="@layout/row_bank_card_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom" />
     </FrameLayout>
 </LinearLayout>

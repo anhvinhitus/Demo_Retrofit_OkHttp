@@ -131,7 +131,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
     @Override
     public void confirmOTPSuccess() {
-        if (mListener!=null) {
+        if (mListener != null) {
             mListener.onConfirmOTPSucess();
         }
         navigator.startHomeActivity(getContext(), true);
@@ -139,7 +139,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
     @Override
     public void confirmOTPError() {
-        showError("Đổi mã PIN thất bại.");
+        showError(getContext().getString(R.string.otp_invalid));
         if (mRetryOtp < 3) {
             mRetryOtp++;
         } else {
@@ -172,6 +172,10 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
         showToast(message);
     }
 
+    public void showError(int messageResource) {
+        showToast(messageResource);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -184,6 +188,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
      */
     public interface OnOTPFragmentListener {
         void onConfirmOTPSucess();
+
         void onConfirmOTPFail();
     }
 }

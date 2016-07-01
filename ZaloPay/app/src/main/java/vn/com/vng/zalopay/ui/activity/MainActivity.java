@@ -25,6 +25,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -181,45 +182,48 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                     // getSupportFragmentManager().beginTransaction().replace(R.id.container, new uy(), "AccountFragment").commit();
                 }
                 break;
-            case MenuItemUtil.APPLICATION_ID:
-                if (id != mCurrentMenuId) {
-                    // getSupportFragmentManager().beginTransaction().replace(R.id.container, new uy(), "AccountFragment").commit();
-                    mCurrentMenuId = id;
-                }
-                break;
             case MenuItemUtil.APPLICATION_INFO_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUHELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUADDCASH);
                 break;
             case MenuItemUtil.FAQ_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUFAQ);
                 break;
             case MenuItemUtil.HOME_ID:
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUHOME);
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 startQRCodeActivity();
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
                 getAppComponent().applicationSession().clearUserSession();
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTIONLOGS);
-                break;
-            case MenuItemUtil.TRANSACTION_ID:
+                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTION_LOGS);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
                 break;
             case MenuItemUtil.SAVE_CARD_ID:
                 navigator.startLinkCardActivity(this);
+                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUADDCARD);
                 break;
 
         }
@@ -327,8 +331,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             startService(intent);
         }
     }*/
-
-
     @Override
     public void onPause() {
         Timber.i("MainActivity is pausing");

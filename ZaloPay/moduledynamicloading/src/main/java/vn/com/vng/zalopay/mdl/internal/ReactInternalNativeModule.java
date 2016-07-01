@@ -12,6 +12,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
@@ -21,10 +22,14 @@ import vn.com.vng.zalopay.mdl.INavigator;
 public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     INavigator navigator;
+    private ZPAnalytics zpAnalytics;
 
-    public ReactInternalNativeModule(ReactApplicationContext reactContext, INavigator navigator) {
+    public ReactInternalNativeModule(ReactApplicationContext reactContext,
+                                     INavigator navigator,
+                                     ZPAnalytics zpAnalytics) {
         super(reactContext);
         this.navigator = navigator;
+        this.zpAnalytics = zpAnalytics;
     }
 
     /// The purpose of this method is to return the string name of the NativeModule
@@ -75,6 +80,23 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         Timber.d("navigateProfile");
         if (getCurrentActivity() != null) {
             Intent intent = navigator.intentProfile(getCurrentActivity());
+            getCurrentActivity().startActivity(intent);
+        }
+    }
+
+    @ReactMethod
+    public void trackEvent(int eventId) {
+
+        Timber.d("trackEvent eventId %s", eventId);
+
+        zpAnalytics.logEvent(eventId);
+    }
+
+    @ReactMethod
+    public void showDetail(int appid, String transid) {
+        Timber.d("show Detail appid %s transid %s", appid, transid);
+        Intent intent = navigator.intentPaymentApp(getCurrentActivity(), appid, "history");
+        if (intent != null) {
             getCurrentActivity().startActivity(intent);
         }
     }

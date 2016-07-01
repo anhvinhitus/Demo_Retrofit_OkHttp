@@ -26,6 +26,9 @@ public final class User extends Person {
     public String email;
 
     public int profilelevel;
+
+    public int need_invitation;
+
     public List<ProfilePermisssion.Permission> profilePermisssions;
 
     public User() {

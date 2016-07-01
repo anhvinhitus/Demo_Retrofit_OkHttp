@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.analytics.Tracker;
+
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Singleton;
@@ -10,6 +12,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
@@ -70,6 +73,8 @@ public interface ApplicationComponent {
     Navigator navigator();
 
     ApplicationSession applicationSession();
+
+    ZPAnalytics zpAnalytics();
 
     /*INJECT*/
 

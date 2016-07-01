@@ -7,18 +7,20 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.react.bridge.queue.MessageQueueThreadHandler;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import timber.log.Timber;
 import vn.com.vng.iot.debugviewer.DebugViewer;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
+import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
@@ -33,8 +35,6 @@ import vn.com.zalopay.wallet.data.Constants;
  *
  */
 public class AndroidApplication extends MultiDexApplication {
-
-    public static final String TAG = "AndroidApplication";
 
     public static File extStorageAppBasePath;
     public static File extStorageAppCachePath;
@@ -59,23 +59,19 @@ public class AndroidApplication extends MultiDexApplication {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-            Timber.tag(TAG);
-            AndroidDevMetrics.Builder builder = new AndroidDevMetrics.Builder(this);
-            if (!BuildConfig.FLAVOR.equalsIgnoreCase("production")) {
-                builder.showNotification(false);
-                StrictMode.enableDefaults();
-                LeakCanary.install(this);
-                DebugViewer.registerInstance(this);
-                Timber.plant(new Timber.DebugTree() {
-                    @Override
-                    protected void log(int priority, String tag, String message, Throwable t) {
-                        DebugViewer.postLog(priority, tag, message);
-                    }
-                });
-            }
-            AndroidDevMetrics.initWith(builder);
+            AndroidDevMetrics.initWith(this);
+            StrictMode.enableDefaults();
+            LeakCanary.install(this);
+            DebugViewer.registerInstance(this);
+            Timber.plant(new Timber.DebugTree() {
+                @Override
+                protected void log(int priority, String tag, String message, Throwable t) {
+                    DebugViewer.postLog(priority, tag, message);
+                }
+            });
         } else {
             Timber.plant(new CrashlyticsTree());
+            InternalLoggerFactory.setDefaultFactory(new NonLoggerFactory());
         }
 
         Fabric.with(this, new Crashlytics());
@@ -90,6 +86,7 @@ public class AndroidApplication extends MultiDexApplication {
         Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
+        appComponent.zpAnalytics().logEvent(ZPEvents.APP_LAUNCH);
     }
 
 
@@ -103,8 +100,6 @@ public class AndroidApplication extends MultiDexApplication {
             @Override
             public void run() {
                 appComponent.bundleService().ensureLocalResources();
-//                appComponent.bundleService().prepareInternalBundle();
-//                appComponent.bundleService().extractAllExternalApplication();
             }
         });
     }

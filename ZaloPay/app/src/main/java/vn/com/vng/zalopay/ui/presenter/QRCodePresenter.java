@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.service.PaymentWrapper;
@@ -129,12 +130,18 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             }
 
             hideLoadingView();
+
+            zpAnalytics.logEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
+
             mView.resumeScanner();
         } catch (JSONException | IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
             hideLoadingView();
+
+            zpAnalytics.logEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
+
             mView.resumeScanner();
         }
     }

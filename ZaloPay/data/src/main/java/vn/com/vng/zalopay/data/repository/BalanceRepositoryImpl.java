@@ -45,6 +45,9 @@ public class BalanceRepositoryImpl implements BalanceRepository {
     }
 
     public Long currentBalance() {
+        if (mCurrentBalance == null) {
+            mCurrentBalance = 0l;
+        }
         return mCurrentBalance;
     }
 

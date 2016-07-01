@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
+import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.data.appresources.AppResource;
@@ -47,9 +48,10 @@ import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
-import vn.com.vng.zalopay.ui.fragment.LinkCardProdureFragment;
+import vn.com.vng.zalopay.ui.fragment.LinkCardProcedureFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 @UserScope
@@ -95,7 +97,7 @@ public interface UserComponent {
 
     void inject(LeftMenuFragment f);
 
-    void inject(LinkCardProdureFragment f);
+    void inject(LinkCardProcedureFragment f);
 
     void inject(ProfileFragment f);
 
@@ -152,4 +154,8 @@ public interface UserComponent {
     void inject(TransferHomeActivity activity);
 
     void inject(NotificationService service);
+
+    void inject(InvitationCodeFragment f);
+
+    void inject(UpdateProfile3Fragment f);
 }

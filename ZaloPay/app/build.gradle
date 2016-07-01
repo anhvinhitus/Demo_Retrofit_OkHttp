@@ -36,8 +36,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 50
-        versionName "1.2.${versionCode}"
+        versionCode 5
+        versionName "1.6.${versionCode}"
 
         multiDexEnabled true
 
@@ -50,10 +50,45 @@ android {
     }
 
     sourceSets {
-        production.assets.srcDirs += '../../paymentapps/production'
-        sandbox.assets.srcDirs += '../../paymentapps/sandbox'
-        internalProduction.assets.srcDirs += '../../paymentapps/production'
-        internalSandbox.assets.srcDirs += '../../paymentapps/sandbox'
+        main {
+            assets.srcDirs += '../../internalapps'
+        }
+
+        production {
+            assets.srcDirs += '../../paymentapps/production'
+        }
+
+        sandbox {
+            assets.srcDirs += '../../paymentapps/sandbox'
+        }
+
+        staging {
+            assets.srcDirs + '../../paymentapps/staging'
+        }
+
+        internalProduction {
+            assets.srcDirs += '../../paymentapps/production'
+        }
+
+        internalSandbox {
+            assets.srcDirs += '../../paymentapps/sandbox'
+        }
+
+        internalStaging {
+            assets.srcDirs + '../../paymentapps/staging'
+        }
+
+        iapSandbox {
+            assets.srcDirs += '../../paymentapps/sandbox'
+        }
+
+        iapProduction {
+            assets.srcDirs += '../../paymentapps/production'
+        }
+
+        iapStaging {
+            assets.srcDirs + '../../paymentapps/staging'
+        }
     }
 
     signingConfigs {
@@ -124,6 +159,17 @@ android {
             buildConfigField 'int', 'WS_PORT', '8404'
         }
 
+        staging {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
+            buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'true'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+            buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8424'
+        }
+
         internalProduction {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
@@ -142,6 +188,16 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
+        }
+
+        internalStaging {
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
+            buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'true'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8424'
         }
 
         iapSandbox {
@@ -164,6 +220,17 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
+        }
+
+        iapStaging {
+            // IAP dev with live environment
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
+            buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
+            buildConfigField 'int', 'PAYAPPID', '1'
+            buildConfigField 'boolean', 'ENV_LIVE', 'false'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
+            buildConfigField 'int', 'WS_PORT', '8424'
         }
     }
 
@@ -214,10 +281,11 @@ android {
         // http://stackoverflow.com/questions/31191898/android-studio-gradle-dynamic-apk-name-out-of-sync/34095961#34095961
         // ./gradlew clean assemble -PCI_BUILD=true
         def clientBuildDate = new Date().format('yyyyMMddHHmm')
-        def newName = defaultConfig.versionName.replace(".", "_") + "-" + clientBuildDate
+        // def newName = defaultConfig.versionName.replace(".", "_") + "-" + clientBuildDate
+        def newName = "v" + defaultConfig.versionName
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-" + newName + ".apk"));
+                output.outputFile = new File("../../releases", output.outputFile.name.replace(".apk", "-" + newName + ".apk").replace("app-", "ZaloPay-"));
             }
         }
     }
@@ -279,6 +347,9 @@ dependencies {
         transitive = true;
     }
 
+    compile libs.parceler
+    apt libs.parceler_apt
+
     compile libs.avi
     compile libs.nineoldandroids
 
@@ -296,6 +367,8 @@ dependencies {
     releaseCompile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
-
     compile project(':sounddecoder')
+    compile project(':zalopayanalytics')
 }
+
+apply plugin: 'com.google.gms.google-services'

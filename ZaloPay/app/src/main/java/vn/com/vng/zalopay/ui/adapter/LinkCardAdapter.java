@@ -1,14 +1,16 @@
 package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,8 +18,8 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
 import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
 
@@ -35,11 +37,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 1) {
-            return new BottomHolder(mInflater.inflate(R.layout.row_bank_card_bottom_layout, parent, false), onItemClickListener);
-        } else {
-            return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
-        }
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
     }
 
 
@@ -52,9 +50,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
             int id = anchor.getId();
 
-            if (id == R.id.btn_add_card) {
-                listener.onClickAddBankCard();
-            } else if (id == R.id.btn_more) {
+            if (id == R.id.root) {
                 BankCard bankCard = getItem(position);
                 if (bankCard != null) {
                     listener.onClickMenu(bankCard);
@@ -85,37 +81,23 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             if (bankCard != null) {
                 ((ViewHolder) holder).bindView(bankCard);
             }
-        } else {
-
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == getItemCount() - 1) {
-            return 1;
-        } else {
-            return 2;
         }
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size() + 1;
+        return mItems.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.root)
+        View mRoot;
+
         @BindView(R.id.iv_logo)
-        ImageView mLogo;
+        ImageView imgLogo;
 
-        @BindView(R.id.vg_header)
-        View mHeaderView;
-
-        @BindView(R.id.tv_sub_num_acc)
-        TextView mSubAccNumber;
-
-        @BindView(R.id.tv_username)
-        TextView mUserName;
+        @BindView(R.id.tv_num_acc)
+        TextView mCardNumber;
 
         OnItemClickListener listener;
 
@@ -125,62 +107,68 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.btn_more)
+        @OnClick(R.id.root)
         public void onClickMore(View v) {
             if (listener != null) {
                 listener.onListItemClick(v, getAdapterPosition());
             }
         }
 
-        public int getColorFromResource(int resource) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return getContext().getColor(resource);
-            } else {
-                return getContext().getResources().getColor(resource);
-            }
+        public void bindView(final BankCard bankCard) {
+            Timber.d("bindView bankCard.type:%s", bankCard.type);
+            bindBankCard(mRoot, imgLogo, bankCard);
+            mCardNumber.setText(BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno));
+        }
+    }
+
+    public int getColorFromResource(int resource) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getContext().getColor(resource);
+        } else {
+            return getContext().getResources().getColor(resource);
+        }
+    }
+
+    private BankImageSetting findBank(BankCard bankCard) {
+        if (bankCard == null || TextUtils.isEmpty(bankCard.type)) {
+            return BankImageSetting.DEFAULT;
         }
 
-        public void bindView(BankCard bankCard) {
-            Timber.d("bindView bankCard.type:%s", bankCard.type);
-            GradientDrawable bgShape = (GradientDrawable) mHeaderView.getBackground();
-            if (bankCard.type == null) {
-                mLogo.setImageResource(R.color.transparent);
-            } else if (bankCard.type.equals(ECardType.JCB.toString())) {
-                mLogo.setImageResource(R.drawable.ic_lc_jcb_card);
-                bgShape.setColor(getColorFromResource(R.color.bg_jcb));
-            } else if (bankCard.type.equals(ECardType.VISA.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_visa));
-                mLogo.setImageResource(R.drawable.ic_lc_visa_card);
-            } else if (bankCard.type.equals(ECardType.MASTER.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_master_card));
-                mLogo.setImageResource(R.drawable.ic_lc_master_card);
-            } else if (bankCard.type.equals(ECardType.PVTB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_vietinbank));
-                mLogo.setImageResource(R.drawable.ic_vietinbank);
-            } else if (bankCard.type.equals(ECardType.PBIDV.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_bidv));
-                mLogo.setImageResource(R.drawable.ic_bidv);
-            } else if (bankCard.type.equals(ECardType.PVCB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_vietcombank));
-                mLogo.setImageResource(R.drawable.ic_vietcombank);
-            } else if (bankCard.type.equals(ECardType.PEIB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_eximbank));
-                mLogo.setImageResource(R.drawable.ic_eximbank);
-            } else if (bankCard.type.equals(ECardType.PSCB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_sacombank));
-                mLogo.setImageResource(R.drawable.ic_sacombank);
-            } else if (bankCard.type.equals(ECardType.PAGB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_agribank));
-                mLogo.setImageResource(R.drawable.ic_agribank);
-            } else if (bankCard.type.equals(ECardType.PTPB.toString())) {
-                bgShape.setColor(getColorFromResource(R.color.bg_tpbank));
-                mLogo.setImageResource(R.drawable.ic_tpbank);
-            } else if (bankCard.type.equals(ECardType.UNDEFINE.toString())) {
-                mLogo.setImageResource(R.color.transparent);
-            }
-            mUserName.setText(bankCard.cardname);
-            mSubAccNumber.setText("*** " + bankCard.last4cardno);
+        if (mBankSettings.containsKey(bankCard.type)) {
+            return mBankSettings.get(bankCard.type);
+        } else {
+            return BankImageSetting.DEFAULT;
         }
+    }
+
+    private void setBankIcon(ImageView imgLogo, int bankIcon) {
+        if (imgLogo == null) {
+            return;
+        }
+        if (bankIcon == 0) {
+            imgLogo.setImageDrawable(null);
+        } else {
+            imgLogo.setImageResource(bankIcon);
+        }
+    }
+
+    private void setBankBackground(View mRoot, BankImageSetting bankInfos) {
+        if (mRoot == null || bankInfos == null) {
+            return;
+        }
+
+        GradientDrawable bgShape = (GradientDrawable) mRoot.getBackground();
+        int[] colors = new int[3];
+        colors[0] = getColorFromResource(bankInfos.backgroundGradientStart);
+        colors[1] = getColorFromResource(bankInfos.backgroundGradientEnd);
+        colors[2] = getColorFromResource(bankInfos.backgroundGradientStart);
+        bgShape.setColors(colors);
+    }
+
+    public void bindBankCard(View mRoot, ImageView imgLogo, BankCard bankCard) {
+        BankImageSetting bankImageSetting = findBank(bankCard);
+        setBankIcon(imgLogo, bankImageSetting.bankIcon);
+        setBankBackground(mRoot, bankImageSetting);
     }
 
     public class BottomHolder extends RecyclerView.ViewHolder {
@@ -202,8 +190,35 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     }
 
     public interface OnClickBankCardListener {
-        void onClickAddBankCard();
-
         void onClickMenu(BankCard bankCard);
+    }
+
+    private final static HashMap<String, BankImageSetting> mBankSettings = new HashMap<>();
+    static {
+        mBankSettings.put(ECardType.JCB.toString(), new BankImageSetting(R.drawable.ic_jcb, R.color.bg_jcb_start, R.color.bg_jcb_end));
+        mBankSettings.put(ECardType.VISA.toString(), new BankImageSetting(R.drawable.ic_visa, R.color.bg_visa_start, R.color.bg_visa_end));
+        mBankSettings.put(ECardType.MASTER.toString(), new BankImageSetting(R.drawable.ic_mastercard, R.color.bg_master_card_start, R.color.bg_master_card_end));
+        mBankSettings.put(ECardType.PVTB.toString(), new BankImageSetting(R.drawable.ic_vietinbank, R.color.bg_vietinbank_start, R.color.bg_vietinbank_end));
+        mBankSettings.put(ECardType.PBIDV.toString(), new BankImageSetting(R.drawable.ic_bidv, R.color.bg_bidv_start, R.color.bg_bidv_end));
+        mBankSettings.put(ECardType.PVCB.toString(), new BankImageSetting(R.drawable.ic_vietcombank, R.color.bg_vietcombank_start, R.color.bg_vietcombank_end));
+        mBankSettings.put(ECardType.PEIB.toString(), new BankImageSetting(R.drawable.ic_eximbank, R.color.bg_eximbank_start, R.color.bg_eximbank_end));
+        mBankSettings.put(ECardType.PSCB.toString(), new BankImageSetting(R.drawable.ic_sacombank, R.color.bg_sacombank_start, R.color.bg_sacombank_end));
+        mBankSettings.put(ECardType.PAGB.toString(), new BankImageSetting(R.drawable.ic_agribank, R.color.bg_agribank_start, R.color.bg_agribank_end));
+        mBankSettings.put(ECardType.PTPB.toString(), new BankImageSetting(R.drawable.ic_tpbank, R.color.bg_tpbank_start, R.color.bg_tpbank_end));
+        mBankSettings.put(ECardType.UNDEFINE.toString(), BankImageSetting.DEFAULT);
+    }
+
+    static class BankImageSetting {
+        final int bankIcon;
+        final int backgroundGradientStart;
+        final int backgroundGradientEnd;
+
+        BankImageSetting(int bankIcon, int backgroundGradientStart, int backgroundGradientEnd) {
+            this.bankIcon = bankIcon;
+            this.backgroundGradientStart = backgroundGradientStart;
+            this.backgroundGradientEnd = backgroundGradientEnd;
+        }
+
+        final static BankImageSetting DEFAULT = new BankImageSetting(0, R.color.bg_vietinbank_start, R.color.bg_vietinbank_end);
     }
 }

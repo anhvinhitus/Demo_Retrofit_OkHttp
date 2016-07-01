@@ -1,6 +1,39 @@
-before_script:  
-  - export ANDROID_HOME="/opt/android-sdk"
+stages:
+  - build
+  - test
+  - archive
 
-dev:  
+before_script:  
+  - export ANDROID_HOME=/home/gitlab-runner/android-sdk-linux
+  - export GRADLE_USER_HOME=/home/gitlab-runner/gradle
+  - export CI_BUILD=$CI_SERVER
+  - export CI_BUILD_TAG=$CI_BUILD_TAG
+  - mkdir -p ./releases
+
+build:
+  stage: build
+  except:
+    - tags  
   script:
     - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleProductionDebug
+
+test:
+  stage: test
+  except:
+    - tags
+  script:
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionReleaseUnitTest
+
+archive:
+  stage: archive
+  script:
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleRelease
+  only:
+    - tags
+  artifacts:
+    name: $CI_BUILD_STAGE_$CI_BUILD_TAG
+    expire_in: 4 week
+    paths:
+      - releases/ZaloPay-sandbox-release-$CI_BUILD_TAG.apk
+      - releases/ZaloPay-production-release-$CI_BUILD_TAG.apk
+

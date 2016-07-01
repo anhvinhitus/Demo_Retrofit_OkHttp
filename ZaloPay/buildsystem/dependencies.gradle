@@ -67,6 +67,8 @@ ext {
     protobufVersion = "2.6.1"
     nettyVesion = "4.1.1.Final"
 
+    parcelerVersion = "1.1.5"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
@@ -110,7 +112,10 @@ ext {
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
             protobuf               : "com.google.protobuf:protobuf-java:${protobufVersion}",
             netty_transport        : "io.netty:netty-transport:${nettyVesion}",
-            netty_codec            : "io.netty:netty-codec:${nettyVesion}"
+            netty_codec            : "io.netty:netty-codec:${nettyVesion}",
+
+            parceler               : "org.parceler:parceler-api:${parcelerVersion}",
+            parceler_apt           : "org.parceler:parceler:${parcelerVersion}"
 
     ]
 

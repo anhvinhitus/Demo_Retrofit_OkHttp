@@ -32,6 +32,9 @@
 # (unless you are using a system that supports de-obfuscate the stack traces).
 -dontobfuscate
 
+# Parcel library
+-keep class **$$Parcelable { *; }
+
 # React Native
 
 # Keep our interfaces so they can be used by other ProGuard rules.
@@ -116,6 +119,8 @@
 -keepattributes Signature
 -keepattributes Exceptions
 
+# Parcel library
+-keep class **$$Parcelable { *; }
 
 #gson
 
@@ -345,6 +350,47 @@
 
 -dontwarn vn.com.zalopay.wallet.**
 
+
+# ---- REQUIRED card.io CONFIG ----------------------------------------
+# card.io is a native lib, so anything crossing JNI must not be changed
+
+# Don't obfuscate DetectionInfo or public fields, since
+# it is used by native methods
+-keep class io.card.payment.DetectionInfo
+-keepclassmembers class io.card.payment.DetectionInfo {
+public *;
+}
+
+-keep class io.card.payment.CreditCard
+-keep class io.card.payment.CreditCard$1
+-keepclassmembers class io.card.payment.CreditCard {
+*;
+}
+
+-keepclassmembers class io.card.payment.CardScanner {
+*** onEdgeUpdate(...);
+}
+
+# Don't mess with classes with native methods
+
+-keepclasseswithmembers class * {
+native <methods>;
+}
+
+-keepclasseswithmembernames class * {
+native <methods>;
+}
+
+-keep public class io.card.payment.* {
+public protected *;
+}
+
+# required to suppress errors when building on android 22
+-dontwarn io.card.payment.CardIOActivity
+
+-keep class io.card.payment.OverlayView
+-keep class io.card.payment.Util
+
 #Zalo SDK
 
 -keep public class com.zing.zalo.zalosdk.** {
@@ -355,3 +401,6 @@
 -keepclassmembers class com.zing.zalo.zalosdk.resource.R {
     *;
 }
+
+
+

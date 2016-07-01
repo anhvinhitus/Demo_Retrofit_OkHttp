@@ -1,81 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:background="#66000000">
 
-    <LinearLayout
-        android:id="@+id/layoutMoneySource"
+    <FrameLayout
+        android:id="@+id/layoutLinkCard"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:layout_height="212dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="158dp"
+        android:background="@drawable/bg_link_card_detail"
+        android:baselineAligned="false">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/spacing.medium"
-            android:src="@drawable/ic_nguontienchinh" />
-
-        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:text="@string/txt_link_card_money_source"
-            android:textColor="#dd000000"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutDetail"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone">
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_map" />
 
         <ImageView
+            android:id="@+id/iv_logo"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/spacing.medium"
-            android:src="@drawable/ic_xemchitiet" />
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/ic_visa" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tv_num_acc"
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:text="@string/txt_link_card_view_detail"
-            android:textColor="#dd000000"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="142dp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="4"
+            android:shadowRadius="4"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize.large.l"
+            android:textStyle="normal"
+            tools:text="*** 0014" />
+    </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/layoutRemoveLink"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/spacing.medium"
-            android:src="@drawable/ic_huylienket" />
-
-        <TextView
+        <LinearLayout
+            android:id="@+id/layoutMoneySource"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:text="@string/txt_link_card_remove_link"
-            android:textColor="#dd000000"
-            android:textSize="16sp" />
+            android:layout_height="48dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/spacing.medium"
+                android:src="@drawable/ic_nguontienchinh" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:text="@string/txt_link_card_money_source"
+                android:textColor="#dd000000"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutDetail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/spacing.medium"
+                android:src="@drawable/ic_xemchitiet" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:text="@string/txt_link_card_view_detail"
+                android:textColor="#dd000000"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutRemoveLink"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/spacing.medium"
+                android:src="@drawable/ic_huylienket" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:text="@string/txt_link_card_remove_link"
+                android:textColor="#dd000000"
+                android:textSize="16sp" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

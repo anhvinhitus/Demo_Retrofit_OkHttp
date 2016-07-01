@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,7 +19,6 @@ import android.widget.TextView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,8 +26,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.ReactAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -52,6 +56,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     protected void onScreenVisible() {
     }
+
+
+    private final static int SPAN_COUNT_APPLICATION = 3;
 
     @Inject
     Navigator navigator;
@@ -112,9 +119,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         presenter.setView(this);
 
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
         listView.setNestedScrollingEnabled(false);
-        listView.addItemDecoration(new GridSpacingItemDecoration(3, 2, false));
+        listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
 
         showBannerAds();
@@ -132,6 +139,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             @Override
             public void onClick(View v) {
                 navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.NOTIFICATIONS);
+                zpAnalytics.logEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
             }
         });
     }
@@ -186,33 +194,51 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void onClickAppListener(AppResource app) {
-
-        if (app == null) {
-            return;
-        }
-        Timber.d("request to launch app [appid: %s, appname: %s]", app.appid, app.appname);
-
+    public void onClickAppListener(AppResource app, int position) {
+        Timber.d("onclick app %s %s ", app.appid, app.appname);
         if (app.appid == 1) {
             navigator.startTransferMoneyActivity(getActivity());
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
         }
+
+        this.logActionApp(position);
+    }
+
+    // FIXME: 6/28/16 
+    private void logActionApp(int position) {
+        int action = ZPEvents.TAPAPPICON_1_1;
+
+        switch (position) {
+            case 0:
+                action = ZPEvents.TAPAPPICON_1_1;
+                break;
+            case 1:
+                action = ZPEvents.TAPAPPICON_1_2;
+                break;
+            case 2:
+                action = ZPEvents.TAPAPPICON_1_3;
+                break;
+        }
+        zpAnalytics.logEvent(action);
     }
 
     @OnClick(R.id.btn_deposit)
     public void onBtnDepositClick(View view) {
         navigator.startDepositActivity(getActivity());
+        zpAnalytics.logEvent(ZPEvents.TAPADDCASH);
     }
 
     @OnClick(R.id.btn_link_card)
     public void onBtnLinkCardClick(View view) {
         navigator.startLinkCardActivity(getActivity());
+        zpAnalytics.logEvent(ZPEvents.TAPMANAGECARDS);
     }
 
     @OnClick(R.id.btn_qr_code)
     public void onBtnQrCodeClick(View view) {
         startQRCodeActivity();
+        zpAnalytics.logEvent(ZPEvents.TAPSCANQR);
     }
 
     @OnClick(R.id.btn_scan_to_pay)
@@ -234,17 +260,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     List<AppResource> mListApps = null;
 
     private List<AppResource> getListData() {
-        if (mListApps == null || mListApps.size() <= 0) {
-            mListApps = Arrays.asList(
-                    new AppResource(1, getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)),
-                    new AppResource(11, getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)),
-                    new AppResource(12, getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt))
-//                new AppResource(13, getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)),
-//                new AppResource(3, getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien), 1),
-//                new AppResource(4, getString(R.string.internet_bill), String.valueOf(R.drawable.ic_internet), 1),
-//                new AppResource(5, getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi), 1),
-//                new AppResource(6, getString(R.string.water_bill), String.valueOf(R.drawable.ic_tiennuoc), 1)
-            );
+        if (Lists.isEmptyOrNull(mListApps)) {
+            mListApps = new ArrayList<>(ReactAppConfig.APP_RESOURCE_LIST);
         }
         return mListApps;
     }
@@ -267,11 +284,33 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onItemClick(int position) {
         if (position == 0) {
-            onClickAppListener(getListData().get(1));
+
+            AppResource app = getListData().get(1);
+            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
+
+            zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
             navigator.startLinkCardProcedureActivity(getActivity());
+            zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-            onClickAppListener(getListData().get(2));
+
+            AppResource app = getListData().get(2);
+            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
+
+            zpAnalytics.logEvent(ZPEvents.TAPBANNERPOSITION3);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                navigator.startQrCodeActivity(getActivity());
+            } else {
+                zpAnalytics.logEvent(ZPEvents.SCANQR_ACCESSDENIED);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
