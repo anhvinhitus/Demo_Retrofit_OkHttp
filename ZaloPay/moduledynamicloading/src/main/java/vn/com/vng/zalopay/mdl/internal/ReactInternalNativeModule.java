@@ -89,7 +89,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
         Timber.d("trackEvent eventId %s", eventId);
 
-        zpAnalytics.logEvent(eventId);
+        zpAnalytics.trackEvent(eventId);
     }
 
     @ReactMethod

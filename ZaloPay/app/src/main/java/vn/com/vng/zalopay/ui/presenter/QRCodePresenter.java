@@ -15,7 +15,6 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -131,7 +130,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             hideLoadingView();
 
-            zpAnalytics.logEvent(ZPEvents.SCANQR_WRONGCODE);
+            zpAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
 
             mView.resumeScanner();
@@ -139,7 +138,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             Timber.i("Invalid JSON input: %s", e.getMessage());
             hideLoadingView();
 
-            zpAnalytics.logEvent(ZPEvents.SCANQR_WRONGCODE);
+            zpAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
 
             mView.resumeScanner();

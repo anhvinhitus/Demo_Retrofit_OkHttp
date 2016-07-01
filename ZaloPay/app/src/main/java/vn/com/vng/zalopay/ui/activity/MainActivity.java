@@ -184,46 +184,46 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 break;
             case MenuItemUtil.APPLICATION_INFO_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUABOUT);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUHELP);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUADDCASH);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCASH);
                 break;
             case MenuItemUtil.FAQ_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUFAQ);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFAQ);
                 break;
             case MenuItemUtil.HOME_ID:
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUHOME);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHOME);
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 startQRCodeActivity();
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUSCANQR);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
                 getAppComponent().applicationSession().clearUserSession();
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENULOGOUT);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTION_LOGS);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
                 break;
             case MenuItemUtil.SAVE_CARD_ID:
                 navigator.startLinkCardActivity(this);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUADDCARD);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
                 break;
 
         }

@@ -30,7 +30,7 @@ public class ZPTrackerGA implements ZPTracker {
     }
 
     @Override
-    public void logEvent(int eventId, Long eventValue) {
+    public void trackEvent(int eventId, Long eventValue) {
 
         HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder()
                 .setCategory(ZPEvents.categoryFromEventId(eventId))
@@ -45,7 +45,7 @@ public class ZPTrackerGA implements ZPTracker {
     }
 
     @Override
-    public void logScreenView(String screenName) {
+    public void trackScreen(String screenName) {
         String screenWithFormat = String.format(FORMAT_GOOGLE_ANALYTICS, versionName, screenName);
         mTracker.setScreenName(screenWithFormat);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());

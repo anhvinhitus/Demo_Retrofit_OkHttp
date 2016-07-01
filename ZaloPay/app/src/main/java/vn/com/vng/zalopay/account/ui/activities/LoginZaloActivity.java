@@ -68,7 +68,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @OnClick(R.id.layoutLoginZalo)
     public void onClickLogin(View v) {
         loginPresenter.loginZalo(this);
-        zpAnalytics.logEvent(ZPEvents.TAP_LOGIN);
+        zpAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
     }
 
    /* @Override

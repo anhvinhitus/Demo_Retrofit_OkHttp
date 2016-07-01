@@ -131,7 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        zpAnalytics.logScreenView(TAG);
+        zpAnalytics.trackScreen(TAG);
     }
 
     @Override
@@ -225,24 +225,24 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void logActionLaunch() {
 //        if (TAG.equals(QRCodeScannerActivity.class.getSimpleName())) {
-//            zpAnalytics.logEvent(SCANQR_LAUNCH);
+//            zpAnalytics.trackEvent(SCANQR_LAUNCH);
 //        } else
         if (TAG.equals(LinkCardActivity.class.getSimpleName())) {
-            zpAnalytics.logEvent(ZPEvents.MANAGECARD_LAUNCH);
+            zpAnalytics.trackEvent(ZPEvents.MANAGECARD_LAUNCH);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
-            zpAnalytics.logEvent(ZPEvents.ADDCASH_LAUNCH);
+            zpAnalytics.trackEvent(ZPEvents.ADDCASH_LAUNCH);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
-            zpAnalytics.logEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
+            zpAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
         }
     }
 
     private void logActionNavigationBack() {
         if (TAG.equals(LinkCardActivity.class.getSimpleName())) {
-            zpAnalytics.logEvent(ZPEvents.MANAGECARD_NAVIGATEBACK);
+            zpAnalytics.trackEvent(ZPEvents.MANAGECARD_NAVIGATEBACK);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
-            zpAnalytics.logEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
+            zpAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
-            zpAnalytics.logEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
+            zpAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
         }
     }
 

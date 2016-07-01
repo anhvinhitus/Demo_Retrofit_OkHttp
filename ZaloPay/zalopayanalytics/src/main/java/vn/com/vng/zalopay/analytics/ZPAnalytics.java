@@ -17,8 +17,8 @@ public class ZPAnalytics {
      *
      * @param eventId Id of the event that we want to log
      */
-    public void logEvent(int eventId) {
-        logEvent(eventId, null);
+    public void trackEvent(int eventId) {
+        trackEvent(eventId, null);
     }
 
     /**
@@ -27,15 +27,15 @@ public class ZPAnalytics {
      * @param eventId    Id of the event that we want to log
      * @param eventValue (optional) provide value for a given event
      */
-    public void logEvent(int eventId, Long eventValue) {
+    public void trackEvent(int eventId, Long eventValue) {
         for (ZPTracker tracker : mTrackerList) {
-            tracker.logEvent(eventId, eventValue);
+            tracker.trackEvent(eventId, eventValue);
         }
     }
 
-    public void logScreenView(String screenName) {
+    public void trackScreen(String screenName) {
         for (ZPTracker tracker : mTrackerList) {
-            tracker.logScreenView(screenName);
+            tracker.trackScreen(screenName);
         }
     }
 
@@ -67,7 +67,7 @@ public class ZPAnalytics {
     static class DefaultTracker implements ZPTracker {
 
         @Override
-        public void logEvent(int eventId, Long eventValue) {
+        public void trackEvent(int eventId, Long eventValue) {
             String message;
             if (eventValue == null) {
                 message = String.format("Event [%d]", eventId);
@@ -79,7 +79,7 @@ public class ZPAnalytics {
         }
 
         @Override
-        public void logScreenView(String screenName) {
+        public void trackScreen(String screenName) {
             //Timber.tag("ZPAnalytics").d(screenName);
         }
     }

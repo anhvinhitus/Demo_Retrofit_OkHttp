@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -62,7 +60,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         qrCodePresenter.setView(this);
-        zpAnalytics.logEvent(ZPEvents.SCANQR_LAUNCH);
+        zpAnalytics.trackEvent(ZPEvents.SCANQR_LAUNCH);
     }
 
     @Override
@@ -99,7 +97,7 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        zpAnalytics.logEvent(ZPEvents.SCANQR_NAVIGATEBACK);
+        zpAnalytics.trackEvent(ZPEvents.SCANQR_NAVIGATEBACK);
     }
 
     @Override

@@ -17,7 +17,6 @@ import io.fabric.sdk.android.Fabric;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import timber.log.Timber;
 import vn.com.vng.iot.debugviewer.DebugViewer;
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
@@ -86,7 +85,7 @@ public class AndroidApplication extends MultiDexApplication {
         Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
-        appComponent.zpAnalytics().logEvent(ZPEvents.APP_LAUNCH);
+        appComponent.zpAnalytics().trackEvent(ZPEvents.APP_LAUNCH);
     }
 
 
