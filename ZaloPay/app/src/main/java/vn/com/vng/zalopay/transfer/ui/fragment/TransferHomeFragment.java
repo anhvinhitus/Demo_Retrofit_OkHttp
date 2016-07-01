@@ -118,9 +118,11 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
         mList.setAdapter(mAdapter);
         if (mAdapter != null && mAdapter.getItemCount() > 0) {
             mTvTileTransactionRecent.setVisibility(View.VISIBLE);
+            mList.setVisibility(View.VISIBLE);
             layoutIntroduction.setVisibility(View.GONE);
         } else {
             mTvTileTransactionRecent.setVisibility(View.GONE);
+            mList.setVisibility(View.GONE);
             layoutIntroduction.setVisibility(View.VISIBLE);
             imgIntroduction.setBackgroundResource(R.drawable.anim_transfer);
             AnimationDrawable animationDrawable = (AnimationDrawable)imgIntroduction.getBackground();
@@ -199,10 +201,12 @@ public class TransferHomeFragment extends BaseFragment implements LoaderManager.
         mAdapter.setData(transferRecents);
         if (transferRecents != null && transferRecents.size() > 0) {
             mTvTileTransactionRecent.setVisibility(View.VISIBLE);
+            mList.setVisibility(View.VISIBLE);
             viewSeparate.setVisibility(View.VISIBLE);
             layoutIntroduction.setVisibility(View.GONE);
         } else {
             mTvTileTransactionRecent.setVisibility(View.GONE);
+            mList.setVisibility(View.GONE);
             viewSeparate.setVisibility(View.GONE);
             layoutIntroduction.setVisibility(View.VISIBLE);
         }
