@@ -51,39 +51,39 @@ android {
 
     sourceSets {
         production {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/production','../../internalapps/production' ]
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps']
         }
 
         sandbox {
-            assets.srcDirs = ['src/main/assets',  '../../paymentapps/sandbox','../../internalapps/sandbox' ]
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/sandbox', '../../internalapps']
         }
 
         staging {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/staging','../../internalapps/staging' ]
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/staging', '../../internalapps']
         }
 
         internalProduction {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps/production']
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps']
         }
 
         internalSandbox {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps/sandbox']
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps']
         }
 
         internalStaging {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps/staging']
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps']
         }
 
         iapSandbox {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/sandbox', '../../internalapps/sandbox']
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/sandbox', '../../internalapps']
         }
 
         iapProduction {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps/production']
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/production', '../../internalapps']
         }
 
         iapStaging {
-            assets.srcDirs = ['src/main/assets', '../../paymentapps/staging', '../../internalapps/staging']
+            assets.srcDirs = ['src/main/assets', '../../paymentapps/staging', '../../internalapps']
         }
     }
 
