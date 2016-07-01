@@ -167,16 +167,20 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveZaloUserInfo(JSONObject profile) {
+        Timber.i("Zalo User Info: %s", profile);
         JSONObject json = profile.optJSONObject("result");
 
-        if (json == null) return;
-        long userId = json.optLong("userId");
+        if (json == null) {
+            return;
+        }
+
+        long zaloId = json.optLong("userId");
         String displayName = json.optString("displayName");
         String avatar = json.optString("largeAvatar");
         long birthday = json.optInt("birthDate");
         int userGender = json.optInt("userGender");
 
-        saveUserInfo(userId, avatar, displayName, birthday, userGender);
+        saveUserInfo(zaloId, avatar, displayName, birthday, userGender);
     }
 
     @Override
