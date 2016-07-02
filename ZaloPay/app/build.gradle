@@ -72,14 +72,17 @@ android {
 
         internalSandbox {
             assets.srcDirs += '../../paymentapps/sandbox'
+            res.srcDirs += 'src/sandbox/res'
         }
 
         internalStaging {
             assets.srcDirs + '../../paymentapps/staging'
+            res.srcDirs += 'src/staging/res'
         }
 
         iapSandbox {
             assets.srcDirs += '../../paymentapps/sandbox'
+            res.srcDirs += 'src/sandbox/res'
         }
 
         iapProduction {
@@ -88,6 +91,7 @@ android {
 
         iapStaging {
             assets.srcDirs + '../../paymentapps/staging'
+            res.srcDirs += 'src/staging/res'
         }
     }
 
@@ -224,6 +228,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
+
         }
     }
 
