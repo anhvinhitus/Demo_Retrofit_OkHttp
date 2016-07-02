@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/header_update_profile_layout" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ViewFlipper
+            android:id="@+id/viewFlipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="48dp">
+            
+            <include layout="@layout/update_profile_3_page_1" />
+
+            <include layout="@layout/update_profile_3_page_2" />
+        </ViewFlipper>
+
+        <LinearLayout
+            android:id="@+id/btnContinue"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@color/bg_btn_blue"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Button.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/btn_continue" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/app_padding"
+                android:src="@drawable/ic_arrow_right"
+                android:tint="@color/white" />
+
+        </LinearLayout>
+    </FrameLayout>
+
 
 </LinearLayout>

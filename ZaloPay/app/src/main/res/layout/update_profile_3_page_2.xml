@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:singleLine="false"
+            android:text="Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân " />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate" />
+
+            <FrameLayout
+                android:id="@+id/layoutFgCmnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selector"
+                android:minHeight="48dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:id="@+id/tvFgCmnd"
+                    style="@style/TextView.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Mặt trước CMND" />
+
+                <ImageView
+                    android:id="@+id/ivFgCmnd"
+                    android:layout_width="90dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical|right"
+                    android:src="@drawable/i_capture" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="16dp"
+                android:background="@color/separate" />
+
+            <FrameLayout
+                android:id="@+id/layoutBgCmnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selector"
+                android:minHeight="48dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <ImageView
+                    android:id="@+id/ivBgCmnd"
+                    android:layout_width="90dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvBgCmnd"
+                    style="@style/TextView.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Mặt sau CMND" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical|right"
+                    android:src="@drawable/i_capture" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:singleLine="false"
+            android:text="Hãy đăng ảnh của bạn để giao dịch được AN TOÀN" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate" />
+
+        <FrameLayout
+            android:id="@+id/layoutAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:minHeight="48dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvAvatar"
+                style="@style/TextView.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Ảnh của bạn" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|right"
+                android:src="@drawable/i_capture" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate" />
+
+    </LinearLayout>
+
+</ScrollView>

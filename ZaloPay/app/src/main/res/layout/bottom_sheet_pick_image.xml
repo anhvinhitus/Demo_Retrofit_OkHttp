@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
+
+    <FrameLayout
+        android:id="@+id/layoutCapture"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:text="Chụp Hình"
+            android:textColor="#dd000000"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_huylienket" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <FrameLayout
+        android:id="@+id/layoutGallery"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:text="Thư viện hình ảnh"
+            android:textColor="#dd000000"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_huylienket" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <FrameLayout
+        android:id="@+id/layoutCancel"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:text="Huỷ"
+            android:textColor="#dd000000"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_huylienket" />
+    </FrameLayout>
+
+</LinearLayout>

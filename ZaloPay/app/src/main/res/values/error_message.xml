@@ -15,5 +15,10 @@
     <string name="order_invalid">Thông tin đơn hàng không hợp lệ.</string>
     <string name="user_invalid">Thông tin người dùng không hợp lệ.</string>
     <string name="invitation.code.empty.error">Vui lòng nhập Invitation Code</string>
+    <string name="email.invalid">Email không hợp lệ!</string>
+    <string name="cmnd.invalid">CMND không hợp lệ!</string>
+    <string name="exception.uri.bg.cmnd">Bạn chưa chọn ảnh CMND!</string>
+    <string name="exception.uri.fg.cmnd">Bạn chưa chọn ảnh CMND!</string>
+    <string name="exception.uri.avatar">Bạn chưa chọn ảnh của bạn!</string>
 
 </resources>

@@ -20,7 +20,7 @@ public class Constants {
     public static final String PREF_USER_BIRTHDATE = "pref_user_birth_date";
     public static final String PREF_USER_GENDER = "pref_user_gender";
     public static final String PREF_PROFILELEVEL = "profilelevel";
-    public static final String PREF_PROFILEPERMISSIONS = "profilePermisssions";
+    public static final String PREF_PROFILEPERMISSIONS = "profilePermissions";
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";

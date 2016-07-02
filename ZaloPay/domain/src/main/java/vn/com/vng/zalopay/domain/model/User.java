@@ -29,7 +29,7 @@ public final class User extends Person {
 
     public int need_invitation;
 
-    public List<ProfilePermisssion.Permission> profilePermisssions;
+    public List<ProfilePermission.Permission> profilePermisssions;
 
     public User() {
     }
@@ -55,7 +55,7 @@ public final class User extends Person {
 
     public void setPermissions(String jsonArray) {
         profilePermisssions = fromJson(jsonArray,
-                new TypeToken<ArrayList<ProfilePermisssion.Permission>>() {
+                new TypeToken<ArrayList<ProfilePermission.Permission>>() {
                 }.getType());
     }
 

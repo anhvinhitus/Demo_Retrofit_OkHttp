@@ -19,7 +19,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.utils.JsonUtil;
@@ -85,7 +85,7 @@ public class UserConfigImpl implements UserConfig {
 
     }
 
-    public void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+    public void updateProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
         if (currentUser == null) {
             return;
         }
@@ -94,7 +94,7 @@ public class UserConfigImpl implements UserConfig {
         saveProfilePermissions(profilelevel, profilePermisssions);
     }
 
-    private void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+    private void saveProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constants.PREF_PROFILELEVEL, profilelevel);
         Gson gson = new Gson();

@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
+import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -129,5 +130,11 @@ public class UserPresenterModule {
     @Provides
     InvitationCodePresenter providesInvitationCodePresenter() {
         return new InvitationCodePresenter();
+    }
+
+    @UserScope
+    @Provides
+    UpdateProfile3Presenter providesUpdateProfile3Presenter() {
+        return new UpdateProfile3Presenter();
     }
 }

@@ -25,6 +25,14 @@ public class ValidateUtil {
         }
     }
 
+    public static boolean isCMND(String str) {
+        if (!isNumeric(str)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static String checkInputPhoneNumber(String str) {
         int length = str.length();
         if (length == 0) {

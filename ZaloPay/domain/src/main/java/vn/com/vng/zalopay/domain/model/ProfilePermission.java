@@ -5,9 +5,9 @@ import java.util.List;
 /**
  * Created by longlv on 03/06/2016.
  */
-public class ProfilePermisssion {
+public class ProfilePermission {
     public int profileLevel;
-    public List<Permission> profilePermisssions;
+    public List<Permission> profilePermissions;
 
     public class Permission {
         public int transtype;
