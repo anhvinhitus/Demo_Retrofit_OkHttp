@@ -125,7 +125,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         addHeader(listView);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
-
         presenter.setView(this);
     }
 
@@ -149,7 +148,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         presenter.initialize();
     }
 

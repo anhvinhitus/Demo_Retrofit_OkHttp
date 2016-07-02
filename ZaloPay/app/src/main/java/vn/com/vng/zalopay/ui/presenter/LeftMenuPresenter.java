@@ -41,7 +41,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
         menuView = iLeftMenuView;
-        menuView.setUserInfo(user);
         eventBus.register(this);
     }
 
@@ -53,6 +52,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initialize() {
+        menuView.setUserInfo(user);
         this.getBalance();
         this.initializeZaloPay();
     }
