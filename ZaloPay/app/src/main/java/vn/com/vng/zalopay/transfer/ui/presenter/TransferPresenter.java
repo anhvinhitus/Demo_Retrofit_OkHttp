@@ -25,7 +25,6 @@ import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
 
 /**
