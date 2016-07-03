@@ -36,7 +36,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             @Override
             public void run() {
                 try {
-                    Thread.sleep(20000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
@@ -45,7 +45,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 if (homeView == null || homeView.getActivity() == null || zaloFriendsFactory == null) {
                     return;
                 }
-                zaloFriendsFactory.reloadZaloFriend(homeView.getContext(), null);
+                zaloFriendsFactory.retrieveZaloFriendsAsNeeded(applicationContext, null);
             }
         }).start();
     }
