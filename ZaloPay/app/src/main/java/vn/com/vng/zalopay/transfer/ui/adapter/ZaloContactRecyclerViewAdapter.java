@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.recyclerview.EndlessListAdapter;
@@ -76,7 +75,7 @@ public class ZaloContactRecyclerViewAdapter extends EndlessListAdapter<ZaloFrien
         Glide.with(mContext).load(url).centerCrop().placeholder(R.color.silver).into(image);
     }
 
-    public class ZaloContactViewHolder extends UltimateRecyclerviewViewHolder {
+    public class ZaloContactViewHolder extends RecyclerView.ViewHolder {
         public View mView;
         public TextView mTvDisplayName;
         public ImageView mImgAvatar;

@@ -339,8 +339,6 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile libs.ultimaterecyclerview
-
     compile libs.play_services_gcm
     compile libs.play_services_analytics
     compile(libs.crashlytics) {

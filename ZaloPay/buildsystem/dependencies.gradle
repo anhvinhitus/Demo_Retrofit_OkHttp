@@ -36,7 +36,6 @@ ext {
     glideOkhttp3IntegrationVersion = "1.4.0@aar"
     eventBusVersion = "3.0.0"
     greendaoVersion = "2.2.0"
-    ultimaterecyclerviewVersion = "0.5.8"
 
     //Testing
     robolectricVersion = '3.0'
@@ -92,8 +91,6 @@ ext {
             zxing                  : "com.google.zxing:core:${zxingVersion}",
             zxing_android_core     : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
             zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
-
-            ultimaterecyclerview   : "com.hkm.ui:ultimaterecyclerview:${ultimaterecyclerviewVersion}",
 
             avi                    : "com.wang.avi:library:${aviVersion}",
             nineoldandroids        : "com.nineoldandroids:library:${nineoldVersion}",
