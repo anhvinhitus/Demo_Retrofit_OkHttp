@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.transfer;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -14,13 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
-import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.vng.uicomponent.widget.util.StringUtils;
 
 /**
@@ -31,6 +29,16 @@ public class ZaloFriendsFactory {
     private final int TIME_RELOAD = 5 * 60; //5'
 
     private SqlZaloPayScope sqlZaloPayScope;
+
+    public interface IZaloFriendListener {
+        void onGetZaloFriendSuccess(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends);
+
+        void onGetZaloFriendError();
+
+        void onZaloFriendUpdated();
+
+        void onGetZaloFriendFinish();
+    }
 
     public ZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope) {
         this.sqlZaloPayScope = sqlZaloPayScope;
@@ -46,32 +54,69 @@ public class ZaloFriendsFactory {
         sqlZaloPayScope.writeTransferRecent(transferEntity);
     }
 
-    public void reloadZaloFriend(Context context, final ZaloContactPresenter.IZaloFriendListener listener) {
-        if (sqlZaloPayScope != null && sqlZaloPayScope.isHaveZaloFriendDb()) {
-            long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
-            //check xem moi lay thi thoi
-            long currentTime = System.currentTimeMillis() / 1000;
-            if (currentTime - lasttime >= TIME_RELOAD) {
-                getFriendListServer(context, 0, listener);
+    public void retrieveZaloFriendsAsNeeded(final Context context, final IZaloFriendListener listener) {
+        AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (sqlZaloPayScope != null && sqlZaloPayScope.isHaveZaloFriendDb()) {
+                    long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
+                    //check xem moi lay thi thoi
+                    long currentTime = System.currentTimeMillis() / 1000;
+                    if (currentTime - lasttime >= TIME_RELOAD) {
+                        getFriendListServer(context, 0, listener);
+                    } else {
+                        if (listener != null) {
+                            listener.onZaloFriendUpdated();
+                        }
+                    }
+                } else {
+                    getFriendListServer(context, 0, listener);
+                }
             }
-        } else {
-            getFriendListServer(context, 0, listener);
-        }
+        });
     }
 
-    private void getFriendListServer(final Context context, final int pageIndex, final ZaloContactPresenter.IZaloFriendListener listener) {
-        Timber.d("getFriendListServer pageIndex:%s ", pageIndex);
+    public void getFriendListServer(final Context context, final IZaloFriendListener listener) {
+        AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                getFriendListServer(context, 0, listener);
+            }
+        });
+    }
+
+    private void getFriendListServer(final Context context, final int pageIndex, final IZaloFriendListener listener) {
+        Timber.d("getFriendListServer context:%s pageIndex:%s IZaloFriendListener:%s", context, pageIndex, listener);
         ZaloSDK.Instance.getFriendList(context, pageIndex, OFFSET_FRIEND_LIST, new ZaloOpenAPICallback() {
             @Override
             public void onResult(final JSONObject arg0) {
+                JSONArray data;
                 try {
-                    JSONArray data = arg0.getJSONArray("result");
+                    data = arg0.getJSONArray("result");
                     Timber.d("getFriendListServer, result: %s", data.toString());
+                } catch (JSONException e) {
+                    if (BuildConfig.DEBUG) {
+                        e.printStackTrace();
+                    }
+                    if (listener != null) {
+                        listener.onGetZaloFriendError();
+                    }
+                    return;
+                }
+
+                if (data.length() <= 0) {
+                    if (listener != null) {
+                        listener.onGetZaloFriendFinish();
+                    }
+                } else {
                     if (data.length() >= OFFSET_FRIEND_LIST) {
                         getFriendListServer(context, (pageIndex + OFFSET_FRIEND_LIST), listener);
                     } else {
                         if (sqlZaloPayScope != null) {
                             sqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
+                        }
+                        if (listener != null) {
+                            listener.onGetZaloFriendFinish();
                         }
                     }
                     List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = zaloFriends(data);
@@ -79,27 +124,21 @@ public class ZaloFriendsFactory {
                     if (listener != null) {
                         listener.onGetZaloFriendSuccess(zaloFriends);
                     }
-                } catch (JSONException e) {
-                    if (BuildConfig.DEBUG) {
-                        e.printStackTrace();
-                    }
                 }
             }
         });
     }
 
     private List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends(final JSONArray jsonArray) {
-        Timber.d("zaloFriends start........");
         List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = new ArrayList<>();
         if (jsonArray == null || jsonArray.length() <= 0) {
             return zaloFriends;
         }
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
-                Timber.d("zaloFriends index: %s", i);
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend = new vn.com.vng.zalopay.transfer.models.ZaloFriend(jsonObject);
-                if (zaloFriend.getUserId() > 0 && zaloFriend.isUsingApp()) {
+                if (zaloFriend.getUserId() > 0 /*&& zaloFriend.isUsingApp()*/) {
                     zaloFriends.add(zaloFriend);
                 }
             }
@@ -113,7 +152,6 @@ public class ZaloFriendsFactory {
     }
 
     private ZaloFriend convertZaloFriend(vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend) {
-        Timber.d("convertZaloFriend, size: %s", zaloFriend);
         if (zaloFriend == null) {
             return null;
         }

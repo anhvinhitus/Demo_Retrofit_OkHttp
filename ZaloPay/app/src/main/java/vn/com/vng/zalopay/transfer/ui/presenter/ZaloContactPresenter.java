@@ -1,10 +1,15 @@
 package vn.com.vng.zalopay.transfer.ui.presenter;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
-import vn.com.vng.zalopay.AndroidApplication;
+import timber.log.Timber;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
@@ -15,17 +20,31 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 /**
  * Created by longlv on 11/06/2016.
  */
-public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView> {
+public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView>, ZaloFriendsFactory.IZaloFriendListener {
+    private final int TIMEOUT_GET_ZALO_FRIENDS = 10000; //10s
+    private final int TIMEOUT_UPDATE_LISTVIEW = 1000; //1s
     private IZaloContactView mView;
+
+    CountDownTimer mCountDownGetZaloFriends;
+    CountDownTimer mCountDownUpdateListView;
+
+    enum EGetZaloFriendListener {
+        GetZaloFriendError(0), GetZaloFriendFinish(1), ZaloFriendUpdated(2), TimeOut(3);
+        private final int value;
+
+        EGetZaloFriendListener(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     @Inject
     Navigator navigator;
 
     ZaloFriendsFactory zaloFriendsFactory;
-
-    public interface IZaloFriendListener {
-        void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends);
-    }
 
     public ZaloContactPresenter(ZaloFriendsFactory zaloFriendsFactory) {
         this.zaloFriendsFactory = zaloFriendsFactory;
@@ -38,7 +57,6 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroyView() {
-        zaloFriendsFactory = null;
         mView = null;
     }
 
@@ -53,22 +71,122 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
+        /*zaloFriendsFactory = null;*/
     }
 
-    public void getFriendList(final IZaloFriendListener listener) {
-//        mView.showLoading();
-        AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (zaloFriendsFactory == null || mView == null) {
-                    return;
+    private void startCountDownGetZaloFriends() {
+        if (mCountDownGetZaloFriends == null) {
+            mCountDownGetZaloFriends = new CountDownTimer(TIMEOUT_GET_ZALO_FRIENDS, TIMEOUT_GET_ZALO_FRIENDS) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
                 }
-                zaloFriendsFactory.reloadZaloFriend(applicationContext, listener);
-            }
-        });
+
+                @Override
+                public void onFinish() {
+                    onGetZaloFriendTimeout();
+                }
+            };
+        } else {
+            mCountDownGetZaloFriends.cancel();
+        }
+        mCountDownGetZaloFriends.start();
     }
 
-    private void saveZaloFriends(List<ZaloFriend> zaloFriends) {
-        zaloFriendsFactory.insertZaloFriends(zaloFriends);
+    private void mCountDownUpdateListView() {
+        if (mCountDownUpdateListView == null) {
+            mCountDownUpdateListView = new CountDownTimer(TIMEOUT_UPDATE_LISTVIEW, TIMEOUT_UPDATE_LISTVIEW) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    onGetZaloFriendFinish();
+                }
+            };
+        } else {
+            mCountDownUpdateListView.cancel();
+        }
+        mCountDownUpdateListView.start();
     }
+
+    public void retrieveZaloFriendsAsNeeded() {
+//        mView.showLoading();
+        if (zaloFriendsFactory == null) {
+            onGetZaloFriendError();
+            return;
+        }
+        zaloFriendsFactory.retrieveZaloFriendsAsNeeded(applicationContext, this);
+        startCountDownGetZaloFriends();
+    }
+
+
+    public void getFriendListServer() {
+//        mView.showLoading();
+        Timber.d("getFriendListServer zaloFriendsFactory: %s", zaloFriendsFactory);
+        if (zaloFriendsFactory == null) {
+            onGetZaloFriendError();
+            return;
+        }
+        zaloFriendsFactory.getFriendListServer(applicationContext, this);
+        startCountDownGetZaloFriends();
+    }
+
+    private void onGetZaloFriendTimeout() {
+        Message message = new Message();
+        message.what = EGetZaloFriendListener.TimeOut.getValue();
+        messageHandler.sendMessage(message);
+    }
+
+    @Override
+    public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
+        mCountDownUpdateListView();
+    }
+
+    @Override
+    public void onGetZaloFriendError() {
+        Message message = new Message();
+        message.what = EGetZaloFriendListener.GetZaloFriendError.getValue();
+        messageHandler.sendMessage(message);
+        mCountDownGetZaloFriends.cancel();
+        mCountDownUpdateListView.cancel();
+    }
+
+    @Override
+    public void onZaloFriendUpdated() {
+        Message message = new Message();
+        message.what = EGetZaloFriendListener.ZaloFriendUpdated.getValue();
+        messageHandler.sendMessage(message);
+        mCountDownGetZaloFriends.cancel();
+        mCountDownUpdateListView.cancel();
+    }
+
+    @Override
+    public void onGetZaloFriendFinish() {
+        Message message = new Message();
+        message.what = EGetZaloFriendListener.GetZaloFriendFinish.getValue();
+        messageHandler.sendMessage(message);
+        mCountDownGetZaloFriends.cancel();
+        mCountDownUpdateListView.cancel();
+    }
+
+    private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg == null) {
+                return;
+            }
+            if (msg.what == EGetZaloFriendListener.GetZaloFriendError.getValue()) {
+                ZaloContactPresenter.this.mView.onGetZaloFriendError();
+            } else if (msg.what == EGetZaloFriendListener.ZaloFriendUpdated.getValue()) {
+                ZaloContactPresenter.this.mView.onZaloFriendUpdated();
+            } else if (msg.what == EGetZaloFriendListener.GetZaloFriendFinish.getValue()) {
+                ZaloContactPresenter.this.mView.onGetZaloFriendFinish();
+            } else if (msg.what == EGetZaloFriendListener.TimeOut.getValue()) {
+                ZaloContactPresenter.this.mView.onGetZaloFriendTimeout();
+            }
+        }
+    };
 }

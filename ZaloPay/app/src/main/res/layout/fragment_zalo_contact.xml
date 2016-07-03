@@ -9,39 +9,53 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:background="@color/white"
+        android:orientation="horizontal"
         android:visibility="visible">
 
-        <vn.com.vng.zalopay.ui.widget.ClearableEditText
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/spacing.medium.t"
+            android:src="@drawable/ic_seach" />
+
+        <vn.vng.uicomponent.widget.edittext.ClearableEditText
             android:id="@+id/edtSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:drawableLeft="@drawable/ic_seach"
-            android:drawablePadding="@dimen/spacing.medium.t"
+            android:ellipsize="end"
             android:hint="@string/hint_zalo_contact"
             android:lines="1"
-            android:padding="@dimen/spacing.medium"
+            android:paddingBottom="@dimen/spacing.medium"
+            android:paddingLeft="@dimen/spacing.medium.t"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.medium"
             android:singleLine="true"
-            android:textSize="@dimen/textsize.small"
-            app:recyclerviewEmptyView="@layout/layout_no_data" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/separate" />
+            android:textSize="@dimen/textsize.small" />
     </LinearLayout>
 
-    <!--<android.support.v7.widget.RecyclerView-->
-    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
-        android:id="@+id/list"
-        android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".transfer.ui.fragment.TransferHomeFragment"
-        tools:listitem="@layout/fragment_zalo_contact_item" />
+        android:layout_height="0.5dp"
+        android:background="@color/separate" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".transfer.ui.fragment.TransferHomeFragment"
+            tools:listitem="@layout/fragment_zalo_contact_item" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <View
         android:id="@+id/viewSeparate"
