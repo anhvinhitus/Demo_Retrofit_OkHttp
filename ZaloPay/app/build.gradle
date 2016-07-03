@@ -63,7 +63,7 @@ android {
         }
 
         staging {
-            assets.srcDirs + '../../paymentapps/staging'
+            assets.srcDirs += '../../paymentapps/staging'
         }
 
         internalProduction {
@@ -76,7 +76,7 @@ android {
         }
 
         internalStaging {
-            assets.srcDirs + '../../paymentapps/staging'
+            assets.srcDirs += '../../paymentapps/staging'
             res.srcDirs += 'src/staging/res'
         }
 
@@ -90,7 +90,7 @@ android {
         }
 
         iapStaging {
-            assets.srcDirs + '../../paymentapps/staging'
+            assets.srcDirs += '../../paymentapps/staging'
             res.srcDirs += 'src/staging/res'
         }
     }
