@@ -3,42 +3,42 @@ package vn.com.vng.zalopay.data.zfriend;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 
 /**
  * Created by huuhoa on 7/4/16.
  * Implementation for FriendStore.LocalStorage
  */
 public class FriendLocalStorage implements FriendStore.LocalStorage {
-    private final DaoSession mDaoSession;
+    private final ZaloFriendGDDao mDao;
 
     public FriendLocalStorage(DaoSession daoSession) {
-
-        mDaoSession = daoSession;
-    }
-    @Override
-    public void writeZaloFriends(List<ZaloFriend> val) {
-        mDaoSession.getZaloFriendDao().insertOrReplaceInTx(val);
+        mDao = daoSession.getZaloFriendGDDao();
     }
 
     @Override
-    public void writeZaloFriend(ZaloFriend val) {
-        mDaoSession.getZaloFriendDao().insertOrReplaceInTx(val);
+    public void writeZaloFriends(List<ZaloFriendGD> val) {
+        mDao.insertOrReplaceInTx(val);
     }
 
     @Override
-    public List<ZaloFriend> listZaloFriend() {
-        return mDaoSession.getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).list();
+    public void writeZaloFriend(ZaloFriendGD val) {
+        mDao.insertOrReplaceInTx(val);
     }
 
     @Override
-    public List<ZaloFriend> listZaloFriend(int limit) {
-        return mDaoSession.getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).limit(limit).list();
+    public List<ZaloFriendGD> listZaloFriend() {
+        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq("true")).list();
+    }
+
+    @Override
+    public List<ZaloFriendGD> listZaloFriend(int limit) {
+        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq("true")).limit(limit).list();
     }
 
     @Override
     public boolean isHaveZaloFriendDb() {
-        return mDaoSession.getZaloFriendDao().queryBuilder().count() > 0;
+        return mDao.queryBuilder().count() > 0;
     }
 }

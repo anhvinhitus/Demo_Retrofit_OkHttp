@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.Constants;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.domain.model.AbstractData;
 
 /**
@@ -47,12 +47,12 @@ public class ZaloFriend extends AbstractData {
         if (cursor == null) {
             return;
         }
-        this.userId = cursor.getLong(cursor.getColumnIndex(ZaloFriendDao.Properties.Id.columnName));
-        this.userName = cursor.getString(cursor.getColumnIndex(ZaloFriendDao.Properties.UserName.columnName));
-        this.displayName = cursor.getString(cursor.getColumnIndex(ZaloFriendDao.Properties.DisplayName.columnName));
-        this.avatar = cursor.getString(cursor.getColumnIndex(ZaloFriendDao.Properties.Avatar.columnName));
-        this.userGender = cursor.getInt(cursor.getColumnIndex(ZaloFriendDao.Properties.UserGender.columnName));
-        this.usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendDao.Properties.UsingApp.columnName)) == 1;
+        this.userId = cursor.getLong(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Id.columnName));
+        this.userName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserName.columnName));
+        this.displayName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.DisplayName.columnName));
+        this.avatar = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Avatar.columnName));
+        this.userGender = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserGender.columnName));
+        this.usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UsingApp.columnName)) == 1;
     }
 
     public ZaloFriend(JSONObject jsonObject) throws JSONException {

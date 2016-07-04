@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.BankCardGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 
@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
 import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
 
@@ -41,7 +41,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig transactionLogDaoConfig;
     private final DaoConfig dataManifestDaoConfig;
     private final DaoConfig bankCardGDDaoConfig;
-    private final DaoConfig zaloFriendDaoConfig;
+    private final DaoConfig zaloFriendGDDaoConfig;
     private final DaoConfig transferRecentDaoConfig;
     private final DaoConfig notificationGDDaoConfig;
 
@@ -50,7 +50,7 @@ public class DaoSession extends AbstractDaoSession {
     private final TransactionLogDao transactionLogDao;
     private final DataManifestDao dataManifestDao;
     private final BankCardGDDao bankCardGDDao;
-    private final ZaloFriendDao zaloFriendDao;
+    private final ZaloFriendGDDao zaloFriendGDDao;
     private final TransferRecentDao transferRecentDao;
     private final NotificationGDDao notificationGDDao;
 
@@ -73,8 +73,8 @@ public class DaoSession extends AbstractDaoSession {
         bankCardGDDaoConfig = daoConfigMap.get(BankCardGDDao.class).clone();
         bankCardGDDaoConfig.initIdentityScope(type);
 
-        zaloFriendDaoConfig = daoConfigMap.get(ZaloFriendDao.class).clone();
-        zaloFriendDaoConfig.initIdentityScope(type);
+        zaloFriendGDDaoConfig = daoConfigMap.get(ZaloFriendGDDao.class).clone();
+        zaloFriendGDDaoConfig.initIdentityScope(type);
 
         transferRecentDaoConfig = daoConfigMap.get(TransferRecentDao.class).clone();
         transferRecentDaoConfig.initIdentityScope(type);
@@ -87,7 +87,7 @@ public class DaoSession extends AbstractDaoSession {
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
         dataManifestDao = new DataManifestDao(dataManifestDaoConfig, this);
         bankCardGDDao = new BankCardGDDao(bankCardGDDaoConfig, this);
-        zaloFriendDao = new ZaloFriendDao(zaloFriendDaoConfig, this);
+        zaloFriendGDDao = new ZaloFriendGDDao(zaloFriendGDDaoConfig, this);
         transferRecentDao = new TransferRecentDao(transferRecentDaoConfig, this);
         notificationGDDao = new NotificationGDDao(notificationGDDaoConfig, this);
 
@@ -96,7 +96,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(TransactionLog.class, transactionLogDao);
         registerDao(DataManifest.class, dataManifestDao);
         registerDao(BankCardGD.class, bankCardGDDao);
-        registerDao(ZaloFriend.class, zaloFriendDao);
+        registerDao(ZaloFriendGD.class, zaloFriendGDDao);
         registerDao(TransferRecent.class, transferRecentDao);
         registerDao(NotificationGD.class, notificationGDDao);
     }
@@ -107,7 +107,7 @@ public class DaoSession extends AbstractDaoSession {
         transactionLogDaoConfig.getIdentityScope().clear();
         dataManifestDaoConfig.getIdentityScope().clear();
         bankCardGDDaoConfig.getIdentityScope().clear();
-        zaloFriendDaoConfig.getIdentityScope().clear();
+        zaloFriendGDDaoConfig.getIdentityScope().clear();
         transferRecentDaoConfig.getIdentityScope().clear();
         notificationGDDaoConfig.getIdentityScope().clear();
     }
@@ -132,8 +132,8 @@ public class DaoSession extends AbstractDaoSession {
         return bankCardGDDao;
     }
 
-    public ZaloFriendDao getZaloFriendDao() {
-        return zaloFriendDao;
+    public ZaloFriendGDDao getZaloFriendGDDao() {
+        return zaloFriendGDDao;
     }
 
     public TransferRecentDao getTransferRecentDao() {

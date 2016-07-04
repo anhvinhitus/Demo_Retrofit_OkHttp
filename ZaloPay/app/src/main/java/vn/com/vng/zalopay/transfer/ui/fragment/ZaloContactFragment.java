@@ -29,7 +29,7 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
@@ -313,9 +313,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         mCurrentItem = limitItem;
         String selection = "";
         if (!TextUtils.isEmpty(txtSearch)) {
-            selection += ZaloFriendDao.Properties.Fulltextsearch.columnName + " like '%" + txtSearch.toLowerCase() + "%'";
+            selection += ZaloFriendGDDao.Properties.Fulltextsearch.columnName + " like '%" + txtSearch.toLowerCase() + "%'";
         }
-        String orderByWithLimit = ZaloFriendDao.Properties.Fulltextsearch.columnName +
+        String orderByWithLimit = ZaloFriendGDDao.Properties.Fulltextsearch.columnName +
                 " ASC" +
                 " LIMIT " +
                 limitItem;

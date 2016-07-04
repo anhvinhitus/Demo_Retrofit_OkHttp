@@ -4,8 +4,6 @@ import java.util.List;
 
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**

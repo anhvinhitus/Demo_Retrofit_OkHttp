@@ -10,12 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import javax.inject.Inject;
-
 import de.greenrobot.dao.DaoLog;
-
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
 
 /* Copy this code snippet into your AndroidManifest.xml inside the
 <application> element:
@@ -35,8 +30,8 @@ public abstract class ZaloFriendContentProvider extends ContentProvider {
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
             + "/" + BASE_PATH;
 
-    private static final String TABLENAME = ZaloFriendDao.TABLENAME;
-    private static final String PK = ZaloFriendDao.Properties.Id
+    private static final String TABLENAME = ZaloFriendGDDao.TABLENAME;
+    private static final String PK = ZaloFriendGDDao.Properties.Id
             .columnName;
 
     private static final int ZALOFRIEND_DIR = 0;

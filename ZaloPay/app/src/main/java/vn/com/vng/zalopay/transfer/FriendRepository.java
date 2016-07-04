@@ -9,7 +9,7 @@ import rx.Subscriber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.vng.uicomponent.widget.util.StringUtils;
 
@@ -43,16 +43,16 @@ public class FriendRepository implements FriendStoreRepository {
         mContext = context;
     }
 
-    private ZaloFriend convertZaloFriend(vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend) {
+    private ZaloFriendGD convertZaloFriend(vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend) {
         if (zaloFriend == null) {
             return null;
         }
         String fullTextSearch = StringUtils.diacriticsInVietnameseLowerCase(zaloFriend.getDisplayName());
-        return new ZaloFriend(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
+        return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
     }
 
-    List<ZaloFriend> convertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
-        List<ZaloFriend> result = new ArrayList<>();
+    List<ZaloFriendGD> convertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
+        List<ZaloFriendGD> result = new ArrayList<>();
         if (zaloFriends == null || zaloFriends.size() <= 0) {
             return result;
         }
@@ -60,14 +60,14 @@ public class FriendRepository implements FriendStoreRepository {
             if (zaloFriend == null) {
                 continue;
             }
-            ZaloFriend zaloFriendTmp = convertZaloFriend(zaloFriend);
+            ZaloFriendGD zaloFriendTmp = convertZaloFriend(zaloFriend);
             result.add(zaloFriendTmp);
         }
         return result;
     }
 
     public void insertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
-        List<ZaloFriend> zaloFriendList = convertZaloFriends(zaloFriends);
+        List<ZaloFriendGD> zaloFriendList = convertZaloFriends(zaloFriends);
         mLocalStorage.writeZaloFriends(zaloFriendList);
     }
 

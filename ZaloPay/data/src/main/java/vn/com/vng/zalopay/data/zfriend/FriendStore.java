@@ -2,7 +2,7 @@ package vn.com.vng.zalopay.data.zfriend;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -12,13 +12,13 @@ public interface FriendStore {
     interface LocalStorage {
         boolean isHaveZaloFriendDb();
 
-        void writeZaloFriends(List<ZaloFriend> val);
+        void writeZaloFriends(List<ZaloFriendGD> val);
 
-        void writeZaloFriend(ZaloFriend val);
+        void writeZaloFriend(ZaloFriendGD val);
 
-        List<ZaloFriend> listZaloFriend();
+        List<ZaloFriendGD> listZaloFriend();
 
-        List<ZaloFriend> listZaloFriend(int limit);
+        List<ZaloFriendGD> listZaloFriend(int limit);
     }
 
     interface RequestService {
