@@ -31,7 +31,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
 //    CountDownTimer mCountDownGetZaloFriends;
 //    CountDownTimer mCountDownUpdateListView;
-//
+
     enum EGetZaloFriendListener {
         GetZaloFriendError(0), GetZaloFriendFinish(1), ZaloFriendUpdated(2), TimeOut(3);
         private final int value;
@@ -148,8 +148,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         messageHandler.sendMessage(message);
     }
 
-    public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends)
-    {
+    public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
 //        mCountDownUpdateListView();
     }
 
