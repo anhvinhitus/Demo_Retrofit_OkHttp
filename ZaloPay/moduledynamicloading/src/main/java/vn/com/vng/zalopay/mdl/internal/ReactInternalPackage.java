@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.data.cache.NotificationStore;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.mdl.INavigator;
 

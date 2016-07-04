@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.cache;
+package vn.com.vng.zalopay.data.notification;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,6 +13,7 @@ import de.greenrobot.dao.async.AsyncSession;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
