@@ -3,9 +3,6 @@ package vn.com.vng.zalopay.utils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -16,19 +13,14 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.StrictMode;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -65,8 +57,6 @@ import java.util.zip.ZipInputStream;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
-import vn.vng.uicomponent.widget.util.CompatibilityUtil;
 
 /**
  * Created by AnhHieu on 9/14/15.
@@ -115,7 +105,6 @@ public class AndroidUtils {
             return "xhdpi";
         }
     }
-
 
     public static String getDeviceId() {
         final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance().getSystemService(Context.TELEPHONY_SERVICE);

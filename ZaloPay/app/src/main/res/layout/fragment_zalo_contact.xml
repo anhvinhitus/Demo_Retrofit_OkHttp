@@ -51,7 +51,7 @@
             android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/background"
             app:layoutManager="LinearLayoutManager"
             tools:context=".transfer.ui.fragment.TransferHomeFragment"
             tools:listitem="@layout/fragment_zalo_contact_item" />
