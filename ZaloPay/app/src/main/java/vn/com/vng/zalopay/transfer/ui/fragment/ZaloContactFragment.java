@@ -32,7 +32,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
 import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
@@ -68,6 +69,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @Inject
     ZaloContactPresenter presenter;
+
+    @Inject
+    FriendStoreRepository mFriendRepository;
 
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout mSwipeRefresh;
@@ -355,7 +359,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         Timber.d("convertCursorToList.... cursor: %s", cursor.getCount());
         if (cursor.moveToFirst()) {
             do {
-                transferRecents.add(new ZaloFriend(cursor));
+                transferRecents.add(mFriendRepository.getZaloFriendFrom(cursor));
             } while (cursor.moveToNext());
         }
         return transferRecents;

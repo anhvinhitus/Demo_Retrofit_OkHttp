@@ -16,9 +16,8 @@ import rx.Observable;
 import rx.Subscriber;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.exception.GetZaloFriendException;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -28,14 +27,14 @@ public class FriendRequestService {
     private final int OFFSET_FRIEND_LIST = 50;
 
     List<ZaloFriend> zaloFriends(final JSONArray jsonArray) {
-        List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = new ArrayList<>();
+        List<ZaloFriend> zaloFriends = new ArrayList<>();
         if (jsonArray == null || jsonArray.length() <= 0) {
             return zaloFriends;
         }
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend = new vn.com.vng.zalopay.transfer.models.ZaloFriend(jsonObject);
+                ZaloFriend zaloFriend = new ZaloFriend(jsonObject);
                 if (zaloFriend.getUserId() > 0 /*&& zaloFriend.isUsingApp()*/) {
                     zaloFriends.add(zaloFriend);
                 }

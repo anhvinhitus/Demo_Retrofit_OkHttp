@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.models;
+package vn.com.vng.zalopay.domain.model;
 
 import android.database.Cursor;
 import android.os.Parcel;
@@ -8,14 +8,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.account.Constants;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
-import vn.com.vng.zalopay.domain.model.AbstractData;
 
 /**
  * Created by longlv on 11/06/2016.
  */
 public class ZaloFriend extends AbstractData {
+    class Constants {
+        /* Zalo profile START */
+        public static final String RESULT = "result";
+        public static final String USERID = "userId";
+        public static final String USERNAME = "userName";
+        public static final String DISPLAYNAME = "displayName";
+        public static final String AVATAR = "avatar";
+        public static final String USERGENDER= "userGender";
+        public static final String BIRTHDAY = "birthday";
+        public static final String YAHOOID = "yahooId";
+        public static final String ZINGMEID = "zingMeId";
+        public static final String FACEBOOKID = "facebookId";
+        public static final String TWITTERID = "twitterId";
+        public static final String GOOGLEID = "googleId";
+        public static final String USINGAPP = "usingApp";
+    /* Zalo profile END */
+    }
 
     private long userId;
     private String userName;
@@ -40,19 +54,6 @@ public class ZaloFriend extends AbstractData {
         this.avatar = avatar;
         this.userGender = userGender;
         this.usingApp = usingApp;
-    }
-
-    public ZaloFriend(Cursor cursor) {
-        super();
-        if (cursor == null) {
-            return;
-        }
-        this.userId = cursor.getLong(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Id.columnName));
-        this.userName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserName.columnName));
-        this.displayName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.DisplayName.columnName));
-        this.avatar = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Avatar.columnName));
-        this.userGender = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserGender.columnName));
-        this.usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UsingApp.columnName)) == 1;
     }
 
     public ZaloFriend(JSONObject jsonObject) throws JSONException {

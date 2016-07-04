@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.transfer;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,9 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.vng.uicomponent.widget.util.StringUtils;
 
 /**
@@ -52,12 +54,29 @@ public class FriendRepository implements FriendStoreRepository {
         return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
     }
 
+    @Override
+    public ZaloFriend getZaloFriendFrom(Cursor cursor) {
+        if (cursor == null) {
+            return null;
+        }
+
+        Long userId = cursor.getLong(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Id.columnName));
+        String userName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserName.columnName));
+        String displayName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.DisplayName.columnName));
+        String avatar = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Avatar.columnName));
+        Integer userGender = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserGender.columnName));
+        boolean usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UsingApp.columnName)) == 1;
+
+        ZaloFriend obj = new ZaloFriend(userId, userName, displayName, avatar, userGender, usingApp);
+        return obj;
+    }
+
     List<ZaloFriendGD> convertZaloFriends(List<ZaloFriend> zaloFriends) {
         List<ZaloFriendGD> result = new ArrayList<>();
         if (zaloFriends == null || zaloFriends.size() <= 0) {
             return result;
         }
-        for (vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend : zaloFriends) {
+        for (ZaloFriend zaloFriend : zaloFriends) {
             if (zaloFriend == null) {
                 continue;
             }

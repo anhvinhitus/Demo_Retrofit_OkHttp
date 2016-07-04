@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import vn.com.vng.zalopay.transfer.models.TransferRecent;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
  * Helper class for providing sample content for user interfaces created by

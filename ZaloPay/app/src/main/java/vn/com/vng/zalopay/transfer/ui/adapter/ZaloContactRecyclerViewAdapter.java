@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.recyclerview.EndlessListAdapter;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ZaloFriend} and makes a call to the
