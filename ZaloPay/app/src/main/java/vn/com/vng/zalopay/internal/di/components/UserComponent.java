@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.data.appresources.AppResource;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
-import vn.com.vng.zalopay.data.cache.TransactionStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;

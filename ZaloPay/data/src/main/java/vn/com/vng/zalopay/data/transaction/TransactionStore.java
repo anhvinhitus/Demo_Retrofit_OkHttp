@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.cache;
+package vn.com.vng.zalopay.data.transaction;
 
 import java.util.List;
 
