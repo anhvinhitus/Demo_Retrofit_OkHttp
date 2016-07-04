@@ -24,6 +24,7 @@ public final class User extends Person {
     public String accesstoken;
     public long expirein;
     public String email;
+    public String identityNumber;
 
     public int profilelevel;
 

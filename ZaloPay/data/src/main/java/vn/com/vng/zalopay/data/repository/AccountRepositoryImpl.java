@@ -74,34 +74,40 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email), fimg, bimg, avatar)
+        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
+                fimg, bimg, avatar)
                 .map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
-    public Observable<Boolean> updateProfile3(String identityNumber, String email, byte[] fimgPath, byte[] bimgPath, byte[] avatarPath) {
+    public Observable<Boolean> updateProfile3(String identityNumber, final String email, byte[] fimgPath, byte[] bimgPath, byte[] avatarPath) {
 
         RequestBody fimg = requestBodyFromPathFile(fimgPath);
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email), fimg, bimg, avatar)
+        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
+                fimg, bimg, avatar)
+              /*  .doOnNext(baseResponse1 -> {
+                    user.email = email;
+                    user.identityNumber = identityNumber;
+                })*/
                 .map(baseResponse -> Boolean.TRUE);
     }
 
     private RequestBody requestBodyFromPathFile(String filePath) {
         File file = new File(filePath);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
         return requestBody;
     }
 
     private RequestBody requestBodyFromPathFile(byte[] data) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), data);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), data);
         return requestBody;
     }
 
     private RequestBody requestBodyParam(String param) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), param);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), param);
         return requestBody;
     }
 
