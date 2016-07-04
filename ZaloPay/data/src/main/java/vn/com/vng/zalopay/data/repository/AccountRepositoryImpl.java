@@ -5,23 +5,22 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.AccountService;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.AccountRepository;
 
 /**
  * Created by longlv on 03/06/2016.
  */
-public class AccountRepositoryImpl extends BaseRepository implements AccountRepository {
+public class AccountRepositoryImpl extends BaseRepository implements AccountStore.Repository {
 
-    AccountService accountService;
+    AccountStore.RequestService accountService;
     final User user;
     final UserConfig userConfig;
 
-    public AccountRepositoryImpl(AccountService accountService, UserConfig userConfig, User user) {
+    public AccountRepositoryImpl(AccountStore.RequestService accountService, UserConfig userConfig, User user) {
         this.accountService = accountService;
         this.user = user;
         this.userConfig = userConfig;
@@ -78,9 +77,25 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
                 .map(baseResponse -> Boolean.TRUE);
     }
 
+    @Override
+    public Observable<Boolean> updateProfile3(String identityNumber, String email, byte[] fimgPath, byte[] bimgPath, byte[] avatarPath) {
+
+        RequestBody fimg = requestBodyFromPathFile(fimgPath);
+        RequestBody bimg = requestBodyFromPathFile(bimgPath);
+        RequestBody avatar = requestBodyFromPathFile(avatarPath);
+
+        return accountService.updateProfile3(user.uid, user.accesstoken, identityNumber, email, fimg, bimg, avatar)
+                .map(baseResponse -> Boolean.TRUE);
+    }
+
     private RequestBody requestBodyFromPathFile(String filePath) {
         File file = new File(filePath);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        return requestBody;
+    }
+
+    private RequestBody requestBodyFromPathFile(byte[] data) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), data);
         return requestBody;
     }
 }

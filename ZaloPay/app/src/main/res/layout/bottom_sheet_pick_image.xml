@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="16dp"
-            android:src="@drawable/ic_huylienket" />
+            android:src="@drawable/ic_bts_camera" />
     </FrameLayout>
 
     <View
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="16dp"
-            android:src="@drawable/ic_huylienket" />
+            android:src="@drawable/ic_bts_gallery" />
     </FrameLayout>
 
     <View
@@ -84,15 +84,8 @@
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
             android:text="Huỷ"
-            android:textColor="#dd000000"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_huylienket" />
     </FrameLayout>
 
 </LinearLayout>

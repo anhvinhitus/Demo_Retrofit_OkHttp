@@ -1,12 +1,15 @@
+/*
 package vn.com.vng.zalopay.domain.repository;
 
 import rx.Observable;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 
+*/
 /**
  * Created by AnhHieu on 4/28/16.
- */
+ *//*
+
 public interface AccountRepository {
     Observable<Boolean> updateProfile(String pin, String phonenumber);
 
@@ -21,4 +24,13 @@ public interface AccountRepository {
                                        String fimgPath,
                                        String bimgPath,
                                        String avatarPath);
+
+    Observable<Boolean> updateProfile3(String identityNumber,
+                                       String email,
+                                       byte[] fimgPath,
+                                       byte[] bimgPath,
+                                       byte[] avatarPath);
+
+
 }
+*/

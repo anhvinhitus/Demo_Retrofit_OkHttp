@@ -56,10 +56,10 @@
                     android:visibility="gone" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:src="@drawable/i_capture" />
+                    android:src="@drawable/ic_camera" />
 
             </FrameLayout>
 
@@ -96,10 +96,10 @@
                     android:text="Mặt sau CMND" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:src="@drawable/i_capture" />
+                    android:src="@drawable/ic_camera" />
 
             </FrameLayout>
 
@@ -150,10 +150,10 @@
                 android:text="Ảnh của bạn" />
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
-                android:src="@drawable/i_capture" />
+                android:src="@drawable/ic_camera" />
 
         </FrameLayout>
 

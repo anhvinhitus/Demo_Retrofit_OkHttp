@@ -1,28 +1,29 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import dagger.Subcomponent;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
+import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfoActivity;
-import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
+import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
-import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.AccountRepository;
 import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.WsModule;
+import vn.com.vng.zalopay.internal.di.modules.user.AccountModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
@@ -61,7 +62,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 TransactionModule.class,
                 AppResourceModule.class,
                 NotificationModule.class,
-                WsModule.class
+                WsModule.class,
+                AccountModule.class
         }
 )
 public interface UserComponent {
@@ -70,7 +72,7 @@ public interface UserComponent {
 
     AppResource.Repository appResourceRepository();
 
-    AccountRepository accountRepository();
+    AccountStore.Repository accountRepository();
 
     ZaloPayRepository zaloPayRepository();
 

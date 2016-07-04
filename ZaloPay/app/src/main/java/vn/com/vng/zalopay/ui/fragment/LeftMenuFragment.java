@@ -189,6 +189,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     private void loadImage(final ImageView imageView, String url) {
         Glide.with(this).load(url)
                 .placeholder(R.color.silver)
+                .error(R.drawable.ic_avatar_default)
                 .centerCrop()
                 .into(imageView);
     }

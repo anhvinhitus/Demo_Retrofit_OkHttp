@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,14 +22,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.UriUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 
 /**
@@ -48,9 +44,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
 
-    public static final int BACKGROUND_IMAGE_REQUEST_CODE = 100;
-    public static final int FOREGROUND_IMAGE_REQUEST_CODE = 101;
-    public static final int AVATAR_REQUEST_CODE = 102;
+    private static final int BACKGROUND_IMAGE_REQUEST_CODE = 100;
+    private static final int FOREGROUND_IMAGE_REQUEST_CODE = 101;
+    private static final int AVATAR_REQUEST_CODE = 102;
 
     @Inject
     UpdateProfile3Presenter presenter;
@@ -150,15 +146,24 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @OnClick(R.id.btnContinue)
     public void onClickContinue(View v) {
         if (getCurrentPage() == 0) {
+
             if (isValidatePageOne()) {
                 nextPage();
             }
+
+            hideKeyboard();
         } else {
-            String cmnd = mIdentityNumberView.getText().toString();
-            String email = mEmailView.getText().toString();
-            if (isValidatePageTwo()) {
-                presenter.update(cmnd, email, UriUtil.getPath(getContext(), mUriFgCmnd), UriUtil.getPath(getContext(), mUriBgCmnd), UriUtil.getPath(getContext(), mUriAvatar));
-            }
+            updateProfile();
+        }
+
+
+    }
+
+    private final void updateProfile() {
+        String cmnd = mIdentityNumberView.getText().toString();
+        String email = mEmailView.getText().toString();
+        if (isValidatePageTwo()) {
+            presenter.updateProfile3(cmnd, email, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
         }
     }
 
@@ -192,7 +197,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             return false;
         }
 
-
         return true;
     }
 
@@ -217,6 +221,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         showToast(message);
     }
 
+    @Override
     public void setProfile(User user) {
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy")
                 .format(new Date(user.birthDate * 1000)));
@@ -225,81 +230,76 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         Glide.with(this).load(user.avatar)
                 .placeholder(R.color.silver)
+                .error(R.drawable.ic_avatar_default)
                 .centerCrop()
                 .into(imgAvatar);
     }
 
     @OnClick(R.id.layoutFgCmnd)
     public void onClickFgCmnd(View v) {
-        CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
-        dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
-            @Override
-            public void onClickCapture() {
-                startCaptureImage(FOREGROUND_IMAGE_REQUEST_CODE, "fgcmnd.jpg");
-            }
-
-            @Override
-            public void onClickGallery() {
-                startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
-            }
-        });
-        dialog.show(getChildFragmentManager(), "FgCmnd");
+        showBottomSheetDialog(FOREGROUND_IMAGE_REQUEST_CODE);
     }
 
     @OnClick(R.id.layoutBgCmnd)
     public void onClickBgCmnd(View v) {
-        CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
-        dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
-            @Override
-            public void onClickCapture() {
-                startCaptureImage(BACKGROUND_IMAGE_REQUEST_CODE, "bgcmnd.jpg");
-            }
-
-            @Override
-            public void onClickGallery() {
-                startPickImage(BACKGROUND_IMAGE_REQUEST_CODE);
-            }
-        });
-        dialog.show(getChildFragmentManager(), "BgCmnd");
+        showBottomSheetDialog(BACKGROUND_IMAGE_REQUEST_CODE);
     }
 
     @OnClick(R.id.layoutAvatar)
     public void onClickAvatar(View v) {
+        showBottomSheetDialog(AVATAR_REQUEST_CODE);
+    }
+
+
+    private void showBottomSheetDialog(final int requestCode) {
         CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
         dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
             @Override
             public void onClickCapture() {
-                startCaptureImage(AVATAR_REQUEST_CODE, "avatar.jpg");
+                startCaptureImage(requestCode, getImageNameFromReqCode(requestCode));
             }
 
             @Override
             public void onClickGallery() {
-                startPickImage(AVATAR_REQUEST_CODE);
+                startPickImage(requestCode);
             }
         });
-        dialog.show(getChildFragmentManager(), "Avatar");
+        dialog.show(getChildFragmentManager(), "bottomsheet");
     }
+
+    private String getImageNameFromReqCode(int requestCode) {
+        if (requestCode == AVATAR_REQUEST_CODE) {
+            return "avatar.jpg";
+        } else if (requestCode == BACKGROUND_IMAGE_REQUEST_CODE) {
+            return "bgcmnd.jpg";
+        } else if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
+            return "fgcmnd.jpg";
+        } else {
+            return "noname.jpg";
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
-                    //  startActivityForResult(ImageCropperActivity.intentInstance(getActivity(), getPickImageResultUri(data)), CROPPER_IMAGE_CODE);
-                    mUriBgCmnd = getPickImageResultUri(data, "bgcmnd.jpg");
-                    setImage(mBgCmndView, mUriBgCmnd);
+
+                    mUriBgCmnd = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
+                    loadImage(mBgCmndView, mUriBgCmnd);
                     mTvBgCmndView.setVisibility(View.GONE);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
-                    //    startActivityForResult(ImageCropperActivity.intentInstance(getActivity(), getPickImageResultUri(data)), CROPPER_IMAGE_CODE);
-                    mUriFgCmnd = getPickImageResultUri(data, "fgcmnd.jpg");
-                    setImage(mFgCmndView, mUriFgCmnd);
+
+                    mUriFgCmnd = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
+                    loadImage(mFgCmndView, mUriFgCmnd);
                     mTvFgCmndView.setVisibility(View.GONE);
                     break;
                 case AVATAR_REQUEST_CODE:
 
-                    mUriAvatar = getPickImageResultUri(data, "avatar.jpg");
-                    setImage(mAvatarView, mUriAvatar);
+                    mUriAvatar = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
+                    loadImage(mAvatarView, mUriAvatar);
                     mTvAvatarView.setVisibility(View.GONE);
 
                     break;
@@ -308,13 +308,18 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
-    private void setImage(ImageView image, Uri uri) {
-        Glide.with(this).load(uri)
+    private void loadImage(ImageView image, Uri uri) {
+        Glide.with(this).loadFromMediaStore(uri)
                 .placeholder(R.color.silver)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .dontTransform()
                 .centerCrop()
                 .into(image);
+      /*  Glide.with(this).load(uri)
+                .placeholder(R.color.silver)
+                .centerCrop()
+                .into(image);*/
         image.setVisibility(View.VISIBLE);
     }
-
-
 }

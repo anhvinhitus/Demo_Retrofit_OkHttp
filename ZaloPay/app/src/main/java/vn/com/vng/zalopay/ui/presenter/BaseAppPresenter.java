@@ -65,15 +65,6 @@ public abstract class BaseAppPresenter {
                 });
     }
 
-
-    protected void clearData() {
-        userConfig.clearConfig();
-        userConfig.setCurrentUser(null);
-        if (AndroidApplication.instance().getUserComponent() != null) {
-            AndroidApplication.instance().releaseUserComponent();
-        }
-    }
-
     protected void clearAndLogout() {
         AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
