@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.domain.repository.AccountRepository;
 /**
  * Created by longlv on 03/06/2016.
  */
-public class AccountRepositoryImpl extends BaseRepository implements AccountRepository {
+public class AccountRepositoryImpl implements AccountRepository {
 
     AccountService accountService;
     final User user;

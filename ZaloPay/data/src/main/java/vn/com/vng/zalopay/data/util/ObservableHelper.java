@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.repository;
+package vn.com.vng.zalopay.data.util;
 
 import java.util.concurrent.Callable;
 
@@ -6,10 +6,10 @@ import rx.Observable;
 import rx.Subscriber;
 
 /**
- * Created by AnhHieu on 5/18/16.
+ * Created by huuhoa on 6/14/16.
+ * Static helper for repository implementations
  */
-public class BaseRepository {
-
+public class ObservableHelper {
     public static <T> Observable<T> makeObservable(final Callable<T> func) {
         return Observable.create(
                 new Observable.OnSubscribe<T>() {

@@ -8,7 +8,7 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
-import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;

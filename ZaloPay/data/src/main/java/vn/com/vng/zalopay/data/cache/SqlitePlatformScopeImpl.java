@@ -1,17 +1,12 @@
 package vn.com.vng.zalopay.data.cache;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.api.entity.PaymentTransTypeEntity;
-import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
-import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
-import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.Lists;
 

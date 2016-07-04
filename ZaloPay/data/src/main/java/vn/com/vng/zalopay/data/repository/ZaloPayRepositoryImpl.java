@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 /**
  * Created by AnhHieu on 5/4/16.
  */
-public class ZaloPayRepositoryImpl extends BaseRepository implements ZaloPayRepository {
+public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     private ZaloPayFactory zaloPayFactory;
     private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
