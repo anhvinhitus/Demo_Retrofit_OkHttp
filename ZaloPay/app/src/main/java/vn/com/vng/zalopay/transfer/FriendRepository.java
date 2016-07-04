@@ -6,7 +6,11 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -92,53 +96,87 @@ public class FriendRepository implements FriendStoreRepository {
     }
 
     @Override
-    public void retrieveZaloFriendsAsNeeded(final IZaloFriendListener listener) {
-        AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
+    public Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded() {
+        return shouldUpdate().mergeWith(fetchListFromServer());
+//        return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
+//            @Override
+//            public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
+//                AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mSqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
+//                            long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
+//                            //check xem moi lay thi thoi
+//                            long currentTime = System.currentTimeMillis() / 1000;
+//                            if (currentTime - lasttime >= TIME_RELOAD) {
+//                                fetchListFromServer(listener);
+//                            } else {
+//                                if (!subscriber.isUnsubscribed()) {
+//                                    subscriber.onCompleted();
+//                                }
+//                            }
+//                        } else {
+//                            fetchListFromServer(listener);
+//                        }
+//                    }
+//                });
+//            }
+//        });
+    }
+
+    Observable<List<ZaloFriend>> shouldUpdate() {
+        List<ZaloFriend> empty = new ArrayList<>();
+        return Observable.just(empty).filter(new Func1<List<ZaloFriend>, Boolean>() {
             @Override
-            public void run() {
+            public Boolean call(List<ZaloFriend> integer) {
                 if (mSqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
                     long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
                     //check xem moi lay thi thoi
                     long currentTime = System.currentTimeMillis() / 1000;
-                    if (currentTime - lasttime >= TIME_RELOAD) {
-                        fetchListFromServer(listener);
-                    } else {
-                        if (listener != null) {
-                            listener.onZaloFriendUpdated();
-                        }
-                    }
-                } else {
-                    fetchListFromServer(listener);
+                    return (currentTime - lasttime >= TIME_RELOAD);
                 }
+
+                return true;
             }
         });
     }
 
     @Override
-    public void fetchListFromServer(final IZaloFriendListener listener) {
-        mRequestService.getFriendListServer(mContext).subscribe(new Subscriber<List<ZaloFriend>>() {
+    public Observable<List<ZaloFriend>> fetchListFromServer() {
+        return mRequestService.getFriendListServer(mContext).doOnNext(new Action1<List<ZaloFriend>>() {
             @Override
-            public void onCompleted() {
-                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
-                if (listener != null) {
-                    listener.onGetZaloFriendFinish();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (listener != null) {
-                    listener.onGetZaloFriendError();
-                }
-            }
-
-            @Override
-            public void onNext(List<ZaloFriend> zaloFriends) {
+            public void call(List<ZaloFriend> zaloFriends) {
                 insertZaloFriends(zaloFriends);
-                if (listener != null) {
-                    listener.onGetZaloFriendSuccess(zaloFriends);
-                }
+            }
+        }).doOnCompleted(new Action0() {
+            @Override
+            public void call() {
+                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
             }
         });
+//        mRequestService.getFriendListServer(mContext).subscribe(new Subscriber<List<ZaloFriend>>() {
+//            @Override
+//            public void onCompleted() {
+//                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
+//                if (listener != null) {
+//                    listener.onGetZaloFriendFinish();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                if (listener != null) {
+//                    listener.onGetZaloFriendError();
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(List<ZaloFriend> zaloFriends) {
+//                insertZaloFriends(zaloFriends);
+//                if (listener != null) {
+//                    listener.onGetZaloFriendSuccess(zaloFriends);
+//                }
+//            }
+//        });
     }
 }

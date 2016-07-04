@@ -2,6 +2,9 @@ package vn.com.vng.zalopay.transfer;
 
 import android.database.Cursor;
 
+import java.util.List;
+
+import rx.Observable;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
@@ -9,9 +12,8 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
  * Declaration for FriendStore.Repository
  */
 public interface FriendStoreRepository {
-    void retrieveZaloFriendsAsNeeded(FriendRepository.IZaloFriendListener listener);
+    Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded();
+    Observable<List<ZaloFriend>> fetchListFromServer();
 
-    void fetchListFromServer(FriendRepository.IZaloFriendListener listener);
-
-    public ZaloFriend getZaloFriendFrom(Cursor cursor);
+    ZaloFriend getZaloFriendFrom(Cursor cursor);
 }
