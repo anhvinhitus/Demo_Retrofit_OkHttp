@@ -1,18 +1,16 @@
-package vn.com.vng.zalopay.data.repository;
+package vn.com.vng.zalopay.data.balance;
 
 import org.greenrobot.eventbus.EventBus;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.cache.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 
 /**
  * Created by huuhoa on 6/15/16.
- * Implementation of BalanceRepository
+ * Implementation of @link{BalanceStore.Repository}
  */
-public class BalanceRepositoryImpl implements BalanceRepository {
+public class BalanceRepositoryImpl implements BalanceStore.Repository {
     private final BalanceStore.LocalStorage mLocalStorage;
     private final BalanceStore.RequestService mRequestService;
     private User mUser;

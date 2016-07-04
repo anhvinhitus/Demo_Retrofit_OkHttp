@@ -16,11 +16,11 @@ import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AccountRepository;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
@@ -76,7 +76,7 @@ public interface UserComponent {
 
     IPaymentService paymentService();
 
-    BalanceRepository balanceRepository();
+    BalanceStore.Repository balanceRepository();
 
     TransactionStore.Repository transactionRepository();
 

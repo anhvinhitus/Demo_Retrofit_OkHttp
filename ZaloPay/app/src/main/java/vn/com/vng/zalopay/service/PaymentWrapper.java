@@ -9,12 +9,12 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -38,7 +38,7 @@ public class PaymentWrapper {
     private final IViewListener viewListener;
     private final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
-    private final BalanceRepository balanceRepository;
+    private final BalanceStore.Repository balanceRepository;
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
         public void onComplete(ZPPaymentResult pPaymentResult) {
@@ -83,7 +83,7 @@ public class PaymentWrapper {
 
         }
     };
-    public PaymentWrapper(BalanceRepository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
