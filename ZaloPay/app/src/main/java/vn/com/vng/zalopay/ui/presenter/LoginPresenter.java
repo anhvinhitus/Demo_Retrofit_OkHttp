@@ -113,11 +113,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 */
         userConfig.saveUserInfo(uId, "", "", 0, 0);
 
-        Timber.d("OAuthComplete uid %s authCode %s", uId, authCode);
-        if (mView != null) {
-            this.getZaloProfileInfo();
-            this.loginPayment(uId, authCode);
-        }
+        Timber.d("OAuthComplete uid: %s authCode: %s", uId, authCode);
+        this.getZaloProfileInfo();
+        this.loginPayment(uId, authCode);
         zpAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
     }
 
