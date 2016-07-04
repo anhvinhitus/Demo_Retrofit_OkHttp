@@ -110,7 +110,7 @@ public class UserControllerModule {
     @Provides
     ZaloFriendsFactory providesZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope,
                                                   FriendStore.LocalStorage localStorage) {
-        return new ZaloFriendsFactory(sqlZaloPayScope, localStorage);
+        return new ZaloFriendsFactory(sqlZaloPayScope);
     }
 
 }
