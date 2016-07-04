@@ -9,15 +9,15 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.JsonUtil;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.application.ZingMobilePayService;
@@ -35,30 +35,55 @@ import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
  */
 public class PaymentWrapper {
 
-    public interface IViewListener {
-        Activity getActivity();
-    }
-
-    public interface IResponseListener {
-        void onParameterError(String param);
-
-        void onResponseError(int status);
-
-        void onResponseSuccess(ZPPaymentResult zpPaymentResult);
-
-        void onResponseTokenInvalid();
-
-        void onResponseCancel();
-
-        void onNotEnoughMoney();
-    }
-
     private final IViewListener viewListener;
     private final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
-    private final BalanceRepository balanceRepository;
+    private final BalanceStore.Repository balanceRepository;
+    private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
+        @Override
+        public void onComplete(ZPPaymentResult pPaymentResult) {
+            if (pPaymentResult == null) {
+                if (NetworkHelper.isNetworkAvailable(viewListener.getActivity())) {
+                    responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
+                } else {
+                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                }
+            } else {
+                int resultStatus = pPaymentResult.paymentStatus.getNum();
+                if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                    responseListener.onResponseSuccess(pPaymentResult);
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                    responseListener.onResponseTokenInvalid();
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
+                    //Hien update profile level 2
+                    startUpdateProfileLevel(null);
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD.getNum()) {
+                    String walletTransId = null;
+                    if (pPaymentResult.paymentInfo != null) {
+                        walletTransId = pPaymentResult.paymentInfo.walletTransID;
+                    }
+                    //Hien update profile level 2
+                    startUpdateProfileLevel(walletTransId);
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
+                    responseListener.onResponseError(resultStatus);
+                    responseListener.onNotEnoughMoney();
+                } else {
+                    responseListener.onResponseError(resultStatus);
+                }
+            }
+        }
 
-    public PaymentWrapper(BalanceRepository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+        @Override
+        public void onCancel() {
+            responseListener.onResponseCancel();
+        }
+
+        @Override
+        public void onSMSCallBack(String appTransID) {
+
+        }
+    };
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
@@ -217,7 +242,7 @@ public class PaymentWrapper {
             zpPaymentListener.onCancel();
             return;
         }
-        if (balanceRepository!=null) {
+        if (balanceRepository != null) {
             userInfo.balance = balanceRepository.currentBalance();
         }
         ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, userInfo, zpPaymentListener);
@@ -239,7 +264,7 @@ public class PaymentWrapper {
         String permissionsStr = "{\"profilelevelpermisssion\":";
         permissionsStr += JsonUtil.toJsonArrayString(user.profilePermisssions);
         permissionsStr += "}";
-        Timber.d("permissionsStr====%s", permissionsStr);
+        Timber.d("permissionsStr: %s", permissionsStr);
         return permissionsStr;
     }
 
@@ -295,50 +320,23 @@ public class PaymentWrapper {
         navigator.startUpdateProfileLevel2Activity(viewListener.getActivity(), walletTransID);
     }
 
-    private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
-        @Override
-        public void onComplete(ZPPaymentResult pPaymentResult) {
-            if (pPaymentResult == null) {
-                if (!AndroidUtils.isNetworkAvailable(viewListener.getActivity())) {
-                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-                } else {
-                    responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
-                }
-            } else {
-                int resultStatus = pPaymentResult.paymentStatus.getNum();
-                if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-                    responseListener.onResponseSuccess(pPaymentResult);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
-                    responseListener.onResponseTokenInvalid();
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
-                    //Hien update profile level 2
-                    startUpdateProfileLevel(null);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD.getNum()) {
-                    String walletTransId = null;
-                    if (pPaymentResult.paymentInfo != null) {
-                        walletTransId = pPaymentResult.paymentInfo.walletTransID;
-                    }
-                    //Hien update profile level 2
-                    startUpdateProfileLevel(walletTransId);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
-                    responseListener.onResponseError(resultStatus);
-                    responseListener.onNotEnoughMoney();
-                } else {
-                    responseListener.onResponseError(resultStatus);
-                }
-            }
-        }
+    public interface IViewListener {
+        Activity getActivity();
+    }
 
-        @Override
-        public void onCancel() {
-            responseListener.onResponseCancel();
-        }
+    public interface IResponseListener {
+        void onParameterError(String param);
 
-        @Override
-        public void onSMSCallBack(String appTransID) {
+        void onResponseError(int status);
 
-        }
-    };
+        void onResponseSuccess(ZPPaymentResult zpPaymentResult);
+
+        void onResponseTokenInvalid();
+
+        void onResponseCancel();
+
+        void onNotEnoughMoney();
+    }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
         public GetOrderSubscriber() {

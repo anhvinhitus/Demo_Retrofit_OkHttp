@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 /**
  * Created by AnhHieu on 4/28/16.
  */
-public class AppConfigRepositoryImpl extends BaseRepository implements AppConfigRepository {
+public class AppConfigRepositoryImpl implements AppConfigRepository {
 
     private AppConfigFactory appConfigFactory;
     private AppConfigEntityDataMapper mapper;

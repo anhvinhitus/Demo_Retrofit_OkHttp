@@ -19,11 +19,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
@@ -56,7 +56,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     @Override
     public void destroyView() {
         mLinkCardView = null;
-//        this.zpwRemoveMapCardListener = null;
         unsubscribeIfNotNull(subscription);
         subscription = null;
     }
@@ -153,8 +152,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         ZingMobilePayApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
     }
 
-//    ZPWRemoveMapCardListener zpwRemoveMapCardListener = new RemoveMapCardListener();
-
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
         public void onSuccess(DMappedCard mapCard) {
@@ -171,10 +168,10 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
             mLinkCardView.hideLoading();
             if (pMessage == null) {
-                if (!AndroidUtils.isNetworkAvailable(mLinkCardView.getContext())) {
-                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-                } else {
+                if (NetworkHelper.isNetworkAvailable(mLinkCardView.getContext())) {
                     mLinkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+                } else {
+                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
                 mLinkCardView.showError(mLinkCardView.getContext().getString(R.string.exception_token_expired_message));
@@ -185,8 +182,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
         }
     }
-
-    ;
 
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
         public LinkCardSubscriber() {

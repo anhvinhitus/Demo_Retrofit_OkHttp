@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.cache;
+package vn.com.vng.zalopay.data.balance;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -18,5 +18,14 @@ public interface BalanceStore {
     interface RequestService {
         @GET("tpe/getbalance")
         Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
+    }
+
+    /**
+     * Interface for providing up-to-date balance information to outer layers
+     */
+    interface Repository {
+        Observable<Long> balance();
+        Long currentBalance();
+        Observable<Long> updateBalance();
     }
 }

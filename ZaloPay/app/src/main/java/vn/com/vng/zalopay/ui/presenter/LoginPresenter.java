@@ -23,11 +23,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 3/26/16.
@@ -94,7 +94,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         zaloProfilePreferences.setAuthCode("");*/
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
-            if (mView.getContext() != null && !AndroidUtils.checkNetwork(mView.getContext())) {
+            if (mView.getContext() != null && !NetworkHelper.isNetworkAvailable(mView.getContext())) {
                 showErrorView(mView.getContext().getString(R.string.exception_no_connection_try_again));
                 zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
             } else {
@@ -113,11 +113,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 */
         userConfig.saveUserInfo(uId, "", "", 0, 0);
 
-        Timber.d("OAuthComplete uid %s authCode %s", uId, authCode);
-        if (mView != null) {
-            this.getZaloProfileInfo();
-            this.loginPayment(uId, authCode);
-        }
+        Timber.d("OAuthComplete uid: %s authCode: %s", uId, authCode);
+        this.getZaloProfileInfo();
+        this.loginPayment(uId, authCode);
         zpAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
     }
 

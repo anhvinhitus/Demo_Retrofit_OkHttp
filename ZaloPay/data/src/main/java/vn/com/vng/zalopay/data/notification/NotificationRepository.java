@@ -1,10 +1,10 @@
-package vn.com.vng.zalopay.data.repository;
+package vn.com.vng.zalopay.data.notification;
 
 import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.cache.NotificationStore;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 
 /**
  * Created by AnhHieu on 6/20/16.

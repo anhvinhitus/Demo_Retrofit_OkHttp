@@ -6,17 +6,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
@@ -36,7 +38,6 @@ import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -46,10 +47,10 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * interface.
  */
 public class ZaloContactFragment extends BaseFragment implements IZaloContactView,
-        ZaloContactPresenter.IZaloFriendListener,
         ZaloContactRecyclerViewAdapter.OnItemInteractionListener,
-        UltimateRecyclerView.OnLoadMoreListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        ZaloContactRecyclerViewAdapter.OnLoadMoreListener,
+        LoaderManager.LoaderCallbacks<Cursor>,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private final int LOADER_ZALO_FRIEND = 2;
@@ -68,8 +69,11 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Inject
     ZaloContactPresenter presenter;
 
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
+
     @BindView(R.id.list)
-    UltimateRecyclerView mList;
+    RecyclerView mRecyclerView;
 
     @BindView(R.id.edtSearch)
     EditText edtSearch;
@@ -78,7 +82,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     View viewSeparate;
 
     @OnTextChanged(R.id.edtSearch)
-    public void onTextChangedEdtSearch(CharSequence charSequence) {
+    public void onTextChangedEdtSearch() {
         if (mSearchTimer != null) {
             mSearchTimer.cancel();
             mSearchTimer.start();
@@ -126,18 +130,23 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         presenter.setView(this);
         // Set the adapter
         if (mColumnCount <= 1) {
-            mList.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         } else {
-            mList.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
         }
-        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), new ArrayList<ZaloFriend>(), this);
-        presenter.getFriendList(this);
-        mList.setOnLoadMoreListener(this);
-        mList.setEmptyView(R.layout.layout_no_data, UltimateRecyclerView.EMPTY_KEEP_HEADER_AND_LOARMORE);
-//        mList.setLoadMoreView(R.layout.layout_loadmore);
-        mList.reenableLoadmore();
-        mList.setAdapter(mAdapter);
-        mSearchTimer = new CountDownTimer(500,500) {
+
+        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), this, this);
+        mAdapter.setLinearLayoutManager((LinearLayoutManager) mRecyclerView.getLayoutManager());
+        mAdapter.setRecyclerView(mRecyclerView);
+        mRecyclerView.setAdapter(mAdapter);
+        mSwipeRefresh.setOnRefreshListener(this);
+
+        initSearchTimer();
+        presenter.retrieveZaloFriendsAsNeeded();
+    }
+
+    private void initSearchTimer() {
+        mSearchTimer = new CountDownTimer(500, 500) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -147,9 +156,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             public void onFinish() {
                 String textSearch = edtSearch.getText().toString();
                 Bundle bundle = new Bundle();
-                if (textSearch != null) {
-                    bundle.putString(TEXT_SEARCH, textSearch.toString());
-                }
+                bundle.putString(TEXT_SEARCH, textSearch);
                 getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, ZaloContactFragment.this);
             }
         };
@@ -183,7 +190,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     public void onDestroyView() {
         presenter.destroyView();
         mAdapter = null;
-        mList = null;
+        mRecyclerView = null;
         super.onDestroyView();
     }
 
@@ -237,14 +244,6 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     @Override
-    public void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends) {
-//        hideLoading();
-        if (mAdapter != null) {
-            getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, new Bundle(), this);
-        }
-    }
-
-    @Override
     public void onItemClick(ZaloFriend zaloFriend) {
         if (mTransferState == null) {
             mTransferState = new Bundle();
@@ -253,21 +252,42 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         navigator.startTransferActivity(this, mTransferState);
     }
 
+    public void onZaloFriendUpdated() {
+        Timber.d("onZaloFriendUpdated");
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    public void onGetZaloFriendFinish() {
+        Timber.d("onGetZaloFriendFinish");
+        mSwipeRefresh.setRefreshing(false);
+        if (mAdapter != null) {
+            getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, new Bundle(), this);
+        }
+    }
+
     @Override
-    public void onGetZaloContactError() {
+    public void onGetZaloFriendTimeout() {
+        onGetZaloFriendError();
+    }
+
+    public void onGetZaloFriendError() {
+        Timber.d("onGetZaloContactError");
         hideLoading();
-        if (!AndroidUtils.checkNetwork(getContext())) {
+        mSwipeRefresh.setRefreshing(false);
+        mAdapter.setMoreLoading(false);
+        mAdapter.setProgressMore(false);
+        if (!NetworkHelper.isNetworkAvailable(getContext())) {
             SweetAlertDialog.OnSweetClickListener cancelListener = new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    getActivity().finish();
                     sweetAlertDialog.cancel();
                 }
             };
             SweetAlertDialog.OnSweetClickListener retryListener = new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    presenter.getFriendList(ZaloContactFragment.this);
+                    mSwipeRefresh.setRefreshing(true);
+                    presenter.retrieveZaloFriendsAsNeeded();
                     sweetAlertDialog.cancel();
                 }
             };
@@ -276,26 +296,10 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             showErrorDialog(getString(R.string.get_zalo_contact_error), getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    if (mAdapter == null || mAdapter.getItemCount() <= 0) {
-                        getActivity().finish();
-                    }
                     sweetAlertDialog.cancel();
                 }
             });
         }
-    }
-
-    @Override
-    public void loadMore(int itemsCount, int maxLastVisiblePosition) {
-        Timber.d("loadMore, itemsCount: %s maxLastVisiblePosition: %s", itemsCount, maxLastVisiblePosition);
-        if (itemsCount % PAGE_SIZE != 0 || itemsCount <= maxLastVisiblePosition) {
-            return;
-        }
-        Bundle bundle = new Bundle();
-        mCurrentItem = itemsCount + PAGE_SIZE;
-        bundle.putInt(LIMIT_ITEMS, itemsCount + PAGE_SIZE);
-        bundle.putString(TEXT_SEARCH, edtSearch.getText().toString());
-        getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, this);
     }
 
     @Override
@@ -329,6 +333,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         } else {
             onGetDataDBSuccess(zaloFriends);
         }
+        mSwipeRefresh.setRefreshing(false);
+        mAdapter.setMoreLoading(false);
+        mAdapter.setProgressMore(false);
     }
 
     @Override
@@ -374,5 +381,35 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         }
         mAdapter.setData(null);
         viewSeparate.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRefresh() {
+        Timber.d("onRefresh start");
+        presenter.getFriendListServer();
+    }
+
+    @Override
+    public void onLoadMore() {
+        Timber.d("onLoadMore start");
+        final int itemsCount = mAdapter == null ? 0 : mAdapter.getItemCount();
+        Timber.d("onLoadMore itemsCount:%s", itemsCount);
+        Timber.d("onLoadMore mCurrentItem:%s", mCurrentItem);
+        if ((itemsCount + 1) < PAGE_SIZE || mCurrentItem > itemsCount) {
+            Timber.d("onLoadMore cancel");
+            return;
+        }
+        Timber.d("onLoadMore show progress");
+        mAdapter.setProgressMore(true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Bundle bundle = new Bundle();
+                mCurrentItem = (itemsCount + 1) + PAGE_SIZE;
+                bundle.putInt(LIMIT_ITEMS, mCurrentItem);
+                bundle.putString(TEXT_SEARCH, edtSearch.getText().toString());
+                getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, ZaloContactFragment.this);
+            }
+        }, 500);
     }
 }

@@ -3,11 +3,9 @@ package vn.com.vng.zalopay.data.appresources;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
-import vn.com.vng.zalopay.data.cache.helper.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;

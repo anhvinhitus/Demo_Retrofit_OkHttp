@@ -14,14 +14,12 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.cache.TransactionStore;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.ServerMaintainException;
-import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -35,7 +33,7 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 public class PaymentServiceImpl implements IPaymentService {
 
     final ZaloPayIAPRepository zaloPayIAPRepository;
-    final BalanceRepository mBalanceRepository;
+    final BalanceStore.Repository mBalanceRepository;
     final User user;
     final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
@@ -43,7 +41,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
+    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceStore.Repository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
         this.zaloPayIAPRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.user = user;
