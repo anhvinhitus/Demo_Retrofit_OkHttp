@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.vng.uicomponent.widget.util.StringUtils;
 
 /**
@@ -26,7 +27,7 @@ public class FriendRepository implements FriendStoreRepository {
     private Context mContext;
 
     public interface IZaloFriendListener {
-        void onGetZaloFriendSuccess(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends);
+        void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends);
 
         void onGetZaloFriendError();
 
@@ -43,7 +44,7 @@ public class FriendRepository implements FriendStoreRepository {
         mContext = context;
     }
 
-    private ZaloFriendGD convertZaloFriend(vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend) {
+    private ZaloFriendGD convertZaloFriend(ZaloFriend zaloFriend) {
         if (zaloFriend == null) {
             return null;
         }
@@ -51,7 +52,7 @@ public class FriendRepository implements FriendStoreRepository {
         return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
     }
 
-    List<ZaloFriendGD> convertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
+    List<ZaloFriendGD> convertZaloFriends(List<ZaloFriend> zaloFriends) {
         List<ZaloFriendGD> result = new ArrayList<>();
         if (zaloFriends == null || zaloFriends.size() <= 0) {
             return result;
@@ -66,7 +67,7 @@ public class FriendRepository implements FriendStoreRepository {
         return result;
     }
 
-    public void insertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
+    public void insertZaloFriends(List<ZaloFriend> zaloFriends) {
         List<ZaloFriendGD> zaloFriendList = convertZaloFriends(zaloFriends);
         mLocalStorage.writeZaloFriends(zaloFriendList);
     }
@@ -96,7 +97,7 @@ public class FriendRepository implements FriendStoreRepository {
 
     @Override
     public void fetchListFromServer(final IZaloFriendListener listener) {
-        mRequestService.getFriendListServer(mContext).subscribe(new Subscriber<List<vn.com.vng.zalopay.transfer.models.ZaloFriend>>() {
+        mRequestService.getFriendListServer(mContext).subscribe(new Subscriber<List<ZaloFriend>>() {
             @Override
             public void onCompleted() {
                 mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
@@ -113,7 +114,7 @@ public class FriendRepository implements FriendStoreRepository {
             }
 
             @Override
-            public void onNext(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
+            public void onNext(List<ZaloFriend> zaloFriends) {
                 insertZaloFriends(zaloFriends);
                 if (listener != null) {
                     listener.onGetZaloFriendSuccess(zaloFriends);
