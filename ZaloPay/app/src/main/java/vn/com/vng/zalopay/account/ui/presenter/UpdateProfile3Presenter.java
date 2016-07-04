@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.utils.UriUtil;
 
 /**
  * Created by AnhHieu on 7/1/16.
@@ -94,27 +95,21 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
                         Uri fimgPath,
                         Uri bimgPath,
                         Uri avatarPath) {
-
-     /*   byte[] _fimgBytes = getByteArrayFromUri(fimgPath);
-        byte[] _bimgBytes = getByteArrayFromUri(bimgPath);
-        byte[] _avatarBytes = getByteArrayFromUri(avatarPath);*/
-
+        
         byte[] _fimgBytes = resizeImageByteArray(fimgPath);
         byte[] _bimgBytes = resizeImageByteArray(bimgPath);
         byte[] _avatarBytes = resizeImageByteArray(avatarPath);
 
-
         if (_fimgBytes != null && _bimgBytes != null && _avatarBytes != null) {
             Timber.d(" _fimg %s _bimg %s avatar %s", _fimgBytes.length, _bimgBytes.length, _avatarBytes.length);
+            Subscription subscription = accountRepository.updateProfile3(identityNumber, email,
+                    _fimgBytes,
+                    _bimgBytes,
+                    _avatarBytes)
 
-            Subscription subscription = accountRepository.updateProfile3(identityNumber, email, _fimgBytes, _bimgBytes, _avatarBytes)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new UpdateSubscriber());
             compositeSubscription.add(subscription);
-/*
-            Observable.just(Boolean.FALSE)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UpdateSubscriber());*/
         } else {
             Observable.just(Boolean.FALSE)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -176,7 +171,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
         b.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
 
-      //  Timber.d("bytes %s", bytes);
+        //  Timber.d("bytes %s", bytes);
 
         byte[] array = buffer.array();
         return array;

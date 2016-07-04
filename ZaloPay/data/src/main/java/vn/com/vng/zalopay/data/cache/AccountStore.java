@@ -46,9 +46,9 @@ public interface AccountStore {
                                                 @Part("accesstoken") RequestBody accesstoken,
                                                 @Part("identitynumber") RequestBody identitynumber,
                                                 @Part("email") RequestBody email,
-                                                @Part("fimg") RequestBody fimg,
-                                                @Part("bimg") RequestBody bimg,
-                                                @Part("avataimg") RequestBody avataimg
+                                                @Part("fimg\"; filename=\"fimg.jpeg") RequestBody fimg,
+                                                @Part("bimg\"; filename=\"bimg.jpeg") RequestBody bimg,
+                                                @Part("avataimg\"; filename=\"avataimg.jpeg") RequestBody avataimg
         );
 
     }
