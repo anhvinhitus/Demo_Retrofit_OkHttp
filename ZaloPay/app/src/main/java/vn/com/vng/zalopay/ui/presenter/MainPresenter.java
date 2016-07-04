@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
@@ -22,12 +23,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     IHomeView homeView;
 
-    ZaloFriendsFactory zaloFriendsFactory;
+    FriendStoreRepository zaloFriendsFactory;
 
     private boolean isLoadedGateWayInfo;
 
 
-    public MainPresenter(ZaloFriendsFactory zaloFriendsFactory) {
+    public MainPresenter(FriendStoreRepository zaloFriendsFactory) {
         this.zaloFriendsFactory = zaloFriendsFactory;
     }
 
@@ -45,7 +46,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 if (homeView == null || homeView.getActivity() == null || zaloFriendsFactory == null) {
                     return;
                 }
-                zaloFriendsFactory.retrieveZaloFriendsAsNeeded(applicationContext, null);
+                zaloFriendsFactory.retrieveZaloFriendsAsNeeded(null);
             }
         }).start();
     }

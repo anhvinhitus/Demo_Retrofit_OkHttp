@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.internal.di.modules.user.AccountModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.user.FriendModule;
 import vn.com.vng.zalopay.internal.di.modules.user.NotificationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
@@ -36,6 +37,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.service.NotificationService;
+import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
@@ -63,7 +65,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 AppResourceModule.class,
                 NotificationModule.class,
                 WsModule.class,
-                AccountModule.class
+                AccountModule.class,
+                FriendModule.class
         }
 )
 public interface UserComponent {
@@ -84,6 +87,7 @@ public interface UserComponent {
 
     NotificationStore.Repository notificationRepository();
 
+    FriendStoreRepository friendRepository();
  /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */

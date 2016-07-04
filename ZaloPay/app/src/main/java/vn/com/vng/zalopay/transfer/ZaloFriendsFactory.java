@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -19,7 +18,7 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
-import vn.vng.uicomponent.widget.util.StringUtils;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 
 /**
  * Created by longlv on 13/06/2016.
@@ -29,6 +28,9 @@ public class ZaloFriendsFactory {
     private final int TIME_RELOAD = 5 * 60; //5'
 
     private SqlZaloPayScope sqlZaloPayScope;
+    private FriendStore.LocalStorage mLocalStorage;
+    private FriendRequestService mFriendRequestService;
+    private FriendRepository mFriendRepository;
 
     public interface IZaloFriendListener {
         void onGetZaloFriendSuccess(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends);
@@ -40,13 +42,14 @@ public class ZaloFriendsFactory {
         void onGetZaloFriendFinish();
     }
 
-    public ZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope) {
+    public ZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope, FriendStore.LocalStorage localStorage) {
         this.sqlZaloPayScope = sqlZaloPayScope;
+        mLocalStorage = localStorage;
     }
 
-    public void insertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
-        List<ZaloFriend> zaloFriendList = convertZaloFriend(zaloFriends);
-        sqlZaloPayScope.writeZaloFriends(zaloFriendList);
+    private void insertZaloFriends(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
+        List<ZaloFriend> zaloFriendList = mFriendRepository.convertZaloFriends(zaloFriends);
+        mLocalStorage.writeZaloFriends(zaloFriendList);
     }
 
     public void insertTransferRecent(vn.com.vng.zalopay.transfer.models.TransferRecent transferRecent) {
@@ -58,7 +61,7 @@ public class ZaloFriendsFactory {
         AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                if (sqlZaloPayScope != null && sqlZaloPayScope.isHaveZaloFriendDb()) {
+                if (sqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
                     long lasttime = sqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
                     //check xem moi lay thi thoi
                     long currentTime = System.currentTimeMillis() / 1000;
@@ -119,7 +122,7 @@ public class ZaloFriendsFactory {
                             listener.onGetZaloFriendFinish();
                         }
                     }
-                    List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = zaloFriends(data);
+                    List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = mFriendRequestService.zaloFriends(data);
                     insertZaloFriends(zaloFriends);
                     if (listener != null) {
                         listener.onGetZaloFriendSuccess(zaloFriends);
@@ -127,51 +130,6 @@ public class ZaloFriendsFactory {
                 }
             }
         });
-    }
-
-    private List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends(final JSONArray jsonArray) {
-        List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends = new ArrayList<>();
-        if (jsonArray == null || jsonArray.length() <= 0) {
-            return zaloFriends;
-        }
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend = new vn.com.vng.zalopay.transfer.models.ZaloFriend(jsonObject);
-                if (zaloFriend.getUserId() > 0 /*&& zaloFriend.isUsingApp()*/) {
-                    zaloFriends.add(zaloFriend);
-                }
-            }
-        } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
-        }
-
-        return zaloFriends;
-    }
-
-    private ZaloFriend convertZaloFriend(vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend) {
-        if (zaloFriend == null) {
-            return null;
-        }
-        String fullTextSearch = StringUtils.diacriticsInVietnameseLowerCase(zaloFriend.getDisplayName());
-        return new ZaloFriend(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
-    }
-
-    private List<ZaloFriend> convertZaloFriend(List<vn.com.vng.zalopay.transfer.models.ZaloFriend> zaloFriends) {
-        List<ZaloFriend> result = new ArrayList<>();
-        if (zaloFriends == null || zaloFriends.size() <= 0) {
-            return result;
-        }
-        for (vn.com.vng.zalopay.transfer.models.ZaloFriend zaloFriend : zaloFriends) {
-            if (zaloFriend == null) {
-                continue;
-            }
-            ZaloFriend zaloFriendTmp = convertZaloFriend(zaloFriend);
-            result.add(zaloFriendTmp);
-        }
-        return result;
     }
 
     private TransferRecent convertTransactionRecent(vn.com.vng.zalopay.transfer.models.TransferRecent transferRecent) {

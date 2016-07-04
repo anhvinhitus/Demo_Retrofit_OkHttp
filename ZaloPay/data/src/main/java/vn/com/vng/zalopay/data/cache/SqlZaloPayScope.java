@@ -12,16 +12,6 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriend;
  */
 public interface SqlZaloPayScope extends SqlBaseScope {
 
-    void writeZaloFriends(List<ZaloFriend> val);
-
-    void writeZaloFriend(ZaloFriend val);
-
-    List<ZaloFriend> listZaloFriend();
-
-    List<ZaloFriend> listZaloFriend(int limit);
-
-    boolean isHaveZaloFriendDb();
-
     void writeTransferRecent(TransferRecent val);
 
     List<TransferRecent> listTransferRecent();

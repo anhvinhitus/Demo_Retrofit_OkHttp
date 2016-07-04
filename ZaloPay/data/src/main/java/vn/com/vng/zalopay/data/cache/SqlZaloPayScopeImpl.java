@@ -22,31 +22,6 @@ public class SqlZaloPayScopeImpl extends SqlBaseScopeImpl implements SqlZaloPayS
     }
 
     @Override
-    public void writeZaloFriends(List<ZaloFriend> val) {
-        getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
-    }
-
-    @Override
-    public void writeZaloFriend(ZaloFriend val) {
-        getDaoSession().getZaloFriendDao().insertOrReplaceInTx(val);
-    }
-
-    @Override
-    public List<ZaloFriend> listZaloFriend() {
-        return getDaoSession().getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).list();
-    }
-
-    @Override
-    public List<ZaloFriend> listZaloFriend(int limit) {
-        return getDaoSession().getZaloFriendDao().queryBuilder().where(ZaloFriendDao.Properties.UsingApp.eq("true")).limit(limit).list();
-    }
-
-    @Override
-    public boolean isHaveZaloFriendDb() {
-        return getDaoSession().getZaloFriendDao().queryBuilder().count() > 0;
-    }
-
-    @Override
     public void writeTransferRecent(TransferRecent val) {
         getDaoSession().getTransferRecentDao().insertOrReplaceInTx(val);
     }

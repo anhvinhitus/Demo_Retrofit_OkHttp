@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
@@ -107,8 +108,9 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloFriendsFactory providesZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope) {
-        return new ZaloFriendsFactory(sqlZaloPayScope);
+    ZaloFriendsFactory providesZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope,
+                                                  FriendStore.LocalStorage localStorage) {
+        return new ZaloFriendsFactory(sqlZaloPayScope, localStorage);
     }
 
 }

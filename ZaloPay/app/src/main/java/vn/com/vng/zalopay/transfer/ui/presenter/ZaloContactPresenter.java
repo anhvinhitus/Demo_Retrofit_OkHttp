@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.transfer.FriendRepository;
+import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
@@ -20,7 +22,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 /**
  * Created by longlv on 11/06/2016.
  */
-public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView>, ZaloFriendsFactory.IZaloFriendListener {
+public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView>, FriendRepository.IZaloFriendListener {
     private final int TIMEOUT_GET_ZALO_FRIENDS = 10000; //10s
     private final int TIMEOUT_UPDATE_LISTVIEW = 1000; //1s
     private IZaloContactView mView;
@@ -44,9 +46,9 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     @Inject
     Navigator navigator;
 
-    ZaloFriendsFactory zaloFriendsFactory;
+    FriendStoreRepository zaloFriendsFactory;
 
-    public ZaloContactPresenter(ZaloFriendsFactory zaloFriendsFactory) {
+    public ZaloContactPresenter(FriendStoreRepository zaloFriendsFactory) {
         this.zaloFriendsFactory = zaloFriendsFactory;
     }
 
@@ -118,7 +120,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             onGetZaloFriendError();
             return;
         }
-        zaloFriendsFactory.retrieveZaloFriendsAsNeeded(applicationContext, this);
+        zaloFriendsFactory.retrieveZaloFriendsAsNeeded(this);
         startCountDownGetZaloFriends();
     }
 
@@ -130,7 +132,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             onGetZaloFriendError();
             return;
         }
-        zaloFriendsFactory.getFriendListServer(applicationContext, this);
+        zaloFriendsFactory.fetchListFromServer(this);
         startCountDownGetZaloFriends();
     }
 
