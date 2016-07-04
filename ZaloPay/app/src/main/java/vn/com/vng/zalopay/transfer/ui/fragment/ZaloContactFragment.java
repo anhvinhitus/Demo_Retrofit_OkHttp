@@ -38,7 +38,6 @@ import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**

@@ -28,7 +28,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 3/26/16.

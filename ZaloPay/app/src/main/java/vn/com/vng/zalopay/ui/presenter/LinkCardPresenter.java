@@ -24,7 +24,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
@@ -57,7 +56,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     @Override
     public void destroyView() {
         mLinkCardView = null;
-//        this.zpwRemoveMapCardListener = null;
         unsubscribeIfNotNull(subscription);
         subscription = null;
     }
@@ -154,8 +152,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         ZingMobilePayApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
     }
 
-//    ZPWRemoveMapCardListener zpwRemoveMapCardListener = new RemoveMapCardListener();
-
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
         public void onSuccess(DMappedCard mapCard) {
@@ -186,8 +182,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
         }
     }
-
-    ;
 
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
         public LinkCardSubscriber() {
