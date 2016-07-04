@@ -18,6 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.cache.NotificationStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -76,7 +77,7 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (AndroidUtils.isNetworkAvailable(getApplicationContext())) {
+        if (NetworkHelper.isNetworkAvailable(getApplicationContext())) {
             this.connectAndSendAuthentication();
         }
 

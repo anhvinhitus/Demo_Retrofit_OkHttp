@@ -23,6 +23,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -211,7 +212,7 @@ public class WsConnection extends Connection implements ConnectionListener {
         mState = Connection.State.Disconnected;
         disconnect();
 
-        if (isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
+        if (NetworkHelper.isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
             connect();
         }
         numRetry++;
@@ -240,14 +241,6 @@ public class WsConnection extends Connection implements ConnectionListener {
         }
         return false;
     }
-
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
 
     protected final void onPostExecute(Event event) {
         if (listCallBack != null) {

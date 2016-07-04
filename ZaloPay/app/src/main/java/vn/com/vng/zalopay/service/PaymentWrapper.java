@@ -9,6 +9,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -299,10 +300,10 @@ public class PaymentWrapper {
         @Override
         public void onComplete(ZPPaymentResult pPaymentResult) {
             if (pPaymentResult == null) {
-                if (!AndroidUtils.isNetworkAvailable(viewListener.getActivity())) {
-                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-                } else {
+                if (NetworkHelper.isNetworkAvailable(viewListener.getActivity())) {
                     responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
+                } else {
+                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
                 }
             } else {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();

@@ -268,22 +268,22 @@ public class AndroidUtils {
 
 
 
-    @Deprecated
-    public static boolean checkNetwork(Context context) {
-        if (context == null) {
-            context = AndroidApplication.instance();
-        }
-        if (context == null) {
-            return false;
-        }
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    @Deprecated
+//    public static boolean checkNetwork(Context context) {
+//        if (context == null) {
+//            context = AndroidApplication.instance();
+//        }
+//        if (context == null) {
+//            return false;
+//        }
+//        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     public static void openAppInfo(Context context, String packageName) {
         String SCHEME = "package";
@@ -351,14 +351,6 @@ public class AndroidUtils {
         }
         Timber.d(ret ? " Current Thread is Main Thread " : " Current Thread is Background Thread ");
         return ret;
-    }
-
-
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public static int getColor(Context context, int colorResource) {

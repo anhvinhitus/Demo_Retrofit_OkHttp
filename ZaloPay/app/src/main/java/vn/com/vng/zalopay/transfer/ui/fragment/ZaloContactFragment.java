@@ -30,6 +30,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendDao;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.models.ZaloFriend;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
@@ -276,7 +277,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         mSwipeRefresh.setRefreshing(false);
         mAdapter.setMoreLoading(false);
         mAdapter.setProgressMore(false);
-        if (!AndroidUtils.checkNetwork(getContext())) {
+        if (!NetworkHelper.isNetworkAvailable(getContext())) {
             SweetAlertDialog.OnSweetClickListener cancelListener = new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {

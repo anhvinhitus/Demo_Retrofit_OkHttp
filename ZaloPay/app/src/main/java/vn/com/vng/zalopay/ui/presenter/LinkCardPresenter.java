@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
@@ -171,10 +172,10 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
             mLinkCardView.hideLoading();
             if (pMessage == null) {
-                if (!AndroidUtils.isNetworkAvailable(mLinkCardView.getContext())) {
-                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
-                } else {
+                if (NetworkHelper.isNetworkAvailable(mLinkCardView.getContext())) {
                     mLinkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+                } else {
+                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
                 mLinkCardView.showError(mLinkCardView.getContext().getString(R.string.exception_token_expired_message));
