@@ -74,7 +74,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(user.uid, user.accesstoken, identityNumber, email, fimg, bimg, avatar)
+        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email), fimg, bimg, avatar)
                 .map(baseResponse -> Boolean.TRUE);
     }
 
@@ -85,7 +85,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(user.uid, user.accesstoken, identityNumber, email, fimg, bimg, avatar)
+        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email), fimg, bimg, avatar)
                 .map(baseResponse -> Boolean.TRUE);
     }
 
@@ -99,4 +99,10 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), data);
         return requestBody;
     }
+
+    private RequestBody requestBodyParam(String param) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), param);
+        return requestBody;
+    }
+
 }

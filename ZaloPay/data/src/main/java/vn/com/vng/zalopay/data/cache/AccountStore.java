@@ -42,10 +42,10 @@ public interface AccountStore {
 
         @Multipart
         @POST("umupload/preupdateprofilelevel3")
-        Observable<BaseResponse> updateProfile3(@Query("userid") String userid,
-                                                @Query("accesstoken") String accesstoken,
-                                                @Query("identitynumber") String identitynumber,
-                                                @Query("email") String email,
+        Observable<BaseResponse> updateProfile3(@Part("userid") RequestBody userid,
+                                                @Part("accesstoken") RequestBody accesstoken,
+                                                @Part("identitynumber") RequestBody identitynumber,
+                                                @Part("email") RequestBody email,
                                                 @Part("fimg") RequestBody fimg,
                                                 @Part("bimg") RequestBody bimg,
                                                 @Part("avataimg") RequestBody avataimg
