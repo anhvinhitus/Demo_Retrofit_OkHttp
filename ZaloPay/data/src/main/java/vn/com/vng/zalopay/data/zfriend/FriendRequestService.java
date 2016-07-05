@@ -70,7 +70,7 @@ public class FriendRequestService implements FriendStore.RequestService {
         JSONArray data;
         try {
             data = arg0.getJSONArray("result");
-            Timber.d("getFriendListServer, result: %s", data.toString());
+            Timber.d("getFriendListServer, result: %s friends", data.length());
         } catch (JSONException e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -82,18 +82,23 @@ public class FriendRequestService implements FriendStore.RequestService {
         }
 
         if (subscriber.isUnsubscribed()) {
+            Timber.d("Subscriber is unsubscribed");
             return;
         }
 
         if (data.length() <= 0) {
+            Timber.d("Emit Completed on empty response");
             subscriber.onCompleted();
         } else {
             List<ZaloFriend> zaloFriends = zaloFriends(data);
+            Timber.d("Emit Next on response");
             subscriber.onNext(zaloFriends);
 
             if (data.length() >= OFFSET_FRIEND_LIST) {
+                Timber.d("Request next batch of friend list");
                 zaloRequestFriendList((pageIndex + OFFSET_FRIEND_LIST), subscriber);
             } else {
+                Timber.d("Emit Completed on not full response");
                 subscriber.onCompleted();
             }
         }

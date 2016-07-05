@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -85,7 +86,25 @@ public class FriendRepository implements FriendStore.Repository {
         return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
             @Override
             public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
-                shouldUpdate().subscribe(list -> fetchListFromServer().subscribe(subscriber));
+                shouldUpdate().subscribe(new Observer<List<ZaloFriend>>() {
+                                             @Override
+                                             public void onCompleted() {
+                                                 Timber.i("Completed!");
+//                                                 subscriber.onCompleted();
+                                             }
+
+                                             @Override
+                                             public void onError(Throwable e) {
+                                                 Timber.i("Error!");
+                                                 subscriber.onError(e);
+                                             }
+
+                                             @Override
+                                             public void onNext(List<ZaloFriend> list) {
+                                                 fetchListFromServer().subscribe(subscriber);
+                                             }
+                                         });
+
             }
         });
     }

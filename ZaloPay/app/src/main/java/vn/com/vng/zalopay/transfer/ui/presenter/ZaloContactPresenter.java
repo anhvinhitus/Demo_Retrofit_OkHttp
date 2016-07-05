@@ -10,7 +10,11 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Func1;
+import rx.internal.util.RxJavaPluginUtils;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -45,6 +49,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     Navigator navigator;
     FriendStore.Repository zaloFriendsFactory;
+    Subscription mSubscription;
 
     @Inject
     public ZaloContactPresenter(Navigator navigator, FriendStore.Repository zaloFriendsFactory) {
@@ -120,12 +125,17 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             onGetZaloFriendError();
             return;
         }
-        zaloFriendsFactory.retrieveZaloFriendsAsNeeded()
-                .timeout(TIMEOUT_GET_ZALO_FRIENDS, TimeUnit.MILLISECONDS)
+        Observable<List<ZaloFriend>> timeout = Observable.timer(TIMEOUT_GET_ZALO_FRIENDS, TimeUnit.MILLISECONDS).map(new Func1<Long, List<ZaloFriend>>() {
+            @Override
+            public List<ZaloFriend> call(Long o) {
+                return null;
+            }
+        });
+
+        Observable.amb(timeout, zaloFriendsFactory.retrieveZaloFriendsAsNeeded())
                 .subscribe(new GetFriendSubscriber());
 //        startCountDownGetZaloFriends();
     }
-
 
     public void getFriendListServer() {
 //        mView.showLoading();
@@ -134,8 +144,15 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             onGetZaloFriendError();
             return;
         }
-        zaloFriendsFactory.fetchListFromServer()
-                .timeout(TIMEOUT_GET_ZALO_FRIENDS, TimeUnit.MILLISECONDS)
+
+        Observable<List<ZaloFriend>> timeout = Observable.timer(TIMEOUT_GET_ZALO_FRIENDS, TimeUnit.MILLISECONDS).map(new Func1<Long, List<ZaloFriend>>() {
+            @Override
+            public List<ZaloFriend> call(Long o) {
+                return null;
+            }
+        });
+
+        Observable.amb(timeout, zaloFriendsFactory.fetchListFromServer())
                 .subscribe(new GetFriendSubscriber());
 //        startCountDownGetZaloFriends();
     }
@@ -190,6 +207,9 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     private class GetFriendSubscriber extends Subscriber<List<ZaloFriend>> {
         @Override
         public void onCompleted() {
+            unsubscribeIfNotNull(mSubscription);
+            mSubscription = null;
+
             onGetZaloFriendFinish();
         }
 

@@ -5,6 +5,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
@@ -79,5 +82,36 @@ public class RxUnitTest {
                 System.out.println("Got: " + document);
             }
         });
+    }
+
+    @Test
+    public void testTimeout() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(2);
+
+        Observable timeout = Observable.timer(10, TimeUnit.MILLISECONDS);
+        Observable.just("doc1", "doc2")
+                .ambWith(timeout)
+                .take(1)
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("Completed");
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("Errr: " + e);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        System.out.println("Got: " + s);
+                        latch.countDown();
+                    }
+                });
+
+        latch.await();
     }
 }
