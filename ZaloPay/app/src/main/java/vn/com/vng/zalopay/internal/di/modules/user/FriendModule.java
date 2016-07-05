@@ -11,9 +11,9 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.transfer.FriendRepository;
-import vn.com.vng.zalopay.transfer.FriendRequestService;
-import vn.com.vng.zalopay.transfer.FriendStoreRepository;
+import vn.com.vng.zalopay.data.zfriend.FriendRepository;
+import vn.com.vng.zalopay.data.zfriend.FriendRequestService;
+import vn.com.vng.zalopay.transfer.ui.ZaloFriendStoreApi;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -23,15 +23,28 @@ import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 public class FriendModule {
     @UserScope
     @Provides
+    FriendStore.SDKApi provideFriendStoreApi(Context context) {
+        return new ZaloFriendStoreApi(context);
+    }
+
+    @UserScope
+    @Provides
     FriendStore.LocalStorage provideFriendLocalStorage(@Named("daosession") DaoSession session) {
         return new FriendLocalStorage(session);
     }
 
     @UserScope
     @Provides
-    FriendStoreRepository provideFriendRepository(FriendStore.LocalStorage localStorage,
+    FriendStore.RequestService provideFriendStoreRequestService(FriendStore.SDKApi sdkApi) {
+        return new FriendRequestService(sdkApi);
+    }
+
+    @UserScope
+    @Provides
+    FriendStore.Repository provideFriendRepository(FriendStore.LocalStorage localStorage,
                                                   SqlZaloPayScope sqlZaloPayScope,
-                                                  Context context) {
-        return new FriendRepository(new FriendRequestService(), localStorage, sqlZaloPayScope, context);
+                                                  FriendStore.RequestService requestService
+                                                  ) {
+        return new FriendRepository(requestService, localStorage, sqlZaloPayScope);
     }
 }

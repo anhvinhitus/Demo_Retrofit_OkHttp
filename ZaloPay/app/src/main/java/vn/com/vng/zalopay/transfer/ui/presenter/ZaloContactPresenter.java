@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.transfer.ui.presenter;
 
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,9 +12,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.transfer.FriendRepository;
-import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -48,10 +46,10 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     @Inject
     Navigator navigator;
 
-    FriendStoreRepository zaloFriendsFactory;
+    @Inject
+    FriendStore.Repository zaloFriendsFactory;
 
-    public ZaloContactPresenter(FriendStoreRepository zaloFriendsFactory) {
-        this.zaloFriendsFactory = zaloFriendsFactory;
+    public ZaloContactPresenter() {
     }
 
     @Override

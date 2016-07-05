@@ -1,6 +1,5 @@
-package vn.com.vng.zalopay.transfer;
+package vn.com.vng.zalopay.data.zfriend;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import java.util.ArrayList;
@@ -12,50 +11,35 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.vng.uicomponent.widget.util.StringUtils;
 
 /**
  * Created by huuhoa on 7/4/16.
  * Implementation for FriendStore.Repository
  */
-public class FriendRepository implements FriendStoreRepository {
+public class FriendRepository implements FriendStore.Repository {
     private final int TIME_RELOAD = 5 * 60; //5'
 
-    private FriendRequestService mRequestService;
+    private FriendStore.RequestService mRequestService;
     private FriendStore.LocalStorage mLocalStorage;
     private SqlZaloPayScope mSqlZaloPayScope;
-    private Context mContext;
 
-    public interface IZaloFriendListener {
-        void onGetZaloFriendSuccess(List<ZaloFriend> zaloFriends);
-
-        void onGetZaloFriendError();
-
-        void onZaloFriendUpdated();
-
-        void onGetZaloFriendFinish();
-    }
-
-
-    public FriendRepository(FriendRequestService requestService, FriendStore.LocalStorage localStorage, SqlZaloPayScope sqlZaloPayScope, Context context) {
+    public FriendRepository(FriendStore.RequestService requestService, FriendStore.LocalStorage localStorage, SqlZaloPayScope sqlZaloPayScope) {
         mRequestService = requestService;
         mLocalStorage = localStorage;
         mSqlZaloPayScope = sqlZaloPayScope;
-        mContext = context;
     }
 
     private ZaloFriendGD convertZaloFriend(ZaloFriend zaloFriend) {
         if (zaloFriend == null) {
             return null;
         }
-        String fullTextSearch = StringUtils.diacriticsInVietnameseLowerCase(zaloFriend.getDisplayName());
+        String fullTextSearch = Strings.stripAccents(zaloFriend.getDisplayName());
         return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
     }
 
@@ -134,7 +118,7 @@ public class FriendRepository implements FriendStoreRepository {
 
     @Override
     public Observable<List<ZaloFriend>> fetchListFromServer() {
-        return mRequestService.getFriendListServer(mContext).doOnNext(new Action1<List<ZaloFriend>>() {
+        return mRequestService.fetchFriendList().doOnNext(new Action1<List<ZaloFriend>>() {
             @Override
             public void call(List<ZaloFriend> zaloFriends) {
                 insertZaloFriends(zaloFriends);

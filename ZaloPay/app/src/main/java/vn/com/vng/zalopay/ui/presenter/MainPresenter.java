@@ -8,12 +8,11 @@ import java.util.List;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.transfer.FriendStoreRepository;
-import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
@@ -26,12 +25,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     IHomeView homeView;
 
-    FriendStoreRepository zaloFriendsFactory;
+    FriendStore.Repository zaloFriendsFactory;
 
     private boolean isLoadedGateWayInfo;
 
 
-    public MainPresenter(FriendStoreRepository zaloFriendsFactory) {
+    public MainPresenter(FriendStore.Repository zaloFriendsFactory) {
         this.zaloFriendsFactory = zaloFriendsFactory;
     }
 

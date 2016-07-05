@@ -11,9 +11,9 @@ import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
@@ -68,7 +68,7 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter(FriendStoreRepository zaloFriendsFactory) {
+    MainPresenter providerMainPresenter(FriendStore.Repository zaloFriendsFactory) {
         return new MainPresenter(zaloFriendsFactory);
     }
 
@@ -117,8 +117,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    ZaloContactPresenter provideZaloContactPresenter(FriendStoreRepository zaloFriendsFactory) {
-        return new ZaloContactPresenter(zaloFriendsFactory);
+    ZaloContactPresenter provideZaloContactPresenter() {
+        return new ZaloContactPresenter();
     }
 
     @UserScope

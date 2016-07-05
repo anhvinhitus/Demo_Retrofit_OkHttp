@@ -31,9 +31,9 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.com.vng.zalopay.transfer.FriendStoreRepository;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
 import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
@@ -71,7 +71,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     ZaloContactPresenter presenter;
 
     @Inject
-    FriendStoreRepository mFriendRepository;
+    FriendStore.Repository mFriendRepository;
 
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout mSwipeRefresh;
