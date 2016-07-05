@@ -145,13 +145,21 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         mCountDownUpdateListView();
     }
 
+    private void cancelTimeout() {
+        if (mCountDownGetZaloFriends != null) {
+            mCountDownGetZaloFriends.cancel();
+        }
+        if (mCountDownUpdateListView != null) {
+            mCountDownUpdateListView.cancel();
+        }
+    }
+
     @Override
     public void onGetZaloFriendError() {
         Message message = new Message();
         message.what = EGetZaloFriendListener.GetZaloFriendError.getValue();
         messageHandler.sendMessage(message);
-        mCountDownGetZaloFriends.cancel();
-        mCountDownUpdateListView.cancel();
+        cancelTimeout();
     }
 
     @Override
@@ -159,8 +167,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         Message message = new Message();
         message.what = EGetZaloFriendListener.ZaloFriendUpdated.getValue();
         messageHandler.sendMessage(message);
-        mCountDownGetZaloFriends.cancel();
-        mCountDownUpdateListView.cancel();
+        cancelTimeout();
     }
 
     @Override
@@ -168,8 +175,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         Message message = new Message();
         message.what = EGetZaloFriendListener.GetZaloFriendFinish.getValue();
         messageHandler.sendMessage(message);
-        mCountDownGetZaloFriends.cancel();
-        mCountDownUpdateListView.cancel();
+        cancelTimeout();
     }
 
     private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
