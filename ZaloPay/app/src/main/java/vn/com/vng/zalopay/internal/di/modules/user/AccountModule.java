@@ -22,19 +22,26 @@ public class AccountModule {
 
     @Provides
     @UserScope
-    AccountStore.RequestService provideBalanceRequestService(@Named("retrofit") Retrofit retrofit) {
+    AccountStore.RequestService providesAccountService(@Named("retrofit") Retrofit retrofit) {
         return retrofit.create(AccountStore.RequestService.class);
     }
 
+    @Provides
+    @UserScope
+    AccountStore.UploadPhotoService providesAccountPhotoService(@Named("retrofitPhoto") Retrofit retrofit) {
+        return retrofit.create(AccountStore.UploadPhotoService.class);
+    }
+
+
     @UserScope
     @Provides
-    AccountStore.Repository provideBalanceRepository(AccountStore.RequestService service, UserConfig userConfig, User user) {
-        return new AccountRepositoryImpl(service, userConfig, user, BuildConfig.UPLOAD_PHOTO_HOST);
+    AccountStore.Repository providesAccountRepository(AccountStore.RequestService service, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user) {
+        return new AccountRepositoryImpl(service, photoService, userConfig, user);
     }
 
     @UserScope
     @Provides
-    AccountStore.LocalStorage provideBalanceLocalStorage(@Named("daosession") DaoSession session) {
+    AccountStore.LocalStorage providesAccountLocalStorage(@Named("daosession") DaoSession session) {
         return null;
     }
 }

@@ -101,4 +101,17 @@ public class NetworkModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    @Named("retrofitPhoto")
+    Retrofit provideRetrofitUploadPhoto(Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+        return new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(callAdapter)
+                .baseUrl(BuildConfig.UPLOAD_PHOTO_HOST)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
 }

@@ -41,6 +41,9 @@ public interface AccountStore {
         @POST("um/getuserinfo")
         Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("loginuid") long zaloId, @Field("systemlogin") int systemlogin);
 
+    }
+
+    interface UploadPhotoService {
         @Multipart
         @POST("umupload/preupdateprofilelevel3")
         Observable<BaseResponse> updateProfile3(@Part("userid") RequestBody userid,
@@ -51,7 +54,6 @@ public interface AccountStore {
                                                 @Part("bimg\"; filename=\"bimg.jpeg") RequestBody bimg,
                                                 @Part("avataimg\"; filename=\"avataimg.jpeg") RequestBody avataimg
         );
-
     }
 
     interface Repository {

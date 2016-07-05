@@ -17,16 +17,18 @@ import vn.com.vng.zalopay.domain.model.User;
 
 public class AccountRepositoryImpl implements AccountStore.Repository {
 
-    AccountStore.RequestService accountService;
+    final AccountStore.RequestService accountService;
+    final AccountStore.UploadPhotoService uploadPhotoService;
+
     final User user;
     final UserConfig userConfig;
-    final String mUploadHost;
 
-    public AccountRepositoryImpl(AccountStore.RequestService accountService, UserConfig userConfig, User user, String mUploadHost) {
+
+    public AccountRepositoryImpl(AccountStore.RequestService accountService, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user) {
         this.accountService = accountService;
+        this.uploadPhotoService = photoService;
         this.user = user;
         this.userConfig = userConfig;
-        this.mUploadHost = mUploadHost;
     }
 
     @Override
@@ -76,7 +78,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
+        return uploadPhotoService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
                 fimg, bimg, avatar)
                 .map(baseResponse -> Boolean.TRUE);
     }
@@ -88,7 +90,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
+        return uploadPhotoService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
                 fimg, bimg, avatar)
               /*  .doOnNext(baseResponse1 -> {
                     user.email = email;
