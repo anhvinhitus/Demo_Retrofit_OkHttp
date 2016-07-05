@@ -35,7 +35,8 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                app:errorEnabled="false">
+                app:errorEnabled="false"
+                app:hintAnimationEnabled="false">
 
                 <vn.com.vng.zalopay.ui.widget.ClearableEditText
                     android:id="@+id/edtEmail"
@@ -62,7 +63,8 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                app:errorEnabled="false">
+                app:errorEnabled="false"
+                app:hintAnimationEnabled="false">
 
                 <vn.com.vng.zalopay.ui.widget.ClearableEditText
                     android:id="@+id/edtIdentityNumber"

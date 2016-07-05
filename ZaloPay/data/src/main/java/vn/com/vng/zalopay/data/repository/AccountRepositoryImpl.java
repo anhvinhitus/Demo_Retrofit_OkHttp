@@ -20,11 +20,13 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     AccountStore.RequestService accountService;
     final User user;
     final UserConfig userConfig;
+    final String mUploadHost;
 
-    public AccountRepositoryImpl(AccountStore.RequestService accountService, UserConfig userConfig, User user) {
+    public AccountRepositoryImpl(AccountStore.RequestService accountService, UserConfig userConfig, User user, String mUploadHost) {
         this.accountService = accountService;
         this.user = user;
         this.userConfig = userConfig;
+        this.mUploadHost = mUploadHost;
     }
 
     @Override

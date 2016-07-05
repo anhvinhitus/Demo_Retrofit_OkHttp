@@ -99,8 +99,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 // because it is handled from event subscribers
                 return;
             }
-
-            Timber.w(e, " Throwable AppResourceSubscriber ");
         }
     }
 

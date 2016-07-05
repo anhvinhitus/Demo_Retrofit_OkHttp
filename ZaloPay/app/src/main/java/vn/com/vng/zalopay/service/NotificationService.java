@@ -140,7 +140,6 @@ public class NotificationService extends Service implements OnReceiverMessageLis
 
         int notificationId = 1;
 
-
         notificationHelper.create(getApplicationContext(), notificationId,
                 navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS),
                 R.mipmap.ic_launcher,

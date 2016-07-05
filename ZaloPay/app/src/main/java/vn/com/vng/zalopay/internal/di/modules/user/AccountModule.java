@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -28,7 +29,7 @@ public class AccountModule {
     @UserScope
     @Provides
     AccountStore.Repository provideBalanceRepository(AccountStore.RequestService service, UserConfig userConfig, User user) {
-        return new AccountRepositoryImpl(service, userConfig, user);
+        return new AccountRepositoryImpl(service, userConfig, user, BuildConfig.UPLOAD_PHOTO_HOST);
     }
 
     @UserScope

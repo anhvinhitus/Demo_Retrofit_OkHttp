@@ -24,11 +24,11 @@ ext {
 
     gsonVersion = '2.6.2'
 
-    okHttpVersion = '3.2.0'
-    okHttpLoggingInterceptor = '3.2.0'
-    retrofitVersion = '2.0.2'
-    retrofitConverterVersion = '2.0.2'
-    retrofitAdapterVersion = '2.0.2'
+    okHttpVersion = '3.3.1'
+    okHttpLoggingInterceptor = '3.3.1'
+    retrofitVersion = '2.1.0'
+    retrofitConverterVersion = '2.1.0'
+    retrofitAdapterVersion = '2.1.0'
 
     androidAnnotationsVersion = '21.0.3'
     timberVersion = '4.1.2'

@@ -122,7 +122,9 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         boolean isRead;
 
-        if (notificationtype != transtype || !user.uid.equals(notificationEntity.userid)) {
+        if ((!user.uid.equals(notificationEntity.userid) && transtype > 0)
+              /*  || notificationtype != transtype*/
+                ) {
             isRead = false;
         } else {
             isRead = true;
