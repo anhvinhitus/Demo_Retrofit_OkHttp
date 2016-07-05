@@ -86,25 +86,7 @@ public class FriendRepository implements FriendStore.Repository {
         return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
             @Override
             public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
-                shouldUpdate().subscribe(new Observer<List<ZaloFriend>>() {
-                                             @Override
-                                             public void onCompleted() {
-                                                 Timber.i("Completed!");
-//                                                 subscriber.onCompleted();
-                                             }
-
-                                             @Override
-                                             public void onError(Throwable e) {
-                                                 Timber.i("Error!");
-                                                 subscriber.onError(e);
-                                             }
-
-                                             @Override
-                                             public void onNext(List<ZaloFriend> list) {
-                                                 fetchListFromServer().subscribe(subscriber);
-                                             }
-                                         });
-
+                shouldUpdate().subscribe(l -> fetchListFromServer().subscribe(subscriber));
             }
         });
     }
@@ -135,6 +117,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private void updateTimeStamp() {
+        Timber.d("Request to update DB timestamp for ZaloFriendList");
         mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
     }
 }
