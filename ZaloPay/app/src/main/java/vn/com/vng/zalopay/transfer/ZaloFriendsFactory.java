@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.transfer;
 
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
+import vn.com.vng.zalopay.transfer.models.RecentTransaction;
 
 /**
  * Created by longlv on 13/06/2016.
@@ -13,12 +14,12 @@ public class ZaloFriendsFactory {
         this.sqlZaloPayScope = sqlZaloPayScope;
     }
 
-    public void insertTransferRecent(vn.com.vng.zalopay.transfer.models.TransferRecent transferRecent) {
+    public void insertTransferRecent(RecentTransaction transferRecent) {
         TransferRecent transferEntity = convertTransactionRecent(transferRecent);
         sqlZaloPayScope.writeTransferRecent(transferEntity);
     }
 
-    private TransferRecent convertTransactionRecent(vn.com.vng.zalopay.transfer.models.TransferRecent transferRecent) {
+    private TransferRecent convertTransactionRecent(RecentTransaction transferRecent) {
         if (transferRecent == null) {
             return null;
         }

@@ -11,7 +11,9 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -19,7 +21,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
-import vn.com.vng.zalopay.transfer.models.TransferRecent;
+//import vn.com.vng.zalopay.transfer.models.TransferRecent;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
@@ -43,7 +45,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     private long mCurrentAmount;
     private String mCurrentMessage;
 
-    ZaloFriendsFactory zaloFriendsFactory;
+    TransferStore.LocalStorage mTransferLocalStorage;
 
     private void clearCurrentData() {
         mCurrentOrder = null;
@@ -51,9 +53,10 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         mCurrentMappingZaloAndZaloPay = null;
     }
 
-    public TransferPresenter(User user, ZaloFriendsFactory zaloFriendsFactory) {
+    public TransferPresenter(User user, TransferStore.LocalStorage localStorage) {
         this.user = user;
-        this.zaloFriendsFactory = zaloFriendsFactory;
+        this.mTransferLocalStorage = localStorage;
+
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -260,7 +263,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             }
             int transationType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
             TransferRecent transferRecent = new TransferRecent(userMapZaloAndZaloPay.getZaloId(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transationType, mCurrentAmount, mCurrentMessage);
-            zaloFriendsFactory.insertTransferRecent(transferRecent);
+            mTransferLocalStorage.append(transferRecent);
         } catch (NumberFormatException e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();

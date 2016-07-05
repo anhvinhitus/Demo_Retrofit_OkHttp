@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
  * Created by longlv on 11/06/2016.
  */
 @Parcel
-public class TransferRecent {
+public class RecentTransaction {
 
     public enum TransferType {
         ZALO_PAY(1), ATM_VISA(2);
@@ -48,10 +48,10 @@ public class TransferRecent {
     long amount;
     String message;
 
-    public TransferRecent() {
+    public RecentTransaction() {
 
     }
-    public TransferRecent(long userId, String zaloPayId, String userName, String displayName, String avatar, int userGender, String birthday, boolean usingApp, String phoneNumber, int transferType, long amount, String message) {
+    public RecentTransaction(long userId, String zaloPayId, String userName, String displayName, String avatar, int userGender, String birthday, boolean usingApp, String phoneNumber, int transferType, long amount, String message) {
         this.userId = userId;
         this.zaloPayId = zaloPayId;
         this.userName = userName;
@@ -66,7 +66,7 @@ public class TransferRecent {
         this.message = message;
     }
 
-    public TransferRecent(JSONObject jsonObject) throws JSONException {
+    public RecentTransaction(JSONObject jsonObject) throws JSONException {
         super();
         if (jsonObject == null) {
             return;
@@ -81,7 +81,7 @@ public class TransferRecent {
         usingApp = jsonObject.getBoolean(Constants.USINGAPP);
     }
 
-    public TransferRecent(Cursor cursor) {
+    public RecentTransaction(Cursor cursor) {
         super();
         if (cursor == null) return;
         userId = cursor.getLong(cursor.getColumnIndex(TransferRecentDao.Properties.Id.columnName));

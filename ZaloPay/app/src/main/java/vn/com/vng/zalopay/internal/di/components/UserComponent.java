@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -88,6 +89,8 @@ public interface UserComponent {
     NotificationStore.Repository notificationRepository();
 
     FriendStore.Repository friendRepository();
+
+    TransferStore.LocalStorage transferLocalStorage();
  /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */

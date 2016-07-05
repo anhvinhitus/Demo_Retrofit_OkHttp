@@ -25,7 +25,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.transfer.models.TransferRecent;
+import vn.com.vng.zalopay.transfer.models.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
@@ -118,7 +118,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             zaloFriend = getArguments().getParcelable(Constants.ARG_ZALO_FRIEND);
             mMessage = getArguments().getString(Constants.ARG_MESSAGE);
             mAmount = getArguments().getLong(Constants.ARG_AMOUNT);
-            TransferRecent transferRecent = Parcels.unwrap(getArguments().getParcelable(Constants.ARG_TRANSFERRECENT));
+            RecentTransaction transferRecent = Parcels.unwrap(getArguments().getParcelable(Constants.ARG_TRANSFERRECENT));
             if (transferRecent != null && zaloFriend == null) {
                 zaloFriend = new ZaloFriend();
                 zaloFriend.setUserId(transferRecent.getUserId());
