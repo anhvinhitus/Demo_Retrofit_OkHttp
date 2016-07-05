@@ -15,14 +15,8 @@ import java.util.List;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.transfer.models.RecentTransaction;
-import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment.OnListFragmentInteractionListener;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link RecentTransaction} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<TransferRecentRecyclerViewAdapter.ViewHolder> {
 
     private final Context mContext;
@@ -30,7 +24,6 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
     private final OnTransferRecentItemListener mListener;
 
     public interface OnTransferRecentItemListener {
-        // TODO: Update argument type and name
         void onItemClick(RecentTransaction item);
     }
 
