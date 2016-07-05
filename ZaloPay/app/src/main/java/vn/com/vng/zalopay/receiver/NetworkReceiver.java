@@ -24,7 +24,11 @@ public class NetworkReceiver extends BroadcastReceiver {
     EventBus eventBus;
 
     public NetworkReceiver() {
-        AndroidApplication.instance().getAppComponent().inject(this);
+        try {
+            AndroidApplication.instance().getAppComponent().inject(this);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override

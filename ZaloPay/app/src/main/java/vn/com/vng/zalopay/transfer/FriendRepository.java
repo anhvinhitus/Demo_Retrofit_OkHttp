@@ -11,6 +11,7 @@ import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -97,31 +98,17 @@ public class FriendRepository implements FriendStoreRepository {
 
     @Override
     public Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded() {
-        return shouldUpdate().mergeWith(fetchListFromServer());
-//        return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
-//            @Override
-//            public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
-//                AndroidApplication.instance().getAppComponent().threadExecutor().execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mSqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
-//                            long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
-//                            //check xem moi lay thi thoi
-//                            long currentTime = System.currentTimeMillis() / 1000;
-//                            if (currentTime - lasttime >= TIME_RELOAD) {
-//                                fetchListFromServer(listener);
-//                            } else {
-//                                if (!subscriber.isUnsubscribed()) {
-//                                    subscriber.onCompleted();
-//                                }
-//                            }
-//                        } else {
-//                            fetchListFromServer(listener);
-//                        }
-//                    }
-//                });
-//            }
-//        });
+        return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
+            @Override
+            public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
+                shouldUpdate().subscribe(new Action1<List<ZaloFriend>>() {
+                    @Override
+                    public void call(List<ZaloFriend> zaloFriends) {
+                        fetchListFromServer().subscribe(subscriber);
+                    }
+                });
+            }
+        });
     }
 
     Observable<List<ZaloFriend>> shouldUpdate() {
@@ -133,9 +120,13 @@ public class FriendRepository implements FriendStoreRepository {
                     long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
                     //check xem moi lay thi thoi
                     long currentTime = System.currentTimeMillis() / 1000;
-                    return (currentTime - lasttime >= TIME_RELOAD);
+                    boolean flag = ((currentTime - lasttime) >= TIME_RELOAD);
+
+                    Timber.i("Should update: %s [current: %d, last: %d, offset: %d", flag, currentTime, lasttime, currentTime - lasttime);
+                    return flag;
                 }
 
+                Timber.i("Should update: TRUE");
                 return true;
             }
         });
@@ -154,29 +145,5 @@ public class FriendRepository implements FriendStoreRepository {
                 mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
             }
         });
-//        mRequestService.getFriendListServer(mContext).subscribe(new Subscriber<List<ZaloFriend>>() {
-//            @Override
-//            public void onCompleted() {
-//                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
-//                if (listener != null) {
-//                    listener.onGetZaloFriendFinish();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                if (listener != null) {
-//                    listener.onGetZaloFriendError();
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(List<ZaloFriend> zaloFriends) {
-//                insertZaloFriends(zaloFriends);
-//                if (listener != null) {
-//                    listener.onGetZaloFriendSuccess(zaloFriends);
-//                }
-//            }
-//        });
     }
 }
