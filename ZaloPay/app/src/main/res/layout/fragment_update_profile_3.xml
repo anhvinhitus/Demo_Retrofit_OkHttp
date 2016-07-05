@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<vn.vng.uicomponent.widget.KeyboardLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -15,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="48dp">
-            
+
             <include layout="@layout/update_profile_3_page_1" />
 
             <include layout="@layout/update_profile_3_page_2" />
@@ -48,4 +49,4 @@
     </FrameLayout>
 
 
-</LinearLayout>
+</vn.vng.uicomponent.widget.KeyboardLinearLayout>

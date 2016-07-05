@@ -51,24 +51,14 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         loginPresenter.setView(this);
 
         String message = getIntent().getStringExtra(Constants.ARG_MESSAGE);
-        if (TextUtils.isEmpty(message)) {
-            return;
+        
+        if (!TextUtils.isEmpty(message)) {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
+            alertDialog.setContentText(message);
+            alertDialog.setConfirmText("Đồng ý");
+            alertDialog.show();
         }
 
-
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
-        alertDialog.setContentText(message);
-        alertDialog.setConfirmText("Đồng ý");
-        alertDialog.show();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        Timber.d("onNewIntent");
-
-      //  loginPresenter.setView(this);
     }
 
     @OnClick(R.id.layoutLoginZalo)

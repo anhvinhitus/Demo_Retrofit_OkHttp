@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.vng.uicomponent.widget.KeyboardLinearLayout;
 
 /**
  * Created by AnhHieu on 6/30/16.
@@ -93,6 +94,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.tvFgCmnd)
     TextView mTvFgCmndView;
 
+    @BindView(R.id.rootView)
+    KeyboardLinearLayout rootView;
+
+    @BindView(R.id.headerView)
+    View headerView;
 
     @Override
     protected void setupFragmentComponent() {
@@ -114,6 +120,17 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         setProfile(user);
+        rootView.setOnKeyboardStateListener(new KeyboardLinearLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+            @Override
+            public void onKeyBoardShow(int height) {
+                headerView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyBoardHide() {
+                headerView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
