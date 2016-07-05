@@ -213,9 +213,6 @@
             android:name="vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl"
             android:authorities="vn.com.vng.zalopay.data.cache.model.zalofriendprovider"
             android:exported="false" />
-        <provider
-            android:name="vn.com.vng.zalopay.transfer.provider.TransferRecentContentProviderImpl"
-            android:authorities="vn.com.vng.zalopay.data.cache.model.transferrecentprovider" />
         <!-- END Content Providers -->
     </application>
 
