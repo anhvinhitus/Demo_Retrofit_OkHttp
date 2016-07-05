@@ -85,49 +85,37 @@ public class FriendRepository implements FriendStore.Repository {
         return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
             @Override
             public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
-                shouldUpdate().subscribe(new Action1<List<ZaloFriend>>() {
-                    @Override
-                    public void call(List<ZaloFriend> zaloFriends) {
-                        fetchListFromServer().subscribe(subscriber);
-                    }
-                });
+                shouldUpdate().subscribe(list -> fetchListFromServer().subscribe(subscriber));
             }
         });
     }
 
     Observable<List<ZaloFriend>> shouldUpdate() {
         List<ZaloFriend> empty = new ArrayList<>();
-        return Observable.just(empty).filter(new Func1<List<ZaloFriend>, Boolean>() {
-            @Override
-            public Boolean call(List<ZaloFriend> integer) {
-                if (mSqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
-                    long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
-                    //check xem moi lay thi thoi
-                    long currentTime = System.currentTimeMillis() / 1000;
-                    boolean flag = ((currentTime - lasttime) >= TIME_RELOAD);
+        return Observable.just(empty).filter(integer -> {
+            if (mSqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
+                long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
+                //check xem moi lay thi thoi
+                long currentTime = System.currentTimeMillis() / 1000;
+                boolean flag = ((currentTime - lasttime) >= TIME_RELOAD);
 
-                    Timber.i("Should update: %s [current: %d, last: %d, offset: %d", flag, currentTime, lasttime, currentTime - lasttime);
-                    return flag;
-                }
-
-                Timber.i("Should update: TRUE");
-                return true;
+                Timber.i("Should update: %s [current: %d, last: %d, offset: %d", flag, currentTime, lasttime, currentTime - lasttime);
+                return flag;
             }
+
+            Timber.i("Should update: TRUE");
+            return true;
         });
     }
 
     @Override
     public Observable<List<ZaloFriend>> fetchListFromServer() {
-        return mRequestService.fetchFriendList().doOnNext(new Action1<List<ZaloFriend>>() {
-            @Override
-            public void call(List<ZaloFriend> zaloFriends) {
-                insertZaloFriends(zaloFriends);
-            }
-        }).doOnCompleted(new Action0() {
-            @Override
-            public void call() {
-                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
-            }
-        });
+        return mRequestService.fetchFriendList()
+                .doOnNext(this::insertZaloFriends)
+                .doOnCompleted(this::updateTimeStamp);
+    }
+
+    private void updateTimeStamp() {
+        mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
     }
 }
