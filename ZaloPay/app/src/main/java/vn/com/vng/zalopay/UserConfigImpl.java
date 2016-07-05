@@ -207,21 +207,24 @@ public class UserConfigImpl implements UserConfig {
 
     @Override
     public void saveInvitationInfo(String uid, String session) {
-
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_INVITATION_USERID, uid);
+        editor.putString(Constants.PREF_INVITATION_SESSION, session);
+        editor.apply();
     }
 
     @Override
     public String getSessionInvitation() {
-        return null;
+        return preferences.getString(Constants.PREF_INVITATION_SESSION, "");
     }
 
     @Override
     public String getUserIdInvitation() {
-        return null;
+        return preferences.getString(Constants.PREF_INVITATION_USERID, "");
     }
 
     public void clearAllUserDB() {
-        Timber.tag("UserConfigFactory").d("clearAllUserDB..............");
+        Timber.d("clearAllUserDB..............");
         clearConfig();
         setCurrentUser(null);
         clearAllCacheDatabase();

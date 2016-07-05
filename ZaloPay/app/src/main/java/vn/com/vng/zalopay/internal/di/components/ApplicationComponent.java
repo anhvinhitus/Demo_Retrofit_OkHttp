@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.NotificationService;
+import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
@@ -78,5 +79,7 @@ public interface ApplicationComponent {
     void inject(DownloadService service);
 
     void inject(NetworkReceiver receiver);
+
+    void inject(InvitationCodeFragment f);
 
 }

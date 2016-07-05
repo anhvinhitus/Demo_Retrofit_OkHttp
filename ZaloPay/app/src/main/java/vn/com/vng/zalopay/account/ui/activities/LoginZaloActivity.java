@@ -45,9 +45,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Inject
     LoginPresenter loginPresenter;
 
-    @Inject
-    Navigator navigator;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +60,15 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         alertDialog.setContentText(message);
         alertDialog.setConfirmText("Đồng ý");
         alertDialog.show();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Timber.d("onNewIntent");
+
+      //  loginPresenter.setView(this);
     }
 
     @OnClick(R.id.layoutLoginZalo)
@@ -106,6 +112,12 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     public void gotoMainActivity() {
         navigator.startHomeActivity(this, true);
+        finish();
+    }
+
+    @Override
+    public void gotoInvitationCode() {
+        navigator.startInvitationCodeActivity(getContext());
         finish();
     }
 

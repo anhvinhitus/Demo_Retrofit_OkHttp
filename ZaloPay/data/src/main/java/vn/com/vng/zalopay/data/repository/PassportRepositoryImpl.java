@@ -7,6 +7,7 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
+import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -61,13 +62,7 @@ public class PassportRepositoryImpl implements PassportRepository {
                             userConfig.setCurrentUser(user);
                             userConfig.saveConfig(user);
                         }
-                ).doOnError(throwable -> {
-                    Timber.w(throwable, "login:");
-                    if (throwable instanceof InvitationCodeException) {
-                        Timber.d("InvitationCodeException");
-                    }
-
-                });
+                );
     }
 
     @Override
@@ -105,9 +100,4 @@ public class PassportRepositoryImpl implements PassportRepository {
                 )
                 ;
     }
-
-    //    @Override
-//    public Observable<Boolean> verifyAccessToken(String userId, String token) {
-//        return passportFactory.verifyAccessToken(userId, token).map(baseResponse -> Boolean.TRUE);
-//    }
 }

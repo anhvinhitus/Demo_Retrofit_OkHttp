@@ -73,10 +73,12 @@
                     android:scheme="zalopay-1" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".account.ui.activities.LoginZaloActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"

@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
@@ -10,6 +11,7 @@ import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +32,7 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
 /**
@@ -50,12 +53,15 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     @Override
     public void setView(ILoginView view) {
         this.mView = view;
+        Timber.d("setView: mview %s", mView);
     }
 
     @Override
     public void destroyView() {
         hideLoadingView();
+
         this.mView = null;
+        Timber.d("destroyView:");
     }
 
     @Override
@@ -70,7 +76,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     public void destroy() {
         this.destroyView();
         this.unsubscribe();
-        Timber.d("Destroy presenter");
     }
 
     private void unsubscribe() {
@@ -91,16 +96,19 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     @Override
-    public void onAuthenError(int errorCode, String message) {
+    public void onAuthError(int errorCode, String message) {
 
      /*   zaloProfilePreferences.setUserId(0);
         zaloProfilePreferences.setAuthCode("");*/
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
-            if (mView.getContext() != null && !NetworkHelper.isNetworkAvailable(mView.getContext())) {
-                showErrorView(mView.getContext().getString(R.string.exception_no_connection_try_again));
+            if (NetworkHelper.isNetworkAvailable(applicationContext)) {
+                showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
                 zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
             } else {
+                if (TextUtils.isEmpty(message)) {
+                    message = applicationContext.getString(R.string.exception_login_zalo_error);
+                }
                 showErrorView(message);
                 zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
             }
@@ -109,16 +117,15 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     @Override
-    public void onGetOAuthComplete(long uId, String authCode, String channel) {
+    public void onGetOAuthComplete(long zaloId, String authCode, String channel) {
+        Timber.d("OAuthComplete uid: %s authCode: %s", zaloId, authCode);
 
-     /*       zaloProfilePreferences.setUserId(uId);
-        zaloProfilePreferences.setAuthCode(authCode);
-*/
-        userConfig.saveUserInfo(uId, "", "", 0, 0);
+        userConfig.saveUserInfo(zaloId, "", "", 0, 0);
+        if (mView != null) {
+            this.getZaloProfileInfo();
+            this.loginPayment(zaloId, authCode);
+        }
 
-        Timber.d("OAuthComplete uid: %s authCode: %s", uId, authCode);
-        this.getZaloProfileInfo();
-        this.loginPayment(uId, authCode);
         zpAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
     }
 
@@ -184,12 +191,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private final void onLoginError(Throwable e) {
-
         Timber.w(e, "exception : ");
-
         if (e instanceof InvitationCodeException) {
-
-            navigator.startInvitationCodeActivity(applicationContext);
+            mView.gotoInvitationCode();
         } else {
             hideLoadingView();
             String message = ErrorMessageFactory.create(applicationContext, e);
@@ -228,6 +232,5 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             LoginPresenter.this.onLoginError(e);
         }
     }
-
 
 }

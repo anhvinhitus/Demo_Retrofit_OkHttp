@@ -30,7 +30,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @Override
     protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
+        getAppComponent().inject(this);
     }
 
 
@@ -65,11 +65,32 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnSend(View v) {
-        String code = mILCodeView.getEditText().getText().toString();
+        String code = mILCodeView.getEditText().getText().toString().trim();
         if (TextUtils.isEmpty(code)) {
             showToast(R.string.invitation_code_empty_error);
         } else {
             presenter.sendCode(code);
         }
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
+    }
+
+    @Override
+    public void gotoMainActivity() {
+        navigator.startHomeActivity(getContext(), true);
+        getActivity().finish();
+    }
+
+    @Override
+    public void showError(String m) {
+        showToast(m);
     }
 }

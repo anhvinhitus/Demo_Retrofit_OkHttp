@@ -149,7 +149,5 @@ public interface UserComponent {
 
     void inject(NotificationService service);
 
-    void inject(InvitationCodeFragment f);
-
     void inject(UpdateProfile3Fragment f);
 }

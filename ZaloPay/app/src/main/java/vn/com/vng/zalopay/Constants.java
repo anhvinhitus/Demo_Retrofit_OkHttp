@@ -28,6 +28,10 @@ public class Constants {
     public static final String ARG_MESSAGE = "message";
     public static final String ARG_TRANSFERRECENT = "TransferRecent";
 
+
+    public static final String PREF_INVITATION_USERID = "pref_userid_invitation";
+    public static final String PREF_INVITATION_SESSION = "pref_session_invitation";
+
     //DATA MANIFESTS DATABASE
     public static final String MANIF_BALANCE = "manif_balance";
 

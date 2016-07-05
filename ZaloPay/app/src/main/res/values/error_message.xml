@@ -20,5 +20,6 @@
     <string name="exception.uri.bg.cmnd">Bạn chưa chọn ảnh CMND!</string>
     <string name="exception.uri.fg.cmnd">Bạn chưa chọn ảnh CMND!</string>
     <string name="exception.uri.avatar">Bạn chưa chọn ảnh của bạn!</string>
+    <string name="exception.login.zalo.error">Không đăng nhập được zalo, Vui lòng thử lại sau!</string>
 
 </resources>
