@@ -13,7 +13,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendRequestService;
-import vn.com.vng.zalopay.transfer.ui.ZaloFriendStoreApi;
+import vn.com.vng.zalopay.transfer.provider.ZaloFriendStoreApi;
 
 /**
  * Created by huuhoa on 7/4/16.

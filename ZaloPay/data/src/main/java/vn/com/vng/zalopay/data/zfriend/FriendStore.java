@@ -19,7 +19,7 @@ public interface FriendStore {
     interface LocalStorage {
         boolean isHaveZaloFriendDb();
 
-        void writeZaloFriends(List<ZaloFriendGD> val);
+        void put(List<ZaloFriendGD> val);
 
         void writeZaloFriend(ZaloFriendGD val);
 

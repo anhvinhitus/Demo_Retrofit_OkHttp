@@ -32,12 +32,21 @@ public class FriendRepository implements FriendStore.Repository {
         mSqlZaloPayScope = sqlZaloPayScope;
     }
 
-    private ZaloFriendGD convertZaloFriend(ZaloFriend zaloFriend) {
-        if (zaloFriend == null) {
-            return null;
-        }
-        String fullTextSearch = Strings.stripAccents(zaloFriend.getDisplayName());
-        return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
+    @Override
+    public Observable<List<ZaloFriend>> fetchListFromServer() {
+        return mRequestService.fetchFriendList()
+                .doOnNext(this::insertZaloFriends)
+                .doOnCompleted(this::updateTimeStamp);
+    }
+
+    @Override
+    public Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded() {
+        return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
+            @Override
+            public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
+                shouldUpdate().subscribe(l -> fetchListFromServer().subscribe(subscriber));
+            }
+        });
     }
 
     @Override
@@ -53,8 +62,15 @@ public class FriendRepository implements FriendStore.Repository {
         Integer userGender = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserGender.columnName));
         boolean usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UsingApp.columnName)) == 1;
 
-        ZaloFriend obj = new ZaloFriend(userId, userName, displayName, avatar, userGender, usingApp);
-        return obj;
+        return new ZaloFriend(userId, userName, displayName, avatar, userGender, usingApp);
+    }
+
+    private ZaloFriendGD convertZaloFriend(ZaloFriend zaloFriend) {
+        if (zaloFriend == null) {
+            return null;
+        }
+        String fullTextSearch = Strings.stripAccents(zaloFriend.getDisplayName());
+        return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
     }
 
     private List<ZaloFriendGD> convertZaloFriends(List<ZaloFriend> zaloFriends) {
@@ -74,17 +90,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     private void insertZaloFriends(List<ZaloFriend> zaloFriends) {
         List<ZaloFriendGD> zaloFriendList = convertZaloFriends(zaloFriends);
-        mLocalStorage.writeZaloFriends(zaloFriendList);
-    }
-
-    @Override
-    public Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded() {
-        return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
-            @Override
-            public void call(final Subscriber<? super List<ZaloFriend>> subscriber) {
-                shouldUpdate().subscribe(l -> fetchListFromServer().subscribe(subscriber));
-            }
-        });
+        mLocalStorage.put(zaloFriendList);
     }
 
     private Observable<List<ZaloFriend>> shouldUpdate() {
@@ -103,13 +109,6 @@ public class FriendRepository implements FriendStore.Repository {
             Timber.i("Should update: TRUE");
             return true;
         });
-    }
-
-    @Override
-    public Observable<List<ZaloFriend>> fetchListFromServer() {
-        return mRequestService.fetchFriendList()
-                .doOnNext(this::insertZaloFriends)
-                .doOnCompleted(this::updateTimeStamp);
     }
 
     private void updateTimeStamp() {

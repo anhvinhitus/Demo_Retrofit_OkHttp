@@ -18,7 +18,7 @@ public class FriendLocalStorage implements FriendStore.LocalStorage {
     }
 
     @Override
-    public void writeZaloFriends(List<ZaloFriendGD> val) {
+    public void put(List<ZaloFriendGD> val) {
         mDao.insertOrReplaceInTx(val);
     }
 
