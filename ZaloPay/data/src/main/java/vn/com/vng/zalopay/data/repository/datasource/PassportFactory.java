@@ -8,6 +8,7 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.api.PassportService;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
+import vn.com.vng.zalopay.data.api.response.VerifyInvitationCodeResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 
 /**
@@ -44,8 +45,9 @@ public class PassportFactory {
         return passportService.logout(payAppId, uid, accesstoken)
                 .doOnNext(logoutResponse -> userConfig.clearConfig());
     }
-//
-//    public Observable<BaseResponse> verifyAccessToken(String uid, String token) {
-//        return passportService.verifyAccessToken(payAppId, uid, token);
-//    }
+
+    //
+    public Observable<VerifyInvitationCodeResponse> verifyInvitationCode(String code) {
+        return passportService.verifyCode(userConfig.getUserIdInvitation(), userConfig.getSessionInvitation(), code);
+    }
 }

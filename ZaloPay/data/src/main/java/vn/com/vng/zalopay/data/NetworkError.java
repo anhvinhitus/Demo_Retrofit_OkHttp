@@ -103,4 +103,6 @@ public class NetworkError {
     public static final int TRANSTYPE_AMOUNT_INVALID = -94;
     public static final int CARD_ALREADY_MAP = -95;
     public static final int SERVER_MAINTAIN = -999;
+
+    public static final int INVITATION_CODE_ERROR = 24;
 }

@@ -3,13 +3,17 @@ package vn.com.vng.zalopay.data.ws.parser;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
+import vn.com.vng.zalopay.domain.model.User;
 
 
 /**
@@ -18,9 +22,11 @@ import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 public class MessageParser implements Parser {
 
     final Gson mGson;
+    final User user;
 
-    public MessageParser() {
-        mGson = new Gson();
+    public MessageParser(UserConfig userConfig, Gson gson) {
+        this.mGson = gson;
+        this.user = userConfig.getCurrentUser();
     }
 
     @Override
@@ -83,11 +89,19 @@ public class MessageParser implements Parser {
         Timber.d("notification %s", str);
         NotificationData event = null;
         if (!TextUtils.isEmpty(str)) {
-
             try {
                 event = mGson.fromJson(str, NotificationData.class);
                 event.setMsgType(msgType);
-
+                JsonObject embeddataJson = event.getEmbeddata();
+                int notificationType = event.getNotificationType();
+                int transType = event.getTransType();
+                if ((!user.uid.equals(event.userid) && transType > 0)
+              /*  || notificationtype != transtype*/
+                        ) {
+                    event.read = false;
+                } else {
+                    event.read = true;
+                }
             } catch (Exception ex) {
                 Timber.w(ex, " Parse error");
                 event = null;

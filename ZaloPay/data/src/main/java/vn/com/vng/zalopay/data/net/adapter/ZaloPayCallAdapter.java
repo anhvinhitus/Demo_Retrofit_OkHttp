@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
+import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 
@@ -44,7 +45,7 @@ final class ZaloPayCallAdapter implements CallAdapter<Observable<?>> {
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
         Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call))
-                    .flatMap(this::makeObservableFromResponse);
+                .flatMap(this::makeObservableFromResponse);
 
         if (mScheduler == null) {
             return observable;
@@ -87,6 +88,8 @@ final class ZaloPayCallAdapter implements CallAdapter<Observable<?>> {
         } else if (baseResponse.isServerMaintain()) {
             EventBus.getDefault().post(new ServerMaintainEvent());
             return Observable.error(new ServerMaintainException());
+        } else if (baseResponse.isInvitationCode()) {
+            return Observable.error(new InvitationCodeException(body.err, body));
         } else {
             return Observable.error(new BodyException(body.err, body.message));
         }

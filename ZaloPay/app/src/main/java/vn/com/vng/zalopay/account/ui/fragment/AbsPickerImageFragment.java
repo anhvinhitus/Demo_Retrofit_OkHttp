@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  */
 public abstract class AbsPickerImageFragment extends BaseFragment {
 
+
     public static final int CAPTURE_CODE = 200;
     public static final int PICK_IMAGE_CODE = 201;
     public static final int CROPPER_IMAGE_CODE = 202;
@@ -179,6 +180,13 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
 
     public static class CoverBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
+        public interface OnClickListener {
+            void onClickCapture();
+
+            void onClickGallery();
+        }
+
+
         public static CoverBottomSheetDialogFragment newInstance() {
             Bundle args = new Bundle();
             CoverBottomSheetDialogFragment fragment = new CoverBottomSheetDialogFragment();
@@ -252,17 +260,19 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
             dismiss();
         }
 
-        OnClickListener listener;
+        private OnClickListener listener;
 
         public void setOnClickListener(OnClickListener listener) {
             this.listener = listener;
         }
 
-        public interface OnClickListener {
-            void onClickCapture();
 
-            void onClickGallery();
+        @Override
+        public void onDestroyView() {
+            this.listener = null;
+            super.onDestroyView();
         }
     }
+
 
 }

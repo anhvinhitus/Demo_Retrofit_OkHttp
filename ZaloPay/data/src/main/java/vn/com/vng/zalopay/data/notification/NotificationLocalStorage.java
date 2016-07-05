@@ -106,40 +106,22 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setTimestamp(notificationEntity.getTimestamp());
         JsonObject embeddataJson = notificationEntity.getEmbeddata();
 
-        int notificationtype = -1;
-        int transtype = -1;
-
-        try {
-            if (embeddataJson.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
-                notificationtype = embeddataJson.getAsJsonObject(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
-            }
-
-            if (embeddataJson.has(Constants.TRANSTYPE)) {
-                transtype = embeddataJson.getAsJsonObject(Constants.TRANSTYPE).getAsInt();
-            }
-        } catch (Exception ex) {
-        }
-
-        boolean isRead;
-
-        if ((!user.uid.equals(notificationEntity.userid) && transtype > 0)
-              /*  || notificationtype != transtype*/
-                ) {
-            isRead = false;
-        } else {
-            isRead = true;
-        }
 
         String embeddata = embeddataJson.toString();
 
-        Timber.d("embeddata put %s isRead %s  ", embeddata, isRead);
+        Timber.d("embeddata put %s isRead %s  ", embeddata, notificationEntity.read);
 
         _notification.setEmbeddata(embeddata);
         _notification.setUserid(notificationEntity.getUserid());
         _notification.setTransid(notificationEntity.getTransid());
-        _notification.setRead(isRead);
+        _notification.setRead(notificationEntity.isRead());
 
-        _notification.setId(null);
+        if (notificationEntity.notificationId > 0) {
+            _notification.setId(notificationEntity.notificationId);
+        } else {
+            _notification.setId(null);
+
+        }
 
         return _notification;
     }

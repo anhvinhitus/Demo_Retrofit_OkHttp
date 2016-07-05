@@ -180,7 +180,6 @@ public class WsConnection extends Connection implements ConnectionListener {
                 numRetry = 0;
 
 
-
             } else if (message.msgType == MessageType.Response.KICK_OUT) {
 
                 disconnect();
@@ -243,10 +242,14 @@ public class WsConnection extends Connection implements ConnectionListener {
     }
 
     protected final void onPostExecute(Event event) {
-        if (listCallBack != null) {
-            for (int i = listCallBack.size() - 1; i >= 0; i--) {
-                listCallBack.get(i).onReceiverEvent(event);
+        try {
+            if (listCallBack != null) {
+                for (int i = listCallBack.size() - 1; i >= 0; i--) {
+                    listCallBack.get(i).onReceiverEvent(event);
+                }
             }
+        } catch (Exception ex) {
+            Timber.w(ex, "exception : ");
         }
     }
 

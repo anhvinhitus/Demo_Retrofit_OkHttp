@@ -27,20 +27,19 @@ public class NotificationHelper {
         NotificationManager manager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent p = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        if (intent != null) {
+            PendingIntent p = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            builder.setContentIntent(p);
+        }
 
-        builder.setContentIntent(p)
-                .setContentTitle(contentTitle)
+        builder.setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setSmallIcon(smallIcon)
                 .setAutoCancel(true);
 
         Notification n = builder.build();
         manager.notify(id, n);
-
-        Timber.d("Notification criada com sucesso");
     }
 
     public void createStackNotification(Context context, int id, String groupId, Intent intent, int smallIcon, String contentTitle, String contentText) {

@@ -26,4 +26,8 @@ public class BaseResponse {
     public boolean isServerMaintain() {
         return err == NetworkError.SERVER_MAINTAIN;
     }
+
+    public boolean isInvitationCode() {
+        return err == NetworkError.INVITATION_CODE_ERROR;
+    }
 }

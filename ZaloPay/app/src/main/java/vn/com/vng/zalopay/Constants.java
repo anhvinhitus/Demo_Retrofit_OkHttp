@@ -55,4 +55,12 @@ public class Constants {
         public static final String FAQ = "FAQ";
         public static final String TRANSACTION_LOGS = "TransactionLogs";
     }
+
+    public static class NotificationType {
+
+    }
+
+    public static class TransactionType {
+
+    }
 }

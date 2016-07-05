@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.cache;
 
-import android.app.Activity;
-
 import org.json.JSONObject;
 
 import java.util.List;
@@ -44,5 +42,10 @@ public interface UserConfig {
 
     void clearAllUserDB();
 
-    void signOutAndCleanData(Activity activity);
+    /*INVITATION*/
+    void saveInvitationInfo(String uid, String session);
+
+    String getSessionInvitation();
+
+    String getUserIdInvitation();
 }

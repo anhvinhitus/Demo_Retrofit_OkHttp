@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -16,7 +13,6 @@ import java.util.List;
 
 import de.greenrobot.dao.AbstractDao;
 import timber.log.Timber;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
@@ -210,28 +206,18 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void signOutAndCleanData(Activity activity) {
-        clearConfig();
-        clearAllUserDB();
-        ZaloSDK.Instance.unauthenticate();
-        AndroidApplication.instance().releaseUserComponent();
-        startLoginActivity(activity, true);
-        activity.finish();
+    public void saveInvitationInfo(String uid, String session) {
+
     }
 
-    private void startLoginActivity(Activity activity, boolean clearTop) {
-        if (activity == null) {
-            return;
-        }
-        Intent intent = new Intent(activity, LoginZaloActivity.class);
-        if (clearTop) {
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        }
+    @Override
+    public String getSessionInvitation() {
+        return null;
+    }
 
-        activity.startActivity(intent);
+    @Override
+    public String getUserIdInvitation() {
+        return null;
     }
 
     public void clearAllUserDB() {
@@ -242,10 +228,6 @@ public class UserConfigImpl implements UserConfig {
         clearAllDatabase();
     }
 
-    private void clearAllCacheDatabase() {
-        daoSession.clear();
-    }
-
     private void clearAllDatabase() {
         Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
         for (AbstractDao<?, ?> dao : daoCollection) {
@@ -253,5 +235,10 @@ public class UserConfigImpl implements UserConfig {
                 dao.deleteAll();
             }
         }
+    }
+
+
+    private void clearAllCacheDatabase() {
+        daoSession.clear();
     }
 }

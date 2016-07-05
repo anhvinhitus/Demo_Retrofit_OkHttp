@@ -6,6 +6,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.google.gson.JsonObject;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -135,15 +137,27 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     }
 
     private void showNotification(NotificationData event) {
-        String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
-        String title = getString(R.string.app_name);
+        if (!event.read) {
+            String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
+            String title = getString(R.string.app_name);
 
-        int notificationId = 1;
+            int notificationId = 1;
+            int notificationType = event.getNotificationType();
+            int transType = event.getTransType();
 
-        notificationHelper.create(getApplicationContext(), notificationId,
-                navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS),
-                R.mipmap.ic_launcher,
-                title, message);
+            Intent intent = null;
+
+            if (transType > 0) {
+                intent = navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS);
+            } else if (notificationType == 2) {
+                intent = navigator.intentProfile(getApplicationContext());
+            }
+
+            notificationHelper.create(getApplicationContext(), notificationId,
+                    intent,
+                    R.mipmap.ic_launcher,
+                    title, message);
+        }
     }
 
     protected void updateTransaction() {

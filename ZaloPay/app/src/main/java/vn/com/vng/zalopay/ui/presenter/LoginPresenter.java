@@ -22,7 +22,10 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -181,10 +184,19 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private final void onLoginError(Throwable e) {
-        hideLoadingView();
-        String message = ErrorMessageFactory.create(applicationContext, e);
-        showErrorView(message);
-        zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
+
+        Timber.w(e, "exception : ");
+
+        if (e instanceof InvitationCodeException) {
+
+            navigator.startInvitationCodeActivity(applicationContext);
+        } else {
+            hideLoadingView();
+            String message = ErrorMessageFactory.create(applicationContext, e);
+            showErrorView(message);
+            zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
+        }
+
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
