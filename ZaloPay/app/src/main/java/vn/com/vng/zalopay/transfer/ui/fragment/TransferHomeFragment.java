@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -34,12 +35,9 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 /**
  * A fragment representing a list of Items.
  * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class TransferHomeFragment extends BaseFragment implements //LoaderManager.LoaderCallbacks<Cursor>,
+  */
+public class TransferHomeFragment extends BaseFragment implements
         TransferRecentRecyclerViewAdapter.OnTransferRecentItemListener {
-    private final int LOADER_TRANSACTION_RECENT = 1;
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private TransferRecentRecyclerViewAdapter mAdapter;
@@ -135,14 +133,11 @@ public class TransferHomeFragment extends BaseFragment implements //LoaderManage
     public void onResume() {
         super.onResume();
         loadData();
-//        getLoaderManager().restartLoader(LOADER_TRANSACTION_RECENT, null, this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        loadData();
-//        getLoaderManager().initLoader(LOADER_TRANSACTION_RECENT, null, this);
     }
 
     @Override
@@ -157,11 +152,12 @@ public class TransferHomeFragment extends BaseFragment implements //LoaderManage
         if (mSubscription != null) {
             mSubscription.unsubscribe();
         }
-
-//        getLoaderManager().destroyLoader(LOADER_TRANSACTION_RECENT);
     }
 
     private void loadData() {
+        if (mTransferLocalStorage == null) {
+            mTransferLocalStorage = getUserComponent().transferLocalStorage();
+        }
         mSubscription = mTransferLocalStorage.get()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<vn.com.vng.zalopay.data.cache.model.TransferRecent>>() {
@@ -215,40 +211,11 @@ public class TransferHomeFragment extends BaseFragment implements //LoaderManage
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        String orderByWithLimit = TransferRecentDao.Properties.Id.columnName + " DESC" + " LIMIT 3";
-//        return new CursorLoader(getActivity(), TransferRecentContentProviderImpl.CONTENT_URI, null, null, null, orderByWithLimit);
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-//        List<TransferRecent> transferRecents = convertCursorToList(cursor);
-//        if (transferRecents == null || transferRecents.size() <= 0) {
-//            onGetDataDBEmpty();
-//        } else {
-//            onGetDataDBSuccess(transferRecents);
-//        }
-//    }
-//
-//    private List<TransferRecent> convertCursorToList(Cursor cursor) {
-//        List<TransferRecent> transferRecents = new ArrayList<>();
-//        if (cursor == null || cursor.getCount() <= 0) {
-//            return transferRecents;
-//        }
-//        if (cursor.moveToFirst()) {
-//            do {
-//                TransferRecent item = new TransferRecent(cursor);
-//                transferRecents.add(item);
-//            } while (cursor.moveToNext());
-//        }
-//        return transferRecents;
-//    }
-
     private void onGetDataDBSuccess(List<RecentTransaction> transferRecents) {
         if (mAdapter == null) {
             return;
         }
+        
         mAdapter.setData(transferRecents);
         if (transferRecents != null && transferRecents.size() > 0) {
             mTvTileTransactionRecent.setVisibility(View.VISIBLE);
@@ -267,11 +234,6 @@ public class TransferHomeFragment extends BaseFragment implements //LoaderManage
 
     }
 
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> loader) {
-//
-//    }
-
     @Override
     public void onItemClick(RecentTransaction item) {
         if (item == null) {
@@ -280,9 +242,5 @@ public class TransferHomeFragment extends BaseFragment implements //LoaderManage
         Bundle bundle = new Bundle();
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
         navigator.startTransferActivity(this, bundle);
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(RecentTransaction item);
     }
 }
