@@ -115,11 +115,11 @@ public class UserPresenterModule {
         return new OTPRecoveryPinPresenter();
     }
 
-    @UserScope
-    @Provides
-    ZaloContactPresenter provideZaloContactPresenter() {
-        return new ZaloContactPresenter();
-    }
+//    @UserScope
+//    @Provides
+//    ZaloContactPresenter provideZaloContactPresenter() {
+//        return new ZaloContactPresenter();
+//    }
 
     @UserScope
     @Provides

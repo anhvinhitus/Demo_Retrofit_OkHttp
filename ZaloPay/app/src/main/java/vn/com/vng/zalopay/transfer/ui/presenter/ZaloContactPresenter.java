@@ -43,13 +43,13 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         }
     }
 
-    @Inject
     Navigator navigator;
-
-    @Inject
     FriendStore.Repository zaloFriendsFactory;
 
-    public ZaloContactPresenter() {
+    @Inject
+    public ZaloContactPresenter(Navigator navigator, FriendStore.Repository zaloFriendsFactory) {
+        this.navigator = navigator;
+        this.zaloFriendsFactory = zaloFriendsFactory;
     }
 
     @Override
