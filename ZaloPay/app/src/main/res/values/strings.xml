@@ -55,7 +55,6 @@
 
     <string name="title_activity_login">Đăng nhập</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="cards">Nguồn nạp</string>
     <string name="amount">Số tiền</string>
     <string name="amount_vnd"> (VND)</string>
@@ -80,7 +79,7 @@
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
     <string name="title.activity.link.card">Quản lý thẻ</string>
     <string name="title.activity.transfer">Chuyển tiền</string>
-    <string name="title.activity.zalopay.contact">Danh bạ Zalo Pay</string>
+    <string name="title.activity.zalopay.contact">Danh bạ Zalo</string>
     <string name="title.activity.change.pin">Tạo lại mã PIN</string>
     <string name="title.activity.invitation.code">Invitation Code</string>
     <!--Activity lable END-->
@@ -195,7 +194,7 @@
     <string name="reset_pin">Tạo lại mã PIN</string>
     <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
 
-    <string name="transfer_acc_zalopay">Đến tài khoản Zalo Pay</string>
+    <string name="transfer_acc_zalopay">Đến tài khoản Zalo</string>
     <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
