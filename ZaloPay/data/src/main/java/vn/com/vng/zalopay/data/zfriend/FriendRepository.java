@@ -6,11 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
@@ -61,7 +57,7 @@ public class FriendRepository implements FriendStore.Repository {
         return obj;
     }
 
-    List<ZaloFriendGD> convertZaloFriends(List<ZaloFriend> zaloFriends) {
+    private List<ZaloFriendGD> convertZaloFriends(List<ZaloFriend> zaloFriends) {
         List<ZaloFriendGD> result = new ArrayList<>();
         if (zaloFriends == null || zaloFriends.size() <= 0) {
             return result;
@@ -76,7 +72,7 @@ public class FriendRepository implements FriendStore.Repository {
         return result;
     }
 
-    public void insertZaloFriends(List<ZaloFriend> zaloFriends) {
+    private void insertZaloFriends(List<ZaloFriend> zaloFriends) {
         List<ZaloFriendGD> zaloFriendList = convertZaloFriends(zaloFriends);
         mLocalStorage.writeZaloFriends(zaloFriendList);
     }
@@ -91,16 +87,16 @@ public class FriendRepository implements FriendStore.Repository {
         });
     }
 
-    Observable<List<ZaloFriend>> shouldUpdate() {
+    private Observable<List<ZaloFriend>> shouldUpdate() {
         List<ZaloFriend> empty = new ArrayList<>();
         return Observable.just(empty).filter(integer -> {
             if (mSqlZaloPayScope != null && mLocalStorage.isHaveZaloFriendDb()) {
-                long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
+                long lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
                 //check xem moi lay thi thoi
                 long currentTime = System.currentTimeMillis() / 1000;
-                boolean flag = ((currentTime - lasttime) >= TIME_RELOAD);
+                boolean flag = ((currentTime - lastUpdated) >= TIME_RELOAD);
 
-                Timber.i("Should update: %s [current: %d, last: %d, offset: %d", flag, currentTime, lasttime, currentTime - lasttime);
+                Timber.i("Should update: %s [current: %d, last: %d, offset: %d", flag, currentTime, lastUpdated, currentTime - lastUpdated);
                 return flag;
             }
 

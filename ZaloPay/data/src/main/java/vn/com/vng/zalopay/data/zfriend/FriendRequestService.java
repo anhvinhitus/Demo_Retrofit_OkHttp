@@ -52,7 +52,7 @@ public class FriendRequestService implements FriendStore.RequestService {
     }
 
     public Observable<List<ZaloFriend>> fetchFriendList() {
-        Timber.d("getFriendListServer pageIndex:%s", 0);
+        Timber.d("fetchFriendList pageIndex:%s", 0);
 
         return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
             @Override
@@ -70,7 +70,7 @@ public class FriendRequestService implements FriendStore.RequestService {
         JSONArray data;
         try {
             data = arg0.getJSONArray("result");
-            Timber.d("getFriendListServer, result: %s friends", data.length());
+            Timber.d("fetchFriendList, result: %s friends", data.length());
         } catch (JSONException e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();

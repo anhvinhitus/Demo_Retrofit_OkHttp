@@ -78,8 +78,8 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     public void reloadListTransactionSync(int count) {
         if (mTransactionLocalStorage.isHaveTransactionInDb()) {
-            long lasttime = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
-            transactionHistoryServer(lasttime, count, 1);
+            long lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
+            transactionHistoryServer(lastUpdated, count, 1);
         } else {
             transactionHistoryServer(0, count, 1);
         }
