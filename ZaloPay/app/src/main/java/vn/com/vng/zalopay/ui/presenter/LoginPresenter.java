@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -205,6 +206,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
                 // because it is handled from event subscribers
+
+                if (e instanceof ServerMaintainException) {
+                    LoginPresenter.this.hideLoadingView();
+                }
+
                 return;
             }
 

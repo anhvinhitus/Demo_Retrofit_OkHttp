@@ -1,0 +1,60 @@
+package protobuf;
+option java_package = "vn.com.vng.zalopay.data.ws.protobuf";
+option java_outer_classname = "ZPMsgProtos";
+
+enum MessageStatus {
+	RECEIVED = 1;
+	READED = 2;
+	DELETED = 3;
+}
+
+enum OSType {
+	IOS = 1;
+	ANDROID = 2;
+	WINDOW_PHONE = 3;
+}
+
+message MessageSendUser{
+	required bytes	data = 1;
+	required string	signature = 2; 
+	optional int64	expiretime = 3;
+	optional uint64 usrid = 4;
+	optional string titlepush = 5;
+}
+
+message MessageLogin{
+	required uint64 usrid = 1;
+	required string	token = 2;
+	optional int32 ostype = 3;
+	optional string devicetoken = 4;
+}
+
+message ResultAuth{
+	required uint64 usrid = 1;
+	required int32	result = 2;
+	optional int32	code = 3;
+}
+
+message DataResponseUser{
+	required int32 msgtype = 1;
+	required bytes	data = 2;
+	optional int32 status = 3;
+	optional uint64 mtaid = 4;
+	optional uint64 mtuid = 5;
+}
+
+message MsgPushUser{
+	required string	devicetoken = 1;
+	required int32	ostype = 2; 
+	required string	alert = 3;
+	optional string sound = 4;
+	optional int32  badge = 5;
+	optional string actionkey = 6;
+}
+
+message StatusMessageClient{
+	required uint64 userid = 1;
+	required int32 status = 2;
+	optional uint64 mtaid = 3;
+	optional uint64 mtuid = 4;
+}
