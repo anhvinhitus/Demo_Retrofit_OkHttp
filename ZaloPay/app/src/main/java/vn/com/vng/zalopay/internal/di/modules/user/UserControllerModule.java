@@ -25,7 +25,6 @@ import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
@@ -33,7 +32,6 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.service.PaymentServiceImpl;
-import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -105,12 +103,4 @@ public class UserControllerModule {
                                             TransactionStore.Repository transactionRepository) {
         return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
     }
-
-    @UserScope
-    @Provides
-    ZaloFriendsFactory providesZaloFriendsFactory(SqlZaloPayScope sqlZaloPayScope,
-                                                  FriendStore.LocalStorage localStorage) {
-        return new ZaloFriendsFactory(sqlZaloPayScope);
-    }
-
 }

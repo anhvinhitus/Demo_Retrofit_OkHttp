@@ -25,13 +25,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     IHomeView homeView;
 
-    FriendStore.Repository zaloFriendsFactory;
+    FriendStore.Repository mFriendRepository;
 
     private boolean isLoadedGateWayInfo;
 
 
-    public MainPresenter(FriendStore.Repository zaloFriendsFactory) {
-        this.zaloFriendsFactory = zaloFriendsFactory;
+    public MainPresenter(FriendStore.Repository friendRepository) {
+        this.mFriendRepository = friendRepository;
     }
 
     public void getZaloFriend() {
@@ -45,10 +45,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         e.printStackTrace();
                     }
                 }
-                if (homeView == null || homeView.getActivity() == null || zaloFriendsFactory == null) {
+                if (homeView == null || homeView.getActivity() == null || mFriendRepository == null) {
                     return;
                 }
-                zaloFriendsFactory.retrieveZaloFriendsAsNeeded().subscribe(new DefaultSubscriber<List<ZaloFriend>>());
+                mFriendRepository.retrieveZaloFriendsAsNeeded().subscribe(new DefaultSubscriber<List<ZaloFriend>>());
             }
         }).start();
     }
@@ -60,7 +60,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroyView() {
-        this.zaloFriendsFactory = null;
+        this.mFriendRepository = null;
         this.homeView = null;
     }
 

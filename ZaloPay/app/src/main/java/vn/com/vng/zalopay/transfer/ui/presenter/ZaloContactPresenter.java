@@ -14,7 +14,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.internal.util.RxJavaPluginUtils;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -48,13 +47,13 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     }
 
     Navigator navigator;
-    FriendStore.Repository zaloFriendsFactory;
+    FriendStore.Repository mRepository;
     Subscription mSubscription;
 
     @Inject
-    public ZaloContactPresenter(Navigator navigator, FriendStore.Repository zaloFriendsFactory) {
+    public ZaloContactPresenter(Navigator navigator, FriendStore.Repository repository) {
         this.navigator = navigator;
-        this.zaloFriendsFactory = zaloFriendsFactory;
+        this.mRepository = repository;
     }
 
     @Override
@@ -78,7 +77,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
-        /*zaloFriendsFactory = null;*/
+        /*mRepository = null;*/
     }
 //
 //    private void startCountDownGetZaloFriends() {
@@ -121,7 +120,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     public void retrieveZaloFriendsAsNeeded() {
 //        mView.showLoading();
-        if (zaloFriendsFactory == null) {
+        if (mRepository == null) {
             onGetZaloFriendError();
             return;
         }
@@ -132,15 +131,15 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             }
         });
 
-        Observable.amb(timeout, zaloFriendsFactory.retrieveZaloFriendsAsNeeded())
+        Observable.amb(timeout, mRepository.retrieveZaloFriendsAsNeeded())
                 .subscribe(new GetFriendSubscriber());
 //        startCountDownGetZaloFriends();
     }
 
     public void getFriendListServer() {
 //        mView.showLoading();
-        Timber.d("getFriendListServer zaloFriendsFactory: %s", zaloFriendsFactory);
-        if (zaloFriendsFactory == null) {
+        Timber.d("getFriendListServer mRepository: %s", mRepository);
+        if (mRepository == null) {
             onGetZaloFriendError();
             return;
         }
@@ -152,7 +151,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             }
         });
 
-        Observable.amb(timeout, zaloFriendsFactory.fetchListFromServer())
+        Observable.amb(timeout, mRepository.fetchListFromServer())
                 .subscribe(new GetFriendSubscriber());
 //        startCountDownGetZaloFriends();
     }

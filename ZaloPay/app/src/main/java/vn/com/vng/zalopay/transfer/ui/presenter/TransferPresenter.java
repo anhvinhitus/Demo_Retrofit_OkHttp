@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 //import vn.com.vng.zalopay.transfer.models.TransferRecent;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
