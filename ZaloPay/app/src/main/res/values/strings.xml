@@ -218,4 +218,9 @@
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
     <string name="update.profile.success">Cập nhật thông tin thành công!</string>
+
+
+    <string name="accept">Đồng ý</string>
+    <string name="cancel">Huỷ</string>
+
 </resources>

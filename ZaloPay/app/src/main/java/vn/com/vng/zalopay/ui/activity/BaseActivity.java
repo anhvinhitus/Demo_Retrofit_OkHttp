@@ -22,6 +22,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
@@ -34,6 +35,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -220,8 +222,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        getAppComponent().applicationSession().setMessageAtLogin("Hệ thống đang bảo trì. Vui lòng thử lại sau.");
-        getAppComponent().applicationSession().clearUserSession();
+        if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+            getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
+            getAppComponent().applicationSession().clearUserSession();
+        } else {
+            showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+        }
     }
 
 
@@ -248,4 +254,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+
+    protected void showDialog(String message, int alertType, String confirmText) {
+        SweetAlertDialog alertDialog = new SweetAlertDialog(this, alertType);
+        alertDialog.setContentText(message);
+        alertDialog.setConfirmText(confirmText);
+        alertDialog.show();
+    }
 }
