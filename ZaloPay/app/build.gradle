@@ -357,9 +357,6 @@ dependencies {
     compile libs.parceler
     apt libs.parceler_apt
 
-    compile libs.avi
-    compile libs.nineoldandroids
-
     debugCompile project(':debugviewer')
     releaseCompile project(':debugviewer-release')
 

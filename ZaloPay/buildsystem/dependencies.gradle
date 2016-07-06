@@ -52,12 +52,7 @@ ext {
     zxingAndroidCoreVersion = "3.2.1"
     zxingAndroidEmbeddedVersion = "3.2.0@aar"
 
-    aviVersion = '1.0.5'
-    nineoldVersion = '2.4.0'
-
     reactNativeVersion = "0.27.2"
-
-    roundedimageviewVersion = "2.2.1"
 
     multidexVersion = "1.0.1"
 
@@ -92,16 +87,13 @@ ext {
             zxing_android_core     : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
             zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
 
-            avi                    : "com.wang.avi:library:${aviVersion}",
-            nineoldandroids        : "com.nineoldandroids:library:${nineoldVersion}",
-
             support_support_v4     : "com.android.support:support-v4:${supportVersion}",
             support_appcompat_v7   : "com.android.support:appcompat-v7:${supportVersion}",
             support_recyclerview_v7: "com.android.support:recyclerview-v7:${supportVersion}",
             support_design         : "com.android.support:design:${supportVersion}",
             support_cardview_v7    : "com.android.support:cardview-v7:${supportVersion}",
             support_annotations    : "com.android.support:support-annotations:${supportVersion}",
-            roundedimageview       : "com.makeramen:roundedimageview:${roundedimageviewVersion}",
+
             react_native           : "com.facebook.react:react-native:${reactNativeVersion}",
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
