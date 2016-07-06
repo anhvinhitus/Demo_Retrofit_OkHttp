@@ -42,6 +42,10 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     }
 
+    public void saveUserPhone(String phone) {
+        userConfig.updateUserPhone(phone);
+    }
+
     public void showLoading() {
         mView.showLoading();
     }

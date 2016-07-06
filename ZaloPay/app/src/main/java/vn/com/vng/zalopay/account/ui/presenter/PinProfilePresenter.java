@@ -85,17 +85,20 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         subscriptionLogin = accountRepository.updateProfile(pinSha256, phone)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new updateProfileSubscriber());
+                .subscribe(new updateProfileSubscriber(phone));
     }
 
     private final class updateProfileSubscriber extends DefaultSubscriber<Boolean> {
-        public updateProfileSubscriber() {
+        private String phone;
+
+        public updateProfileSubscriber(String phone) {
+            this.phone = phone;
         }
 
         @Override
         public void onNext(Boolean result) {
             Timber.d("updateProfile success " + result);
-            PinProfilePresenter.this.onUpdateProfileSuccess();
+            PinProfilePresenter.this.onUpdateProfileSuccess(phone);
         }
 
         @Override
@@ -118,9 +121,9 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         mView.showError("Cập nhật thông tin người dùng thất bại.");
     }
 
-    private void onUpdateProfileSuccess() {
+    private void onUpdateProfileSuccess(String phone) {
         hideLoading();
-        mView.updateProfileSuccess();
+        mView.updateProfileSuccess(phone);
     }
 
     public void showLoading() {

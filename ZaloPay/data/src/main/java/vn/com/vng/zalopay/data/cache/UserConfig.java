@@ -22,6 +22,8 @@ public interface UserConfig {
 
     void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermisssions);
 
+    void updateUserPhone(String phone);
+
     void loadConfig();
 
     void clearConfig();

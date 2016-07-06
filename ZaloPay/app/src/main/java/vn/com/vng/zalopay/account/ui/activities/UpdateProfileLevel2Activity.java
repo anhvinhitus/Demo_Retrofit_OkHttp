@@ -29,7 +29,6 @@ import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -50,6 +49,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     private String walletTransId = null;
     private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
+    private String mCurrentPhone = null;
 
     @Inject
     Navigator navigator;
@@ -286,7 +286,8 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     }
 
     @Override
-    public void onUpdatePinSuccess() {
+    public void onUpdatePinSuccess(String phone) {
+        mCurrentPhone = phone;
         nextPager();
     }
 
@@ -299,6 +300,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     public void onConfirmOTPSucess() {
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
+        presenter.saveUserPhone(mCurrentPhone);
         if (!TextUtils.isEmpty(walletTransId)) {
             showLoading();
             paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {

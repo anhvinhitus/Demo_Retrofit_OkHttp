@@ -82,6 +82,26 @@ public class UserConfigImpl implements UserConfig {
 
     }
 
+    @Override
+    public void updateUserPhone(String phone) {
+        if (currentUser == null) {
+            return;
+        }
+        try {
+            long phoneNumber = Long.valueOf(phone);
+            currentUser.phonenumber = phoneNumber;
+            saveUserPhone(phoneNumber);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "NumberFormatException phone: %s", phone);
+        }
+    }
+
+    private void saveUserPhone(long phone) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(Constants.PREF_USER_PHONE, phone);
+        editor.apply();
+    }
+
     public void updateProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
         if (currentUser == null) {
             return;
