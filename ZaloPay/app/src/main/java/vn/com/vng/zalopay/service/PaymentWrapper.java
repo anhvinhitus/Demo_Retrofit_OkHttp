@@ -10,6 +10,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -361,7 +362,11 @@ public class PaymentWrapper {
             }
 
             Timber.w(e, "onError " + e);
-            responseListener.onParameterError("token");
+            if (e instanceof NetworkConnectionException) {
+                responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+            } else {
+                responseListener.onParameterError("token");
+            }
         }
     }
 }

@@ -19,7 +19,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -132,11 +131,6 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
 
     protected void setupActivityComponent() {
         AndroidApplication.instance().getUserComponent().inject(this);
-    }
-
-    @Override
-    public void showOrderDetail(Order order) {
-
     }
 
     @Override

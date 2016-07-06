@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -48,7 +49,11 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseError(int status) {
+                if (status == PaymentError.ERR_CODE_INTERNET) {
+                    mView.showError(mView.getContext().getString(R.string.exception_no_connection_try_again));
+                }
                 hideLoadingView();
+                mView.resumeScanner();
             }
 
             @Override
@@ -70,6 +75,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             @Override
             public void onResponseCancel() {
                 hideLoadingView();
+                mView.resumeScanner();
             }
 
             @Override
