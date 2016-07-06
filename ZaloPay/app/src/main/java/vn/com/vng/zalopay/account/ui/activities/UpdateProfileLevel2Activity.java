@@ -217,6 +217,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
 
     @Override
     protected void onDestroy() {
+        presenter.destroy();
         super.onDestroy();
         hideLoading();
         mProgressDialog = null;
