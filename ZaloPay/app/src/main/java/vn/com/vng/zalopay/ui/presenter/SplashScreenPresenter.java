@@ -1,10 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
-import org.json.JSONObject;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -57,18 +52,5 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
             Timber.d("gotoLoginScreen");
             mView.gotoLoginScreen();
         }
-    }
-
-    private void getZaloProfileInfo() {
-        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
-            @Override
-            public void onResult(JSONObject profile) {
-                try {
-                    userConfig.saveZaloUserInfo(profile);
-                } catch (Exception ex) {
-                    Timber.w(ex, "Exception while getting Zalo user profile");
-                }
-            }
-        });
     }
 }

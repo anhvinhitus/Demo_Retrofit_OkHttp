@@ -7,11 +7,7 @@ import android.text.TextUtils;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
-import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,15 +20,12 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.analytics.ZPEvents;
-import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 
 /**
@@ -149,19 +142,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
-    }
-
-    private void getZaloProfileInfo() {
-        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
-            @Override
-            public void onResult(JSONObject profile) {
-                try {
-                    userConfig.saveZaloUserInfo(profile);
-                } catch (Exception ex) {
-                    Timber.w(ex, " Exception :");
-                }
-            }
-        });
     }
 
     private void showErrorView(String message) {
