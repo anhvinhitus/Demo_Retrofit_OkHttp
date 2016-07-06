@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.text.TextUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -108,7 +110,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onError(String pMessage) {
-                Timber.w("loadGatewayInfoPaymentSDK error %s", pMessage);
+
+                if (!TextUtils.isEmpty(pMessage)) {
+                    Timber.d("loadGatewayInfoPaymentSDK onError %s", pMessage);
+                } else {
+                    Timber.d("loadGatewayInfoPaymentSDK onError null");
+                }
             }
         });
     }

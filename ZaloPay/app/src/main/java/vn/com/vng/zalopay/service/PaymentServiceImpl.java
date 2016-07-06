@@ -7,6 +7,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 import rx.Subscription;
@@ -28,7 +29,6 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 02/06/2016.
- *
  */
 public class PaymentServiceImpl implements IPaymentService {
 
@@ -49,11 +49,15 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
-    public void pay(final Activity activity, final Promise promise, long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
+    public void pay(Activity activity, final Promise promise, long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
+
+
+        final WeakReference<Activity> mWeakReference = new WeakReference(activity);
+
         this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
-                return activity;
+                return mWeakReference.get();
             }
         }, new PaymentWrapper.IResponseListener() {
             @Override
