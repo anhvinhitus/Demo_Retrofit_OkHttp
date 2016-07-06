@@ -73,11 +73,6 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
                 .into(imgAvatar);
     }
 
-    @Override
-    public void updateBannerView(String bannerUrl) {
-
-    }
-
     @BindView(R.id.layoutChangePin)
     View layoutChangePin;
 
@@ -131,6 +126,7 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
     private void initView() {
         presenter.setView(this);
+        presenter.getZaloProfileInfo();
         mToolbar.setTitle("");
         if (getActivity() != null && getActivity() instanceof BaseActivity) {
             ((BaseActivity) getActivity()).setSupportActionBar(mToolbar);
