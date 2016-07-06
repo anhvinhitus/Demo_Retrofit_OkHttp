@@ -17,10 +17,11 @@ public class Constants {
     public static final String PREF_USER_NAME = "pref_user_name";
     public static final String PREF_USER_AVATAR = "pref_user_avatar";
     public static final String PREF_USER_EMAIL = "pref_user_email";
-    public static final String PREF_USER_BIRTHDATE = "pref_user_birth_date";
+    public static final String PREF_USER_BIRTHDAY = "pref_user_birth_date";
     public static final String PREF_USER_GENDER = "pref_user_gender";
-    public static final String PREF_PROFILELEVEL = "profilelevel";
-    public static final String PREF_PROFILEPERMISSIONS = "profilePermissions";
+    public static final String PREF_USER_PHONE = "pref_user_phone";
+    public static final String PREF_PROFILE_LEVEL = "profilelevel";
+    public static final String PREF_PROFILE_PERMISSIONS = "profilePermissions";
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";

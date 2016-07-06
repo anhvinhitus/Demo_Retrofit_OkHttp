@@ -262,11 +262,13 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void setTotalNotify(int total) {
-        if (total > 0) {
-            mNotifyView.setText(String.valueOf(total));
-            mNotifyView.setVisibility(View.VISIBLE);
-        } else {
-            mNotifyView.setVisibility(View.GONE);
+        if (mNotifyView != null) {
+            if (total > 0) {
+                mNotifyView.setText(String.valueOf(total));
+                mNotifyView.setVisibility(View.VISIBLE);
+            } else {
+                mNotifyView.setVisibility(View.GONE);
+            }
         }
     }
 

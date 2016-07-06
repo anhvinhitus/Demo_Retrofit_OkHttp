@@ -23,6 +23,9 @@ public class LoginResponse extends BaseResponse {
     @SerializedName("profilelevel")
     public int profilelevel;
 
+    @SerializedName("phonenumber")
+    public long phonenumber;
+
     @SerializedName("profilelevelpermisssion")
     public List<ProfilePermission.Permission> profilelevelpermisssion;
 }

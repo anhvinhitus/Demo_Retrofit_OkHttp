@@ -185,6 +185,14 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             return bundle;
         }
 
+        if (appResource.appid == 11) {
+            if (bundle == null) {
+                bundle = new Bundle();
+            }
+
+            bundle.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
+        }
+
         return bundle;
 
     }

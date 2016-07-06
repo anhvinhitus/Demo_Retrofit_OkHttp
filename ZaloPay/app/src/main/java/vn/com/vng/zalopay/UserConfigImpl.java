@@ -72,10 +72,11 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_ID, user.uid);
         editor.putString(Constants.PREF_USER_NAME, user.dname);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
-        editor.putInt(Constants.PREF_PROFILELEVEL, user.profilelevel);
+        editor.putInt(Constants.PREF_PROFILE_LEVEL, user.profilelevel);
         String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermisssions);
         Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
-        editor.putString(Constants.PREF_PROFILEPERMISSIONS, permissionsStr);
+        editor.putLong(Constants.PREF_USER_PHONE, user.phonenumber);
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
 
         editor.apply();
 
@@ -92,11 +93,11 @@ public class UserConfigImpl implements UserConfig {
 
     private void saveProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(Constants.PREF_PROFILELEVEL, profilelevel);
+        editor.putInt(Constants.PREF_PROFILE_LEVEL, profilelevel);
         Gson gson = new Gson();
         String permissionsStr = JsonUtil.toJsonArrayString(profilePermisssions);
         Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
-        editor.putString(Constants.PREF_PROFILEPERMISSIONS, permissionsStr);
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
         editor.apply();
     }
 
@@ -115,9 +116,10 @@ public class UserConfigImpl implements UserConfig {
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
-            currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDATE, 0);
-            currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILELEVEL, 0);
-            currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILEPERMISSIONS, ""));
+            currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDAY, 0);
+            currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
+            currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0l);
+            currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
         }
     }
 
@@ -130,7 +132,12 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_USER_NAME);
         editor.remove(Constants.PREF_USER_ID);
         editor.remove(Constants.PREF_ZALO_ID);
-
+        editor.remove(Constants.PREF_USER_PHONE);
+        editor.remove(Constants.PREF_PROFILE_LEVEL);
+        editor.remove(Constants.PREF_USER_BIRTHDAY);
+        editor.remove(Constants.PREF_PROFILE_PERMISSIONS);
+        editor.remove(Constants.PREF_INVITATION_SESSION);
+        editor.remove(Constants.PREF_INVITATION_USERID);
         editor.apply();
     }
 
@@ -141,7 +148,7 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_ZALO_ID, zaloId);
         editor.putString(Constants.PREF_USER_NAME, displayName);
         editor.putString(Constants.PREF_USER_AVATAR, avatar);
-        editor.putLong(Constants.PREF_USER_BIRTHDATE, birthData);
+        editor.putLong(Constants.PREF_USER_BIRTHDAY, birthData);
         editor.putInt(Constants.PREF_USER_GENDER, userGender);
 //        editor.putLong(Constants.PREF_USER_ID, uid);
         editor.apply();

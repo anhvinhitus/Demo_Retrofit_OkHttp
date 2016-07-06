@@ -30,6 +30,8 @@ public final class User extends Person {
 
     public int need_invitation;
 
+    public long phonenumber;
+
     public List<ProfilePermission.Permission> profilePermisssions;
 
     public User() {
