@@ -81,14 +81,14 @@ android {
             res.srcDirs += 'src/staging/res'
         }
 
-        iapSandbox {
-            assets.srcDirs += '../../paymentapps/sandbox'
-            res.srcDirs += 'src/sandbox/res'
-        }
-
         iapProduction {
             assets.srcDirs += '../../paymentapps/production'
             res.srcDirs += 'src/production/res'
+        }
+
+        iapSandbox {
+            assets.srcDirs += '../../paymentapps/sandbox'
+            res.srcDirs += 'src/sandbox/res'
         }
 
         iapStaging {
