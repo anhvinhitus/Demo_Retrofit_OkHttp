@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl.internal;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.widget.Toast;
 
@@ -10,6 +11,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
@@ -95,9 +99,18 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void showDetail(int appid, String transid) {
         Timber.d("show Detail appid %s transid %s", appid, transid);
-        Intent intent = navigator.intentPaymentApp(getCurrentActivity(), appid, "history");
+        Map<String, String> options = new HashMap<>();
+        options.put("view", "history");
+        options.put("transid", transid);
+
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        Intent intent = navigator.intentPaymentApp(activity, appid, options);
         if (intent != null) {
-            getCurrentActivity().startActivity(intent);
+            activity.startActivity(intent);
         }
     }
 }

@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -200,16 +203,10 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startPaymentApplicationActivity(Context context, String name) {
-        Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", name);
-        context.startActivity(intent);
-    }
-
-    public void startPaymentApplicationActivity(Context context, AppResource appResource, String moduleName) {
-        Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", moduleName);
-        intent.putExtra("appResource", appResource);
+    public void startPaymentApplicationActivity(Context context, int appId) {
+        Map<String, String> options = new HashMap<>();
+        options.put("view", "main");
+        Intent intent = intentPaymentApp(context, appId, options);
         context.startActivity(intent);
     }
 
@@ -297,15 +294,16 @@ public class Navigator implements INavigator {
     }
 
     @Override
-    public Intent intentPaymentApp(Context context, int appId, String view) {
+    public Intent intentPaymentApp(Context context, int appId, Map<String, String> launchOptions) {
         AppResource appResource = ReactAppConfig.getAppResource(appId);
         if (appResource == null) {
             return null;
         }
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", Constants.ModuleName.PAYMENT_MAIN);
         intent.putExtra("appResource", appResource);
-        intent.putExtra("view", view);
+        for (Map.Entry<String, String> e : launchOptions.entrySet()) {
+            intent.putExtra(e.getKey(), e.getValue());
+        }
         return intent;
     }
 }

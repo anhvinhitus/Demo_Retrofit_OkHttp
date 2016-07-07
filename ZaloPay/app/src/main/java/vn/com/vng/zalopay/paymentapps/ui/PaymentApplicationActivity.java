@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
@@ -82,16 +83,15 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     private void initArgs(Bundle savedInstanceState) {
+        mComponentName = Constants.ModuleName.PAYMENT_MAIN;
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
 
             appResource = intent.getParcelableExtra("appResource");
-            mComponentName = intent.getStringExtra("moduleName");
             viewOption = intent.getStringExtra("view");
         } else {
             appResource = savedInstanceState.getParcelable("appResource");
-            mComponentName = savedInstanceState.getString("moduleName");
             viewOption = savedInstanceState.getString("view");
         }
 

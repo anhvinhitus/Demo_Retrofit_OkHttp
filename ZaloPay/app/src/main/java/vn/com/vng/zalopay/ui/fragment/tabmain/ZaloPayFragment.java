@@ -197,7 +197,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         if (app.appid == 1) {
             navigator.startTransferMoneyActivity(getActivity());
         } else {
-            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
+            navigator.startPaymentApplicationActivity(getActivity(), app.appid);
         }
 
         this.logActionApp(position);
@@ -275,19 +275,13 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onItemClick(int position) {
         if (position == 0) {
-
-            AppResource app = getListData().get(1);
-            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
-
+            navigator.startPaymentApplicationActivity(getActivity(), 11);
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
             navigator.startLinkCardProcedureActivity(getActivity());
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-
-            AppResource app = getListData().get(2);
-            navigator.startPaymentApplicationActivity(getActivity(), app, Constants.ModuleName.PAYMENT_MAIN);
-
+            navigator.startPaymentApplicationActivity(getActivity(), 12);
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
         }
     }
