@@ -185,7 +185,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         if (!TextUtils.isEmpty(viewOption)) {
             bundle = new Bundle();
             bundle.putString("view", viewOption);
-            return bundle;
         }
 
         if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
