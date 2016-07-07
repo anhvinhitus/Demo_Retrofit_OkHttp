@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <FrameLayout
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -24,12 +24,21 @@
                 android:layout_marginBottom="90dp"
                 android:src="@drawable/ic_invitation_code" />
 
-            <vn.com.vng.zalopay.ui.widget.PassCodeView
+            <TextView
+                style="@style/TextView.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/label_invitation_code"
+                android:textSize="16dp" />
+
+            <vn.com.vng.zalopay.ui.widget.PassCodeView xmlns:zalopay="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/passCodeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="70dp"
                 android:maxLength="8"
                 zalopay:hint="@string/hint_pin"
                 zalopay:length="8" />
@@ -37,7 +46,7 @@
         </FrameLayout>
     </ScrollView>
 
-    <Button
+    <vn.vng.uicomponent.widget.button.GuardButton
         android:id="@+id/btnContinue"
         style="@style/Button.Default"
         android:layout_width="match_parent"

@@ -3,8 +3,10 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import javax.inject.Inject;
 
@@ -13,7 +15,10 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
+import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
+import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
+import vn.vng.uicomponent.widget.button.GuardButton;
 
 /**
  * Created by AnhHieu on 6/27/16.
@@ -41,6 +46,9 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @Inject
     InvitationCodePresenter presenter;
 
+    @BindView(R.id.btnContinue)
+    GuardButton mButtonContinueView;
+
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_invitation_code;
@@ -60,6 +68,24 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         mILCodeView.setHintVisibility(View.GONE);
         mILCodeView.setBackgroundEdittext(0);
         mILCodeView.showPasscode();
+        mButtonContinueView.setEnabled(mILCodeView.getText().length() == 8);
+        mILCodeView.setPasscodeChanged(new IPasscodeChanged() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mButtonContinueView.setEnabled(s.length() == 8);
+            }
+        });
+
+        mButtonContinueView.registerAvoidMultipleRapidClicks();
+
     }
 
     @Override

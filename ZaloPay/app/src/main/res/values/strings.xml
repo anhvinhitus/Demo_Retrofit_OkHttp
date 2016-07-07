@@ -85,6 +85,7 @@
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
+    <string name="label_invitation_code">Nhập mã để sử dụng Zalo Pay</string>
 
     <!--Left Menu lable START-->
     <string name="txt_leftmenu_home">Trang Chủ</string>
