@@ -43,6 +43,9 @@ import vn.com.vng.zalopay.utils.ToastUtil;
  */
 public class PaymentApplicationActivity extends ReactBasedActivity {
 
+
+    private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
+
     private String mComponentName;
 
     @Inject
@@ -185,7 +188,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             return bundle;
         }
 
-        if (appResource.appid == 11) {
+        if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
             if (bundle == null) {
                 bundle = new Bundle();
             }
