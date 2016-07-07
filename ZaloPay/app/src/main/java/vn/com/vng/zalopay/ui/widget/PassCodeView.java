@@ -280,4 +280,16 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             mIPasscodeFocusChanged.onFocusChangedPin(hasFocus);
         }
     }
+
+    public void setHintVisibility(int visibility) {
+        mTvHint.setVisibility(visibility);
+    }
+
+    public void setButtonHideVisibility(int visibility) {
+        mTvShowHide.setVisibility(visibility);
+    }
+
+    public void setBackgroundEdittext(int res) {
+        mEditText.setBackgroundResource(res);
+    }
 }

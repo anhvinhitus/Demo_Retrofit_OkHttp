@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
+import vn.com.vng.zalopay.ui.widget.PassCodeView;
 
 /**
  * Created by AnhHieu on 6/27/16.
@@ -34,8 +35,8 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     }
 
 
-    @BindView(R.id.tilCode)
-    TextInputLayout mILCodeView;
+    @BindView(R.id.passCodeInput)
+    PassCodeView mILCodeView;
 
     @Inject
     InvitationCodePresenter presenter;
@@ -55,6 +56,10 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        mILCodeView.setButtonHideVisibility(View.GONE);
+        mILCodeView.setHintVisibility(View.GONE);
+        mILCodeView.setBackgroundEdittext(0);
+        mILCodeView.showPasscode();
     }
 
     @Override
@@ -65,7 +70,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnSend(View v) {
-        String code = mILCodeView.getEditText().getText().toString().trim();
+        String code = mILCodeView.getText().trim();
         if (TextUtils.isEmpty(code)) {
             showToast(R.string.invitation_code_empty_error);
         } else {
