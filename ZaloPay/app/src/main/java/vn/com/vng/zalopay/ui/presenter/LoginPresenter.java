@@ -172,10 +172,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private final void onLoginError(Throwable e) {
-        Timber.w(e, "exception : ");
         if (e instanceof InvitationCodeException) {
             mView.gotoInvitationCode();
         } else {
+
+            Timber.w(e, "exception  ");
             hideLoadingView();
             String message = ErrorMessageFactory.create(applicationContext, e);
             showErrorView(message);
@@ -214,7 +215,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
                 return;
             }
 
-            Timber.w(e, "onError " + e);
             LoginPresenter.this.onLoginError(e);
         }
     }
