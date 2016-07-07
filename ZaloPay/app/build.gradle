@@ -169,7 +169,7 @@ android {
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
         }
 
         internalProduction {
@@ -202,7 +202,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
         }
 
         iapSandbox {
@@ -238,7 +238,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
 
         }
     }
