@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -41,6 +40,7 @@ import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by huuhoa on 5/16/16.
+ * Activity for hosting payment app
  */
 public class PaymentApplicationActivity extends ReactBasedActivity {
 
@@ -66,7 +66,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     private AppResource appResource;
 
-    private String viewOption;
+    Bundle mLaunchOptions = new Bundle();
 
     public PaymentApplicationActivity() {
     }
@@ -89,10 +89,14 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             Intent intent = getIntent();
 
             appResource = intent.getParcelableExtra("appResource");
-            viewOption = intent.getStringExtra("view");
+            mLaunchOptions = intent.getBundleExtra("launchOptions");
         } else {
             appResource = savedInstanceState.getParcelable("appResource");
-            viewOption = savedInstanceState.getString("view");
+            mLaunchOptions = savedInstanceState.getBundle("launchOptions");
+        }
+
+        if (appResource != null && appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
+            mLaunchOptions.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
         }
 
         Timber.d("Starting module: %s", mComponentName);
@@ -121,13 +125,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             outState.putParcelable("appResource", appResource);
         }
 
-        if (mComponentName != null) {
-            outState.putString("moduleName", mComponentName);
-        }
-
-        if (viewOption != null) {
-            outState.putString("viewOption", viewOption);
-        }
+        outState.putBundle("launchOptions", mLaunchOptions);
     }
 
     protected void doInjection() {
@@ -180,23 +178,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected
     @Nullable
     Bundle getLaunchOptions() {
-        Bundle bundle = null;
-
-        if (!TextUtils.isEmpty(viewOption)) {
-            bundle = new Bundle();
-            bundle.putString("view", viewOption);
-        }
-
-        if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
-            if (bundle == null) {
-                bundle = new Bundle();
-            }
-
-            bundle.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
-        }
-
-        return bundle;
-
+        return mLaunchOptions;
     }
 
     /**
