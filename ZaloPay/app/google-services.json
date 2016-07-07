@@ -11,7 +11,12 @@
           "package_name": "vn.com.vng.zalopay"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "386726389536-keiegcvb29n0avdsvue997u2g7sspqs0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDKM_WVOFUvEsePdKKOwJPLBv_ZRRhLmcQ"
