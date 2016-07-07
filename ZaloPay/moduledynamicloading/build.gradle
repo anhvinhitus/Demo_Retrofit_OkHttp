@@ -49,6 +49,7 @@ dependencies {
     compile libs.support_appcompat_v7
     compile libs.timber
     compile libs.react_native
+    compile libs.animated_gif
 
     compile project(':data')
     compile project(':zalopayanalytics')

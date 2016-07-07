@@ -53,6 +53,7 @@ ext {
     zxingAndroidEmbeddedVersion = "3.2.0@aar"
 
     reactNativeVersion = "0.27.2"
+    animatedGifVersion = "0.10.0"
 
     multidexVersion = "1.0.1"
 
@@ -95,6 +96,7 @@ ext {
             support_annotations    : "com.android.support:support-annotations:${supportVersion}",
 
             react_native           : "com.facebook.react:react-native:${reactNativeVersion}",
+            animated_gif           : "com.facebook.fresco:animated-gif:${animatedGifVersion}",
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
 
