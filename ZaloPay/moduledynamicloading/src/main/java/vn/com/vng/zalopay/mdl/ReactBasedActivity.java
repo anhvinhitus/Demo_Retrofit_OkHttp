@@ -141,12 +141,17 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
             }
         }
 
+        this.initArgs(savedInstanceState);
+
         mReactInstanceManager = mNativeInstanceManager.acquireReactInstanceManager();
         Timber.i("ReactInstanceManager currently has context: %s", mReactInstanceManager.hasStartedCreatingInitialContext());
 //        mReactInstanceManager.createReactContextInBackground();
         mReactRootView = createRootView();
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
         setContentView(mReactRootView);
+    }
+
+    protected void initArgs(Bundle savedInstanceState){
     }
 
     @Override

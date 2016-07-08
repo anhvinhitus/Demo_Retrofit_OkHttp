@@ -74,15 +74,13 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
-            initArgs(savedInstanceState);
-
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             Timber.e(e, "Caught exception while initializing Payment App");
         }
     }
 
-    private void initArgs(Bundle savedInstanceState) {
+    protected void initArgs(Bundle savedInstanceState) {
         mComponentName = Constants.ModuleName.PAYMENT_MAIN;
 
         if (savedInstanceState == null) {
