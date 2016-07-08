@@ -121,7 +121,6 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
     }
 
     private final void onLoginError(Throwable e) {
-        Timber.w(e, "exception : ");
         hideLoadingView();
         String message = ErrorMessageFactory.create(applicationContext, e);
         showErrorView(message);

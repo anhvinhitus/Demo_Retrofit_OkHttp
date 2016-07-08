@@ -124,7 +124,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
-            Timber.w(e, "onError ");
         }
     }
 
