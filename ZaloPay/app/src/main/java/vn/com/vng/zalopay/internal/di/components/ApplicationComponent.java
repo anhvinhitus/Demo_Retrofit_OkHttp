@@ -7,6 +7,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import org.greenrobot.eventbus.EventBus;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -34,6 +35,7 @@ import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
+import vn.com.vng.zalopay.utils.NotificationHelper;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class,
@@ -65,6 +67,8 @@ public interface ApplicationComponent {
     GlobalEventHandlingService globalEventService();
 
     Navigator navigator();
+
+    NotificationHelper notificationHelper();
 
     ApplicationSession applicationSession();
 

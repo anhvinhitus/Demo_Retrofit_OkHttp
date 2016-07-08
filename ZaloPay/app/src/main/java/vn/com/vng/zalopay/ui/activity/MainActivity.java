@@ -15,7 +15,11 @@ import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.lang.ref.WeakReference;
 
@@ -28,6 +32,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
@@ -44,6 +49,9 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Main Application activity
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
+
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected int getResLayoutId() {
@@ -289,24 +297,18 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     private void startZaloPayService() {
-        AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                startService(new Intent(MainActivity.this.getApplicationContext(), NotificationService.class));
-                return null;
-            }
-        });
+        /*if (checkPlayServices()) {*/
+            Intent intent = new Intent(this, NotificationService.class);
+            startService(intent);
+        /*}*/
     }
-
-      /*  */
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
      * the Google Play Store or enable it in the device's system settings.
-     *//*
+     */
     private boolean checkPlayServices() {
-        Timber.tag(TAG).d("checkPlayServices.........");
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -314,23 +316,13 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Timber.tag(TAG).d("This device is not supported.");
-                finish();
+                Timber.d( "This device is not supported.");
             }
             return false;
         }
         return true;
     }
 
-    private void startRegistrationReceiver() {
-        Timber.tag(TAG).d("startRegistrationReceiver......");
-        if (checkPlayServices()) {
-            Timber.tag(TAG).d("Start IntentService to register this application with GCM");
-            // Start IntentService to register this application with GCM.
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
-        }
-    }*/
     @Override
     public void onPause() {
         Timber.i("MainActivity is pausing");
