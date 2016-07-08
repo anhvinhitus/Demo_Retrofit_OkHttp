@@ -97,7 +97,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
-    public void closeModule() {
+    public void closeModule(String moduleId) {
         Timber.d("close Module");
         if (getCurrentActivity() != null) {
             getCurrentActivity().finish();
