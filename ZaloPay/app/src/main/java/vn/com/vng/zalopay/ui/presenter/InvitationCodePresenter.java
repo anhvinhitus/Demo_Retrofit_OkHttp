@@ -102,7 +102,6 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
                 // because it is handled from event subscribers
                 return;
             }
-            Timber.w(e, "onError " + e);
             InvitationCodePresenter.this.onLoginError(e);
         }
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:zalopay="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -33,15 +33,20 @@
                 android:text="@string/label_invitation_code"
                 android:textSize="16dp" />
 
-            <vn.com.vng.zalopay.ui.widget.PassCodeView xmlns:zalopay="http://schemas.android.com/apk/res-auto"
+            <vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView
                 android:id="@+id/passCodeInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="70dp"
-                android:maxLength="8"
-                zalopay:hint="@string/hint_pin"
-                zalopay:length="8" />
+                app:gpvGridColor="#ffffff"
+                app:gpvLineColor="#858585"
+                app:gpvLineWidth="1dp"
+                app:gpvPasswordLength="@integer/invitation_code_length"
+                app:gpvPasswordType="numberPassword"
+                app:gpvTextColor="#000000"
+                app:gpvTextSize="20sp" />
+
 
         </FrameLayout>
     </ScrollView>
