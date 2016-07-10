@@ -216,10 +216,14 @@ public class UserConfigImpl implements UserConfig {
         return !TextUtils.isEmpty(getSession());
     }
 
-
     @Override
     public String getSession() {
         return preferences.getString(Constants.PREF_USER_SESSION, "");
+    }
+
+    @Override
+    public String getUserId() {
+        return preferences.getString(Constants.PREF_USER_ID, "");
     }
 
     @Override

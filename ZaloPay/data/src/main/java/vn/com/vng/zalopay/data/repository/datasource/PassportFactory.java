@@ -49,9 +49,10 @@ public class PassportFactory {
                 ;
     }
 
-    public Observable<LogoutResponse> logout(String uid, String accesstoken) {
-        return passportService.logout(payAppId, uid, accesstoken)
-                .doOnNext(logoutResponse -> userConfig.clearConfig());
+    public Observable<LogoutResponse> logout() {
+        return passportService.logout(payAppId, userConfig.getUserId(), userConfig.getSession())
+                //.doOnNext(logoutResponse -> userConfig.clearConfig())
+                ;
     }
 
     //

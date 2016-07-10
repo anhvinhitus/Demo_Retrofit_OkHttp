@@ -9,12 +9,14 @@ import java.util.List;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
@@ -125,6 +127,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (event.isOnline && !isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
+    }
+
+
+    public void logout() {
+        passportRepository.logout()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.applicationSession().clearUserSession();
     }
 
 }

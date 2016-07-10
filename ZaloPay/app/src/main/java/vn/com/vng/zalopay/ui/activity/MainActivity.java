@@ -218,7 +218,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
-                getAppComponent().applicationSession().clearUserSession();
+                presenter.logout();
                 zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
@@ -298,8 +298,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     private void startZaloPayService() {
         /*if (checkPlayServices()) {*/
-            Intent intent = new Intent(this, NotificationService.class);
-            startService(intent);
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
         /*}*/
     }
 
@@ -316,7 +316,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Timber.d( "This device is not supported.");
+                Timber.d("This device is not supported.");
             }
             return false;
         }

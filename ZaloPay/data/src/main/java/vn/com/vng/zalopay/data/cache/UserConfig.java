@@ -30,6 +30,8 @@ public interface UserConfig {
 
     String getSession();
 
+    String getUserId();
+
     long getZaloId();
 
     void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
