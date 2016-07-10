@@ -19,6 +19,9 @@ import timber.log.Timber;
 import vn.com.vng.iot.debugviewer.DebugViewer;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
+import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.InvitationCodeException;
+import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -26,12 +29,12 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.com.vng.zalopay.utils.ZPDebugTree;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.
- *
  */
 public class AndroidApplication extends MultiDexApplication {
 
@@ -82,7 +85,7 @@ public class AndroidApplication extends MultiDexApplication {
         ZaloSDKApplication.wrap(this);
         ZingMobilePayApplication.wrap(this);
         Constants.IS_RELEASE = BuildConfig.ENV_LIVE;
-       // Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
+        // Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
         Constants.setEnumEnvironment(BuildConfig.HOST_TYPE);
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
@@ -160,6 +163,12 @@ public class AndroidApplication extends MultiDexApplication {
         @Override
         protected void log(int priority, @Nullable String tag, @Nullable String message, @Nullable Throwable t) {
             if (priority == Log.VERBOSE || priority == Log.DEBUG || priority == Log.INFO) {
+                return;
+            }
+
+            if (t instanceof BodyException
+                    || t instanceof TokenException
+                    || t instanceof InvitationCodeException) {
                 return;
             }
 

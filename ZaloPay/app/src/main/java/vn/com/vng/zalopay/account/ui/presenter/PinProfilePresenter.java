@@ -74,7 +74,8 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
             return hexString.toString();
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            Timber.e(ex, "exception sha256");
+            return "";
         }
     }
 
