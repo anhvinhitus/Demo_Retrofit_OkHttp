@@ -1,0 +1,102 @@
+ ,,
+,,
+1,SUCCESSFUL,Thanh toán thành công!
+0,EXCEPTION,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-1,ZK_NODE_EXIST_EXCEPTION,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-2,APPID_INVALID,Ứng dụng chưa được đăng ký thanh toán!
+-3,APP_NOT_AVAILABLE,Ứng dụng chưa được đăng ký thanh toán!
+-4,APP_TIME_INVALID,Ứng dụng tạm thời không thể thanh toán!
+-5,AMOUNT_INVALID,Số tiền không hợp lệ!
+-6,PLATFORM_INVALID,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-7,PLATFORM_NOT_AVAILABLE,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-8,DSCREEN_TYPE_INVALID,Thiết bị chưa được đăng ký thanh toán!
+-9,PMCID_INVALID,Kênh thanh toán không hỗ trợ hoặc đang bảo trì.
+-10,PMC_INACTIVE,Kênh thanh toán không hỗ trợ hoặc đang bảo trì.
+-70,APPTRANSID_EXIST,Giao dịch đã tồn tại!
+-69,DUPLICATE_ZPTRANSID,Trùng mã giao dịch!
+-13,GET_TRANSID_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-14,SET_CACHE_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-15,GET_CACHE_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-16,UPDATE_RESULT_FAIL,"Giao dịch chưa hoàn tất, vui lòng vào http://hotro.zing.vn để được hỗ trợ!"
+-17,EXCEED_MAX_NOTIFY,"Giao dịch chưa hoàn tất, vui lòng vào http://hotro.zing.vn để được hỗ trợ!"
+-18,DEVICEID_NOT_MATCH,"Thông tin từ ứng dụng không hợp lệ, giao dịch thất bại!"
+-19,APPID_NOT_MATCH,"Thông tin từ ứng dụng không hợp lệ, giao dịch thất bại!"
+-20,PLATFORM_NOT_MATCH,"Thông tin từ ứng dụng không hợp lệ, giao dịch thất bại!"
+-21,PMC_FACTORY_NOT_FOUND,"Thông tin từ ứng dụng không hợp lệ, giao dịch thất bại!"
+-71,ZALO_LOGIN_FAIL,Login thất bại!
+-72,ZALO_LOGIN_EXPIRE,Login hết hạn!
+-73,TOKEN_INVALID,Token không chính xác!
+-74,CARDINFO_INVALID,Thông tin thẻ không chính xác!
+-75,CARDINFO_EXIST,Thông tin card đã tồn tại!
+-26,SDK_INVALID,"Thông tin từ ứng dụng không hợp lệ, giao dịch thất bại!"
+-76,CARDINFO_NOT_FOUND,Thông tin card không tồn tại!
+-77,UM_TOKEN_NOT_FOUND,Token không tồn tại!
+-29,ATM_CREATE_ORDER_DBG_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-78,UM_TOKEN_EXPIRE,Token hết hạn!
+-79,REQUEST_FORMAT_INVALID,Thông tin input không đúng format!
+-31,CARD_INVALID,Thông tin thẻ không chính xác!
+-32,APP_INACTIVE,Ứng dụng chưa được đăng ký thanh toán!
+-33,APP_MAINTENANCE,Ứng dụng đang bảo trì thanh toán!
+-34,PMC_MAINTENANCE,Kênh thanh toán đang bảo trì!
+-35,PMC_NOT_AVAILABLE,Kênh thanh toán không hỗ trợ hoặc đang bảo trì.
+-36,OVER_LIMIT,"Hệ thống đang có lỗi, giao dịch thất bại!"
+2,DUPLICATE,"Hệ thống đang có lỗi, giao dịch thất bại!"
+3,CREATE_ORDER_SUCCESSFUL,Giao dịch đang xử lý!
+4,IN_NOTIFY_QUEUE,Giao dịch đang xử lý!
+5,PROCESSING,Giao dịch đang xử lý!
+-80,TRANS_NOT_FINISH,Giao dịch chưa hoàn tất!
+9,ATM_WAIT_FOR_CHARGE,Giao dịch đang xử lý!
+10,INIT,Giao dịch đang xử lý!
+-81,USER_NOT_MATCH,User không đúng!
+-39,NOT_FOUND_SMS_SERVICE_PHONE,Kênh thanh toán không hỗ trợ hoặc đang bảo trì.
+-40,MAX_RETRY_GET_DBG_STATUS,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-41,ATM_CREATE_ORDER_FAIL,Ngân hàng chưa hỗ trợ hoặc đang bảo trì!
+-42,ATM_BANK_INVALID,Chưa hỗ trợ ngân hàng đã chọn!
+-43,ATM_BANK_MAINTENANCE,Ngân hàng đang bảo trì.
+-68,DUPLICATE_APPTRANSID,Trùng mã giao dịch!
+12,ATM_VERIFY_CARD_SUCCESSFUL,Giao dịch đang xử lý!
+13,ATM_VERIFY_OTP_SUCCESS,Giao dịch đang xử lý!
+-44,ATM_VERIFY_CARD_FAIL,Thông tin thẻ không chính xác!
+-45,ATM_MAX_RETRY_OTP_FAIL,Thông tin otp không chính xác!
+-46,ATM_QUERY_ORDER_FAIL,Giao dịch thất bại!
+-47,ATM_BANK_SRC_INVALID,Ngân hàng chưa hỗ trợ hoặc đang bảo trì!
+-67,DESERIALIZE_TRANS_FAIL,Login thất bại!
+15,IN_GET_STATUS_ATM_QUEUE,Giao dịch đang xử lý!
+-48,ATM_CHARGE_FAIL,Giao dịch thất bại!
+16,ATM_RETRY_CAPTCHA,Sai thông tin capcha. Vui lòng nhập lại!
+17,ATM_RETRY_OTP,Sai thông tin otp. Vui lòng nhập lại!
+18,ATM_CHARGE_SUCCESSFUL,Thanh toán atm thành công!
+-49,TRANS_INFO_NOT_FOUND,Giao dịch không tìm thấy!
+-50,ATM_CAPTCHA_INVALID,Nhập sai thông tin captcha quá số lần quy định!
+-51,ATM_COST_RATE_INVALID,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-52,ITEMS_INVALID,Dữ liệu thanh toán không hợp lệ
+-53,HMAC_INVALID,Dữ liệu thanh toán không hợp lệ
+-54,TIME_INVALID,Dữ liệu thanh toán không hợp lệ
+-55,CAL_NET_CHARGE_AMT_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-56,ATM_VERIFY_OTP_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-57,APP_USER_INVALID,Dữ liệu thanh toán không hợp lệ
+-58,ZPW_GETTRANSID_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-59,ZPW_PURCHASE_FAIL,"Hệ thống đang có lỗi, giao dịch thất bại!"
+-60,ZPW_ACCOUNT_NAME_INVALID,Thông tài khoản không chính xác!
+-61,ZPW_ACCOUNT_SUSPENDED,Tài khoản tạm thời bị khóa!
+-62,ZPW_ACCOUNT_NOT_EXIST,Tài khoản không tồn tại!
+-63,ZPW_BALANCE_NOT_ENOUGH,Tài khoản không đủ tiền để thanh toán!
+-64,ZPW_GET_BALANCE_FAIL,User không tồn tại!
+-65,ZPW_WRONG_PASSWORD,Sai password!
+-66,USER_INVALID,Sai thông tin userid!
+-82,CARD_NOT_MATCH,Thông tin card không đúng!
+-83,TRANSID_FORMAT_INVALID,Transid không hợp lệ!
+-84,CARD_TOKEN_INVALID,Thông tin card không hợp lệ!
+-85,CARD_TOKEN_EXPIRE,Thông tin map card hết hạn!
+-86,TRANSTYPE_INVALID,App không hỗ trợ loại giao dịch!
+-87,TRANSTYPE_INACTIVE,App không hỗ trợ loại giao dịch!
+-88,TRANSTYPE_MAINTENANCE,Loại giao dịch đang bảo trì!
+-93,APPTRANSID_GEN_ERROR,"Hệ thống đang có lỗi, vui lòng quay lại sau!"
+-89,MAP_APPID_APPTRANSID_FAIL,Giao dịch đã tồn tại!
+-90,EXCEED_MAX_NOTIFY_WALLET_FEE,Add fee thất bại!
+-91,UPDATE_RESULT_FAIL_WALLET_FEE,Add fee thất bại!
+-92,APPTRANSID_INVALID,Mã giao dịch không hợp lệ!
+-94,TRANSTYPE_AMOUNT_INVALID,Thông tin thanh toán không hợp lệ
+-95,CARD_ALREADY_MAP,Thẻ đã được liên kết
+-999,SERVER_MAINTAIN,Hệ thống đang bảo trì
+24,INVITATION_CODE_ERROR, Cần nhập mã mới dùng được ứng dụng!
