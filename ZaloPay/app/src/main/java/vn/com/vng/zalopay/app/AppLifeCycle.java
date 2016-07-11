@@ -14,7 +14,7 @@ import timber.log.Timber;
  */
 public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    HashMap<String, Integer> activities;
+    private static HashMap<String, Integer> activities;
 
     public AppLifeCycle() {
         activities = new HashMap<>();
@@ -52,7 +52,7 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     public void onActivityDestroyed(Activity activity) {
     }
 
-    private boolean isBackGround() {
+    public static boolean isBackGround() {
         for (String s : activities.keySet()) {
             if (activities.get(s) == 1) {
                 return false;

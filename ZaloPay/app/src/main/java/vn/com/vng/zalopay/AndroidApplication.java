@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
 import vn.com.vng.zalopay.domain.model.User;
@@ -167,7 +168,8 @@ public class AndroidApplication extends MultiDexApplication {
 
             if (t instanceof BodyException
                     || t instanceof TokenException
-                    || t instanceof InvitationCodeException) {
+                    || t instanceof InvitationCodeException
+                    || t instanceof NetworkConnectionException) {
                 return;
             }
 

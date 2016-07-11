@@ -16,25 +16,15 @@
 package vn.com.vng.zalopay.data.net.adapter;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import retrofit2.Call;
 import retrofit2.CallAdapter;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
-import rx.exceptions.Exceptions;
-import rx.functions.Action0;
-import rx.subscriptions.Subscriptions;
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 
 public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     /**

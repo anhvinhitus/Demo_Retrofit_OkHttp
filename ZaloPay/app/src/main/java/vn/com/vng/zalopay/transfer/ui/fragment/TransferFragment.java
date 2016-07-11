@@ -150,7 +150,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             @Override
             public void afterTextChanged(Editable s) {
                 super.afterTextChanged(s);
-                showError(null);
                 checkShowBtnContinue();
             }
         });
