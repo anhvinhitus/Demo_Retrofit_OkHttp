@@ -29,7 +29,6 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
-import vn.com.vng.zalopay.utils.ZPDebugTree;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
