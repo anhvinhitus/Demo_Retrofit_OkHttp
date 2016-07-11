@@ -32,16 +32,6 @@ public class FriendLocalStorage implements FriendStore.LocalStorage {
     }
 
     @Override
-    public List<ZaloFriendGD> listZaloFriend() {
-        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq("true")).list();
-    }
-
-    @Override
-    public List<ZaloFriendGD> listZaloFriend(int limit) {
-        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq("true")).limit(limit).list();
-    }
-
-    @Override
     public LazyList<ZaloFriendGD> listZaloFriend(String textSearch) {
         Timber.d("listZaloFriend textSearch: %s", textSearch);
         if (!TextUtils.isEmpty(textSearch)) {

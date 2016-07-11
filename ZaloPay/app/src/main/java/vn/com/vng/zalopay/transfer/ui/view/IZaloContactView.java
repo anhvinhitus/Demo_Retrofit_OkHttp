@@ -8,8 +8,10 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * Created by longlv on 11/06/2016.
  */
 public interface IZaloContactView extends ILoadDataView {
-    void onGetZaloFriendError();
-    void onGetZaloFriendFinish();
-    void onGetZaloFriendFinish(LazyList<ZaloFriendGD> items);
-    void onGetZaloFriendTimeout();
+    void showGetZFriendFromServerError();
+    void showGetZFriendFromServerTimeout();
+    void updateZFriendList(LazyList<ZaloFriendGD> items);
+    String getTextSearch();
+    void showRefreshView();
+    void hideRefreshView();
 }

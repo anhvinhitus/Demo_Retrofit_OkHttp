@@ -4,7 +4,7 @@ package vn.com.vng.zalopay.data.cache.model;
 /**
  * Entity mapped to table "ZALO_FRIEND_GD".
  */
-public class ZaloFriendGD implements vn.com.vng.zalopay.domain.model.PersistentObject {
+public class ZaloFriendGD implements vn.com.vng.zalopay.domain.model.IPersistentObject {
 
     private Long id;
     private String userName;

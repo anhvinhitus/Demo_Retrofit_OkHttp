@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.zfriend;
 
-import android.database.Cursor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +10,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -56,22 +53,6 @@ public class FriendRepository implements FriendStore.Repository {
                 shouldUpdate().subscribe(l -> fetchListFromServer().subscribe(subscriber));
             }
         });
-    }
-
-    @Override
-    public ZaloFriend getZaloFriendFrom(Cursor cursor) {
-        if (cursor == null) {
-            return null;
-        }
-
-        Long userId = cursor.getLong(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Id.columnName));
-        String userName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserName.columnName));
-        String displayName = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.DisplayName.columnName));
-        String avatar = cursor.getString(cursor.getColumnIndex(ZaloFriendGDDao.Properties.Avatar.columnName));
-        Integer userGender = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UserGender.columnName));
-        boolean usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UsingApp.columnName)) == 1;
-
-        return new ZaloFriend(userId, userName, displayName, avatar, userGender, usingApp);
     }
 
     @Override

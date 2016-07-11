@@ -27,7 +27,7 @@ public class GreenDaoGenerator {
 
     private static void addZaloContact(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("ZaloFriendGD");
-        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.PersistentObject");
+        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.IPersistentObject");
         appInfoEntity.addIdProperty();//zaloId
 //        appInfoEntity.addLongProperty("userId").notNull().unique();
         appInfoEntity.addStringProperty("userName");
@@ -37,7 +37,6 @@ public class GreenDaoGenerator {
         appInfoEntity.addStringProperty("birthday");
         appInfoEntity.addBooleanProperty("usingApp");
         appInfoEntity.addStringProperty("fulltextsearch");
-//        appInfoEntity.addContentProvider();
     }
 
     private static void addTransferRecent(Schema appSchema) {
@@ -55,7 +54,6 @@ public class GreenDaoGenerator {
         appInfoEntity.addIntProperty("transferType");
         appInfoEntity.addLongProperty("amount");
         appInfoEntity.addStringProperty("message");
-//        appInfoEntity.addContentProvider();
     }
 
     private static void addApplicationInfo(Schema schema) {

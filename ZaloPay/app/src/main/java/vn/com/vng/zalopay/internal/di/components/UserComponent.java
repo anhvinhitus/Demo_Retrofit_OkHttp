@@ -39,7 +39,6 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.service.NotificationService;
-import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
@@ -47,7 +46,6 @@ import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
-import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardProcedureFragment;
@@ -142,8 +140,6 @@ public interface UserComponent {
     void inject(UpdateProfileLevel2Activity a);
 
     void inject(ChangePinActivity a);
-
-    void inject(ZaloFriendContentProviderImpl contentProvider);
 
     void inject(TransferHomeActivity activity);
 

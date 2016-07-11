@@ -9,10 +9,10 @@ import dagger.Provides;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendRequestService;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.transfer.provider.ZaloFriendStoreApi;
 
 /**

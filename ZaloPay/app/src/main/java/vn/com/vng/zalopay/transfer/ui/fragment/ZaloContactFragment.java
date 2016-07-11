@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -130,7 +129,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
         initSearchTimer();
         presenter.retrieveZaloFriendsAsNeeded();
-        presenter.getFriedListFromDB(null);
+        presenter.getZFriedListFromDB();
     }
 
     private void initSearchTimer() {
@@ -142,7 +141,10 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
             @Override
             public void onFinish() {
-                getFriedListFromDB();
+                if (presenter == null) {
+                    return;
+                }
+                presenter.getZFriedListFromDB();
             }
         };
     }
@@ -245,32 +247,15 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     @Override
-    public void onGetZaloFriendFinish(LazyList<ZaloFriendGD> items) {
-        Timber.d("onGetZaloFriendFinish.... items: %s", items);
-        if (items == null || items.size() <= 0) {
-            onGetDataDBEmpty();
-        } else {
-            onGetDataDBSuccess(items);
-        }
-        mSwipeRefresh.setRefreshing(false);
+    public void showGetZFriendFromServerTimeout() {
+        showGetZFriendFromServerError();
     }
 
     @Override
-    public void onGetZaloFriendFinish() {
-        Timber.d("onGetZaloFriendFinish");
-        mSwipeRefresh.setRefreshing(false);
-        getFriedListFromDB();
-    }
-
-    @Override
-    public void onGetZaloFriendTimeout() {
-        onGetZaloFriendError();
-    }
-
-    public void onGetZaloFriendError() {
-        Timber.d("onGetZaloContactError");
+    public void showGetZFriendFromServerError() {
+        Timber.d("showGetZFriendFromServerError");
         hideLoading();
-        mSwipeRefresh.setRefreshing(false);
+        hideRefreshView();
         if (!NetworkHelper.isNetworkAvailable(getContext())) {
             SweetAlertDialog.OnSweetClickListener cancelListener = new SweetAlertDialog.OnSweetClickListener() {
                 @Override
@@ -281,7 +266,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             SweetAlertDialog.OnSweetClickListener retryListener = new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    mSwipeRefresh.setRefreshing(true);
+                    showRefreshView();
                     presenter.retrieveZaloFriendsAsNeeded();
                     sweetAlertDialog.cancel();
                 }
@@ -297,21 +282,34 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         }
     }
 
-    private void getFriedListFromDB() {
+    @Override
+    public String getTextSearch() {
         String txtSearch = null;
         if (edtSearch.getText() != null) {
             txtSearch = edtSearch.getText().toString();
         }
-        Timber.d("getFriedListFromDB, txtSearch: %s", txtSearch);
-        if (!TextUtils.isEmpty(txtSearch)) {
-            presenter.getFriedListFromDB(txtSearch.toLowerCase());
-        } else {
-            presenter.getFriedListFromDB(null);
-        }
+        return txtSearch;
     }
 
-    private void onGetDataDBSuccess(LazyList<ZaloFriendGD> zaloFriends) {
-        Timber.d("onGetDataDBSuccess mAdapter %s", mAdapter);
+    @Override
+    public void showRefreshView() {
+        if (mSwipeRefresh == null) {
+            return;
+        }
+        mSwipeRefresh.setRefreshing(true);
+    }
+
+    @Override
+    public void hideRefreshView() {
+        if (mSwipeRefresh == null) {
+            return;
+        }
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void updateZFriendList(LazyList<ZaloFriendGD> zaloFriends) {
+        Timber.d("updateZFriendList mAdapter: %s zaloFriends:%s", mAdapter, zaloFriends);
         hideLoading();
         if (mAdapter == null) {
             return;
@@ -322,15 +320,6 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         } else {
             viewSeparate.setVisibility(View.GONE);
         }
-    }
-
-    private void onGetDataDBEmpty() {
-        hideLoading();
-        if (mAdapter == null) {
-            return;
-        }
-        mAdapter.setLazyList(null);
-        viewSeparate.setVisibility(View.GONE);
     }
 
     @Override

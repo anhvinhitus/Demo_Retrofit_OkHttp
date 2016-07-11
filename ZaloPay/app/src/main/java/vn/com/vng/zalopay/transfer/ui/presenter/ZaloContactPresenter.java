@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.transfer.ui.presenter;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -82,7 +83,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
     public void retrieveZaloFriendsAsNeeded() {
         if (mRepository == null) {
-            onGetZaloFriendError();
+            onGetZFriendError();
             return;
         }
         Observable<List<ZaloFriend>> timeout = Observable.timer(TIMEOUT_GET_ZALO_FRIENDS, TimeUnit.MILLISECONDS).map(new Func1<Long, List<ZaloFriend>>() {
@@ -99,13 +100,15 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     public void getFriendListServer() {
         Timber.d("getFriendListServer mRepository: %s", mRepository);
         if (mRepository == null) {
-            onGetZaloFriendError();
+            onGetZFriendError();
             return;
         }
 
         Observable<List<ZaloFriend>> timeout = Observable.timer(TIMEOUT_GET_ZALO_FRIENDS, TimeUnit.MILLISECONDS).map(new Func1<Long, List<ZaloFriend>>() {
             @Override
             public List<ZaloFriend> call(Long o) {
+                Timber.d("getFriendListServer timeout arg %s", o);
+                onGetZFriendTimeout();
                 return null;
             }
         });
@@ -114,26 +117,40 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                 .subscribe(new GetFriendSubscriber());
     }
 
-    public void getFriedListFromDB(String textSearch) {
-        Timber.d("getFriedListFromDB  textSearch:%s", textSearch);
+
+    public void getZFriedListFromDB() {
+        String txtSearch = mView.getTextSearch();
+        Timber.d("getZFriedListFromDB, txtSearch: %s", txtSearch);
+        if (!TextUtils.isEmpty(txtSearch)) {
+            getZFriedListFromDB(txtSearch.toLowerCase());
+        } else {
+            getZFriedListFromDB(null);
+        }
+    }
+
+    private void getZFriedListFromDB(String textSearch) {
+        Timber.d("getZFriedListFromDB  textSearch:%s", textSearch);
         Subscription subscription = mRepository.listZaloFriendFromDb(textSearch)
-                .subscribe(new FriendLazyListSubscriber());
+                .subscribe(new GetZFriendFromDBSubscriber());
         compositeSubscription.add(subscription);
     }
 
-    private void onGetZaloFriendTimeout() {
+    private void onGetZFriendTimeout() {
+        Timber.d("onGetZFriendTimeout start");
         Message message = new Message();
         message.what = EGetZaloFriendListener.TimeOut.getValue();
         messageHandler.sendMessage(message);
     }
 
-    public void onGetZaloFriendError() {
+    public void onGetZFriendError() {
+        Timber.d("onGetZFriendError start");
         Message message = new Message();
         message.what = EGetZaloFriendListener.GetZaloFriendError.getValue();
         messageHandler.sendMessage(message);
     }
 
-    public void onGetZaloFriendFinish() {
+    public void onGetZFriendFinish() {
+        Timber.d("onGetZFriendFinish start");
         Message message = new Message();
         message.what = EGetZaloFriendListener.GetZaloFriendFinish.getValue();
         messageHandler.sendMessage(message);
@@ -146,11 +163,12 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
                 return;
             }
             if (msg.what == EGetZaloFriendListener.GetZaloFriendError.getValue()) {
-                ZaloContactPresenter.this.mView.onGetZaloFriendError();
+                ZaloContactPresenter.this.mView.showGetZFriendFromServerError();
             } else if (msg.what == EGetZaloFriendListener.GetZaloFriendFinish.getValue()) {
-                ZaloContactPresenter.this.mView.onGetZaloFriendFinish();
+                ZaloContactPresenter.this.mView.showRefreshView();
+                ZaloContactPresenter.this.getZFriedListFromDB();
             } else if (msg.what == EGetZaloFriendListener.TimeOut.getValue()) {
-                ZaloContactPresenter.this.mView.onGetZaloFriendTimeout();
+                ZaloContactPresenter.this.mView.showGetZFriendFromServerTimeout();
             }
         }
     };
@@ -161,16 +179,16 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
             unsubscribeIfNotNull(mSubscription);
             mSubscription = null;
 
-            onGetZaloFriendFinish();
+            onGetZFriendFinish();
         }
 
         @Override
         public void onError(Throwable e) {
             if (e instanceof TimeoutException ||
                     e.getCause() instanceof TimeoutException) {
-                onGetZaloFriendTimeout();
+                onGetZFriendTimeout();
             } else {
-                onGetZaloFriendError();
+                onGetZFriendError();
             }
         }
 
@@ -179,23 +197,24 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         }
     }
 
-    private class FriendLazyListSubscriber extends DefaultSubscriber<LazyList<ZaloFriendGD>> {
+    private class GetZFriendFromDBSubscriber extends DefaultSubscriber<LazyList<ZaloFriendGD>> {
         @Override
         public void onCompleted() {
-            Timber.d("onCompleted ");
+            Timber.d("GetZFriendFromDBSubscriber onCompleted ");
             super.onCompleted();
         }
 
         @Override
         public void onError(Throwable e) {
-            Timber.d("onError e %s", e);
+            Timber.d("GetZFriendFromDBSubscriber onError e %s", e);
             super.onError(e);
         }
 
         @Override
         public void onNext(LazyList<ZaloFriendGD> zaloFriendGDs) {
-            Timber.d("onNext zaloFriendGDS %s", zaloFriendGDs);
-            mView.onGetZaloFriendFinish(zaloFriendGDs);
+            Timber.d("GetZFriendFromDBSubscriber onNext zaloFriendGDS %s", zaloFriendGDs);
+            mView.updateZFriendList(zaloFriendGDs);
+            mView.hideRefreshView();
         }
     }
 }

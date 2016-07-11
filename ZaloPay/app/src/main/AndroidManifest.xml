@@ -208,14 +208,6 @@
             android:name=".transfer.ui.activities.TransferActivity"
             android:label="@string/title.activity.transfer" />
 
-        <!-- Content Providers for DAO -->
-        <provider
-            android:name="vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl"
-            android:authorities="vn.com.vng.zalopay.data.cache.model.zalofriendprovider"
-            android:exported="false" />
-        <!-- END Content Providers -->
-
-
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
