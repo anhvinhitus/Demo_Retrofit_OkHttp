@@ -37,6 +37,8 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
+import vn.com.vng.zalopay.notification.NotificationHelper;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
@@ -85,9 +87,12 @@ public interface UserComponent {
 
     NotificationStore.Repository notificationRepository();
 
+    NotificationHelper notificationHelper();
+
     FriendStore.Repository friendRepository();
 
     TransferStore.LocalStorage transferLocalStorage();
+
  /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */
@@ -144,6 +149,8 @@ public interface UserComponent {
     void inject(TransferHomeActivity activity);
 
     void inject(NotificationService service);
+
+    void inject(ZPNotificationService service);
 
     void inject(UpdateProfile3Fragment f);
 }

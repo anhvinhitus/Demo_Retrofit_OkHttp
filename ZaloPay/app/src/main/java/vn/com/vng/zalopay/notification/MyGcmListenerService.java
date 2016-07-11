@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,38 +16,31 @@
 
 package vn.com.vng.zalopay.notification;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.Gson;
 
-import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.activity.MainActivity;
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
 public class MyGcmListenerService extends GcmListenerService {
 
-    private static final String TAG = "MyGcmListenerService";
+    private Gson mGson = new Gson();
 
-    /**
-     * Called when message is received.
-     *
-     * @param from SenderID of the sender.
-     * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
-     */
-    // [START receive_message]
+    private UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+
     @Override
     public void onMessageReceived(String from, Bundle data) {
+
         String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        Timber.d("onMessageReceived: from %s message %s", from, message);
 
         if (from.startsWith("/topics/")) {
             // message received from some topic.
@@ -55,46 +48,44 @@ public class MyGcmListenerService extends GcmListenerService {
             // normal downstream message.
         }
 
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
-
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        sendNotification(message);
-        // [END_EXCLUDE]
+        NotificationData event = parseMessage(message);
+        if (event != null) {
+            sendNotification(event);
+        }
     }
-    // [END receive_message]
 
-    /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param message GCM message received.
-     */
-    private void sendNotification(String message) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+    private NotificationData parseMessage(String message) {
+        Timber.d("sendNotification: message %s", message);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("GCM Message")
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+        NotificationData event = null;
+        try {
+            if (TextUtils.isEmpty(message)) {
+                return null;
+            }
+            if (userConfig.hasCurrentUser()) {
+                return null;
+            }
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            User user = userConfig.getCurrentUser();
+            event = mGson.fromJson(message, NotificationData.class);
+            int transType = event.getTransType();
+            event.read = !(!user.uid.equals(event.userid) && transType > 0);
+        } catch (Exception ex) {
+            Timber.e(ex, "exception parse gcm");
+        }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        return event;
     }
+
+    private void sendNotification(NotificationData notify) {
+        if (notify != null) {
+            UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+            if (userComponent != null) {
+                NotificationHelper notificationHelper = userComponent.notificationHelper();
+                notificationHelper.processNotification(notify);
+            }
+        }
+    }
+
+
 }

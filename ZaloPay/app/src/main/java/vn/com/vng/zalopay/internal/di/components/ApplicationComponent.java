@@ -3,11 +3,8 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.android.gms.analytics.Tracker;
-
 import org.greenrobot.eventbus.EventBus;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -23,7 +20,6 @@ import vn.com.vng.zalopay.internal.di.modules.ApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
-import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
@@ -32,10 +28,9 @@ import vn.com.vng.zalopay.receiver.NetworkReceiver;
 import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
-import vn.com.vng.zalopay.utils.NotificationHelper;
+import vn.com.vng.zalopay.notification.NotificationHelper;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class,
@@ -67,8 +62,6 @@ public interface ApplicationComponent {
     GlobalEventHandlingService globalEventService();
 
     Navigator navigator();
-
-    NotificationHelper notificationHelper();
 
     ApplicationSession applicationSession();
 

@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -36,6 +37,11 @@ public class ApplicationSession {
         // move to login
         ZaloSDK.Instance.unauthenticate();
         AndroidApplication.instance().releaseUserComponent();
+
+        //cancel notification
+        NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
+        nm.cancelAll();
+
         applicationContext.stopService(new Intent(applicationContext, NotificationService.class));
 
         if (TextUtils.isEmpty(mLoginMessage)) {
@@ -47,9 +53,9 @@ public class ApplicationSession {
     }
 
     public void setMessageAtLogin(String message) {
-
         mLoginMessage = message;
     }
+
     /**
      * New user session and move to main state
      */
