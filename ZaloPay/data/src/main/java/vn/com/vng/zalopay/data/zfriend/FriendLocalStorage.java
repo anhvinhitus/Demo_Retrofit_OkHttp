@@ -1,7 +1,11 @@
 package vn.com.vng.zalopay.data.zfriend;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
+import de.greenrobot.dao.query.LazyList;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
@@ -35,6 +39,16 @@ public class FriendLocalStorage implements FriendStore.LocalStorage {
     @Override
     public List<ZaloFriendGD> listZaloFriend(int limit) {
         return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq("true")).limit(limit).list();
+    }
+
+    @Override
+    public LazyList<ZaloFriendGD> listZaloFriend(String textSearch) {
+        Timber.d("listZaloFriend textSearch: %s", textSearch);
+        if (!TextUtils.isEmpty(textSearch)) {
+            return mDao.queryBuilder().orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch).where(ZaloFriendGDDao.Properties.Fulltextsearch.like("%" + textSearch.toLowerCase() + "%")).listLazy();
+        } else {
+            return mDao.queryBuilder().orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch).listLazy();
+        }
     }
 
     @Override

@@ -24,7 +24,6 @@ import butterknife.OnClick;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -176,7 +175,7 @@ public class TransferHomeFragment extends BaseFragment implements
                         if (transferRecent.isEmpty()) {
                             onGetDataDBEmpty();
                         } else {
-                            List<RecentTransaction> items = new ArrayList<RecentTransaction>();
+                            List<RecentTransaction> items = new ArrayList<>();
                             for (vn.com.vng.zalopay.data.cache.model.TransferRecent item : transferRecent) {
                                 RecentTransaction newItem = new RecentTransaction(
                                         item.getId(),

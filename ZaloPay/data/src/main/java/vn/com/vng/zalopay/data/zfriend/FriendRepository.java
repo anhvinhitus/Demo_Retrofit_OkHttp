@@ -5,6 +5,7 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.dao.query.LazyList;
 import rx.Observable;
 import rx.Subscriber;
 import timber.log.Timber;
@@ -12,6 +13,7 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
@@ -40,6 +42,13 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
+    public Observable<LazyList<ZaloFriendGD>> listZaloFriendFromDb(String textSearch) {
+        Timber.d("listZaloFriendFromDb textSearch: %s", textSearch);
+        return ObservableHelper.makeObservable(() -> mLocalStorage.listZaloFriend(textSearch))
+                .doOnNext(listZaloFriend -> Timber.d("listZaloFriendFromDb get %s", listZaloFriend.size()));
+    }
+
+    @Override
     public Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded() {
         return Observable.create(new Observable.OnSubscribe<List<ZaloFriend>>() {
             @Override
@@ -63,6 +72,14 @@ public class FriendRepository implements FriendStore.Repository {
         boolean usingApp = cursor.getInt(cursor.getColumnIndex(ZaloFriendGDDao.Properties.UsingApp.columnName)) == 1;
 
         return new ZaloFriend(userId, userName, displayName, avatar, userGender, usingApp);
+    }
+
+    @Override
+    public ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD) {
+        if (zaloFriendGD == null) {
+            return null;
+        }
+        return new ZaloFriend(zaloFriendGD.getId(), zaloFriendGD.getUserName(), zaloFriendGD.getDisplayName(), zaloFriendGD.getAvatar(), zaloFriendGD.getUserGender(), zaloFriendGD.getUsingApp());
     }
 
     private ZaloFriendGD convertZaloFriend(ZaloFriend zaloFriend) {

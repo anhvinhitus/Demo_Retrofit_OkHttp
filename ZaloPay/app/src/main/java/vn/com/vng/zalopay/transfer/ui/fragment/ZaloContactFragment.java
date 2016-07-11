@@ -3,14 +3,9 @@ package vn.com.vng.zalopay.transfer.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,22 +14,19 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnTextChanged;
+import de.greenrobot.dao.query.LazyList;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.com.vng.zalopay.transfer.provider.ZaloFriendContentProviderImpl;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
@@ -49,20 +41,13 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class ZaloContactFragment extends BaseFragment implements IZaloContactView,
         ZaloContactRecyclerViewAdapter.OnItemInteractionListener,
-        ZaloContactRecyclerViewAdapter.OnLoadMoreListener,
-        LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private final int LOADER_ZALO_FRIEND = 2;
-    private final int PAGE_SIZE = 50;
-    private final String LIMIT_ITEMS = "limit_items";
-    private final String TEXT_SEARCH = "text_search";
     private int mColumnCount = 1;
     private ZaloContactRecyclerViewAdapter mAdapter;
     private Bundle mTransferState;
     private CountDownTimer mSearchTimer;
-    private int mCurrentItem = 0;
 
     @Inject
     Navigator navigator;
@@ -139,14 +124,13 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
         }
 
-        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), this, this);
-        mAdapter.setLinearLayoutManager((LinearLayoutManager) mRecyclerView.getLayoutManager());
-        mAdapter.setRecyclerView(mRecyclerView);
+        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
         mSwipeRefresh.setOnRefreshListener(this);
 
         initSearchTimer();
         presenter.retrieveZaloFriendsAsNeeded();
+        presenter.getFriedListFromDB(null);
     }
 
     private void initSearchTimer() {
@@ -158,10 +142,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
             @Override
             public void onFinish() {
-                String textSearch = edtSearch.getText().toString();
-                Bundle bundle = new Bundle();
-                bundle.putString(TEXT_SEARCH, textSearch);
-                getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, ZaloContactFragment.this);
+                getFriedListFromDB();
             }
         };
     }
@@ -169,13 +150,11 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        getLoaderManager().initLoader(LOADER_ZALO_FRIEND, null, this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        getLoaderManager().destroyLoader(LOADER_ZALO_FRIEND);
     }
 
     @Override
@@ -193,8 +172,13 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onDestroyView() {
         presenter.destroyView();
+        mAdapter.setLazyList(null);
         mAdapter = null;
         mRecyclerView = null;
+        if (mSearchTimer != null) {
+            mSearchTimer.cancel();
+            mSearchTimer = null;
+        }
         super.onDestroyView();
     }
 
@@ -248,25 +232,34 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     @Override
-    public void onItemClick(ZaloFriend zaloFriend) {
+    public void onItemClick(ZaloFriendGD zaloFriendGD) {
+        if (zaloFriendGD == null) {
+            return;
+        }
         if (mTransferState == null) {
             mTransferState = new Bundle();
         }
+        ZaloFriend zaloFriend = mFriendRepository.convertZaloFriendGD(zaloFriendGD);
         mTransferState.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
         navigator.startTransferActivity(this, mTransferState);
     }
 
-    public void onZaloFriendUpdated() {
-        Timber.d("onZaloFriendUpdated");
+    @Override
+    public void onGetZaloFriendFinish(LazyList<ZaloFriendGD> items) {
+        Timber.d("onGetZaloFriendFinish.... items: %s", items);
+        if (items == null || items.size() <= 0) {
+            onGetDataDBEmpty();
+        } else {
+            onGetDataDBSuccess(items);
+        }
         mSwipeRefresh.setRefreshing(false);
     }
 
+    @Override
     public void onGetZaloFriendFinish() {
         Timber.d("onGetZaloFriendFinish");
         mSwipeRefresh.setRefreshing(false);
-        if (mAdapter != null) {
-            getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, new Bundle(), this);
-        }
+        getFriedListFromDB();
     }
 
     @Override
@@ -278,8 +271,6 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         Timber.d("onGetZaloContactError");
         hideLoading();
         mSwipeRefresh.setRefreshing(false);
-        mAdapter.setMoreLoading(false);
-        mAdapter.setProgressMore(false);
         if (!NetworkHelper.isNetworkAvailable(getContext())) {
             SweetAlertDialog.OnSweetClickListener cancelListener = new SweetAlertDialog.OnSweetClickListener() {
                 @Override
@@ -306,71 +297,26 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        int limitItem = PAGE_SIZE;
-        String txtSearch = "";
-        if (args != null) {
-            limitItem = args.getInt(LIMIT_ITEMS, PAGE_SIZE);
-            txtSearch = args.getString(TEXT_SEARCH, "");
+    private void getFriedListFromDB() {
+        String txtSearch = null;
+        if (edtSearch.getText() != null) {
+            txtSearch = edtSearch.getText().toString();
         }
-        mCurrentItem = limitItem;
-        String selection = "";
+        Timber.d("getFriedListFromDB, txtSearch: %s", txtSearch);
         if (!TextUtils.isEmpty(txtSearch)) {
-            selection += ZaloFriendGDDao.Properties.Fulltextsearch.columnName + " like '%" + txtSearch.toLowerCase() + "%'";
-        }
-        String orderByWithLimit = ZaloFriendGDDao.Properties.Fulltextsearch.columnName +
-                " ASC" +
-                " LIMIT " +
-                limitItem;
-        Timber.d("onCreateLoader, selection: %s", selection);
-        Timber.d("onCreateLoader, orderByWithLimit: %s", orderByWithLimit);
-        return new CursorLoader(getActivity(), ZaloFriendContentProviderImpl.CONTENT_URI, null, selection, null, orderByWithLimit);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Timber.d("onLoadFinished.... cursor: %s", cursor);
-        List<ZaloFriend> zaloFriends = convertCursorToList(cursor);
-        if (zaloFriends == null || zaloFriends.size() <= 0) {
-            onGetDataDBEmpty();
+            presenter.getFriedListFromDB(txtSearch.toLowerCase());
         } else {
-            onGetDataDBSuccess(zaloFriends);
-        }
-        mSwipeRefresh.setRefreshing(false);
-        mAdapter.setMoreLoading(false);
-        mAdapter.setProgressMore(false);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        Timber.d("onLoaderReset");
-        if (mAdapter != null) {
-            mAdapter.setData(new ArrayList<ZaloFriend>());
+            presenter.getFriedListFromDB(null);
         }
     }
 
-    private List<ZaloFriend> convertCursorToList(Cursor cursor) {
-        List<ZaloFriend> transferRecents = new ArrayList<>();
-        if (cursor == null || cursor.getCount() <= 0) {
-            Timber.d("onLoadFinished.... cursor null/empty");
-            return transferRecents;
-        }
-        Timber.d("convertCursorToList.... cursor: %s", cursor.getCount());
-        if (cursor.moveToFirst()) {
-            do {
-                transferRecents.add(mFriendRepository.getZaloFriendFrom(cursor));
-            } while (cursor.moveToNext());
-        }
-        return transferRecents;
-    }
-
-    private void onGetDataDBSuccess(List<ZaloFriend> zaloFriends) {
+    private void onGetDataDBSuccess(LazyList<ZaloFriendGD> zaloFriends) {
+        Timber.d("onGetDataDBSuccess mAdapter %s", mAdapter);
         hideLoading();
         if (mAdapter == null) {
             return;
         }
-        mAdapter.setData(zaloFriends);
+        mAdapter.setLazyList(zaloFriends);
         if (zaloFriends != null && zaloFriends.size() > 0) {
             viewSeparate.setVisibility(View.VISIBLE);
         } else {
@@ -383,7 +329,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         if (mAdapter == null) {
             return;
         }
-        mAdapter.setData(null);
+        mAdapter.setLazyList(null);
         viewSeparate.setVisibility(View.GONE);
     }
 
@@ -393,27 +339,4 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         presenter.getFriendListServer();
     }
 
-    @Override
-    public void onLoadMore() {
-        Timber.d("onLoadMore start");
-        final int itemsCount = mAdapter == null ? 0 : mAdapter.getItemCount();
-        Timber.d("onLoadMore itemsCount:%s", itemsCount);
-        Timber.d("onLoadMore mCurrentItem:%s", mCurrentItem);
-        if ((itemsCount + 1) < PAGE_SIZE || mCurrentItem > itemsCount) {
-            Timber.d("onLoadMore cancel");
-            return;
-        }
-        Timber.d("onLoadMore show progress");
-        mAdapter.setProgressMore(true);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                Bundle bundle = new Bundle();
-                mCurrentItem = (itemsCount + 1) + PAGE_SIZE;
-                bundle.putInt(LIMIT_ITEMS, mCurrentItem);
-                bundle.putString(TEXT_SEARCH, edtSearch.getText().toString());
-                getLoaderManager().restartLoader(LOADER_ZALO_FRIEND, bundle, ZaloContactFragment.this);
-            }
-        }, 500);
-    }
 }

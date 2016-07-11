@@ -1,12 +1,12 @@
 package vn.com.vng.zalopay.data.zfriend;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
+import de.greenrobot.dao.query.LazyList;
 import rx.Observable;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -26,6 +26,8 @@ public interface FriendStore {
         List<ZaloFriendGD> listZaloFriend();
 
         List<ZaloFriendGD> listZaloFriend(int limit);
+
+        LazyList<ZaloFriendGD> listZaloFriend(String textSearch);
     }
 
     interface RequestService {
@@ -46,7 +48,9 @@ public interface FriendStore {
     interface Repository {
         Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded();
         Observable<List<ZaloFriend>> fetchListFromServer();
+        Observable<LazyList<ZaloFriendGD>> listZaloFriendFromDb(String textSearch);
 
         ZaloFriend getZaloFriendFrom(Cursor cursor);
+        ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD);
     }
 }

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui.view;
 
+import de.greenrobot.dao.query.LazyList;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -7,7 +9,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface IZaloContactView extends ILoadDataView {
     void onGetZaloFriendError();
-    void onZaloFriendUpdated();
     void onGetZaloFriendFinish();
+    void onGetZaloFriendFinish(LazyList<ZaloFriendGD> items);
     void onGetZaloFriendTimeout();
 }

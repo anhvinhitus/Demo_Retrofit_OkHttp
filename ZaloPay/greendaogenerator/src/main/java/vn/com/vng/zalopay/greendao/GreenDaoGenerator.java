@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 16;
+    private static final int APP_DB_VERSION = 17;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -27,6 +27,7 @@ public class GreenDaoGenerator {
 
     private static void addZaloContact(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("ZaloFriendGD");
+        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.PersistentObject");
         appInfoEntity.addIdProperty();//zaloId
 //        appInfoEntity.addLongProperty("userId").notNull().unique();
         appInfoEntity.addStringProperty("userName");

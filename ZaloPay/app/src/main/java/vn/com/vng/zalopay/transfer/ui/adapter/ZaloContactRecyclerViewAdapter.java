@@ -10,26 +10,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import de.greenrobot.dao.query.LazyList;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.recyclerview.EndlessListAdapter;
+import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ZaloFriend} and makes a call to the
  * specified {}.
  */
-public class ZaloContactRecyclerViewAdapter extends EndlessListAdapter<ZaloFriend> {
-    private Context mContext;
-
+public class ZaloContactRecyclerViewAdapter extends AbstractLazyListAdapter<ZaloFriendGD> {
     private OnItemInteractionListener mListener;
 
     public interface OnItemInteractionListener {
-        void onItemClick(ZaloFriend item);
+        void onItemClick(ZaloFriendGD item);
     }
 
-    public ZaloContactRecyclerViewAdapter(Context context, OnItemInteractionListener listener, OnLoadMoreListener onLoadMoreListener) {
-        super(onLoadMoreListener);
-        this.mContext = context;
+    public ZaloContactRecyclerViewAdapter(Context context, LazyList<ZaloFriendGD> items, OnItemInteractionListener listener) {
+        super(context, items);
         this.mListener = listener;
     }
 
@@ -37,7 +35,7 @@ public class ZaloContactRecyclerViewAdapter extends EndlessListAdapter<ZaloFrien
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ZaloContactViewHolder) {
             final ZaloContactViewHolder viewHolder = (ZaloContactViewHolder) holder;
-            viewHolder.mItem = getItemList().get(position);
+            viewHolder.mItem = getItem(position);
             viewHolder.mTvDisplayName.setText(viewHolder.mItem.getDisplayName());
             loadImage(viewHolder.mImgAvatar, viewHolder.mItem.getAvatar());
             if (position < getItemCount() - 1) {
@@ -45,7 +43,7 @@ public class ZaloContactRecyclerViewAdapter extends EndlessListAdapter<ZaloFrien
             } else {
                 viewHolder.mViewSeparate.setVisibility(View.GONE);
             }
-            if (viewHolder.mItem.isUsingApp()) {
+            if (viewHolder.mItem.getUsingApp()) {
                 viewHolder.mImgZaloPay.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.mImgZaloPay.setVisibility(View.GONE);
@@ -69,10 +67,10 @@ public class ZaloContactRecyclerViewAdapter extends EndlessListAdapter<ZaloFrien
     }
 
     private void loadImage(ImageView image, String url) {
-        if (mContext == null) {
+        if (getContext() == null) {
             return;
         }
-        Glide.with(mContext).load(url).centerCrop().placeholder(R.color.silver).into(image);
+        Glide.with(getContext()).load(url).centerCrop().placeholder(R.color.silver).into(image);
     }
 
     public class ZaloContactViewHolder extends RecyclerView.ViewHolder {
@@ -81,7 +79,7 @@ public class ZaloContactRecyclerViewAdapter extends EndlessListAdapter<ZaloFrien
         public ImageView mImgAvatar;
         public ImageView mImgZaloPay;
         public View mViewSeparate;
-        public ZaloFriend mItem;
+        public ZaloFriendGD mItem;
 
         public ZaloContactViewHolder(View view) {
             super(view);
