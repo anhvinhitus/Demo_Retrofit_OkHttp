@@ -23,6 +23,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
+    private SweetAlertDialog mErrorDialog;
 
     @Override
     protected void setupActivityComponent() {
@@ -77,6 +78,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void onDestroy() {
+        destroyErrorDialog();
         loginPresenter.destroy();
         super.onDestroy();
     }
@@ -140,16 +142,26 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showError(String message) {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
-                .setContentText(message)
-                .setConfirmText(getContext().getString(R.string.txt_close))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                    }
-                })
-                .show();
+        Timber.d("showError message %s", message);
+        if (mErrorDialog == null) {
+            mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setConfirmText(getContext().getString(R.string.txt_close))
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+                        }
+                    });
+        }
+        mErrorDialog.setContentText(message);
+        mErrorDialog.show();
+    }
+
+    private void destroyErrorDialog() {
+        if (mErrorDialog != null && mErrorDialog.isShowing()) {
+            mErrorDialog.dismiss();
+        }
+        mErrorDialog = null;
     }
 
     @Override

@@ -100,9 +100,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         zaloProfilePreferences.setAuthCode("");*/
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
-            if (NetworkHelper.isNetworkAvailable(applicationContext)) {
+            if (!NetworkHelper.isNetworkAvailable(applicationContext)) {
                 showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
                 zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
+            } else if (errorCode == -1111) {
+                Timber.d("onAuthError User click backpress");
             } else {
                 if (TextUtils.isEmpty(message)) {
                     message = applicationContext.getString(R.string.exception_login_zalo_error);
