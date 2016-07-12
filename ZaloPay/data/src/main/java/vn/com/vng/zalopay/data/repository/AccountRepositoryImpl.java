@@ -5,6 +5,7 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
@@ -63,9 +64,8 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> recoverypin(String pin, String otp) {
-        return accountService.recoverypin(user.uid, user.accesstoken, pin, otp)
-                .map(baseResponse -> Boolean.TRUE);
+    public Observable<BaseResponse> recoverypin(String pin, String otp) {
+        return accountService.recoverypin(user.uid, user.accesstoken, pin, otp);
     }
 
     @Override

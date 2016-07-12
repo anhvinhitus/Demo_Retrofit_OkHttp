@@ -10,6 +10,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IOTPRecoveryPinView extends ILoadDataView {
     Activity getActivity();
     void confirmOTPSuccess();
-    void confirmOTPError();
+    void confirmOTPError(String msg);
 }
 

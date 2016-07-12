@@ -6,6 +6,8 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPRecoveryPinView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -49,9 +51,15 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
-        mView.confirmOTPError();
+        if (e != null) {
+            mView.confirmOTPError(e.getMessage());
+        }
     }
 
+    private void onConfirmOTPError(String msg) {
+        hideLoading();
+        mView.confirmOTPError(msg);
+    }
     private void onVerifyOTPSucess() {
         hideLoading();
         mView.confirmOTPSuccess();
@@ -65,12 +73,12 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
                 .subscribe(new VerifyOTPRecoveryPinSubscriber());
     }
 
-    private final class VerifyOTPRecoveryPinSubscriber extends DefaultSubscriber<Boolean> {
+    private final class VerifyOTPRecoveryPinSubscriber extends DefaultSubscriber<BaseResponse> {
         public VerifyOTPRecoveryPinSubscriber() {
         }
 
         @Override
-        public void onNext(Boolean result) {
+        public void onNext(BaseResponse baseResponse) {
             OTPRecoveryPinPresenter.this.onVerifyOTPSucess();
         }
 
@@ -83,7 +91,11 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-
+            if (e instanceof BodyException) {
+                BodyException bodyException = (BodyException)e;
+                OTPRecoveryPinPresenter.this.onConfirmOTPError(bodyException.getMessage());
+                return;
+            }
             Timber.e(e, "onError " + e);
             OTPRecoveryPinPresenter.this.onConfirmOTPError(e);
         }

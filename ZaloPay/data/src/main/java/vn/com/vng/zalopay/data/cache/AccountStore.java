@@ -64,7 +64,7 @@ public interface AccountStore {
 
         Observable<ProfilePermission> verifyOTPProfile(String otp);
 
-        Observable<Boolean> recoverypin(String pin, String otp);
+        Observable<BaseResponse> recoverypin(String pin, String otp);
 
         Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin);
 
