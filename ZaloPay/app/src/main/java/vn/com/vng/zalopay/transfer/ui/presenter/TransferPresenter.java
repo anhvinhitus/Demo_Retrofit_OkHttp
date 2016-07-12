@@ -64,6 +64,9 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
+                if (mView == null) {
+                    return;
+                }
                 if ("order".equalsIgnoreCase(param)) {
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
                 } else if ("uid".equalsIgnoreCase(param)) {
@@ -76,15 +79,21 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
             @Override
             public void onResponseError(int status) {
+                if (mView == null) {
+                    return;
+                }
                 mView.hideLoading();
             }
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                if (mView == null) {
+                    return;
+                }
                 updateTransaction();
                 updateBalance();
 
-                if (mView != null && mView.getActivity() != null) {
+                if (mView.getActivity() != null) {
                     mView.getActivity().setResult(Activity.RESULT_OK, null);
                     mView.getActivity().finish();
                 }
@@ -100,17 +109,26 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
             @Override
             public void onResponseTokenInvalid() {
+                if (mView == null) {
+                    return;
+                }
                 mView.onTokenInvalid();
                 clearAndLogout();
             }
 
             @Override
             public void onResponseCancel() {
+                if (mView == null) {
+                    return;
+                }
                 mView.hideLoading();
             }
 
             @Override
             public void onNotEnoughMoney() {
+                if (mView == null) {
+                    return;
+                }
                 navigator.startDepositActivity(mView.getContext());
             }
         });
