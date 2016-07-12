@@ -7,6 +7,10 @@ import android.text.TextUtils;
  */
 public class PhoneUtil {
 
+    public static String toString(long phoneNumber) {
+        return formatPhoneNumber(String.valueOf(phoneNumber));
+    }
+
     public static String formatPhoneNumber(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber) || !isPhoneNumber(phoneNumber)) {
             return "";
