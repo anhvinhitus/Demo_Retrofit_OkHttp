@@ -2,15 +2,9 @@ package vn.com.vng.zalopay.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import vn.com.vng.zalopay.R;
 
 /**
  * Created by longlv on 10/6/15.
