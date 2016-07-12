@@ -8,10 +8,8 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.api.response.GetUserProfileLevelResponse;
 import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
@@ -44,7 +42,7 @@ public interface AccountStore {
         Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("loginuid") long zaloId, @Field("systemlogin") int systemlogin);
 
         @GET("um/getuserprofilelevel")
-        Observable<GetUserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
+        Observable<UpdateProfileResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
     }
 
     interface UploadPhotoService {
@@ -81,5 +79,7 @@ public interface AccountStore {
                                            byte[] fimgPath,
                                            byte[] bimgPath,
                                            byte[] avatarPath);
+
+        Observable<ProfilePermission> getUserProfileLevel();
     }
 }

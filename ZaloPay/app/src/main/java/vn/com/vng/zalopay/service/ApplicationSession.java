@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
+import com.google.android.gms.iid.InstanceID;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
+import java.io.IOException;
 
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -29,20 +32,27 @@ public class ApplicationSession {
      * Clear current user session and move to login state
      */
     public void clearUserSession() {
-        // clear current user DB
-        UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
-        userConfig.clearConfig();
-        userConfig.setCurrentUser(null);
-
-        // move to login
-        ZaloSDK.Instance.unauthenticate();
-        AndroidApplication.instance().releaseUserComponent();
 
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
         nm.cancelAll();
 
+        try {
+            InstanceID.getInstance(applicationContext).deleteInstanceID();
+        } catch (IOException e) {
+        }
+
         applicationContext.stopService(new Intent(applicationContext, NotificationService.class));
+
+        // move to login
+        ZaloSDK.Instance.unauthenticate();
+
+        // clear current user DB
+        UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+        userConfig.clearConfig();
+        userConfig.setCurrentUser(null);
+
+        AndroidApplication.instance().releaseUserComponent();
 
         if (TextUtils.isEmpty(mLoginMessage)) {
             navigator.startLoginActivity(applicationContext, true);

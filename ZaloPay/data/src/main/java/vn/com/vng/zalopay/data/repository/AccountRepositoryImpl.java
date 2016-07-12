@@ -42,11 +42,23 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .map(baseResponse -> {
                     ProfilePermission profilePermission = new ProfilePermission();
                     profilePermission.profileLevel = baseResponse.profilelevel;
-                    profilePermission.profilePermissions = baseResponse.profilePermisssions;
+                    profilePermission.profilePermissions = baseResponse.profilePermissions;
                     return profilePermission;
                 })
                 .doOnNext(profilePermission -> {
                     userConfig.updateProfilePermissions(profilePermission.profileLevel, profilePermission.profilePermissions);
+                });
+    }
+
+    @Override
+    public Observable<ProfilePermission> getUserProfileLevel() {
+        return accountService.getUserProfileLevel(user.uid, user.accesstoken)
+                .doOnNext(response -> userConfig.updateProfilePermissions(response.profilelevel, response.profilePermissions))
+                .map(baseResponse -> {
+                    ProfilePermission profilePermission = new ProfilePermission();
+                    profilePermission.profileLevel = baseResponse.profilelevel;
+                    profilePermission.profilePermissions = baseResponse.profilePermissions;
+                    return profilePermission;
                 });
     }
 

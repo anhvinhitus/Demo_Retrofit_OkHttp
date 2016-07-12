@@ -1,15 +1,7 @@
 package vn.com.vng.zalopay.domain.model;
 
-import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by AnhHieu on 3/25/16.

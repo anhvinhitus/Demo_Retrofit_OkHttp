@@ -11,8 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.google.gson.JsonObject;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -20,9 +19,11 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -35,11 +36,13 @@ public class NotificationHelper {
     final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     final NotificationStore.LocalStorage notificationStore;
+    final AccountStore.Repository accountRepository;
     final Context context;
 
-    public NotificationHelper(Context applicationContext, NotificationStore.LocalStorage notificationStore) {
+    public NotificationHelper(Context applicationContext, NotificationStore.LocalStorage notificationStore, AccountStore.Repository accountRepository) {
         this.notificationStore = notificationStore;
         this.context = applicationContext;
+        this.accountRepository = accountRepository;
     }
 
 
@@ -100,22 +103,36 @@ public class NotificationHelper {
         manager.notify(0, n);
     }
 
-    public void cancell(Context context, int id) {
-        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
-        nm.cancel(id);
-    }
-
-    public void cancellAll(Context context) {
-        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
-        nm.cancelAll();
-    }
-
-
     public void processNotification(NotificationData notify) {
-        this.updateTransaction();
-        this.updateBalance();
+
+        if (notify.getTransType() > 0) {
+            this.updateTransaction();
+            this.updateBalance();
+        } else if (notify.getNotificationType() == 2) {
+            try {
+                JsonObject embeddata = notify.embeddata;
+                if (embeddata != null) {
+                    int status = embeddata.get("status").getAsInt();
+                    int profileLevel = embeddata.get("profilelevel").getAsInt();
+                    if (profileLevel > 2 && status == 1) {
+                        updateProfilePermission();
+                    }
+                }
+            } catch (Exception ex) {
+                Timber.e(ex, "exception");
+            }
+        }
+
         notificationStore.put(notify);
         this.showNotification(notify);
+
+    }
+
+
+    private void updateProfilePermission() {
+        accountRepository.getUserProfileLevel()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<ProfilePermission>());
     }
 
     private void showNotification(NotificationData event) {
