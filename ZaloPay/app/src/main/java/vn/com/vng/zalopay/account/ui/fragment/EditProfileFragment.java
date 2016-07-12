@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -29,19 +28,17 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EditProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link EditProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class EditProfileFragment extends BaseFragment implements IProfileView {
-    private OnFragmentInteractionListener mListener;
-
     @Inject
     ProfilePresenter mPresenter;
 
@@ -59,6 +56,8 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     TextView tvBalance;
     @BindView(R.id.tvPhone)
     TextView tvPhone;
+    @BindView(R.id.tvEmail)
+    TextView tvEmail;
     @BindView(R.id.tvCMND)
     TextView tvCMND;
     @BindView(R.id.tvAddress)
@@ -113,7 +112,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     EditText edtZaloPayId;
 
     @OnTextChanged(R.id.edtFullName)
-    public void onTextChangedFullName(CharSequence charSequence) {
+    public void onTextChangedFullName() {
         if (isValidFullName()) {
             hideFullNameError();
         } else {
@@ -122,7 +121,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @OnTextChanged(R.id.edtPhone)
-    public void onTextChangedPhone(CharSequence charSequence) {
+    public void onTextChangedPhone() {
         if (isValidPhone()) {
             hidePhoneError();
         } else {
@@ -131,7 +130,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @OnTextChanged(R.id.edtEmail)
-    public void onTextChangedEmail(CharSequence charSequence) {
+    public void onTextChangedEmail() {
         if (isValidEmail()) {
             hideEmailError();
         } else {
@@ -140,7 +139,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @OnTextChanged(R.id.edtCmnd)
-    public void onTextChangedCmnd(CharSequence charSequence) {
+    public void onTextChangedCmnd() {
         if (isValidCmnd()) {
             hideCmndError();
         } else {
@@ -149,7 +148,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @OnTextChanged(R.id.edtAddress)
-    public void onTextChangedAddress(CharSequence charSequence) {
+    public void onTextChangedAddress() {
         if (isValidAddress()) {
             hideAddressError();
         } else {
@@ -159,42 +158,27 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
 
     public boolean isValidFullName() {
         String fullName = edtFullName.getText().toString();
-        if (TextUtils.isEmpty(fullName)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(fullName);
     }
 
     public boolean isValidPhone() {
         String phone = edtPhone.getString();
-        if (TextUtils.isEmpty(phone)) {
-            return false;
-        }
-        return ValidateUtil.isMobileNumber(phone);
+        return !TextUtils.isEmpty(phone) && ValidateUtil.isMobileNumber(phone);
     }
 
     public boolean isValidEmail() {
         String email = edtEmail.getText().toString();
-        if (TextUtils.isEmpty(email)) {
-            return false;
-        }
-        return ValidateUtil.isEmailAddress(email);
+        return !TextUtils.isEmpty(email) && ValidateUtil.isEmailAddress(email);
     }
 
     public boolean isValidCmnd() {
         String cmnd = edtCmnd.getText().toString();
-        if (TextUtils.isEmpty(cmnd)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(cmnd);
     }
 
     public boolean isValidAddress() {
         String address = edtAddress.getText().toString();
-        if (TextUtils.isEmpty(address)) {
-            return false;
-        }
-        return true;
+        return !TextUtils.isEmpty(address);
     }
 
     private void showFullNameError() {
@@ -258,12 +242,12 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @OnClick(R.id.imgEditInfo)
-    public void onClickEditInfo(View view) {
+    public void onClickEditInfo() {
         showEditProfileInfo();
     }
 
     @OnClick(R.id.btnUpdate)
-    public void onClickBtnContinue(View view) {
+    public void onClickBtnContinue() {
         boolean isSuccess = true;
         if (!isValidFullName()) {
             showFullNameError();
@@ -330,8 +314,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
      */
     // TODO: Rename and change types and number of parameters
     public static EditProfileFragment newInstance() {
-        EditProfileFragment fragment = new EditProfileFragment();
-        return fragment;
+        return new EditProfileFragment();
     }
 
     @Override
@@ -362,33 +345,19 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
         mPresenter.resume();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
     public boolean onBackPressed() {
-        if (layoutEditProfileInfo.getVisibility()==View.VISIBLE) {
+        if (layoutEditProfileInfo.getVisibility() == View.VISIBLE) {
             showProfileInfo();
             return true;
         } else {
@@ -407,7 +376,16 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
         if (user == null) {
             return;
         }
-        Date date = new Date(user.birthDate*1000);
+        if (!TextUtils.isEmpty(user.email))
+            tvEmail.setText(user.email);
+        String strPhoneNumber = PhoneUtil.toString(user.phonenumber);
+        if (!TextUtils.isEmpty(strPhoneNumber))
+            tvPhone.setText(strPhoneNumber);
+        if (!TextUtils.isEmpty(user.identityNumber))
+            tvCMND.setText(user.identityNumber);
+//        tvAddress.setText(userConfig.getCurrentUser().);
+
+        Date date = new Date(user.birthDate * 1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String birthday = simpleDateFormat.format(date);
         String zaloPayId = String.valueOf(user.uid);
@@ -458,21 +436,5 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     @Override
     public void showError(String message) {
         super.showToast(message);
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
