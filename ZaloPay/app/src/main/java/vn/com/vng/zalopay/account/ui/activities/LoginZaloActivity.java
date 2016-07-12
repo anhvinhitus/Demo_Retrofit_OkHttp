@@ -14,7 +14,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
@@ -141,7 +140,16 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                .setContentText(message)
+                .setConfirmText(getContext().getString(R.string.txt_close))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     @Override
