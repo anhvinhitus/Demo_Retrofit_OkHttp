@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationLocalStorage;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -36,8 +37,8 @@ public class NotificationModule {
 
     @UserScope
     @Provides
-    NotificationHelper providesNotificationHelper(Context context, NotificationStore.LocalStorage localStorage) {
-        return new NotificationHelper(context, localStorage);
+    NotificationHelper providesNotificationHelper(Context context, NotificationStore.LocalStorage localStorage, AccountStore.Repository repository) {
+        return new NotificationHelper(context, localStorage, repository);
     }
 
 
