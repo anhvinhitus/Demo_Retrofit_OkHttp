@@ -98,17 +98,33 @@ public class PaymentWrapper {
                 .subscribe(new GetOrderSubscriber());
     }
 
-    public void transfer(Order order, String displayName, String avatar, String phoneNumber) {
+    private UserInfo getUserInfo(String displayName, String avatar, String phoneNumber) {
+        UserInfo mUserInfo = getUserInfo();
+        mUserInfo.phoneNumber = phoneNumber;
+        mUserInfo.userName = displayName;
+//        mUserInfo.userimage = avatar;
+        return mUserInfo;
+    }
+
+    private UserInfo getUserInfo() {
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
         UserInfo mUserInfo = new UserInfo();
-        mUserInfo.phonenumber = phoneNumber;
-        mUserInfo.userimage = avatar;
-        mUserInfo.username = displayName;
-        mUserInfo.level = getUserProfileLevel();
-        mUserInfo.userProfile = getUserPermission();
+        if (user != null) {
+            mUserInfo.zaloUserId = String.valueOf(user.zaloId);
+            mUserInfo.zaloPayUserId = user.uid;
+            mUserInfo.accessToken = user.accesstoken;
+            mUserInfo.level = getUserProfileLevel();
+            mUserInfo.userProfile = getUserPermission();
+        }
+        return mUserInfo;
+    }
+
+    public void transfer(Order order, String displayName, String avatar, String phoneNumber) {
+
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
-
-        callPayAPI(paymentInfo, forcedPaymentChannel, mUserInfo);
+        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber);
+        callPayAPI(paymentInfo, forcedPaymentChannel);
     }
 
     public void payWithDetail(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
@@ -153,7 +169,7 @@ public class PaymentWrapper {
             return;
         }
 
-        ZPWPaymentInfo paymentInfo = createPaymentInfo(appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac, user);
+        ZPWPaymentInfo paymentInfo = createPaymentInfo(appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
         callPayAPI(paymentInfo);
     }
 
@@ -220,11 +236,9 @@ public class PaymentWrapper {
         if (viewListener == null) {
             return;
         }
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
 
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.zaloUserID = user.uid;
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        paymentInfo.userInfo = getUserInfo();
         paymentInfo.walletTransID = walletTransId;
 
         Timber.d("saveCardMap, start paymentsdk");
@@ -232,21 +246,20 @@ public class PaymentWrapper {
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.level = getUserProfileLevel();
-        userInfo.userProfile = getUserPermission();
-        callPayAPI(paymentInfo, paymentChannel, userInfo);
-    }
-
-    private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel, UserInfo userInfo) {
-        if (userInfo == null || userInfo.level < 0 || TextUtils.isEmpty(userInfo.userProfile)) {
+        if (paymentInfo == null) {
+            return;
+        }
+        if (paymentInfo.userInfo == null) {
+            paymentInfo.userInfo = getUserInfo();
+        }
+        if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
             zpPaymentListener.onCancel();
             return;
         }
         if (balanceRepository != null) {
-            userInfo.balance = balanceRepository.currentBalance();
+            paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
-        ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, userInfo, zpPaymentListener);
+        ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
     }
 
     private int getUserProfileLevel() {
@@ -274,11 +287,10 @@ public class PaymentWrapper {
     }
 
     @NonNull
-    private ZPWPaymentInfo createPaymentInfo(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac, User user) {
+    private ZPWPaymentInfo createPaymentInfo(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         paymentInfo.appID = appID;
-        paymentInfo.zaloUserID = String.valueOf(user.uid);
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        paymentInfo.userInfo = getUserInfo();
         paymentInfo.appTime = appTime;
         paymentInfo.appTransID = appTransID;
         paymentInfo.itemName = itemName;
@@ -293,12 +305,10 @@ public class PaymentWrapper {
 
     @NonNull
     private ZPWPaymentInfo transform(Order order) {
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
         paymentInfo.appID = order.getAppid();
-        paymentInfo.zaloUserID = String.valueOf(user.uid);
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        paymentInfo.userInfo = getUserInfo();
         paymentInfo.appTime = Long.valueOf(order.getApptime());
         paymentInfo.appTransID = order.getApptransid();
         Timber.d("paymentInfo.appTransID: %s", paymentInfo.appTransID);

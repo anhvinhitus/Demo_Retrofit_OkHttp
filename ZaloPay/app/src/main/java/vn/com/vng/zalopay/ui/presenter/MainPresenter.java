@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 
 /**
@@ -97,8 +98,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private void loadGatewayInfoPaymentSDK() {
         User user = userConfig.getCurrentUser();
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.zaloUserID = String.valueOf(user.uid);
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        UserInfo userInfo = new UserInfo();
+        userInfo.zaloUserId = String.valueOf(user.zaloId);
+        userInfo.zaloPayUserId = user.uid;
+        userInfo.accessToken = user.accesstoken;
+        paymentInfo.userInfo = userInfo;
         ZingMobilePayApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
             @Override
             public void onFinish() {
