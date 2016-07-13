@@ -4,7 +4,7 @@ import java.util.List;
 
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
+import retrofit2.http.Field;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
@@ -24,15 +24,15 @@ public interface RedPackageStore {
     interface RequestService {
         @FormUrlEncoded
         @POST("redpackage/createBundleOrder")
-        Observable<BundleOrderResponse> createBundleOrder(@Query("quantity") int quantity, @Query("totalLuck") long totalLuck, @Query("amountEach") long amountEach, @Query("type") int type, @Query("sendZaloPayID") String sendZaloPayID, @Query("accessToken") String accessToken, @Query("sendMessage") String sendMessage);
+        Observable<BundleOrderResponse> createBundleOrder(@Field("quantity") int quantity, @Field("totalLuck") long totalLuck, @Field("amountEach") long amountEach, @Field("type") int type, @Field("sendZaloPayID") String sendZaloPayID, @Field("accessToken") String accessToken, @Field("sendMessage") String sendMessage);
 
         @FormUrlEncoded
         @POST("redpackage/sendBundle")
-        Observable<BaseResponse> sendBundle(@Query("bundleID") long bundleID, @Query("friendList") String friendList, @Query("sendZaloPayID") String sendZaloPayID, @Query("accessToken") String accessToken);
+        Observable<BaseResponse> sendBundle(@Field("bundleID") long bundleID, @Field("friendList") String friendList, @Field("sendZaloPayID") String sendZaloPayID, @Field("accessToken") String accessToken);
 
         @FormUrlEncoded
         @POST("redpackage/submitOpenPackage")
-        Observable<RedPackageResponse> submitOpenPackage(@Query("packageID") long packageID, @Query("bundleID") long bundleID, @Query("revZaloPayID") String revZaloPayID, @Query("accessToken") String accessToken);
+        Observable<RedPackageResponse> submitOpenPackage(@Field("packageID") long packageID, @Field("bundleID") long bundleID, @Field("revZaloPayID") String revZaloPayID, @Field("accessToken") String accessToken);
     }
 
     /**
