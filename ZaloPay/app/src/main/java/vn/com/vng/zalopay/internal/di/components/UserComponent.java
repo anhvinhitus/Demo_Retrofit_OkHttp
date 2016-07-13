@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
+import vn.com.vng.zalopay.data.RedPacket.RedPackageStore;
 import vn.com.vng.zalopay.data.appresources.AppResource;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
@@ -24,6 +25,7 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.internal.di.modules.RedPackageModule;
 import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.AccountModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
@@ -66,7 +68,8 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
                 NotificationModule.class,
                 WsModule.class,
                 AccountModule.class,
-                FriendModule.class
+                FriendModule.class,
+                RedPackageModule.class
         }
 )
 public interface UserComponent {
@@ -78,6 +81,8 @@ public interface UserComponent {
     AccountStore.Repository accountRepository();
 
     ZaloPayRepository zaloPayRepository();
+
+    RedPackageStore.Repository redPackageStoreRepository();
 
     IPaymentService paymentService();
 
