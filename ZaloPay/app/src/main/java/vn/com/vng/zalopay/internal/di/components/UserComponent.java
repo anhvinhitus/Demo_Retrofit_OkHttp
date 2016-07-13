@@ -42,7 +42,6 @@ import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
-import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
@@ -152,8 +151,6 @@ public interface UserComponent {
     void inject(ChangePinActivity a);
 
     void inject(TransferHomeActivity activity);
-
-    void inject(NotificationService service);
 
     void inject(ZPNotificationService service);
 

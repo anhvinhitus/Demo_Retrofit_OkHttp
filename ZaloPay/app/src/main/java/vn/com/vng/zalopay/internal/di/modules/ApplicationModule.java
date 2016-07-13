@@ -32,8 +32,9 @@ import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.service.ApplicationSession;
+import vn.com.vng.zalopay.service.ApplicationSessionImpl;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
@@ -151,8 +152,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    ApplicationSession providesApplicationSession(Context context, Navigator navigator) {
-        return new ApplicationSession(context, navigator);
+    ApplicationSession providesApplicationSession(Context context, Navigator navigator, @Named("daosession") DaoSession daoSession) {
+        return new ApplicationSessionImpl(context, daoSession, navigator);
     }
 
     @Provides

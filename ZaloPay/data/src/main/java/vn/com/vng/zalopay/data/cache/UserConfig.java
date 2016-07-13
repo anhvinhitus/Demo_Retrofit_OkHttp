@@ -44,7 +44,7 @@ public interface UserConfig {
 
     boolean isSignIn();
 
-    void clearAllUserDB();
+  //  void clearAllUserDB();
 
     /*INVITATION*/
     void saveInvitationInfo(String uid, String session);
@@ -52,4 +52,8 @@ public interface UserConfig {
     String getSessionInvitation();
 
     String getUserIdInvitation();
+
+    String getLastUid();
+
+    void setLastUid(String uid);
 }

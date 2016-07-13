@@ -5,17 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +31,6 @@ import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -297,10 +293,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     private void startZaloPayService() {
-        /*if (checkPlayServices()) {*/
-        Intent intent = new Intent(this, NotificationService.class);
+
+        checkPlayServices();
+        Intent intent = new Intent(this, ZPNotificationService.class);
         startService(intent);
-        /*}*/
     }
 
     /**

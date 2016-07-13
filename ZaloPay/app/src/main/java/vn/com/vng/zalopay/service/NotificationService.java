@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.service;
 
 import android.app.Service;
@@ -31,9 +32,11 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 
+*/
 /**
  * Created by AnhHieu on 6/14/16.
- */
+ *//*
+
 public class NotificationService extends Service implements OnReceiverMessageListener {
 
     @Nullable
@@ -212,3 +215,4 @@ public class NotificationService extends Service implements OnReceiverMessageLis
         return AndroidApplication.instance().getAppComponent();
     }
 }
+*/

@@ -9,23 +9,34 @@ import com.google.android.gms.iid.InstanceID;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import java.io.IOException;
+import java.util.Collection;
 
+import javax.inject.Named;
+
+import de.greenrobot.dao.AbstractDao;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 
 /**
  * Created by huuhoa on 6/14/16.
  * Manage application session
  */
-public class ApplicationSession {
+public class ApplicationSessionImpl implements ApplicationSession {
     Navigator navigator;
     Context applicationContext;
     private String mLoginMessage;
+    final DaoSession daoSession;
 
-    public ApplicationSession(Context applicationContext, Navigator navigator) {
+
+    public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession, Navigator navigator) {
         this.applicationContext = applicationContext;
         this.navigator = navigator;
+        this.daoSession = daoSession;
     }
 
     /**
@@ -42,7 +53,7 @@ public class ApplicationSession {
         } catch (IOException e) {
         }
 
-        applicationContext.stopService(new Intent(applicationContext, NotificationService.class));
+        applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
 
         // move to login
         ZaloSDK.Instance.unauthenticate();
@@ -59,6 +70,22 @@ public class ApplicationSession {
         } else {
             navigator.startLoginActivity(applicationContext, mLoginMessage);
             mLoginMessage = null;
+        }
+    }
+
+
+    public void clearAllUserDB() {
+        Timber.d("clearAllUserDB");
+        try {
+            daoSession.clear();
+            Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
+            for (AbstractDao<?, ?> dao : daoCollection) {
+                if (dao != null) {
+                    dao.deleteAll();
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e, "exception");
         }
     }
 

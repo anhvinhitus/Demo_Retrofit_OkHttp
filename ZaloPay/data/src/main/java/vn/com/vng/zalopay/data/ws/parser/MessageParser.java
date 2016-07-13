@@ -34,7 +34,6 @@ public class MessageParser implements Parser {
     public Event parserMessage(byte[] msg) {
 
         Event ret = null;
-
         if (msg.length != 0) {
             try {
                 ret = processMessage(msg);
@@ -44,7 +43,6 @@ public class MessageParser implements Parser {
         }
 
         return ret;
-
     }
 
     private Event processMessage(byte[] msg) throws Exception {
@@ -61,7 +59,6 @@ public class MessageParser implements Parser {
 
         return null;
     }
-
 
     public Event processAuthenticationLoginSuccess(int msgType, byte[] data) {
         try {
@@ -81,7 +78,6 @@ public class MessageParser implements Parser {
 
     public Event processKickOutUser(int msgType, byte[] data) {
         Timber.d("You kickedout");
-
         return null;
     }
 

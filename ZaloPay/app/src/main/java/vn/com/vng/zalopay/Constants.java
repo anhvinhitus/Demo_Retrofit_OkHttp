@@ -23,6 +23,8 @@ public class Constants {
     public static final String PREF_PROFILE_LEVEL = "profilelevel";
     public static final String PREF_PROFILE_PERMISSIONS = "profilePermissions";
 
+    public static final String PREF_USER_LAST_USER_ID = "pref_last_uid";
+
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";
     public static final String ARG_ZALO_FRIEND = "zalofriend";

@@ -5,12 +5,9 @@ import javax.inject.Singleton;
 
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.repository.datasource.PassportFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
@@ -37,32 +34,8 @@ public class PassportRepositoryImpl implements PassportRepository {
     @Override
     public Observable<User> login(final long zuid, String zAuthCode) {
         return passportFactory.login(zuid, zAuthCode)
-                .map(response -> {
-                    User user = userEntityDataMapper.transform(response);
-
-                    user.dname = userConfig.getDisPlayName();
-                    user.avatar = userConfig.getAvatar();
-                    user.zaloId = userConfig.getZaloId();
-
-                    Timber.d("dname %s avatar %s zaloid %s", user.dname, user.avatar, user.zaloId);
-
-                    return user;
-                }).doOnNext(user -> {
-                            //Check old user & new user
-                            Timber.d("PassportRepositoryImpl before cleanup user database");
-                            User oldUser = userConfig.getCurrentUser();
-                            if (oldUser != null) {
-                                Timber.d("PassportRepositoryImpl before cleanup user oldUser: " + oldUser.uid);
-                            }
-                            if (oldUser == null || oldUser.uid != user.uid) {
-                                userConfig.clearAllUserDB();
-                            }
-
-                            Timber.d("save User");
-                            userConfig.setCurrentUser(user);
-                            userConfig.saveConfig(user);
-                        }
-                );
+                .map(response -> saveUser(response))
+                ;
     }
 
     @Override
@@ -73,31 +46,24 @@ public class PassportRepositoryImpl implements PassportRepository {
     @Override
     public Observable<User> verifyCode(String code) {
         return passportFactory.verifyInvitationCode(code)
-                .map(response -> {
-                    User user = userEntityDataMapper.transform(response);
-                    user.dname = userConfig.getDisPlayName();
-                    user.avatar = userConfig.getAvatar();
-                    user.zaloId = userConfig.getZaloId();
-                    Timber.d("dname %s avatar %s zaloid %s", user.dname, user.avatar, user.zaloId);
-
-                    return user;
-
-                }).doOnNext(user -> {
-                            //Check old user & new user
-                            Timber.d("PassportRepositoryImpl before cleanup user database");
-                            User oldUser = userConfig.getCurrentUser();
-                            if (oldUser != null) {
-                                Timber.d("PassportRepositoryImpl before cleanup user oldUser: " + oldUser.uid);
-                            }
-                            if (oldUser == null || oldUser.uid != user.uid) {
-                                userConfig.clearAllUserDB();
-                            }
-
-                            Timber.d("save User");
-                            userConfig.setCurrentUser(user);
-                            userConfig.saveConfig(user);
-                        }
-                )
+                .map(response -> saveUser(response))
                 ;
     }
+
+    private User transformWithZaloInfo(LoginResponse response) {
+        User user = userEntityDataMapper.transform(response);
+        user.dname = userConfig.getDisPlayName();
+        user.avatar = userConfig.getAvatar();
+        user.zaloId = userConfig.getZaloId();
+        Timber.d("dname %s avatar %s zaloid %s", user.dname, user.avatar, user.zaloId);
+        return user;
+    }
+
+    private User saveUser(LoginResponse response) {
+        User user = transformWithZaloInfo(response);
+        userConfig.setCurrentUser(user);
+        userConfig.saveConfig(user);
+        return user;
+    }
+
 }

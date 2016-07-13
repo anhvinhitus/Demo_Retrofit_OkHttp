@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,6 +29,7 @@ import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -46,8 +48,9 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
     final SharedPreferences sharedPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
+    final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+    final Gson mGson = AndroidApplication.instance().getAppComponent().gson();
 
-    @Inject
     WsConnection mWsConnection;
 
     @Inject
@@ -66,15 +69,18 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
         eventBus.register(this);
         boolean isInject = doInject();
-        if (isInject) {
-            mWsConnection.addReceiverListener(this);
-        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("onStartCommand: flags %s startId %s", flags, startId);
-        if (NetworkHelper.isNetworkAvailable(getApplicationContext())) {
+        if (NetworkHelper.isNetworkAvailable(this)) {
+
+            if (mWsConnection == null) {
+                mWsConnection = new WsConnection(this, new MessageParser(userConfig, mGson), userConfig);
+                mWsConnection.addReceiverListener(this);
+            }
+
             connectToServer();
         }
         return START_STICKY;
@@ -89,21 +95,25 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
 
     private void connectToServer() {
+
+        String token = null;
+
         try {
             InstanceID instanceID = InstanceID.getInstance(this);
 
             Timber.d("onHandleIntent: senderId %s", getString(R.string.gcm_defaultSenderId));
 
-            String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+            token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-
-            connect(token);
 
             subscribeTopics(token);
             sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
+            Timber.e(ex, "exception");
             sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
         }
+
+        this.connect(token);
     }
 
     private void connect(String token) {

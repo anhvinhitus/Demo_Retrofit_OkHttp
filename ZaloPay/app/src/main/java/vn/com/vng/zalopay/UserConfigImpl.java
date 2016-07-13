@@ -254,25 +254,15 @@ public class UserConfigImpl implements UserConfig {
         return preferences.getString(Constants.PREF_INVITATION_USERID, "");
     }
 
-    public void clearAllUserDB() {
-        Timber.d("clearAllUserDB..............");
-        clearConfig();
-        setCurrentUser(null);
-        clearAllCacheDatabase();
-        clearAllDatabase();
+    @Override
+    public String getLastUid() {
+        return preferences.getString(Constants.PREF_USER_LAST_USER_ID, "");
     }
 
-    private void clearAllDatabase() {
-        Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
-        for (AbstractDao<?, ?> dao : daoCollection) {
-            if (dao != null) {
-                dao.deleteAll();
-            }
-        }
-    }
-
-
-    private void clearAllCacheDatabase() {
-        daoSession.clear();
+    @Override
+    public void setLastUid(String uid) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_LAST_USER_ID, uid);
+        editor.apply();
     }
 }

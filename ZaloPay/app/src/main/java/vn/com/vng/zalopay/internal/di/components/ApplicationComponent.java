@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Singleton;
@@ -14,6 +16,7 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.ApiModule;
@@ -25,12 +28,10 @@ import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.receiver.NetworkReceiver;
-import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
-import vn.com.vng.zalopay.notification.NotificationHelper;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, ApiModule.class, AppControllerModule.class,
@@ -48,6 +49,8 @@ public interface ApplicationComponent {
     EventBus eventBus();
 
     SharedPreferences sharedPreferences();
+
+    Gson gson();
 
     UserConfig userConfig();
 
