@@ -11,6 +11,7 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
@@ -100,7 +101,7 @@ public class BalanceRepositoryTest {
             }
         });
 
-        countDownLatch.await();
+        Assert.assertTrue(countDownLatch.await(3, TimeUnit.SECONDS));
         Assert.assertArrayEquals(balanceValue.toArray(), balanceValueExpected);
     }
 
@@ -149,7 +150,7 @@ public class BalanceRepositoryTest {
             }
         });
 
-        countDownLatch.await();
+        Assert.assertTrue(countDownLatch.await(3, TimeUnit.SECONDS));
         Assert.assertArrayEquals(balanceValue.toArray(), balanceValueExpected);
         Assert.assertArrayEquals(balancePutValue.toArray(), balanceValueExpected);
     }
@@ -177,7 +178,7 @@ public class BalanceRepositoryTest {
             }
         });
 
-        countDownLatch.await();
+        Assert.assertTrue(countDownLatch.await(3, TimeUnit.SECONDS));
         Assert.assertEquals(Long.valueOf(returnBalance), mRepository.currentBalance());
     }
 }
