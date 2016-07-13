@@ -25,6 +25,14 @@
       "status": 1
     },
     {
+      "appid": 15,
+      "appname": "Thẻ Game",
+      "asset": "android.015.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
+    },
+    {
       "appid": 17,
       "appname": "Thanh toán tiền điện",
       "asset": "android.017.zip",
