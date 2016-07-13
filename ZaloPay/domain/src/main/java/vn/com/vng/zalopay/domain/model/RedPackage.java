@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by longlv on 13/07/2016.
+ * Relate with RedPackageResponse which is data of request "sendbundle"
  */
 public class RedPackage extends AbstractData {
     private String zpTransID;

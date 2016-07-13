@@ -1,13 +1,10 @@
 package vn.com.vng.zalopay.domain.model;
 
-import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import timber.log.Timber;
 
 /**
  * Created by longlv on 11/06/2016.
