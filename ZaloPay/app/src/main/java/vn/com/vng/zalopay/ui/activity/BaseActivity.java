@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -229,6 +230,17 @@ public abstract class BaseActivity extends AppCompatActivity {
             getAppComponent().applicationSession().clearUserSession();
         } else {
             showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountSuspended(AccountSuspendedException event) {
+        Timber.i("Receive server maintain event");
+        if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+            getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_zpw_account_suspended));
+            getAppComponent().applicationSession().clearUserSession();
+        } else {
+            showDialog(getString(R.string.exception_zpw_account_suspended), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         }
     }
 

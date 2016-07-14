@@ -16,6 +16,7 @@ import rx.Scheduler;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -90,6 +91,8 @@ final class ZaloPayCallAdapter implements CallAdapter<Observable<?>> {
             return Observable.error(new ServerMaintainException());
         } else if (baseResponse.isInvitationCode()) {
             return Observable.error(new InvitationCodeException(body.err, body));
+        } else if (baseResponse.isAccountSuspended()) {
+            return Observable.error(new AccountSuspendedException());
         } else {
             return Observable.error(new BodyException(body.err, body.message));
         }
