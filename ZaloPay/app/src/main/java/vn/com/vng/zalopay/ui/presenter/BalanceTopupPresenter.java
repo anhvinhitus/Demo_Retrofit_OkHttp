@@ -173,7 +173,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
         @Override
         public void onNext(Order order) {
-            Timber.d("login success " + order);
+            Timber.d("Create order for WalletTopup success: " + order);
             BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
         }
 

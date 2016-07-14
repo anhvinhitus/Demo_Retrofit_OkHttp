@@ -194,28 +194,40 @@ public class Order extends AbstractData {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{");
+        stringBuilder.append("appid: ");
         stringBuilder.append(appid);
         stringBuilder.append(", ");
+        stringBuilder.append("zptranstoken: ");
         stringBuilder.append(zptranstoken);
         stringBuilder.append(", ");
+        stringBuilder.append("apptransid: ");
         stringBuilder.append(apptransid);
         stringBuilder.append(", ");
+        stringBuilder.append("appuser: ");
         stringBuilder.append(appuser);
         stringBuilder.append(", ");
+        stringBuilder.append("apptime: ");
         stringBuilder.append(apptime);
         stringBuilder.append(", ");
+        stringBuilder.append("embeddata: ");
         stringBuilder.append(embeddata);
         stringBuilder.append(", ");
+        stringBuilder.append("item: ");
         stringBuilder.append(item);
         stringBuilder.append(", ");
+        stringBuilder.append("amount: ");
         stringBuilder.append(amount);
         stringBuilder.append(", ");;
+        stringBuilder.append("description: ");
         stringBuilder.append(description);
         stringBuilder.append(", ");
+        stringBuilder.append("payoption: ");
         stringBuilder.append(payoption);
         stringBuilder.append(", ");
+        stringBuilder.append("mac: ");
         stringBuilder.append(mac);
-        stringBuilder.append(", ");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }
