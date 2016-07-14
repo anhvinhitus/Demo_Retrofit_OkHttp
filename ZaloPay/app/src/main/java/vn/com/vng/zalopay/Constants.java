@@ -73,4 +73,9 @@ public class Constants {
     public static class TransactionType {
 
     }
+
+    public static class Apps {
+        public static final int INTERNAL = 1;
+        public static final int RED_PACKET = 6;
+    }
 }

@@ -19,7 +19,9 @@ import android.widget.TextView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -194,9 +196,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app, int position) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-        if (app.appid == 1) {
+        if (app.appid == Constants.Apps.INTERNAL) {
             navigator.startTransferMoneyActivity(getActivity());
-        } else if (app.appid == 5) {
+        } else if (app.appid == Constants.Apps.RED_PACKET) {
             navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.RED_PACKET);
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
@@ -207,20 +209,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     // FIXME: 6/28/16 
     private void logActionApp(int position) {
-        int action = ZPEvents.TAPAPPICON_1_1;
+        Timber.d("Tap on app at position %d", position);
 
-        switch (position) {
-            case 0:
-                action = ZPEvents.TAPAPPICON_1_1;
-                break;
-            case 1:
-                action = ZPEvents.TAPAPPICON_1_2;
-                break;
-            case 2:
-                action = ZPEvents.TAPAPPICON_1_3;
-                break;
-        }
-        zpAnalytics.trackEvent(action);
+        zpAnalytics.trackEvent(sActionMap.get(position));
     }
 
     @OnClick(R.id.btn_deposit)
@@ -299,5 +290,22 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    static Map<Integer, Integer> sActionMap;
+    static {
+        sActionMap = new HashMap<>();
+        sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);
+        sActionMap.put(1, ZPEvents.TAPAPPICON_1_2);
+        sActionMap.put(2, ZPEvents.TAPAPPICON_1_3);
+        sActionMap.put(3, ZPEvents.TAPAPPICON_2_1);
+        sActionMap.put(4, ZPEvents.TAPAPPICON_2_2);
+        sActionMap.put(5, ZPEvents.TAPAPPICON_2_3);
+        sActionMap.put(6, ZPEvents.TAPAPPICON_3_1);
+        sActionMap.put(7, ZPEvents.TAPAPPICON_3_2);
+        sActionMap.put(8, ZPEvents.TAPAPPICON_3_3);
+        sActionMap.put(9, ZPEvents.TAPAPPICON_4_1);
+        sActionMap.put(10, ZPEvents.TAPAPPICON_4_2);
+        sActionMap.put(11, ZPEvents.TAPAPPICON_4_3);
     }
 }
