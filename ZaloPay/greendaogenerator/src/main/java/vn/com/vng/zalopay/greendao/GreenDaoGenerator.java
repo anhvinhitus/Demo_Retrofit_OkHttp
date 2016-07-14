@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 17;
+    private static final int APP_DB_VERSION = 19;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -21,8 +21,32 @@ public class GreenDaoGenerator {
         addZaloContact(appSchema);
         addTransferRecent(appSchema);
         addNotification(appSchema);
+        addRedPackage(appSchema);
+        addRedPackageItem(appSchema);
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
+    }
+
+    private static void addRedPackageItem(Schema appSchema) {
+        Entity appInfoEntity = appSchema.addEntity("RedPackageItemGD");
+        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.IPersistentObject");
+        appInfoEntity.addIdProperty();//packageId
+        appInfoEntity.addStringProperty("zpTransID");
+        appInfoEntity.addLongProperty("bundleID");
+        appInfoEntity.addIntProperty("state");
+    }
+
+    private static void addRedPackage(Schema appSchema) {
+        Entity appInfoEntity = appSchema.addEntity("RedPackageGD");
+        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.IPersistentObject");
+        appInfoEntity.addIdProperty();//bundleID
+        appInfoEntity.addIntProperty("quantity");
+        appInfoEntity.addLongProperty("totalLuck");
+        appInfoEntity.addLongProperty("amountEach");
+        appInfoEntity.addIntProperty("type");
+        appInfoEntity.addStringProperty("sendMessage");
+        appInfoEntity.addStringProperty("listZaloId");
+        appInfoEntity.addIntProperty("state");
     }
 
     private static void addZaloContact(Schema appSchema) {

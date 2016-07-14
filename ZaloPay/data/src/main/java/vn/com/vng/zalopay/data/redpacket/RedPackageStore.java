@@ -1,15 +1,16 @@
-package vn.com.vng.zalopay.data.redPacket;
+package vn.com.vng.zalopay.data.redpacket;
 
 import java.util.List;
 
+import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Field;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.RedPackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
+import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.RedPackage;
 
 /**
@@ -19,6 +20,13 @@ import vn.com.vng.zalopay.domain.model.RedPackage;
 public interface RedPackageStore {
 
     interface LocalStorage {
+
+        void putRedPackage(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage);
+        void updateRedPackage(long bundleId, int state);
+
+        void putRedPackageItem(long packageId, long bundleId, String zpTransID, int state);
+
+        Observable<List<RedPackage>> getAllRedPackage();
     }
 
     interface RequestService {
@@ -32,7 +40,7 @@ public interface RedPackageStore {
 
         @FormUrlEncoded
         @POST("redpackage/submitOpenPackage")
-        Observable<RedPackageResponse> submitOpenPackage(@Field("packageID") long packageID, @Field("bundleID") long bundleID, @Field("revZaloPayID") String revZaloPayID, @Field("accessToken") String accessToken);
+        Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageID") long packageID, @Field("bundleID") long bundleID, @Field("revZaloPayID") String revZaloPayID, @Field("accessToken") String accessToken);
     }
 
     /**
@@ -43,6 +51,6 @@ public interface RedPackageStore {
 
         Observable<Boolean> sendBundle(long bundleID, List<Long> friendList);
 
-        Observable<RedPackage> submitOpenPackage(long packageID, long bundleID);
+        Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID);
     }
 }
