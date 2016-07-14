@@ -25,6 +25,7 @@
                 android:src="@drawable/ic_invitation_code" />
 
             <TextView
+                android:id="@+id/lb_invite"
                 style="@style/TextView.SubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

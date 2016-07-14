@@ -1,9 +1,11 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 
 import javax.inject.Inject;
@@ -47,6 +49,9 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @BindView(R.id.btnContinue)
     GuardButton mButtonContinueView;
 
+    @BindView(R.id.lb_invite)
+    TextView mTvInviteView;
+
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_invitation_code;
@@ -81,7 +86,6 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
             }
         });
-
 
     }
 
@@ -120,5 +124,11 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @Override
     public void showError(String m) {
         showToast(m);
+    }
+
+    @Override
+    public void showLabelError() {
+        mTvInviteView.setTextColor(Color.RED);
+        mTvInviteView.setText(R.string.exception_code_invalid);
     }
 }

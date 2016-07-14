@@ -11,4 +11,6 @@ public interface IInvitationCodeView {
     void gotoMainActivity();
 
     void showError(String m);
+
+    void showLabelError();
 }

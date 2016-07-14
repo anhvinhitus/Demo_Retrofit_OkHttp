@@ -100,4 +100,5 @@
     <string name="exception.card.already.map">Thẻ đã được liên kết</string>
     <string name="exception.server.maintain">Hệ thống đang bảo trì</string>
     <string name="exception.invitation.code.error"> Cần nhập mã mới dùng được ứng dụng!</string>
+    <string name="exception.invitation.code.invalid">Mã code không hợp lệ.</string>
 </resources>

@@ -12,7 +12,9 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -122,6 +124,13 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
 
     private final void onLoginError(Throwable e) {
         hideLoadingView();
+        if (e instanceof BodyException) {
+            if (((BodyException) e).errorCode == NetworkError.INVITATION_CODE_INVALID) {
+                mView.showLabelError();
+                return;
+            }
+        }
+
         String message = ErrorMessageFactory.create(applicationContext, e);
         showErrorView(message);
     }
