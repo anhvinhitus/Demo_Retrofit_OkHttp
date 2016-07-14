@@ -247,11 +247,11 @@ public class PaymentWrapper {
 
         paymentInfo.appID = order.getAppid();
         paymentInfo.userInfo = getUserInfo();
-        paymentInfo.appTime = Long.valueOf(order.getApptime());
+        paymentInfo.appTime = order.getApptime();
         paymentInfo.appTransID = order.getApptransid();
         Timber.d("paymentInfo.appTransID: %s", paymentInfo.appTransID);
         paymentInfo.itemName = order.getItem();
-        paymentInfo.amount = Long.parseLong(order.getAmount());
+        paymentInfo.amount = order.getAmount();
         paymentInfo.description = order.getDescription();
         paymentInfo.embedData = order.getEmbeddata();
         //lap vao ví appId = appUser = 1
@@ -267,74 +267,6 @@ public class PaymentWrapper {
 
         Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
         navigator.startUpdateProfileLevel2Activity(viewListener.getActivity(), walletTransID);
-    }
-
-    public void payWithInformation(IPaymentService.PaymentInfo info) {
-        Timber.d("payWithInformation: appID %s appTransId: %s appUser:%s appTime:%s amount:%s itemName:%s description:%s embedData:%s mac:%s",
-                info.appID,
-                info.appTransID,
-                info.appUser,
-                info.appTime,
-                info.amount,
-                info.itemName,
-                info.description,
-                info.embedData,
-                info.mac);
-
-        if (info.appID < 0) {
-            responseListener.onParameterError(Constants.APPID);
-            return;
-        }
-        if (TextUtils.isEmpty(info.appTransID)) {
-            responseListener.onParameterError(Constants.APPTRANSID);
-            return;
-        }
-        if (TextUtils.isEmpty(info.appUser)) {
-            responseListener.onParameterError(Constants.APPUSER);
-            return;
-        }
-        if (info.appTime <= 0) {
-            responseListener.onParameterError(Constants.APPTIME);
-            return;
-        }
-        if (info.amount <= 0) {
-            responseListener.onParameterError(Constants.AMOUNT);
-            return;
-        }
-        if (TextUtils.isEmpty(info.itemName)) {
-            responseListener.onParameterError(Constants.ITEM);
-            return;
-        }
-        if (TextUtils.isEmpty(info.description)) {
-            Timber.d("description: %s", info.description);
-            responseListener.onParameterError(Constants.DESCRIPTION);
-            return;
-        }
-        if (TextUtils.isEmpty(info.mac)) {
-            responseListener.onParameterError(Constants.MAC);
-            return;
-        }
-
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user == null || TextUtils.isEmpty(user.uid) || TextUtils.isEmpty(user.accesstoken)) {
-            responseListener.onParameterError("uid");
-            return;
-        }
-
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.appID = info.appID;
-        paymentInfo.userInfo = getUserInfo();
-        paymentInfo.appTime = info.appTime;
-        paymentInfo.appTransID = info.appTransID;
-        paymentInfo.itemName = info.itemName;
-        paymentInfo.amount = info.amount;
-        paymentInfo.description = info.description;
-        paymentInfo.embedData = info.embedData;
-        //lap vao ví appId = appUser = 1
-        paymentInfo.appUser = info.appUser;
-        paymentInfo.mac = info.mac;
-
-        callPayAPI(paymentInfo);
     }
 
     public interface IViewListener {

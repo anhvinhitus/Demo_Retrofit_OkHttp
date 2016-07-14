@@ -174,16 +174,16 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         if (TextUtils.isEmpty(order.getAppuser())) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getApptime())) {
+        if (order.getApptime() <= 0) {
             return false;
         }
         if (TextUtils.isEmpty(order.getItem())) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getAmount())) {
+        if (order.getAmount() < 0) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getEmbeddata())) {
+        if (TextUtils.isEmpty(order.getDescription())) {
             return false;
         }
         if (TextUtils.isEmpty(order.getMac())) {

@@ -13,8 +13,11 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
+import java.util.Locale;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
@@ -55,18 +58,51 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
 
         // verify params parameters
         try {
-            IPaymentService.PaymentInfo paymentInfo = new IPaymentService.PaymentInfo();
-            paymentInfo.appID = (long) params.getDouble(Constants.APPID);
-            paymentInfo.appTransID = params.getString(Constants.APPTRANSID);
-            paymentInfo.appUser = params.getString(Constants.APPUSER);
-            paymentInfo.appTime = (long) params.getDouble(Constants.APPTIME);
-            paymentInfo.amount = (long) params.getDouble(Constants.AMOUNT);
-            paymentInfo.itemName = params.getString(Constants.ITEM);
-            paymentInfo.description = params.getString(Constants.DESCRIPTION);
-            paymentInfo.embedData = params.getString(Constants.EMBEDDATA);
-            paymentInfo.mac = params.getString(Constants.MAC);
+            Order order = new Order();
+            order.setAppid((long) params.getDouble(Constants.APPID));
+            order.setApptransid(params.getString(Constants.APPTRANSID));
+            order.setAppuser(params.getString(Constants.APPUSER));
+            order.setApptime((long) params.getDouble(Constants.APPTIME));
+            order.setAmount((long) params.getDouble(Constants.AMOUNT));
+            order.setItem(params.getString(Constants.ITEM));
+            order.setDescription(params.getString(Constants.DESCRIPTION));
+            order.setEmbeddata(params.getString(Constants.EMBEDDATA));
+            order.setMac(params.getString(Constants.MAC));
 
-            mPaymentService.pay(getCurrentActivity(), promise, paymentInfo);
+            if (order.getAppid() < 0) {
+                reportInvalidParameter(promise, Constants.APPID);
+                return;
+            }
+            if (TextUtils.isEmpty(order.getApptransid())) {
+                reportInvalidParameter(promise, Constants.APPTRANSID);
+                return;
+            }
+            if (TextUtils.isEmpty(order.getAppuser())) {
+                reportInvalidParameter(promise, Constants.APPUSER);
+                return;
+            }
+            if (order.getApptime() <= 0) {
+                reportInvalidParameter(promise, Constants.APPTIME);
+                return;
+            }
+            if (order.getAmount() <= 0) {
+                reportInvalidParameter(promise, Constants.AMOUNT);
+                return;
+            }
+            if (TextUtils.isEmpty(order.getItem())) {
+                reportInvalidParameter(promise, Constants.ITEM);
+                return;
+            }
+            if (TextUtils.isEmpty(order.getDescription())) {
+                reportInvalidParameter(promise, Constants.DESCRIPTION);
+                return;
+            }
+            if (TextUtils.isEmpty(order.getMac())) {
+                reportInvalidParameter(promise, Constants.MAC);
+                return;
+            }
+
+            mPaymentService.pay(getCurrentActivity(), promise, order);
         } catch (Exception e) {
             errorCallback(promise, PaymentError.ERR_CODE_INPUT);
             //e.printStackTrace();
@@ -121,5 +157,15 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
     public void onHostDestroy() {
         Timber.d("Activity `onDestroy");
         mPaymentService.destroyVariable();
+    }
+
+    private void reportInvalidParameter(Promise promise, String parameterName) {
+        if (promise == null) {
+            return;
+        }
+
+        String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
+        Timber.d("Invalid parameter [%s]", parameterName);
+        errorCallback(promise, PaymentError.ERR_CODE_INPUT, message);
     }
 }

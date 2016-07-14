@@ -8,10 +8,10 @@ public class GetOrderResponse extends BaseResponse {
     private String zptranstoken;
     public String apptransid;
     public String appuser;
-    public String apptime;
+    public long apptime;
     public String embeddata;
     public String item;
-    public String amount;
+    public long amount;
     public String description;
     public String payoption;
     public String mac;

@@ -10,11 +10,11 @@ public class BundleOrder extends Order {
 
     public String bundleId;
 
-    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac) {
+    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac) {
         super(appid, zptranstoken, apptransid, appuser, apptime, embeddata, item, amount, description, payoption, mac);
     }
 
-    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac, String bundleId) {
+    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac, String bundleId) {
         super(appid, zptranstoken, apptransid, appuser, apptime, embeddata, item, amount, description, payoption, mac);
         this.bundleId = bundleId;
     }

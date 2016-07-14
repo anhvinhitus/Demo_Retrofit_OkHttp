@@ -13,20 +13,23 @@ import vn.com.vng.zalopay.domain.Constants;
  * Created by longlv on 09/05/2016.
  */
 public class Order extends AbstractData {
-
     private long appid;
     private String zptranstoken;
     private String apptransid;
     private String appuser;
-    public String apptime;
+    public long apptime;
     public String embeddata;
     private String item;
-    private String amount;
+    private long amount;
     private String description;
     private String payoption;
     private String mac;
 
-    public Order(long appid, String zptranstoken, String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac) {
+    public Order() {
+
+    }
+
+    public Order(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac) {
         this.appid = appid;
         this.zptranstoken = zptranstoken;
         this.apptransid = apptransid;
@@ -48,8 +51,8 @@ public class Order extends AbstractData {
         }
         apptransid = jsonObject.getString(Constants.APPTRANSID);
         appuser = jsonObject.getString(Constants.APPUSER);
-        apptime = jsonObject.getString(Constants.APPTIME);
-        amount = jsonObject.getString(Constants.AMOUNT);
+        apptime = Long.parseLong(jsonObject.getString(Constants.APPTIME));
+        amount = Long.parseLong(jsonObject.getString(Constants.AMOUNT));
         item = jsonObject.getString(Constants.ITEM);
         description = jsonObject.getString(Constants.DESCRIPTION);
         embeddata = jsonObject.getString(Constants.EMBEDDATA);
@@ -64,10 +67,10 @@ public class Order extends AbstractData {
         zptranstoken = in.readString();
         apptransid = in.readString();
         appuser = in.readString();
-        apptime = in.readString();
+        apptime = in.readLong();
         embeddata = in.readString();
         item = in.readString();
-        amount = in.readString();
+        amount = in.readLong();
         description = in.readString();
         payoption = in.readString();
         mac = in.readString();
@@ -79,10 +82,10 @@ public class Order extends AbstractData {
         dest.writeString(zptranstoken);
         dest.writeString(apptransid);
         dest.writeString(appuser);
-        dest.writeString(apptime);
+        dest.writeLong(apptime);
         dest.writeString(embeddata);
         dest.writeString(item);
-        dest.writeString(amount);
+        dest.writeLong(amount);
         dest.writeString(description);
         dest.writeString(payoption);
         dest.writeString(mac);
@@ -120,7 +123,7 @@ public class Order extends AbstractData {
         return item;
     }
 
-    public String getAmount() {
+    public long getAmount() {
         return amount;
     }
 
@@ -156,7 +159,7 @@ public class Order extends AbstractData {
         this.item = item;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
@@ -168,7 +171,7 @@ public class Order extends AbstractData {
         this.payoption = payoption;
     }
 
-    public String getApptime() {
+    public long getApptime() {
         return apptime;
     }
 
@@ -176,7 +179,7 @@ public class Order extends AbstractData {
         return embeddata;
     }
 
-    public void setApptime(String apptime) {
+    public void setApptime(long apptime) {
         this.apptime = apptime;
     }
 

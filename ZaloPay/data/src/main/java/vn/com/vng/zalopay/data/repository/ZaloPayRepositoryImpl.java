@@ -45,7 +45,7 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
             @Override
             public Order call(GetOrderResponse getOrderResponse) {
                 getOrderResponse.setAppid(appId);
-                getOrderResponse.amount = String.valueOf(amount);
+                getOrderResponse.amount = amount;
                 return zaloPayEntityDataMapper.transform(getOrderResponse);
             }
         });

@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
@@ -49,7 +50,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
-    public void pay(Activity activity, final Promise promise, PaymentInfo paymentInfo) {
+    public void pay(Activity activity, final Promise promise, Order order) {
 
         final WeakReference<Activity> mWeakReference = new WeakReference<Activity>(activity);
 
@@ -93,7 +94,7 @@ public class PaymentServiceImpl implements IPaymentService {
             }
         });
 
-        this.paymentWrapper.payWithInformation(paymentInfo);
+        this.paymentWrapper.payWithOrder(order);
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
