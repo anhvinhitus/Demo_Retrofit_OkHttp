@@ -11,14 +11,14 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.inject.Named;
-
 import de.greenrobot.dao.AbstractDao;
+import okhttp3.OkHttpClient;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 
@@ -55,11 +55,18 @@ public class ApplicationSessionImpl implements ApplicationSession {
 
         applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
 
+
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+
+        OkHttpClient okHttpClient = applicationComponent.okHttpClient();
+        okHttpClient.dispatcher().cancelAll();
+        Timber.d("clearUserSession: call request");
+
         // move to login
         ZaloSDK.Instance.unauthenticate();
 
         // clear current user DB
-        UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+        UserConfig userConfig = applicationComponent.userConfig();
         userConfig.clearConfig();
         userConfig.setCurrentUser(null);
 

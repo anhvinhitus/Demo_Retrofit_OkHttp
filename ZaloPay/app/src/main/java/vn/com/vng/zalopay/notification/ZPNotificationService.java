@@ -81,8 +81,14 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                 mWsConnection.addReceiverListener(this);
             }
 
-            connectToServer();
+            getAppComponent().threadExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    connectToServer();
+                }
+            });
         }
+
         return START_STICKY;
     }
 
@@ -95,7 +101,6 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
 
     private void connectToServer() {
-
         String token = null;
 
         try {
@@ -160,8 +165,9 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private void createUserComponent() {
         Timber.d(" user component %s", getUserComponent());
-        if (getUserComponent() != null)
+        if (getUserComponent() != null) {
             return;
+        }
 
         UserConfig userConfig = getAppComponent().userConfig();
         Timber.d(" userConfig %s", userConfig.isSignIn());

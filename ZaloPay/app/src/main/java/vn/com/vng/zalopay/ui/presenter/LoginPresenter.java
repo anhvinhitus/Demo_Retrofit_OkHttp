@@ -85,7 +85,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     public void loginZalo(Activity activity) {
-        if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
+        if (NetworkHelper.isNetworkAvailable(applicationContext)) {
             showLoadingView();
             ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, new LoginListener(this));
         } else {

@@ -225,7 +225,7 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private boolean sendAuthentication(String token, long uid) {
 
-        Timber.d("send authentication token %s uid %s", token, uid);
+        Timber.d("send authentication token %s uid %s gcmToken %s", token, uid, gcmToken);
 
         ZPMsgProtos.MessageLogin.Builder loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
                 .setToken(token)

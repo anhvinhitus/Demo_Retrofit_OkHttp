@@ -52,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
 
-    final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+    protected final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
     protected final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
@@ -211,7 +211,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        getAppComponent().applicationSession().clearUserSession();
+        if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+            getAppComponent().applicationSession().clearUserSession();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

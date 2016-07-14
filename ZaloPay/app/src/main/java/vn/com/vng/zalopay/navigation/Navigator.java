@@ -57,11 +57,6 @@ public class Navigator implements INavigator {
         this.userConfig = userConfig;
     }
 
-
-    public void startLoginActivity(Context context) {
-        startLoginActivity(context, false);
-    }
-
     public void startLoginActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, LoginZaloActivity.class);
         if (clearTop) {

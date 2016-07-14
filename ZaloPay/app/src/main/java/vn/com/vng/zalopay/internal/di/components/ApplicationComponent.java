@@ -10,6 +10,7 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
@@ -47,6 +48,8 @@ public interface ApplicationComponent {
     UserComponent plus(UserModule userModule);
 
     EventBus eventBus();
+
+    OkHttpClient okHttpClient();
 
     SharedPreferences sharedPreferences();
 
