@@ -151,7 +151,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activity.LinkCardProcedureActivity"
-            android:label="@string/title.activity.link.card"
+            android:label="@string/title.activity.add.card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"

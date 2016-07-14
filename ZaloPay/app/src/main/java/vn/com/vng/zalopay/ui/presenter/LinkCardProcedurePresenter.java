@@ -9,9 +9,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -130,9 +128,6 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
                     e.printStackTrace();
                 }
             }
-            if (user == null) {
-                return;
-            }
             showLoadingView();
             String description = mView.getContext().getString(R.string.link_card);
             Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
@@ -149,7 +144,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
         @Override
         public void onNext(Order order) {
-            Timber.d("GetUserInfoSubscriber success " + order);
+            Timber.d("CreateWalletOrderSubscriber onNext order: [%s]" + order);
             LinkCardProcedurePresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -165,20 +160,20 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
                 return;
             }
 
-            Timber.w(e, "GetUserInfoSubscriber onError " + e);
+            Timber.w(e, "CreateWalletOrderSubscriber onError exception: [%s]" + e);
             LinkCardProcedurePresenter.this.onCreateWalletOrderError(e);
         }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        Timber.tag("onCreateWalletOrderError").d("session =========" + e);
+        Timber.d("onCreateWalletOrderError exception: [%s]" + e);
         hideLoadingView();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         showErrorView(message);
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        Timber.tag("onCreateWalletOrderSuccess").d("session =========" + order.getItem());
+        Timber.d("onCreateWalletOrderSuccess order: [%s]", order);
         paymentWrapper.linkCard(order);
         hideLoadingView();
     }

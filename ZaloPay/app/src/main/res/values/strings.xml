@@ -78,6 +78,7 @@
 
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
     <string name="title.activity.link.card">Quản lý thẻ</string>
+    <string name="title.activity.add.card">Thêm thẻ</string>
     <string name="title.activity.transfer">Chuyển tiền</string>
     <string name="title.activity.zalopay.contact">Danh bạ Zalo</string>
     <string name="title.activity.change.pin">Tạo lại mã PIN</string>
