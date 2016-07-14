@@ -15,7 +15,6 @@ import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
@@ -23,23 +22,20 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
  * API for PaymentApp integration
  */
 
-
-public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
-//    final ZaloPayIAPRepository zaloPayIAPRepository;
-    final IPaymentService paymentService;
-    final long appId; // AppId này là appid js cắm vào
+public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
+        implements ActivityEventListener, LifecycleEventListener {
+    final IPaymentService mPaymentService;
+    final long mAppId; // AppId này là appid js cắm vào
 
     public ZaloPayIAPNativeModule(ReactApplicationContext reactContext,
-                                  ZaloPayIAPRepository zaloPayIAPRepository,
-                                  IPaymentService paymentService, long appId) {
+                                  IPaymentService paymentService,
+                                  long appId) {
         super(reactContext);
-//        this.zaloPayIAPRepository = zaloPayIAPRepository;
-        this.paymentService = paymentService;
-        this.appId = appId;
+        this.mPaymentService = paymentService;
+        this.mAppId = appId;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
-
     }
 
     @Override
@@ -55,7 +51,8 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
      */
     @ReactMethod
     public void payOrder(ReadableMap params, Promise promise) {
-        Timber.d("payOrder start");
+        Timber.d("payOrder start with params: %s", Helpers.readableMapToString(params));
+
         // verify params parameters
         try {
             long appID = (long) params.getDouble(Constants.APPID);
@@ -68,7 +65,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
             String embedData = params.getString(Constants.EMBEDDATA);
             String mac = params.getString(Constants.MAC);
 
-            paymentService.pay(getCurrentActivity(), promise, appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
+            mPaymentService.pay(getCurrentActivity(), promise, appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
         } catch (Exception e) {
             errorCallback(promise, PaymentError.ERR_CODE_INPUT);
             //e.printStackTrace();
@@ -93,7 +90,7 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void getUserInfo(Promise promise) {
-        paymentService.getUserInfo(promise, appId);
+        mPaymentService.getUserInfo(promise, mAppId);
     }
 
     @ReactMethod
@@ -111,18 +108,17 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule implement
 
     @Override
     public void onHostResume() {
-        Timber.d(" Actvity `onResume`");
+        Timber.d(" Activity `onResume`");
     }
 
     @Override
     public void onHostPause() {
-        Timber.d(" Actvity `onPause`");
+        Timber.d(" Activity `onPause`");
     }
 
     @Override
     public void onHostDestroy() {
-        Timber.d("Actvity `onDestroy");
-        paymentService.destroyVariable();
+        Timber.d("Activity `onDestroy");
+        mPaymentService.destroyVariable();
     }
-
 }

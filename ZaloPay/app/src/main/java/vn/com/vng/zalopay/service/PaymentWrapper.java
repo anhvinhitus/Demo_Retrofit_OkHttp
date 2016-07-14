@@ -127,9 +127,11 @@ public class PaymentWrapper {
         callPayAPI(paymentInfo, forcedPaymentChannel);
     }
 
-    public void payWithDetail(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
+    public void payWithDetail(long appID, String appTransID, String appUser,
+                              long appTime, long amount, String itemName,
+                              String description, String embedData, String mac) {
         Timber.d("payWithDetail start.......");
-        Timber.d("appID %s appTransId: %s appUser:%s appTime:%s amount:%s itemName:%s itemNam:%s description:%s embedData:%s mac:%s", appID, appTransID, appUser, appTime, amount, itemName, amount, itemName, description, embedData, mac);
+        Timber.d("appID %s appTransId: %s appUser:%s appTime:%s amount:%s itemName:%s itemName:%s description:%s embedData:%s mac:%s", appID, appTransID, appUser, appTime, amount, itemName, amount, itemName, description, embedData, mac);
         if (appID < 0) {
             responseListener.onParameterError(Constants.APPID);
             return;
@@ -155,7 +157,8 @@ public class PaymentWrapper {
             return;
         }
         if (TextUtils.isEmpty(embedData)) {
-            responseListener.onParameterError(Constants.DESCRIPTION);
+            Timber.d("embeddata: %s", embedData);
+            responseListener.onParameterError(Constants.EMBEDDATA);
             return;
         }
         if (TextUtils.isEmpty(mac)) {
