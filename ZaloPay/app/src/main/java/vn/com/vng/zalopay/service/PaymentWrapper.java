@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.JsonUtil;
@@ -125,55 +126,6 @@ public class PaymentWrapper {
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber);
         callPayAPI(paymentInfo, forcedPaymentChannel);
-    }
-
-    public void payWithDetail(long appID, String appTransID, String appUser,
-                              long appTime, long amount, String itemName,
-                              String description, String embedData, String mac) {
-        Timber.d("payWithDetail start.......");
-        Timber.d("appID %s appTransId: %s appUser:%s appTime:%s amount:%s itemName:%s itemName:%s description:%s embedData:%s mac:%s", appID, appTransID, appUser, appTime, amount, itemName, amount, itemName, description, embedData, mac);
-        if (appID < 0) {
-            responseListener.onParameterError(Constants.APPID);
-            return;
-        }
-        if (TextUtils.isEmpty(appTransID)) {
-            responseListener.onParameterError(Constants.APPTRANSID);
-            return;
-        }
-        if (TextUtils.isEmpty(appUser)) {
-            responseListener.onParameterError(Constants.APPUSER);
-            return;
-        }
-        if (appTime <= 0) {
-            responseListener.onParameterError(Constants.APPTIME);
-            return;
-        }
-        if (amount <= 0) {
-            responseListener.onParameterError(Constants.AMOUNT);
-            return;
-        }
-        if (TextUtils.isEmpty(itemName)) {
-            responseListener.onParameterError(Constants.ITEM);
-            return;
-        }
-        if (TextUtils.isEmpty(embedData)) {
-            Timber.d("embeddata: %s", embedData);
-            responseListener.onParameterError(Constants.EMBEDDATA);
-            return;
-        }
-        if (TextUtils.isEmpty(mac)) {
-            responseListener.onParameterError(Constants.MAC);
-            return;
-        }
-
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user == null || TextUtils.isEmpty(user.uid) || TextUtils.isEmpty(user.accesstoken)) {
-            responseListener.onParameterError("uid");
-            return;
-        }
-
-        ZPWPaymentInfo paymentInfo = createPaymentInfo(appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
-        callPayAPI(paymentInfo);
     }
 
     public void payWithOrder(Order order) {
@@ -290,23 +242,6 @@ public class PaymentWrapper {
     }
 
     @NonNull
-    private ZPWPaymentInfo createPaymentInfo(long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.appID = appID;
-        paymentInfo.userInfo = getUserInfo();
-        paymentInfo.appTime = appTime;
-        paymentInfo.appTransID = appTransID;
-        paymentInfo.itemName = itemName;
-        paymentInfo.amount = amount;
-        paymentInfo.description = description;
-        paymentInfo.embedData = embedData;
-        //lap vao ví appId = appUser = 1
-        paymentInfo.appUser = appUser;
-        paymentInfo.mac = mac;
-        return paymentInfo;
-    }
-
-    @NonNull
     private ZPWPaymentInfo transform(Order order) {
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
@@ -332,6 +267,74 @@ public class PaymentWrapper {
 
         Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
         navigator.startUpdateProfileLevel2Activity(viewListener.getActivity(), walletTransID);
+    }
+
+    public void payWithInformation(IPaymentService.PaymentInfo info) {
+        Timber.d("payWithInformation: appID %s appTransId: %s appUser:%s appTime:%s amount:%s itemName:%s description:%s embedData:%s mac:%s",
+                info.appID,
+                info.appTransID,
+                info.appUser,
+                info.appTime,
+                info.amount,
+                info.itemName,
+                info.description,
+                info.embedData,
+                info.mac);
+
+        if (info.appID < 0) {
+            responseListener.onParameterError(Constants.APPID);
+            return;
+        }
+        if (TextUtils.isEmpty(info.appTransID)) {
+            responseListener.onParameterError(Constants.APPTRANSID);
+            return;
+        }
+        if (TextUtils.isEmpty(info.appUser)) {
+            responseListener.onParameterError(Constants.APPUSER);
+            return;
+        }
+        if (info.appTime <= 0) {
+            responseListener.onParameterError(Constants.APPTIME);
+            return;
+        }
+        if (info.amount <= 0) {
+            responseListener.onParameterError(Constants.AMOUNT);
+            return;
+        }
+        if (TextUtils.isEmpty(info.itemName)) {
+            responseListener.onParameterError(Constants.ITEM);
+            return;
+        }
+        if (TextUtils.isEmpty(info.description)) {
+            Timber.d("description: %s", info.description);
+            responseListener.onParameterError(Constants.DESCRIPTION);
+            return;
+        }
+        if (TextUtils.isEmpty(info.mac)) {
+            responseListener.onParameterError(Constants.MAC);
+            return;
+        }
+
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (user == null || TextUtils.isEmpty(user.uid) || TextUtils.isEmpty(user.accesstoken)) {
+            responseListener.onParameterError("uid");
+            return;
+        }
+
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.appID = info.appID;
+        paymentInfo.userInfo = getUserInfo();
+        paymentInfo.appTime = info.appTime;
+        paymentInfo.appTransID = info.appTransID;
+        paymentInfo.itemName = info.itemName;
+        paymentInfo.amount = info.amount;
+        paymentInfo.description = info.description;
+        paymentInfo.embedData = info.embedData;
+        //lap vao ví appId = appUser = 1
+        paymentInfo.appUser = info.appUser;
+        paymentInfo.mac = info.mac;
+
+        callPayAPI(paymentInfo);
     }
 
     public interface IViewListener {

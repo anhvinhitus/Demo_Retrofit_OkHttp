@@ -49,9 +49,9 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
-    public void pay(Activity activity, final Promise promise, long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
+    public void pay(Activity activity, final Promise promise, PaymentInfo paymentInfo) {
 
-        final WeakReference<Activity> mWeakReference = new WeakReference(activity);
+        final WeakReference<Activity> mWeakReference = new WeakReference<Activity>(activity);
 
         this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
@@ -93,7 +93,7 @@ public class PaymentServiceImpl implements IPaymentService {
             }
         });
 
-        this.paymentWrapper.payWithDetail(appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
+        this.paymentWrapper.payWithInformation(paymentInfo);
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {

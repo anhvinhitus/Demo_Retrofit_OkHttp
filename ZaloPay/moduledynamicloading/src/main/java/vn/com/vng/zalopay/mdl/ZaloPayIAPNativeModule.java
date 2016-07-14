@@ -55,17 +55,18 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
 
         // verify params parameters
         try {
-            long appID = (long) params.getDouble(Constants.APPID);
-            String appTransID = params.getString(Constants.APPTRANSID);
-            String appUser = params.getString(Constants.APPUSER);
-            long appTime = (long) params.getDouble(Constants.APPTIME);
-            long amount = (long) params.getDouble(Constants.AMOUNT);
-            String itemName = params.getString(Constants.ITEM);
-            String description = params.getString(Constants.DESCRIPTION);
-            String embedData = params.getString(Constants.EMBEDDATA);
-            String mac = params.getString(Constants.MAC);
+            IPaymentService.PaymentInfo paymentInfo = new IPaymentService.PaymentInfo();
+            paymentInfo.appID = (long) params.getDouble(Constants.APPID);
+            paymentInfo.appTransID = params.getString(Constants.APPTRANSID);
+            paymentInfo.appUser = params.getString(Constants.APPUSER);
+            paymentInfo.appTime = (long) params.getDouble(Constants.APPTIME);
+            paymentInfo.amount = (long) params.getDouble(Constants.AMOUNT);
+            paymentInfo.itemName = params.getString(Constants.ITEM);
+            paymentInfo.description = params.getString(Constants.DESCRIPTION);
+            paymentInfo.embedData = params.getString(Constants.EMBEDDATA);
+            paymentInfo.mac = params.getString(Constants.MAC);
 
-            mPaymentService.pay(getCurrentActivity(), promise, appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
+            mPaymentService.pay(getCurrentActivity(), promise, paymentInfo);
         } catch (Exception e) {
             errorCallback(promise, PaymentError.ERR_CODE_INPUT);
             //e.printStackTrace();
