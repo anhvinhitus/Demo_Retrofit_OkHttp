@@ -51,4 +51,10 @@ public class TransHistoryEntity {
 
     @SerializedName("appusername")
     public String appusername;
+
+    @SerializedName("transstatus")
+    public int transstatus;
+    
+    @SerializedName("isretry")
+    public boolean isretry;
 }
