@@ -8,26 +8,26 @@ import android.os.Parcelable;
  */
 public class BundleOrder extends Order {
 
-    public String bundleId;
+    public long bundleId;
 
     public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac) {
         super(appid, zptranstoken, apptransid, appuser, apptime, embeddata, item, amount, description, payoption, mac);
     }
 
-    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac, String bundleId) {
+    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac, long bundleId) {
         super(appid, zptranstoken, apptransid, appuser, apptime, embeddata, item, amount, description, payoption, mac);
         this.bundleId = bundleId;
     }
 
     public BundleOrder(Parcel in) {
         super(in);
-        bundleId = in.readString();
+        bundleId = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeString(bundleId);
+        dest.writeLong(bundleId);
     }
 
     @Override

@@ -10,5 +10,5 @@ import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
 public class BundleOrderResponse extends GetOrderResponse {
 
     @SerializedName("bundleID")
-    public String bundleID;
+    public long bundleID;
 }

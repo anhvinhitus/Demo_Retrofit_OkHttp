@@ -4,8 +4,8 @@ package vn.com.vng.zalopay.data.api.response;
  * Created by Longlv on 5/8/16.
  */
 public class GetOrderResponse extends BaseResponse {
-    private long appid;
-    private String zptranstoken;
+    public long appid;
+    public String zptranstoken;
     public String apptransid;
     public String appuser;
     public long apptime;
