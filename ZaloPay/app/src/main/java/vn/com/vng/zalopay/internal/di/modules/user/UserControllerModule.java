@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayIAPRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
-import vn.com.vng.zalopay.data.repository.datasource.ZaloPayFactory;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -73,14 +72,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    ZaloPayFactory provideZaloPayFactory(Context context, ZaloPayService service, User user) {
-        return new ZaloPayFactory(context, service, user);
-    }
-
-    @UserScope
-    @Provides
-    ZaloPayRepository provideZaloPayRepository(ZaloPayFactory zaloPayFactory, ZaloPayEntityDataMapper mapper) {
-        return new ZaloPayRepositoryImpl(zaloPayFactory, mapper);
+    ZaloPayRepository provideZaloPayRepository(ZaloPayService service, User user, ZaloPayEntityDataMapper mapper) {
+        return new ZaloPayRepositoryImpl(mapper, service, user);
     }
 
     @UserScope
