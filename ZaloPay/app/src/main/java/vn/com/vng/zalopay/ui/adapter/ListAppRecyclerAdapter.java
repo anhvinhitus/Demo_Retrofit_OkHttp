@@ -110,7 +110,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         public void bindView(AppResource appResource) {
-
             mNameView.setText(appResource.appname);
             setImage(mLogoView, appResource.urlImage);
          /*   if (appResource.status == 0) {

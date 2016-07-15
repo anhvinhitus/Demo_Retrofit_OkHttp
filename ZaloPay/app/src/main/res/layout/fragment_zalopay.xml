@@ -20,6 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/separate" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listView"
             style="@style/RecyclerView"
@@ -28,5 +33,9 @@
             android:clipToPadding="false"
             tools:listitem="@layout/item_app_info" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/separate" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

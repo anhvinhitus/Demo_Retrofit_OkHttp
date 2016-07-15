@@ -11,6 +11,11 @@
         <item name="android:textSize">@dimen/textsize.large</item>
     </style>
 
+    <style name="HomePage.Title" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/c_text_black</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
     <style name="LeftMenu.Title" parent="android:Widget.TextView">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/leftmenu.title</item>

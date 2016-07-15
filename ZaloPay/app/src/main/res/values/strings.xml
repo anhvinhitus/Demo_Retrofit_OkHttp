@@ -24,13 +24,13 @@
     <string name="notification">Thông báo</string>
     <string name="transaction">Giao dịch</string>
 
-    <string name="transfer.money">Chuyển tiền</string>
-    <string name="recharge.money.phone">Nạp Tiền ĐT</string>
+    <string name="transfer.money">Chuyển Tiền</string>
+    <string name="recharge.money.phone">Nạp Tiền \nĐiện Thoại</string>
     <string name="bill">Hoá đơn</string>
-    <string name="electric.bill">Tiền Điện</string>
+    <string name="electric.bill">Thanh Toán \nTiền Điện</string>
     <string name="internet.bill">Internet/TV</string>
     <string name="water.bill">Tiền nước</string>
-    <string name="red.envelope">Lì xì</string>
+    <string name="red.envelope">Lì Xì</string>
     <string name="collect.money">Gom tiền</string>
     <string name="other.services">Dịch vụ khác</string>
     <string name="card.bank">Thẻ ngân hàng</string>
@@ -42,7 +42,7 @@
     <string name="tel_card">Thẻ cào</string>
     <string name="buy.phone.card">Thẻ ĐT</string>
     <string name="buy.game.card">Nạp Game</string>
-    <string name="zing.xu">Zing Xu</string>
+    <string name="zing.xu">ZingXu</string>
     <string name="transfer.to.mobile">Đến số điện thoại di động</string>
     <string name="transfer.to.atm.visa">Đến số thẻ ATM / VISA</string>
     <string name="transfer.to.bank.account">Đến tài khoản ngân hàng</string>
