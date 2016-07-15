@@ -23,7 +23,7 @@ test:
   except:
     - tags
   script:
-    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 test
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionDebugUnitTest
 
 archive:
   stage: archive
