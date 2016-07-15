@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.view.Gravity;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -67,21 +69,20 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public MainActivity() {
     }
 
-    private ActionBarDrawerToggle toggle;
-
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-
-    private int mCurrentMenuId;
-
-    @Inject
-    Navigator navigator;
 
     @Inject
     MainPresenter presenter;
 
     @Inject
     GlobalEventHandlingService globalEventHandlingService;
+
+    private int mCurrentMenuId;
+    private long back_pressed;
+
+    private ActionBarDrawerToggle toggle;
+    private SweetAlertDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,24 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         startZaloPayService();
         presenter.getZaloFriend();
+
+        payWithTransToken();
+    }
+
+    private void payWithTransToken() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if (bundle.containsKey(Constants.ARG_APPID) && bundle.containsKey(Constants.ARG_ZPTRANSTOKEN)) {
+                long appId = bundle.getLong(Constants.ARG_APPID, 0);
+                String zptranstoken = bundle.getString(Constants.ARG_ZPTRANSTOKEN);
+                if (appId > 0 && !TextUtils.isEmpty(zptranstoken)) {
+                    presenter.pay(appId, zptranstoken);
+                } else {
+                    showToast(R.string.exception_data_invalid);
+                    finish();
+                }
+            }
+        }
     }
 
     @Override
@@ -261,8 +280,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-    private long back_pressed;
-
     @Override
     public void onBackPressed() {
 
@@ -299,7 +316,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         startService(intent);
     }
 
- /*   *//**
+ /*   */
+
+    /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
      * the Google Play Store or enable it in the device's system settings.
@@ -339,6 +358,36 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         alertDialog.setConfirmText(message.title);
         alertDialog.setContentText(message.content);
         alertDialog.show();
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            mProgressDialog.setContentText("Loading");
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
     }
 
 }

@@ -9,4 +9,8 @@ import android.content.Context;
 public interface IHomeView {
     Activity getActivity();
     Context getContext();
+
+    void showError(String message);
+    void showLoading();
+    void hideLoading();
 }

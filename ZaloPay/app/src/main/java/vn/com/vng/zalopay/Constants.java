@@ -31,6 +31,8 @@ public class Constants {
     public static final String ARG_MESSAGE = "message";
     public static final String ARG_TRANSFERRECENT = "TransferRecent";
 
+    public static final String ARG_APPID = "appid";
+    public static final String ARG_ZPTRANSTOKEN = "zptranstoken";
 
     public static final String PREF_INVITATION_USERID = "pref_userid_invitation";
     public static final String PREF_INVITATION_SESSION = "pref_session_invitation";

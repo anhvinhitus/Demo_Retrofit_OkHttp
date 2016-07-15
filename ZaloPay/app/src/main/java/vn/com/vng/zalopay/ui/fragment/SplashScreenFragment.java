@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -17,7 +18,6 @@ import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 
 /**
  * Created by AnhHieu on 5/13/16.
- *
  */
 public class SplashScreenFragment extends BaseFragment implements ISplashScreenView {
 
@@ -53,24 +53,8 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onOpenDeepLinks();
     }
 
-
-    private void onOpenDeepLinks() {
-        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoken={}"'
-        Uri data = getActivity().getIntent().getData();
-
-        if (data != null
-            //&& data.isHierarchical()
-                ) {
-
-            String appid = data.getQueryParameter(Constants.APPID);
-            String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
-
-            Timber.d("appid %s zptranstoken %s ", appid, zptranstoken);
-        }
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -101,8 +85,35 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void gotoHomeScreen() {
         interstitialCanceled = true;
-        navigator.startHomeActivity(getContext(), false);
-        getActivity().finish();
+        if (!onOpenDeepLinks()) {
+            navigator.startHomeActivity(getContext(), false);
+            getActivity().finish();
+        }
+    }
+
+    private boolean onOpenDeepLinks() {
+        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoken={}"'
+        Uri data = getActivity().getIntent().getData();
+        if (data != null
+            //&& data.isHierarchical()
+                ) {
+
+            String appid = data.getQueryParameter(Constants.APPID);
+            String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
+            if (TextUtils.isEmpty(appid) && TextUtils.isEmpty(zptranstoken)) {
+            }else{
+                Timber.d("appid %s zptranstoken %s ", appid, zptranstoken);
+                if (TextUtils.isEmpty(appid) || !TextUtils.isDigitsOnly(appid) || TextUtils.isEmpty(zptranstoken)) {
+                    showToast(R.string.exception_data_invalid);
+                } else {
+                    navigator.startHomeActivity(getActivity(), Long.parseLong(appid), zptranstoken);
+                }
+
+                getActivity().finish();
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

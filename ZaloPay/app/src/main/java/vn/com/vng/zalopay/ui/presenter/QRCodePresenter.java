@@ -36,6 +36,10 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
+                if(mView ==null){
+                    return;
+                }
+
                 if ("order".equalsIgnoreCase(param)) {
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
                 } else if ("uid".equalsIgnoreCase(param)) {
@@ -49,8 +53,12 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseError(int status) {
+                if(mView ==null){
+                    return;
+                }
+
                 if (status == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showError(mView.getContext().getString(R.string.exception_no_connection_try_again));
+                    mView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
                 }
                 hideLoadingView();
                 mView.resumeScanner();
@@ -68,19 +76,31 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseTokenInvalid() {
+                if(mView ==null){
+                    return;
+                }
+
                 mView.onTokenInvalid();
                 clearAndLogout();
             }
 
             @Override
             public void onResponseCancel() {
+                if(mView ==null){
+                    return;
+                }
+
                 hideLoadingView();
                 mView.resumeScanner();
             }
 
             @Override
             public void onNotEnoughMoney() {
-                navigator.startDepositActivity(mView.getContext());
+                if(mView ==null){
+                    return;
+                }
+
+                navigator.startDepositActivity(applicationContext);
             }
         });
     }

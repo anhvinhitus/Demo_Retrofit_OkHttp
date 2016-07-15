@@ -82,11 +82,19 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startHomeActivity(Context context) {
-        startHomeActivity(context, false);
+    public void startHomeActivity(Context context, boolean clearTop) {
+        Intent intent = intentHomeActivity(context, clearTop);
+        context.startActivity(intent);
     }
 
-    public void startHomeActivity(Context context, boolean clearTop) {
+    public void startHomeActivity(Context context, long appId, String zptranstoken) {
+        Intent intent = intentHomeActivity(context, true);
+        intent.putExtra(Constants.ARG_APPID, appId);
+        intent.putExtra(Constants.ARG_ZPTRANSTOKEN, zptranstoken);
+        context.startActivity(intent);
+    }
+
+    public Intent intentHomeActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, MainActivity.class);
 
         if (clearTop) {
@@ -95,8 +103,7 @@ public class Navigator implements INavigator {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
-
-        context.startActivity(intent);
+        return intent;
     }
 
     public void startUpdateProfileLevel2Activity(Context context, boolean clearTop) {
