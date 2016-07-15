@@ -50,8 +50,8 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> get(int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(() -> queryList(pageIndex, limit))
+    public Observable<List<TransHistoryEntity>> get(int pageIndex, int limit, int status) {
+        return ObservableHelper.makeObservable(() -> queryList(pageIndex, limit, status))
                 .doOnNext(transHistoryEntities -> Timber.d("get %s", transHistoryEntities.size()))
                 ;
     }
@@ -66,6 +66,18 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 getDaoSession()
                         .getTransactionLogDao()
                         .queryBuilder()
+                        .limit(limit)
+                        .offset(pageIndex * limit)
+                        .orderDesc(TransactionLogDao.Properties.Reqdate)
+                        .list());
+    }
+
+    private List<TransHistoryEntity> queryList(int pageIndex, int limit, int statusType) {
+        return transform2Entity(
+                getDaoSession()
+                        .getTransactionLogDao()
+                        .queryBuilder()
+                        .where(TransactionLogDao.Properties.Statustype.eq(statusType))
                         .limit(limit)
                         .offset(pageIndex * limit)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
@@ -112,6 +124,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         transDao.setSign(transEntity.sign);
         transDao.setUsername(transEntity.username);
         transDao.setAppusername(transEntity.appusername);
+        transDao.setStatustype(transEntity.statustype);
         return transDao;
     }
 
@@ -136,6 +149,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         transHistoryEntity.sign = transDao.getSign();
         transHistoryEntity.username = transDao.getUsername();
         transHistoryEntity.appusername = transDao.getAppusername();
+        transHistoryEntity.statustype = transDao.getStatustype();
         return transHistoryEntity;
     }
 

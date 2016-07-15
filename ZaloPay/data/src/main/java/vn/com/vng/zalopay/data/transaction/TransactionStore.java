@@ -18,7 +18,7 @@ public interface TransactionStore {
     interface LocalStorage {
         void put(List<TransHistoryEntity> val);
 
-        Observable<List<TransHistoryEntity>> get(int pageIndex, int limit);
+        Observable<List<TransHistoryEntity>> get(int pageIndex, int limit, int statusType);
 
         boolean isHaveTransactionInDb();
 
@@ -27,12 +27,14 @@ public interface TransactionStore {
 
     interface RequestService {
         @GET("tpe/transhistory")
-        Observable<TransactionHistoryResponse> getTransactionHistories(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order);
+        Observable<TransactionHistoryResponse> getTransactionHistories(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("statustype") int statustype);
     }
 
     interface Repository {
 
         Observable<List<TransHistory>> getTransactions(int pageIndex, int count);
+
+        Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count);
 
         /*Gọi khi một giao dịch thành công*/
         Observable<Boolean> updateTransaction();

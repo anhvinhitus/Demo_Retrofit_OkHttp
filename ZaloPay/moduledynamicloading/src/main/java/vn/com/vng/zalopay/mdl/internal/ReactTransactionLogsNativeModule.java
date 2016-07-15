@@ -63,6 +63,20 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
+    public void getTransactionsFail(int pageIndex, int count, Promise promise) {
+        Subscription subscription = mRepository.getTransactionsFail(pageIndex, count)
+                .map(new Func1<List<TransHistory>, WritableArray>() {
+                    @Override
+                    public WritableArray call(List<TransHistory> transHistories) {
+                        return transform(transHistories);
+                    }
+                })
+                .subscribe(new TransactionLogSubscriber(promise));
+
+        compositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
     public void loadTransactionWithId(String id, Promise promise) {
 
         Timber.d("loadTransactionWithId %s", id);
