@@ -22,7 +22,7 @@ public class ReactAppConfig {
         APP_RESOURCE_MAP.put(11, new AppResource(11, AndroidApplication.instance().getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)));
 //        APP_RESOURCE_MAP.put(12, new AppResource(12, AndroidApplication.instance().getString(R.string.buy_phone_card), String.valueOf(R.drawable.ic_muathedt)));
         APP_RESOURCE_MAP.put(14, new AppResource(14, AndroidApplication.instance().getString(R.string.zing_xu), String.valueOf(R.drawable.ic_zingxu)));
-        APP_RESOURCE_MAP.put(15, new AppResource(15, AndroidApplication.instance().getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)));
+        APP_RESOURCE_MAP.put(15, new AppResource(15, AndroidApplication.instance().getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_napgame)));
         APP_RESOURCE_MAP.put(17, new AppResource(17, AndroidApplication.instance().getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)));
 
         APP_RESOURCE_LIST = new ArrayList<>();
