@@ -80,4 +80,14 @@ public final class User extends Person {
         }
     };
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("{");
+        result.append("uid: ").append(this.uid);
+        result.append(", ");
+        result.append("accesstoken: ").append(this.accesstoken);
+        result.append("}");
+        return result.toString();
+    }
 }

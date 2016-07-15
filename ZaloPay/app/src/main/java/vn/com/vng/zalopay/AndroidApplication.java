@@ -108,11 +108,16 @@ public class AndroidApplication extends MultiDexApplication {
     }
 
     public UserComponent createUserComponent(User user) {
+        Timber.d("Create new instance of UserComponent");
         userComponent = appComponent.plus(new UserModule(user));
         return userComponent;
     }
 
     public void releaseUserComponent() {
+        Timber.d("Release instance of UserComponent");
+        if (userComponent != null) {
+            userComponent.reactNativeInstanceManager().cleanup();
+        }
         userComponent = null;
     }
 

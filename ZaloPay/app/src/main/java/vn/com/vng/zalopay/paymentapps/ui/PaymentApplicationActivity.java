@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
+import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -63,6 +64,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Inject
     EventBus eventBus;
+
+    @Inject
+    ReactNativeInstanceManager mReactNativeInstanceManager;
 
     private AppResource appResource;
 
@@ -129,6 +133,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected void doInjection() {
         createUserComponent();
         AndroidApplication.instance().getUserComponent().inject(this);
+    }
+
+    @Override
+    protected ReactNativeInstanceManager nativeInstanceManager() {
+        return mReactNativeInstanceManager;
     }
 
     /**

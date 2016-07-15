@@ -6,6 +6,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -79,6 +80,7 @@ public class UserControllerModule {
     @UserScope
     @Provides
     ZaloPayIAPFactory providesZaloPayIAPFactory(ZaloPayIAPService service, User user) {
+        Timber.d("Create new instance of ZaloPayIAPFactory");
         return new ZaloPayIAPFactory(service, user);
     }
 
