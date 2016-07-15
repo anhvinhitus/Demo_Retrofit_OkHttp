@@ -3,6 +3,9 @@ package vn.com.vng.zalopay.data;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vn.com.vng.zalopay.data.util.Strings;
 
 import static org.junit.Assert.*;
@@ -25,5 +28,30 @@ public class StringsTest {
 
         value = Strings.stripAccents(input);
         Assert.assertTrue(output.equals(value));
+    }
+
+    @Test
+    public void testJoinWithDelimiter() throws Exception {
+        List<String> input = new ArrayList<>();
+        input.add("1");
+        input.add("2");
+        input.add("3");
+        String expected = "1|2|3";
+
+        String output = Strings.joinWithDelimiter("|", input);
+        Assert.assertTrue(expected.equals(output));
+    }
+
+
+    @Test
+    public void testJoinLongListWithDelimiter() throws Exception {
+        List<Long> input = new ArrayList<>();
+        input.add(1L);
+        input.add(2L);
+        input.add(3L);
+        String expected = "1|2|3";
+
+        String output = Strings.joinWithDelimiter("|", input);
+        Assert.assertTrue(expected.equals(output));
     }
 }

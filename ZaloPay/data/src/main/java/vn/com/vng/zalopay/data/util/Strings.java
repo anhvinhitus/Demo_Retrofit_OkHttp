@@ -8,17 +8,18 @@ public final class Strings {
     private Strings() {
     }
 
-    public static String joinWithDelimiter(String delimiter, List<String> strings) {
-        return joinWithDelimiter(delimiter, strings.toArray(new String[strings.size()]));
+    public static String joinWithDelimiter(String delimiter, List longList) {
+        return joinWithDelimiter(delimiter, longList.toArray());
     }
 
-    public static String joinWithDelimiter(String delimiter, String... strings) {
+    @SafeVarargs
+    public static <T> String joinWithDelimiter(String delimiter, T... values) {
         StringBuilder sb = new StringBuilder();
         String loopDelimiter = "";
-        for (String s : strings) {
-            if (!Strings.isNullOrEmpty(s)) {
+        for (T value : values) {
+            if (value != null) {
                 sb.append(loopDelimiter);
-                sb.append(s);
+                sb.append(String.valueOf(value));
 
                 loopDelimiter = delimiter;
             }
