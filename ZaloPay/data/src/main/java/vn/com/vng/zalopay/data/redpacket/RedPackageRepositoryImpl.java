@@ -7,7 +7,6 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
-import vn.com.vng.zalopay.domain.model.RedPackage;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -39,8 +38,8 @@ public class RedPackageRepositoryImpl implements RedPackageStore.Repository {
     public Observable<Boolean> sendBundle(long bundleID, List<Long> friendList) {
         String friendListStr = Strings.joinWithDelimiter("|", friendList);
         return mRequestService.sendBundle(bundleID, friendListStr, user.uid, user.accesstoken)
-                .map(BaseResponse::isSuccessfulResponse)
-                .doOnNext(redPackageResponse -> mLocalStorage.updateRedPackage(bundleID, RedPackage.RedPackageState.SENT.getValue()));
+                .map(BaseResponse::isSuccessfulResponse);
+                //.doOnNext(redPackageResponse -> mLocalStorage.updateRedPackage(bundleID, RedPackage.RedPackageState.SENT.getValue()));
     }
 
     @Override

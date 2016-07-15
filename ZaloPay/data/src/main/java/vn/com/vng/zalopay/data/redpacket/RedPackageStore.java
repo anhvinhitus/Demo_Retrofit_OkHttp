@@ -7,11 +7,16 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.api.response.SentBundleResponse;
+import vn.com.vng.zalopay.data.api.response.SentPackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.ReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
-import vn.com.vng.zalopay.domain.model.RedPackage;
+import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpackage.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
 
 /**
  * Created by longlv on 13/07/2016.
@@ -20,27 +25,39 @@ import vn.com.vng.zalopay.domain.model.RedPackage;
 public interface RedPackageStore {
 
     interface LocalStorage {
+        void putSentBundle(SentBundle sentBundle);
+        void putSentPackage(List<SentPackage> sentPackages, long bundleID);
+        Observable<List<SentBundle>> getAllSentBundle();
 
-        void putRedPackage(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage);
-        void updateRedPackage(long bundleId, int state);
-
-        void putRedPackageItem(long packageId, long bundleId, String zpTransID, int state);
-
-        Observable<List<RedPackage>> getAllRedPackage();
+        void putReceivePackages(List<ReceivePackage> receivePackages);
+        Observable<List<ReceivePackage>> getAllReceivePackage();
     }
 
     interface RequestService {
         @FormUrlEncoded
-        @POST("redpackage/createBundleOrder")
+        @POST("redpackage/createbundleorder")
         Observable<BundleOrderResponse> createBundleOrder(@Field("quantity") int quantity, @Field("totalLuck") long totalLuck, @Field("amountEach") long amountEach, @Field("type") int type, @Field("sendZaloPayID") String sendZaloPayID, @Field("accessToken") String accessToken, @Field("sendMessage") String sendMessage);
 
         @FormUrlEncoded
-        @POST("redpackage/sendBundle")
+        @POST("redpackage/submittosendbundle")
         Observable<BaseResponse> sendBundle(@Field("bundleID") long bundleID, @Field("friendList") String friendList, @Field("sendZaloPayID") String sendZaloPayID, @Field("accessToken") String accessToken);
 
         @FormUrlEncoded
-        @POST("redpackage/submitOpenPackage")
+        @POST("redpackage/submitopenpackage")
         Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageID") long packageID, @Field("bundleID") long bundleID, @Field("revZaloPayID") String revZaloPayID, @Field("accessToken") String accessToken);
+
+        @FormUrlEncoded
+        @POST("/rpe/getSentBundleList")
+        Observable<SentBundleResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order);
+
+        @FormUrlEncoded
+        @POST("/rpe/getPackageInBundleList")
+        Observable<SentPackageResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order);
+
+        @FormUrlEncoded
+        @POST("/rpe/getRevPackageList")
+        Observable<ReceivePackageResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order);
+
     }
 
     /**
