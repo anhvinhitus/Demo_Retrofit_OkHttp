@@ -12,7 +12,7 @@ ext {
     androidCompileSdkVersion = 21
 
     supportVersion = '23.2.1'
-    playServiceVersion = "8.4.0"
+    playServiceVersion = "9.0.0"
     //Libraries Version
     daggerVersion = '2.2'
     butterKnifeVersion = '8.0.1'

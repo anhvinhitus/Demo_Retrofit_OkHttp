@@ -95,7 +95,8 @@ public class MessageParser implements Parser {
 
                 int transType = event.getTransType();
 
-                event.read = !(!user.uid.equals(event.userid) && transType > 0);
+                event.read = !((!user.uid.equals(event.userid) && transType > 0)
+                        || notificationType > 0);
 
             } catch (Exception ex) {
                 Timber.w(ex, " Parse error");

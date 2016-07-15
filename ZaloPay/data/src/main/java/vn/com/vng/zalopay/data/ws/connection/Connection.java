@@ -31,6 +31,10 @@ public abstract class Connection {
         return mState == State.Connected;
     }
 
+    public boolean isConnecting(){
+        return mState == State.Connecting;
+    }
+
     public State getState() {
         return mState;
     }

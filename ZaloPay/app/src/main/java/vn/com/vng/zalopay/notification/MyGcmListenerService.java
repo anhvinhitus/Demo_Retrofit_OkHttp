@@ -39,6 +39,11 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
 
+
+      /*  String message = intent.getStringExtra("msg");
+        String badgeNumber = intent.getStringExtra("badgenumber");
+        String embeddata = intent.getStringExtra("embeddata");*/
+
         String message = data.getString("message");
         Timber.d("onMessageReceived: from %s message %s", from, message);
 

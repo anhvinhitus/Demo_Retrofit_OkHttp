@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 buildscript {
     repositories {
@@ -20,8 +22,6 @@ buildscript {
 }
 
 def cfg = rootProject.ext.configuration
-
-apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -69,6 +69,7 @@ android {
         internalProduction {
             assets.srcDirs += '../../paymentapps/production'
             res.srcDirs += 'src/production/res'
+
         }
 
         internalSandbox {
@@ -125,7 +126,7 @@ android {
         }
         debug {
             minifyEnabled false
-            //  applicationIdSuffix ".debug"
+        //    applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
         }
@@ -376,4 +377,4 @@ dependencies {
     compile project(':zalopayanalytics')
 }
 
-apply plugin: 'com.google.gms.google-services'
+

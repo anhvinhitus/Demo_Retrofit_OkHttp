@@ -96,6 +96,11 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     public void onDestroy() {
         Timber.d("onDestroy");
         eventBus.unregister(this);
+        if (mWsConnection != null) {
+            mWsConnection.disconnect();
+            mWsConnection.clearOnScrollListeners();
+            mWsConnection = null;
+        }
         super.onDestroy();
     }
 

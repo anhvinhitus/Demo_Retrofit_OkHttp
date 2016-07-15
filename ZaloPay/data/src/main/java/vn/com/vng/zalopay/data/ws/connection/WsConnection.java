@@ -137,7 +137,14 @@ public class WsConnection extends Connection implements ConnectionListener {
         if (mChannel != null) {
             return mChannel.isActive();
         }
+        return false;
+    }
 
+    @Override
+    public boolean isConnecting() {
+        if(mChannel!=null){
+            return mChannel.isOpen();
+        }
         return false;
     }
 
@@ -184,9 +191,11 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
         if (message != null) {
+            Timber.d("onReceived message.msgType %s",message.msgType);
             if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
             } else if (message.msgType == MessageType.Response.KICK_OUT) {
+                Timber.d("onReceived KICK_OUT");
                 disconnect();
                 return;
             }
