@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPackageLocalStorage;
@@ -21,8 +22,8 @@ public class RedPackageModule {
 
     @UserScope
     @Provides
-    RedPackageStore.LocalStorage provideRedPackageStorage(@Named("daosession") DaoSession session) {
-        return new RedPackageLocalStorage(session);
+    RedPackageStore.LocalStorage provideRedPackageStorage(@Named("daosession") DaoSession session, RedPackageDataMapper dataMapper) {
+        return new RedPackageLocalStorage(session, dataMapper);
     }
 
     @Provides
@@ -33,7 +34,7 @@ public class RedPackageModule {
 
     @UserScope
     @Provides
-    RedPackageStore.Repository provideRedPackageRepository(RedPackageStore.RequestService requestService, RedPackageStore.LocalStorage localStorage, UserConfig userConfig, User user) {
-        return new RedPackageRepositoryImpl(requestService, localStorage, userConfig, user);
+    RedPackageStore.Repository provideRedPackageRepository(RedPackageStore.RequestService requestService, RedPackageStore.LocalStorage localStorage, RedPackageDataMapper dataMapper, UserConfig userConfig, User user) {
+        return new RedPackageRepositoryImpl(requestService, localStorage, dataMapper, userConfig, user);
     }
 }

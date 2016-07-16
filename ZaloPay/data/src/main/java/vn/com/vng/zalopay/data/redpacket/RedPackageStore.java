@@ -7,11 +7,14 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.api.response.SentBundleResponse;
-import vn.com.vng.zalopay.data.api.response.SentPackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.ReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.RevPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.SentBundleListResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
+import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
@@ -25,12 +28,21 @@ import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
 public interface RedPackageStore {
 
     interface LocalStorage {
-        void putSentBundle(SentBundle sentBundle);
-        void putSentPackage(List<SentPackage> sentPackages, long bundleID);
+        void putSentBundle(SentBundleGD sentBundle);
+        void putSentBundle(List<SentBundleGD> sentBundle);
         Observable<List<SentBundle>> getAllSentBundle();
+        Observable<List<SentBundle>> getSentBundle(int pageIndex, int limit);
+        Observable<SentBundle> getSentBundle(long bundleID);
 
-        void putReceivePackages(List<ReceivePackage> receivePackages);
+        void putSentPackage(List<SentPackageGD> sentPackages);
+        Observable<List<SentPackage>> getAllSentPackage();
+        Observable<List<SentPackage>> getSentPackage(int pageIndex, int limit);
+        Observable<SentPackage> getSentPackage(long bundleID);
+
+        void putReceivePackages(List<ReceivePackageGD> receivePackages);
         Observable<List<ReceivePackage>> getAllReceivePackage();
+        Observable<List<ReceivePackage>> getReceivePackage(int pageIndex, int limit);
+        Observable<ReceivePackage> getReceivePackage(long bundleID);
     }
 
     interface RequestService {
@@ -48,15 +60,15 @@ public interface RedPackageStore {
 
         @FormUrlEncoded
         @POST("/rpe/getSentBundleList")
-        Observable<SentBundleResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order);
+        Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken);
 
         @FormUrlEncoded
         @POST("/rpe/getPackageInBundleList")
-        Observable<SentPackageResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order);
+        Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken);
 
         @FormUrlEncoded
         @POST("/rpe/getRevPackageList")
-        Observable<ReceivePackageResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order);
+        Observable<RevPackageInBundleResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken);
 
     }
 
@@ -69,5 +81,11 @@ public interface RedPackageStore {
         Observable<Boolean> sendBundle(long bundleID, List<Long> friendList);
 
         Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID);
+
+        Observable<List<SentBundle>> getSentBundleList(long timestamp, int count, int order);
+
+        Observable<List<SentPackage>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
+
+        Observable<List<ReceivePackage>> getRevPackageList(long bundleID, long timestamp, int count, int order);
     }
 }

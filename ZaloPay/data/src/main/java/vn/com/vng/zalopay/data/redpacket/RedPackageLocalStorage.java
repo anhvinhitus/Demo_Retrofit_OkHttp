@@ -1,15 +1,18 @@
 package vn.com.vng.zalopay.data.redpacket;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
+import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
+import vn.com.vng.zalopay.data.cache.model.SentPackageGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
@@ -24,39 +27,54 @@ import static java.util.Collections.emptyList;
  */
 public class RedPackageLocalStorage extends SqlBaseScopeImpl implements RedPackageStore.LocalStorage {
 
-    public RedPackageLocalStorage(DaoSession daoSession) {
+    private RedPackageDataMapper mDataMapper;
+
+    public RedPackageLocalStorage(DaoSession daoSession, RedPackageDataMapper dataMapper) {
         super(daoSession);
+        this.mDataMapper = dataMapper;
     }
 
     @Override
-    public void putSentBundle(SentBundle sentBundle) {
-        if (sentBundle == null || sentBundle.bundleID <= 0) {
+    public void putSentBundle(SentBundleGD sentBundleGD) {
+        if (sentBundleGD == null || sentBundleGD.getId() <= 0) {
             return;
         }
         try {
             //save SentBundle to DB
-            SentBundleGD sentBundleGD = new SentBundleGD(sentBundle.bundleID, sentBundle.type, sentBundle.createTime, sentBundle.lastOpenTime, sentBundle.totalLuck, sentBundle.numOfOpenedPakages, sentBundle.numOfPackages);
             getDaoSession().getSentBundleGDDao().insertOrReplaceInTx(sentBundleGD);
             //save SentPackage of SentBundle to DB
-            putSentPackage(sentBundle.packages, sentBundle.bundleID);
-            Timber.d("putRedPackage sentBundleGD %s", sentBundleGD);
+            putSentPackage(sentBundleGD.getSentPackages());
+            Timber.d("putSentBundle sentBundleGD %s", sentBundleGD);
         } catch (Exception e) {
-            Timber.w("Exception while trying to put RedPackage to local storage: %s", e.getMessage());
+            Timber.w("Exception while trying to put SentBundle to local storage: %s", e.getMessage());
         }
     }
 
     @Override
-    public void putSentPackage(List<SentPackage> sentPackages, long bundleID) {
-        if (bundleID <= 0 || sentPackages == null || sentPackages.size() <= 0) {
+    public void putSentBundle(List<SentBundleGD> sentBundleGDs) {
+        if (Lists.isEmptyOrNull(sentBundleGDs)) {
             return;
         }
         try {
-            List<SentPackageGD> sentPackageGDs = transform(sentPackages, bundleID);
+            getDaoSession().getSentBundleGDDao().insertOrReplaceInTx(sentBundleGDs);
+
+            Timber.d("putSentBundle sentBundleGDs %s", sentBundleGDs);
+        } catch (Exception e) {
+            Timber.w("Exception while trying to put SentBundle to local storage: %s", e.getMessage());
+        }
+    }
+
+    @Override
+    public void putSentPackage(List<SentPackageGD> sentPackageGDs) {
+        if (sentPackageGDs == null || sentPackageGDs.size() <= 0) {
+            return;
+        }
+        try {
             getDaoSession().getSentPackageGDDao().insertOrReplaceInTx(sentPackageGDs);
 
-            Timber.d("putRedPackage redPackage %s", sentPackageGDs);
+            Timber.d("putSentPackage sentPackage %s", sentPackageGDs);
         } catch (Exception e) {
-            Timber.w("Exception while trying to put RedPackage to local storage: %s", e.getMessage());
+            Timber.w("Exception while trying to put sentPackage to local storage: %s", e.getMessage());
         }
     }
 
@@ -67,17 +85,46 @@ public class RedPackageLocalStorage extends SqlBaseScopeImpl implements RedPacka
     }
 
     @Override
-    public void putReceivePackages(List<ReceivePackage> receivePackages) {
-        if (Lists.isEmptyOrNull(receivePackages)) {
+    public Observable<List<SentBundle>> getSentBundle(int pageIndex, int limit) {
+        return ObservableHelper.makeObservable(() -> querySentBundleList(pageIndex, limit))
+                .doOnNext(redPackageList -> Timber.d("get %s", redPackageList.size()));
+    }
+
+    @Override
+    public Observable<SentBundle> getSentBundle(long bundleID) {
+        return ObservableHelper.makeObservable(() -> querySentBundle(bundleID))
+                .doOnNext(sentBundle -> Timber.d("get %s", sentBundle));
+    }
+
+    @Override
+    public Observable<List<SentPackage>> getAllSentPackage() {
+        return ObservableHelper.makeObservable(this::querySentPackageList)
+                .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
+    }
+
+    @Override
+    public Observable<List<SentPackage>> getSentPackage(int pageIndex, int limit) {
+        return ObservableHelper.makeObservable(() -> querySentPackageList(pageIndex, limit))
+                .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
+    }
+
+    @Override
+    public Observable<SentPackage> getSentPackage(long bundleID) {
+        return ObservableHelper.makeObservable(() -> querySentPackage(bundleID))
+                .doOnNext(sentPackage -> Timber.d("get %s", sentPackage));
+    }
+
+    @Override
+    public void putReceivePackages(List<ReceivePackageGD> receivePackageGDs) {
+        if (Lists.isEmptyOrNull(receivePackageGDs)) {
             emptyList();
         }
         try {
-            List<ReceivePackageGD> receivePackageGDs = transformToReceivePackageDB(receivePackages);
             getDaoSession().getReceivePackageGDDao().insertOrReplaceInTx(receivePackageGDs);
 
-            Timber.d("putRedPackage redPackage %s", receivePackageGDs);
+            Timber.d("putReceivePackages receivePackages %s", receivePackageGDs);
         } catch (Exception e) {
-            Timber.w("Exception while trying to put RedPackage to local storage: %s", e.getMessage());
+            Timber.w("Exception while trying to put receivePackages to local storage: %s", e.getMessage());
         }
     }
 
@@ -87,125 +134,118 @@ public class RedPackageLocalStorage extends SqlBaseScopeImpl implements RedPacka
                 .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
-    private List<ReceivePackage> queryReceivePackageList() {
-        return transformToReceivePackage(
-                getDaoSession()
-                        .getReceivePackageGDDao()
-                        .queryBuilder()
-                        .list());
+    @Override
+    public Observable<List<ReceivePackage>> getReceivePackage(int pageIndex, int limit) {
+        return ObservableHelper.makeObservable(()-> queryReceivePackageList(pageIndex, limit))
+                .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
-    private List<ReceivePackage> transformToReceivePackage(List<ReceivePackageGD> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return emptyList();
-        }
-        List<ReceivePackage> receivePackages = new ArrayList<>();
-        for (ReceivePackageGD receivePackageGD: list) {
-            if (receivePackageGD == null || receivePackageGD.getId() <= 0) {
-                continue;
-            }
-            ReceivePackage receivePackage = transform(receivePackageGD);
-            receivePackages.add(receivePackage);
-
-        }
-        return receivePackages;
-    }
-
-    private ReceivePackage transform(ReceivePackageGD receivePackageGD) {
-        if (receivePackageGD == null || receivePackageGD.getId() <= 0) {
-            return null;
-        }
-        return new ReceivePackage(receivePackageGD.getPackageId(), receivePackageGD.getId(), receivePackageGD.getSendZaloPayID(), receivePackageGD.getSendFullName(), receivePackageGD.getAmount(), receivePackageGD.getOpenedTime());
-    }
-
-    private List<ReceivePackageGD> transformToReceivePackageDB(List<ReceivePackage> receivePackages) {
-        if (Lists.isEmptyOrNull(receivePackages)) {
-            return emptyList();
-        }
-        List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
-        for (ReceivePackage receivePackage: receivePackages) {
-            if (receivePackage == null || receivePackage.packageID <= 0) {
-                continue;
-            }
-            ReceivePackageGD receivePackageGD = transform(receivePackage);
-            receivePackageGDs.add(receivePackageGD);
-
-        }
-        return receivePackageGDs;
-    }
-
-    private ReceivePackageGD transform(ReceivePackage receivePackage) {
-        if (receivePackage == null || receivePackage.packageID <= 0) {
-            return null;
-        }
-        return new ReceivePackageGD(receivePackage.bundleID, receivePackage.packageID, receivePackage.sendZaloPayID, receivePackage.sendFullName, receivePackage.amount, receivePackage.openedTime);
+    @Override
+    public Observable<ReceivePackage> getReceivePackage(long bundleID) {
+        return ObservableHelper.makeObservable(() -> queryReceivePackage(bundleID))
+                .doOnNext(receivePackage -> Timber.d("get %s", receivePackage));
     }
 
     private List<SentBundle> querySentBundleList() {
-        return transform(
+        return mDataMapper.transformToSentBundle(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
+                        .orderDesc(SentBundleGDDao.Properties.CreateTime)
                         .list());
     }
 
-    private SentBundle transform(SentBundleGD sentBundleGD) {
-        List<SentPackage> sentPackages = transformToSentPackage(sentBundleGD.getSentPackages());
-        return new SentBundle(sentBundleGD.getId(), sentBundleGD.getType(), sentBundleGD.getCreateTime(), sentBundleGD.getLastOpenTime(), sentBundleGD.getTotalLuck(), sentBundleGD.getNumOfOpenedPakages(), sentBundleGD.getNumOfPackages(), sentPackages);
+    private List<SentBundle> querySentBundleList(int pageIndex, int limit) {
+        return mDataMapper.transformToSentBundle(
+                getDaoSession()
+                        .getSentBundleGDDao()
+                        .queryBuilder()
+                        .limit(limit)
+                        .offset(pageIndex * limit)
+                        .orderDesc(SentBundleGDDao.Properties.CreateTime)
+                        .list());
     }
 
-    private List<SentPackageGD> transform(List<SentPackage> sentPackages, long bundleID) {
-        List<SentPackageGD> sentPackageGDs = new ArrayList<>();
-        if (sentPackages == null || sentPackages.size() <= 0) {
-            return sentPackageGDs;
+    private SentBundle querySentBundle(long bundleID) {
+        List<SentBundle> sentBundles = mDataMapper.transformToSentBundle(
+                getDaoSession()
+                        .getSentBundleGDDao()
+                        .queryBuilder()
+                        .where(SentBundleGDDao.Properties.Id.eq(bundleID))
+                        .limit(1)
+                        .list());
+        if (Lists.isEmptyOrNull(sentBundles)) {
+            return null;
+        } else {
+            return sentBundles.get(0);
         }
-        for (SentPackage sentPackage : sentPackages) {
-            if (sentPackage == null || sentPackage.revZaloID <= 0) {
-                continue;
-            }
-            SentPackageGD sentPackageGD = new SentPackageGD(bundleID, sentPackage.revZaloPayID, sentPackage.revZaloID, sentPackage.revFullName, sentPackage.revAvatarURL, sentPackage.openTime, sentPackage.amount, sentPackage.sendMessage, sentPackage.isLuckiest?1:0);
-            sentPackageGDs.add(sentPackageGD);
-        }
-        return sentPackageGDs;
     }
 
-    private List<SentPackage> transformToSentPackage(List<SentPackageGD> list) {
-        List<SentPackage> sentPackages = new ArrayList<>();
-        if (list == null || list.size() <= 0) {
-            return  sentPackages;
-        }
-        for (SentPackageGD sentPackageGD : list) {
-            if (sentPackageGD.getId() <= 0) {
-                continue;
-            }
-            SentPackage sentPackage = transform(sentPackageGD);
-            sentPackages.add(sentPackage);
-        }
-        return null;
+    private List<SentPackage> querySentPackageList() {
+        return mDataMapper.transformToSentPackage(
+                getDaoSession()
+                        .getSentPackageGDDao()
+                        .queryBuilder()
+                        .orderDesc(SentPackageGDDao.Properties.OpenTime)
+                        .list());
     }
 
-    private SentPackage transform(SentPackageGD sentPackageGD) {
-        if (sentPackageGD == null) {
-            return  null;
-        }
-        return new SentPackage(sentPackageGD.getRevZaloPayID(), sentPackageGD.getRevZaloID(), sentPackageGD.getRevFullName(), sentPackageGD.getRevAvatarURL(), sentPackageGD.getOpenTime(), sentPackageGD.getAmount(), sentPackageGD.getSendMessage(), sentPackageGD.getIsLuckiest()==1);
+    private List<SentPackage> querySentPackageList(int pageIndex, int limit) {
+        return mDataMapper.transformToSentPackage(
+                getDaoSession()
+                        .getSentPackageGDDao()
+                        .queryBuilder()
+                        .offset(pageIndex * limit)
+                        .orderDesc(SentPackageGDDao.Properties.OpenTime)
+                        .list());
     }
 
-    private List<SentBundle> transform(List<SentBundleGD> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return emptyList();
+    private SentPackage querySentPackage(long bundleID) {
+        List<SentPackage> sentPackages = mDataMapper.transformToSentPackage(
+                getDaoSession()
+                        .getSentPackageGDDao()
+                        .queryBuilder()
+                        .where(SentPackageGDDao.Properties.Id.eq(bundleID))
+                        .limit(1)
+                        .list());
+        if (Lists.isEmptyOrNull(sentPackages)) {
+            return null;
+        } else {
+            return sentPackages.get(0);
         }
+    }
 
-        List<SentBundle> sentBundles = new ArrayList<>(list.size());
-        for (SentBundleGD sentBundleGD : list) {
-            SentBundle sentBundle = transform(sentBundleGD);
-            if (sentBundle == null) {
-                continue;
-            }
+    private List<ReceivePackage> queryReceivePackageList() {
+        return mDataMapper.transformToReceivePackage(
+                getDaoSession()
+                        .getReceivePackageGDDao()
+                        .queryBuilder()
+                        .orderDesc(ReceivePackageGDDao.Properties.PackageId)
+                        .list());
+    }
 
-            sentBundles.add(sentBundle);
+    private List<ReceivePackage> queryReceivePackageList(int pageIndex, int limit) {
+        return mDataMapper.transformToReceivePackage(
+                getDaoSession()
+                        .getReceivePackageGDDao()
+                        .queryBuilder()
+                        .offset(pageIndex*limit)
+                        .orderDesc(ReceivePackageGDDao.Properties.PackageId)
+                        .list());
+    }
+
+    private ReceivePackage queryReceivePackage(long bundleID) {
+        List<ReceivePackage> receivePackages = mDataMapper.transformToReceivePackage(
+                getDaoSession()
+                        .getReceivePackageGDDao()
+                        .queryBuilder()
+                        .where(ReceivePackageGDDao.Properties.Id.eq(bundleID))
+                        .limit(1)
+                        .list());
+        if (Lists.isEmptyOrNull(receivePackages)) {
+            return null;
+        } else {
+            return receivePackages.get(0);
         }
-
-        return sentBundles;
     }
 }

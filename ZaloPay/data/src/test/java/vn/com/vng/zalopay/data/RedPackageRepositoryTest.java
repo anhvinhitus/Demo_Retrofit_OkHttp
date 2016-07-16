@@ -13,15 +13,17 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.http.Field;
 import rx.Observable;
 import rx.Observer;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.api.response.SentBundleResponse;
-import vn.com.vng.zalopay.data.api.response.SentPackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.ReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.RevPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.SentBundleListResponse;
+import vn.com.vng.zalopay.data.api.response.redpackage.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -29,7 +31,6 @@ import vn.com.vng.zalopay.data.redpacket.RedPackageLocalStorage;
 import vn.com.vng.zalopay.data.redpacket.RedPackageRepositoryImpl;
 import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
-import vn.com.vng.zalopay.domain.model.RedPackage;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -89,9 +90,10 @@ public class RedPackageRepositoryTest {
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
-        mLocalStorage = new RedPackageLocalStorage(daoSession);
+        RedPackageDataMapper dataMapper = new RedPackageDataMapper();
+        mLocalStorage = new RedPackageLocalStorage(daoSession, dataMapper);
 
-        mRepository = new RedPackageRepositoryImpl(mRequestService, mLocalStorage, null, new User("1"));
+        mRepository = new RedPackageRepositoryImpl(mRequestService, mLocalStorage, dataMapper, null, new User("1"));
     }
 
     public class RequestServiceImpl implements RedPackageStore.RequestService {
@@ -112,24 +114,24 @@ public class RedPackageRepositoryTest {
         }
 
         @Override
-        public Observable<SentBundleResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order) {
+        public Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
             return null;
         }
 
         @Override
-        public Observable<SentPackageResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order) {
+        public Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
             return null;
         }
 
         @Override
-        public Observable<ReceivePackageResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order) {
+        public Observable<RevPackageInBundleResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
             return null;
         }
     }
 
     @Test
     public void testCreateBundle() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(3);
+        CountDownLatch countDownLatch = new CountDownLatch(2);
         final List<BundleOrder> bundleOrderSource = new ArrayList<>();
         final List<BundleOrder> bundleOrders = new ArrayList<>();
 
@@ -157,15 +159,15 @@ public class RedPackageRepositoryTest {
         BundleOrder bundleOrder = new BundleOrder(bundleOrderResponse.getAppid(), bundleOrderResponse.getZptranstoken(), bundleOrderResponse.apptransid, bundleOrderResponse.appuser, bundleOrderResponse.apptime, bundleOrderResponse.embeddata, bundleOrderResponse.item, bundleOrderResponse.amount, bundleOrderResponse.description, bundleOrderResponse.payoption, bundleOrderResponse.mac, bundleOrderResponse.bundleID);
         bundleOrderSource.add(bundleOrder);
 
-//        Assert.assertTrue(countDownLatch.await(3, TimeUnit.SECONDS));
+        Assert.assertTrue(countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals(bundleOrderSource, bundleOrders);
     }
 
     @Test
     public void testRedPackage() throws Exception{
-        CountDownLatch countDownLatch = new CountDownLatch(6);
-        final List<RedPackage> redPackages = new ArrayList<>();
-        final List<BundleOrder> bundleOrders = new ArrayList<>();
+//        CountDownLatch countDownLatch = new CountDownLatch(6);
+//        final List<RedPackage> redPackages = new ArrayList<>();
+//        final List<BundleOrder> bundleOrders = new ArrayList<>();
 
 //        mRequestService.sendBundle(bundleOrderResponse.bundleID, "u1|u2|u3", "323242", "adsfsafa")
 //        .subscribe(new Observer<BaseResponse>() {
