@@ -21,6 +21,7 @@ public interface FriendStore {
 
         void writeZaloFriend(ZaloFriendGD val);
 
+        List<ZaloFriendGD> listZaloFriend();
         LazyList<ZaloFriendGD> listZaloFriend(String textSearch);
     }
 
@@ -43,6 +44,7 @@ public interface FriendStore {
         Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded();
         Observable<List<ZaloFriend>> fetchListFromServer();
         Observable<LazyList<ZaloFriendGD>> listZaloFriendFromDb(String textSearch);
+        Observable<List<ZaloFriendGD>> listZaloFriendFromDb();
 
         ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD);
     }

@@ -40,8 +40,15 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<LazyList<ZaloFriendGD>> listZaloFriendFromDb(String textSearch) {
-        Timber.d("listZaloFriendFromDb textSearch: %s", textSearch);
+        Timber.d("LazyListZaloFriendFromDb textSearch: %s", textSearch);
         return ObservableHelper.makeObservable(() -> mLocalStorage.listZaloFriend(textSearch))
+                .doOnNext(lazyListZaloFriend -> Timber.d("listZaloFriendFromDb get %s", lazyListZaloFriend.size()));
+    }
+
+    @Override
+    public Observable<List<ZaloFriendGD>> listZaloFriendFromDb() {
+        Timber.d("listZaloFriendFromDb");
+        return ObservableHelper.makeObservable(() -> mLocalStorage.listZaloFriend())
                 .doOnNext(listZaloFriend -> Timber.d("listZaloFriendFromDb get %s", listZaloFriend.size()));
     }
 
