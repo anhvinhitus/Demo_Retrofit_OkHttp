@@ -1,10 +1,10 @@
-package vn.com.vng.zalopay.mdl;
+package vn.com.vng.zalopay.mdl.internal;
 
 /**
  * Created by huuhoa on 4/29/16.
  * Common exception
  */
-public class MiniApplicationException extends Exception {
+class MiniApplicationException extends Exception {
     public MiniApplicationException(String message) {
         super(message);
     }

@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
  * Created by huuhoa on 7/15/16.
  * Handle NativeModuleCallExceptionHandler
  */
-public class HandleReactNativeException implements NativeModuleCallExceptionHandler {
+class HandleReactNativeException implements NativeModuleCallExceptionHandler {
     WeakReference<ReactNativeInstanceManager> mInstanceReference;
     WeakReference<ReactBasedActivity> mActivityReference;
 

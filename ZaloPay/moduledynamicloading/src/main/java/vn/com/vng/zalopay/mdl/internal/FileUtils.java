@@ -13,8 +13,6 @@ import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import vn.com.vng.zalopay.mdl.MiniApplicationException;
-
 /**
  * Created by huuhoa on 4/29/16.
  * Copy from react-native-code-push

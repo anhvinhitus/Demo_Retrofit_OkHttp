@@ -58,7 +58,7 @@ public class RedPackageRepositoryTest {
 
     private void setupRequestServiceVariable() {
         bundleOrderResponse = new BundleOrderResponse();
-        bundleOrderResponse.bundleID = 123321l;
+        bundleOrderResponse.bundleID = 123321L;
         bundleOrderResponse.appid = 123;
         bundleOrderResponse.zptranstoken = "abc";
         bundleOrderResponse.apptransid = "234";
@@ -76,8 +76,8 @@ public class RedPackageRepositoryTest {
         baseResponse.message="";
 
         submitOpenPackageResponse = new SubmitOpenPackageResponse();
-        submitOpenPackageResponse.bundleId = 123321l;
-        submitOpenPackageResponse.packageID = 987l;
+        submitOpenPackageResponse.bundleId = 123321L;
+        submitOpenPackageResponse.packageID = 987L;
         submitOpenPackageResponse.zpTransID = "lx123456";
     }
 
