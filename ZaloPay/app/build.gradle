@@ -36,12 +36,12 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 10
+        versionCode 11
         versionName "1.6.${versionCode}"
 
         multiDexEnabled true
 
-        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
+        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
