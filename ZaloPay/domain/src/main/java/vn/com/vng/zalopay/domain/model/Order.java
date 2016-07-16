@@ -192,6 +192,48 @@ public class Order extends AbstractData {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (appid != order.appid) return false;
+        if (apptime != order.apptime) return false;
+        if (amount != order.amount) return false;
+        if (zptranstoken != null ? !zptranstoken.equals(order.zptranstoken) : order.zptranstoken != null)
+            return false;
+        if (apptransid != null ? !apptransid.equals(order.apptransid) : order.apptransid != null)
+            return false;
+        if (appuser != null ? !appuser.equals(order.appuser) : order.appuser != null) return false;
+        if (embeddata != null ? !embeddata.equals(order.embeddata) : order.embeddata != null)
+            return false;
+        if (item != null ? !item.equals(order.item) : order.item != null) return false;
+        if (description != null ? !description.equals(order.description) : order.description != null)
+            return false;
+        if (payoption != null ? !payoption.equals(order.payoption) : order.payoption != null)
+            return false;
+        return mac != null ? mac.equals(order.mac) : order.mac == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (appid ^ (appid >>> 32));
+        result = 31 * result + (zptranstoken != null ? zptranstoken.hashCode() : 0);
+        result = 31 * result + (apptransid != null ? apptransid.hashCode() : 0);
+        result = 31 * result + (appuser != null ? appuser.hashCode() : 0);
+        result = 31 * result + (int) (apptime ^ (apptime >>> 32));
+        result = 31 * result + (embeddata != null ? embeddata.hashCode() : 0);
+        result = 31 * result + (item != null ? item.hashCode() : 0);
+        result = 31 * result + (int) (amount ^ (amount >>> 32));
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (payoption != null ? payoption.hashCode() : 0);
+        result = 31 * result + (mac != null ? mac.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");

@@ -48,4 +48,16 @@ public class BundleOrder extends Order {
             return new BundleOrder[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        BundleOrder that = (BundleOrder) o;
+
+        return bundleId == that.bundleId;
+
+    }
 }
