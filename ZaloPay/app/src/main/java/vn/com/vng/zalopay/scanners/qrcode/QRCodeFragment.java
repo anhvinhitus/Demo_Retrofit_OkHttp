@@ -77,14 +77,9 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     }
 
     @Override
-    public void showOrderDetail(Order order) {
-
-    }
-
-    @Override
     public void onTokenInvalid() {
         ZaloSDK.Instance.unauthenticate();
-        navigator.startLoginActivity(getContext());
+        navigator.startLoginActivity(getContext(), null);
         getActivity().finish();
     }
 
