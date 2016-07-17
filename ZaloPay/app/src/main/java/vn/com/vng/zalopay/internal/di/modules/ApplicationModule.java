@@ -38,6 +38,7 @@ import vn.com.vng.zalopay.service.ApplicationSessionImpl;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
+import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
@@ -174,7 +175,8 @@ public class ApplicationModule {
 
         ZPAnalytics.Builder builder = new ZPAnalytics.Builder();
         builder.addDefaultTracker();
-        builder.addTracker(new ZPTrackerGA(tracker, application));
+        builder.addTracker(new ZPTrackerGA(tracker));
+        builder.addTracker(new ZPTrackerAnswers());
         return builder.build();
     }
 }
