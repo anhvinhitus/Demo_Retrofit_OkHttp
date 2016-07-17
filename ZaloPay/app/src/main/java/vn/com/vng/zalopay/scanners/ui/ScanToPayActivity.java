@@ -14,9 +14,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -101,19 +98,19 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                         mNFCTabActivated = false;
                     }
 
-                    if (beaconFragment != null) {
+                    if (mScanBeaconFragment != null) {
                         if (position == TAB_BEACON) {
-                            beaconFragment.startScanning();
+                            mScanBeaconFragment.startScanning();
                         } else {
-                            beaconFragment.stopScanning();
+                            mScanBeaconFragment.stopScanning();
                         }
                     }
 
-                    if (soundFragment != null) {
+                    if (mScanSoundFragment != null) {
                         if (position == TAB_SOUND) {
-                            soundFragment.startRecording();
+                            mScanSoundFragment.startRecording();
                         } else {
-                            soundFragment.stopRecording();
+                            mScanSoundFragment.stopRecording();
                         }
                     }
                 }
@@ -239,6 +236,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.NFC_SCANNING);
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.BLE_SCANNING);
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.SOUND_SCANNING);
+        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.QR_SCANNING);
     }
 
     @Override
@@ -253,10 +251,10 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         handleIntent(intent);
     }
 
-    private ScanNFCFragment nfcFragment;
-    private ScanSoundFragment soundFragment;
-    private CounterBeaconFragment beaconFragment;
-    private QRCodeFragment qrCodeFragment;
+    private ScanNFCFragment mScanNFCFragment;
+    private ScanSoundFragment mScanSoundFragment;
+    private CounterBeaconFragment mScanBeaconFragment;
+    private QRCodeFragment mScanQRCodeFragment;
 
 
     /**
@@ -276,23 +274,23 @@ public class ScanToPayActivity extends BaseToolBarActivity {
             Timber.d("SectionsPagerAdapter getItem: %d", position);
             switch (position) {
                 case TAB_NFC: {
-                    nfcFragment = ScanNFCFragment.newInstance();
-                    nfcFragment.setReaderPresenter(mNFCReader);
-                    return nfcFragment;
+                    mScanNFCFragment = ScanNFCFragment.newInstance();
+                    mScanNFCFragment.setReaderPresenter(mNFCReader);
+                    return mScanNFCFragment;
                 }
                 case TAB_BEACON: {
 //                    return ScanSoundFragment.newInstance();
-                    beaconFragment = CounterBeaconFragment.newInstance(1);
-                    return beaconFragment;
+                    mScanBeaconFragment = CounterBeaconFragment.newInstance(1);
+                    return mScanBeaconFragment;
                 }
 
                 case TAB_QR:
-                    qrCodeFragment = QRCodeFragment.newInstance();
-                    return qrCodeFragment;
+                    mScanQRCodeFragment = QRCodeFragment.newInstance();
+                    return mScanQRCodeFragment;
 
                 case TAB_SOUND:
-                    soundFragment = ScanSoundFragment.newInstance();
-                    return soundFragment;
+                    mScanSoundFragment = ScanSoundFragment.newInstance();
+                    return mScanSoundFragment;
 
                 default:
                     return null;
@@ -301,7 +299,6 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return TAB_TOTAL;
         }
     }
