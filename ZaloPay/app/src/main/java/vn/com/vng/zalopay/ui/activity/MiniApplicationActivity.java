@@ -20,10 +20,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -55,6 +57,12 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     TransactionStore.Repository transactionRepository;
+
+    @Inject
+    RedPackageStore.Repository redPackageRepository;
+
+    @Inject
+    FriendStore.Repository friendRepository;
 
     @Inject
     INavigator navigator;
@@ -118,7 +126,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     protected ReactPackage reactInternalPackage() {
         return new ReactInternalPackage(transactionRepository,
-                notificationRepository, navigator, zpAnalytics);
+                notificationRepository, redPackageRepository, friendRepository, navigator, zpAnalytics);
     }
 
     private void createUserComponent() {
