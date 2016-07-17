@@ -7,6 +7,10 @@ import android.app.Activity;
  */
 public interface ILoginView extends ILoadDataView {
     void gotoMainActivity();
+
     void gotoUpdateProfileLevel2();
+
     Activity getActivity();
+
+    void gotoInvitationCode();
 }

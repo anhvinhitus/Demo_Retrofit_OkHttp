@@ -7,7 +7,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,17 +24,17 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.analytics.ZPTracker;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.cache.helper.DBOpenHelper;
+import vn.com.vng.zalopay.data.util.DBOpenHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.service.ApplicationSession;
+import vn.com.vng.zalopay.service.ApplicationSessionImpl;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
@@ -153,8 +152,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    ApplicationSession providesApplicationSession(Context context, Navigator navigator) {
-        return new ApplicationSession(context, navigator);
+    ApplicationSession providesApplicationSession(Context context, Navigator navigator, @Named("daosession") DaoSession daoSession) {
+        return new ApplicationSessionImpl(context, daoSession, navigator);
     }
 
     @Provides

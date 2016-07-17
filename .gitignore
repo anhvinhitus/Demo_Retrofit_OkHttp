@@ -8,3 +8,6 @@ ZaloPay/*/build/
 ZaloPay/build/
 ZaloPay/local.properties
 *.swp
+scripts/error.csv
+scripts/JavaApplication1.jar
+scripts/README.md

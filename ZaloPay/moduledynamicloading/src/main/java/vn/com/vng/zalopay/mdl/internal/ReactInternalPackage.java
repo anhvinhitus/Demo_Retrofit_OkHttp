@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.analytics.ZPTracker;
-import vn.com.vng.zalopay.data.cache.NotificationStore;
-import vn.com.vng.zalopay.data.cache.TransactionStore;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
@@ -24,6 +24,9 @@ import vn.com.vng.zalopay.mdl.INavigator;
 public class ReactInternalPackage implements ReactPackage {
 
     private TransactionStore.Repository mRepository;
+    private RedPackageStore.Repository mRedPackageRepository;
+    private FriendStore.Repository mFriendRepository;
+
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
 
@@ -43,7 +46,7 @@ public class ReactInternalPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
-        modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
+        modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository, mRedPackageRepository, mFriendRepository));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
         return modules;
     }

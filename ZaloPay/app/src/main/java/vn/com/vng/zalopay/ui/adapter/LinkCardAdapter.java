@@ -157,12 +157,15 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             return;
         }
 
-        GradientDrawable bgShape = (GradientDrawable) mRoot.getBackground();
         int[] colors = new int[3];
         colors[0] = getColorFromResource(bankInfos.backgroundGradientStart);
         colors[1] = getColorFromResource(bankInfos.backgroundGradientEnd);
         colors[2] = getColorFromResource(bankInfos.backgroundGradientStart);
-        bgShape.setColors(colors);
+
+        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
+        gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+        gradientDrawable.setCornerRadius(8);
+        mRoot.setBackground(gradientDrawable);
     }
 
     public void bindBankCard(View mRoot, ImageView imgLogo, BankCard bankCard) {

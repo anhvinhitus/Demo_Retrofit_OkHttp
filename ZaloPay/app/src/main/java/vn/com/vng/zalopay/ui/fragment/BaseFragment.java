@@ -23,7 +23,9 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -44,6 +46,8 @@ public abstract class BaseFragment extends Fragment {
     private Unbinder unbinder;
 
     protected final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
+    protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

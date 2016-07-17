@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.ws.model.Event;
 
 /**
@@ -109,5 +111,29 @@ public class NotificationData extends Event {
 
     public void setNotificationId(long notificationId) {
         this.notificationId = notificationId;
+    }
+
+    public int getTransType() {
+        int transType = -1;
+        try {
+            if (embeddata.has(Constants.TRANSTYPE)) {
+                transType = embeddata.get(Constants.TRANSTYPE).getAsInt();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return transType;
+    }
+
+    public int getNotificationType() {
+        int notificationType = -1;
+        try {
+            if (embeddata.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
+                notificationType = embeddata.get(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return notificationType;
     }
 }

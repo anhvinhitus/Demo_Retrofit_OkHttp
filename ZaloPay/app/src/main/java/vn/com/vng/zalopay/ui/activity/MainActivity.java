@@ -5,17 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.view.Gravity;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.lang.ref.WeakReference;
 
@@ -28,8 +31,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.service.NotificationService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -44,6 +47,9 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Main Application activity
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
+
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected int getResLayoutId() {
@@ -63,21 +69,20 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public MainActivity() {
     }
 
-    private ActionBarDrawerToggle toggle;
-
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-
-    private int mCurrentMenuId;
-
-    @Inject
-    Navigator navigator;
 
     @Inject
     MainPresenter presenter;
 
     @Inject
     GlobalEventHandlingService globalEventHandlingService;
+
+    private int mCurrentMenuId;
+    private long back_pressed;
+
+    private ActionBarDrawerToggle toggle;
+    private SweetAlertDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +119,24 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         startZaloPayService();
         presenter.getZaloFriend();
+
+        payWithTransToken();
+    }
+
+    private void payWithTransToken() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if (bundle.containsKey(Constants.ARG_APPID) && bundle.containsKey(Constants.ARG_ZPTRANSTOKEN)) {
+                long appId = bundle.getLong(Constants.ARG_APPID, 0);
+                String zptranstoken = bundle.getString(Constants.ARG_ZPTRANSTOKEN);
+                if (appId > 0 && !TextUtils.isEmpty(zptranstoken)) {
+                    presenter.pay(appId, zptranstoken);
+                } else {
+                    showToast(R.string.exception_data_invalid);
+                    finish();
+                }
+            }
+        }
     }
 
     @Override
@@ -184,46 +207,46 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 break;
             case MenuItemUtil.APPLICATION_INFO_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUABOUT);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUHELP);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUADDCASH);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCASH);
                 break;
             case MenuItemUtil.FAQ_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUFAQ);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFAQ);
                 break;
             case MenuItemUtil.HOME_ID:
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUHOME);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHOME);
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 startQRCodeActivity();
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUSCANQR);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
-                getAppComponent().applicationSession().clearUserSession();
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENULOGOUT);
+                presenter.logout();
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTION_LOGS);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
                 break;
             case MenuItemUtil.SAVE_CARD_ID:
                 navigator.startLinkCardActivity(this);
-                zpAnalytics.logEvent(ZPEvents.TAPLEFTMENUADDCARD);
+                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
                 break;
 
         }
@@ -257,8 +280,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-    private long back_pressed;
-
     @Override
     public void onBackPressed() {
 
@@ -289,16 +310,13 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     private void startZaloPayService() {
-        AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                startService(new Intent(MainActivity.this.getApplicationContext(), NotificationService.class));
-                return null;
-            }
-        });
+/*
+        checkPlayServices();*/
+        Intent intent = new Intent(this, ZPNotificationService.class);
+        startService(intent);
     }
 
-      /*  */
+ /*   */
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -306,7 +324,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
      * the Google Play Store or enable it in the device's system settings.
      *//*
     private boolean checkPlayServices() {
-        Timber.tag(TAG).d("checkPlayServices.........");
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -314,23 +331,13 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Timber.tag(TAG).d("This device is not supported.");
-                finish();
+                Timber.d("This device is not supported.");
             }
             return false;
         }
         return true;
     }
-
-    private void startRegistrationReceiver() {
-        Timber.tag(TAG).d("startRegistrationReceiver......");
-        if (checkPlayServices()) {
-            Timber.tag(TAG).d("Start IntentService to register this application with GCM");
-            // Start IntentService to register this application with GCM.
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
-        }
-    }*/
+*/
     @Override
     public void onPause() {
         Timber.i("MainActivity is pausing");
@@ -351,6 +358,36 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         alertDialog.setConfirmText(message.title);
         alertDialog.setContentText(message.content);
         alertDialog.show();
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            mProgressDialog.setContentText("Loading");
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
     }
 
 }

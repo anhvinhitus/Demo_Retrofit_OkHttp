@@ -173,7 +173,7 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
         @Override
         public void onNext(Order order) {
-            Timber.d("login success " + order);
+            Timber.d("Create order for WalletTopup success: " + order);
             BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -195,14 +195,12 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        Timber.d("session =========" + e);
         hideLoadingView();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         showErrorView(message);
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        Timber.d("session =========" + order.getItem());
 //        pay(order);
         paymentWrapper.payWithOrder(order);
         hideLoadingView();

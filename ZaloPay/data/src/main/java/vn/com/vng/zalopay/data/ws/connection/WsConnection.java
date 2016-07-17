@@ -6,8 +6,11 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.google.protobuf.AbstractMessage;
+
+import org.w3c.dom.Text;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -23,11 +26,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -47,6 +52,8 @@ public class WsConnection extends Connection implements ConnectionListener {
     private NioEventLoopGroup group;
     private Channel mChannel;
     private ChannelFuture channelFuture;
+
+    private String gcmToken;
 
     private final Context context;
 
@@ -68,6 +75,10 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void setHostPort(String host, int port) {
         this.HOST = host;
         this.PORT = port;
+    }
+
+    public void setGCMToken(String token) {
+        this.gcmToken = token;
     }
 
     @Override
@@ -126,16 +137,21 @@ public class WsConnection extends Connection implements ConnectionListener {
         if (mChannel != null) {
             return mChannel.isActive();
         }
-
         return false;
     }
 
+    @Override
+    public boolean isConnecting() {
+        if(mChannel!=null){
+            return mChannel.isOpen();
+        }
+        return false;
+    }
 
     @Override
     public boolean send(int msgType, String data) {
         return false;
     }
-
 
     @Override
     public boolean send(int msgType, AbstractMessage msgData) {
@@ -175,13 +191,11 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
         if (message != null) {
+            Timber.d("onReceived message.msgType %s",message.msgType);
             if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
-
-
-
             } else if (message.msgType == MessageType.Response.KICK_OUT) {
-
+                Timber.d("onReceived KICK_OUT");
                 disconnect();
                 return;
             }
@@ -211,7 +225,7 @@ public class WsConnection extends Connection implements ConnectionListener {
         mState = Connection.State.Disconnected;
         disconnect();
 
-        if (isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
+        if (NetworkHelper.isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
             connect();
         }
         numRetry++;
@@ -220,13 +234,18 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private boolean sendAuthentication(String token, long uid) {
 
-        Timber.d("send authentication token %s uid %s", token, uid);
+        Timber.d("send authentication token %s uid %s gcmToken %s", token, uid, gcmToken);
 
-        ZPMsgProtos.MessageLogin loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
+        ZPMsgProtos.MessageLogin.Builder loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
                 .setToken(token)
                 .setUsrid(uid)
-                .build();
-        return send(MessageType.Request.AUTHEN_LOGIN, loginMsg);
+                .setOstype(Enums.Platform.ANDROID.getId());
+
+        if (!TextUtils.isEmpty(gcmToken)) {
+            loginMsg.setDevicetoken(gcmToken);
+        }
+
+        return send(MessageType.Request.AUTHEN_LOGIN, loginMsg.build());
     }
 
     public boolean isAuthenticated() {
@@ -241,19 +260,15 @@ public class WsConnection extends Connection implements ConnectionListener {
         return false;
     }
 
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-
     protected final void onPostExecute(Event event) {
-        if (listCallBack != null) {
-            for (int i = listCallBack.size() - 1; i >= 0; i--) {
-                listCallBack.get(i).onReceiverEvent(event);
+        try {
+            if (listCallBack != null) {
+                for (int i = listCallBack.size() - 1; i >= 0; i--) {
+                    listCallBack.get(i).onReceiverEvent(event);
+                }
             }
+        } catch (Exception ex) {
+            Timber.w(ex, "exception : ");
         }
     }
 

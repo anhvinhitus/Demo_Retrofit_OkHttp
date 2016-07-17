@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 
 /**
@@ -23,16 +24,16 @@ public class NetworkReceiver extends BroadcastReceiver {
     EventBus eventBus;
 
     public NetworkReceiver() {
-        AndroidApplication.instance().getAppComponent().inject(this);
+        try {
+            AndroidApplication.instance().getAppComponent().inject(this);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ConnectivityManager conn = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = conn.getActiveNetworkInfo();
-
-        boolean isOnline = networkInfo != null && networkInfo.isConnected();
+        boolean isOnline = NetworkHelper.isNetworkAvailable(context);
         Timber.d("Network State Change %s", isOnline);
 
         eventBus.post(new NetworkChangeEvent(isOnline));

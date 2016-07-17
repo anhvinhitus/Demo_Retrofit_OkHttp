@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
@@ -43,7 +43,7 @@ public class ScanSoundFragment extends BaseFragment {
     ZaloPayRepository zaloPayRepository;
 
     @Inject
-    BalanceRepository mBalanceRepository;
+    BalanceStore.Repository mBalanceRepository;
 
     @Inject
     Navigator mNavigator;

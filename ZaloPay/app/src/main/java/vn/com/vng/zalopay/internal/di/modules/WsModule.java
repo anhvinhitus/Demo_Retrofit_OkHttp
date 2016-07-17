@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -17,11 +19,11 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  */
 @Module
 public class WsModule {
-    
+
     @UserScope
     @Provides
-    WsConnection providesWsConnection(Context context, UserConfig userConfig) {
-        WsConnection wsConnection = new WsConnection(context, new MessageParser(), userConfig);
+    WsConnection providesWsConnection(Context context, UserConfig userConfig, Gson gson) {
+        WsConnection wsConnection = new WsConnection(context, new MessageParser(userConfig, gson), userConfig);
         wsConnection.setHostPort(BuildConfig.WS_HOST, BuildConfig.WS_PORT);
         return wsConnection;
     }

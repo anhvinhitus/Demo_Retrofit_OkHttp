@@ -14,33 +14,26 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.transfer.models.TransferRecent;
-import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment.OnListFragmentInteractionListener;
+import vn.com.vng.zalopay.transfer.models.RecentTransaction;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link TransferRecent} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<TransferRecentRecyclerViewAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<TransferRecent> mValues;
+    private final List<RecentTransaction> mValues;
     private final OnTransferRecentItemListener mListener;
 
     public interface OnTransferRecentItemListener {
-        // TODO: Update argument type and name
-        void onItemClick(TransferRecent item);
+        void onItemClick(RecentTransaction item);
     }
 
-    public TransferRecentRecyclerViewAdapter(Context context, List<TransferRecent> items, OnTransferRecentItemListener listener) {
+    public TransferRecentRecyclerViewAdapter(Context context, List<RecentTransaction> items, OnTransferRecentItemListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
     }
 
-    public void setData(List<TransferRecent> items) {
+    public void setData(List<RecentTransaction> items) {
         mValues.clear();
         if (items == null || items.size() <= 0) {
             return;
@@ -107,7 +100,7 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
         public final ImageView mImgAvatar;
         public final ImageView mImgTransferType;
         public final View mViewSeparate;
-        public TransferRecent mItem;
+        public RecentTransaction mItem;
 
         public ViewHolder(View view) {
             super(view);

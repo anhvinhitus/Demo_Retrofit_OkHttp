@@ -24,12 +24,15 @@ public final class User extends Person {
     public String accesstoken;
     public long expirein;
     public String email;
+    public String identityNumber;
 
     public int profilelevel;
 
     public int need_invitation;
 
-    public List<ProfilePermisssion.Permission> profilePermisssions;
+    public long phonenumber;
+
+    public List<ProfilePermission.Permission> profilePermisssions;
 
     public User() {
     }
@@ -55,7 +58,7 @@ public final class User extends Person {
 
     public void setPermissions(String jsonArray) {
         profilePermisssions = fromJson(jsonArray,
-                new TypeToken<ArrayList<ProfilePermisssion.Permission>>() {
+                new TypeToken<ArrayList<ProfilePermission.Permission>>() {
                 }.getType());
     }
 
@@ -77,4 +80,14 @@ public final class User extends Person {
         }
     };
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("{");
+        result.append("uid: ").append(this.uid);
+        result.append(", ");
+        result.append("accesstoken: ").append(this.accesstoken);
+        result.append("}");
+        return result.toString();
+    }
 }

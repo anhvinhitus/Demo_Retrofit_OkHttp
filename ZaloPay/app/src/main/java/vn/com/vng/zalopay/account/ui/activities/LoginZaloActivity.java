@@ -14,7 +14,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
@@ -24,6 +23,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
+    private SweetAlertDialog mErrorDialog;
 
     @Override
     protected void setupActivityComponent() {
@@ -45,30 +45,23 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Inject
     LoginPresenter loginPresenter;
 
-    @Inject
-    Navigator navigator;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
 
         String message = getIntent().getStringExtra(Constants.ARG_MESSAGE);
-        if (TextUtils.isEmpty(message)) {
-            return;
+
+        if (!TextUtils.isEmpty(message)) {
+            showDialog(message, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         }
 
-
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
-        alertDialog.setContentText(message);
-        alertDialog.setConfirmText("Đồng ý");
-        alertDialog.show();
     }
 
     @OnClick(R.id.layoutLoginZalo)
     public void onClickLogin(View v) {
         loginPresenter.loginZalo(this);
-        zpAnalytics.logEvent(ZPEvents.TAP_LOGIN);
+        zpAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
     }
 
    /* @Override
@@ -85,6 +78,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void onDestroy() {
+        destroyErrorDialog();
         loginPresenter.destroy();
         super.onDestroy();
     }
@@ -106,6 +100,12 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     public void gotoMainActivity() {
         navigator.startHomeActivity(this, true);
+        finish();
+    }
+
+    @Override
+    public void gotoInvitationCode() {
+        navigator.startInvitationCodeActivity(getContext());
         finish();
     }
 
@@ -142,7 +142,26 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        Timber.d("showError message %s", message);
+        if (mErrorDialog == null) {
+            mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setConfirmText(getContext().getString(R.string.txt_close))
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+                        }
+                    });
+        }
+        mErrorDialog.setContentText(message);
+        mErrorDialog.show();
+    }
+
+    private void destroyErrorDialog() {
+        if (mErrorDialog != null && mErrorDialog.isShowing()) {
+            mErrorDialog.dismiss();
+        }
+        mErrorDialog = null;
     }
 
     @Override

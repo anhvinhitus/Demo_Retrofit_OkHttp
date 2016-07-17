@@ -7,7 +7,8 @@ public class Enums {
 
     public enum Platform {
         IOS((short) 1),
-        ANDROID((short) 2);
+        ANDROID((short) 2),
+        WINDOW_PHONE((short) 3);
         private short mId;
 
         Platform(short id) {

@@ -2,12 +2,14 @@
 package vn.com.vng.zalopay.exception;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.net.SocketTimeoutException;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.HttpException;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
@@ -36,7 +38,10 @@ public class ErrorMessageFactory {
         if (exception instanceof NetworkConnectionException) {
             message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof BodyException) {
-            message = exception.getMessage();
+            message = NetworkError.create(context, ((BodyException) exception).errorCode);
+            if (TextUtils.isEmpty(message)) {
+                message = exception.getMessage();
+            }
         } else if (exception instanceof TokenException) {
             //message = context.getString(R.string.exception_token_expired_message);
             message = null;

@@ -11,11 +11,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -36,6 +36,10 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
+                if(mView ==null){
+                    return;
+                }
+
                 if ("order".equalsIgnoreCase(param)) {
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
                 } else if ("uid".equalsIgnoreCase(param)) {
@@ -49,7 +53,15 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseError(int status) {
+                if(mView ==null){
+                    return;
+                }
+
+                if (status == PaymentError.ERR_CODE_INTERNET) {
+                    mView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                }
                 hideLoadingView();
+                mView.resumeScanner();
             }
 
             @Override
@@ -64,18 +76,31 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseTokenInvalid() {
+                if(mView ==null){
+                    return;
+                }
+
                 mView.onTokenInvalid();
                 clearAndLogout();
             }
 
             @Override
             public void onResponseCancel() {
+                if(mView ==null){
+                    return;
+                }
+
                 hideLoadingView();
+                mView.resumeScanner();
             }
 
             @Override
             public void onNotEnoughMoney() {
-                navigator.startDepositActivity(mView.getContext());
+                if(mView ==null){
+                    return;
+                }
+
+                navigator.startDepositActivity(applicationContext);
             }
         });
     }
@@ -131,7 +156,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             hideLoadingView();
 
-            zpAnalytics.logEvent(ZPEvents.SCANQR_WRONGCODE);
+            zpAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
 
             mView.resumeScanner();
@@ -139,7 +164,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             Timber.i("Invalid JSON input: %s", e.getMessage());
             hideLoadingView();
 
-            zpAnalytics.logEvent(ZPEvents.SCANQR_WRONGCODE);
+            zpAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
 
             mView.resumeScanner();
@@ -169,16 +194,16 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         if (TextUtils.isEmpty(order.getAppuser())) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getApptime())) {
+        if (order.getApptime() <= 0) {
             return false;
         }
         if (TextUtils.isEmpty(order.getItem())) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getAmount())) {
+        if (order.getAmount() < 0) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getEmbeddata())) {
+        if (TextUtils.isEmpty(order.getDescription())) {
             return false;
         }
         if (TextUtils.isEmpty(order.getMac())) {

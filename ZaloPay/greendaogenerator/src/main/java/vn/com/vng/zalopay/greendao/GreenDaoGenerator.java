@@ -5,9 +5,10 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Index;
 import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
+import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 15;
+    private static final int APP_DB_VERSION = 20;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -21,12 +22,61 @@ public class GreenDaoGenerator {
         addZaloContact(appSchema);
         addTransferRecent(appSchema);
         addNotification(appSchema);
+        addSentBundle(appSchema);
+        addReceiveBundle(appSchema);
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
+    private static void addSentBundle(Schema appSchema) {
+        Entity packageEntity = appSchema.addEntity("SentPackageGD");
+        Property propertyBundleId = packageEntity.addIdProperty().unique().notNull().getProperty();//bundleID
+        packageEntity.addStringProperty("revZaloPayID");
+        packageEntity.addLongProperty("revZaloID");
+        packageEntity.addStringProperty("revFullName");
+        packageEntity.addStringProperty("revAvatarURL");
+        Property openTime = packageEntity.addLongProperty("openTime").getProperty();
+        packageEntity.addLongProperty("amount");
+        packageEntity.addStringProperty("sendMessage");
+        packageEntity.addIntProperty("isLuckiest");
+
+        Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
+        sentBundleEntity.addIdProperty().unique().notNull();//bundleId
+        sentBundleEntity.addIntProperty("type");
+        sentBundleEntity.addLongProperty("createTime");
+        sentBundleEntity.addLongProperty("lastOpenTime");
+        sentBundleEntity.addIntProperty("totalLuck");
+        sentBundleEntity.addIntProperty("numOfOpenedPakages");
+        sentBundleEntity.addIntProperty("numOfPackages");
+        ToMany sentBundleToPackage = sentBundleEntity.addToMany(packageEntity, propertyBundleId);
+        sentBundleToPackage.setName("sentPackages");
+        sentBundleToPackage.orderDesc(openTime);
+    }
+
+    private static void addReceiveBundle(Schema appSchema) {
+        Entity revPackageEntity = appSchema.addEntity("ReceivePackageGD");
+        Property revBundleId = revPackageEntity.addIdProperty().unique().notNull().getProperty();//BundleId
+        revPackageEntity.addLongProperty("packageId");
+        revPackageEntity.addStringProperty("sendZaloPayID");
+        revPackageEntity.addStringProperty("sendFullName");
+        revPackageEntity.addLongProperty("amount");
+        Property openTime = revPackageEntity.addLongProperty("openedTime").getProperty();
+
+        Entity receiveBundleEntity = appSchema.addEntity("ReceiveBundleGD");
+        receiveBundleEntity.addIdProperty().unique().notNull();//Bundle
+        receiveBundleEntity.addIntProperty("type");
+        receiveBundleEntity.addLongProperty("createTime");
+        receiveBundleEntity.addIntProperty("totalLuck");
+        receiveBundleEntity.addIntProperty("numOfOpenedPakages");
+        receiveBundleEntity.addIntProperty("numOfPackages");
+        ToMany revBundleToPackage = receiveBundleEntity.addToMany(revPackageEntity, revBundleId);
+        revBundleToPackage.setName("receivePackages");
+        revBundleToPackage.orderDesc(openTime);
+    }
+
     private static void addZaloContact(Schema appSchema) {
-        Entity appInfoEntity = appSchema.addEntity("ZaloFriend");
+        Entity appInfoEntity = appSchema.addEntity("ZaloFriendGD");
+        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.IPersistentObject");
         appInfoEntity.addIdProperty();//zaloId
 //        appInfoEntity.addLongProperty("userId").notNull().unique();
         appInfoEntity.addStringProperty("userName");
@@ -36,7 +86,6 @@ public class GreenDaoGenerator {
         appInfoEntity.addStringProperty("birthday");
         appInfoEntity.addBooleanProperty("usingApp");
         appInfoEntity.addStringProperty("fulltextsearch");
-//        appInfoEntity.addContentProvider();
     }
 
     private static void addTransferRecent(Schema appSchema) {
@@ -54,7 +103,6 @@ public class GreenDaoGenerator {
         appInfoEntity.addIntProperty("transferType");
         appInfoEntity.addLongProperty("amount");
         appInfoEntity.addStringProperty("message");
-//        appInfoEntity.addContentProvider();
     }
 
     private static void addApplicationInfo(Schema schema) {
@@ -73,7 +121,6 @@ public class GreenDaoGenerator {
         appInfoEntity.addIntProperty("numRetry");
 
     }
-
 
     private static void addPaymentTransactionType(Schema schema) {
         Entity appInfoEntity = schema.addEntity("PaymentTransTypeGD");
@@ -120,6 +167,7 @@ public class GreenDaoGenerator {
         transHistoryData.addIntProperty("sign");
         transHistoryData.addStringProperty("username");
         transHistoryData.addStringProperty("appusername");
+        transHistoryData.addIntProperty("statustype");
     }
 
     private static void addDataManifest(Schema schema) {

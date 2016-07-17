@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -22,19 +21,17 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.transfer.models.TransferRecent;
-import vn.com.vng.zalopay.transfer.models.ZaloFriend;
+import vn.com.vng.zalopay.transfer.models.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
-import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -121,7 +118,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             zaloFriend = getArguments().getParcelable(Constants.ARG_ZALO_FRIEND);
             mMessage = getArguments().getString(Constants.ARG_MESSAGE);
             mAmount = getArguments().getLong(Constants.ARG_AMOUNT);
-            TransferRecent transferRecent = Parcels.unwrap(getArguments().getParcelable(Constants.ARG_TRANSFERRECENT));
+            RecentTransaction transferRecent = Parcels.unwrap(getArguments().getParcelable(Constants.ARG_TRANSFERRECENT));
             if (transferRecent != null && zaloFriend == null) {
                 zaloFriend = new ZaloFriend();
                 zaloFriend.setUserId(transferRecent.getUserId());
@@ -153,7 +150,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             @Override
             public void afterTextChanged(Editable s) {
                 super.afterTextChanged(s);
-                showError(null);
                 checkShowBtnContinue();
             }
         });

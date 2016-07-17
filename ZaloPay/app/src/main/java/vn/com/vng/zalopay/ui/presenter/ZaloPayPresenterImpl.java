@@ -55,7 +55,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void initialize() {
-        this.getTotalNotification(1000);
+        this.getTotalNotification(2000);
         this.listAppResource();
     }
 
@@ -99,8 +99,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 // because it is handled from event subscribers
                 return;
             }
-
-            Timber.w(e, " Throwable AppResourceSubscriber ");
         }
     }
 
@@ -126,7 +124,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
-            Timber.w(e, "onError ");
         }
     }
 

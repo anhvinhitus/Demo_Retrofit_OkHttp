@@ -18,9 +18,9 @@ import android.view.ViewGroup;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.cache.TransactionStore;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -63,7 +63,7 @@ public class CounterBeaconFragment extends BaseFragment {
     TransactionStore.Repository mTransactionRepository;
 
     @Inject
-    BalanceRepository mBalanceRepository;
+    BalanceStore.Repository mBalanceRepository;
 
     @Inject
     Navigator mNavigator;
@@ -283,7 +283,9 @@ public class CounterBeaconFragment extends BaseFragment {
     private final Runnable updateDatasetRunnable = new Runnable() {
         @Override
         public void run() {
-            mViewAdapter.notifyDataSetChanged();
+            if (mViewAdapter != null) {
+                mViewAdapter.notifyDataSetChanged();
+            }
         }
     };
 

@@ -3,19 +3,21 @@ package vn.com.vng.zalopay.internal.di.components;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.android.gms.analytics.Tracker;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.ApiModule;
@@ -23,7 +25,6 @@ import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.MonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
-import vn.com.vng.zalopay.internal.di.modules.WsModule;
 import vn.com.vng.zalopay.internal.di.modules.user.ReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
@@ -31,10 +32,9 @@ import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.receiver.NetworkReceiver;
-import vn.com.vng.zalopay.service.ApplicationSession;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.service.NotificationService;
+import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
@@ -53,7 +53,11 @@ public interface ApplicationComponent {
 
     EventBus eventBus();
 
+    OkHttpClient okHttpClient();
+
     SharedPreferences sharedPreferences();
+
+    Gson gson();
 
     UserConfig userConfig();
 
@@ -85,5 +89,7 @@ public interface ApplicationComponent {
     void inject(DownloadService service);
 
     void inject(NetworkReceiver receiver);
+
+    void inject(InvitationCodeFragment f);
 
 }

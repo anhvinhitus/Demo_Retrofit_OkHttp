@@ -1,13 +1,10 @@
 package vn.com.vng.zalopay.data.cache;
 
-import android.app.Activity;
-
 import org.json.JSONObject;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.data.api.entity.UserEntity;
-import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -23,13 +20,17 @@ public interface UserConfig {
 
     void saveConfig(User user);
 
-    void updateProfilePermissions(int profileLevel, List<ProfilePermisssion.Permission> profilePermisssions);
+    void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermisssions);
+
+    void updateUserPhone(String phone);
 
     void loadConfig();
 
     void clearConfig();
 
     String getSession();
+
+    String getUserId();
 
     long getZaloId();
 
@@ -43,7 +44,16 @@ public interface UserConfig {
 
     boolean isSignIn();
 
-    void clearAllUserDB();
+  //  void clearAllUserDB();
 
-    void signOutAndCleanData(Activity activity);
+    /*INVITATION*/
+    void saveInvitationInfo(String uid, String session);
+
+    String getSessionInvitation();
+
+    String getUserIdInvitation();
+
+    String getLastUid();
+
+    void setLastUid(String uid);
 }

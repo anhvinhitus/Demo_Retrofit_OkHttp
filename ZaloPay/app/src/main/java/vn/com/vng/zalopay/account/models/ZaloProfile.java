@@ -60,7 +60,7 @@ public class ZaloProfile extends AbstractData {
         if (jsonObject == null) {
             return;
         }
-        Timber.d("Profile_jsonObject: %s", jsonObject.toString());
+//        Timber.d("Profile_jsonObject: %s", jsonObject.toString());
         userId = jsonObject.getLong(Constants.USERID);
         userName = jsonObject.getString(Constants.USERNAME);
         displayName = jsonObject.getString(Constants.DISPLAYNAME);

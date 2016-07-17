@@ -1,86 +1,120 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.fragment.LinkCardProcedureFragment">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_weight="1.0"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".ui.fragment.LinkCardProcedureFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:orientation="vertical"
-            android:paddingLeft="14dp"
-            android:paddingRight="14dp">
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/TextView.Group.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.0"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium.t"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/link_card_title"
+                android:textAllCaps="true" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/layoutContent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
+                android:layout_weight="0.0"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing.medium.t">
 
-                <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/ic_link_card"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_lc_visa_card_blue" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/link_card_step_one" />
 
-                <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="14dp"
-                    android:background="@drawable/ic_link_card"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_lc_master_card" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.large.t"
+                    android:text="@string/link_card_step_two" />
 
-                <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="14dp"
-                    android:background="@drawable/ic_link_card"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_lc_jcb_card" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium.t"
+                    android:layout_marginTop="@dimen/spacing.large.t"
+                    android:text="@string/link_card_step_two_1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium.t"
+                    android:text="@string/link_card_step_two_2" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.large.t"
+                    android:text="@string/link_card_step_note" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/link_card_title" />
+                android:layout_weight="0.0"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/link_card_step_one" />
+                <TextView
+                    style="@style/TextView.Group.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/spacing.small"
+                    android:paddingLeft="@dimen/spacing.medium.t"
+                    android:paddingTop="@dimen/spacing.large.t"
+                    android:text="@string/support_banks"
+                    android:textAllCaps="true" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/link_card_step_two" />
-
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/listView"
+                    style="@style/RecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@color/background"
+                    android:clipToPadding="false"
+                    android:padding="@dimen/spacing.tiny"
+                    app:layoutManager="GridLayoutManager"
+                    tools:listitem="@layout/fragment_participated_bank_item" />
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <TextView
-            android:id="@+id/btnContinue"
-            style="@style/Button.Default"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_weight="0.0"
-            android:background="@drawable/bg_btn_blue"
-            android:gravity="center"
-            android:text="@string/btn_continue" />
-    </LinearLayout>
-</ScrollView>
+    <TextView
+        android:id="@+id/btnContinue"
+        style="@style/Button.Default"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/spacing.tiny"
+        android:layout_weight="0.0"
+        android:background="@drawable/bg_btn_blue"
+        android:gravity="center"
+        android:text="@string/btn_continue" />
+</LinearLayout>

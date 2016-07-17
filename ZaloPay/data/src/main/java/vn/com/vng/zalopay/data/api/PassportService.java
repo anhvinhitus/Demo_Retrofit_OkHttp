@@ -7,6 +7,7 @@ import retrofit2.http.POST;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
+import vn.com.vng.zalopay.data.api.response.VerifyInvitationCodeResponse;
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -21,4 +22,9 @@ public interface PassportService {
     @FormUrlEncoded
     @POST("um/removeaccesstoken")
     Observable<LogoutResponse> logout(@Field("appid") long appid, @Field("userid") String uid, @Field("accesstoken") String accesstoken);
+
+
+    @FormUrlEncoded
+    @POST("/um/verifycodetest")
+    Observable<VerifyInvitationCodeResponse> verifyCode(@Field("userid") String uid, @Field("accesstoken") String accesstoken, @Field("codetest") String codetest);
 }

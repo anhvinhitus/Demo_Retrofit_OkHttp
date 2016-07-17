@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/headerView"
+    android:layout_width="match_parent"
+    android:layout_height="148dp"
+    android:background="@drawable/ic_cover"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_border_white"
+            android:padding="4dp">
+
+            <vn.vng.uicomponent.widget.image.BezelImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="@dimen/leftmenu.avatar"
+                android:layout_height="@dimen/leftmenu.avatar"
+                android:scaleType="centerCrop"
+                app:borderDrawable="@color/transparent"
+                app:maskDrawable="@drawable/circle_mask" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing.tiny"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize.normal"
+            tools:text="@string/app_name" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="@dimen/separate_stroke"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="24dp"
+        android:background="#42ffffff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.0"
+        android:orientation="vertical"
+        android:paddingLeft="0dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:text="@string/gender"
+            android:textAllCaps="true"
+            android:textColor="#b2ffffff"
+            android:textSize="@dimen/textsize.tiny" />
+
+        <TextView
+            android:id="@+id/tvSex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize.normal.s"
+            tools:text="Nam" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.tiny"
+            android:layout_marginTop="17dp"
+            android:gravity="left|center_vertical"
+            android:text="@string/birthday"
+            android:textAllCaps="true"
+            android:textColor="#b2ffffff"
+            android:textSize="@dimen/textsize.tiny" />
+
+        <TextView
+            android:id="@+id/tvBirthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.tiny"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize.normal.s"
+            tools:text="01/12/2000" />
+    </LinearLayout>
+</LinearLayout>

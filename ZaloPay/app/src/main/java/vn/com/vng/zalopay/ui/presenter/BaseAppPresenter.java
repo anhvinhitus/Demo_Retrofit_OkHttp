@@ -3,7 +3,11 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.content.Context;
 
+import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.util.concurrent.Callable;
 
@@ -11,6 +15,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -65,16 +70,20 @@ public abstract class BaseAppPresenter {
                 });
     }
 
-
-    protected void clearData() {
-        userConfig.clearConfig();
-        userConfig.setCurrentUser(null);
-        if (AndroidApplication.instance().getUserComponent() != null) {
-            AndroidApplication.instance().releaseUserComponent();
-        }
-    }
-
     protected void clearAndLogout() {
         AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+    }
+
+    public void getZaloProfileInfo() {
+        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
+            @Override
+            public void onResult(JSONObject profile) {
+                try {
+                    userConfig.saveZaloUserInfo(profile);
+                } catch (Exception ex) {
+                    Timber.w(ex, " Exception :");
+                }
+            }
+        });
     }
 }

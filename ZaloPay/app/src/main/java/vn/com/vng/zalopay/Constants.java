@@ -17,16 +17,25 @@ public class Constants {
     public static final String PREF_USER_NAME = "pref_user_name";
     public static final String PREF_USER_AVATAR = "pref_user_avatar";
     public static final String PREF_USER_EMAIL = "pref_user_email";
-    public static final String PREF_USER_BIRTHDATE = "pref_user_birth_date";
+    public static final String PREF_USER_BIRTHDAY = "pref_user_birth_date";
     public static final String PREF_USER_GENDER = "pref_user_gender";
-    public static final String PREF_PROFILELEVEL = "profilelevel";
-    public static final String PREF_PROFILEPERMISSIONS = "profilePermisssions";
+    public static final String PREF_USER_PHONE = "pref_user_phone";
+    public static final String PREF_PROFILE_LEVEL = "profilelevel";
+    public static final String PREF_PROFILE_PERMISSIONS = "profilePermissions";
+
+    public static final String PREF_USER_LAST_USER_ID = "pref_last_uid";
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";
     public static final String ARG_ZALO_FRIEND = "zalofriend";
     public static final String ARG_MESSAGE = "message";
     public static final String ARG_TRANSFERRECENT = "TransferRecent";
+
+    public static final String ARG_APPID = "appid";
+    public static final String ARG_ZPTRANSTOKEN = "zptranstoken";
+
+    public static final String PREF_INVITATION_USERID = "pref_userid_invitation";
+    public static final String PREF_INVITATION_SESSION = "pref_session_invitation";
 
     //DATA MANIFESTS DATABASE
     public static final String MANIF_BALANCE = "manif_balance";
@@ -52,6 +61,8 @@ public class Constants {
 
     public static final int REQUEST_CODE_TRANSFER = 124;
 
+    public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+    public static final String REGISTRATION_COMPLETE = "registrationComplete";
 
     public static class ModuleName {
         public static final String NOTIFICATIONS = "Notifications";
@@ -60,5 +71,19 @@ public class Constants {
         public static final String HELP = "Help";
         public static final String FAQ = "FAQ";
         public static final String TRANSACTION_LOGS = "TransactionLogs";
+        public static final String RED_PACKET = "RedPacket";
+    }
+
+    public static class NotificationType {
+
+    }
+
+    public static class TransactionType {
+
+    }
+
+    public static class Apps {
+        public static final int INTERNAL = 1;
+        public static final int RED_PACKET = 6;
     }
 }

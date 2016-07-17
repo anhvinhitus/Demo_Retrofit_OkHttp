@@ -268,9 +268,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     @Override
-    public void updateProfileSuccess() {
+    public void updateProfileSuccess(String phone) {
         if (mListener != null) {
-            mListener.onUpdatePinSuccess();
+            mListener.onUpdatePinSuccess(phone);
         }
     }
 
@@ -285,7 +285,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPinProfileFragmentListener {
-        void onUpdatePinSuccess();
+        void onUpdatePinSuccess(String phone);
 
         void onUpdatePinFail();
     }

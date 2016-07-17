@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
  * Created by huuhoa on 5/29/16.
  * Implementation for @ref LocalResourceRepository
  */
-public class LocalResourceRepositoryImpl extends BaseRepository implements LocalResourceRepository {
+public class LocalResourceRepositoryImpl implements LocalResourceRepository {
     LocalResourceFactory mFactory;
     public LocalResourceRepositoryImpl(LocalResourceFactory factory) {
         mFactory = factory;

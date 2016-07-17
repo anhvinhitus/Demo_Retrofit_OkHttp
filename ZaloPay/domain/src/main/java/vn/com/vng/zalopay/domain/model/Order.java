@@ -13,20 +13,23 @@ import vn.com.vng.zalopay.domain.Constants;
  * Created by longlv on 09/05/2016.
  */
 public class Order extends AbstractData {
-
     private long appid;
     private String zptranstoken;
     private String apptransid;
     private String appuser;
-    public String apptime;
+    public long apptime;
     public String embeddata;
     private String item;
-    private String amount;
+    private long amount;
     private String description;
     private String payoption;
     private String mac;
 
-    public Order(long appid, String zptranstoken, String apptransid, String appuser, String apptime, String embeddata, String item, String amount, String description, String payoption, String mac) {
+    public Order() {
+
+    }
+
+    public Order(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac) {
         this.appid = appid;
         this.zptranstoken = zptranstoken;
         this.apptransid = apptransid;
@@ -48,8 +51,8 @@ public class Order extends AbstractData {
         }
         apptransid = jsonObject.getString(Constants.APPTRANSID);
         appuser = jsonObject.getString(Constants.APPUSER);
-        apptime = jsonObject.getString(Constants.APPTIME);
-        amount = jsonObject.getString(Constants.AMOUNT);
+        apptime = Long.parseLong(jsonObject.getString(Constants.APPTIME));
+        amount = Long.parseLong(jsonObject.getString(Constants.AMOUNT));
         item = jsonObject.getString(Constants.ITEM);
         description = jsonObject.getString(Constants.DESCRIPTION);
         embeddata = jsonObject.getString(Constants.EMBEDDATA);
@@ -64,10 +67,10 @@ public class Order extends AbstractData {
         zptranstoken = in.readString();
         apptransid = in.readString();
         appuser = in.readString();
-        apptime = in.readString();
+        apptime = in.readLong();
         embeddata = in.readString();
         item = in.readString();
-        amount = in.readString();
+        amount = in.readLong();
         description = in.readString();
         payoption = in.readString();
         mac = in.readString();
@@ -79,10 +82,10 @@ public class Order extends AbstractData {
         dest.writeString(zptranstoken);
         dest.writeString(apptransid);
         dest.writeString(appuser);
-        dest.writeString(apptime);
+        dest.writeLong(apptime);
         dest.writeString(embeddata);
         dest.writeString(item);
-        dest.writeString(amount);
+        dest.writeLong(amount);
         dest.writeString(description);
         dest.writeString(payoption);
         dest.writeString(mac);
@@ -120,7 +123,7 @@ public class Order extends AbstractData {
         return item;
     }
 
-    public String getAmount() {
+    public long getAmount() {
         return amount;
     }
 
@@ -156,7 +159,7 @@ public class Order extends AbstractData {
         this.item = item;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
@@ -168,7 +171,7 @@ public class Order extends AbstractData {
         this.payoption = payoption;
     }
 
-    public String getApptime() {
+    public long getApptime() {
         return apptime;
     }
 
@@ -176,7 +179,7 @@ public class Order extends AbstractData {
         return embeddata;
     }
 
-    public void setApptime(String apptime) {
+    public void setApptime(long apptime) {
         this.apptime = apptime;
     }
 
@@ -189,30 +192,84 @@ public class Order extends AbstractData {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (appid != order.appid) return false;
+        if (apptime != order.apptime) return false;
+        if (amount != order.amount) return false;
+        if (zptranstoken != null ? !zptranstoken.equals(order.zptranstoken) : order.zptranstoken != null)
+            return false;
+        if (apptransid != null ? !apptransid.equals(order.apptransid) : order.apptransid != null)
+            return false;
+        if (appuser != null ? !appuser.equals(order.appuser) : order.appuser != null) return false;
+        if (embeddata != null ? !embeddata.equals(order.embeddata) : order.embeddata != null)
+            return false;
+        if (item != null ? !item.equals(order.item) : order.item != null) return false;
+        if (description != null ? !description.equals(order.description) : order.description != null)
+            return false;
+        if (payoption != null ? !payoption.equals(order.payoption) : order.payoption != null)
+            return false;
+        return mac != null ? mac.equals(order.mac) : order.mac == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (appid ^ (appid >>> 32));
+        result = 31 * result + (zptranstoken != null ? zptranstoken.hashCode() : 0);
+        result = 31 * result + (apptransid != null ? apptransid.hashCode() : 0);
+        result = 31 * result + (appuser != null ? appuser.hashCode() : 0);
+        result = 31 * result + (int) (apptime ^ (apptime >>> 32));
+        result = 31 * result + (embeddata != null ? embeddata.hashCode() : 0);
+        result = 31 * result + (item != null ? item.hashCode() : 0);
+        result = 31 * result + (int) (amount ^ (amount >>> 32));
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (payoption != null ? payoption.hashCode() : 0);
+        result = 31 * result + (mac != null ? mac.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{");
+        stringBuilder.append("appid: ");
         stringBuilder.append(appid);
         stringBuilder.append(", ");
+        stringBuilder.append("zptranstoken: ");
         stringBuilder.append(zptranstoken);
         stringBuilder.append(", ");
+        stringBuilder.append("apptransid: ");
         stringBuilder.append(apptransid);
         stringBuilder.append(", ");
+        stringBuilder.append("appuser: ");
         stringBuilder.append(appuser);
         stringBuilder.append(", ");
+        stringBuilder.append("apptime: ");
         stringBuilder.append(apptime);
         stringBuilder.append(", ");
+        stringBuilder.append("embeddata: ");
         stringBuilder.append(embeddata);
         stringBuilder.append(", ");
+        stringBuilder.append("item: ");
         stringBuilder.append(item);
         stringBuilder.append(", ");
+        stringBuilder.append("amount: ");
         stringBuilder.append(amount);
         stringBuilder.append(", ");;
+        stringBuilder.append("description: ");
         stringBuilder.append(description);
         stringBuilder.append(", ");
+        stringBuilder.append("payoption: ");
         stringBuilder.append(payoption);
         stringBuilder.append(", ");
+        stringBuilder.append("mac: ");
         stringBuilder.append(mac);
-        stringBuilder.append(", ");
+        stringBuilder.append("}");
         return stringBuilder.toString();
     }
 }

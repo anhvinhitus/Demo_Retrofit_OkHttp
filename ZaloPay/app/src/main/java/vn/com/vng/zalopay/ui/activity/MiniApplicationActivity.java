@@ -20,8 +20,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.data.cache.NotificationStore;
-import vn.com.vng.zalopay.data.cache.TransactionStore;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
+import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -60,6 +61,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     ZPAnalytics zpAnalytics;
+
+    @Inject
+    ReactNativeInstanceManager mReactNativeInstanceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +147,11 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected void handleException(Throwable e) {
         eventBus.post(new InternalAppExceptionEvent(e));
         super.handleException(e);
+    }
+
+    @Override
+    protected ReactNativeInstanceManager nativeInstanceManager() {
+        return mReactNativeInstanceManager;
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

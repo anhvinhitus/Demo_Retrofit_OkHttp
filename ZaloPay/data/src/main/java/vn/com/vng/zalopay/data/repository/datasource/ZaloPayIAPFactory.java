@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.repository.datasource;
 import android.util.LruCache;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
@@ -20,6 +21,7 @@ public class ZaloPayIAPFactory {
     public ZaloPayIAPFactory(ZaloPayIAPService service, User user) {
         this.service = service;
         this.user = user;
+        Timber.d("Current user: %s", user);
     }
 
     public Observable<GetMerchantUserInfoResponse> getMerchantUserInfo(long mAppJSId) {

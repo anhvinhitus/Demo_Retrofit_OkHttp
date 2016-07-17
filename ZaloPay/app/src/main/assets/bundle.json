@@ -3,15 +3,7 @@
     {
       "appid": 11,
       "appname": "Nạp Tiền ĐT",
-      "asset": "android.011.zip",
-      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
-      "version": "1.0.0",
-      "status": 1
-    },
-    {
-      "appid": 12,
-      "appname": "Thẻ ĐT",
-      "asset": "android.012.zip",
+      "asset": "android.11.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1
@@ -19,7 +11,23 @@
     {
       "appid": 14,
       "appname": "Zing Xu",
-      "asset": "android.014.zip",
+      "asset": "android.14.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
+    },
+    {
+      "appid": 15,
+      "appname": "Thẻ Game",
+      "asset": "android.15.zip",
+      "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
+      "version": "1.0.0",
+      "status": 1
+    },
+    {
+      "appid": 17,
+      "appname": "Thanh toán tiền điện",
+      "asset": "android.17.zip",
       "checksum": "An3SoswJ6ujv2Qk6UqYxcw",
       "version": "1.0.0",
       "status": 1

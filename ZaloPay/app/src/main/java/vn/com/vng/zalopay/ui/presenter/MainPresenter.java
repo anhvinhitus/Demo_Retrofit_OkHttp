@@ -1,18 +1,31 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
+import android.text.TextUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 
 /**
@@ -22,13 +35,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     IHomeView homeView;
 
-    ZaloFriendsFactory zaloFriendsFactory;
+    FriendStore.Repository mFriendRepository;
 
     private boolean isLoadedGateWayInfo;
 
-
-    public MainPresenter(ZaloFriendsFactory zaloFriendsFactory) {
-        this.zaloFriendsFactory = zaloFriendsFactory;
+    public MainPresenter(FriendStore.Repository friendRepository) {
+        this.mFriendRepository = friendRepository;
     }
 
     public void getZaloFriend() {
@@ -36,16 +48,16 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             @Override
             public void run() {
                 try {
-                    Thread.sleep(20000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     if (BuildConfig.DEBUG) {
                         e.printStackTrace();
                     }
                 }
-                if (homeView == null || homeView.getActivity() == null || zaloFriendsFactory == null) {
+                if (homeView == null || homeView.getActivity() == null || mFriendRepository == null) {
                     return;
                 }
-                zaloFriendsFactory.reloadZaloFriend(homeView.getContext(), null);
+                mFriendRepository.retrieveZaloFriendsAsNeeded().subscribe(new DefaultSubscriber<List<ZaloFriend>>());
             }
         }).start();
     }
@@ -57,7 +69,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroyView() {
-        this.zaloFriendsFactory = null;
+        this.mFriendRepository = null;
         this.homeView = null;
     }
 
@@ -90,8 +102,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private void loadGatewayInfoPaymentSDK() {
         User user = userConfig.getCurrentUser();
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.zaloUserID = String.valueOf(user.uid);
-        paymentInfo.zaloPayAccessToken = user.accesstoken;
+        UserInfo userInfo = new UserInfo();
+        userInfo.zaloUserId = String.valueOf(user.zaloId);
+        userInfo.zaloPayUserId = user.uid;
+        userInfo.accessToken = user.accesstoken;
+        paymentInfo.userInfo = userInfo;
         ZingMobilePayApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
             @Override
             public void onFinish() {
@@ -105,7 +120,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onError(String pMessage) {
-                Timber.w("loadGatewayInfoPaymentSDK error %s", pMessage);
+
+                if (!TextUtils.isEmpty(pMessage)) {
+                    Timber.d("loadGatewayInfoPaymentSDK onError %s", pMessage);
+                } else {
+                    Timber.d("loadGatewayInfoPaymentSDK onError null");
+                }
             }
         });
     }
@@ -117,4 +137,120 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
     }
 
+
+    public void logout() {
+        passportRepository.logout()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.applicationSession().clearUserSession();
+    }
+
+    PaymentWrapper paymentWrapper;
+
+    public void pay(long appId, String zptranstoken) {
+        showLoadingView();
+        if (paymentWrapper == null) {
+            paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
+                @Override
+                public Activity getActivity() {
+                    if (homeView != null) {
+                        homeView.getActivity();
+                    }
+                    return null;
+                }
+            }, new PaymentWrapper.IResponseListener() {
+                @Override
+                public void onParameterError(String param) {
+                    if (homeView == null) {
+                        return;
+                    }
+
+                    if ("order".equalsIgnoreCase(param)) {
+                        homeView.showError(applicationContext.getString(R.string.order_invalid));
+                    } else if ("uid".equalsIgnoreCase(param)) {
+                        homeView.showError(applicationContext.getString(R.string.user_invalid));
+                    } else if ("token".equalsIgnoreCase(param)) {
+                        hideLoadingView();
+                        homeView.showError(applicationContext.getString(R.string.order_invalid));
+                    }
+                }
+
+                @Override
+                public void onResponseError(int status) {
+                    if (homeView == null) {
+                        return;
+                    }
+
+                    if (status == PaymentError.ERR_CODE_INTERNET) {
+                        homeView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                    }
+
+                    hideLoadingView();
+                }
+
+                @Override
+                public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                    updateTransaction();
+                    updateBalance();
+
+                    if (homeView != null && homeView.getActivity() != null) {
+                        homeView.getActivity().finish();
+                    }
+                }
+
+                @Override
+                public void onResponseTokenInvalid() {
+                    if (homeView == null) {
+                        return;
+                    }
+
+                  /*  homeView.onTokenInvalid();
+                    clearAndLogout();*/
+                }
+
+                @Override
+                public void onResponseCancel() {
+                    if (homeView == null) {
+                        return;
+                    }
+                    hideLoadingView();
+/*
+                    hideLoadingView();
+                    homeView.resumeScanner();*/
+                }
+
+                @Override
+                public void onNotEnoughMoney() {
+                    if (homeView == null) {
+                        return;
+                    }
+
+                    navigator.startDepositActivity(applicationContext);
+                }
+            });
+        }
+
+        paymentWrapper.payWithToken(appId, zptranstoken);
+    }
+
+    protected void updateTransaction() {
+        transactionRepository.updateTransaction()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+    }
+
+    protected void updateBalance() {
+        balanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+    }
+
+    private void showLoadingView() {
+        homeView.showLoading();
+    }
+
+    private void hideLoadingView() {
+        homeView.hideLoading();
+    }
 }

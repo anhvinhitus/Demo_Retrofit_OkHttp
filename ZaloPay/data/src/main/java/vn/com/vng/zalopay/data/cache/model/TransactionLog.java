@@ -21,6 +21,7 @@ public class TransactionLog {
     private Integer sign;
     private String username;
     private String appusername;
+    private Integer statustype;
 
     public TransactionLog() {
     }
@@ -29,7 +30,7 @@ public class TransactionLog {
         this.transid = transid;
     }
 
-    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer userchargeamt, Integer userfeeamt, Integer amount, Integer type, Integer sign, String username, String appusername) {
+    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer userchargeamt, Integer userfeeamt, Integer amount, Integer type, Integer sign, String username, String appusername, Integer statustype) {
         this.transid = transid;
         this.appid = appid;
         this.userid = userid;
@@ -45,6 +46,7 @@ public class TransactionLog {
         this.sign = sign;
         this.username = username;
         this.appusername = appusername;
+        this.statustype = statustype;
     }
 
     public long getTransid() {
@@ -165,6 +167,14 @@ public class TransactionLog {
 
     public void setAppusername(String appusername) {
         this.appusername = appusername;
+    }
+
+    public Integer getStatustype() {
+        return statustype;
+    }
+
+    public void setStatustype(Integer statustype) {
+        this.statustype = statustype;
     }
 
 }

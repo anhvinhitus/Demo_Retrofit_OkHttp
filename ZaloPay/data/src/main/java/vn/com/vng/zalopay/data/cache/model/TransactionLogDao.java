@@ -38,6 +38,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         public final static Property Sign = new Property(12, Integer.class, "sign", false, "SIGN");
         public final static Property Username = new Property(13, String.class, "username", false, "USERNAME");
         public final static Property Appusername = new Property(14, String.class, "appusername", false, "APPUSERNAME");
+        public final static Property Statustype = new Property(15, Integer.class, "statustype", false, "STATUSTYPE");
     };
 
 
@@ -67,7 +68,8 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
                 "\"TYPE\" INTEGER," + // 11: type
                 "\"SIGN\" INTEGER," + // 12: sign
                 "\"USERNAME\" TEXT," + // 13: username
-                "\"APPUSERNAME\" TEXT);"); // 14: appusername
+                "\"APPUSERNAME\" TEXT," + // 14: appusername
+                "\"STATUSTYPE\" INTEGER);"); // 15: statustype
     }
 
     /** Drops the underlying database table. */
@@ -147,6 +149,11 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         if (appusername != null) {
             stmt.bindString(15, appusername);
         }
+ 
+        Integer statustype = entity.getStatustype();
+        if (statustype != null) {
+            stmt.bindLong(16, statustype);
+        }
     }
 
     /** @inheritdoc */
@@ -173,7 +180,8 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // type
             cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // sign
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // username
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // appusername
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // appusername
+            cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15) // statustype
         );
         return entity;
     }
@@ -196,6 +204,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         entity.setSign(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
         entity.setUsername(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setAppusername(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setStatustype(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
      }
     
     /** @inheritdoc */

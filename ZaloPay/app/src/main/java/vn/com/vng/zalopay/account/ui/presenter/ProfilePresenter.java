@@ -8,9 +8,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -83,7 +83,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     private void getBalance() {
-        BalanceRepository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
+        BalanceStore.Repository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
         Subscription subscription = repository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

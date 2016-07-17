@@ -8,11 +8,11 @@
 
     <FrameLayout
         android:id="@+id/layoutLinkCard"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="212dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_marginTop="158dp"
         android:background="@drawable/bg_link_card_detail"
         android:baselineAligned="false">
 

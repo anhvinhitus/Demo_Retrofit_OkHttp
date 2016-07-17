@@ -6,7 +6,6 @@
         android:id="@+id/layoutBannerFullScreen"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:layout_marginBottom="@dimen/app_padding"
         android:background="@color/white">
 
         <android.support.v4.view.ViewPager
@@ -32,6 +31,12 @@
             app:stl_underlineColor="@color/transparent"
             app:stl_underlineThickness="0dp" />
     </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="@dimen/app_padding"
+        android:background="@color/separate" />
 
     <TextView
         android:id="@+id/tvAdsSubContent"

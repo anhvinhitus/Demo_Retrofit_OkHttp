@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 buildscript {
     repositories {
@@ -21,8 +23,6 @@ buildscript {
 
 def cfg = rootProject.ext.configuration
 
-apply plugin: 'io.fabric'
-
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://dl.bintray.com/jjhesk/maven" }
@@ -36,12 +36,12 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 5
+        versionCode 12
         versionName "1.6.${versionCode}"
 
         multiDexEnabled true
 
-        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
+        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -63,31 +63,38 @@ android {
         }
 
         staging {
-            assets.srcDirs + '../../paymentapps/staging'
+            assets.srcDirs += '../../paymentapps/staging'
         }
 
         internalProduction {
             assets.srcDirs += '../../paymentapps/production'
+            res.srcDirs += 'src/production/res'
+
         }
 
         internalSandbox {
             assets.srcDirs += '../../paymentapps/sandbox'
+            res.srcDirs += 'src/sandbox/res'
         }
 
         internalStaging {
-            assets.srcDirs + '../../paymentapps/staging'
-        }
-
-        iapSandbox {
-            assets.srcDirs += '../../paymentapps/sandbox'
+            assets.srcDirs += '../../paymentapps/staging'
+            res.srcDirs += 'src/staging/res'
         }
 
         iapProduction {
             assets.srcDirs += '../../paymentapps/production'
+            res.srcDirs += 'src/production/res'
+        }
+
+        iapSandbox {
+            assets.srcDirs += '../../paymentapps/sandbox'
+            res.srcDirs += 'src/sandbox/res'
         }
 
         iapStaging {
-            assets.srcDirs + '../../paymentapps/staging'
+            assets.srcDirs += '../../paymentapps/staging'
+            res.srcDirs += 'src/staging/res'
         }
     }
 
@@ -119,17 +126,10 @@ android {
         }
         debug {
             minifyEnabled false
-            //  applicationIdSuffix ".debug"
+        //    applicationIdSuffix ".debug"
             debuggable true
             signingConfig signingConfigs.debug
         }
-    }
-
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/maven/com.google.zxing/core/pom.xml'
-        exclude 'META-INF/maven/com.google.zxing/core/pom.properties'
     }
 
     compileOptions {
@@ -147,6 +147,7 @@ android {
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
         }
 
         sandbox {
@@ -157,6 +158,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
 
         staging {
@@ -164,10 +166,11 @@ android {
             buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
-            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.STAGING'
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
         }
 
         internalProduction {
@@ -178,6 +181,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
         }
 
         internalSandbox {
@@ -188,6 +192,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
 
         internalStaging {
@@ -195,9 +200,10 @@ android {
             buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'true'
-            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.STAGING'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
         }
 
         iapSandbox {
@@ -209,6 +215,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
 
         iapProduction {
@@ -220,6 +227,7 @@ android {
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
         }
 
         iapStaging {
@@ -228,9 +236,11 @@ android {
             buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
             buildConfigField 'int', 'PAYAPPID', '1'
             buildConfigField 'boolean', 'ENV_LIVE', 'false'
-            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
+            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.STAGING'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
+
         }
     }
 
@@ -267,6 +277,8 @@ android {
         exclude 'META-INF/maven/jaxen/jaxen/pom.xml'
         exclude 'META-INF/INDEX.LIST'
         exclude "META-INF/io.netty.versions.properties"
+        exclude 'META-INF/maven/com.google.zxing/core/pom.xml'
+        exclude 'META-INF/maven/com.google.zxing/core/pom.properties'
 
     }
 
@@ -339,8 +351,6 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile libs.ultimaterecyclerview
-
     compile libs.play_services_gcm
     compile libs.play_services_analytics
     compile(libs.crashlytics) {
@@ -349,9 +359,6 @@ dependencies {
 
     compile libs.parceler
     apt libs.parceler_apt
-
-    compile libs.avi
-    compile libs.nineoldandroids
 
     debugCompile project(':debugviewer')
     releaseCompile project(':debugviewer-release')
@@ -371,4 +378,4 @@ dependencies {
     compile project(':zalopayanalytics')
 }
 
-apply plugin: 'com.google.gms.google-services'
+

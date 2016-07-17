@@ -37,7 +37,7 @@
     <string name="liked">Liked</string>
     <string name="like">Like</string>
     <string name="reject">Reject</string>
-
+    <string name="email">Email</string>
     <string name="favorite">Favorite</string>
     <string name="recent">Recent</string>
     <string name="hide">Hide</string>

@@ -9,12 +9,13 @@ import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
+import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.transfer.TransferStore;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.transfer.ZaloFriendsFactory;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
-import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
@@ -66,8 +67,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter(ZaloFriendsFactory zaloFriendsFactory) {
-        return new MainPresenter(zaloFriendsFactory);
+    MainPresenter providerMainPresenter(FriendStore.Repository repository) {
+        return new MainPresenter(repository);
     }
 
     @UserScope
@@ -113,21 +114,27 @@ public class UserPresenterModule {
         return new OTPRecoveryPinPresenter();
     }
 
-    @UserScope
-    @Provides
-    ZaloContactPresenter provideZaloContactPresenter(ZaloFriendsFactory zaloFriendsFactory) {
-        return new ZaloContactPresenter(zaloFriendsFactory);
-    }
+//    @UserScope
+//    @Provides
+//    ZaloContactPresenter provideZaloContactPresenter() {
+//        return new ZaloContactPresenter();
+//    }
 
     @UserScope
     @Provides
-    TransferPresenter provideTransferPresenter(User user, ZaloFriendsFactory zaloFriendsFactory) {
-        return new TransferPresenter(user, zaloFriendsFactory);
+    TransferPresenter provideTransferPresenter(User user, TransferStore.LocalStorage localStorage) {
+        return new TransferPresenter(user, localStorage);
     }
 
     @UserScope
     @Provides
     InvitationCodePresenter providesInvitationCodePresenter() {
         return new InvitationCodePresenter();
+    }
+
+    @UserScope
+    @Provides
+    UpdateProfile3Presenter providesUpdateProfile3Presenter() {
+        return new UpdateProfile3Presenter();
     }
 }

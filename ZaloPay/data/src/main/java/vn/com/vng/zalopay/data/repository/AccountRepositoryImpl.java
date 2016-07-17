@@ -5,66 +5,67 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.AccountService;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.domain.repository.AccountRepository;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by longlv on 03/06/2016.
  */
-public class AccountRepositoryImpl extends BaseRepository implements AccountRepository {
 
-    AccountService accountService;
-    private UserConfig userConfig;
+public class AccountRepositoryImpl implements AccountStore.Repository {
 
-    public AccountRepositoryImpl(AccountService accountService, UserConfig userConfig) {
+    final AccountStore.RequestService accountService;
+    final AccountStore.UploadPhotoService uploadPhotoService;
+
+    final User user;
+    final UserConfig userConfig;
+
+
+    public AccountRepositoryImpl(AccountStore.RequestService accountService, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user) {
         this.accountService = accountService;
+        this.uploadPhotoService = photoService;
+        this.user = user;
         this.userConfig = userConfig;
     }
 
     @Override
     public Observable<Boolean> updateProfile(String pin, String phonenumber) {
-        String uid = "";
-        String accesstoken = "";
-        if (userConfig.getCurrentUser() != null) {
-            uid = userConfig.getCurrentUser().uid;
-            accesstoken = userConfig.getCurrentUser().accesstoken;
-        }
-        return accountService.updateProfile(uid, accesstoken, pin, phonenumber).map(baseResponse -> Boolean.TRUE);
+        return accountService.updateProfile(user.uid, user.accesstoken, pin, phonenumber).map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
-    public Observable<ProfilePermisssion> verifyOTPProfile(String otp) {
-        String uid = "";
-        String accesstoken = "";
-        if (userConfig.getCurrentUser() != null) {
-            uid = userConfig.getCurrentUser().uid;
-            accesstoken = userConfig.getCurrentUser().accesstoken;
-        }
-        return accountService.verifyOTPProfile(uid, accesstoken, otp)
+    public Observable<ProfilePermission> verifyOTPProfile(String otp) {
+        return accountService.verifyOTPProfile(user.uid, user.accesstoken, otp)
                 .map(baseResponse -> {
-                    ProfilePermisssion profilePermisssion = new ProfilePermisssion();
-                    profilePermisssion.profileLevel = baseResponse.profilelevel;
-                    profilePermisssion.profilePermisssions = baseResponse.profilePermisssions;
-                    return profilePermisssion;
+                    ProfilePermission profilePermission = new ProfilePermission();
+                    profilePermission.profileLevel = baseResponse.profilelevel;
+                    profilePermission.profilePermissions = baseResponse.profilePermissions;
+                    return profilePermission;
                 })
-                .doOnNext(profilePermisssion -> {
-                    userConfig.updateProfilePermissions(profilePermisssion.profileLevel, profilePermisssion.profilePermisssions);
+                .doOnNext(profilePermission -> {
+                    userConfig.updateProfilePermissions(profilePermission.profileLevel, profilePermission.profilePermissions);
                 });
     }
 
     @Override
-    public Observable<Boolean> recoverypin(String pin, String otp) {
-        String uid = "";
-        String accesstoken = "";
-        if (userConfig.getCurrentUser() != null) {
-            uid = userConfig.getCurrentUser().uid;
-            accesstoken = userConfig.getCurrentUser().accesstoken;
-        }
-        return accountService.recoverypin(uid, accesstoken, pin, otp)
-                .map(baseResponse -> Boolean.TRUE);
+    public Observable<ProfilePermission> getUserProfileLevel() {
+        return accountService.getUserProfileLevel(user.uid, user.accesstoken)
+                .doOnNext(response -> userConfig.updateProfilePermissions(response.profilelevel, response.profilePermissions))
+                .map(baseResponse -> {
+                    ProfilePermission profilePermission = new ProfilePermission();
+                    profilePermission.profileLevel = baseResponse.profilelevel;
+                    profilePermission.profilePermissions = baseResponse.profilePermissions;
+                    return profilePermission;
+                });
+    }
+
+    @Override
+    public Observable<BaseResponse> recoverypin(String pin, String otp) {
+        return accountService.recoverypin(user.uid, user.accesstoken, pin, otp);
     }
 
     @Override
@@ -72,13 +73,8 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
         if (zaloId <= 0) {
             return null;
         }
-        String uid = "";
-        String accesstoken = "";
-        if (userConfig.getCurrentUser() != null) {
-            uid = userConfig.getCurrentUser().uid;
-            accesstoken = userConfig.getCurrentUser().accesstoken;
-        }
-        return accountService.getuserinfo(uid, accesstoken, zaloId, systemlogin).map(mappingZaloAndZaloPayResponse -> {
+
+        return accountService.getuserinfo(user.uid, user.accesstoken, zaloId, systemlogin).map(mappingZaloAndZaloPayResponse -> {
             MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
             mappingZaloAndZaloPay.setZaloId(zaloId);
             mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
@@ -88,19 +84,47 @@ public class AccountRepositoryImpl extends BaseRepository implements AccountRepo
     }
 
     @Override
-    public Observable<Boolean> updateProfile3(long uId, String accessToken, String identityNumber, String email, String fimgPath, String bimgPath, String avatarPath) {
+    public Observable<Boolean> updateProfile3(String identityNumber, String email, String fimgPath, String bimgPath, String avatarPath) {
 
         RequestBody fimg = requestBodyFromPathFile(fimgPath);
         RequestBody bimg = requestBodyFromPathFile(bimgPath);
         RequestBody avatar = requestBodyFromPathFile(avatarPath);
 
-        return accountService.updateProfile3(uId, accessToken, identityNumber, email, fimg, bimg, avatar)
+        return uploadPhotoService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
+                fimg, bimg, avatar)
+                .map(baseResponse -> Boolean.TRUE);
+    }
+
+    @Override
+    public Observable<Boolean> updateProfile3(String identityNumber, final String email, byte[] fimgPath, byte[] bimgPath, byte[] avatarPath) {
+
+        RequestBody fimg = requestBodyFromPathFile(fimgPath);
+        RequestBody bimg = requestBodyFromPathFile(bimgPath);
+        RequestBody avatar = requestBodyFromPathFile(avatarPath);
+
+        return uploadPhotoService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
+                fimg, bimg, avatar)
+              /*  .doOnNext(baseResponse1 -> {
+                    user.email = email;
+                    user.identityNumber = identityNumber;
+                })*/
                 .map(baseResponse -> Boolean.TRUE);
     }
 
     private RequestBody requestBodyFromPathFile(String filePath) {
         File file = new File(filePath);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
         return requestBody;
     }
+
+    private RequestBody requestBodyFromPathFile(byte[] data) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), data);
+        return requestBody;
+    }
+
+    private RequestBody requestBodyParam(String param) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), param);
+        return requestBody;
+    }
+
 }

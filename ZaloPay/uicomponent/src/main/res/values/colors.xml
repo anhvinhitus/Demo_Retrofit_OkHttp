@@ -24,7 +24,6 @@
     <color name="button_text_color">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="white.transparent">#33FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="black.transparent">#19000000</color>
     <color name="gray.333333">#333333</color>
@@ -36,7 +35,7 @@
     <color name="gray.7f8c8d">#7f8c8d</color>
     <color name="separate">#e3e6e7</color>
     <color name="separate.transparent">#00e3e6e7</color>
-
+    <color name="white_transparent_2">#33FFFFFF</color>
     <!-- Holo Colors -->
     <color name="holo_blue_light">#33B5E5</color>
     <color name="holo_blue_dark">#0099CC</color>

@@ -5,6 +5,7 @@ stages:
 
 before_script:  
   - export ANDROID_HOME=/home/gitlab-runner/android-sdk-linux
+  - export NDK_HOME=/home/gitlab-runner/android-ndk-r12
   - export GRADLE_USER_HOME=/home/gitlab-runner/gradle
   - export CI_BUILD=$CI_SERVER
   - export CI_BUILD_TAG=$CI_BUILD_TAG
@@ -22,7 +23,7 @@ test:
   except:
     - tags
   script:
-    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionReleaseUnitTest
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 testProductionDebugUnitTest :data:testDebugUnitTest
 
 archive:
   stage: archive

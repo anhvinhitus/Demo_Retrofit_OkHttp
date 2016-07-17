@@ -39,7 +39,11 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     @Override
     public void destroy() {
+        this.destroyView();
+    }
 
+    public void saveUserPhone(String phone) {
+        userConfig.updateUserPhone(phone);
     }
 
     public void showLoading() {

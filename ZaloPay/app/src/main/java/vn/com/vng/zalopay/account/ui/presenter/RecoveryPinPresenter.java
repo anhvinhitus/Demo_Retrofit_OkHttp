@@ -10,7 +10,9 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -64,10 +66,10 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
 
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
+            for (byte aHash : hash) {
+                String hex = Integer.toHexString(0xff & aHash);
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
@@ -88,13 +90,13 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
                 .subscribe(new RecoveryPassCodeSubscriber());
     }
 
-    private final class RecoveryPassCodeSubscriber extends DefaultSubscriber<Boolean> {
+    private final class RecoveryPassCodeSubscriber extends DefaultSubscriber<BaseResponse> {
         public RecoveryPassCodeSubscriber() {
         }
 
         @Override
-        public void onNext(Boolean result) {
-            Timber.d("updateProfile success " + result);
+        public void onNext(BaseResponse baseResponse) {
+            Timber.d("updateProfile baseResponse: %s" + baseResponse);
             RecoveryPinPresenter.this.onRecoveryPinSuccess();
         }
 
@@ -107,15 +109,24 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-
+            if (e instanceof BodyException) {
+                BodyException bodyException = (BodyException)e;
+                RecoveryPinPresenter.this.onRecoveryPinError(bodyException.getMessage());
+                return;
+            }
             Timber.e(e, "onError " + e);
-            RecoveryPinPresenter.this.onRecoveryPinError(e);
+            RecoveryPinPresenter.this.onRecoveryPinError();
         }
     }
 
-    private void onRecoveryPinError(Throwable e) {
+    private void onRecoveryPinError() {
         hideLoading();
         mView.showError("Thiết lập lại mã PIN thất bại.");
+    }
+
+    private void onRecoveryPinError(String msg) {
+        hideLoading();
+        mView.showError(msg);
     }
 
     private void onRecoveryPinSuccess() {

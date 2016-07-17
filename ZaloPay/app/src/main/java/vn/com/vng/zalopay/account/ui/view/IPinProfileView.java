@@ -9,6 +9,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface IPinProfileView extends ILoadDataView {
     Activity getActivity();
-    void updateProfileSuccess();
+    void updateProfileSuccess(String phone);
 }
 

@@ -15,8 +15,9 @@ import timber.log.Timber;
 public class LoginListener extends OAuthCompleteListener {
 
     public interface ILoginZaloListener {
-        public void onAuthenError(int errorCode, String message);
-        public void onGetOAuthComplete(long uId, String oauthCode, String channel);
+        void onAuthError(int errorCode, String message);
+
+        void onGetOAuthComplete(long uId, String oauthCode, String channel);
     }
 
     private ILoginZaloListener mListener;
@@ -46,31 +47,31 @@ public class LoginListener extends OAuthCompleteListener {
             dialog.dismiss();
         }
         if (mListener != null) {
-            mListener.onAuthenError(-1, message);
+            mListener.onAuthError(-1, message);
         }
     }
 
     @Override
     public void onAuthenError(int errorCode, String message) {
-        Timber.d("onAuthenError............errorCode: %s", errorCode);
-        Timber.d("onAuthenError............message: %s", message);
-        if (mListener != null) {
-            mListener.onAuthenError(errorCode, message);
-        }
+
+        Timber.d("onAuthenError errorCode: %s message: %s", errorCode, message);
         super.onAuthenError(errorCode, message);
+        if (mListener != null) {
+            mListener.onAuthError(errorCode, message);
+        }
     }
 
     @Override
     public void onGetOAuthComplete(OauthResponse response) {
         super.onGetOAuthComplete(response);
-        ZaloSDK.Instance.submitAppUserData("" + ZaloSDK.Instance.getZaloId(), ZaloSDK.Instance.getLastestLoginChannel(), "zalo", "appUTMSource", null);
+        ZaloSDK.Instance.submitAppUserData(String.valueOf(ZaloSDK.Instance.getZaloId()), ZaloSDK.Instance.getLastestLoginChannel(), "zalo", "appUTMSource", null);
+
         long userId = response.getuId();
         String channel = String.valueOf(response.getChannel());
         String oauthCode = String.valueOf(response.getOauthCode());
-        //getProfile();
-        Timber.d("onGetOAuthComplete............userId:%s", userId);
-        Timber.d("onGetOAuthComplete............oauthCode:%s", oauthCode);
-        Timber.d("onGetOAuthComplete............channel:%s", channel);
+
+        Timber.d("onGetOAuthComplete userId %s oauthCode %s channel %s", userId, oauthCode, channel);
+
         if (mListener != null) {
             mListener.onGetOAuthComplete(userId, oauthCode, channel);
         }

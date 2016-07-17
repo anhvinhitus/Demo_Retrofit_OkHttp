@@ -7,12 +7,11 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import vn.com.vng.zalopay.data.cache.BalanceLocalStorage;
-import vn.com.vng.zalopay.data.cache.BalanceStore;
+import vn.com.vng.zalopay.data.balance.BalanceLocalStorage;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.repository.BalanceRepositoryImpl;
+import vn.com.vng.zalopay.data.balance.BalanceRepositoryImpl;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
@@ -23,7 +22,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 public class BalanceModule {
     @UserScope
     @Provides
-    BalanceRepository provideBalanceRepository(
+    BalanceStore.Repository provideBalanceRepository(
             BalanceStore.LocalStorage localStorage,
             BalanceStore.RequestService requestService,
             User user,

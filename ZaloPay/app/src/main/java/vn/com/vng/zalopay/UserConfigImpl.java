@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -16,10 +13,9 @@ import java.util.List;
 
 import de.greenrobot.dao.AbstractDao;
 import timber.log.Timber;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.domain.model.ProfilePermisssion;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.utils.JsonUtil;
@@ -76,16 +72,37 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_ID, user.uid);
         editor.putString(Constants.PREF_USER_NAME, user.dname);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
-        editor.putInt(Constants.PREF_PROFILELEVEL, user.profilelevel);
+        editor.putInt(Constants.PREF_PROFILE_LEVEL, user.profilelevel);
         String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermisssions);
         Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
-        editor.putString(Constants.PREF_PROFILEPERMISSIONS, permissionsStr);
+        editor.putLong(Constants.PREF_USER_PHONE, user.phonenumber);
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
 
         editor.apply();
 
     }
 
-    public void updateProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+    @Override
+    public void updateUserPhone(String phone) {
+        if (currentUser == null) {
+            return;
+        }
+        try {
+            long phoneNumber = Long.valueOf(phone);
+            currentUser.phonenumber = phoneNumber;
+            saveUserPhone(phoneNumber);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "NumberFormatException phone: %s", phone);
+        }
+    }
+
+    private void saveUserPhone(long phone) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(Constants.PREF_USER_PHONE, phone);
+        editor.apply();
+    }
+
+    public void updateProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
         if (currentUser == null) {
             return;
         }
@@ -94,13 +111,13 @@ public class UserConfigImpl implements UserConfig {
         saveProfilePermissions(profilelevel, profilePermisssions);
     }
 
-    private void saveProfilePermissions(int profilelevel, List<ProfilePermisssion.Permission> profilePermisssions) {
+    private void saveProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(Constants.PREF_PROFILELEVEL, profilelevel);
+        editor.putInt(Constants.PREF_PROFILE_LEVEL, profilelevel);
         Gson gson = new Gson();
         String permissionsStr = JsonUtil.toJsonArrayString(profilePermisssions);
         Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
-        editor.putString(Constants.PREF_PROFILEPERMISSIONS, permissionsStr);
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
         editor.apply();
     }
 
@@ -119,9 +136,10 @@ public class UserConfigImpl implements UserConfig {
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
-            currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDATE, 0);
-            currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILELEVEL, 0);
-            currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILEPERMISSIONS, ""));
+            currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDAY, 0);
+            currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
+            currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0l);
+            currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
         }
     }
 
@@ -134,7 +152,12 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_USER_NAME);
         editor.remove(Constants.PREF_USER_ID);
         editor.remove(Constants.PREF_ZALO_ID);
-
+        editor.remove(Constants.PREF_USER_PHONE);
+        editor.remove(Constants.PREF_PROFILE_LEVEL);
+        editor.remove(Constants.PREF_USER_BIRTHDAY);
+        editor.remove(Constants.PREF_PROFILE_PERMISSIONS);
+        editor.remove(Constants.PREF_INVITATION_SESSION);
+        editor.remove(Constants.PREF_INVITATION_USERID);
         editor.apply();
     }
 
@@ -145,7 +168,7 @@ public class UserConfigImpl implements UserConfig {
         editor.putLong(Constants.PREF_ZALO_ID, zaloId);
         editor.putString(Constants.PREF_USER_NAME, displayName);
         editor.putString(Constants.PREF_USER_AVATAR, avatar);
-        editor.putLong(Constants.PREF_USER_BIRTHDATE, birthData);
+        editor.putLong(Constants.PREF_USER_BIRTHDAY, birthData);
         editor.putInt(Constants.PREF_USER_GENDER, userGender);
 //        editor.putLong(Constants.PREF_USER_ID, uid);
         editor.apply();
@@ -193,10 +216,14 @@ public class UserConfigImpl implements UserConfig {
         return !TextUtils.isEmpty(getSession());
     }
 
-
     @Override
     public String getSession() {
         return preferences.getString(Constants.PREF_USER_SESSION, "");
+    }
+
+    @Override
+    public String getUserId() {
+        return preferences.getString(Constants.PREF_USER_ID, "");
     }
 
     @Override
@@ -210,48 +237,32 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void signOutAndCleanData(Activity activity) {
-        clearConfig();
-        clearAllUserDB();
-        ZaloSDK.Instance.unauthenticate();
-        AndroidApplication.instance().releaseUserComponent();
-        startLoginActivity(activity, true);
-        activity.finish();
+    public void saveInvitationInfo(String uid, String session) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_INVITATION_USERID, uid);
+        editor.putString(Constants.PREF_INVITATION_SESSION, session);
+        editor.apply();
     }
 
-    private void startLoginActivity(Activity activity, boolean clearTop) {
-        if (activity == null) {
-            return;
-        }
-        Intent intent = new Intent(activity, LoginZaloActivity.class);
-        if (clearTop) {
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        }
-
-        activity.startActivity(intent);
+    @Override
+    public String getSessionInvitation() {
+        return preferences.getString(Constants.PREF_INVITATION_SESSION, "");
     }
 
-    public void clearAllUserDB() {
-        Timber.tag("UserConfigFactory").d("clearAllUserDB..............");
-        clearConfig();
-        setCurrentUser(null);
-        clearAllCacheDatabase();
-        clearAllDatabase();
+    @Override
+    public String getUserIdInvitation() {
+        return preferences.getString(Constants.PREF_INVITATION_USERID, "");
     }
 
-    private void clearAllCacheDatabase() {
-        daoSession.clear();
+    @Override
+    public String getLastUid() {
+        return preferences.getString(Constants.PREF_USER_LAST_USER_ID, "");
     }
 
-    private void clearAllDatabase() {
-        Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
-        for (AbstractDao<?, ?> dao : daoCollection) {
-            if (dao != null) {
-                dao.deleteAll();
-            }
-        }
+    @Override
+    public void setLastUid(String uid) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_LAST_USER_ID, uid);
+        editor.apply();
     }
 }

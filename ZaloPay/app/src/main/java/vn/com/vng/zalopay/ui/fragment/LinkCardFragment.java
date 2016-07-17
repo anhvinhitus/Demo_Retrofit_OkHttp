@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -282,7 +281,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
             presenter.removeLinkCard(mCurrentBankCard);
-            zpAnalytics.logEvent(ZPEvents.MANAGECARD_DELETECARD);
+            zpAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.root) {
             mBottomSheetDialog.dismiss();

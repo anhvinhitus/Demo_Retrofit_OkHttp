@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.service;
 
 import android.app.Service;
@@ -5,7 +6,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -18,24 +18,25 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.cache.NotificationStore;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
-import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.NotificationHelper;
+import vn.com.vng.zalopay.notification.NotificationHelper;
 
+*/
 /**
  * Created by AnhHieu on 6/14/16.
- */
+ *//*
+
 public class NotificationService extends Service implements OnReceiverMessageListener {
 
     @Nullable
@@ -76,7 +77,7 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (AndroidUtils.isNetworkAvailable(getApplicationContext())) {
+        if (NetworkHelper.isNetworkAvailable(getApplicationContext())) {
             this.connectAndSendAuthentication();
         }
 
@@ -137,16 +138,27 @@ public class NotificationService extends Service implements OnReceiverMessageLis
     }
 
     private void showNotification(NotificationData event) {
-        String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
-        String title = getString(R.string.app_name);
+        if (!event.read) {
+            String message = TextUtils.isEmpty(event.message) ? getString(R.string.notify_from_zalopay) : event.message;
+            String title = getString(R.string.app_name);
 
-        int notificationId = 1;
+            int notificationId = 1;
+            int notificationType = event.getNotificationType();
+            int transType = event.getTransType();
 
+            Intent intent = null;
 
-        notificationHelper.create(getApplicationContext(), notificationId,
-                navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS),
-                R.mipmap.ic_launcher,
-                title, message);
+            if (transType > 0) {
+                intent = navigator.getIntentMiniAppActivity(getApplicationContext(), Constants.ModuleName.NOTIFICATIONS);
+            } else if (notificationType == 2) {
+                intent = navigator.intentProfile(getApplicationContext());
+            }
+
+            notificationHelper.create(getApplicationContext(), notificationId,
+                    intent,
+                    R.mipmap.ic_launcher,
+                    title, message);
+        }
     }
 
     protected void updateTransaction() {
@@ -203,3 +215,4 @@ public class NotificationService extends Service implements OnReceiverMessageLis
         return AndroidApplication.instance().getAppComponent();
     }
 }
+*/

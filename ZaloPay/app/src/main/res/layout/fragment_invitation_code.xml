@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,42 +10,49 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:orientation="vertical">
 
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="40dp"
-                android:text="Invitation Code"
-                android:textColor="@color/c_text_black"
-                android:textSize="24dp" />
+                android:layout_marginBottom="90dp"
+                android:src="@drawable/ic_invitation_code" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilCode"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/lb_invite"
+                style="@style/TextView.SubTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/label_invitation_code"
+                android:textSize="16dp" />
 
-                <EditText
-                    android:id="@+id/tvCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter code"
-                    android:inputType="text" />
+            <vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView
+                android:id="@+id/passCodeInput"
+                android:layout_width="320dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="70dp"
+                app:gpvGridColor="#ffffff"
+                app:gpvLineColor="#858585"
+                app:gpvLineWidth="1dp"
+                app:gpvPasswordLength="@integer/invitation_code_length"
+                app:gpvPasswordType="numberPassword"
+                app:gpvTextColor="#000000"
+                app:gpvTextSize="20sp" />
 
-            </android.support.design.widget.TextInputLayout>
 
-        </LinearLayout>
+        </FrameLayout>
     </ScrollView>
 
-    <Button
+    <vn.vng.uicomponent.widget.button.GuardButton
         android:id="@+id/btnContinue"
         style="@style/Button.Default"
         android:layout_width="match_parent"
@@ -53,5 +60,5 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@drawable/bg_btn_blue"
-        android:text="Gửi" />
+        android:text="Xác nhận" />
 </FrameLayout>

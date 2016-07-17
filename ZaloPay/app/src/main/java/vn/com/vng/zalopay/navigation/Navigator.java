@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -32,7 +35,7 @@ import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
-
+import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -53,11 +56,6 @@ public class Navigator implements INavigator {
     public Navigator(UserConfig userConfig) {
         //empty
         this.userConfig = userConfig;
-    }
-
-
-    public void startLoginActivity(Context context) {
-        startLoginActivity(context, false);
     }
 
     public void startLoginActivity(Context context, boolean clearTop) {
@@ -85,11 +83,19 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startHomeActivity(Context context) {
-        startHomeActivity(context, false);
+    public void startHomeActivity(Context context, boolean clearTop) {
+        Intent intent = intentHomeActivity(context, clearTop);
+        context.startActivity(intent);
     }
 
-    public void startHomeActivity(Context context, boolean clearTop) {
+    public void startHomeActivity(Context context, long appId, String zptranstoken) {
+        Intent intent = intentHomeActivity(context, true);
+        intent.putExtra(Constants.ARG_APPID, appId);
+        intent.putExtra(Constants.ARG_ZPTRANSTOKEN, zptranstoken);
+        context.startActivity(intent);
+    }
+
+    public Intent intentHomeActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, MainActivity.class);
 
         if (clearTop) {
@@ -98,8 +104,7 @@ public class Navigator implements INavigator {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
-
-        context.startActivity(intent);
+        return intent;
     }
 
     public void startUpdateProfileLevel2Activity(Context context, boolean clearTop) {
@@ -206,16 +211,10 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startPaymentApplicationActivity(Context context, String name) {
-        Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", name);
-        context.startActivity(intent);
-    }
-
-    public void startPaymentApplicationActivity(Context context, AppResource appResource, String moduleName) {
-        Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", moduleName);
-        intent.putExtra("appResource", appResource);
+    public void startPaymentApplicationActivity(Context context, int appId) {
+        Map<String, String> options = new HashMap<>();
+        options.put("view", "main");
+        Intent intent = intentPaymentApp(context, appId, options);
         context.startActivity(intent);
     }
 
@@ -285,6 +284,11 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startInvitationCodeActivity(Context context) {
+        Intent intent = new Intent(context, InvitationCodeActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     public Intent intentProfile(Context context) {
         Intent intent = new Intent(context, ProfileInfo2Activity.class);
@@ -298,15 +302,18 @@ public class Navigator implements INavigator {
     }
 
     @Override
-    public Intent intentPaymentApp(Context context, int appId, String view) {
+    public Intent intentPaymentApp(Context context, int appId, Map<String, String> launchOptions) {
         AppResource appResource = ReactAppConfig.getAppResource(appId);
         if (appResource == null) {
             return null;
         }
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("moduleName", Constants.ModuleName.PAYMENT_MAIN);
         intent.putExtra("appResource", appResource);
-        intent.putExtra("view", view);
+        Bundle options = new Bundle();
+        for (Map.Entry<String, String> e : launchOptions.entrySet()) {
+            options.putString(e.getKey(), e.getValue());
+        }
+        intent.putExtra("launchOptions", options);
         return intent;
     }
 }

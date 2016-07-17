@@ -13,7 +13,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -36,7 +36,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     ZaloPayRepository zaloPayRepository;
 
     @Inject
-    BalanceRepository mBalanceRepository;
+    BalanceStore.Repository mBalanceRepository;
 
     @Inject
     Navigator mNavigator;

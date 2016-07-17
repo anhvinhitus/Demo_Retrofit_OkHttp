@@ -11,7 +11,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IProfileInfoView extends ILoadDataView {
     Activity getActivity();
     void updateUserInfo(User user);
-    void updateBannerView(String bannerUrl);
     void updateBalance(long balance);
     void showHideChangePinView(boolean isShow);
 }

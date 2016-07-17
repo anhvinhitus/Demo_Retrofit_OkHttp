@@ -7,6 +7,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 import rx.Subscription;
@@ -14,14 +15,13 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.cache.TransactionStore;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.ServerMaintainException;
-import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.BalanceRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -30,12 +30,11 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 02/06/2016.
- *
  */
 public class PaymentServiceImpl implements IPaymentService {
 
     final ZaloPayIAPRepository zaloPayIAPRepository;
-    final BalanceRepository mBalanceRepository;
+    final BalanceStore.Repository mBalanceRepository;
     final User user;
     final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
@@ -43,7 +42,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceRepository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
+    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceStore.Repository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
         this.zaloPayIAPRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.user = user;
@@ -51,11 +50,14 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
-    public void pay(final Activity activity, final Promise promise, long appID, String appTransID, String appUser, long appTime, long amount, String itemName, String description, String embedData, String mac) {
+    public void pay(Activity activity, final Promise promise, Order order) {
+
+        final WeakReference<Activity> mWeakReference = new WeakReference<Activity>(activity);
+
         this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
-                return activity;
+                return mWeakReference.get();
             }
         }, new PaymentWrapper.IResponseListener() {
             @Override
@@ -92,7 +94,7 @@ public class PaymentServiceImpl implements IPaymentService {
             }
         });
 
-        this.paymentWrapper.payWithDetail(appID, appTransID, appUser, appTime, amount, itemName, description, embedData, mac);
+        this.paymentWrapper.payWithOrder(order);
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
@@ -107,7 +109,7 @@ public class PaymentServiceImpl implements IPaymentService {
         }
 
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
-        Timber.d("Invalid parameter %s", parameterName);
+        Timber.d("Invalid parameter [%s]", parameterName);
         errorCallback(promise, PaymentError.ERR_CODE_INPUT, message);
     }
 

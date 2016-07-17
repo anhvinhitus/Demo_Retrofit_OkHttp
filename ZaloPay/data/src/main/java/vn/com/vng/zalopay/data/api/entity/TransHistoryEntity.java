@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.api.entity;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -51,4 +52,13 @@ public class TransHistoryEntity {
 
     @SerializedName("appusername")
     public String appusername;
+
+    @SerializedName("transstatus")
+    public int transstatus;
+    
+    @SerializedName("isretry")
+    public boolean isretry;
+
+    @Expose(serialize = false, deserialize = false)
+    public int statustype = 1;
 }

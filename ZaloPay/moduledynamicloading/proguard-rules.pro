@@ -70,3 +70,6 @@
 -keepnames class vn.com.vng.zalopay.mdl.** {
     *;
 }
+
+# Animated Gif
+-keep class com.facebook.imagepipeline.animated.factory.AnimatedFactoryImpl { public AnimatedFactoryImpl(com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory, com.facebook.imagepipeline.core.ExecutorSupplier); }
