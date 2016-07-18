@@ -33,9 +33,13 @@ public class ReactInternalPackage implements ReactPackage {
     private ZPAnalytics zpAnalytics;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
+                                RedPackageStore.Repository redPackageRepository,
+                                FriendStore.Repository friendRepository,
                                 INavigator navigator, ZPAnalytics zpAnalytics) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
+        this.mRedPackageRepository = redPackageRepository;
+        this.mFriendRepository = friendRepository;
         this.navigator = navigator;
         this.zpAnalytics = zpAnalytics;
     }
@@ -46,7 +50,8 @@ public class ReactInternalPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
-        modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository, mRedPackageRepository, mFriendRepository));
+        modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
+        modules.add(new ReactRedPackageNativeModule(reactContext, mRedPackageRepository, mFriendRepository));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
         return modules;
     }

@@ -148,9 +148,12 @@ public class NotificationHelper {
 
             if (transType > 0) {
                 intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.NOTIFICATIONS);
+                notificationId = transType;
             } else if (notificationType == 2) {
                 intent = navigator.intentProfile(context);
+                notificationId = notificationType;
             }
+
             create(context, notificationId,
                     intent,
                     R.mipmap.ic_launcher,

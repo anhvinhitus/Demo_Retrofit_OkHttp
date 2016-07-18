@@ -15,18 +15,12 @@ import vn.com.vng.zalopay.analytics.ZPTracker;
  */
 public class ZPTrackerGA implements ZPTracker {
 
-    private static final String FORMAT_GOOGLE_ANALYTICS = "[Android][%s][%s]";
+    private static final String FORMAT_GOOGLE_ANALYTICS = "[Android][%s]";
 
     private final Tracker mTracker;
-    private String versionName;
 
-    public ZPTrackerGA(Tracker tracker, Context context) {
+    public ZPTrackerGA(Tracker tracker) {
         mTracker = tracker;
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            versionName = pInfo.versionName;
-        } catch (Exception ex) {
-        }
     }
 
     @Override
@@ -46,7 +40,7 @@ public class ZPTrackerGA implements ZPTracker {
 
     @Override
     public void trackScreen(String screenName) {
-        String screenWithFormat = String.format(FORMAT_GOOGLE_ANALYTICS, versionName, screenName);
+        String screenWithFormat = String.format(FORMAT_GOOGLE_ANALYTICS, screenName);
         mTracker.setScreenName(screenWithFormat);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
