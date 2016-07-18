@@ -9,9 +9,11 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscription;
@@ -50,12 +52,12 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
     @Override
     public String getName() {
-        return this.getClass().getSimpleName();
+        return "ZaloPayRedPacketApi";
     }
 
     @ReactMethod
-    public void createRedPacketBundleOrder(int quantity, long totalLuck, long amountEach, int type, String sendMessage, Promise promise) {
-        Subscription subscription = mRedPackageRepository.createBundleOrder(quantity, totalLuck, amountEach, type, sendMessage)
+    public void createRedPacketBundleOrder(int quantity, double totalLuck, double amountEach, int type, String sendMessage, Promise promise) {
+        Subscription subscription = mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
                 .map(new Func1<BundleOrder, WritableMap>() {
                     @Override
                     public WritableMap call(BundleOrder bundleOrder) {
@@ -67,8 +69,9 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void submitToSendBundle(long bundleID, List<Long> friendList, Promise promise) {
-        Subscription subscription = mRedPackageRepository.sendBundle(bundleID, friendList)
+    public void submitToSendBundle(double bundleID, ReadableArray friends, Promise promise) {
+        List<Long> friendList = transform(friends);
+        Subscription subscription = mRedPackageRepository.sendBundle((long) bundleID, friendList)
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean) {
@@ -79,9 +82,24 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
         compositeSubscription.add(subscription);
     }
 
+    private List<Long> transform(ReadableArray friends) {
+        List<Long> friendList = new ArrayList<>();
+        if (friends == null || friends.size() <= 0) {
+            return friendList;
+        }
+        for (int i = 0; i < friends.size(); i++) {
+            double friendId = friends.getDouble(i);
+            if (friendId <= 0) {
+                continue;
+            }
+            friendList.add((long) friendId);
+        }
+        return friendList;
+    }
+
     @ReactMethod
-    public void openPacket(long packageID, long bundleID, Promise promise) {
-        Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
+    public void openPacket(double packageID, double bundleID, Promise promise) {
+        Subscription subscription = mRedPackageRepository.submitOpenPackage((long) packageID, (long) bundleID)
                 .map(new Func1<SubmitOpenPackage, WritableMap>() {
                     @Override
                     public WritableMap call(SubmitOpenPackage submitOpenPackage) {
@@ -138,7 +156,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void requestStatusWithTransId(long transid, long packageId, Promise promise) {
+    public void requestStatusWithTransId(double transid, double packageId, Promise promise) {
 
     }
 
