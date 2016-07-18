@@ -79,5 +79,10 @@ public class Constants {
     public static class Apps {
         public static final int INTERNAL = 1;
         public static final int RED_PACKET = 6;
+        public static final int RECHARGE_MONEY_PHONE = 11;
+        public static final int BUY_PHONE_CARD = 12;
+        public static final int ZING_XU = 14;
+        public static final int BUY_GAME_CARD = 15;
+        public static final int ELECTRIC_BILL = 17;
     }
 }
