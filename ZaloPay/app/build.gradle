@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 buildscript {
@@ -376,5 +375,7 @@ dependencies {
     compile project(':moduledynamicloading')
     compile project(':zalopayanalytics')
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 

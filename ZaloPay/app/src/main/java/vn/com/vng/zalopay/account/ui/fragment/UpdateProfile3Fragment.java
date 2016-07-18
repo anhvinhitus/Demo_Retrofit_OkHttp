@@ -34,7 +34,6 @@ import vn.vng.uicomponent.widget.KeyboardLinearLayout;
  */
 public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View {
 
-
     public static UpdateProfile3Fragment newInstance() {
 
         Bundle args = new Bundle();
@@ -100,6 +99,10 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.headerView)
     View headerView;
 
+    private Uri mUriBgCmnd;
+    private Uri mUriFgCmnd;
+    private Uri mUriAvatar;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -155,11 +158,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         viewFlipper.showPrevious();
     }
 
-
-    private Uri mUriBgCmnd;
-    private Uri mUriFgCmnd;
-    private Uri mUriAvatar;
-
     @OnClick(R.id.btnContinue)
     public void onClickContinue(View v) {
         if (getCurrentPage() == 0) {
@@ -172,8 +170,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         } else {
             updateProfile();
         }
-
-
     }
 
     private final void updateProfile() {
@@ -216,7 +212,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         return true;
     }
-
 
     @Override
     public void showLoading() {
@@ -297,7 +292,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -334,10 +328,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 .dontTransform()
                 .centerCrop()
                 .into(image);
-      /*  Glide.with(this).load(uri)
-                .placeholder(R.color.silver)
-                .centerCrop()
-                .into(image);*/
         image.setVisibility(View.VISIBLE);
     }
 }
