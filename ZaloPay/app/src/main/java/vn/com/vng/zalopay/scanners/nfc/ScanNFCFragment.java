@@ -228,7 +228,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
             return;
         }
 
-        Timber.i("appId: %d, token: %s", paymentRecord.appId, paymentRecord.transactionToken);
+        Timber.i("appId: %d, token: [%s]", paymentRecord.appId, paymentRecord.transactionToken);
         paymentWrapper.payWithToken(paymentRecord.appId, paymentRecord.transactionToken);
     }
 }

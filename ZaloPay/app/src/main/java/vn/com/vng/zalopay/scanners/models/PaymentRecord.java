@@ -8,6 +8,7 @@ import vn.com.vng.zalopay.utils.MemoryUtils;
 
 /**
  * Created by huuhoa on 6/4/16.
+ *
  */
 public class PaymentRecord {
     public final long manufacturerId;
@@ -36,7 +37,7 @@ public class PaymentRecord {
 
     @Override
     public String toString() {
-        return String.format("appId: %d, token: %s", appId, transactionToken);
+        return String.format("appId: [%d], token: [%s]", appId, transactionToken);
     }
 
     public final static PaymentRecord Invalid = new PaymentRecord(-1, -1, -1, "", -1);
@@ -61,7 +62,7 @@ public class PaymentRecord {
         long appid = MemoryUtils.extractShort(data, currentPos);
         currentPos += 2;
         byte[] transactionTokenBytes = MemoryUtils.extractBytes(data, currentPos, 16);
-        String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING);
+        String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
 //        transactionToken = "DQ5ZWRbtdc4NKCQckstZLg";
         currentPos += 16;
         long crc16 = MemoryUtils.extractShort(data, currentPos);

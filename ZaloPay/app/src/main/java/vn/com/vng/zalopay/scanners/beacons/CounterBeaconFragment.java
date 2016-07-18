@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -68,6 +69,9 @@ public class CounterBeaconFragment extends BaseFragment {
     @Inject
     Navigator mNavigator;
 
+
+    @BindView(R.id.beaconList)
+    RecyclerView mRecyclerView;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -170,23 +174,19 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Timber.w("onCreateView begin");
+        Timber.d("onCreateView begin");
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            mViewAdapter = new CounterBeaconRecyclerViewAdapter(mDeviceList, new SelectDeviceListener());
-            recyclerView.setAdapter(mViewAdapter);
+        if (mColumnCount <= 1) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
         }
+        mViewAdapter = new CounterBeaconRecyclerViewAdapter(mDeviceList, new SelectDeviceListener());
+        mRecyclerView.setAdapter(mViewAdapter);
 
-        Timber.w("onCreateView finish");
+        Timber.d("onCreateView finish");
         return view;
     }
 
@@ -355,7 +355,7 @@ public class CounterBeaconFragment extends BaseFragment {
             }
             BeaconDevice device = new BeaconDevice(title, rssi, data, order);
             if (cache == null) {
-                Timber.i("Start fetching order information for %s", data.transactionToken);
+                Timber.i("Start fetching order information for [%s]", data.transactionToken);
                 cache = new OrderCache();
                 cache.status = OrderCache.STATUS_FETCHING;
                 mTransactionCache.put(data.transactionToken, cache);
