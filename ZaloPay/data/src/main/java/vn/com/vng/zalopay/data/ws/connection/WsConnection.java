@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -46,8 +47,8 @@ public class WsConnection extends Connection implements ConnectionListener {
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
     private static final int MAX_NUMBER_RETRY_CONNECT = 3;
 
-    private int PORT = 8404;
-    private String HOST = "sandbox.notify.zalopay.com.vn";
+    private int PORT;
+    private String HOST;
 
     private NioEventLoopGroup group;
     private Channel mChannel;
@@ -86,6 +87,11 @@ public class WsConnection extends Connection implements ConnectionListener {
         if (mChannel != null && mChannel.isOpen()) {
             return;
         }
+
+        if (TextUtils.isEmpty(HOST) || PORT == 0) {
+            throw new RuntimeException("Init host port notification");
+        }
+
         Timber.i("Begin connecting");
         new Thread() {
             @Override
@@ -112,7 +118,6 @@ public class WsConnection extends Connection implements ConnectionListener {
             }
         }.start();
 
-
     }
 
     @Override
@@ -122,6 +127,8 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     @Override
     public void disconnect() {
+        Timber.d("disconnect");
+
         if (mChannel != null && mChannel.isOpen()) {
             mChannel.close();
         }
@@ -142,7 +149,7 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     @Override
     public boolean isConnecting() {
-        if(mChannel!=null){
+        if (mChannel != null) {
             return mChannel.isOpen();
         }
         return false;
@@ -191,16 +198,18 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
         if (message != null) {
-            Timber.d("onReceived message.msgType %s",message.msgType);
+            Timber.d("onReceived message.msgType %s", message.msgType);
             if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
             } else if (message.msgType == MessageType.Response.KICK_OUT) {
                 Timber.d("onReceived KICK_OUT");
                 disconnect();
                 return;
+            } else {
+                postResult(message);
             }
 
-            postResult(message);
+
         }
     }
 

@@ -19,7 +19,8 @@ message MessageSendUser{
 	required string	signature = 2; 
 	optional int64	expiretime = 3;
 	optional uint64 usrid = 4;
-	optional string titlepush = 5;
+	optional string pushtitle = 5;
+	optional string pushembeddata = 6;
 }
 
 message MessageLogin{
@@ -50,6 +51,9 @@ message MsgPushUser{
 	optional string sound = 4;
 	optional int32  badge = 5;
 	optional string actionkey = 6;
+	optional string pushembeddata = 7;
+	optional string serviceid = 8;
+	optional string msgid = 9;
 }
 
 message StatusMessageClient{

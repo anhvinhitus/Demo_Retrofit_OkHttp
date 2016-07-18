@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -78,6 +79,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
             if (mWsConnection == null) {
                 mWsConnection = new WsConnection(this, new MessageParser(userConfig, mGson), userConfig);
+                mWsConnection.setHostPort(BuildConfig.WS_HOST, BuildConfig.WS_PORT);
                 mWsConnection.addReceiverListener(this);
             }
 

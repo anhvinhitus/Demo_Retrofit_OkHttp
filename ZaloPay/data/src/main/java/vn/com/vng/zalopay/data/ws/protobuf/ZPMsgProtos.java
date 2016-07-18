@@ -236,18 +236,32 @@ public final class ZPMsgProtos {
     long getUsrid();
 
     /**
-     * <code>optional string titlepush = 5;</code>
+     * <code>optional string pushtitle = 5;</code>
      */
-    boolean hasTitlepush();
+    boolean hasPushtitle();
     /**
-     * <code>optional string titlepush = 5;</code>
+     * <code>optional string pushtitle = 5;</code>
      */
-    java.lang.String getTitlepush();
+    java.lang.String getPushtitle();
     /**
-     * <code>optional string titlepush = 5;</code>
+     * <code>optional string pushtitle = 5;</code>
      */
     com.google.protobuf.ByteString
-        getTitlepushBytes();
+        getPushtitleBytes();
+
+    /**
+     * <code>optional string pushembeddata = 6;</code>
+     */
+    boolean hasPushembeddata();
+    /**
+     * <code>optional string pushembeddata = 6;</code>
+     */
+    java.lang.String getPushembeddata();
+    /**
+     * <code>optional string pushembeddata = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getPushembeddataBytes();
   }
   /**
    * Protobuf type {@code protobuf.MessageSendUser}
@@ -325,7 +339,13 @@ public final class ZPMsgProtos {
             case 42: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
-              titlepush_ = bs;
+              pushtitle_ = bs;
+              break;
+            }
+            case 50: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000020;
+              pushembeddata_ = bs;
               break;
             }
           }
@@ -455,19 +475,19 @@ public final class ZPMsgProtos {
       return usrid_;
     }
 
-    public static final int TITLEPUSH_FIELD_NUMBER = 5;
-    private java.lang.Object titlepush_;
+    public static final int PUSHTITLE_FIELD_NUMBER = 5;
+    private java.lang.Object pushtitle_;
     /**
-     * <code>optional string titlepush = 5;</code>
+     * <code>optional string pushtitle = 5;</code>
      */
-    public boolean hasTitlepush() {
+    public boolean hasPushtitle() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional string titlepush = 5;</code>
+     * <code>optional string pushtitle = 5;</code>
      */
-    public java.lang.String getTitlepush() {
-      java.lang.Object ref = titlepush_;
+    public java.lang.String getPushtitle() {
+      java.lang.Object ref = pushtitle_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -475,22 +495,64 @@ public final class ZPMsgProtos {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          titlepush_ = s;
+          pushtitle_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string titlepush = 5;</code>
+     * <code>optional string pushtitle = 5;</code>
      */
     public com.google.protobuf.ByteString
-        getTitlepushBytes() {
-      java.lang.Object ref = titlepush_;
+        getPushtitleBytes() {
+      java.lang.Object ref = pushtitle_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        titlepush_ = b;
+        pushtitle_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUSHEMBEDDATA_FIELD_NUMBER = 6;
+    private java.lang.Object pushembeddata_;
+    /**
+     * <code>optional string pushembeddata = 6;</code>
+     */
+    public boolean hasPushembeddata() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional string pushembeddata = 6;</code>
+     */
+    public java.lang.String getPushembeddata() {
+      java.lang.Object ref = pushembeddata_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          pushembeddata_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string pushembeddata = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPushembeddataBytes() {
+      java.lang.Object ref = pushembeddata_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        pushembeddata_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -502,7 +564,8 @@ public final class ZPMsgProtos {
       signature_ = "";
       expiretime_ = 0L;
       usrid_ = 0L;
-      titlepush_ = "";
+      pushtitle_ = "";
+      pushembeddata_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -538,7 +601,10 @@ public final class ZPMsgProtos {
         output.writeUInt64(4, usrid_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getTitlepushBytes());
+        output.writeBytes(5, getPushtitleBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getPushembeddataBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -567,7 +633,11 @@ public final class ZPMsgProtos {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getTitlepushBytes());
+          .computeBytesSize(5, getPushtitleBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getPushembeddataBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -694,8 +764,10 @@ public final class ZPMsgProtos {
         bitField0_ = (bitField0_ & ~0x00000004);
         usrid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
-        titlepush_ = "";
+        pushtitle_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
+        pushembeddata_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -743,7 +815,11 @@ public final class ZPMsgProtos {
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        result.titlepush_ = titlepush_;
+        result.pushtitle_ = pushtitle_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.pushembeddata_ = pushembeddata_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -774,9 +850,14 @@ public final class ZPMsgProtos {
         if (other.hasUsrid()) {
           setUsrid(other.getUsrid());
         }
-        if (other.hasTitlepush()) {
+        if (other.hasPushtitle()) {
           bitField0_ |= 0x00000010;
-          titlepush_ = other.titlepush_;
+          pushtitle_ = other.pushtitle_;
+          onChanged();
+        }
+        if (other.hasPushembeddata()) {
+          bitField0_ |= 0x00000020;
+          pushembeddata_ = other.pushembeddata_;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -989,24 +1070,24 @@ public final class ZPMsgProtos {
         return this;
       }
 
-      private java.lang.Object titlepush_ = "";
+      private java.lang.Object pushtitle_ = "";
       /**
-       * <code>optional string titlepush = 5;</code>
+       * <code>optional string pushtitle = 5;</code>
        */
-      public boolean hasTitlepush() {
+      public boolean hasPushtitle() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional string titlepush = 5;</code>
+       * <code>optional string pushtitle = 5;</code>
        */
-      public java.lang.String getTitlepush() {
-        java.lang.Object ref = titlepush_;
+      public java.lang.String getPushtitle() {
+        java.lang.Object ref = pushtitle_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            titlepush_ = s;
+            pushtitle_ = s;
           }
           return s;
         } else {
@@ -1014,53 +1095,129 @@ public final class ZPMsgProtos {
         }
       }
       /**
-       * <code>optional string titlepush = 5;</code>
+       * <code>optional string pushtitle = 5;</code>
        */
       public com.google.protobuf.ByteString
-          getTitlepushBytes() {
-        java.lang.Object ref = titlepush_;
+          getPushtitleBytes() {
+        java.lang.Object ref = pushtitle_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          titlepush_ = b;
+          pushtitle_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string titlepush = 5;</code>
+       * <code>optional string pushtitle = 5;</code>
        */
-      public Builder setTitlepush(
+      public Builder setPushtitle(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000010;
-        titlepush_ = value;
+        pushtitle_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string titlepush = 5;</code>
+       * <code>optional string pushtitle = 5;</code>
        */
-      public Builder clearTitlepush() {
+      public Builder clearPushtitle() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        titlepush_ = getDefaultInstance().getTitlepush();
+        pushtitle_ = getDefaultInstance().getPushtitle();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string titlepush = 5;</code>
+       * <code>optional string pushtitle = 5;</code>
        */
-      public Builder setTitlepushBytes(
+      public Builder setPushtitleBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000010;
-        titlepush_ = value;
+        pushtitle_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object pushembeddata_ = "";
+      /**
+       * <code>optional string pushembeddata = 6;</code>
+       */
+      public boolean hasPushembeddata() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional string pushembeddata = 6;</code>
+       */
+      public java.lang.String getPushembeddata() {
+        java.lang.Object ref = pushembeddata_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pushembeddata_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string pushembeddata = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPushembeddataBytes() {
+        java.lang.Object ref = pushembeddata_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          pushembeddata_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string pushembeddata = 6;</code>
+       */
+      public Builder setPushembeddata(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        pushembeddata_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string pushembeddata = 6;</code>
+       */
+      public Builder clearPushembeddata() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        pushembeddata_ = getDefaultInstance().getPushembeddata();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string pushembeddata = 6;</code>
+       */
+      public Builder setPushembeddataBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        pushembeddata_ = value;
         onChanged();
         return this;
       }
@@ -3255,6 +3412,48 @@ public final class ZPMsgProtos {
      */
     com.google.protobuf.ByteString
         getActionkeyBytes();
+
+    /**
+     * <code>optional string pushembeddata = 7;</code>
+     */
+    boolean hasPushembeddata();
+    /**
+     * <code>optional string pushembeddata = 7;</code>
+     */
+    java.lang.String getPushembeddata();
+    /**
+     * <code>optional string pushembeddata = 7;</code>
+     */
+    com.google.protobuf.ByteString
+        getPushembeddataBytes();
+
+    /**
+     * <code>optional string serviceid = 8;</code>
+     */
+    boolean hasServiceid();
+    /**
+     * <code>optional string serviceid = 8;</code>
+     */
+    java.lang.String getServiceid();
+    /**
+     * <code>optional string serviceid = 8;</code>
+     */
+    com.google.protobuf.ByteString
+        getServiceidBytes();
+
+    /**
+     * <code>optional string msgid = 9;</code>
+     */
+    boolean hasMsgid();
+    /**
+     * <code>optional string msgid = 9;</code>
+     */
+    java.lang.String getMsgid();
+    /**
+     * <code>optional string msgid = 9;</code>
+     */
+    com.google.protobuf.ByteString
+        getMsgidBytes();
   }
   /**
    * Protobuf type {@code protobuf.MsgPushUser}
@@ -3340,6 +3539,24 @@ public final class ZPMsgProtos {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
               actionkey_ = bs;
+              break;
+            }
+            case 58: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000040;
+              pushembeddata_ = bs;
+              break;
+            }
+            case 66: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000080;
+              serviceid_ = bs;
+              break;
+            }
+            case 74: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000100;
+              msgid_ = bs;
               break;
             }
           }
@@ -3580,6 +3797,132 @@ public final class ZPMsgProtos {
       }
     }
 
+    public static final int PUSHEMBEDDATA_FIELD_NUMBER = 7;
+    private java.lang.Object pushembeddata_;
+    /**
+     * <code>optional string pushembeddata = 7;</code>
+     */
+    public boolean hasPushembeddata() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional string pushembeddata = 7;</code>
+     */
+    public java.lang.String getPushembeddata() {
+      java.lang.Object ref = pushembeddata_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          pushembeddata_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string pushembeddata = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPushembeddataBytes() {
+      java.lang.Object ref = pushembeddata_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        pushembeddata_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SERVICEID_FIELD_NUMBER = 8;
+    private java.lang.Object serviceid_;
+    /**
+     * <code>optional string serviceid = 8;</code>
+     */
+    public boolean hasServiceid() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional string serviceid = 8;</code>
+     */
+    public java.lang.String getServiceid() {
+      java.lang.Object ref = serviceid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          serviceid_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string serviceid = 8;</code>
+     */
+    public com.google.protobuf.ByteString
+        getServiceidBytes() {
+      java.lang.Object ref = serviceid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        serviceid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MSGID_FIELD_NUMBER = 9;
+    private java.lang.Object msgid_;
+    /**
+     * <code>optional string msgid = 9;</code>
+     */
+    public boolean hasMsgid() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional string msgid = 9;</code>
+     */
+    public java.lang.String getMsgid() {
+      java.lang.Object ref = msgid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          msgid_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string msgid = 9;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMsgidBytes() {
+      java.lang.Object ref = msgid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        msgid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       devicetoken_ = "";
       ostype_ = 0;
@@ -3587,6 +3930,9 @@ public final class ZPMsgProtos {
       sound_ = "";
       badge_ = 0;
       actionkey_ = "";
+      pushembeddata_ = "";
+      serviceid_ = "";
+      msgid_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3631,6 +3977,15 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(6, getActionkeyBytes());
       }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBytes(7, getPushembeddataBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeBytes(8, getServiceidBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, getMsgidBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3663,6 +4018,18 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, getActionkeyBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(7, getPushembeddataBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getServiceidBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, getMsgidBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3793,6 +4160,12 @@ public final class ZPMsgProtos {
         bitField0_ = (bitField0_ & ~0x00000010);
         actionkey_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
+        pushembeddata_ = "";
+        bitField0_ = (bitField0_ & ~0x00000040);
+        serviceid_ = "";
+        bitField0_ = (bitField0_ & ~0x00000080);
+        msgid_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -3845,6 +4218,18 @@ public final class ZPMsgProtos {
           to_bitField0_ |= 0x00000020;
         }
         result.actionkey_ = actionkey_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.pushembeddata_ = pushembeddata_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.serviceid_ = serviceid_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.msgid_ = msgid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3885,6 +4270,21 @@ public final class ZPMsgProtos {
         if (other.hasActionkey()) {
           bitField0_ |= 0x00000020;
           actionkey_ = other.actionkey_;
+          onChanged();
+        }
+        if (other.hasPushembeddata()) {
+          bitField0_ |= 0x00000040;
+          pushembeddata_ = other.pushembeddata_;
+          onChanged();
+        }
+        if (other.hasServiceid()) {
+          bitField0_ |= 0x00000080;
+          serviceid_ = other.serviceid_;
+          onChanged();
+        }
+        if (other.hasMsgid()) {
+          bitField0_ |= 0x00000100;
+          msgid_ = other.msgid_;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -4290,6 +4690,234 @@ public final class ZPMsgProtos {
   }
   bitField0_ |= 0x00000020;
         actionkey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object pushembeddata_ = "";
+      /**
+       * <code>optional string pushembeddata = 7;</code>
+       */
+      public boolean hasPushembeddata() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional string pushembeddata = 7;</code>
+       */
+      public java.lang.String getPushembeddata() {
+        java.lang.Object ref = pushembeddata_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            pushembeddata_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string pushembeddata = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPushembeddataBytes() {
+        java.lang.Object ref = pushembeddata_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          pushembeddata_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string pushembeddata = 7;</code>
+       */
+      public Builder setPushembeddata(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        pushembeddata_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string pushembeddata = 7;</code>
+       */
+      public Builder clearPushembeddata() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        pushembeddata_ = getDefaultInstance().getPushembeddata();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string pushembeddata = 7;</code>
+       */
+      public Builder setPushembeddataBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        pushembeddata_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object serviceid_ = "";
+      /**
+       * <code>optional string serviceid = 8;</code>
+       */
+      public boolean hasServiceid() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional string serviceid = 8;</code>
+       */
+      public java.lang.String getServiceid() {
+        java.lang.Object ref = serviceid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            serviceid_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string serviceid = 8;</code>
+       */
+      public com.google.protobuf.ByteString
+          getServiceidBytes() {
+        java.lang.Object ref = serviceid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          serviceid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string serviceid = 8;</code>
+       */
+      public Builder setServiceid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        serviceid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string serviceid = 8;</code>
+       */
+      public Builder clearServiceid() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        serviceid_ = getDefaultInstance().getServiceid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string serviceid = 8;</code>
+       */
+      public Builder setServiceidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        serviceid_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object msgid_ = "";
+      /**
+       * <code>optional string msgid = 9;</code>
+       */
+      public boolean hasMsgid() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional string msgid = 9;</code>
+       */
+      public java.lang.String getMsgid() {
+        java.lang.Object ref = msgid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            msgid_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string msgid = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMsgidBytes() {
+        java.lang.Object ref = msgid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          msgid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string msgid = 9;</code>
+       */
+      public Builder setMsgid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        msgid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string msgid = 9;</code>
+       */
+      public Builder clearMsgid() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        msgid_ = getDefaultInstance().getMsgid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string msgid = 9;</code>
+       */
+      public Builder setMsgidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        msgid_ = value;
         onChanged();
         return this;
       }
@@ -4991,25 +5619,27 @@ public final class ZPMsgProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024PATH/zpmsguser.proto\022\010protobuf\"h\n\017Mess" +
+      "\n\024PATH/zpmsguser.proto\022\010protobuf\"\177\n\017Mess" +
       "ageSendUser\022\014\n\004data\030\001 \002(\014\022\021\n\tsignature\030\002" +
       " \002(\t\022\022\n\nexpiretime\030\003 \001(\003\022\r\n\005usrid\030\004 \001(\004\022" +
-      "\021\n\ttitlepush\030\005 \001(\t\"Q\n\014MessageLogin\022\r\n\005us" +
-      "rid\030\001 \002(\004\022\r\n\005token\030\002 \002(\t\022\016\n\006ostype\030\003 \001(\005" +
-      "\022\023\n\013devicetoken\030\004 \001(\t\"9\n\nResultAuth\022\r\n\005u" +
-      "srid\030\001 \002(\004\022\016\n\006result\030\002 \002(\005\022\014\n\004code\030\003 \001(\005" +
-      "\"_\n\020DataResponseUser\022\017\n\007msgtype\030\001 \002(\005\022\014\n" +
-      "\004data\030\002 \002(\014\022\016\n\006status\030\003 \001(\005\022\r\n\005mtaid\030\004 \001" +
-      "(\004\022\r\n\005mtuid\030\005 \001(\004\"r\n\013MsgPushUser\022\023\n\013devi",
-      "cetoken\030\001 \002(\t\022\016\n\006ostype\030\002 \002(\005\022\r\n\005alert\030\003" +
-      " \002(\t\022\r\n\005sound\030\004 \001(\t\022\r\n\005badge\030\005 \001(\005\022\021\n\tac" +
-      "tionkey\030\006 \001(\t\"S\n\023StatusMessageClient\022\016\n\006" +
-      "userid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022\r\n\005mtaid\030\003 " +
-      "\001(\004\022\r\n\005mtuid\030\004 \001(\004*6\n\rMessageStatus\022\014\n\010R" +
-      "ECEIVED\020\001\022\n\n\006READED\020\002\022\013\n\007DELETED\020\003*0\n\006OS" +
-      "Type\022\007\n\003IOS\020\001\022\013\n\007ANDROID\020\002\022\020\n\014WINDOW_PHO" +
-      "NE\020\003B2\n#vn.com.vng.zalopay.data.ws.proto" +
-      "bufB\013ZPMsgProtos"
+      "\021\n\tpushtitle\030\005 \001(\t\022\025\n\rpushembeddata\030\006 \001(" +
+      "\t\"Q\n\014MessageLogin\022\r\n\005usrid\030\001 \002(\004\022\r\n\005toke" +
+      "n\030\002 \002(\t\022\016\n\006ostype\030\003 \001(\005\022\023\n\013devicetoken\030\004" +
+      " \001(\t\"9\n\nResultAuth\022\r\n\005usrid\030\001 \002(\004\022\016\n\006res" +
+      "ult\030\002 \002(\005\022\014\n\004code\030\003 \001(\005\"_\n\020DataResponseU" +
+      "ser\022\017\n\007msgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014\022\016\n\006st" +
+      "atus\030\003 \001(\005\022\r\n\005mtaid\030\004 \001(\004\022\r\n\005mtuid\030\005 \001(\004",
+      "\"\253\001\n\013MsgPushUser\022\023\n\013devicetoken\030\001 \002(\t\022\016\n" +
+      "\006ostype\030\002 \002(\005\022\r\n\005alert\030\003 \002(\t\022\r\n\005sound\030\004 " +
+      "\001(\t\022\r\n\005badge\030\005 \001(\005\022\021\n\tactionkey\030\006 \001(\t\022\025\n" +
+      "\rpushembeddata\030\007 \001(\t\022\021\n\tserviceid\030\010 \001(\t\022" +
+      "\r\n\005msgid\030\t \001(\t\"S\n\023StatusMessageClient\022\016\n" +
+      "\006userid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022\r\n\005mtaid\030\003" +
+      " \001(\004\022\r\n\005mtuid\030\004 \001(\004*6\n\rMessageStatus\022\014\n\010" +
+      "RECEIVED\020\001\022\n\n\006READED\020\002\022\013\n\007DELETED\020\003*0\n\006O" +
+      "SType\022\007\n\003IOS\020\001\022\013\n\007ANDROID\020\002\022\020\n\014WINDOW_PH" +
+      "ONE\020\003B2\n#vn.com.vng.zalopay.data.ws.prot",
+      "obufB\013ZPMsgProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5028,7 +5658,7 @@ public final class ZPMsgProtos {
     internal_static_protobuf_MessageSendUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_MessageSendUser_descriptor,
-        new java.lang.String[] { "Data", "Signature", "Expiretime", "Usrid", "Titlepush", });
+        new java.lang.String[] { "Data", "Signature", "Expiretime", "Usrid", "Pushtitle", "Pushembeddata", });
     internal_static_protobuf_MessageLogin_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_protobuf_MessageLogin_fieldAccessorTable = new
@@ -5052,7 +5682,7 @@ public final class ZPMsgProtos {
     internal_static_protobuf_MsgPushUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_MsgPushUser_descriptor,
-        new java.lang.String[] { "Devicetoken", "Ostype", "Alert", "Sound", "Badge", "Actionkey", });
+        new java.lang.String[] { "Devicetoken", "Ostype", "Alert", "Sound", "Badge", "Actionkey", "Pushembeddata", "Serviceid", "Msgid", });
     internal_static_protobuf_StatusMessageClient_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_protobuf_StatusMessageClient_fieldAccessorTable = new
