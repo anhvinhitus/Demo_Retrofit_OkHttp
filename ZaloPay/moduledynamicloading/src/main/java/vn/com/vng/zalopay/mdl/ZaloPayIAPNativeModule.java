@@ -89,10 +89,10 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
                 reportInvalidParameter(promise, Constants.AMOUNT);
                 return;
             }
-            if (TextUtils.isEmpty(order.getItem())) {
-                reportInvalidParameter(promise, Constants.ITEM);
-                return;
-            }
+//            if (TextUtils.isEmpty(order.getItem())) {
+//                reportInvalidParameter(promise, Constants.ITEM);
+//                return;
+//            }
             if (TextUtils.isEmpty(order.getDescription())) {
                 reportInvalidParameter(promise, Constants.DESCRIPTION);
                 return;

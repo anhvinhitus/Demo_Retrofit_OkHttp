@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpackage.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
@@ -54,6 +55,12 @@ public class RedPackageRepositoryImpl implements RedPackageStore.Repository {
     public Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID) {
         return mRequestService.submitOpenPackage(packageID, bundleID, user.uid, user.accesstoken)
                 .map(redPackageResponse -> new SubmitOpenPackage(bundleID, packageID, redPackageResponse.zpTransID));
+    }
+
+    @Override
+    public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID) {
+        return mRequestService.getPackageStatus(packageID, zpTransID, user.uid, user.accesstoken, "")
+                .map(packageStatusResponse -> new PackageStatus(packageStatusResponse.isProcessing, packageStatusResponse.amount, packageStatusResponse.zpTransID, packageStatusResponse.nextAction, packageStatusResponse.data, packageStatusResponse.balance));
     }
 
     @Override

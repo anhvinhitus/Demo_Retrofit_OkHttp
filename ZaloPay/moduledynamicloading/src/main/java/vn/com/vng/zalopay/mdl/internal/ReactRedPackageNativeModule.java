@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
+import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
 import vn.com.vng.zalopay.mdl.internal.subscriber.CreateBundleOrderSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
@@ -69,9 +70,15 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void submitToSendBundle(double bundleID, ReadableArray friends, Promise promise) {
+    public void submitToSendBundle(String strBundleID, ReadableArray friends, Promise promise) {
+        long bundleID = 0;
+        try {
+            bundleID = Long.valueOf(strBundleID);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "submitToSendBundle throw NumberFormatException");
+        }
         List<Long> friendList = transform(friends);
-        Subscription subscription = mRedPackageRepository.sendBundle((long) bundleID, friendList)
+        Subscription subscription = mRedPackageRepository.sendBundle(bundleID, friendList)
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean) {
@@ -98,8 +105,16 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void openPacket(double packageID, double bundleID, Promise promise) {
-        Subscription subscription = mRedPackageRepository.submitOpenPackage((long) packageID, (long) bundleID)
+    public void openPacket(String strPackageID, String strBundleID, Promise promise) {
+        long packageID = 0;
+        long bundleID = 0;
+        try {
+            packageID = Long.valueOf(strPackageID);
+            bundleID = Long.valueOf(strBundleID);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "submitToSendBundle throw NumberFormatException");
+        }
+        Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
                 .map(new Func1<SubmitOpenPackage, WritableMap>() {
                     @Override
                     public WritableMap call(SubmitOpenPackage submitOpenPackage) {
@@ -156,27 +171,56 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void requestStatusWithTransId(double transid, double packageId, Promise promise) {
+    public void requestStatusWithTransId(String strTransid, String strPackageId, Promise promise) {
+        long transid = 0;
+        long packageId = 0;
+        try {
+            transid = Long.valueOf(strTransid);
+            packageId = Long.valueOf(strPackageId);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "submitToSendBundle throw NumberFormatException");
+        }
+        Subscription subscription = mRedPackageRepository.getpackagestatus(packageId, transid)
+                .map(new Func1<PackageStatus, WritableMap>() {
+                    @Override
+                    public WritableMap call(PackageStatus packageStatus) {
+                        return transform(packageStatus);
+                    }
+                })
+                .subscribe(new OpenPackageSubscriber(promise));
+        compositeSubscription.add(subscription);
+    }
 
+    private WritableMap transform(PackageStatus packageStatus) {
+        if (packageStatus == null) {
+            return null;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putBoolean("isProcessing", packageStatus.isProcessing);
+        item.putDouble("amount", packageStatus.amount);
+        item.putString("zpTransID", packageStatus.zpTransID);
+        item.putString("nextAction", packageStatus.nextAction);
+        item.putString("data", packageStatus.data);
+        item.putDouble("balance", packageStatus.balance);
+        return item;
     }
 
     private WritableMap transform(BundleOrder bundleOrder) {
         if (bundleOrder == null) {
             return null;
         }
-        WritableMap item = Arguments.createMap();
-        item.putDouble("bundleId", bundleOrder.bundleId);
-        item.putString("zptranstoken", bundleOrder.getZptranstoken());
-        item.putString("apptransid", bundleOrder.getApptransid());
-        item.putString("appuser", bundleOrder.getAppuser());
-        item.putDouble("apptime", bundleOrder.apptime);
-        item.putString("embeddata", bundleOrder.embeddata);
-        item.putString("item", bundleOrder.getItem());
-        item.putDouble("amount", bundleOrder.getAmount());
-        item.putString("description", bundleOrder.getDescription());
-        item.putString("payoption", bundleOrder.getPayoption());
-        item.putString("mac", bundleOrder.getMac());
-        return item;
+        WritableMap payOrder = Arguments.createMap();
+        payOrder.putDouble("bundleid", bundleOrder.bundleId);
+        payOrder.putDouble("appid", bundleOrder.getAppid());
+        payOrder.putString("apptransid", bundleOrder.getApptransid());
+        payOrder.putString("appuser", bundleOrder.getAppuser());
+        payOrder.putDouble("apptime", bundleOrder.apptime);
+        payOrder.putString("embeddata", bundleOrder.embeddata);
+        payOrder.putString("item", bundleOrder.getItem());
+        payOrder.putDouble("amount", bundleOrder.getAmount());
+        payOrder.putString("description", bundleOrder.getDescription());
+        payOrder.putString("mac", bundleOrder.getMac());
+        return payOrder;
     }
 
     @Override

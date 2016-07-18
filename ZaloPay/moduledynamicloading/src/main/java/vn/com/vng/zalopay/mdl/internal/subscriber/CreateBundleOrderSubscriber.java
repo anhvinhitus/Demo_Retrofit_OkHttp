@@ -39,7 +39,7 @@ public class CreateBundleOrderSubscriber extends DefaultSubscriber<WritableMap> 
     @Override
     public void onNext(WritableMap writableMap) {
 
-        Timber.d("CreateBundleOrderSubscriber %s", writableMap);
+        Timber.d("onNext %s", writableMap);
 
         if (promiseWeakReference == null) {
             return;

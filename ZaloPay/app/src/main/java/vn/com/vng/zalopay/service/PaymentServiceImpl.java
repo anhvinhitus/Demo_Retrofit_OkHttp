@@ -114,6 +114,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     private void successCallback(Promise promise, WritableMap object) {
+        Timber.d("successCallback promise [%s]", promise);
         if (promise == null) {
             return;
         }
