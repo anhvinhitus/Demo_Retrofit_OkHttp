@@ -19,7 +19,7 @@
 
     <dimen name="height.control.zalo.pay">98dp</dimen>
 
-    <dimen name="text.login">14sp</dimen>
+    <dimen name="text.login">16sp</dimen>
 
     <dimen name="moneytext.small">14sp</dimen>
     <dimen name="moneytext.normal.xs">18sp</dimen>
