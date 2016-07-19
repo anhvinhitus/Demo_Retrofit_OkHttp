@@ -45,6 +45,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 
 /**
  * Created by AnhHieu on 4/11/16.
+ *
  */
 public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener, IZaloPayView, BannerPagerAdapter.IBannerClick {
 
@@ -209,7 +210,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         this.logActionApp(position);
     }
 
-    // FIXME: 6/28/16 
     private void logActionApp(int position) {
         Timber.d("Tap on app at position %d", position);
 
@@ -217,19 +217,19 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @OnClick(R.id.btn_deposit)
-    public void onBtnDepositClick(View view) {
+    public void onBtnDepositClick() {
         navigator.startDepositActivity(getActivity());
         zpAnalytics.trackEvent(ZPEvents.TAPADDCASH);
     }
 
     @OnClick(R.id.btn_link_card)
-    public void onBtnLinkCardClick(View view) {
+    public void onBtnLinkCardClick() {
         navigator.startLinkCardActivity(getActivity());
         zpAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
     }
 
     @OnClick(R.id.btn_qr_code)
-    public void onBtnQrCodeClick(View view) {
+    public void onBtnQrCodeClick() {
         startQRCodeActivity();
         zpAnalytics.trackEvent(ZPEvents.TAPSCANQR);
     }

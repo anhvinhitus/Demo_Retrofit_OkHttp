@@ -2,11 +2,12 @@ package vn.com.vng.zalopay;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 public class Constants {
     public static final int PROFILE_LEVEL_MIN = 2;
     public static final int CONNECTION_POOL_COUNT = 3;
-    public static final long KEEP_ALIVE_DURATION_MS = 30000l;
+    public static final long KEEP_ALIVE_DURATION_MS = 30000L;
     public static final long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
 
     public static final String PREF_USER_SESSION = "pref_user_session";

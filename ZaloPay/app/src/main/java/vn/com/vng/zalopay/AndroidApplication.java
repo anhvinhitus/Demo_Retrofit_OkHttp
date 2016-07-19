@@ -35,6 +35,7 @@ import vn.com.zalopay.wallet.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public class AndroidApplication extends MultiDexApplication {
 
@@ -171,9 +172,9 @@ public class AndroidApplication extends MultiDexApplication {
                 return;
             }
 
-            if (t instanceof BodyException
+            if (t instanceof InvitationCodeException
+                    || t instanceof BodyException
                     || t instanceof TokenException
-                    || t instanceof InvitationCodeException
                     || t instanceof NetworkConnectionException) {
                 return;
             }
