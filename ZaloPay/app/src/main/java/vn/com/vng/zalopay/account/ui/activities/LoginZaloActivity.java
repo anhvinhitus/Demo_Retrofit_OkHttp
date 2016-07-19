@@ -14,6 +14,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
@@ -64,12 +65,18 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         zpAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
     }
 
-   /* @Override
+    @Override
     public void onResume() {
         super.onResume();
-        loginPresenter.pause();
-    }
 
+        GlobalEventHandlingService.Message message = getAppComponent().globalEventService().popMessage();
+        if (message == null) {
+            return;
+        }
+
+        showDialog(message.content, message.messageType, message.title);
+    }
+/*
     @Override
     public void onPause() {
         super.onPause();

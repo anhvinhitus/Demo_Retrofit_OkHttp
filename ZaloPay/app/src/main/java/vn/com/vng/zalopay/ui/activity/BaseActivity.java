@@ -225,11 +225,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+        if (this instanceof LoginZaloActivity) {
+            showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+        } else {
             getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
             getAppComponent().applicationSession().clearUserSession();
-        } else {
-            showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         }
     }
 
