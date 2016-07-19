@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.mdl.internal;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -17,6 +18,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
@@ -46,6 +48,9 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     private final IRedPackagePayService mPaymentService;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    private CountDownTimer mTimerGetTranStatus;
+    private boolean isRunningGetTranStatus;
 
     public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPackageStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPackagePayService payService) {
         super(reactContext);
@@ -149,11 +154,15 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
     @ReactMethod
     public void submitToSendBundle(String strBundleID, ReadableArray friends, final Promise promise) {
-        long bundleID = 0;
+        final long bundleID;
         try {
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "submitToSendBundle throw NumberFormatException");
+            return;
+        }
+        if (bundleID <= 0) {
+            return;
         }
         List<Long> friendList = transform(friends);
         Subscription subscription = mRedPackageRepository.sendBundle(bundleID, friendList)
@@ -185,10 +194,86 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                         if (promise == null) {
                             return;
                         }
-                        promise.resolve(null);
+                        promise.resolve(result);
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
+        if (mTimerGetTranStatus == null) mTimerGetTranStatus = new CountDownTimer(30000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                getTransactionStatus(packageId, zpTransId, promise);
+            }
+
+            @Override
+            public void onFinish() {
+                showDialogRetryGetTranStatus(packageId, zpTransId, promise);
+            }
+        };
+        else {
+            mTimerGetTranStatus.cancel();
+        }
+        mTimerGetTranStatus.start();
+    }
+
+    private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
+        if (getCurrentActivity() == null) {
+            return;
+        }
+        new SweetAlertDialog(getCurrentActivity(), SweetAlertDialog.WARNING_TYPE)
+                .setContentText("Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp ?")
+                .setCancelText("Đóng")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        promise.reject(String.valueOf(PaymentError.ERR_CODE_USER_CANCEL), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmText("Thử lại")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        startTaskGetTransactionStatus(packageId, zpTransId, promise);
+                    }
+                })
+                .show();
+    }
+
+    private void getTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
+        if (isRunningGetTranStatus) {
+            return;
+        }
+        isRunningGetTranStatus = true;
+        mRedPackageRepository.getpackagestatus(packageId, zpTransId)
+                .subscribe(new Subscriber<PackageStatus>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(PackageStatus packageStatus) {
+                        if (promise == null) {
+                            return;
+                        }
+                        WritableMap writableMap = Arguments.createMap();
+                        writableMap.putBoolean("isProcessing", packageStatus.isProcessing);
+                        writableMap.putDouble("amount", packageStatus.amount);
+                        writableMap.putString("zpTransID", packageStatus.zpTransID);
+                        writableMap.putString("nextAction", packageStatus.nextAction);
+                        writableMap.putString("data", packageStatus.data);
+                        writableMap.putDouble("balance", packageStatus.balance);
+                        promise.resolve(writableMap);
+                    }
+                });
     }
 
     private List<Long> transform(ReadableArray friends) {
@@ -207,36 +292,46 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void openPacket(String strPackageID, String strBundleID, Promise promise) {
-        long packageID = 0;
-        long bundleID = 0;
+    public void openPacket(String strPackageID, String strBundleID, final Promise promise) {
+        final long packageID;
+        final long bundleID;
         try {
             packageID = Long.valueOf(strPackageID);
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "openPacket throw NumberFormatException");
+            return;
+        }
+        if (packageID <= 0 || bundleID <= 0) {
+            return;
         }
         Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
-                .map(new Func1<SubmitOpenPackage, WritableMap>() {
+                .subscribe(new Subscriber<SubmitOpenPackage>() {
                     @Override
-                    public WritableMap call(SubmitOpenPackage submitOpenPackage) {
-                        return transform(submitOpenPackage);
+                    public void onCompleted() {
+
                     }
-                })
-                .subscribe(new OpenPackageSubscriber(promise));
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.w(e, "error on openPacket");
+                        if (promise == null) {
+                            return;
+                        }
+
+                        promise.reject(e);
+                    }
+
+                    @Override
+                    public void onNext(SubmitOpenPackage submitOpenPackage) {
+                        Timber.d("openPacket %s", submitOpenPackage);
+                        if (promise == null) {
+                            return;
+                        }
+                        startTaskGetTransactionStatus(submitOpenPackage.packageID, submitOpenPackage.zpTransID, promise);
+                    }
+                });
         compositeSubscription.add(subscription);
-    }
-
-
-    private WritableMap transform(SubmitOpenPackage submitOpenPackage) {
-        if (submitOpenPackage == null) {
-            return null;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putDouble("bundleID", submitOpenPackage.bundleID);
-        item.putDouble("packageID", submitOpenPackage.packageID);
-        item.putString("zpTransID", submitOpenPackage.zpTransID);
-        return item;
     }
 
     @ReactMethod
@@ -306,24 +401,6 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
         item.putString("data", packageStatus.data);
         item.putDouble("balance", packageStatus.balance);
         return item;
-    }
-
-    private WritableMap transform(BundleOrder bundleOrder) {
-        if (bundleOrder == null) {
-            return null;
-        }
-        WritableMap payOrder = Arguments.createMap();
-        payOrder.putDouble("bundleid", bundleOrder.bundleId);
-        payOrder.putDouble("appid", bundleOrder.getAppid());
-        payOrder.putString("apptransid", bundleOrder.getApptransid());
-        payOrder.putString("appuser", bundleOrder.getAppuser());
-        payOrder.putDouble("apptime", bundleOrder.apptime);
-        payOrder.putString("embeddata", bundleOrder.embeddata);
-        payOrder.putString("item", bundleOrder.getItem());
-        payOrder.putDouble("amount", bundleOrder.getAmount());
-        payOrder.putString("description", bundleOrder.getDescription());
-        payOrder.putString("mac", bundleOrder.getMac());
-        return payOrder;
     }
 
     @Override

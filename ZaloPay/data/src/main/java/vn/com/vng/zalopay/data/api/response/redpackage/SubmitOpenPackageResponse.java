@@ -7,5 +7,5 @@ package vn.com.vng.zalopay.data.api.response.redpackage;
 public class SubmitOpenPackageResponse {
     public long bundleId;
     public long packageID;
-    public String zpTransID;
+    public long zpTransID;
 }

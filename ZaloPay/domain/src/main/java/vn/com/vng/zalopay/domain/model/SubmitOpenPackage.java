@@ -10,9 +10,9 @@ import android.os.Parcelable;
 public class SubmitOpenPackage extends AbstractData {
     public long bundleID;
     public long packageID;
-    public String zpTransID;
+    public long zpTransID;
 
-    public SubmitOpenPackage(long bundleID, long packageID, String zpTransID) {
+    public SubmitOpenPackage(long bundleID, long packageID, long zpTransID) {
         this.bundleID = bundleID;
         this.packageID = packageID;
         this.zpTransID = zpTransID;
@@ -21,14 +21,14 @@ public class SubmitOpenPackage extends AbstractData {
     public SubmitOpenPackage(Parcel in) {
         bundleID = in.readLong();
         packageID = in.readLong();
-        zpTransID = in.readString();
+        zpTransID = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(bundleID);
         dest.writeLong(packageID);
-        dest.writeString(zpTransID);
+        dest.writeLong(zpTransID);
     }
 
     public final Parcelable.Creator<SubmitOpenPackage> CREATOR = new Parcelable.Creator<SubmitOpenPackage>() {
