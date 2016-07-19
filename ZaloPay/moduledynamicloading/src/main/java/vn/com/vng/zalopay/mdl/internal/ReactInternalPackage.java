@@ -16,8 +16,7 @@ import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
-import vn.com.vng.zalopay.mdl.IPaymentService;
-import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -28,26 +27,23 @@ public class ReactInternalPackage implements ReactPackage {
     private TransactionStore.Repository mRepository;
     private RedPackageStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
-    private IPaymentService paymentService;
+    private IRedPackagePayService paymentService;
 
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
 
     private ZPAnalytics zpAnalytics;
-    private int paymentAppId;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                 RedPackageStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
-                                IPaymentService paymentService,
-                                int paymentAppId,
+                                IRedPackagePayService paymentService,
                                 INavigator navigator, ZPAnalytics zpAnalytics) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
         this.paymentService = paymentService;
-        this.paymentAppId = paymentAppId;
         this.navigator = navigator;
         this.zpAnalytics = zpAnalytics;
     }
@@ -59,9 +55,8 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
-        modules.add(new ReactRedPackageNativeModule(reactContext, mRedPackageRepository, mFriendRepository));
+        modules.add(new ReactRedPackageNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
-        modules.add(new ZaloPayIAPNativeModule(reactContext, paymentService, paymentAppId));
         return modules;
     }
 

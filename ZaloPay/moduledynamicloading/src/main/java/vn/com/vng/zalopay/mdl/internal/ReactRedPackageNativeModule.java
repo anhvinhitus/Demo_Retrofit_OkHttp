@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.mdl.internal;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -16,6 +17,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
@@ -27,10 +29,12 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
-import vn.com.vng.zalopay.mdl.internal.subscriber.CreateBundleOrderSubscriber;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.SubmitToSendSubscriber;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayListener;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 
 /**
  * Created by longlv on 17/07/2016.
@@ -40,13 +44,15 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
     private RedPackageStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
+    private final IRedPackagePayService mPaymentService;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPackageStore.Repository redPackageRepository, FriendStore.Repository friendRepository) {
+    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPackageStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPackagePayService payService) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
+        this.mPaymentService = payService;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -57,16 +63,89 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void createRedPacketBundleOrder(int quantity, double totalLuck, double amountEach, int type, String sendMessage, Promise promise) {
+    public void createRedPacketBundleOrder(int quantity, double totalLuck, double amountEach, int type, String sendMessage, final Promise promise) {
         Subscription subscription = mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
-                .map(new Func1<BundleOrder, WritableMap>() {
+                //.subscribe(new CreateBundleOrderSubscriber(promise));
+                .subscribe(new Subscriber<BundleOrder>() {
                     @Override
-                    public WritableMap call(BundleOrder bundleOrder) {
-                        return transform(bundleOrder);
+                    public void onCompleted() {
+
                     }
-                })
-                .subscribe(new CreateBundleOrderSubscriber(promise));
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.w(e, "error on getting CreateBundleOrderSubscriber");
+                        if (promise == null) {
+                            return;
+                        }
+                        promise.reject(e);
+                    }
+
+                    @Override
+                    public void onNext(BundleOrder bundleOrder) {
+                        Timber.d("onNext bundleOrder [%s]", bundleOrder);
+                        if (bundleOrder == null) {
+                            promise.reject(String.valueOf(PaymentError.ERR_CODE_INPUT), "bundleOrder null");
+                        } else {
+                            pay(bundleOrder, promise);
+                        }
+                    }
+                });
         compositeSubscription.add(subscription);
+    }
+
+    private void pay(final BundleOrder bundleOrder, final Promise promise) {
+        if (bundleOrder == null) {
+            return;
+        }
+        mPaymentService.pay(getCurrentActivity(), bundleOrder, new IRedPackagePayListener() {
+            @Override
+            public void onParameterError(String param) {
+                if (promise == null) {
+                    return;
+                }
+                promise.reject(String.valueOf(PaymentError.ERR_CODE_INPUT), param);
+            }
+
+            @Override
+            public void onResponseError(int status) {
+                if (promise == null) {
+                    return;
+                }
+                WritableMap item = Arguments.createMap();
+                item.putInt("code", status);
+                item.putString("message", PaymentError.getErrorMessage(status));
+                promise.resolve(item);
+            }
+
+            @Override
+            public void onResponseSuccess(Bundle bundle) {
+                if (promise == null || bundleOrder == null) {
+                    return;
+                }
+                WritableMap item = Arguments.createMap();
+                item.putString("bundleid", String.valueOf(bundleOrder.bundleId));
+                promise.resolve(item);
+            }
+
+            @Override
+            public void onResponseTokenInvalid() {
+
+            }
+
+            @Override
+            public void onResponseCancel() {
+                if (promise == null) {
+                    return;
+                }
+                promise.reject(String.valueOf(PaymentError.ERR_CODE_USER_CANCEL), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+
+            }
+        });
     }
 
     @ReactMethod
@@ -112,7 +191,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             packageID = Long.valueOf(strPackageID);
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
-            Timber.e(e, "submitToSendBundle throw NumberFormatException");
+            Timber.e(e, "openPacket throw NumberFormatException");
         }
         Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
                 .map(new Func1<SubmitOpenPackage, WritableMap>() {
@@ -139,6 +218,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
     @ReactMethod
     public void getAllFriend(Promise promise) {
+        Timber.d("getAllFriend promise [%s]", promise);
         Subscription subscription = mFriendRepository.listZaloFriendFromDb()
                 .map(new Func1<List<ZaloFriendGD>, WritableArray>() {
                     @Override
@@ -178,7 +258,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             transid = Long.valueOf(strTransid);
             packageId = Long.valueOf(strPackageId);
         } catch (NumberFormatException e) {
-            Timber.e(e, "submitToSendBundle throw NumberFormatException");
+            Timber.e(e, "requestStatusWithTransId throw NumberFormatException");
         }
         Subscription subscription = mRedPackageRepository.getpackagestatus(packageId, transid)
                 .map(new Func1<PackageStatus, WritableMap>() {

@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -33,10 +32,10 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.INavigator;
-import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -67,7 +66,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     FriendStore.Repository friendRepository;
 
     @Inject
-    IPaymentService paymentService;
+    IRedPackagePayService paymentService;
 
     @Inject
     INavigator navigator;
@@ -131,7 +130,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     protected ReactPackage reactInternalPackage() {
         return new ReactInternalPackage(transactionRepository,
-                notificationRepository, redPackageRepository, friendRepository, paymentService, BuildConfig.PAYAPPID, navigator, zpAnalytics);
+                notificationRepository, redPackageRepository, friendRepository, paymentService, navigator, zpAnalytics);
     }
 
     private void createUserComponent() {
