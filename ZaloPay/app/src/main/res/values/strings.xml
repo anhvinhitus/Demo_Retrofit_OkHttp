@@ -204,7 +204,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="deposit">Gửi tiền</string>
+    <string name="deposit">Gửi tiền vào tài khoản</string>
 
     <string name="notify.from.zalopay">Thông báo từ Zalo Pay</string>
     <string name="not_update_phone">Chưa cập nhật SĐT</string>
