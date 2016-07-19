@@ -52,6 +52,12 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.tvEmail)
     TextView tvEmail;
 
+    @BindView(R.id.layoutCmnd)
+    View mLayoutCmnd;
+
+    @BindView(R.id.layoutEmail)
+    View mLayoutEmail;
+
 
     @Override
     protected void setupFragmentComponent() {
@@ -100,6 +106,14 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
         this.setCMND(user.identityNumber);
         this.setEmail(user.email);
         this.setGender(user.getGender());
+
+        if (user.profilelevel < 3) {
+            mLayoutCmnd.setClickable(true);
+            mLayoutEmail.setClickable(true);
+        } else {
+            mLayoutCmnd.setClickable(false);
+            mLayoutEmail.setClickable(false);
+        }
 /*
         String zaloPayId = String.valueOf(user.uid);
         String zaloId = String.valueOf(user.zaloId);*/

@@ -54,7 +54,14 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<ProfilePermission> getUserProfileLevel() {
         return accountService.getUserProfileLevel(user.uid, user.accesstoken)
-                .doOnNext(response -> userConfig.updateProfilePermissions(response.profilelevel, response.profilePermissions))
+                .doOnNext(response -> {
+                    user.profilelevel = response.profilelevel;
+                    user.profilePermissions = response.profilePermissions;
+                    user.email = response.email;
+                    user.identityNumber = response.identityNumber;
+
+                    userConfig.updateProfile(response.profilelevel, response.profilePermissions, response.email, response.identityNumber);
+                })
                 .map(baseResponse -> {
                     ProfilePermission profilePermission = new ProfilePermission();
                     profilePermission.profileLevel = baseResponse.profilelevel;

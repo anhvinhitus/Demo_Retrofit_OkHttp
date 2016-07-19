@@ -1,7 +1,14 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.text.TextUtils;
+
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -45,6 +52,9 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         User user = userConfig.getCurrentUser();
         if (user != null) {
             mView.updateUserInfo(user);
+            if (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber)) { // Chua get profile level 3
+                getUserProfile();
+            }
         }
     }
 
@@ -62,5 +72,34 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     public void hideRetry() {
         mView.hideRetry();
+    }
+
+
+    private void getUserProfile() {
+        Subscription subscription = accountRepository.getUserProfileLevel()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProfileSubscriber());
+        compositeSubscription.add(subscription);
+    }
+
+    private final void getProfileSuccess() {
+        User user = userConfig.getCurrentUser();
+        if (user != null) {
+            mView.updateUserInfo(user);
+        }
+    }
+
+    private class ProfileSubscriber extends DefaultSubscriber<ProfilePermission> {
+
+        @Override
+        public void onCompleted() {
+            ProfilePresenter.this.getProfileSuccess();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
     }
 }

@@ -231,7 +231,7 @@ public class PaymentWrapper {
             return null;
         }
         String permissionsStr = "{\"profilelevelpermisssion\":";
-        permissionsStr += JsonUtil.toJsonArrayString(user.profilePermisssions);
+        permissionsStr += JsonUtil.toJsonArrayString(user.profilePermissions);
         permissionsStr += "}";
         Timber.d("permissionsStr: %s", permissionsStr);
         return permissionsStr;

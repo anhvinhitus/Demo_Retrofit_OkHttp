@@ -32,7 +32,7 @@ public final class User extends Person {
 
     public long phonenumber;
 
-    public List<ProfilePermission.Permission> profilePermisssions;
+    public List<ProfilePermission.Permission> profilePermissions;
 
     public User() {
     }
@@ -57,7 +57,7 @@ public final class User extends Person {
     }
 
     public void setPermissions(String jsonArray) {
-        profilePermisssions = fromJson(jsonArray,
+        profilePermissions = fromJson(jsonArray,
                 new TypeToken<ArrayList<ProfilePermission.Permission>>() {
                 }.getType());
     }
