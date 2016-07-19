@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.ReactAppConfig;
+import vn.com.vng.zalopay.PaymentAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
@@ -198,9 +198,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app, int position) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-        if (app.appid == Constants.Apps.INTERNAL) {
+        if (app.appid == PaymentAppConfig.Constants.INTERNAL) {
             navigator.startTransferMoneyActivity(getActivity());
-        } else if (app.appid == Constants.Apps.RED_PACKET) {
+        } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
             navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.RED_PACKET);
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
@@ -245,7 +245,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     private List<AppResource> getListData() {
         if (Lists.isEmptyOrNull(mListApps)) {
-            mListApps = new ArrayList<>(ReactAppConfig.APP_RESOURCE_LIST);
+            mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
         }
         return mListApps;
     }
