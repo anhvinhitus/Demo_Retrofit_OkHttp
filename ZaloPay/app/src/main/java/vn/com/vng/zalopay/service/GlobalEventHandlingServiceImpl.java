@@ -14,6 +14,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
@@ -65,6 +68,11 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         Crashlytics.log(Log.ERROR, "EXCEPTION", String.format("Payment App %d causes exception: %s", event.getAppId(), event.getInnerException().getMessage()));
         Crashlytics.logException(event.getInnerException());
         Answers.getInstance().logCustom(new CustomEvent("EXCEPTION APP " + String.valueOf(event.getAppId())));
+    }
+
+    @Subscribe
+    public void onServerMaintainEvent(ServerMaintainEvent event) {
+        enqueueMessage(SweetAlertDialog.ERROR_TYPE, "ĐÓNG", AndroidApplication.instance().getString(R.string.exception_server_maintain));
     }
 
     @Override

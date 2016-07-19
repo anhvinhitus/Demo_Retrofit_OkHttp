@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 
 /**
  * Created by AnhHieu on 3/30/16.
+ *
  */
 @Singleton
 public class PassportFactory {
@@ -44,6 +45,8 @@ public class PassportFactory {
     }
 
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
+//        EventBus.getDefault().post(new ServerMaintainEvent());
+//        return Observable.error(new ServerMaintainException());
         return passportService.login(payAppId, zuid, zAuthCode)
                 .doOnNext(response -> checkIfOldAccount(response.userid))
                 .doOnError(throwable -> {
@@ -52,8 +55,7 @@ public class PassportFactory {
                         LoginResponse loginResponse = (LoginResponse) ((InvitationCodeException) throwable).response;
                         userConfig.saveInvitationInfo(loginResponse.userid, loginResponse.accesstoken);
                     }
-                })
-                ;
+                });
     }
 
     public Observable<LogoutResponse> logout() {
