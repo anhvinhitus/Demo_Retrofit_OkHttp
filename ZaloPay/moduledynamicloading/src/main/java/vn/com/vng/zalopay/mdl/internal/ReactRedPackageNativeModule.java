@@ -32,7 +32,6 @@ import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
-import vn.com.vng.zalopay.mdl.internal.subscriber.SubmitToSendSubscriber;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayListener;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 
@@ -149,7 +148,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     @ReactMethod
-    public void submitToSendBundle(String strBundleID, ReadableArray friends, Promise promise) {
+    public void submitToSendBundle(String strBundleID, ReadableArray friends, final Promise promise) {
         long bundleID = 0;
         try {
             bundleID = Long.valueOf(strBundleID);
@@ -164,7 +163,31 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                         return aBoolean;
                     }
                 })
-                .subscribe(new SubmitToSendSubscriber(promise));
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.w(e, "error on getting SubmitToSendSubscriber");
+                        if (promise == null) {
+                            return;
+                        }
+
+                        promise.reject(e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean result) {
+                        Timber.d("onNext result [%s]", result);
+                        if (promise == null) {
+                            return;
+                        }
+                        promise.resolve(null);
+                    }
+                });
         compositeSubscription.add(subscription);
     }
 
