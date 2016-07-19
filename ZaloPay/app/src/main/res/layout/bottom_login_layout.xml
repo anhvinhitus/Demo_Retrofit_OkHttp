@@ -21,59 +21,58 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_exim" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_agri" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_vietcom" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_bidv" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_viettin" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_sacom" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_visa" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_mc" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_margin="@dimen/spacing.tiny"
             android:src="@drawable/ic_pp_jcb" />
     </LinearLayout>
 

@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:adjustViewBounds="true"
             android:scaleType="center"
             android:src="@drawable/ic_bg" />
 
@@ -31,10 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="56dp"
             android:text="@string/no.need.cash.anymore"
             android:textColor="@color/colorPrimary"
-            android:textSize="18dp" />
+            android:textSize="16dp" />
     </FrameLayout>
 
 </FrameLayout>

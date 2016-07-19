@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -259,6 +261,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             if (total > 0) {
                 mNotifyView.setText(String.valueOf(total));
                 mNotifyView.setVisibility(View.VISIBLE);
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
+                mNotifyView.startAnimation(animation);
             } else {
                 mNotifyView.setVisibility(View.GONE);
             }
@@ -293,6 +297,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     static Map<Integer, Integer> sActionMap;
+
     static {
         sActionMap = new HashMap<>();
         sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);

@@ -35,10 +35,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="56dp"
                 android:text="@string/no.need.cash.anymore"
                 android:textColor="@color/colorPrimary"
-                android:textSize="18dp" />
+                android:textSize="16dp" />
         </FrameLayout>
     </FrameLayout>
 
@@ -54,9 +54,7 @@
             android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_btn_login_zalo_selector"
             android:orientation="horizontal"
-            android:paddingBottom="4dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp">
+            android:padding="4dp">
 
             <ImageView
                 android:layout_width="37dp"
