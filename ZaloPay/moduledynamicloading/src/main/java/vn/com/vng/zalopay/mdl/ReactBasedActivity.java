@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.mdl;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -145,6 +146,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         mReactRootView = createRootView();
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
         setContentView(mReactRootView);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected void initArgs(Bundle savedInstanceState){
