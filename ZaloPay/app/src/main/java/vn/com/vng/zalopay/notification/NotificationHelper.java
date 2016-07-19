@@ -5,8 +5,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
@@ -63,8 +66,15 @@ public class NotificationHelper {
 
         builder.setContentTitle(contentTitle)
                 .setContentText(contentText)
-                .setSmallIcon(smallIcon)
                 .setAutoCancel(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            builder.setLargeIcon(bm);
+            builder.setSmallIcon(R.drawable.ic_notify);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
 
         Notification n = builder.build();
         manager.notify(id, n);
@@ -89,19 +99,26 @@ public class NotificationHelper {
 
     }
 
-    public void create(Context context, int smallIcon, String contentTitle, String contentText) {
+  /*  public void create(Context context, int smallIcon, String contentTitle, String contentText) {
         NotificationManager manager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle(contentTitle)
                 .setContentText(contentText)
-                .setSmallIcon(smallIcon)
                 .setAutoCancel(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            builder.setLargeIcon(bm);
+            builder.setSmallIcon(R.drawable.ic_notify);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
 
         Notification n = builder.build();
         manager.notify(0, n);
-    }
+    }*/
 
     public void processNotification(NotificationData notify) {
 
