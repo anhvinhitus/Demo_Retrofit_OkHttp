@@ -57,10 +57,6 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
     TextView tvBalance;
 
     private EditProfileFragment mEditProfileFragment;
-//    @OnClick(R.id.layoutUser)
-//    public void onClickLayoutUser(View view) {
-//        navigator.startUpdateProfileLevel2Activity(this);
-//    }
 
     public void updateUserInfo(User user) {
         if (user == null) {
@@ -121,7 +117,6 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
         } else {
             mEditProfileFragment = (EditProfileFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         }
-        mEditProfileFragment.showHideProfileInfo(false);
     }
 
     private void initView() {

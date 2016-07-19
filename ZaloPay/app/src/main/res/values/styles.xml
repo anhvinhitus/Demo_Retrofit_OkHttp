@@ -76,7 +76,7 @@
     </style>
 
     <style name="TextView.Profile.Edit" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/c_text_black</item>
         <item name="android:textSize">@dimen/font_size_medium</item>
     </style>
 

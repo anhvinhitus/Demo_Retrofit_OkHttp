@@ -113,6 +113,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
                 return true;
             }
         }
+
         return false;
     }
 

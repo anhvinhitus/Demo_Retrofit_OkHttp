@@ -117,7 +117,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
                 return;
             }
 
-            Timber.tag(TAG).e(e, " exception ");
+            Timber.e(e, " exception ");
         }
 
         @Override
