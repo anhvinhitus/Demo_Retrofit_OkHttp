@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl.internal;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -18,7 +19,6 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
@@ -37,6 +37,8 @@ import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayListener;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
+import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialogListener;
 
 /**
  * Created by longlv on 17/07/2016.
@@ -47,17 +49,19 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private final IRedPacketPayService mPaymentService;
+    private ISweetAlertDialog sweetAlertDialog;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private CountDownTimer mTimerGetTranStatus;
     private boolean isRunningGetTranStatus;
 
-    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPacketStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPacketPayService payService) {
+    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPacketStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPacketPayService payService, ISweetAlertDialog sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
         this.mPaymentService = payService;
+        this.sweetAlertDialog = sweetAlertDialog;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -70,7 +74,6 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     @ReactMethod
     public void createRedPacketBundleOrder(int quantity, double totalLuck, double amountEach, int type, String sendMessage, final Promise promise) {
         Subscription subscription = mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
-                //.subscribe(new CreateBundleOrderSubscriber(promise));
                 .subscribe(new Subscriber<BundleOrder>() {
                     @Override
                     public void onCompleted() {
@@ -83,7 +86,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                         if (promise == null) {
                             return;
                         }
-                        promise.reject(e);
+                        promise.reject(e.getMessage());
                     }
 
                     @Override
@@ -220,27 +223,30 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     }
 
     private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
+        Timber.d("showDialogRetryGetTranStatus start");
         if (getCurrentActivity() == null) {
             return;
         }
-        new SweetAlertDialog(getCurrentActivity(), SweetAlertDialog.WARNING_TYPE)
-                .setContentText("Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp ?")
-                .setCancelText("Đóng")
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        promise.reject(String.valueOf(PaymentError.ERR_CODE_USER_CANCEL), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
-                        sweetAlertDialog.dismiss();
-                    }
-                })
-                .setConfirmText("Thử lại")
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        startTaskGetTransactionStatus(packageId, zpTransId, promise);
-                    }
-                })
-                .show();
+
+        ISweetAlertDialogListener onCancelListener = new ISweetAlertDialogListener() {
+            @Override
+            public void onClick(Dialog dialog) {
+                promise.reject(String.valueOf(PaymentError.ERR_CODE_USER_CANCEL), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                dialog.dismiss();
+            }
+        };
+
+        ISweetAlertDialogListener onConfirmListener = new ISweetAlertDialogListener() {
+            @Override
+            public void onClick(Dialog dialog) {
+                startTaskGetTransactionStatus(packageId, zpTransId, promise);
+                dialog.dismiss();
+            }
+        };
+
+        sweetAlertDialog.showWarningAlertDialog(getCurrentActivity(), "Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp ?", "Đóng",
+                onCancelListener, "Thử lại", onConfirmListener);
+        Timber.d("showDialogRetryGetTranStatus end");
     }
 
     private void getTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {

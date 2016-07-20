@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -28,6 +29,7 @@ public class ReactInternalPackage implements ReactPackage {
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private IRedPacketPayService paymentService;
+    private ISweetAlertDialog sweetAlertDialog;
 
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
@@ -38,12 +40,14 @@ public class ReactInternalPackage implements ReactPackage {
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
                                 IRedPacketPayService paymentService,
+                                ISweetAlertDialog sweetAlertDialog,
                                 INavigator navigator, ZPAnalytics zpAnalytics) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
         this.paymentService = paymentService;
+        this.sweetAlertDialog = sweetAlertDialog;
         this.navigator = navigator;
         this.zpAnalytics = zpAnalytics;
     }
@@ -55,7 +59,7 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
-        modules.add(new ReactRedPackageNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService));
+        modules.add(new ReactRedPackageNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
         return modules;
     }

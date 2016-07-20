@@ -53,5 +53,4 @@ dependencies {
 
     compile project(':data')
     compile project(':zalopayanalytics')
-    compile 'cn.pedant.sweetalert:library:1.3'
 }
