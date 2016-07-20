@@ -220,8 +220,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     private void createUserComponent() {
         Timber.d(" user component %s", getUserComponent());
-        if (getUserComponent() != null)
+        if (getUserComponent() != null) {
             return;
+        }
 
         UserConfig userConfig = getAppComponent().userConfig();
         Timber.d(" userConfig %s", userConfig.isSignIn());

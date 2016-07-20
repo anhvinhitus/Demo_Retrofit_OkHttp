@@ -1,9 +1,11 @@
-package vn.com.vng.zalopay;
+package vn.com.vng.zalopay.paymentapps;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
 /**
