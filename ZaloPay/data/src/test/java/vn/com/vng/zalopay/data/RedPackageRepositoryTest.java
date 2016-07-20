@@ -28,8 +28,8 @@ import vn.com.vng.zalopay.data.api.response.redpackage.SentPackageInBundleRespon
 import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.redpacket.RedPackageLocalStorage;
-import vn.com.vng.zalopay.data.redpacket.RedPackageRepositoryImpl;
+import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
+import vn.com.vng.zalopay.data.redpacket.RedPacketRepositoryImpl;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
@@ -92,9 +92,9 @@ public class RedPackageRepositoryTest {
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
         RedPacketDataMapper dataMapper = new RedPacketDataMapper();
-        mLocalStorage = new RedPackageLocalStorage(daoSession, dataMapper);
+        mLocalStorage = new RedPacketLocalStorage(daoSession, dataMapper);
 
-        mRepository = new RedPackageRepositoryImpl(mRequestService, mLocalStorage, dataMapper, null, new User("1"));
+        mRepository = new RedPacketRepositoryImpl(mRequestService, mLocalStorage, dataMapper, null, new User("1"));
     }
 
     public class RequestServiceImpl implements RedPacketStore.RequestService {

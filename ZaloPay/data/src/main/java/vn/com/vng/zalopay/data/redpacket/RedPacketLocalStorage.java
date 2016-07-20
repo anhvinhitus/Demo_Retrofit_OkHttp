@@ -25,11 +25,11 @@ import static java.util.Collections.emptyList;
  * Created by longlv on 13/07/2016.
  * Implementation of RedPacketStore.LocalStorage
  */
-public class RedPackageLocalStorage extends SqlBaseScopeImpl implements RedPacketStore.LocalStorage {
+public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacketStore.LocalStorage {
 
     private RedPacketDataMapper mDataMapper;
 
-    public RedPackageLocalStorage(DaoSession daoSession, RedPacketDataMapper dataMapper) {
+    public RedPacketLocalStorage(DaoSession daoSession, RedPacketDataMapper dataMapper) {
         super(daoSession);
         this.mDataMapper = dataMapper;
     }

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  * Provide glue on balance repository, balance local storage, balance request service
  */
 @Module
-public class BalanceModule {
+public class UserBalanceModule {
     @UserScope
     @Provides
     BalanceStore.Repository provideBalanceRepository(

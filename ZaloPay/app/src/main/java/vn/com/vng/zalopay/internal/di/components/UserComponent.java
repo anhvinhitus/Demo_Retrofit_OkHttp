@@ -25,17 +25,17 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.internal.di.modules.user.RedPacketModule;
-import vn.com.vng.zalopay.internal.di.modules.user.AccountModule;
-import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
-import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
-import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
-import vn.com.vng.zalopay.internal.di.modules.user.FriendModule;
-import vn.com.vng.zalopay.internal.di.modules.user.NotificationModule;
-import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
+import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
+import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
+import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
+import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
+import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
+import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
+import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
+import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
+import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
@@ -58,16 +58,16 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 @Subcomponent(
         modules = {
                 UserModule.class,
-                ApiUserModule.class,
+                UserApiModule.class,
                 UserControllerModule.class,
                 UserPresenterModule.class,
-                BalanceModule.class,
-                TransactionModule.class,
+                UserBalanceModule.class,
+                UserTransactionModule.class,
                 AppResourceModule.class,
-                NotificationModule.class,
-                AccountModule.class,
-                FriendModule.class,
-                RedPacketModule.class
+                UserNotificationModule.class,
+                UserAccountModule.class,
+                UserFriendModule.class,
+                UserRedPacketModule.class
         }
 )
 public interface UserComponent {

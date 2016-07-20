@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 
@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.notification.NotificationHelper;
  * Created by AnhHieu on 6/20/16.
  */
 @Module
-public class NotificationModule {
+public class UserNotificationModule {
 
     @UserScope
     @Provides

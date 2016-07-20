@@ -34,7 +34,7 @@ import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayListener;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayListener;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
 
 /**
@@ -102,7 +102,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
         if (bundleOrder == null) {
             return;
         }
-        mPaymentService.pay(getCurrentActivity(), bundleOrder, new IRedPackagePayListener() {
+        mPaymentService.pay(getCurrentActivity(), bundleOrder, new IRedPacketPayListener() {
             @Override
             public void onParameterError(String param) {
                 if (promise == null) {

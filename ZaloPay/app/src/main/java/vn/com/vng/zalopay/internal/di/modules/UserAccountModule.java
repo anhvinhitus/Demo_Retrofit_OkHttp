@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import javax.inject.Named;
 
@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  */
 
 @Module
-public class AccountModule {
+public class UserAccountModule {
 
     @Provides
     @UserScope

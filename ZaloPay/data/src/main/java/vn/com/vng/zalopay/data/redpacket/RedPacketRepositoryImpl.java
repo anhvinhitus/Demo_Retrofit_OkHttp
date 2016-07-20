@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
  * Created by longlv on 13/07/2016.
  * Implementation for RedPacketStore.Repository
  */
-public class RedPackageRepositoryImpl implements RedPacketStore.Repository {
+public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
 
     public RedPacketStore.RequestService mRequestService;
     private RedPacketStore.LocalStorage mLocalStorage;
@@ -30,7 +30,7 @@ public class RedPackageRepositoryImpl implements RedPacketStore.Repository {
     public UserConfig userConfig;
     public User user;
 
-    public RedPackageRepositoryImpl(RedPacketStore.RequestService requestService, RedPacketStore.LocalStorage localStorage, RedPacketDataMapper dataMapper, UserConfig userConfig, User user) {
+    public RedPacketRepositoryImpl(RedPacketStore.RequestService requestService, RedPacketStore.LocalStorage localStorage, RedPacketDataMapper dataMapper, UserConfig userConfig, User user) {
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
         this.mDataMapper = dataMapper;

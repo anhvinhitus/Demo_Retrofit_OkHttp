@@ -6,7 +6,7 @@ import android.os.Bundle;
  * Created by longlv on 19/07/2016.
  * Listener of IRedPacketPayService
  */
-public interface IRedPackagePayListener {
+public interface IRedPacketPayListener {
     void onParameterError(String param);
 
     void onResponseError(int status);

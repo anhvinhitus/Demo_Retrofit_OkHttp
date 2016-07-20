@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 

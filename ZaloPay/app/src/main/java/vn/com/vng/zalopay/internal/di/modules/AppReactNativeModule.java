@@ -71,7 +71,7 @@ public class AppReactNativeModule {
 
     @Provides
     @Singleton
-    BundleReactConfig provideBundleReactConfig(Context context, BundleService service) {
+    BundleReactConfig provideBundleReactConfig(BundleService service) {
         switch (BuildConfig.REACT_DEVELOP_SUPPORT) {
             case DEV_INTERNAL:
                 return new BundleReactConfigInternalDev(service);

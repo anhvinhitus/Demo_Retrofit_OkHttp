@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.Context;
 
@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.transfer.provider.ZaloFriendStoreApi;
  * Provide glues for FriendStore services
  */
 @Module
-public class FriendModule {
+public class UserFriendModule {
     @UserScope
     @Provides
     FriendStore.SDKApi provideFriendStoreApi(Context context) {

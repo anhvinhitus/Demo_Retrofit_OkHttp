@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import javax.inject.Named;
 
@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  * Provide glue on transaction local storage, transaction request service, transaction repository
  */
 @Module
-public class TransactionModule {
+public class UserTransactionModule {
     @UserScope
     @Provides
     TransactionStore.Repository provideTransactionRepository(ZaloPayEntityDataMapper zaloPayEntityDataMapper,
