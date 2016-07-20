@@ -10,7 +10,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayListener;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -21,20 +20,13 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
  * This is payment service that RedPackage module used to pay by zaloPaymentSDK
  */
 public class RedPackagePayServiceImpl implements IRedPackagePayService {
-
-    final ZaloPayIAPRepository zaloPayIAPRepository;
     final BalanceStore.Repository mBalanceRepository;
-    final User user;
     final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
-    public RedPackagePayServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceStore.Repository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
-        this.zaloPayIAPRepository = zaloPayIAPRepository;
+    public RedPackagePayServiceImpl(BalanceStore.Repository balanceRepository, TransactionStore.Repository transactionRepository) {
         this.mBalanceRepository = balanceRepository;
-        this.user = user;
         this.mTransactionRepository = transactionRepository;
     }
 
@@ -94,16 +86,8 @@ public class RedPackagePayServiceImpl implements IRedPackagePayService {
         this.paymentWrapper.payWithOrder(bundleOrder);
     }
 
-    private void unsubscribeIfNotNull(CompositeSubscription subscription) {
-        if (subscription != null) {
-            subscription.clear();
-        }
-    }
-
     public void destroyVariable() {
-//        paymentListener = null;
         paymentWrapper = null;
-        unsubscribeIfNotNull(compositeSubscription);
     }
 
     private void updateTransaction() {
@@ -111,7 +95,6 @@ public class RedPackagePayServiceImpl implements IRedPackagePayService {
     }
 
     private void balanceUpdate() {
-        // update balance
         mBalanceRepository.updateBalance();
     }
 }

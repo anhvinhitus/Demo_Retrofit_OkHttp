@@ -103,10 +103,8 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    IRedPackagePayService providesIRedPackagePayService(ZaloPayIAPRepository zaloPayIAPRepository,
-                                                        BalanceStore.Repository balanceRepository,
-                                                        User user,
+    IRedPackagePayService providesIRedPackagePayService(BalanceStore.Repository balanceRepository,
                                                         TransactionStore.Repository transactionRepository) {
-        return new RedPackagePayServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
+        return new RedPackagePayServiceImpl(balanceRepository, transactionRepository);
     }
 }
