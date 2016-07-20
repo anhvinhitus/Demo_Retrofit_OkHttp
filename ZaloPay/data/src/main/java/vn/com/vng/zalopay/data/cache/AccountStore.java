@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.domain.model.ProfilePermission;
 
 /**
  * Created by AnhHieu on 7/3/16.
+ * AccountStore to provide User Profile management feature
  */
 public interface AccountStore {
 
