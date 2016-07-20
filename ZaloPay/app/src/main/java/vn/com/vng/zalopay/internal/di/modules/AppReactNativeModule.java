@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.internal.di.modules.user;
+package vn.com.vng.zalopay.internal.di.modules;
 
 import android.app.Application;
 import android.content.Context;
@@ -32,7 +32,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
  * Created by AnhHieu on 5/12/16.
  */
 @Module
-public class ReactNativeModule {
+public class AppReactNativeModule {
 
     @Provides
     @Singleton

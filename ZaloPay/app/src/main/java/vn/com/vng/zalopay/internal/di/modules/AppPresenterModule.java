@@ -8,6 +8,6 @@ import dagger.Module;
  */
 
 @Module
-public class PresenterModule {
+public class AppPresenterModule {
 
 }
