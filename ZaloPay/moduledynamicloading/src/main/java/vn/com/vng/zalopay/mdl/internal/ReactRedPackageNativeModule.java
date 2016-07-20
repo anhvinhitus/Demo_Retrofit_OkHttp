@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
+import vn.com.vng.zalopay.mdl.BuildConfig;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
@@ -282,11 +283,18 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             return friendList;
         }
         for (int i = 0; i < friends.size(); i++) {
-            double friendId = friends.getDouble(i);
+            long friendId = 0;
+            try {
+                friendId = Long.valueOf(friends.getString(i));
+            } catch (NumberFormatException e) {
+                if (BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
+            }
             if (friendId <= 0) {
                 continue;
             }
-            friendList.add((long) friendId);
+            friendList.add(friendId);
         }
         return friendList;
     }
@@ -359,7 +367,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             WritableMap friendItem = Arguments.createMap();
             friendItem.putString("displayName", zaloFriendGD.getDisplayName());
             friendItem.putString("ascciDisplayName", zaloFriendGD.getFulltextsearch());
-            friendItem.putDouble("userId", zaloFriendGD.getId());
+            friendItem.putString("userId", String.valueOf(zaloFriendGD.getId()));
             friendItem.putInt("userGender", zaloFriendGD.getUserGender());
             friendItem.putBoolean("usingApp", zaloFriendGD.getUsingApp());
             friendItem.putString("avatar", zaloFriendGD.getAvatar());
