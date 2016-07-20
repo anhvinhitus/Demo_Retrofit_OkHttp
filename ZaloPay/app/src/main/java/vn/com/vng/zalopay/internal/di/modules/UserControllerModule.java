@@ -7,7 +7,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
-import vn.com.vng.zalopay.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -32,10 +31,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
 import vn.com.vng.zalopay.service.PaymentServiceImpl;
-import vn.com.vng.zalopay.service.RedPacketPayServiceImpl;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -101,18 +97,5 @@ public class UserControllerModule {
                                             User user,
                                             TransactionStore.Repository transactionRepository) {
         return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
-    }
-
-    @UserScope
-    @Provides
-    IRedPacketPayService providesIRedPacketPayService(BalanceStore.Repository balanceRepository,
-                                                       TransactionStore.Repository transactionRepository) {
-        return new RedPacketPayServiceImpl(balanceRepository, transactionRepository);
-    }
-
-    @UserScope
-    @Provides
-    ISweetAlertDialog providesISweetAlertDialog() {
-        return new SweetAlertDialogImpl();
     }
 }
