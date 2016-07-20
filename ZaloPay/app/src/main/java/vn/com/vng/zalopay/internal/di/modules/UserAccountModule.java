@@ -21,7 +21,7 @@ public class UserAccountModule {
 
     @Provides
     @UserScope
-    AccountStore.RequestService providesAccountService(@Named("retrofit") Retrofit retrofit) {
+    AccountStore.RequestService providesAccountService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(AccountStore.RequestService.class);
     }
 

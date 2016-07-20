@@ -38,7 +38,7 @@ public class UserBalanceModule {
 
     @Provides
     @UserScope
-    BalanceStore.RequestService provideBalanceRequestService(@Named("retrofit") Retrofit retrofit) {
+    BalanceStore.RequestService provideBalanceRequestService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(BalanceStore.RequestService.class);
     }
 }

@@ -13,7 +13,7 @@ public class AppApiModule {
 
     @Provides
     @Singleton
-    PassportService providePassportService(@Named("retrofit") Retrofit retrofit) {
+    PassportService providePassportService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(PassportService.class);
     }
 

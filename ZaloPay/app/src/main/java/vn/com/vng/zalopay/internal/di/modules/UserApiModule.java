@@ -19,20 +19,20 @@ public class UserApiModule {
 
     @Provides
     @UserScope
-    AppConfigService provideAppConfigService(@Named("retrofit") Retrofit retrofit) {
+    AppConfigService provideAppConfigService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(AppConfigService.class);
     }
 
     @Provides
     @UserScope
-    ZaloPayService provideZaloPayService(@Named("retrofit") Retrofit retrofit) {
+    ZaloPayService provideZaloPayService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(ZaloPayService.class);
     }
 
 
     @Provides
     @UserScope
-    ZaloPayIAPService provideZaloPayIAPService(@Named("retrofit") Retrofit retrofit) {
+    ZaloPayIAPService provideZaloPayIAPService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(ZaloPayIAPService.class);
     }
 

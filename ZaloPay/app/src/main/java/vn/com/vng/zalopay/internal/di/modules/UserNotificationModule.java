@@ -44,7 +44,7 @@ public class UserNotificationModule {
 
    /* @Provides
     @UserScope
-    NotificationStore.RequestService providesNotificationStoreService(@Named("retrofit") Retrofit retrofit) {
+    NotificationStore.RequestService providesNotificationStoreService(@Named("retrofitApi") Retrofit retrofit) {
         return null;
     }*/
 }

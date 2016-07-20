@@ -90,7 +90,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Named("retrofit")
+    @Named("retrofitApi")
     Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))

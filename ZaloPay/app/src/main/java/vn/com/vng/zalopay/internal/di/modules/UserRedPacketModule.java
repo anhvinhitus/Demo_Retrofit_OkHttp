@@ -33,7 +33,7 @@ public class UserRedPacketModule {
 
     @Provides
     @UserScope
-    RedPacketStore.RequestService providesRedPacketService(@Named("retrofit") Retrofit retrofit) {
+    RedPacketStore.RequestService providesRedPacketService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(RedPacketStore.RequestService.class);
     }
 

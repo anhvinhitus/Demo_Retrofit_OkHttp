@@ -29,7 +29,7 @@ public class AppResourceModule {
 
     @Provides
     @UserScope
-    AppResource.RequestService provideAppResourceRequestService(@Named("retrofit") Retrofit retrofit) {
+    AppResource.RequestService provideAppResourceRequestService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(AppResource.RequestService.class);
     }
 
