@@ -12,11 +12,11 @@ import java.util.List;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -25,9 +25,9 @@ import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 public class ReactInternalPackage implements ReactPackage {
 
     private TransactionStore.Repository mRepository;
-    private RedPackageStore.Repository mRedPackageRepository;
+    private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
-    private IRedPackagePayService paymentService;
+    private IRedPacketPayService paymentService;
 
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
@@ -35,9 +35,9 @@ public class ReactInternalPackage implements ReactPackage {
     private ZPAnalytics zpAnalytics;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
-                                RedPackageStore.Repository redPackageRepository,
+                                RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
-                                IRedPackagePayService paymentService,
+                                IRedPacketPayService paymentService,
                                 INavigator navigator, ZPAnalytics zpAnalytics) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;

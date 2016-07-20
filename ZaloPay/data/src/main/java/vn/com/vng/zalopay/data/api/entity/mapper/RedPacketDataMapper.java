@@ -24,10 +24,10 @@ import static java.util.Collections.emptyList;
  */
 
 @Singleton
-public class RedPackageDataMapper {
+public class RedPacketDataMapper {
 
     @Inject
-    public RedPackageDataMapper() {
+    public RedPacketDataMapper() {
 
     }
 

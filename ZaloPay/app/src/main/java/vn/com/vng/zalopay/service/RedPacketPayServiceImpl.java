@@ -4,14 +4,12 @@ import android.app.Activity;
 
 import java.lang.ref.WeakReference;
 
-import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayListener;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
@@ -19,13 +17,13 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
  * Created by longlv on 19/07/2016.
  * This is payment service that RedPackage module used to pay by zaloPaymentSDK
  */
-public class RedPackagePayServiceImpl implements IRedPackagePayService {
+public class RedPacketPayServiceImpl implements IRedPacketPayService {
     final BalanceStore.Repository mBalanceRepository;
     final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
-    public RedPackagePayServiceImpl(BalanceStore.Repository balanceRepository, TransactionStore.Repository transactionRepository) {
+    public RedPacketPayServiceImpl(BalanceStore.Repository balanceRepository, TransactionStore.Repository transactionRepository) {
         this.mBalanceRepository = balanceRepository;
         this.mTransactionRepository = transactionRepository;
     }

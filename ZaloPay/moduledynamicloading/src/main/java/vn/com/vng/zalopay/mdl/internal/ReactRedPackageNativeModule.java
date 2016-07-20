@@ -25,7 +25,7 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
 import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayListener;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
 
 /**
  * Created by longlv on 17/07/2016.
@@ -43,16 +43,16 @@ import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
  */
 public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private RedPackageStore.Repository mRedPackageRepository;
+    private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
-    private final IRedPackagePayService mPaymentService;
+    private final IRedPacketPayService mPaymentService;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private CountDownTimer mTimerGetTranStatus;
     private boolean isRunningGetTranStatus;
 
-    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPackageStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPackagePayService payService) {
+    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPacketStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPacketPayService payService) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;

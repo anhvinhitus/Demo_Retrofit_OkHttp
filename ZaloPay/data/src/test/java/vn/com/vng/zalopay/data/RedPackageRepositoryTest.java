@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.http.Field;
 import rx.Observable;
 import rx.Observer;
-import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpackage.PackageStatusResponse;
@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPackageLocalStorage;
 import vn.com.vng.zalopay.data.redpacket.RedPackageRepositoryImpl;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -48,9 +48,9 @@ public class RedPackageRepositoryTest {
     int type = 1;
     String message = "Chuc may man lan sau";
 
-    RedPackageStore.LocalStorage mLocalStorage;
-    RedPackageStore.Repository mRepository;
-    RedPackageStore.RequestService mRequestService;
+    RedPacketStore.LocalStorage mLocalStorage;
+    RedPacketStore.Repository mRepository;
+    RedPacketStore.RequestService mRequestService;
 
     //declare Variable
     BundleOrderResponse bundleOrderResponse;
@@ -91,13 +91,13 @@ public class RedPackageRepositoryTest {
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
-        RedPackageDataMapper dataMapper = new RedPackageDataMapper();
+        RedPacketDataMapper dataMapper = new RedPacketDataMapper();
         mLocalStorage = new RedPackageLocalStorage(daoSession, dataMapper);
 
         mRepository = new RedPackageRepositoryImpl(mRequestService, mLocalStorage, dataMapper, null, new User("1"));
     }
 
-    public class RequestServiceImpl implements RedPackageStore.RequestService {
+    public class RequestServiceImpl implements RedPacketStore.RequestService {
 
         @Override
         public Observable<BundleOrderResponse> createBundleOrder(@Field("quantity") int quantity, @Field("totalLuck") long totalLuck, @Field("amountEach") long amountEach, @Field("type") int type, @Field("sendZaloPayID") String sendZaloPayID, @Field("accessToken") String accessToken, @Field("sendMessage") String sendMessage) {

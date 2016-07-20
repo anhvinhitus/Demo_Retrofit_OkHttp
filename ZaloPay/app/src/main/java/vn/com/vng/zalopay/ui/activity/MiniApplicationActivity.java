@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
+import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -60,13 +60,13 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     TransactionStore.Repository transactionRepository;
 
     @Inject
-    RedPackageStore.Repository redPackageRepository;
+    RedPacketStore.Repository redPackageRepository;
 
     @Inject
     FriendStore.Repository friendRepository;
 
     @Inject
-    IRedPackagePayService paymentService;
+    IRedPacketPayService paymentService;
 
     @Inject
     INavigator navigator;

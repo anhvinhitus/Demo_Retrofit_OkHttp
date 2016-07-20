@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.data.redpacket;
 import java.util.List;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -20,17 +20,17 @@ import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
 
 /**
  * Created by longlv on 13/07/2016.
- * Implementation for RedPackageStore.Repository
+ * Implementation for RedPacketStore.Repository
  */
-public class RedPackageRepositoryImpl implements RedPackageStore.Repository {
+public class RedPackageRepositoryImpl implements RedPacketStore.Repository {
 
-    public RedPackageStore.RequestService mRequestService;
-    private RedPackageStore.LocalStorage mLocalStorage;
-    private RedPackageDataMapper mDataMapper;
+    public RedPacketStore.RequestService mRequestService;
+    private RedPacketStore.LocalStorage mLocalStorage;
+    private RedPacketDataMapper mDataMapper;
     public UserConfig userConfig;
     public User user;
 
-    public RedPackageRepositoryImpl(RedPackageStore.RequestService requestService, RedPackageStore.LocalStorage localStorage, RedPackageDataMapper dataMapper, UserConfig userConfig, User user) {
+    public RedPackageRepositoryImpl(RedPacketStore.RequestService requestService, RedPacketStore.LocalStorage localStorage, RedPacketDataMapper dataMapper, UserConfig userConfig, User user) {
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
         this.mDataMapper = dataMapper;

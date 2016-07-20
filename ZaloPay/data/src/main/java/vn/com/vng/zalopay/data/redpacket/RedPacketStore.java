@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
  * Created by longlv on 13/07/2016.
  * Declaration for redPackage local storage, redPackage request service, redPackage repository
  */
-public interface RedPackageStore {
+public interface RedPacketStore {
 
     interface LocalStorage {
         void putSentBundle(SentBundleGD sentBundle);

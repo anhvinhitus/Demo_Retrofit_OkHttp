@@ -4,7 +4,7 @@ import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -23,13 +23,13 @@ import static java.util.Collections.emptyList;
 
 /**
  * Created by longlv on 13/07/2016.
- * Implementation of RedPackageStore.LocalStorage
+ * Implementation of RedPacketStore.LocalStorage
  */
-public class RedPackageLocalStorage extends SqlBaseScopeImpl implements RedPackageStore.LocalStorage {
+public class RedPackageLocalStorage extends SqlBaseScopeImpl implements RedPacketStore.LocalStorage {
 
-    private RedPackageDataMapper mDataMapper;
+    private RedPacketDataMapper mDataMapper;
 
-    public RedPackageLocalStorage(DaoSession daoSession, RedPackageDataMapper dataMapper) {
+    public RedPackageLocalStorage(DaoSession daoSession, RedPacketDataMapper dataMapper) {
         super(daoSession);
         this.mDataMapper = dataMapper;
     }
