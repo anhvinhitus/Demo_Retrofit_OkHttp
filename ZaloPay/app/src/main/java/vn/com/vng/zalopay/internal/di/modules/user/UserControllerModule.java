@@ -31,9 +31,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPackagePayService;
 import vn.com.vng.zalopay.service.PaymentServiceImpl;
-import vn.com.vng.zalopay.service.RedPackagePayServiceImpl;
 
 /**
  * Created by AnhHieu on 4/28/16.
@@ -99,12 +97,5 @@ public class UserControllerModule {
                                             User user,
                                             TransactionStore.Repository transactionRepository) {
         return new PaymentServiceImpl(zaloPayIAPRepository, balanceRepository, user, transactionRepository);
-    }
-
-    @UserScope
-    @Provides
-    IRedPackagePayService providesIRedPackagePayService(BalanceStore.Repository balanceRepository,
-                                                        TransactionStore.Repository transactionRepository) {
-        return new RedPackagePayServiceImpl(balanceRepository, transactionRepository);
     }
 }
