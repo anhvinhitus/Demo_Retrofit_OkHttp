@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.data.transfer;
 import java.util.List;
 
 import rx.Observable;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
@@ -22,7 +21,7 @@ public class TransferLocalStorage implements TransferStore.LocalStorage {
 
     @Override
     public Observable<List<TransferRecent>> get() {
-        return ObservableHelper.makeObservable(() -> mDao.queryBuilder().limit(3).list());
+        return ObservableHelper.makeObservable(() -> mDao.queryBuilder().orderDesc(TransferRecentDao.Properties.Id).limit(3).list());
     }
 
     @Override

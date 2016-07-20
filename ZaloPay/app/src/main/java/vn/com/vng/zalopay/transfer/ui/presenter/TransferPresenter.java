@@ -206,6 +206,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             if (user == null) {
                 return;
             }
+            mView.showLoading();
             subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), userMapZaloAndZaloPay.getZaloPayId(), message)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -279,7 +280,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 return;
             }
             int transationType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
-            TransferRecent transferRecent = new TransferRecent(userMapZaloAndZaloPay.getZaloId(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transationType, mCurrentAmount, mCurrentMessage);
+            TransferRecent transferRecent = new TransferRecent(System.currentTimeMillis(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transationType, mCurrentAmount, mCurrentMessage);
             mTransferLocalStorage.append(transferRecent);
         } catch (NumberFormatException e) {
             if (BuildConfig.DEBUG) {
