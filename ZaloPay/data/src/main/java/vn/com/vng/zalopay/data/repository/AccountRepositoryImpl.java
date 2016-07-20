@@ -14,32 +14,36 @@ import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by longlv on 03/06/2016.
+ *
  */
-
 public class AccountRepositoryImpl implements AccountStore.Repository {
 
-    final AccountStore.RequestService accountService;
-    final AccountStore.UploadPhotoService uploadPhotoService;
+    final AccountStore.RequestService mRequestService;
+    final AccountStore.UploadPhotoService mUploadPhotoService;
 
-    final User user;
-    final UserConfig userConfig;
+    final User mUser;
+    final UserConfig mUserConfig;
 
 
-    public AccountRepositoryImpl(AccountStore.RequestService accountService, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user) {
-        this.accountService = accountService;
-        this.uploadPhotoService = photoService;
-        this.user = user;
-        this.userConfig = userConfig;
+    public AccountRepositoryImpl(AccountStore.RequestService accountService,
+                                 AccountStore.UploadPhotoService photoService,
+                                 UserConfig userConfig,
+                                 User user) {
+        this.mRequestService = accountService;
+        this.mUploadPhotoService = photoService;
+        this.mUser = user;
+        this.mUserConfig = userConfig;
     }
 
     @Override
-    public Observable<Boolean> updateProfile(String pin, String phonenumber) {
-        return accountService.updateProfile(user.uid, user.accesstoken, pin, phonenumber).map(baseResponse -> Boolean.TRUE);
+    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber) {
+        return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber)
+                .map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
     public Observable<ProfilePermission> verifyOTPProfile(String otp) {
-        return accountService.verifyOTPProfile(user.uid, user.accesstoken, otp)
+        return mRequestService.verifyOTPProfile(mUser.uid, mUser.accesstoken, otp)
                 .map(baseResponse -> {
                     ProfilePermission profilePermission = new ProfilePermission();
                     profilePermission.profileLevel = baseResponse.profilelevel;
@@ -47,20 +51,26 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                     return profilePermission;
                 })
                 .doOnNext(profilePermission -> {
-                    userConfig.updateProfilePermissions(profilePermission.profileLevel, profilePermission.profilePermissions);
+                    mUserConfig.updateProfilePermissions(
+                            profilePermission.profileLevel,
+                            profilePermission.profilePermissions);
                 });
     }
 
     @Override
     public Observable<ProfilePermission> getUserProfileLevel() {
-        return accountService.getUserProfileLevel(user.uid, user.accesstoken)
+        return mRequestService.getUserProfileLevel(mUser.uid, mUser.accesstoken)
                 .doOnNext(response -> {
-                    user.profilelevel = response.profilelevel;
-                    user.profilePermissions = response.profilePermissions;
-                    user.email = response.email;
-                    user.identityNumber = response.identityNumber;
+                    mUser.profilelevel = response.profilelevel;
+                    mUser.profilePermissions = response.profilePermissions;
+                    mUser.email = response.email;
+                    mUser.identityNumber = response.identityNumber;
 
-                    userConfig.updateProfile(response.profilelevel, response.profilePermissions, response.email, response.identityNumber);
+                    mUserConfig.updateProfile(
+                            response.profilelevel,
+                            response.profilePermissions,
+                            response.email,
+                            response.identityNumber);
                 })
                 .map(baseResponse -> {
                     ProfilePermission profilePermission = new ProfilePermission();
@@ -72,7 +82,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<BaseResponse> recoverypin(String pin, String otp) {
-        return accountService.recoverypin(user.uid, user.accesstoken, pin, otp);
+        return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, otp);
     }
 
     @Override
@@ -81,7 +91,8 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
             return null;
         }
 
-        return accountService.getuserinfo(user.uid, user.accesstoken, zaloId, systemlogin).map(mappingZaloAndZaloPayResponse -> {
+        return mRequestService.getuserinfo(mUser.uid, mUser.accesstoken, zaloId, systemlogin)
+                .map(mappingZaloAndZaloPayResponse -> {
             MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
             mappingZaloAndZaloPay.setZaloId(zaloId);
             mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
@@ -91,47 +102,64 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> updateProfile3(String identityNumber, String email, String fimgPath, String bimgPath, String avatarPath) {
+    public Observable<Boolean> updateUserProfileLevel3(String identityNumber,
+                                                       String email,
+                                                       String frontImagePath,
+                                                       String backImagePath,
+                                                       String avatarPath) {
 
-        RequestBody fimg = requestBodyFromPathFile(fimgPath);
-        RequestBody bimg = requestBodyFromPathFile(bimgPath);
-        RequestBody avatar = requestBodyFromPathFile(avatarPath);
+        RequestBody fimg = requestBodyFromFile(frontImagePath);
+        RequestBody bimg = requestBodyFromFile(backImagePath);
+        RequestBody avatar = requestBodyFromFile(avatarPath);
 
-        return uploadPhotoService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
-                fimg, bimg, avatar)
+        return mUploadPhotoService.updateProfile3(
+                requestBodyParam(mUser.uid),
+                requestBodyParam(mUser.accesstoken),
+                requestBodyParam(identityNumber),
+                requestBodyParam(email),
+                fimg,
+                bimg,
+                avatar)
                 .map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
-    public Observable<Boolean> updateProfile3(String identityNumber, final String email, byte[] fimgPath, byte[] bimgPath, byte[] avatarPath) {
+    public Observable<Boolean> updateUserProfileLevel3(String identityNumber,
+                                                       final String email,
+                                                       byte[] frontImage,
+                                                       byte[] backImage,
+                                                       byte[] avatar) {
 
-        RequestBody fimg = requestBodyFromPathFile(fimgPath);
-        RequestBody bimg = requestBodyFromPathFile(bimgPath);
-        RequestBody avatar = requestBodyFromPathFile(avatarPath);
+        RequestBody frontImageBodyRequest = requestBodyFromData(frontImage);
+        RequestBody backImageBodyRequest = requestBodyFromData(backImage);
+        RequestBody avatarBodyRequest = requestBodyFromData(avatar);
 
-        return uploadPhotoService.updateProfile3(requestBodyParam(user.uid), requestBodyParam(user.accesstoken), requestBodyParam(identityNumber), requestBodyParam(email),
-                fimg, bimg, avatar)
+        return mUploadPhotoService.updateProfile3(
+                requestBodyParam(mUser.uid),
+                requestBodyParam(mUser.accesstoken),
+                requestBodyParam(identityNumber),
+                requestBodyParam(email),
+                frontImageBodyRequest,
+                backImageBodyRequest,
+                avatarBodyRequest)
               /*  .doOnNext(baseResponse1 -> {
-                    user.email = email;
-                    user.identityNumber = identityNumber;
+                    mUser.email = email;
+                    mUser.identityNumber = identityNumber;
                 })*/
                 .map(baseResponse -> Boolean.TRUE);
     }
 
-    private RequestBody requestBodyFromPathFile(String filePath) {
+    private RequestBody requestBodyFromFile(String filePath) {
         File file = new File(filePath);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        return requestBody;
+        return RequestBody.create(MediaType.parse("image/*"), file);
     }
 
-    private RequestBody requestBodyFromPathFile(byte[] data) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), data);
-        return requestBody;
+    private RequestBody requestBodyFromData(byte[] data) {
+        return RequestBody.create(MediaType.parse("image/*"), data);
     }
 
     private RequestBody requestBodyParam(String param) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), param);
-        return requestBody;
+        return RequestBody.create(MediaType.parse("text/plain"), param);
     }
 
 }

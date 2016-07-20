@@ -83,7 +83,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         showLoading();
         String pinSha256 = sha256(pin);
 
-        subscriptionLogin = accountRepository.updateProfile(pinSha256, phone)
+        subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new updateProfileSubscriber(phone));

@@ -62,7 +62,7 @@ public interface AccountStore {
 
     interface Repository {
 
-        Observable<Boolean> updateProfile(String pin, String phonenumber);
+        Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber);
 
         Observable<ProfilePermission> verifyOTPProfile(String otp);
 
@@ -70,17 +70,17 @@ public interface AccountStore {
 
         Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin);
 
-        Observable<Boolean> updateProfile3(String identityNumber,
-                                           String email,
-                                           String fimgPath,
-                                           String bimgPath,
-                                           String avatarPath);
+        Observable<Boolean> updateUserProfileLevel3(String identityNumber,
+                                                    String email,
+                                                    String frontImagePath,
+                                                    String backImagePath,
+                                                    String avatarPath);
 
-        Observable<Boolean> updateProfile3(String identityNumber,
-                                           String email,
-                                           byte[] fimgPath,
-                                           byte[] bimgPath,
-                                           byte[] avatarPath);
+        Observable<Boolean> updateUserProfileLevel3(String identityNumber,
+                                                    String email,
+                                                    byte[] frontImage,
+                                                    byte[] backImage,
+                                                    byte[] avatar);
 
         Observable<ProfilePermission> getUserProfileLevel();
     }
