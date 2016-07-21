@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.util.List;
 
@@ -12,26 +11,30 @@ import vn.com.vng.zalopay.domain.model.AbstractData;
  */
 public class SentBundle extends AbstractData {
     public long bundleID;
+    public String sendZaloPayID;
     public int type;
     public long createTime;
     public long lastOpenTime;
     public int totalLuck;
     public int numOfOpenedPakages;
     public int numOfPackages;
-    public List<SentPackage> packages;
+    public List<PackageInBundle> packages;
 
-    public SentBundle(long bundleID, int type, long createTime, long lastOpenTime, int totalLuck, int numOfOpenedPakages, int numOfPackages) {
+    public SentBundle(long bundleID, String sendZaloPayID, int type, long createTime, long lastOpenTime, int totalLuck, int numOfOpenedPakages, int numOfPackages) {
         this.bundleID = bundleID;
+        this.sendZaloPayID = sendZaloPayID;
         this.type = type;
         this.createTime = createTime;
         this.lastOpenTime = lastOpenTime;
         this.totalLuck = totalLuck;
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
+        this.packages = null;
     }
 
-    public SentBundle(long bundleID, int type, long createTime, long lastOpenTime, int totalLuck, int numOfOpenedPakages, int numOfPackages, List<SentPackage> packages) {
+    public SentBundle(long bundleID, String sendZaloPayID, int type, long createTime, long lastOpenTime, int totalLuck, int numOfOpenedPakages, int numOfPackages, List<PackageInBundle> packages) {
         this.bundleID = bundleID;
+        this.sendZaloPayID = sendZaloPayID;
         this.type = type;
         this.createTime = createTime;
         this.lastOpenTime = lastOpenTime;
@@ -41,30 +44,37 @@ public class SentBundle extends AbstractData {
         this.packages = packages;
     }
 
-    public SentBundle(Parcel in) {
-        bundleID = in.readLong();
-        type = in.readInt();
-        createTime = in.readLong();
-        lastOpenTime = in.readLong();
-        totalLuck = in.readInt();
-        numOfOpenedPakages = in.readInt();
-        numOfPackages = in.readInt();
-        in.readList(packages, null);
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(bundleID);
-        dest.writeInt(type);
-        dest.writeLong(createTime);
-        dest.writeLong(lastOpenTime);
-        dest.writeInt(totalLuck);
-        dest.writeInt(numOfOpenedPakages);
-        dest.writeInt(numOfPackages);
-        dest.writeList(packages);
+        dest.writeLong(this.bundleID);
+        dest.writeString(this.sendZaloPayID);
+        dest.writeInt(this.type);
+        dest.writeLong(this.createTime);
+        dest.writeLong(this.lastOpenTime);
+        dest.writeInt(this.totalLuck);
+        dest.writeInt(this.numOfOpenedPakages);
+        dest.writeInt(this.numOfPackages);
+        dest.writeTypedList(this.packages);
     }
 
-    public static final Parcelable.Creator<SentBundle> CREATOR = new Parcelable.Creator<SentBundle>() {
+    protected SentBundle(Parcel in) {
+        this.bundleID = in.readLong();
+        this.sendZaloPayID = in.readString();
+        this.type = in.readInt();
+        this.createTime = in.readLong();
+        this.lastOpenTime = in.readLong();
+        this.totalLuck = in.readInt();
+        this.numOfOpenedPakages = in.readInt();
+        this.numOfPackages = in.readInt();
+        this.packages = in.createTypedArrayList(PackageInBundle.CREATOR);
+    }
+
+    public static final Creator<SentBundle> CREATOR = new Creator<SentBundle>() {
         @Override
         public SentBundle createFromParcel(Parcel source) {
             return new SentBundle(source);

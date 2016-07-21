@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 24;
+    private static final int APP_DB_VERSION = 25;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -22,15 +22,15 @@ public class GreenDaoGenerator {
         addZaloContact(appSchema);
         addTransferRecent(appSchema);
         addNotification(appSchema);
-        addSentBundle(appSchema);
-        addReceiveBundle(appSchema);
+        addRedPacket(appSchema);
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
-    private static void addSentBundle(Schema appSchema) {
-        Entity packageEntity = appSchema.addEntity("SentPackageGD");
-        Property propertyBundleId = packageEntity.addIdProperty().unique().notNull().getProperty();//bundleID
+    private static void addRedPacket(Schema appSchema) {
+        Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
+        packageEntity.addIdProperty(); //packageId
+        Property propertyBundleId = packageEntity.addLongProperty("bundleID").getProperty();
         packageEntity.addStringProperty("revZaloPayID");
         packageEntity.addLongProperty("revZaloID");
         packageEntity.addStringProperty("revFullName");
@@ -42,6 +42,7 @@ public class GreenDaoGenerator {
 
         Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
         sentBundleEntity.addIdProperty().unique().notNull();//bundleId
+        sentBundleEntity.addStringProperty("sendZaloPayID").notNull();//sendZaloPayID
         sentBundleEntity.addIntProperty("type");
         sentBundleEntity.addLongProperty("createTime");
         sentBundleEntity.addLongProperty("lastOpenTime");
@@ -51,25 +52,16 @@ public class GreenDaoGenerator {
         ToMany sentBundleToPackage = sentBundleEntity.addToMany(packageEntity, propertyBundleId);
         sentBundleToPackage.setName("sentPackages");
         sentBundleToPackage.orderDesc(openTime);
-    }
 
-    private static void addReceiveBundle(Schema appSchema) {
-        Entity revPackageEntity = appSchema.addEntity("ReceivePackageGD");
-        Property revBundleId = revPackageEntity.addIdProperty().unique().notNull().getProperty();//BundleId
-        revPackageEntity.addLongProperty("packageId");
-        revPackageEntity.addStringProperty("sendZaloPayID");
-        revPackageEntity.addStringProperty("sendFullName");
-        revPackageEntity.addLongProperty("amount");
-        Property openTime = revPackageEntity.addLongProperty("openedTime").getProperty();
-
-        Entity receiveBundleEntity = appSchema.addEntity("ReceiveBundleGD");
-        receiveBundleEntity.addIdProperty().unique().notNull();//Bundle
-        receiveBundleEntity.addIntProperty("type");
-        receiveBundleEntity.addLongProperty("createTime");
-        receiveBundleEntity.addIntProperty("totalLuck");
-        receiveBundleEntity.addIntProperty("numOfOpenedPakages");
-        receiveBundleEntity.addIntProperty("numOfPackages");
-        ToMany revBundleToPackage = receiveBundleEntity.addToMany(revPackageEntity, revBundleId);
+        Entity receiveBundleEntity = appSchema.addEntity("ReceivePackageGD");
+        receiveBundleEntity.addIdProperty().unique().notNull();//packageID
+        receiveBundleEntity.addLongProperty("bundleID");
+        receiveBundleEntity.addStringProperty("revZaloPayID");
+        receiveBundleEntity.addStringProperty("sendZaloPayID");
+        receiveBundleEntity.addStringProperty("sendFullName");
+        receiveBundleEntity.addLongProperty("amount");
+        receiveBundleEntity.addLongProperty("openedTime");
+        ToMany revBundleToPackage = receiveBundleEntity.addToMany(packageEntity, propertyBundleId);
         revBundleToPackage.setName("receivePackages");
         revBundleToPackage.orderDesc(openTime);
     }

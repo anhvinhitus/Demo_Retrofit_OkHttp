@@ -6,10 +6,11 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  * Created by longlv on 15/07/2016.
  */
 public class ReceivePackageResponse extends BaseResponse {
-    public long packageID;
-    public long bundleID;
-    public String sendZaloPayID;
-    public String sendFullName;
+    public long packageid;
+    public long bundleid;
+    public String revzalopayid;
+    public String sendzalopayid;
+    public String sendfullname;
     public long amount;
-    public long openedTime;
+    public long openedtime;
 }

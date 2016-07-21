@@ -11,6 +11,8 @@ import de.greenrobot.dao.DaoException;
 public class SentBundleGD {
 
     private long id;
+    /** Not-null value. */
+    private String sendZaloPayID;
     private Integer type;
     private Long createTime;
     private Long lastOpenTime;
@@ -24,7 +26,7 @@ public class SentBundleGD {
     /** Used for active entity operations. */
     private transient SentBundleGDDao myDao;
 
-    private List<SentPackageGD> sentPackages;
+    private List<PackageInBundleGD> sentPackages;
 
     public SentBundleGD() {
     }
@@ -33,8 +35,9 @@ public class SentBundleGD {
         this.id = id;
     }
 
-    public SentBundleGD(long id, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages) {
+    public SentBundleGD(long id, String sendZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages) {
         this.id = id;
+        this.sendZaloPayID = sendZaloPayID;
         this.type = type;
         this.createTime = createTime;
         this.lastOpenTime = lastOpenTime;
@@ -55,6 +58,16 @@ public class SentBundleGD {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    /** Not-null value. */
+    public String getSendZaloPayID() {
+        return sendZaloPayID;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setSendZaloPayID(String sendZaloPayID) {
+        this.sendZaloPayID = sendZaloPayID;
     }
 
     public Integer getType() {
@@ -106,13 +119,13 @@ public class SentBundleGD {
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<SentPackageGD> getSentPackages() {
+    public List<PackageInBundleGD> getSentPackages() {
         if (sentPackages == null) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            SentPackageGDDao targetDao = daoSession.getSentPackageGDDao();
-            List<SentPackageGD> sentPackagesNew = targetDao._querySentBundleGD_SentPackages(id);
+            PackageInBundleGDDao targetDao = daoSession.getPackageInBundleGDDao();
+            List<PackageInBundleGD> sentPackagesNew = targetDao._querySentBundleGD_SentPackages(id);
             synchronized (this) {
                 if(sentPackages == null) {
                     sentPackages = sentPackagesNew;

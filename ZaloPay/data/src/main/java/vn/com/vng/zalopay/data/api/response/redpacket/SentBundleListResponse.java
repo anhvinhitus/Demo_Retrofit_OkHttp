@@ -12,8 +12,12 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  */
 public class SentBundleListResponse extends BaseResponse {
 
-    @SerializedName("totalOfSentAmount")
-    public int totalOfSentAmount;
+    @SerializedName("totalofsentamount")
+    public long totalOfSentAmount;
+
+    @SerializedName("totalofsentbundle")
+    public long totalOfSentBundle;
+
     @SerializedName("bundles")
     public List<SentBundleResponse> bundleResponseList;
 }

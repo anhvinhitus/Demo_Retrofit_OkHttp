@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.RevPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
@@ -123,14 +123,15 @@ public class RedPackageRepositoryTest {
         }
 
         @Override
-        public Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
+        public Observable<GetReceivePackageResponse> getRevPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken) {
             return null;
         }
 
         @Override
-        public Observable<RevPackageInBundleResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
+        public Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
             return null;
         }
+
     }
 
     @Test

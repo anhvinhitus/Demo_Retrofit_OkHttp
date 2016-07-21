@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.data.cache.model;
 
-import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -8,8 +7,6 @@ import android.database.sqlite.SQLiteStatement;
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
-import de.greenrobot.dao.query.Query;
-import de.greenrobot.dao.query.QueryBuilder;
 
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 
@@ -27,14 +24,16 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property PackageId = new Property(1, Long.class, "packageId", false, "PACKAGE_ID");
-        public final static Property SendZaloPayID = new Property(2, String.class, "sendZaloPayID", false, "SEND_ZALO_PAY_ID");
-        public final static Property SendFullName = new Property(3, String.class, "sendFullName", false, "SEND_FULL_NAME");
-        public final static Property Amount = new Property(4, Long.class, "amount", false, "AMOUNT");
-        public final static Property OpenedTime = new Property(5, Long.class, "openedTime", false, "OPENED_TIME");
+        public final static Property BundleID = new Property(1, Long.class, "bundleID", false, "BUNDLE_ID");
+        public final static Property RevZaloPayID = new Property(2, String.class, "revZaloPayID", false, "REV_ZALO_PAY_ID");
+        public final static Property SendZaloPayID = new Property(3, String.class, "sendZaloPayID", false, "SEND_ZALO_PAY_ID");
+        public final static Property SendFullName = new Property(4, String.class, "sendFullName", false, "SEND_FULL_NAME");
+        public final static Property Amount = new Property(5, Long.class, "amount", false, "AMOUNT");
+        public final static Property OpenedTime = new Property(6, Long.class, "openedTime", false, "OPENED_TIME");
     };
 
-    private Query<ReceivePackageGD> receiveBundleGD_ReceivePackagesQuery;
+    private DaoSession daoSession;
+
 
     public ReceivePackageGDDao(DaoConfig config) {
         super(config);
@@ -42,6 +41,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     
     public ReceivePackageGDDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -49,11 +49,12 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"RECEIVE_PACKAGE_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: id
-                "\"PACKAGE_ID\" INTEGER," + // 1: packageId
-                "\"SEND_ZALO_PAY_ID\" TEXT," + // 2: sendZaloPayID
-                "\"SEND_FULL_NAME\" TEXT," + // 3: sendFullName
-                "\"AMOUNT\" INTEGER," + // 4: amount
-                "\"OPENED_TIME\" INTEGER);"); // 5: openedTime
+                "\"BUNDLE_ID\" INTEGER," + // 1: bundleID
+                "\"REV_ZALO_PAY_ID\" TEXT," + // 2: revZaloPayID
+                "\"SEND_ZALO_PAY_ID\" TEXT," + // 3: sendZaloPayID
+                "\"SEND_FULL_NAME\" TEXT," + // 4: sendFullName
+                "\"AMOUNT\" INTEGER," + // 5: amount
+                "\"OPENED_TIME\" INTEGER);"); // 6: openedTime
     }
 
     /** Drops the underlying database table. */
@@ -68,30 +69,41 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
  
-        Long packageId = entity.getPackageId();
-        if (packageId != null) {
-            stmt.bindLong(2, packageId);
+        Long bundleID = entity.getBundleID();
+        if (bundleID != null) {
+            stmt.bindLong(2, bundleID);
+        }
+ 
+        String revZaloPayID = entity.getRevZaloPayID();
+        if (revZaloPayID != null) {
+            stmt.bindString(3, revZaloPayID);
         }
  
         String sendZaloPayID = entity.getSendZaloPayID();
         if (sendZaloPayID != null) {
-            stmt.bindString(3, sendZaloPayID);
+            stmt.bindString(4, sendZaloPayID);
         }
  
         String sendFullName = entity.getSendFullName();
         if (sendFullName != null) {
-            stmt.bindString(4, sendFullName);
+            stmt.bindString(5, sendFullName);
         }
  
         Long amount = entity.getAmount();
         if (amount != null) {
-            stmt.bindLong(5, amount);
+            stmt.bindLong(6, amount);
         }
  
         Long openedTime = entity.getOpenedTime();
         if (openedTime != null) {
-            stmt.bindLong(6, openedTime);
+            stmt.bindLong(7, openedTime);
         }
+    }
+
+    @Override
+    protected void attachEntity(ReceivePackageGD entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */
@@ -105,11 +117,12 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     public ReceivePackageGD readEntity(Cursor cursor, int offset) {
         ReceivePackageGD entity = new ReceivePackageGD( //
             cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // packageId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // sendZaloPayID
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // sendFullName
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // amount
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5) // openedTime
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // bundleID
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // revZaloPayID
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // sendZaloPayID
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sendFullName
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // amount
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6) // openedTime
         );
         return entity;
     }
@@ -118,11 +131,12 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     @Override
     public void readEntity(Cursor cursor, ReceivePackageGD entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
-        entity.setPackageId(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setSendZaloPayID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setSendFullName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setAmount(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setOpenedTime(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setBundleID(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setRevZaloPayID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setSendZaloPayID(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setSendFullName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setAmount(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setOpenedTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
      }
     
     /** @inheritdoc */
@@ -148,19 +162,4 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         return true;
     }
     
-    /** Internal query to resolve the "receivePackages" to-many relationship of ReceiveBundleGD. */
-    public List<ReceivePackageGD> _queryReceiveBundleGD_ReceivePackages(long id) {
-        synchronized (this) {
-            if (receiveBundleGD_ReceivePackagesQuery == null) {
-                QueryBuilder<ReceivePackageGD> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Id.eq(null));
-                queryBuilder.orderRaw("T.'OPENED_TIME' DESC");
-                receiveBundleGD_ReceivePackagesQuery = queryBuilder.build();
-            }
-        }
-        Query<ReceivePackageGD> query = receiveBundleGD_ReceivePackagesQuery.forCurrentThread();
-        query.setParameter(0, id);
-        return query.list();
-    }
-
 }

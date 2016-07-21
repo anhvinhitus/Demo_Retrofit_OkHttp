@@ -6,17 +6,19 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
+import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
-import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
-import vn.com.vng.zalopay.domain.model.redpacket.SentPackage;
 
 /**
  * Created by longlv on 13/07/2016.
@@ -64,39 +66,50 @@ public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<List<SentBundle>> getSentBundleList(long timestamp, int count, int order) {
+    public Observable<GetSentBundle> getSentBundleList(long timestamp, int count, int order) {
         return mRequestService.getSentBundleList(timestamp, count, order, user.uid, user.accesstoken)
                 .map(sentBundleResponse -> mDataMapper.transformToSentBundle(sentBundleResponse))
                 .doOnNext(this::insertSentBundles);
     }
 
-    private void insertSentBundles(List<SentBundle> sentBundles) {
+    private void insertSentBundles(GetSentBundle getSentBundle) {
+        if (getSentBundle == null
+                || getSentBundle.sentbundlelist == null
+                || getSentBundle.sentbundlelist.size() <= 0) {
+            return;
+        }
+        List<SentBundle> sentBundles = getSentBundle.sentbundlelist;
         List<SentBundleGD> sentBundleGDList = mDataMapper.transformToSenBundleGD(sentBundles);
         mLocalStorage.putSentBundle(sentBundleGDList);
     }
 
     @Override
-    public Observable<List<SentPackage>> getPackageInBundleList(long bundleID, long timestamp, int count, int order) {
-        return mRequestService.getPackageInBundleList(bundleID, timestamp, count, order, user.uid, user.accesstoken)
-                .map(packageInBundlesResponse -> mDataMapper.transformToSentPackage(packageInBundlesResponse))
-                .doOnNext(sentPackages -> insertSentPackage(sentPackages, bundleID));
-    }
-
-    private void insertSentPackage(List<SentPackage> sentPackages, long bundleId) {
-        List<SentPackageGD> sentPackageGDs = mDataMapper.transformToSentPackageGD(sentPackages, bundleId);
-        mLocalStorage.putSentPackage(sentPackageGDs);
-    }
-
-    @Override
-    public Observable<List<ReceivePackage>> getRevPackageList(long timestamp, int count, int order) {
+    public Observable<GetReceivePacket> getRevPackageList(long timestamp, int count, int order) {
         return mRequestService.getRevPackageList(timestamp, count, order, user.uid, user.accesstoken)
                 .map(revPackageInBundleResponse -> mDataMapper.transformToReceivePackage(revPackageInBundleResponse))
                 .doOnNext(this::insertReceivePackages);
     }
 
-    private void insertReceivePackages(List<ReceivePackage> receivePackages) {
+    private void insertReceivePackages(GetReceivePacket getReceivePacket) {
+        if (getReceivePacket == null
+                || getReceivePacket.revpackageList == null
+                || getReceivePacket.revpackageList.size() <= 0) {
+            return;
+        }
+        List<ReceivePackage> receivePackages = getReceivePacket.revpackageList;
         List<ReceivePackageGD> receivePackageGDs = mDataMapper.transformToReceivePackageDB(receivePackages);
         mLocalStorage.putReceivePackages(receivePackageGDs);
     }
 
+    @Override
+    public Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order) {
+        return mRequestService.getPackageInBundleList(bundleID, timestamp, count, order, user.uid, user.accesstoken)
+                .map(packageInBundlesResponse -> mDataMapper.transformToPackageInBundle(packageInBundlesResponse))
+                .doOnNext(packages -> insertPackageInBundle(packages));
+    }
+
+    private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
+        List<PackageInBundleGD> packageInBundleGDs = mDataMapper.transformToPackageInBundleGD(packageInBundles);
+        mLocalStorage.putPackageInBundle(packageInBundleGDs);
+    }
 }

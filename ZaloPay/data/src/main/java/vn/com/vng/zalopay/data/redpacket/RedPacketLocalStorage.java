@@ -7,17 +7,17 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
+import vn.com.vng.zalopay.data.cache.model.PackageInBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
-import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
-import vn.com.vng.zalopay.data.cache.model.SentPackageGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
-import vn.com.vng.zalopay.domain.model.redpacket.SentPackage;
 
 import static java.util.Collections.emptyList;
 
@@ -42,8 +42,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         try {
             //save SentBundle to DB
             getDaoSession().getSentBundleGDDao().insertOrReplaceInTx(sentBundleGD);
-            //save SentPackage of SentBundle to DB
-            putSentPackage(sentBundleGD.getSentPackages());
+            //save PackageInBundle of SentBundle to DB
+            putPackageInBundle(sentBundleGD.getSentPackages());
             Timber.d("putSentBundle sentBundleGD %s", sentBundleGD);
         } catch (Exception e) {
             Timber.w("Exception while trying to put SentBundle to local storage: %s", e.getMessage());
@@ -65,14 +65,14 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public void putSentPackage(List<SentPackageGD> sentPackageGDs) {
-        if (sentPackageGDs == null || sentPackageGDs.size() <= 0) {
+    public void putPackageInBundle(List<PackageInBundleGD> packageInBundleGDs) {
+        if (packageInBundleGDs == null || packageInBundleGDs.size() <= 0) {
             return;
         }
         try {
-            getDaoSession().getSentPackageGDDao().insertOrReplaceInTx(sentPackageGDs);
+            getDaoSession().getPackageInBundleGDDao().insertOrReplaceInTx(packageInBundleGDs);
 
-            Timber.d("putSentPackage sentPackage %s", sentPackageGDs);
+            Timber.d("putPackageInBundle sentPackage %s", packageInBundleGDs);
         } catch (Exception e) {
             Timber.w("Exception while trying to put sentPackage to local storage: %s", e.getMessage());
         }
@@ -97,19 +97,19 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<SentPackage>> getAllSentPackage() {
+    public Observable<List<PackageInBundle>> getPackageInBundle() {
         return ObservableHelper.makeObservable(this::querySentPackageList)
                 .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
     }
 
     @Override
-    public Observable<List<SentPackage>> getSentPackage(int pageIndex, int limit) {
+    public Observable<List<PackageInBundle>> getPackageInBundle(int pageIndex, int limit) {
         return ObservableHelper.makeObservable(() -> querySentPackageList(pageIndex, limit))
                 .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
     }
 
     @Override
-    public Observable<SentPackage> getSentPackage(long bundleID) {
+    public Observable<PackageInBundle> getPackageInBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> querySentPackage(bundleID))
                 .doOnNext(sentPackage -> Timber.d("get %s", sentPackage));
     }
@@ -129,25 +129,25 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<ReceivePackage>> getAllReceivePackage() {
+    public Observable<List<ReceivePackage>> getReceiveBundle() {
         return ObservableHelper.makeObservable(this::queryReceivePackageList)
                 .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
     @Override
-    public Observable<List<ReceivePackage>> getReceivePackage(int pageIndex, int limit) {
+    public Observable<List<ReceivePackage>> getReceiveBundle(int pageIndex, int limit) {
         return ObservableHelper.makeObservable(()-> queryReceivePackageList(pageIndex, limit))
                 .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
     @Override
-    public Observable<ReceivePackage> getReceivePackage(long bundleID) {
+    public Observable<ReceivePackage> getReceiveBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> queryReceivePackage(bundleID))
                 .doOnNext(receivePackage -> Timber.d("get %s", receivePackage));
     }
 
     private List<SentBundle> querySentBundleList() {
-        return mDataMapper.transformToSentBundle(
+        return mDataMapper.transformDBToSentBundle(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
@@ -156,7 +156,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<SentBundle> querySentBundleList(int pageIndex, int limit) {
-        return mDataMapper.transformToSentBundle(
+        return mDataMapper.transformDBToSentBundle(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
@@ -167,7 +167,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private SentBundle querySentBundle(long bundleID) {
-        List<SentBundle> sentBundles = mDataMapper.transformToSentBundle(
+        List<SentBundle> sentBundles = mDataMapper.transformDBToSentBundle(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
@@ -181,31 +181,31 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         }
     }
 
-    private List<SentPackage> querySentPackageList() {
-        return mDataMapper.transformToSentPackage(
+    private List<PackageInBundle> querySentPackageList() {
+        return mDataMapper.transformToPackageInBundle(
                 getDaoSession()
-                        .getSentPackageGDDao()
+                        .getPackageInBundleGDDao()
                         .queryBuilder()
-                        .orderDesc(SentPackageGDDao.Properties.OpenTime)
+                        .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
                         .list());
     }
 
-    private List<SentPackage> querySentPackageList(int pageIndex, int limit) {
-        return mDataMapper.transformToSentPackage(
+    private List<PackageInBundle> querySentPackageList(int pageIndex, int limit) {
+        return mDataMapper.transformToPackageInBundle(
                 getDaoSession()
-                        .getSentPackageGDDao()
+                        .getPackageInBundleGDDao()
                         .queryBuilder()
                         .offset(pageIndex * limit)
-                        .orderDesc(SentPackageGDDao.Properties.OpenTime)
+                        .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
                         .list());
     }
 
-    private SentPackage querySentPackage(long bundleID) {
-        List<SentPackage> sentPackages = mDataMapper.transformToSentPackage(
+    private PackageInBundle querySentPackage(long bundleID) {
+        List<PackageInBundle> sentPackages = mDataMapper.transformToPackageInBundle(
                 getDaoSession()
-                        .getSentPackageGDDao()
+                        .getPackageInBundleGDDao()
                         .queryBuilder()
-                        .where(SentPackageGDDao.Properties.Id.eq(bundleID))
+                        .where(PackageInBundleGDDao.Properties.Id.eq(bundleID))
                         .limit(1)
                         .list());
         if (Lists.isEmptyOrNull(sentPackages)) {
@@ -220,7 +220,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
-                        .orderDesc(ReceivePackageGDDao.Properties.PackageId)
+                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
                         .list());
     }
 
@@ -230,7 +230,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                         .getReceivePackageGDDao()
                         .queryBuilder()
                         .offset(pageIndex*limit)
-                        .orderDesc(ReceivePackageGDDao.Properties.PackageId)
+                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
                         .list());
     }
 

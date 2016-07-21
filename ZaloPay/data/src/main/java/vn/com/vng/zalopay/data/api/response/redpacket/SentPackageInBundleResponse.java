@@ -12,6 +12,6 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  */
 public class SentPackageInBundleResponse extends BaseResponse {
 
-    @SerializedName("packages")
-    public List<SentPackageResponse> packageResponses;
+    @SerializedName("packagelist")
+    public List<PackageInBundleResponse> packageResponses;
 }
