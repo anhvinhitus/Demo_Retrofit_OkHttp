@@ -16,6 +16,7 @@ public class NotificationGD {
     private Boolean read;
     private Long bundleid;
     private Long packageid;
+    private Integer notificationtype;
     private String embeddata;
 
     public NotificationGD() {
@@ -25,7 +26,7 @@ public class NotificationGD {
         this.id = id;
     }
 
-    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Boolean read, Long bundleid, Long packageid, String embeddata) {
+    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Boolean read, Long bundleid, Long packageid, Integer notificationtype, String embeddata) {
         this.id = id;
         this.transid = transid;
         this.appid = appid;
@@ -36,6 +37,7 @@ public class NotificationGD {
         this.read = read;
         this.bundleid = bundleid;
         this.packageid = packageid;
+        this.notificationtype = notificationtype;
         this.embeddata = embeddata;
     }
 
@@ -117,6 +119,14 @@ public class NotificationGD {
 
     public void setPackageid(Long packageid) {
         this.packageid = packageid;
+    }
+
+    public Integer getNotificationtype() {
+        return notificationtype;
+    }
+
+    public void setNotificationtype(Integer notificationtype) {
+        this.notificationtype = notificationtype;
     }
 
     public String getEmbeddata() {

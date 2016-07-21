@@ -103,11 +103,15 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setTimestamp(notificationEntity.getTimestamp());
         _notification.setBundleid(notificationEntity.getBundleid());
         _notification.setPackageid(notificationEntity.getPackageid());
+        _notification.setNotificationtype(notificationEntity.getNotificationType());
         JsonObject embeddataJson = notificationEntity.getEmbeddata();
 
         Timber.d("transformToNotificationGD Packageid %s Bundleid %s  ", notificationEntity.getPackageid(), notificationEntity.getBundleid());
 
-        String embeddata = embeddataJson.toString();
+        String embeddata = "";
+        if (embeddataJson != null) {
+            embeddata = embeddataJson.toString();
+        }
 
         Timber.d("embeddata put %s isRead %s  ", embeddata, notificationEntity.read);
 
@@ -141,6 +145,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setTimestamp(notificationGD.getTimestamp());
         _notification.setBundleid(notificationGD.getBundleid());
         _notification.setPackageid(notificationGD.getPackageid());
+        _notification.setNotificationtype(notificationGD.getNotificationtype());
 
         Timber.d("transformToNotificationData Packageid %s Bundleid %s  ", notificationGD.getPackageid(), notificationGD.getBundleid());
 

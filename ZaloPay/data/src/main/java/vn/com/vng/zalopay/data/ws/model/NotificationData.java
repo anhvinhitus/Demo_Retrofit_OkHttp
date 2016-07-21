@@ -144,4 +144,8 @@ public class NotificationData extends Event {
     public void setPackageid(long packageid) {
         this.packageid = packageid;
     }
+
+    public void setNotificationtype(int notificationtype) {
+        this.notificationtype = notificationtype;
+    }
 }
