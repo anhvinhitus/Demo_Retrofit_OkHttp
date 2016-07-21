@@ -34,11 +34,11 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
-import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayListener;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayListener;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
 import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialogListener;
 

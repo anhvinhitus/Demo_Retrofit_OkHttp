@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.api.response.redpackage;
+package vn.com.vng.zalopay.data.api.response.redpacket;
 
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 

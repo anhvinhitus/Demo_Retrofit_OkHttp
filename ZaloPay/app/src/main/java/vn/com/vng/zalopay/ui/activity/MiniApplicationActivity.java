@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;

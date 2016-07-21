@@ -13,10 +13,10 @@ import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
-import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpackage.SentBundle;
-import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.SentPackage;
 
 /**
  * Created by longlv on 13/07/2016.

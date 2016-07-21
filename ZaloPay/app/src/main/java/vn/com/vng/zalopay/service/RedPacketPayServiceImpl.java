@@ -8,8 +8,8 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayListener;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayListener;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 

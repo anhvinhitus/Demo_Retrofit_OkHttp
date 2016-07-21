@@ -6,16 +6,16 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import vn.com.vng.zalopay.data.api.response.redpackage.RevPackageInBundleResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SentBundleListResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SentPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.RevPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpackage.SentBundle;
-import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.SentPackage;
 
 import static java.util.Collections.emptyList;
 

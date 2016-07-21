@@ -7,21 +7,21 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.PackageStatusResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.RevPackageInBundleResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SentBundleListResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SentPackageInBundleResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.RevPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
-import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
-import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpackage.SentBundle;
-import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.SentPackage;
 
 /**
  * Created by longlv on 13/07/2016.

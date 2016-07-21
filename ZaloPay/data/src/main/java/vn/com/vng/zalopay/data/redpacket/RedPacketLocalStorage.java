@@ -15,9 +15,9 @@ import vn.com.vng.zalopay.data.cache.model.SentPackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentPackageGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.model.redpackage.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpackage.SentBundle;
-import vn.com.vng.zalopay.domain.model.redpackage.SentPackage;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.SentPackage;
 
 import static java.util.Collections.emptyList;
 

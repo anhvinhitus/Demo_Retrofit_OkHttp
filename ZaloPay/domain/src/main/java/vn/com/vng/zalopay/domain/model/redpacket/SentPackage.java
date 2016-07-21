@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.domain.model.redpackage;
+package vn.com.vng.zalopay.domain.model.redpacket;
 
 import android.os.Parcel;
 import android.os.Parcelable;

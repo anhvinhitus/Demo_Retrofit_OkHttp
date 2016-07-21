@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
-import vn.com.vng.zalopay.mdl.redpackage.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
 
 /**

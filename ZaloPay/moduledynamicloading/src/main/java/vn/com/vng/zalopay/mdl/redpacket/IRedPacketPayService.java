@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.redpackage;
+package vn.com.vng.zalopay.mdl.redpacket;
 
 import android.app.Activity;
 
