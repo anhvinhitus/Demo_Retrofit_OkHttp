@@ -365,14 +365,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule imple
                 .map(new Func1<List<ZaloFriendGD>, WritableArray>() {
                     @Override
                     public WritableArray call(List<ZaloFriendGD> zaloFriendGDs) {
-                        return transforListFriend(zaloFriendGDs);
+                        return transformListFriend(zaloFriendGDs);
                     }
                 })
                 .subscribe(new GetAllFriendSubscriber(promise));
         compositeSubscription.add(subscription);
     }
 
-    private WritableArray transforListFriend(List<ZaloFriendGD> zaloFriendGDs) {
+    private WritableArray transformListFriend(List<ZaloFriendGD> zaloFriendGDs) {
         if (Lists.isEmptyOrNull(zaloFriendGDs))
             return null;
         WritableArray listFriends = Arguments.createArray();
@@ -404,6 +404,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule imple
         writableMap.putDouble("balance", packageStatus.balance);
         writableMap.putString("data", packageStatus.data);
         return writableMap;
+    }
+
+    @ReactMethod
+    public void getPackageInBundle(String bundleID) {
+
     }
 
     @Override

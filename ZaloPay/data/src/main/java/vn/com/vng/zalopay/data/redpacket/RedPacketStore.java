@@ -69,13 +69,12 @@ public interface RedPacketStore {
         Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
 
         @FormUrlEncoded
-        @POST("/rpe/getPackageInBundleList")
-        Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleid") long bundleid, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
+        @POST("/rpe/getRevPackageList")
+        Observable<RevPackageInBundleResponse> getRevPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
 
         @FormUrlEncoded
-        @POST("/rpe/getRevPackageList")
-        Observable<RevPackageInBundleResponse> getRevPackageList(@Field("bundleid") long bundleid, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
-
+        @POST("/rpe/getPackageInBundleList")
+        Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleid") long bundleid, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
     }
 
     /**
@@ -92,8 +91,8 @@ public interface RedPacketStore {
 
         Observable<List<SentBundle>> getSentBundleList(long timestamp, int count, int order);
 
-        Observable<List<SentPackage>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
+        Observable<List<ReceivePackage>> getRevPackageList(long timestamp, int count, int order);
 
-        Observable<List<ReceivePackage>> getRevPackageList(long bundleID, long timestamp, int count, int order);
+        Observable<List<SentPackage>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
     }
 }
