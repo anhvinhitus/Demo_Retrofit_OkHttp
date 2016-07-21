@@ -77,9 +77,7 @@ public class RedPackageRepositoryTest {
         baseResponse.message="";
 
         submitOpenPackageResponse = new SubmitOpenPackageResponse();
-        submitOpenPackageResponse.bundleId = 123321L;
-        submitOpenPackageResponse.packageID = 987L;
-        submitOpenPackageResponse.zpTransID = 123456;
+        submitOpenPackageResponse.zptransid = 123456;
     }
 
     @Before

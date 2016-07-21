@@ -7,7 +7,5 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  * Data of sendbundle request
  */
 public class SubmitOpenPackageResponse extends BaseResponse{
-    public long bundleId;
-    public long packageID;
-    public long zpTransID;
+    public long zptransid;
 }

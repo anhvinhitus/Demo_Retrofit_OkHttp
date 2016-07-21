@@ -54,7 +54,7 @@ public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
     @Override
     public Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID) {
         return mRequestService.submitOpenPackage(packageID, bundleID, user.uid, user.accesstoken)
-                .map(redPackageResponse -> new SubmitOpenPackage(bundleID, packageID, redPackageResponse.zpTransID));
+                .map(redPackageResponse -> new SubmitOpenPackage(bundleID, packageID, redPackageResponse.zptransid));
     }
 
     @Override
