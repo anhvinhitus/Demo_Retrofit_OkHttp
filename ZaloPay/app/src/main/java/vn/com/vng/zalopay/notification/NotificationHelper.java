@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
@@ -69,7 +68,7 @@ public class NotificationHelper {
                 .setAutoCancel(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
             builder.setLargeIcon(bm);
             builder.setSmallIcon(R.drawable.ic_notify);
         } else {
@@ -157,7 +156,7 @@ public class NotificationHelper {
             String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
             String title = context.getString(R.string.app_name);
 
-            int notificationId = 1;
+            int notificationId = (int)event.getTransid();
             int notificationType = event.getNotificationType();
             int transType = event.getTransType();
 

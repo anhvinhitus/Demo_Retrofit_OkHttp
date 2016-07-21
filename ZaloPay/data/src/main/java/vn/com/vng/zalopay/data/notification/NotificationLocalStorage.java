@@ -12,15 +12,14 @@ import java.util.List;
 import de.greenrobot.dao.async.AsyncSession;
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static java.util.Collections.emptyList;
@@ -50,8 +49,6 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
         }
-
-
     }
 
     @Override
@@ -104,8 +101,11 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationEntity.getDestuserid());
         _notification.setMessage(notificationEntity.getMessage());
         _notification.setTimestamp(notificationEntity.getTimestamp());
+        _notification.setBundleid(notificationEntity.getBundleid());
+        _notification.setPackageid(notificationEntity.getPackageid());
         JsonObject embeddataJson = notificationEntity.getEmbeddata();
 
+        Timber.d("transformToNotificationGD Packageid %s Bundleid %s  ", notificationEntity.getPackageid(), notificationEntity.getBundleid());
 
         String embeddata = embeddataJson.toString();
 
@@ -139,6 +139,11 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationGD.getDestuserid());
         _notification.setMessage(notificationGD.getMessage());
         _notification.setTimestamp(notificationGD.getTimestamp());
+        _notification.setBundleid(notificationGD.getBundleid());
+        _notification.setPackageid(notificationGD.getPackageid());
+
+        Timber.d("transformToNotificationData Packageid %s Bundleid %s  ", notificationGD.getPackageid(), notificationGD.getBundleid());
+
         String embeddata = notificationGD.getEmbeddata();
 
         Timber.d("embeddata get %s ", embeddata);

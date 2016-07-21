@@ -31,7 +31,9 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
         public final static Property Userid = new Property(5, String.class, "userid", false, "USERID");
         public final static Property Destuserid = new Property(6, String.class, "destuserid", false, "DESTUSERID");
         public final static Property Read = new Property(7, Boolean.class, "read", false, "READ");
-        public final static Property Embeddata = new Property(8, String.class, "embeddata", false, "EMBEDDATA");
+        public final static Property Bundleid = new Property(8, Long.class, "bundleid", false, "BUNDLEID");
+        public final static Property Packageid = new Property(9, Long.class, "packageid", false, "PACKAGEID");
+        public final static Property Embeddata = new Property(10, String.class, "embeddata", false, "EMBEDDATA");
     };
 
 
@@ -55,7 +57,9 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
                 "\"USERID\" TEXT," + // 5: userid
                 "\"DESTUSERID\" TEXT," + // 6: destuserid
                 "\"READ\" INTEGER," + // 7: read
-                "\"EMBEDDATA\" TEXT);"); // 8: embeddata
+                "\"BUNDLEID\" INTEGER," + // 8: bundleid
+                "\"PACKAGEID\" INTEGER," + // 9: packageid
+                "\"EMBEDDATA\" TEXT);"); // 10: embeddata
     }
 
     /** Drops the underlying database table. */
@@ -109,9 +113,19 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
             stmt.bindLong(8, read ? 1L: 0L);
         }
  
+        Long bundleid = entity.getBundleid();
+        if (bundleid != null) {
+            stmt.bindLong(9, bundleid);
+        }
+ 
+        Long packageid = entity.getPackageid();
+        if (packageid != null) {
+            stmt.bindLong(10, packageid);
+        }
+ 
         String embeddata = entity.getEmbeddata();
         if (embeddata != null) {
-            stmt.bindString(9, embeddata);
+            stmt.bindString(11, embeddata);
         }
     }
 
@@ -133,7 +147,9 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // userid
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // destuserid
             cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0, // read
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // embeddata
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // bundleid
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // packageid
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // embeddata
         );
         return entity;
     }
@@ -149,7 +165,9 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
         entity.setUserid(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDestuserid(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setRead(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
-        entity.setEmbeddata(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setBundleid(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setPackageid(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setEmbeddata(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     /** @inheritdoc */

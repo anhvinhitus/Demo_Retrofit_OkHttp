@@ -159,7 +159,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
     private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            if (msg == null) {
+            if (msg == null || ZaloContactPresenter.this.mView == null) {
                 return;
             }
             if (msg.what == EGetZaloFriendListener.GetZaloFriendError.getValue()) {

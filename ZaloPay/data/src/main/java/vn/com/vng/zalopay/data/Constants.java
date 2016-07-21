@@ -24,6 +24,4 @@ public class Constants {
 
     public static final String MANIF_LASTTIME_UPDATE_ZALO_FRIEND = "manif_lt_zalo_friend";
 
-    public static final String PARAM_RESPONSE_NOTIFICATION_TYPE = "notificationtype";
-
 }

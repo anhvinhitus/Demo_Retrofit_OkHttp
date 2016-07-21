@@ -4,10 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.ws.model.Event;
-
 /**
  * Created by AnhHieu on 6/20/16.
  */
@@ -28,11 +24,23 @@ public class NotificationData extends Event {
     @SerializedName("embeddata")
     public JsonObject embeddata;
 
+    @SerializedName("transtype")
+    public int transtype;
+
+    @SerializedName("notificationtype")
+    public int notificationtype;
+
     @SerializedName("userid")
     public String userid;
 
     @SerializedName("destuserid")
     public String destuserid;
+
+    @SerializedName("bundleid")
+    public long bundleid;
+
+    @SerializedName("packageid")
+    public long packageid;
 
     @Expose(deserialize = false, serialize = false)
     public boolean read;
@@ -114,26 +122,26 @@ public class NotificationData extends Event {
     }
 
     public int getTransType() {
-        int transType = -1;
-        try {
-            if (embeddata.has(Constants.TRANSTYPE)) {
-                transType = embeddata.get(Constants.TRANSTYPE).getAsInt();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return transType;
+        return transtype;
     }
 
     public int getNotificationType() {
-        int notificationType = -1;
-        try {
-            if (embeddata.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
-                notificationType = embeddata.get(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return notificationType;
+        return notificationtype;
+    }
+
+    public long getBundleid() {
+        return bundleid;
+    }
+
+    public long getPackageid() {
+        return packageid;
+    }
+
+    public void setBundleid(long bundleid) {
+        this.bundleid = bundleid;
+    }
+
+    public void setPackageid(long packageid) {
+        this.packageid = packageid;
     }
 }

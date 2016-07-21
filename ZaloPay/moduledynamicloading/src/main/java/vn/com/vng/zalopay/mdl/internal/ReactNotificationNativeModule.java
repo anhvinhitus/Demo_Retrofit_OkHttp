@@ -11,7 +11,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.google.gson.JsonObject;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -20,10 +19,9 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.message.TransactionType;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
@@ -118,21 +116,13 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putInt("appid", entity.appid);
         item.putString("destuserid", entity.destuserid);
 
-        int transtype = 0;
-        int notificationtype = 1;
+        Timber.d("transform bundleid [%s] packageid [%s]", entity.bundleid, entity.packageid);
 
-        try {
-            JsonObject embeddata = entity.getEmbeddata();
-            if (embeddata.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
-                notificationtype = embeddata.get(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
-            }
+        item.putString("packageid", String.valueOf(entity.packageid));
+        item.putString("bundleid", String.valueOf(entity.bundleid));
 
-            if (embeddata.has(Constants.TRANSTYPE)) {
-                transtype = embeddata.get(Constants.TRANSTYPE).getAsInt();
-            }
-        } catch (Exception ex) {
-            Timber.w(ex, " exception parse");
-        }
+        int transtype = entity.transtype;
+        int notificationtype = entity.notificationtype;
 
         Timber.d("transtype %s notificationtype %s", transtype, notificationtype);
 

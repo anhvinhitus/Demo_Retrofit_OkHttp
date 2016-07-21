@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -19,19 +20,19 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BundleOrder;
 import vn.com.vng.zalopay.domain.model.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.redpackage.PackageStatus;
-import vn.com.vng.zalopay.mdl.BuildConfig;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.internal.subscriber.OpenPackageSubscriber;
@@ -74,7 +75,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     @ReactMethod
     public void createRedPacketBundleOrder(int quantity, double totalLuck, double amountEach, int type, String sendMessage, final Promise promise) {
         Subscription subscription = mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
-                .subscribe(new Subscriber<BundleOrder>() {
+                .subscribe(new DefaultSubscriber<BundleOrder>() {
                     @Override
                     public void onCompleted() {
 
@@ -83,17 +84,18 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                     @Override
                     public void onError(Throwable e) {
                         Timber.w(e, "error on getting CreateBundleOrderSubscriber");
-                        if (promise == null) {
-                            return;
+                        if (e instanceof BodyException) {
+                            int errorCode = ((BodyException) e).errorCode;
+                            String message = ((BodyException) e).message;
+                            errorCallback(promise, errorCode, message);
                         }
-                        promise.reject(e.getMessage());
                     }
 
                     @Override
                     public void onNext(BundleOrder bundleOrder) {
                         Timber.d("onNext bundleOrder [%s]", bundleOrder);
                         if (bundleOrder == null) {
-                            promise.reject(String.valueOf(PaymentError.ERR_CODE_INPUT), "bundleOrder null");
+                            errorCallback(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
                         } else {
                             pay(bundleOrder, promise);
                         }
@@ -109,31 +111,24 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
         mPaymentService.pay(getCurrentActivity(), bundleOrder, new IRedPacketPayListener() {
             @Override
             public void onParameterError(String param) {
-                if (promise == null) {
-                    return;
-                }
-                promise.reject(String.valueOf(PaymentError.ERR_CODE_INPUT), param);
+                Timber.d("onParameterError");
+                errorCallback(promise, PaymentError.ERR_CODE_INPUT, param);
             }
 
             @Override
             public void onResponseError(int status) {
-                if (promise == null) {
-                    return;
-                }
-                WritableMap item = Arguments.createMap();
-                item.putInt("code", status);
-                item.putString("message", PaymentError.getErrorMessage(status));
-                promise.resolve(item);
+                Timber.d("onResponseError status [%s]", status);
+                errorCallback(promise, status, PaymentError.getErrorMessage(status));
             }
 
             @Override
             public void onResponseSuccess(Bundle bundle) {
-                if (promise == null || bundleOrder == null) {
-                    return;
+                Timber.d("onResponseSuccess bundle [%s]", bundle);
+                WritableMap data = Arguments.createMap();
+                if (bundleOrder != null) {
+                    data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
                 }
-                WritableMap item = Arguments.createMap();
-                item.putString("bundleid", String.valueOf(bundleOrder.bundleId));
-                promise.resolve(item);
+                successCallback(promise, data);
             }
 
             @Override
@@ -143,10 +138,8 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
             @Override
             public void onResponseCancel() {
-                if (promise == null) {
-                    return;
-                }
-                promise.reject(String.valueOf(PaymentError.ERR_CODE_USER_CANCEL), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                Timber.d("onResponseCancel");
+                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
             }
 
             @Override
@@ -176,7 +169,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                         return aBoolean;
                     }
                 })
-                .subscribe(new Subscriber<Boolean>() {
+                .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
 
@@ -185,41 +178,53 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                     @Override
                     public void onError(Throwable e) {
                         Timber.w(e, "error on getting SubmitToSendSubscriber");
-                        if (promise == null) {
-                            return;
+                        if (e instanceof BodyException) {
+                            int errorCode = ((BodyException) e).errorCode;
+                            String message = ((BodyException) e).message;
+                            errorCallback(promise, errorCode, message);
                         }
-
-                        promise.reject(e);
                     }
 
                     @Override
                     public void onNext(Boolean result) {
                         Timber.d("onNext result [%s]", result);
-                        if (promise == null) {
-                            return;
-                        }
-                        promise.resolve(result);
+                        WritableMap writableMap = Arguments.createMap();
+                        writableMap.putBoolean("result", result);
+                        successCallback(promise, writableMap);
                     }
                 });
         compositeSubscription.add(subscription);
     }
 
     private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
-        if (mTimerGetTranStatus == null) mTimerGetTranStatus = new CountDownTimer(30000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                getTransactionStatus(packageId, zpTransId, promise);
-            }
+        Timber.d("startTaskGetTransactionStatus packetId [%s] transId [%s]", packageId, zpTransId);
+        if (mTimerGetTranStatus == null) {
+            mTimerGetTranStatus = new CountDownTimer(30000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Timber.d("onTick");
+                    getpackagestatus(packageId, zpTransId, promise);
+                }
 
-            @Override
-            public void onFinish() {
-                showDialogRetryGetTranStatus(packageId, zpTransId, promise);
-            }
-        };
-        else {
+                @Override
+                public void onFinish() {
+                    Timber.d("onFinish");
+                    hideLoading();
+                    showDialogRetryGetTranStatus(packageId, zpTransId, promise);
+                }
+            };
+        } else {
             mTimerGetTranStatus.cancel();
         }
         mTimerGetTranStatus.start();
+    }
+
+    private void showLoading() {
+        sweetAlertDialog.showLoading(getCurrentActivity());
+    }
+
+    private void hideLoading() {
+        sweetAlertDialog.hideLoading();
     }
 
     private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
@@ -231,7 +236,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
         ISweetAlertDialogListener onCancelListener = new ISweetAlertDialogListener() {
             @Override
             public void onClick(Dialog dialog) {
-                promise.reject(String.valueOf(PaymentError.ERR_CODE_USER_CANCEL), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
                 dialog.dismiss();
             }
         };
@@ -244,18 +249,19 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             }
         };
 
-        sweetAlertDialog.showWarningAlertDialog(getCurrentActivity(), "Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp ?", "Đóng",
+        sweetAlertDialog.showWarningAlertDialog(getCurrentActivity(), "Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp tục?", "Đóng",
                 onCancelListener, "Thử lại", onConfirmListener);
         Timber.d("showDialogRetryGetTranStatus end");
     }
 
-    private void getTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
+    private void getpackagestatus(final long packageId, final long zpTransId, final Promise promise) {
+        Timber.d("getpackagestatus isRunningGetTranStatus [%s]", isRunningGetTranStatus);
         if (isRunningGetTranStatus) {
             return;
         }
         isRunningGetTranStatus = true;
         mRedPackageRepository.getpackagestatus(packageId, zpTransId)
-                .subscribe(new Subscriber<PackageStatus>() {
+                .subscribe(new DefaultSubscriber<PackageStatus>() {
                     @Override
                     public void onCompleted() {
 
@@ -263,13 +269,15 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Timber.d("getpackagestatus onError");
+                        isRunningGetTranStatus = false;
                     }
 
                     @Override
                     public void onNext(PackageStatus packageStatus) {
-                        if (promise == null) {
-                            return;
+                        Timber.d("getpackagestatus onNext start");
+                        if (mTimerGetTranStatus != null) {
+                            mTimerGetTranStatus.cancel();
                         }
                         WritableMap writableMap = Arguments.createMap();
                         writableMap.putBoolean("isProcessing", packageStatus.isProcessing);
@@ -278,7 +286,8 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                         writableMap.putString("nextAction", packageStatus.nextAction);
                         writableMap.putString("data", packageStatus.data);
                         writableMap.putDouble("balance", packageStatus.balance);
-                        promise.resolve(writableMap);
+                        successCallback(promise, writableMap);
+                        isRunningGetTranStatus = false;
                     }
                 });
     }
@@ -293,9 +302,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             try {
                 friendId = Long.valueOf(friends.getString(i));
             } catch (NumberFormatException e) {
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace();
-                }
+                Timber.e(e, "transform friends from react native");
             }
             if (friendId <= 0) {
                 continue;
@@ -307,6 +314,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
     @ReactMethod
     public void openPacket(String strPackageID, String strBundleID, final Promise promise) {
+        Timber.d("openPacket start");
         final long packageID;
         final long bundleID;
         try {
@@ -314,13 +322,16 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "openPacket throw NumberFormatException");
+            errorCallback(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
+        Timber.d("openPacket packageID [%s] bundleID [%s]", packageID, bundleID);
         if (packageID <= 0 || bundleID <= 0) {
+            errorCallback(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
         Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
-                .subscribe(new Subscriber<SubmitOpenPackage>() {
+                .subscribe(new DefaultSubscriber<SubmitOpenPackage>() {
                     @Override
                     public void onCompleted() {
 
@@ -329,19 +340,19 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
                     @Override
                     public void onError(Throwable e) {
                         Timber.w(e, "error on openPacket");
-                        if (promise == null) {
-                            return;
+                        if (e instanceof BodyException) {
+                            int errorCode = ((BodyException) e).errorCode;
+                            String message = ((BodyException) e).message;
+                            errorCallback(promise, errorCode, message);
+                        } else {
+                            errorCallback(promise, PaymentError.ERR_CODE_UNKNOWN, null);
                         }
-
-                        promise.reject(e);
                     }
 
                     @Override
                     public void onNext(SubmitOpenPackage submitOpenPackage) {
                         Timber.d("openPacket %s", submitOpenPackage);
-                        if (promise == null) {
-                            return;
-                        }
+                        showLoading();
                         startTaskGetTransactionStatus(submitOpenPackage.packageID, submitOpenPackage.zpTransID, promise);
                     }
                 });
@@ -384,6 +395,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
 
     @ReactMethod
     public void requestStatusWithTransId(String strTransid, String strPackageId, Promise promise) {
+        Timber.d("requestStatusWithTransId transId [%s] packetId [%s]", strTransid, strPackageId);
         long transid = 0;
         long packageId = 0;
         try {
@@ -446,5 +458,31 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
         if (subscription != null) {
             subscription.clear();
         }
+    }
+
+    private void successCallback(Promise promise, WritableMap object) {
+        Timber.d("successCallback promise [%s]", promise);
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        if (object != null) {
+            item.putMap("data", object);
+        }
+        promise.resolve(item);
+    }
+
+    private void errorCallback(Promise promise, int errorCode, String message) {
+        Timber.d("errorCallback start");
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", errorCode);
+        if (!TextUtils.isEmpty(message)) {
+            item.putString("message", message);
+        }
+        promise.resolve(item);
     }
 }

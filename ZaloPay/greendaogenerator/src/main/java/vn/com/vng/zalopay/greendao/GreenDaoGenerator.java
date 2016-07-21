@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 20;
+    private static final int APP_DB_VERSION = 23;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -90,8 +90,7 @@ public class GreenDaoGenerator {
 
     private static void addTransferRecent(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("TransferRecent");
-        appInfoEntity.addIdProperty();//zaloId
-//        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addIdProperty().autoincrement();//zaloId
         appInfoEntity.addStringProperty("zaloPayId");
         appInfoEntity.addStringProperty("userName");
         appInfoEntity.addStringProperty("displayName");
@@ -103,6 +102,7 @@ public class GreenDaoGenerator {
         appInfoEntity.addIntProperty("transferType");
         appInfoEntity.addLongProperty("amount");
         appInfoEntity.addStringProperty("message");
+        appInfoEntity.addLongProperty("timeCreate");
     }
 
     private static void addApplicationInfo(Schema schema) {
@@ -196,7 +196,9 @@ public class GreenDaoGenerator {
         notificationGD.addStringProperty("userid");
         notificationGD.addStringProperty("destuserid");
         notificationGD.addBooleanProperty("read");
-        
+        notificationGD.addLongProperty("bundleid");
+        notificationGD.addLongProperty("packageid");
+
         notificationGD.addStringProperty("embeddata");
     }
 

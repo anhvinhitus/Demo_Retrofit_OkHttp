@@ -8,5 +8,7 @@ import android.content.Context;
  */
 public interface ISweetAlertDialog {
 
+    void showLoading(Context context);
+    void hideLoading();
     void showWarningAlertDialog(Context context, String contentText, String cancelText, ISweetAlertDialogListener cancelClick, String ConfirmText, ISweetAlertDialogListener confirmClick);
 }
