@@ -9,6 +9,6 @@ public class UserProfileLevelResponse extends UpdateProfileResponse {
     @SerializedName("email")
     public String email;
 
-    @SerializedName("identitynumber")
+    @SerializedName("identity")
     public String identityNumber;
 }
