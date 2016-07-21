@@ -15,7 +15,7 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 19/07/2016.
- * This is payment service that RedPackage module used to pay by zaloPaymentSDK
+ * This is payment service that RedPacket module used to pay by zaloPaymentSDK
  */
 public class RedPacketPayServiceImpl implements IRedPacketPayService {
     final BalanceStore.Repository mBalanceRepository;

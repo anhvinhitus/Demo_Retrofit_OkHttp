@@ -8,9 +8,9 @@ import java.util.List;
 
 /**
  * Created by longlv on 14/07/2016.
- * RedPackage save redPackage that user sent
+ * RedPacket save redPackage that user sent
  */
-public class RedPackage extends AbstractData {
+public class RedPacket extends AbstractData {
     public long bundleId;
     public int quantity;
     public long totalLuck;
@@ -20,11 +20,11 @@ public class RedPackage extends AbstractData {
     public List<Person> friends;
     public int state;
 
-    public enum RedPackageState {
+    public enum RedPacketState {
         CREATE(0), SENT(1);
         private int value;
 
-        RedPackageState(int value) {
+        RedPacketState(int value) {
             this.value = value;
         }
 
@@ -33,7 +33,7 @@ public class RedPackage extends AbstractData {
         }
     }
 
-    public RedPackage(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage) {
+    public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage) {
         this.bundleId = bundleId;
         this.quantity = quantity;
         this.totalLuck = totalLuck;
@@ -41,10 +41,10 @@ public class RedPackage extends AbstractData {
         this.type = type;
         this.sendMessage = sendMessage;
         this.friends = new ArrayList<>();
-        this.state = RedPackageState.CREATE.getValue();
+        this.state = RedPacketState.CREATE.getValue();
     }
 
-    public RedPackage(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage, List<Person> friends, int state) {
+    public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage, List<Person> friends, int state) {
         this.bundleId = bundleId;
         this.quantity = quantity;
         this.totalLuck = totalLuck;
@@ -55,7 +55,7 @@ public class RedPackage extends AbstractData {
         this.state = state;
     }
 
-    public RedPackage(Parcel source) {
+    public RedPacket(Parcel source) {
         source.writeLong(bundleId);
         source.writeInt(quantity);
         source.writeLong(totalLuck);
@@ -77,15 +77,15 @@ public class RedPackage extends AbstractData {
         dest.readList(friends, null);
     }
 
-    public final Parcelable.Creator<RedPackage> CREATOR = new Parcelable.Creator<RedPackage>() {
+    public final Parcelable.Creator<RedPacket> CREATOR = new Parcelable.Creator<RedPacket>() {
         @Override
-        public RedPackage createFromParcel(Parcel source) {
-            return new RedPackage(source);
+        public RedPacket createFromParcel(Parcel source) {
+            return new RedPacket(source);
         }
 
         @Override
-        public RedPackage[] newArray(int size) {
-            return new RedPackage[size];
+        public RedPacket[] newArray(int size) {
+            return new RedPacket[size];
         }
     };
 }

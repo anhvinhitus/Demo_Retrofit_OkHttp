@@ -46,7 +46,7 @@ import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialogListener;
  * Created by longlv on 17/07/2016.
  * define methods that had been called by React Native
  */
-public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
@@ -58,7 +58,7 @@ public class ReactRedPackageNativeModule extends ReactContextBaseJavaModule impl
     private CountDownTimer mTimerGetTranStatus;
     private boolean isRunningGetTranStatus;
 
-    public ReactRedPackageNativeModule(ReactApplicationContext reactContext, RedPacketStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPacketPayService payService, ISweetAlertDialog sweetAlertDialog) {
+    public ReactRedPacketNativeModule(ReactApplicationContext reactContext, RedPacketStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPacketPayService payService, ISweetAlertDialog sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;

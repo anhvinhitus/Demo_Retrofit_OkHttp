@@ -170,7 +170,7 @@ public class RedPackageRepositoryTest {
     @Test
     public void testRedPackage() throws Exception{
 //        CountDownLatch countDownLatch = new CountDownLatch(6);
-//        final List<RedPackage> redPackages = new ArrayList<>();
+//        final List<RedPacket> redPackages = new ArrayList<>();
 //        final List<BundleOrder> bundleOrders = new ArrayList<>();
 
 //        mRequestService.sendBundle(bundleOrderResponse.bundleID, "u1|u2|u3", "323242", "adsfsafa")
@@ -189,12 +189,12 @@ public class RedPackageRepositoryTest {
 //            @Override
 //            public void onNext(BaseResponse baseResponse) {
 //                System.out.println("Got baseResponse: " + String.valueOf(baseResponse));
-//                mLocalStorage.updateRedPackage(bundleOrderResponse.bundleID, RedPackage.RedPackageState.SENT.getValue());
+//                mLocalStorage.updateRedPackage(bundleOrderResponse.bundleID, RedPacket.RedPacketState.SENT.getValue());
 //                countDownLatch.countDown();
 //            }
 //        });
 
-//        mLocalStorage.getAllRedPackage().subscribe(new Observer<List<RedPackage>>() {
+//        mLocalStorage.getAllRedPackage().subscribe(new Observer<List<RedPacket>>() {
 //            @Override
 //            public void onCompleted() {
 //                countDownLatch.countDown();
@@ -207,7 +207,7 @@ public class RedPackageRepositoryTest {
 //            }
 //
 //            @Override
-//            public void onNext(List<RedPackage> redPackageList) {
+//            public void onNext(List<RedPacket> redPackageList) {
 //                for (int i = 0; i < redPackageList.size(); i++) {
 //                    System.out.print("bundleId:" + redPackageList.get(i).bundleId);
 //                    System.out.print("state:" + redPackageList.get(i).state);
