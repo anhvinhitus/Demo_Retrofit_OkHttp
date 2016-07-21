@@ -18,6 +18,7 @@ public class TransferRecent {
     private Integer transferType;
     private Long amount;
     private String message;
+    private Long timeCreate;
 
     public TransferRecent() {
     }
@@ -26,7 +27,7 @@ public class TransferRecent {
         this.id = id;
     }
 
-    public TransferRecent(Long id, String zaloPayId, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String phoneNumber, Integer transferType, Long amount, String message) {
+    public TransferRecent(Long id, String zaloPayId, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String phoneNumber, Integer transferType, Long amount, String message, Long timeCreate) {
         this.id = id;
         this.zaloPayId = zaloPayId;
         this.userName = userName;
@@ -39,6 +40,7 @@ public class TransferRecent {
         this.transferType = transferType;
         this.amount = amount;
         this.message = message;
+        this.timeCreate = timeCreate;
     }
 
     public Long getId() {
@@ -135,6 +137,14 @@ public class TransferRecent {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Long getTimeCreate() {
+        return timeCreate;
+    }
+
+    public void setTimeCreate(Long timeCreate) {
+        this.timeCreate = timeCreate;
     }
 
 }

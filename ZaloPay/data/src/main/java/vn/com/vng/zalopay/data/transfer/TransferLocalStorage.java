@@ -21,7 +21,7 @@ public class TransferLocalStorage implements TransferStore.LocalStorage {
 
     @Override
     public Observable<List<TransferRecent>> get() {
-        return ObservableHelper.makeObservable(() -> mDao.queryBuilder().orderDesc(TransferRecentDao.Properties.Id).limit(3).list());
+        return ObservableHelper.makeObservable(() -> mDao.queryBuilder().orderDesc(TransferRecentDao.Properties.TimeCreate).limit(3).list());
     }
 
     @Override
