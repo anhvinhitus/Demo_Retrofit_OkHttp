@@ -85,7 +85,7 @@ public class AndroidApplication extends MultiDexApplication {
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
         ZingMobilePayApplication.wrap(this);
-        Constants.IS_RELEASE = BuildConfig.ENV_LIVE;
+        Constants.IS_RELEASE = !BuildConfig.DEBUG;
         // Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
         Constants.setEnumEnvironment(BuildConfig.HOST_TYPE);
 
