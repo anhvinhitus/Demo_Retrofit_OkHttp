@@ -8,12 +8,21 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.OTPRecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IOTPRecoveryPinView;
+import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 
 /**
@@ -30,6 +39,9 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
     @Inject
     OTPRecoveryPinPresenter presenter;
+
+    @Inject
+    EventBus mEventBus;
 
     @BindView(R.id.textInputOTP)
     TextInputLayout textInputOTP;
@@ -109,6 +121,9 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
     public void onResume() {
         super.onResume();
         presenter.resume();
+
+        Timber.d("Register OTPRecoveryPinFragment to eventbus");
+        mEventBus.register(this);
     }
 
     @Override
@@ -126,6 +141,8 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
     @Override
     public void onDestroy() {
         presenter.destroy();
+        Timber.d("Unregister OTPRecoveryPinFragment from eventbus");
+        mEventBus.unregister(this);
         super.onDestroy();
     }
 
@@ -176,6 +193,22 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
         showToast(messageResource);
     }
 
+
+    @Subscribe
+    void onReceiveSmsMessages(ReceiveSmsEvent event) {
+        String pattern = "(.*)(\\d{6})(.*)";
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+
+        for (ReceiveSmsEvent.SmsMessage message : event.messages) {
+            Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
+            Matcher m = r.matcher(message.body);
+            if (m.find()) {
+                Timber.d("Found OTP: %s", m.group(2));
+                edtOTP.setText(m.group(2));
+            }
+        }
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

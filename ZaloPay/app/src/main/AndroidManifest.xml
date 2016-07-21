@@ -35,6 +35,8 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
 
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
     <permission
         android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -182,6 +184,13 @@
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- SMS -->
+        <receiver android:name=".receiver.SmsReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 

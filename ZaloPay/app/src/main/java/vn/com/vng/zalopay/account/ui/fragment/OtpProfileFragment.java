@@ -8,12 +8,20 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
+import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 
 /**
@@ -29,6 +37,9 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     private int mRetryOtp = 0;
     @Inject
     OTPProfilePresenter presenter;
+
+    @Inject
+    EventBus mEventBus;
 
     @BindView(R.id.textInputOTP)
     TextInputLayout textInputOTP;
@@ -109,6 +120,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     public void onResume() {
         super.onResume();
         presenter.resume();
+        mEventBus.register(this);
     }
 
     @Override
@@ -126,6 +138,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     @Override
     public void onDestroy() {
         presenter.destroy();
+        mEventBus.unregister(this);
         super.onDestroy();
     }
 
@@ -174,6 +187,22 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     public void showError(int messageResource) {
         showToast(messageResource);
+    }
+
+    @Subscribe
+    void onReceiveSmsMessages(ReceiveSmsEvent event) {
+        String pattern = "(.*)(\\d{6})(.*)";
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+
+        for (ReceiveSmsEvent.SmsMessage message : event.messages) {
+            Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
+            Matcher m = r.matcher(message.body);
+            if (m.find()) {
+                Timber.d("Found OTP: %s", m.group(2));
+                edtOTP.setText(m.group(2));
+            }
+        }
     }
 
     /**
