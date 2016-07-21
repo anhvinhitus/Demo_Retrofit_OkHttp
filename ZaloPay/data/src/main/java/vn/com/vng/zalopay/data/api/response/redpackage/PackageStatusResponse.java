@@ -7,10 +7,10 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  * Data of getpackagestatus request
  */
 public class PackageStatusResponse extends BaseResponse {
-    public boolean isProcessing;
+    public boolean isprocessing;
     public long amount;
-    public String zpTransID;
-    public String nextAction;
+    public String zptransid;
     public String data;
     public long balance;
+    public long reqdate;
 }

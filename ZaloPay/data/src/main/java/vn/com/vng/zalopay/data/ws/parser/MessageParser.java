@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.data.ws.parser;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -87,15 +86,15 @@ public class MessageParser implements Parser {
             try {
                 event = mGson.fromJson(str, NotificationData.class);
                 event.setMsgType(msgType);
-                JsonObject embeddataJson = event.getEmbeddata();
-                if (embeddataJson != null) {
-                    if (embeddataJson.has("bundleid")) {
-                        event.setBundleid(embeddataJson.get("bundleid").getAsLong());
-                    }
-                    if (embeddataJson.has("packageid")) {
-                        event.setPackageid(embeddataJson.get("packageid").getAsLong());
-                    }
-                }
+//                JsonObject embeddataJson = event.getEmbeddata();
+//                if (embeddataJson != null) {
+//                    if (embeddataJson.has("bundleid")) {
+//                        event.setBundleid(embeddataJson.get("bundleid").getAsLong());
+//                    }
+//                    if (embeddataJson.has("packageid")) {
+//                        event.setPackageid(embeddataJson.get("packageid").getAsLong());
+//                    }
+//                }
                 int notificationType = event.getNotificationType();
 
                 int transType = event.getTransType();

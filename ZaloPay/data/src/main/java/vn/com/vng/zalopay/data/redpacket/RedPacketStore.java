@@ -88,7 +88,7 @@ public interface RedPacketStore {
 
         Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID);
 
-        Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID);
+        Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId);
 
         Observable<List<SentBundle>> getSentBundleList(long timestamp, int count, int order);
 

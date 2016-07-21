@@ -58,9 +58,9 @@ public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID) {
-        return mRequestService.getPackageStatus(packageID, zpTransID, user.uid, user.accesstoken, "")
-                .map(packageStatusResponse -> new PackageStatus(packageStatusResponse.isProcessing, packageStatusResponse.amount, packageStatusResponse.zpTransID, packageStatusResponse.nextAction, packageStatusResponse.data, packageStatusResponse.balance));
+    public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId) {
+        return mRequestService.getPackageStatus(packageID, zpTransID, user.uid, user.accesstoken, deviceId)
+                .map(packageStatusResponse -> new PackageStatus(packageStatusResponse.isprocessing, packageStatusResponse.zptransid, packageStatusResponse.reqdate, packageStatusResponse.amount, packageStatusResponse.balance, packageStatusResponse.data));
     }
 
     @Override

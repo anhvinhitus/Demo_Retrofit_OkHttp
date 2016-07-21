@@ -196,8 +196,6 @@ public class GreenDaoGenerator {
         notificationGD.addStringProperty("userid");
         notificationGD.addStringProperty("destuserid");
         notificationGD.addBooleanProperty("read");
-        notificationGD.addLongProperty("bundleid");
-        notificationGD.addLongProperty("packageid");
         notificationGD.addIntProperty("notificationtype");
 
         notificationGD.addStringProperty("embeddata");

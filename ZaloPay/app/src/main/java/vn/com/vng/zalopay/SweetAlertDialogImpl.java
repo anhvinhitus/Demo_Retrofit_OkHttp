@@ -17,10 +17,8 @@ public class SweetAlertDialogImpl implements ISweetAlertDialog {
 
     @Override
     public void showLoading(Context context) {
-        if (sweetAlertDialog == null) {
-            sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
-            sweetAlertDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        }
+        sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        sweetAlertDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         sweetAlertDialog.show();
     }
 
@@ -30,6 +28,7 @@ public class SweetAlertDialogImpl implements ISweetAlertDialog {
             return;
         }
         sweetAlertDialog.dismiss();
+        sweetAlertDialog = null;
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import timber.log.Timber;
+
 /**
  * Created by AnhHieu on 6/20/16.
  */
@@ -35,12 +37,6 @@ public class NotificationData extends Event {
 
     @SerializedName("destuserid")
     public String destuserid;
-
-    @SerializedName("bundleid")
-    public long bundleid;
-
-    @SerializedName("packageid")
-    public long packageid;
 
     @Expose(deserialize = false, serialize = false)
     public boolean read;
@@ -129,23 +125,31 @@ public class NotificationData extends Event {
         return notificationtype;
     }
 
-    public long getBundleid() {
-        return bundleid;
+    public void setNotificationtype(int notificationtype) {
+        this.notificationtype = notificationtype;
     }
 
     public long getPackageid() {
-        return packageid;
+        long packetId = -1;
+        try {
+            if (embeddata.has("packageid")) {
+                packetId = embeddata.get("packageid").getAsLong();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return packetId;
     }
 
-    public void setBundleid(long bundleid) {
-        this.bundleid = bundleid;
-    }
-
-    public void setPackageid(long packageid) {
-        this.packageid = packageid;
-    }
-
-    public void setNotificationtype(int notificationtype) {
-        this.notificationtype = notificationtype;
+    public long getBundleid() {
+        long bundleid = -1;
+        try {
+            if (embeddata.has("bundleid")) {
+                bundleid = embeddata.get("bundleid").getAsLong();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return bundleid;
     }
 }
