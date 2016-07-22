@@ -30,6 +30,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         public final static Property SendFullName = new Property(4, String.class, "sendFullName", false, "SEND_FULL_NAME");
         public final static Property Amount = new Property(5, Long.class, "amount", false, "AMOUNT");
         public final static Property OpenedTime = new Property(6, Long.class, "openedTime", false, "OPENED_TIME");
+        public final static Property IsOpen = new Property(7, Boolean.class, "isOpen", false, "IS_OPEN");
     };
 
     private DaoSession daoSession;
@@ -54,7 +55,8 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
                 "\"SEND_ZALO_PAY_ID\" TEXT," + // 3: sendZaloPayID
                 "\"SEND_FULL_NAME\" TEXT," + // 4: sendFullName
                 "\"AMOUNT\" INTEGER," + // 5: amount
-                "\"OPENED_TIME\" INTEGER);"); // 6: openedTime
+                "\"OPENED_TIME\" INTEGER," + // 6: openedTime
+                "\"IS_OPEN\" INTEGER);"); // 7: isOpen
     }
 
     /** Drops the underlying database table. */
@@ -98,6 +100,11 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         if (openedTime != null) {
             stmt.bindLong(7, openedTime);
         }
+ 
+        Boolean isOpen = entity.getIsOpen();
+        if (isOpen != null) {
+            stmt.bindLong(8, isOpen ? 1L: 0L);
+        }
     }
 
     @Override
@@ -122,7 +129,8 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // sendZaloPayID
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sendFullName
             cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // amount
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6) // openedTime
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // openedTime
+            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0 // isOpen
         );
         return entity;
     }
@@ -137,6 +145,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         entity.setSendFullName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setAmount(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
         entity.setOpenedTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setIsOpen(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
      }
     
     /** @inheritdoc */
