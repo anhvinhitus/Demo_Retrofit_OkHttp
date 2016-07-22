@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.notification.NotificationLocalStorage;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.notification.NotificationRepository;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.notification.NotificationHelper;
@@ -37,8 +38,12 @@ public class UserNotificationModule {
 
     @UserScope
     @Provides
-    NotificationHelper providesNotificationHelper(Context context, NotificationStore.LocalStorage localStorage, AccountStore.Repository repository) {
-        return new NotificationHelper(context, localStorage, repository);
+    NotificationHelper providesNotificationHelper(Context context,
+                                                  NotificationStore.LocalStorage localStorage,
+                                                  AccountStore.Repository repository,
+                                                  RedPacketStore.Repository redPacketRepository
+                                                  ) {
+        return new NotificationHelper(context, localStorage, repository, redPacketRepository);
     }
 
 

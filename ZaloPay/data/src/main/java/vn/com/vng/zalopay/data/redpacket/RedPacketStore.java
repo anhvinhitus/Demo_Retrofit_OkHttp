@@ -51,6 +51,8 @@ public interface RedPacketStore {
         Boolean isPacketOpen(long packetId);
 
         Void setPacketIsOpen(long packetId);
+
+        Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
     }
 
     interface RequestService {
@@ -104,5 +106,7 @@ public interface RedPacketStore {
         Observable<Boolean> isPacketOpen(String packetId);
 
         Observable<Void> setPacketIsOpen(long packageId);
+
+        Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
     }
 }

@@ -143,6 +143,21 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
+    public Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message) {
+        ReceivePackageGD packageGD = getReceivePackageGD(packetId);
+        if (packageGD == null) {
+            packageGD = new ReceivePackageGD();
+            packageGD.setId(packetId);
+            packageGD.setIsOpen(false);
+        }
+        packageGD.setBundleID(bundleId);
+        packageGD.setSendFullName(senderName);
+
+        getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);
+        return null;
+    }
+
+    @Override
     public void putReceivePackages(List<ReceivePackageGD> receivePackageGDs) {
         if (Lists.isEmptyOrNull(receivePackageGDs)) {
             emptyList();

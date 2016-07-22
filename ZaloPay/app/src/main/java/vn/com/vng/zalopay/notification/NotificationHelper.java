@@ -23,9 +23,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.domain.model.redpacket.RedPacket;
 import vn.com.vng.zalopay.event.NotificationUpdatedEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -41,11 +43,16 @@ public class NotificationHelper {
     final NotificationStore.LocalStorage notificationStore;
     final AccountStore.Repository accountRepository;
     final Context context;
+    final RedPacketStore.Repository mRedPacketRepository;
 
-    public NotificationHelper(Context applicationContext, NotificationStore.LocalStorage notificationStore, AccountStore.Repository accountRepository) {
+    public NotificationHelper(Context applicationContext,
+                              NotificationStore.LocalStorage notificationStore,
+                              AccountStore.Repository accountRepository,
+                              RedPacketStore.Repository redPacketRepository) {
         this.notificationStore = notificationStore;
         this.context = applicationContext;
         this.accountRepository = accountRepository;
+        this.mRedPacketRepository = redPacketRepository;
     }
 
 
@@ -137,6 +144,10 @@ public class NotificationHelper {
             } catch (Exception ex) {
                 Timber.e(ex, "exception");
             }
+        } else if (notify.getNotificationType() == 103) {
+            // Process received red packet
+            // {"userid":"160526000000502","destuserid":"160601000000002","message":"Nguyễn Hữu Hoà đã lì xì cho bạn.","zaloMessage":"da gui li xi cho ban. Vui long vao ... de nhan li xi.","embeddata":{"bundleid":160722000000430,"packageid":1607220000004300001,"avatar":"http://avatar.talk.zdn.vn/e/d/e/2/4/75/f1898a0a0a3f05bbb11088cb202d1c02.jpg","name":"Nguyễn Hữu Hoà","liximessage":"Best wishes."},"timestamp":1469190991786,"notificationtype":103}
+            extractRedPacketFromNotification(notify);
         }
 
         notificationStore.put(notify);
@@ -144,6 +155,27 @@ public class NotificationHelper {
 
         NotificationUpdatedEvent event = new NotificationUpdatedEvent();
         AndroidApplication.instance().getAppComponent().eventBus().post(event);
+    }
+
+    private void extractRedPacketFromNotification(NotificationData data) {
+        try {
+            JsonObject embeddata = data.embeddata;
+            if (embeddata == null) {
+                return;
+            }
+
+            long bundleid = embeddata.get("bundleid").getAsLong();
+            long packageid = embeddata.get("packageid").getAsLong();
+            String senderAvatar = embeddata.get("avatar").getAsString();
+            String senderName = embeddata.get("name").getAsString();
+            String message = embeddata.get("liximessage").getAsString();
+
+            mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        } catch (Exception ex) {
+            Timber.e(ex, "exception");
+        }
     }
 
 

@@ -146,6 +146,11 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketIsOpen(packageId));
     }
 
+    @Override
+    public Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.addReceivedRedPacket(packetId, bundleId, senderName, senderAvatar, message));
+    }
+
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
         List<PackageInBundleGD> packageInBundleGDs = mDataMapper.transformToPackageInBundleGD(packageInBundles);
         mLocalStorage.putPackageInBundle(packageInBundleGDs);
