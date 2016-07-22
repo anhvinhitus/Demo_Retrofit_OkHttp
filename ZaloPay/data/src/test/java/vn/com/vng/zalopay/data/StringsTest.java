@@ -8,8 +8,6 @@ import java.util.List;
 
 import vn.com.vng.zalopay.data.util.Strings;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by huuhoa on 7/5/16.
  */
@@ -23,8 +21,8 @@ public class StringsTest {
         String value = Strings.stripAccents(input);
         Assert.assertTrue(output.equals(value));
 
-        input = "Cộng hoà xã hội chủ nghĩa Việt Nam";
-        output = "Cong hoa xa hoi chu nghia Viet Nam";
+        input = "Cộng hoà xã hội chủ nghĩa Việt Nam - Độc lập tự do hạnh phúc";
+        output = "Cong hoa xa hoi chu nghia Viet Nam - Doc lap tu do hanh phuc";
 
         value = Strings.stripAccents(input);
         Assert.assertTrue(output.equals(value));
