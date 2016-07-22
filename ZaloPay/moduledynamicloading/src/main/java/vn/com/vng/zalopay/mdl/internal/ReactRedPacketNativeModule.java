@@ -1,6 +1,6 @@
 package vn.com.vng.zalopay.mdl.internal;
 
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -39,31 +39,35 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayListener;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialogListener;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 
 /**
  * Created by longlv on 17/07/2016.
  * define methods that had been called by React Native
  */
-public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
+        implements ActivityEventListener, LifecycleEventListener {
 
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private final IRedPacketPayService mPaymentService;
-    private ISweetAlertDialog sweetAlertDialog;
+    private AlertDialogProvider mDialogProvider;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private CountDownTimer mTimerGetTranStatus;
     private boolean isRunningGetTranStatus;
 
-    public ReactRedPacketNativeModule(ReactApplicationContext reactContext, RedPacketStore.Repository redPackageRepository, FriendStore.Repository friendRepository, IRedPacketPayService payService, ISweetAlertDialog sweetAlertDialog) {
+    public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
+                                      RedPacketStore.Repository redPackageRepository,
+                                      FriendStore.Repository friendRepository,
+                                      IRedPacketPayService payService,
+                                      AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
         this.mPaymentService = payService;
-        this.sweetAlertDialog = sweetAlertDialog;
+        this.mDialogProvider = sweetAlertDialog;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -74,8 +78,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule imple
     }
 
     @ReactMethod
-    public void createRedPacketBundleOrder(int quantity, double totalLuck, double amountEach, int type, String sendMessage, final Promise promise) {
-        Subscription subscription = mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
+    public void createRedPacketBundleOrder(int quantity,
+                                           double totalLuck,
+                                           double amountEach,
+                                           int type,
+                                           String sendMessage,
+                                           final Promise promise) {
+        Subscription subscription =
+                mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
                 .subscribe(new DefaultSubscriber<BundleOrder>() {
                     @Override
                     public void onCompleted() {
@@ -221,11 +231,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule imple
     }
 
     private void showLoading() {
-        sweetAlertDialog.showLoading(getCurrentActivity());
+        mDialogProvider.showLoading(getCurrentActivity());
     }
 
     private void hideLoading() {
-        sweetAlertDialog.hideLoading();
+        mDialogProvider.hideLoading();
     }
 
     private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
@@ -234,24 +244,26 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule imple
             return;
         }
 
-        ISweetAlertDialogListener onCancelListener = new ISweetAlertDialogListener() {
+        DialogInterface.OnCancelListener onCancelListener = new DialogInterface.OnCancelListener() {
             @Override
-            public void onClick(Dialog dialog) {
+            public void onCancel(DialogInterface dialog) {
                 errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
                 dialog.dismiss();
             }
         };
 
-        ISweetAlertDialogListener onConfirmListener = new ISweetAlertDialogListener() {
+        DialogInterface.OnClickListener onConfirmListener = new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(Dialog dialog) {
+            public void onClick(DialogInterface dialog, int which) {
                 startTaskGetTransactionStatus(packageId, zpTransId, promise);
                 dialog.dismiss();
             }
         };
 
-        sweetAlertDialog.showWarningAlertDialog(getCurrentActivity(), "Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp tục?", "Đóng",
-                onCancelListener, "Thử lại", onConfirmListener);
+        mDialogProvider.showWarningAlertDialog(getCurrentActivity(),
+                "Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp tục?",
+                "Đóng", "Thử lại",
+                onCancelListener, onConfirmListener);
         Timber.d("showDialogRetryGetTranStatus end");
     }
 

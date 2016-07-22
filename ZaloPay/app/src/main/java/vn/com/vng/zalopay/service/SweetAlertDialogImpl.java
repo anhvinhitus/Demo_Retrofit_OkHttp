@@ -1,17 +1,17 @@
-package vn.com.vng.zalopay;
+package vn.com.vng.zalopay.service;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialogListener;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by longlv on 20/07/2016.
- * Implement ISweetAlertDialog
+ * Implement AlertDialogProvider
  */
-public class SweetAlertDialogImpl implements ISweetAlertDialog {
+public class SweetAlertDialogImpl implements AlertDialogProvider {
 
     private SweetAlertDialog sweetAlertDialog;
 
@@ -32,7 +32,7 @@ public class SweetAlertDialogImpl implements ISweetAlertDialog {
     }
 
     @Override
-    public void showWarningAlertDialog(Context context, String contentText, String cancelText, final ISweetAlertDialogListener cancelClick, String ConfirmText, final ISweetAlertDialogListener confirmClick) {
+    public void showWarningAlertDialog(Context context, String contentText, String cancelText, String confirmText, final DialogInterface.OnCancelListener cancelClick, final DialogInterface.OnClickListener confirmClick) {
         new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                 .setContentText(contentText)
                 .setCancelText(cancelText)
@@ -40,16 +40,16 @@ public class SweetAlertDialogImpl implements ISweetAlertDialog {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         if (cancelClick != null) {
-                            cancelClick.onClick(sweetAlertDialog);
+                            cancelClick.onCancel(sweetAlertDialog);
                         }
                     }
                 })
-                .setConfirmText(ConfirmText)
+                .setConfirmText(confirmText)
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         if (confirmClick != null) {
-                            confirmClick.onClick(sweetAlertDialog);
+                            confirmClick.onClick(sweetAlertDialog, 0);
                         }
                     }
                 })

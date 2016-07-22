@@ -36,7 +36,7 @@ import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -70,7 +70,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     IRedPacketPayService paymentService;
 
     @Inject
-    ISweetAlertDialog sweetAlertDialog;
+    AlertDialogProvider sweetAlertDialog;
 
     @Inject
     INavigator navigator;

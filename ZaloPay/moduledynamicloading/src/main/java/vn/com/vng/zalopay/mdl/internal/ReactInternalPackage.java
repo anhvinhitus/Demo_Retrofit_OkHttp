@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -31,7 +31,7 @@ public class ReactInternalPackage implements ReactPackage {
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private IRedPacketPayService paymentService;
-    private ISweetAlertDialog sweetAlertDialog;
+    private AlertDialogProvider sweetAlertDialog;
 
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
@@ -43,7 +43,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
                                 IRedPacketPayService paymentService,
-                                ISweetAlertDialog sweetAlertDialog,
+                                AlertDialogProvider sweetAlertDialog,
                                 INavigator navigator, ZPAnalytics zpAnalytics,
                                 EventBus eventBus) {
         this.mRepository = repository;

@@ -5,7 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import vn.com.vng.zalopay.SweetAlertDialogImpl;
+import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.sweetalertdialog.ISweetAlertDialog;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.service.RedPacketPayServiceImpl;
 
 /**
@@ -54,7 +54,7 @@ public class UserRedPacketModule {
 
     @UserScope
     @Provides
-    ISweetAlertDialog providesISweetAlertDialog() {
+    AlertDialogProvider providesISweetAlertDialog() {
         return new SweetAlertDialogImpl();
     }
 }
