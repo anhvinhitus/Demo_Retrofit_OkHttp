@@ -116,23 +116,29 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Boolean isPacketOpen(long packetId) {
+        Timber.d("query status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
+            Timber.d("Packet not found");
             return Boolean.FALSE;
         }
 
+        Timber.d("query status for packet: %s, result: %s", packetId, packageGD.getIsOpen());
         return packageGD.getIsOpen();
     }
 
     @Override
     public Void setPacketIsOpen(long packetId) {
+        Timber.d("set open status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
+            Timber.d("Packet not found");
             return null;
         }
 
         packageGD.setIsOpen(true);
         getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);
+        Timber.d("Packet is set to be opened");
         return null;
     }
 

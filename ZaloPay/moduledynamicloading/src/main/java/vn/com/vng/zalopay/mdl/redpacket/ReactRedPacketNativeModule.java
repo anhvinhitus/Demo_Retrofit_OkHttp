@@ -294,6 +294,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         }
                         hideLoading();
                         successCallback(promise, transform(packageStatus));
+                        Timber.d("set open status 1 for packet: %s", packageId);
                         mRedPackageRepository.setPacketIsOpen(packageId).subscribe(new DefaultSubscriber<Void>());
                         isRunningGetTranStatus = false;
                     }
@@ -423,7 +424,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void isPacketOpen(String packetId, final Promise promise) {
+    public void isPacketOpen(final String packetId, final Promise promise) {
+        Timber.d("query open status for packet: %s", packetId);
         Subscription subscription = mRedPackageRepository.isPacketOpen(packetId).subscribe(new Observer<Boolean>() {
             @Override
             public void onCompleted() {
@@ -434,6 +436,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             public void onError(Throwable e) {
                 WritableMap writableMap = Arguments.createMap();
                 writableMap.putInt("code", 0);
+                Timber.d(e, "Error while query packet open status");
                 promise.reject("-1", e.getMessage());
             }
 
@@ -441,6 +444,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             public void onNext(Boolean aBoolean) {
                 WritableMap writableMap = Arguments.createMap();
                 writableMap.putInt("code", aBoolean ? 1 : 0);
+                Timber.d("open status [%s] for packet: %s", aBoolean, packetId);
                 promise.resolve(writableMap);
             }
         });
