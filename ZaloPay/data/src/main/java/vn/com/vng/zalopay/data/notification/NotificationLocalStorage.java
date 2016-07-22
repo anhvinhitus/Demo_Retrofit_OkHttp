@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.notification;
 
+import android.text.TextUtils;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -145,12 +147,16 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         String embeddata = notificationGD.getEmbeddata();
 
-        Timber.d("embeddata get %s ", embeddata);
-        try {
-            _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
-        } catch (Exception ex) {
+        Timber.d("embeddata [%s]", embeddata);
+        if (TextUtils.isEmpty(embeddata)) {
             _notification.setEmbeddata(new JsonObject());
-            Timber.w(ex, " parse exception Notification Entity");
+        } else {
+            try {
+                _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
+            } catch (Exception ex) {
+                _notification.setEmbeddata(new JsonObject());
+                Timber.w(ex, " parse exception Notification Entity");
+            }
         }
 
         _notification.setUserid(notificationGD.getUserid());
