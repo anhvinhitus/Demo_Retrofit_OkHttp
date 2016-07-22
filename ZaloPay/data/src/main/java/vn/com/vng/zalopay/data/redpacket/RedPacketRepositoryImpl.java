@@ -84,8 +84,8 @@ public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<GetReceivePacket> getRevPackageList(long timestamp, int count, int order) {
-        return mRequestService.getRevPackageList(timestamp, count, order, user.uid, user.accesstoken)
+    public Observable<GetReceivePacket> getReceivedPackageList(long timestamp, int count, int order) {
+        return mRequestService.getReceivedPackageList(timestamp, count, order, user.uid, user.accesstoken)
                 .map(revPackageInBundleResponse -> mDataMapper.transformToReceivePackage(revPackageInBundleResponse))
                 .doOnNext(this::insertReceivePackages);
     }

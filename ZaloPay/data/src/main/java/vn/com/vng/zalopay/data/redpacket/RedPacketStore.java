@@ -72,7 +72,7 @@ public interface RedPacketStore {
 
         @FormUrlEncoded
         @POST("/rpe/getRevPackageList")
-        Observable<GetReceivePackageResponse> getRevPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
+        Observable<GetReceivePackageResponse> getReceivedPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
 
         @FormUrlEncoded
         @POST("/rpe/getPackageInBundleList")
@@ -93,7 +93,7 @@ public interface RedPacketStore {
 
         Observable<GetSentBundle> getSentBundleList(long timestamp, int count, int order);
 
-        Observable<GetReceivePacket> getRevPackageList(long timestamp, int count, int order);
+        Observable<GetReceivePacket> getReceivedPackageList(long timestamp, int count, int order);
 
         Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
     }

@@ -123,7 +123,7 @@ public class RedPackageRepositoryTest {
         }
 
         @Override
-        public Observable<GetReceivePackageResponse> getRevPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken) {
+        public Observable<GetReceivePackageResponse> getReceivedPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken) {
             return null;
         }
 
