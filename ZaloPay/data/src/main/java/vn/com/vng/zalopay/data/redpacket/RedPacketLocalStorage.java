@@ -115,6 +115,22 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
+    public Boolean isPacketOpen(long packetId) {
+        List<ReceivePackageGD> all =
+                getDaoSession()
+                        .getReceivePackageGDDao()
+                        .queryBuilder()
+                        .where(ReceivePackageGDDao.Properties.Id.eq(packetId))
+                        .limit(1)
+                        .list();
+        if (Lists.isEmptyOrNull(all)) {
+            return Boolean.FALSE;
+        } else {
+            return all.get(0).getIsOpen();
+        }
+    }
+
+    @Override
     public void putReceivePackages(List<ReceivePackageGD> receivePackageGDs) {
         if (Lists.isEmptyOrNull(receivePackageGDs)) {
             emptyList();

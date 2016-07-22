@@ -14,12 +14,13 @@ public class ReceivePackage {
     public String sendFullName;
     public long amount;
     public long openedTime;
+    public boolean isOpen;
 
     public ReceivePackage() {
 
     }
 
-    public ReceivePackage(long packageID, long bundleID, String revZaloPayID, String sendZaloPayID, String sendFullName, long amount, long openedTime) {
+    public ReceivePackage(long packageID, long bundleID, String revZaloPayID, String sendZaloPayID, String sendFullName, long amount, long openedTime, boolean isOpen) {
         this.packageID = packageID;
         this.bundleID = bundleID;
         this.revZaloPayID = revZaloPayID;
@@ -27,5 +28,6 @@ public class ReceivePackage {
         this.sendFullName = sendFullName;
         this.amount = amount;
         this.openedTime = openedTime;
+        this.isOpen = isOpen;
     }
 }

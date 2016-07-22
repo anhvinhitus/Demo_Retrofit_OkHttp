@@ -20,6 +20,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -418,6 +419,32 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getPackageInBundle(String bundleID) {
 
+    }
+
+    @ReactMethod
+    public void isPacketOpen(String packetId, final Promise promise) {
+        Subscription subscription = mRedPackageRepository.isPacketOpen(packetId).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putInt("code", 0);
+                promise.reject("-1", e.getMessage());
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putInt("code", aBoolean ? 1 : 0);
+                promise.resolve(writableMap);
+            }
+        });
+
+        compositeSubscription.add(subscription);
     }
 
     @Override

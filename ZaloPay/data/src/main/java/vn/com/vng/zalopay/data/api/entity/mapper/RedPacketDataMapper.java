@@ -57,7 +57,11 @@ public class RedPacketDataMapper {
             return null;
         }
 
-        return new ReceivePackage(receivePackageGD.getId(), receivePackageGD.getBundleID(), receivePackageGD.getRevZaloPayID(), receivePackageGD.getSendZaloPayID(), receivePackageGD.getSendFullName(), receivePackageGD.getAmount(), receivePackageGD.getOpenedTime());
+        return new ReceivePackage(receivePackageGD.getId(), receivePackageGD.getBundleID(),
+                receivePackageGD.getRevZaloPayID(), receivePackageGD.getSendZaloPayID(),
+                receivePackageGD.getSendFullName(), receivePackageGD.getAmount(),
+                receivePackageGD.getOpenedTime(),
+                receivePackageGD.getIsOpen());
     }
 
     public List<ReceivePackageGD> transformToReceivePackageDB(List<ReceivePackage> receivePackages) {
@@ -80,12 +84,19 @@ public class RedPacketDataMapper {
         if (receivePackage == null || receivePackage.packageID <= 0) {
             return null;
         }
-        return new ReceivePackageGD(receivePackage.packageID, receivePackage.bundleID, receivePackage.revZaloPayID, receivePackage.sendZaloPayID, receivePackage.sendFullName, receivePackage.amount, receivePackage.openedTime);
+        return new ReceivePackageGD(receivePackage.packageID, receivePackage.bundleID,
+                receivePackage.revZaloPayID, receivePackage.sendZaloPayID,
+                receivePackage.sendFullName, receivePackage.amount,
+                receivePackage.openedTime, receivePackage.isOpen);
     }
 
     private SentBundle transform(SentBundleGD sentBundleGD) {
         List<PackageInBundle> sentPackages = transformToPackageInBundle(sentBundleGD.getSentPackages());
-        return new SentBundle(sentBundleGD.getId(), sentBundleGD.getSendZaloPayID(), sentBundleGD.getType(), sentBundleGD.getCreateTime(), sentBundleGD.getLastOpenTime(), sentBundleGD.getTotalLuck(), sentBundleGD.getNumOfOpenedPakages(), sentBundleGD.getNumOfPackages(), sentPackages);
+        return new SentBundle(sentBundleGD.getId(), sentBundleGD.getSendZaloPayID(),
+                sentBundleGD.getType(), sentBundleGD.getCreateTime(),
+                sentBundleGD.getLastOpenTime(), sentBundleGD.getTotalLuck(),
+                sentBundleGD.getNumOfOpenedPakages(), sentBundleGD.getNumOfPackages(),
+                sentPackages);
     }
 
     public List<PackageInBundleGD> transformToPackageInBundleGD(List<PackageInBundle> sentPackages) {
@@ -97,7 +108,12 @@ public class RedPacketDataMapper {
             if (sentPackage == null || sentPackage.revZaloID <= 0) {
                 continue;
             }
-            PackageInBundleGD packageInBundleGD = new PackageInBundleGD(sentPackage.packageID, sentPackage.bundleID, sentPackage.revZaloPayID, sentPackage.revZaloID, sentPackage.revFullName, sentPackage.revAvatarURL, sentPackage.openTime, sentPackage.amount, sentPackage.sendMessage, sentPackage.isLuckiest?1:0);
+            PackageInBundleGD packageInBundleGD = new PackageInBundleGD(sentPackage.packageID,
+                    sentPackage.bundleID, sentPackage.revZaloPayID,
+                    sentPackage.revZaloID, sentPackage.revFullName,
+                    sentPackage.revAvatarURL, sentPackage.openTime,
+                    sentPackage.amount, sentPackage.sendMessage,
+                    sentPackage.isLuckiest?1:0);
             sentPackageGDs.add(packageInBundleGD);
         }
         return sentPackageGDs;
@@ -208,7 +224,11 @@ public class RedPacketDataMapper {
             if (response == null) {
                 continue;
             }
-            receivePackages.add(new ReceivePackage(response.packageid, response.bundleid, response.revzalopayid, response.sendzalopayid, response.sendfullname, response.amount, response.openedtime));
+            receivePackages.add(
+                    new ReceivePackage(response.packageid, response.bundleid,
+                            response.revzalopayid, response.sendzalopayid,
+                            response.sendfullname, response.amount,
+                            response.openedtime, false));
         }
         return receivePackages;
     }

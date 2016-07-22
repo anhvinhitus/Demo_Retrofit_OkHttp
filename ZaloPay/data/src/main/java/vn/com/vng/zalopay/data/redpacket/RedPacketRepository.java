@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.redpacket;
 
 import java.util.List;
+import java.util.concurrent.Exchanger;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
@@ -10,6 +11,7 @@ import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
@@ -129,6 +131,14 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return mRequestService.getPackageInBundleList(bundleID, timestamp, count, order, user.uid, user.accesstoken)
                 .map(packageInBundlesResponse -> mDataMapper.transformToPackageInBundle(packageInBundlesResponse))
                 .doOnNext(packages -> insertPackageInBundle(packages));
+    }
+
+    @Override
+    public Observable<Boolean> isPacketOpen(String packetIdStr) {
+        return ObservableHelper.makeObservable(() -> {
+            long packetId = Long.parseLong(packetIdStr);
+            return mLocalStorage.isPacketOpen(packetId);
+        });
     }
 
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
