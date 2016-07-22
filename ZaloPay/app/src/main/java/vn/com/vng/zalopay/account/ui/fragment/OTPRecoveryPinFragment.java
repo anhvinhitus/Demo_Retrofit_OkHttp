@@ -11,7 +11,6 @@ import android.view.View;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -127,6 +126,12 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mEventBus.unregister(this);
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();
@@ -142,7 +147,6 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
     public void onDestroy() {
         presenter.destroy();
         Timber.d("Unregister OTPRecoveryPinFragment from eventbus");
-        mEventBus.unregister(this);
         super.onDestroy();
     }
 
