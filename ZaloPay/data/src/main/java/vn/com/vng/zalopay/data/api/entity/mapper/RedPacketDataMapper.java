@@ -26,6 +26,7 @@ import static java.util.Collections.emptyList;
 
 /**
  * Created by longlv on 16/07/2016.
+ * Transform RedPacket data entities
  */
 
 @Singleton
@@ -57,10 +58,13 @@ public class RedPacketDataMapper {
             return null;
         }
 
+        Long openTime = receivePackageGD.getOpenedTime();
         return new ReceivePackage(receivePackageGD.getId(), receivePackageGD.getBundleID(),
-                receivePackageGD.getRevZaloPayID(), receivePackageGD.getSendZaloPayID(),
-                receivePackageGD.getSendFullName(), receivePackageGD.getAmount(),
-                receivePackageGD.getOpenedTime(),
+                receivePackageGD.getReceiverZaloPayID(), receivePackageGD.getSenderZaloPayID(),
+                receivePackageGD.getSenderFullName(),
+                receivePackageGD.getSenderAvatar(), receivePackageGD.getMessage(),
+                receivePackageGD.getAmount(),
+                openTime == null ? 0 : openTime,
                 receivePackageGD.getIsOpen());
     }
 
@@ -85,9 +89,13 @@ public class RedPacketDataMapper {
             return null;
         }
         return new ReceivePackageGD(receivePackage.packageID, receivePackage.bundleID,
-                receivePackage.revZaloPayID, receivePackage.sendZaloPayID,
-                receivePackage.sendFullName, receivePackage.amount,
-                receivePackage.openedTime, receivePackage.isOpen);
+                receivePackage.revZaloPayID, receivePackage.senderZaloPayID,
+                receivePackage.senderFullName, receivePackage.senderAvatar,
+                receivePackage.amount,
+                receivePackage.openedTime,
+                receivePackage.isOpen,
+                receivePackage.message
+        );
     }
 
     private SentBundle transform(SentBundleGD sentBundleGD) {
@@ -227,8 +235,11 @@ public class RedPacketDataMapper {
             receivePackages.add(
                     new ReceivePackage(response.packageid, response.bundleid,
                             response.revzalopayid, response.sendzalopayid,
-                            response.sendfullname, response.amount,
-                            response.openedtime, false));
+                            response.sendfullname,
+                            "", "",
+                            response.amount,
+                            response.openedtime,
+                            false));
         }
         return receivePackages;
     }

@@ -128,7 +128,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Void setPacketIsOpen(long packetId) {
+    public Void setPacketIsOpen(long packetId, long amount) {
         Timber.d("set open status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
@@ -137,6 +137,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         }
 
         packageGD.setIsOpen(true);
+        packageGD.setAmount(amount);
+        packageGD.setOpenedTime(System.currentTimeMillis());
         getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);
         Timber.d("Packet is set to be opened");
         return null;
@@ -151,10 +153,17 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             packageGD.setIsOpen(false);
         }
         packageGD.setBundleID(bundleId);
-        packageGD.setSendFullName(senderName);
+        packageGD.setSenderFullName(senderName);
+        packageGD.setSenderAvatar(senderAvatar);
+        packageGD.setMessage(message);
 
         getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);
         return null;
+    }
+
+    @Override
+    public ReceivePackage getReceivedPacket(long packetId) {
+        return queryReceivePackage(packetId);
     }
 
     @Override

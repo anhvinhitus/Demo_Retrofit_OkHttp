@@ -25,12 +25,14 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property BundleID = new Property(1, Long.class, "bundleID", false, "BUNDLE_ID");
-        public final static Property RevZaloPayID = new Property(2, String.class, "revZaloPayID", false, "REV_ZALO_PAY_ID");
-        public final static Property SendZaloPayID = new Property(3, String.class, "sendZaloPayID", false, "SEND_ZALO_PAY_ID");
-        public final static Property SendFullName = new Property(4, String.class, "sendFullName", false, "SEND_FULL_NAME");
-        public final static Property Amount = new Property(5, Long.class, "amount", false, "AMOUNT");
-        public final static Property OpenedTime = new Property(6, Long.class, "openedTime", false, "OPENED_TIME");
-        public final static Property IsOpen = new Property(7, Boolean.class, "isOpen", false, "IS_OPEN");
+        public final static Property ReceiverZaloPayID = new Property(2, String.class, "receiverZaloPayID", false, "RECEIVER_ZALO_PAY_ID");
+        public final static Property SenderZaloPayID = new Property(3, String.class, "senderZaloPayID", false, "SENDER_ZALO_PAY_ID");
+        public final static Property SenderFullName = new Property(4, String.class, "senderFullName", false, "SENDER_FULL_NAME");
+        public final static Property SenderAvatar = new Property(5, String.class, "senderAvatar", false, "SENDER_AVATAR");
+        public final static Property Amount = new Property(6, Long.class, "amount", false, "AMOUNT");
+        public final static Property OpenedTime = new Property(7, Long.class, "openedTime", false, "OPENED_TIME");
+        public final static Property IsOpen = new Property(8, Boolean.class, "isOpen", false, "IS_OPEN");
+        public final static Property Message = new Property(9, String.class, "message", false, "MESSAGE");
     };
 
     private DaoSession daoSession;
@@ -51,12 +53,14 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"RECEIVE_PACKAGE_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: id
                 "\"BUNDLE_ID\" INTEGER," + // 1: bundleID
-                "\"REV_ZALO_PAY_ID\" TEXT," + // 2: revZaloPayID
-                "\"SEND_ZALO_PAY_ID\" TEXT," + // 3: sendZaloPayID
-                "\"SEND_FULL_NAME\" TEXT," + // 4: sendFullName
-                "\"AMOUNT\" INTEGER," + // 5: amount
-                "\"OPENED_TIME\" INTEGER," + // 6: openedTime
-                "\"IS_OPEN\" INTEGER);"); // 7: isOpen
+                "\"RECEIVER_ZALO_PAY_ID\" TEXT," + // 2: receiverZaloPayID
+                "\"SENDER_ZALO_PAY_ID\" TEXT," + // 3: senderZaloPayID
+                "\"SENDER_FULL_NAME\" TEXT," + // 4: senderFullName
+                "\"SENDER_AVATAR\" TEXT," + // 5: senderAvatar
+                "\"AMOUNT\" INTEGER," + // 6: amount
+                "\"OPENED_TIME\" INTEGER," + // 7: openedTime
+                "\"IS_OPEN\" INTEGER," + // 8: isOpen
+                "\"MESSAGE\" TEXT);"); // 9: message
     }
 
     /** Drops the underlying database table. */
@@ -76,34 +80,44 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             stmt.bindLong(2, bundleID);
         }
  
-        String revZaloPayID = entity.getRevZaloPayID();
-        if (revZaloPayID != null) {
-            stmt.bindString(3, revZaloPayID);
+        String receiverZaloPayID = entity.getReceiverZaloPayID();
+        if (receiverZaloPayID != null) {
+            stmt.bindString(3, receiverZaloPayID);
         }
  
-        String sendZaloPayID = entity.getSendZaloPayID();
-        if (sendZaloPayID != null) {
-            stmt.bindString(4, sendZaloPayID);
+        String senderZaloPayID = entity.getSenderZaloPayID();
+        if (senderZaloPayID != null) {
+            stmt.bindString(4, senderZaloPayID);
         }
  
-        String sendFullName = entity.getSendFullName();
-        if (sendFullName != null) {
-            stmt.bindString(5, sendFullName);
+        String senderFullName = entity.getSenderFullName();
+        if (senderFullName != null) {
+            stmt.bindString(5, senderFullName);
+        }
+ 
+        String senderAvatar = entity.getSenderAvatar();
+        if (senderAvatar != null) {
+            stmt.bindString(6, senderAvatar);
         }
  
         Long amount = entity.getAmount();
         if (amount != null) {
-            stmt.bindLong(6, amount);
+            stmt.bindLong(7, amount);
         }
  
         Long openedTime = entity.getOpenedTime();
         if (openedTime != null) {
-            stmt.bindLong(7, openedTime);
+            stmt.bindLong(8, openedTime);
         }
  
         Boolean isOpen = entity.getIsOpen();
         if (isOpen != null) {
-            stmt.bindLong(8, isOpen ? 1L: 0L);
+            stmt.bindLong(9, isOpen ? 1L: 0L);
+        }
+ 
+        String message = entity.getMessage();
+        if (message != null) {
+            stmt.bindString(10, message);
         }
     }
 
@@ -125,12 +139,14 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         ReceivePackageGD entity = new ReceivePackageGD( //
             cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // bundleID
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // revZaloPayID
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // sendZaloPayID
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // sendFullName
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // amount
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // openedTime
-            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0 // isOpen
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // receiverZaloPayID
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // senderZaloPayID
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // senderFullName
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // senderAvatar
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // amount
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // openedTime
+            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // isOpen
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // message
         );
         return entity;
     }
@@ -140,12 +156,14 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     public void readEntity(Cursor cursor, ReceivePackageGD entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
         entity.setBundleID(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setRevZaloPayID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setSendZaloPayID(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setSendFullName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAmount(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setOpenedTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setIsOpen(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
+        entity.setReceiverZaloPayID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setSenderZaloPayID(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setSenderFullName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setSenderAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setAmount(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setOpenedTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setIsOpen(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
+        entity.setMessage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     /** @inheritdoc */

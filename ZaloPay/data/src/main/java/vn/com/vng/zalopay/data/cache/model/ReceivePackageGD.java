@@ -12,12 +12,14 @@ public class ReceivePackageGD {
 
     private long id;
     private Long bundleID;
-    private String revZaloPayID;
-    private String sendZaloPayID;
-    private String sendFullName;
+    private String receiverZaloPayID;
+    private String senderZaloPayID;
+    private String senderFullName;
+    private String senderAvatar;
     private Long amount;
     private Long openedTime;
     private Boolean isOpen;
+    private String message;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -34,15 +36,17 @@ public class ReceivePackageGD {
         this.id = id;
     }
 
-    public ReceivePackageGD(long id, Long bundleID, String revZaloPayID, String sendZaloPayID, String sendFullName, Long amount, Long openedTime, Boolean isOpen) {
+    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Boolean isOpen, String message) {
         this.id = id;
         this.bundleID = bundleID;
-        this.revZaloPayID = revZaloPayID;
-        this.sendZaloPayID = sendZaloPayID;
-        this.sendFullName = sendFullName;
+        this.receiverZaloPayID = receiverZaloPayID;
+        this.senderZaloPayID = senderZaloPayID;
+        this.senderFullName = senderFullName;
+        this.senderAvatar = senderAvatar;
         this.amount = amount;
         this.openedTime = openedTime;
         this.isOpen = isOpen;
+        this.message = message;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -67,28 +71,36 @@ public class ReceivePackageGD {
         this.bundleID = bundleID;
     }
 
-    public String getRevZaloPayID() {
-        return revZaloPayID;
+    public String getReceiverZaloPayID() {
+        return receiverZaloPayID;
     }
 
-    public void setRevZaloPayID(String revZaloPayID) {
-        this.revZaloPayID = revZaloPayID;
+    public void setReceiverZaloPayID(String receiverZaloPayID) {
+        this.receiverZaloPayID = receiverZaloPayID;
     }
 
-    public String getSendZaloPayID() {
-        return sendZaloPayID;
+    public String getSenderZaloPayID() {
+        return senderZaloPayID;
     }
 
-    public void setSendZaloPayID(String sendZaloPayID) {
-        this.sendZaloPayID = sendZaloPayID;
+    public void setSenderZaloPayID(String senderZaloPayID) {
+        this.senderZaloPayID = senderZaloPayID;
     }
 
-    public String getSendFullName() {
-        return sendFullName;
+    public String getSenderFullName() {
+        return senderFullName;
     }
 
-    public void setSendFullName(String sendFullName) {
-        this.sendFullName = sendFullName;
+    public void setSenderFullName(String senderFullName) {
+        this.senderFullName = senderFullName;
+    }
+
+    public String getSenderAvatar() {
+        return senderAvatar;
+    }
+
+    public void setSenderAvatar(String senderAvatar) {
+        this.senderAvatar = senderAvatar;
     }
 
     public Long getAmount() {
@@ -113,6 +125,14 @@ public class ReceivePackageGD {
 
     public void setIsOpen(Boolean isOpen) {
         this.isOpen = isOpen;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

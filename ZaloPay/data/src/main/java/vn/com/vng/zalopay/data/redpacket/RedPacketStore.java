@@ -6,6 +6,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
+import rx.Subscription;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
@@ -50,9 +51,11 @@ public interface RedPacketStore {
 
         Boolean isPacketOpen(long packetId);
 
-        Void setPacketIsOpen(long packetId);
+        Void setPacketIsOpen(long packetId, long amount);
 
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
+
+        ReceivePackage getReceivedPacket(long packetId);
     }
 
     interface RequestService {
@@ -105,8 +108,10 @@ public interface RedPacketStore {
 
         Observable<Boolean> isPacketOpen(String packetId);
 
-        Observable<Void> setPacketIsOpen(long packageId);
+        Observable<Void> setPacketIsOpen(long packageId, long amount);
 
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
+
+        Observable<ReceivePackage> getReceivedPacket(long packetId);
     }
 }

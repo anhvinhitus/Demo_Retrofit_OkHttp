@@ -1,26 +1,24 @@
 package vn.com.vng.zalopay.data.redpacket;
 
 import java.util.List;
-import java.util.concurrent.Exchanger;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
 /**
  * Created by longlv on 13/07/2016.
@@ -93,7 +91,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<GetSentBundle> getSentBundleList(long timestamp, int count, int order) {
         return mRequestService.getSentBundleList(timestamp, count, order, user.uid, user.accesstoken)
-                .map(sentBundleResponse -> mDataMapper.transformToSentBundle(sentBundleResponse))
+                .map(mDataMapper::transformToSentBundle)
                 .doOnNext(this::insertSentBundles);
     }
 
@@ -111,7 +109,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<GetReceivePacket> getReceivedPackageList(long timestamp, int count, int order) {
         return mRequestService.getReceivedPackageList(timestamp, count, order, user.uid, user.accesstoken)
-                .map(revPackageInBundleResponse -> mDataMapper.transformToReceivePackage(revPackageInBundleResponse))
+                .map(mDataMapper::transformToReceivePackage)
                 .doOnNext(this::insertReceivePackages);
     }
 
@@ -129,8 +127,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order) {
         return mRequestService.getPackageInBundleList(bundleID, timestamp, count, order, user.uid, user.accesstoken)
-                .map(packageInBundlesResponse -> mDataMapper.transformToPackageInBundle(packageInBundlesResponse))
-                .doOnNext(packages -> insertPackageInBundle(packages));
+                .map(mDataMapper::transformToPackageInBundle)
+                .doOnNext(this::insertPackageInBundle);
     }
 
     @Override
@@ -142,13 +140,18 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Void> setPacketIsOpen(long packageId) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketIsOpen(packageId));
+    public Observable<Void> setPacketIsOpen(long packageId, long amount) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketIsOpen(packageId, amount));
     }
 
     @Override
     public Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message) {
         return ObservableHelper.makeObservable(() -> mLocalStorage.addReceivedRedPacket(packetId, bundleId, senderName, senderAvatar, message));
+    }
+
+    @Override
+    public Observable<ReceivePackage> getReceivedPacket(long packetId) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.getReceivedPacket(packetId));
     }
 
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {

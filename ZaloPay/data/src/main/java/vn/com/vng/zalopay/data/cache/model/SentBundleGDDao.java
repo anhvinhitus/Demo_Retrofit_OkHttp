@@ -24,7 +24,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property SendZaloPayID = new Property(1, String.class, "sendZaloPayID", false, "SEND_ZALO_PAY_ID");
+        public final static Property SendZaloPayID = new Property(1, String.class, "senderZaloPayID", false, "SEND_ZALO_PAY_ID");
         public final static Property Type = new Property(2, Integer.class, "type", false, "TYPE");
         public final static Property CreateTime = new Property(3, Long.class, "createTime", false, "CREATE_TIME");
         public final static Property LastOpenTime = new Property(4, Long.class, "lastOpenTime", false, "LAST_OPEN_TIME");
@@ -50,7 +50,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SENT_BUNDLE_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: id
-                "\"SEND_ZALO_PAY_ID\" TEXT NOT NULL ," + // 1: sendZaloPayID
+                "\"SEND_ZALO_PAY_ID\" TEXT NOT NULL ," + // 1: senderZaloPayID
                 "\"TYPE\" INTEGER," + // 2: type
                 "\"CREATE_TIME\" INTEGER," + // 3: createTime
                 "\"LAST_OPEN_TIME\" INTEGER," + // 4: lastOpenTime
@@ -120,7 +120,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     public SentBundleGD readEntity(Cursor cursor, int offset) {
         SentBundleGD entity = new SentBundleGD( //
             cursor.getLong(offset + 0), // id
-            cursor.getString(offset + 1), // sendZaloPayID
+            cursor.getString(offset + 1), // senderZaloPayID
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // type
             cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // createTime
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // lastOpenTime

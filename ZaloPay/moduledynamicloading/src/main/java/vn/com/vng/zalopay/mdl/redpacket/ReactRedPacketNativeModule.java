@@ -17,10 +17,14 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -35,6 +39,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -294,8 +299,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         }
                         hideLoading();
                         successCallback(promise, transform(packageStatus));
-                        Timber.d("set open status 1 for packet: %s", packageId);
-                        mRedPackageRepository.setPacketIsOpen(packageId).subscribe(new DefaultSubscriber<Void>());
+                        Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
+                        mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
                         isRunningGetTranStatus = false;
                     }
                 });
@@ -384,6 +389,42 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
+    @ReactMethod
+    public void getReceivedPacket(String packetId, final Promise promise) {
+        Timber.d("get received packet detail: [%s]", packetId);
+        try {
+            if (TextUtils.isEmpty(packetId)) {
+                promise.reject("EMPTY PACKETID", "Invalid argument");
+                return;
+            }
+
+            long packetIdValue = Long.parseLong(packetId);
+            Timber.d("packetId: %d", packetIdValue);
+            Subscription subscription = mRedPackageRepository.getReceivedPacket(packetIdValue)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Subscriber<ReceivePackage>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            promise.reject("EXCEPTION", Arrays.toString(e.getStackTrace()));
+                        }
+
+                        @Override
+                        public void onNext(ReceivePackage receivePackage) {
+                            Timber.d("received packet: %s", receivePackage.packageID);
+                            promise.resolve(transform(receivePackage));
+                        }
+                    });
+            compositeSubscription.add(subscription);
+        } catch (Exception ex) {
+            promise.reject("EXCEPTION", Arrays.toString(ex.getStackTrace()));
+        }
+    }
+
     private WritableArray transformListFriend(List<ZaloFriendGD> zaloFriendGDs) {
         if (Lists.isEmptyOrNull(zaloFriendGDs))
             return null;
@@ -415,6 +456,20 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         writableMap.putDouble("amount", packageStatus.amount);
         writableMap.putDouble("balance", packageStatus.balance);
         writableMap.putString("data", packageStatus.data);
+        return writableMap;
+    }
+
+    private WritableMap transform(ReceivePackage packet) {
+        if (packet == null) {
+            return null;
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.putDouble("packetId", packet.packageID);
+        writableMap.putDouble("bundleId", packet.bundleID);
+        writableMap.putString("senderName", packet.senderFullName);
+        writableMap.putString("senderAvatar", packet.senderAvatar);
+        writableMap.putString("message", packet.message);
+        writableMap.putDouble("amount", packet.amount);
         return writableMap;
     }
 
