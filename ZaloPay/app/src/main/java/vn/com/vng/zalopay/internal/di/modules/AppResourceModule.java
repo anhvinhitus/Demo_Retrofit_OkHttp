@@ -50,7 +50,7 @@ public class AppResourceModule {
                                                         DownloadAppResourceTaskQueue taskQueue,
                                                         OkHttpClient mOkHttpClient,
                                                         @Named("rootbundle") String rootBundle) {
-        return new AppResourceRepository(context, mapper, requestService, localStorage,
+        return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
                 BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle);
     }

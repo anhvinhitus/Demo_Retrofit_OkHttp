@@ -5,13 +5,10 @@ package vn.com.vng.zalopay.data.appresources;
  */
 public class DownloadInfo {
 
-    public String url;
-
-    public String appname;
-
-    public int appid;
-
-    public String checksum;
+    public final String url;
+    public final String appname;
+    public final int appid;
+    public final String checksum;
 
     public DownloadInfo(String url, String appname, int appid, String checksum) {
         this.url = url;

@@ -11,6 +11,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -19,6 +23,7 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -31,12 +36,16 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 public class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private NotificationStore.Repository repository;
+    private final EventBus mEventBus;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactNotificationNativeModule(ReactApplicationContext reactContext, NotificationStore.Repository repository) {
+    public ReactNotificationNativeModule(ReactApplicationContext reactContext,
+                                         NotificationStore.Repository repository,
+                                         EventBus eventBus) {
         super(reactContext);
         this.repository = repository;
+        this.mEventBus = eventBus;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -160,11 +169,13 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
     @Override
     public void onHostResume() {
         Timber.d(" Actvity `onResume`");
+        mEventBus.register(this);
     }
 
     @Override
     public void onHostPause() {
         Timber.d(" Actvity `onPause`");
+        mEventBus.unregister(this);
     }
 
     @Override
@@ -183,5 +194,18 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
     }
 
+    public void sendEvent(String eventName) {
+        ReactApplicationContext reactContext = getReactApplicationContext();
+        if (reactContext == null) {
+            return;
+        }
+
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
+    }
+
+    @Subscribe
+    private void onNotificationUpdated(NotificationChangeEvent event) {
+        sendEvent("zalopayNotificationsAdded");
+    }
 
 }

@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.data.util.Lists;
  * Implementation for AppResource.Repository
  */
 public class AppResourceRepository implements AppResource.Repository {
-    private Context mContext;
     private AppConfigEntityDataMapper mAppConfigEntityDataMapper;
     private HashMap<String, String> mRequestParameters;
     private DownloadAppResourceTaskQueue taskQueue;
@@ -34,8 +33,7 @@ public class AppResourceRepository implements AppResource.Repository {
     private final AppResource.RequestService mRequestService;
     private final AppResource.LocalStorage mLocalStorage;
 
-    public AppResourceRepository(Context context,
-                                 AppConfigEntityDataMapper mapper,
+    public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResource.RequestService requestService,
                                  AppResource.LocalStorage localStorage,
                                  HashMap<String, String> requestParameters,
@@ -43,7 +41,6 @@ public class AppResourceRepository implements AppResource.Repository {
                                  OkHttpClient okHttpClient,
                                  boolean download,
                                  String rootBundle) {
-        this.mContext = context;
         this.mAppConfigEntityDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
