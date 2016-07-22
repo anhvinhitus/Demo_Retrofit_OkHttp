@@ -17,6 +17,7 @@ public class ReceivePackageGD {
     private String sendFullName;
     private Long amount;
     private Long openedTime;
+    private Boolean isOpen;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -33,7 +34,7 @@ public class ReceivePackageGD {
         this.id = id;
     }
 
-    public ReceivePackageGD(long id, Long bundleID, String revZaloPayID, String sendZaloPayID, String sendFullName, Long amount, Long openedTime) {
+    public ReceivePackageGD(long id, Long bundleID, String revZaloPayID, String sendZaloPayID, String sendFullName, Long amount, Long openedTime, Boolean isOpen) {
         this.id = id;
         this.bundleID = bundleID;
         this.revZaloPayID = revZaloPayID;
@@ -41,6 +42,7 @@ public class ReceivePackageGD {
         this.sendFullName = sendFullName;
         this.amount = amount;
         this.openedTime = openedTime;
+        this.isOpen = isOpen;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -103,6 +105,14 @@ public class ReceivePackageGD {
 
     public void setOpenedTime(Long openedTime) {
         this.openedTime = openedTime;
+    }
+
+    public Boolean getIsOpen() {
+        return isOpen;
+    }
+
+    public void setIsOpen(Boolean isOpen) {
+        this.isOpen = isOpen;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
