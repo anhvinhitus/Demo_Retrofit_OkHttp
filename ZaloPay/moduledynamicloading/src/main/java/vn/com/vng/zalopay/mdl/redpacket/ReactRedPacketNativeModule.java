@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.internal;
+package vn.com.vng.zalopay.mdl.redpacket;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,13 +33,10 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
-import vn.com.vng.zalopay.mdl.internal.subscriber.GetAllFriendSubscriber;
-import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayListener;
-import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
  * Created by longlv on 17/07/2016.

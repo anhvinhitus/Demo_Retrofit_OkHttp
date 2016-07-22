@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.internal.subscriber;
+package vn.com.vng.zalopay.mdl.redpacket;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;

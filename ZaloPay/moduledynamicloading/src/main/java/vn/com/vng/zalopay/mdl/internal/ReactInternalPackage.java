@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
+import vn.com.vng.zalopay.mdl.redpacket.ReactRedPacketNativeModule;
 
 /**
  * Created by huuhoa on 4/25/16.
