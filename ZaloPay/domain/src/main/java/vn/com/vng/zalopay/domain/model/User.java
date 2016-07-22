@@ -1,8 +1,6 @@
 package vn.com.vng.zalopay.domain.model;
 
 import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,10 +12,7 @@ import java.util.List;
 /**
  * Created by AnhHieu on 3/25/16.
  */
-
-/*
-*
-* */
+@org.parceler.Parcel
 public final class User extends Person {
 
     public long zaloId;
@@ -35,10 +30,6 @@ public final class User extends Person {
     public List<ProfilePermission.Permission> profilePermissions;
 
     public User() {
-    }
-
-    public User(Parcel source) {
-        super(source);
     }
 
     public User(SharedPreferences preferences) {
@@ -61,24 +52,6 @@ public final class User extends Person {
                 new TypeToken<ArrayList<ProfilePermission.Permission>>() {
                 }.getType());
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-    }
-
-
-    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
-        @Override
-        public Person createFromParcel(Parcel source) {
-            return new Person(source);
-        }
-
-        @Override
-        public Person[] newArray(int size) {
-            return new Person[size];
-        }
-    };
 
     @Override
     public String toString() {

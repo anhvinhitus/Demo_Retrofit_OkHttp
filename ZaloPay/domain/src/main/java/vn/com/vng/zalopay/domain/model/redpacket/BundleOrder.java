@@ -1,7 +1,9 @@
-package vn.com.vng.zalopay.domain.model;
+package vn.com.vng.zalopay.domain.model.redpacket;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import vn.com.vng.zalopay.domain.model.Order;
 
 /**
  * Created by longlv on 13/07/2016.

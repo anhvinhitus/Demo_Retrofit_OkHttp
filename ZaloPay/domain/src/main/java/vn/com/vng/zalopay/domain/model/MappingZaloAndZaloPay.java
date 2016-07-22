@@ -1,16 +1,14 @@
 package vn.com.vng.zalopay.domain.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import org.parceler.Parcel;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 
-/*
-*
-* */
-public final class MappingZaloAndZaloPay extends AbstractData {
+@Parcel
+public final class MappingZaloAndZaloPay {
 
     public long zaloId;
     public String zaloPayId;
@@ -27,31 +25,6 @@ public final class MappingZaloAndZaloPay extends AbstractData {
         this.zaloPayId = zaloPayId;
         this.phonenumber = phonenumber;
     }
-
-    public MappingZaloAndZaloPay(Parcel source) {
-        zaloId = source.readLong();
-        zaloPayId = source.readString();
-        phonenumber = source.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(zaloId);
-        dest.writeString(zaloPayId);
-        dest.writeString(phonenumber);
-    }
-
-    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
-        @Override
-        public Person createFromParcel(Parcel source) {
-            return new Person(source);
-        }
-
-        @Override
-        public Person[] newArray(int size) {
-            return new Person[size];
-        }
-    };
 
     public long getZaloId() {
         return zaloId;

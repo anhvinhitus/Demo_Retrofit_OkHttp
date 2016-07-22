@@ -1,16 +1,18 @@
-package vn.com.vng.zalopay.domain.model;
+package vn.com.vng.zalopay.domain.model.redpacket;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import vn.com.vng.zalopay.domain.model.Person;
 
 /**
  * Created by longlv on 14/07/2016.
  * RedPacket save redPackage that user sent
  */
-public class RedPacket extends AbstractData {
+@Parcel
+public class RedPacket {
     public long bundleId;
     public int quantity;
     public long totalLuck;
@@ -31,6 +33,10 @@ public class RedPacket extends AbstractData {
         public int getValue() {
             return value;
         }
+    }
+
+    public RedPacket() {
+
     }
 
     public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage) {
@@ -54,38 +60,4 @@ public class RedPacket extends AbstractData {
         this.friends = friends;
         this.state = state;
     }
-
-    public RedPacket(Parcel source) {
-        source.writeLong(bundleId);
-        source.writeInt(quantity);
-        source.writeLong(totalLuck);
-        source.writeLong(amountEach);
-        source.writeInt(type);
-        source.writeString(sendMessage);
-        source.writeList(friends);
-        source.writeInt(state);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        bundleId = dest.readLong();
-        quantity = dest.readInt();
-        totalLuck = dest.readInt();
-        amountEach = dest.readLong();
-        type = dest.readInt();
-        sendMessage = dest.readString();
-        dest.readList(friends, null);
-    }
-
-    public final Parcelable.Creator<RedPacket> CREATOR = new Parcelable.Creator<RedPacket>() {
-        @Override
-        public RedPacket createFromParcel(Parcel source) {
-            return new RedPacket(source);
-        }
-
-        @Override
-        public RedPacket[] newArray(int size) {
-            return new RedPacket[size];
-        }
-    };
 }

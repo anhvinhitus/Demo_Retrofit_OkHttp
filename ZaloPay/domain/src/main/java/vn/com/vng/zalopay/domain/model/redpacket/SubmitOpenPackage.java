@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.domain.model;
+package vn.com.vng.zalopay.domain.model.redpacket;
 
 import org.parceler.Parcel;
 

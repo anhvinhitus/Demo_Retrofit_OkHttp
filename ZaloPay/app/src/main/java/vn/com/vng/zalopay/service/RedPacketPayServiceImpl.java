@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.domain.model.BundleOrder;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayListener;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.navigation.Navigator;

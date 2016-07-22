@@ -31,7 +31,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
 import vn.com.vng.zalopay.data.redpacket.RedPacketRepositoryImpl;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
-import vn.com.vng.zalopay.domain.model.BundleOrder;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
