@@ -1,12 +1,15 @@
 package vn.com.vng.zalopay.mdl.internal.subscriber;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
  * Created by longlv on 16/07/2016.
@@ -38,7 +41,6 @@ public class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
 
     @Override
     public void onNext(WritableArray writableArray) {
-
         Timber.d("OpenPackageSubscriber %s", writableArray);
 
         if (promiseWeakReference == null) {
@@ -46,7 +48,10 @@ public class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
         }
 
         Promise promise = promiseWeakReference.get();
-        promise.resolve(writableArray);
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        writableMap.putArray("data", writableArray);
+        promise.resolve(writableMap);
         promiseWeakReference.clear();
     }
 }
