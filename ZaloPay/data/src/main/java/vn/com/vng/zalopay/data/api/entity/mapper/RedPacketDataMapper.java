@@ -52,7 +52,7 @@ public class RedPacketDataMapper {
         return receivePackages;
     }
 
-    private ReceivePackage transform(ReceivePackageGD receivePackageGD) {
+    public ReceivePackage transform(ReceivePackageGD receivePackageGD) {
         if (receivePackageGD == null || receivePackageGD.getId() <= 0) {
             return null;
         }

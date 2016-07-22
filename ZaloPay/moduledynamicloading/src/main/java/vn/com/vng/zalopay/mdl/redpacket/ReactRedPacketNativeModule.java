@@ -294,6 +294,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         }
                         hideLoading();
                         successCallback(promise, transform(packageStatus));
+                        mRedPackageRepository.setPacketIsOpen(packageId).subscribe(new DefaultSubscriber<Void>());
                         isRunningGetTranStatus = false;
                     }
                 });

@@ -116,18 +116,24 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Boolean isPacketOpen(long packetId) {
-        List<ReceivePackageGD> all =
-                getDaoSession()
-                        .getReceivePackageGDDao()
-                        .queryBuilder()
-                        .where(ReceivePackageGDDao.Properties.Id.eq(packetId))
-                        .limit(1)
-                        .list();
-        if (Lists.isEmptyOrNull(all)) {
+        ReceivePackageGD packageGD = getReceivePackageGD(packetId);
+        if (packageGD == null) {
             return Boolean.FALSE;
-        } else {
-            return all.get(0).getIsOpen();
         }
+
+        return packageGD.getIsOpen();
+    }
+
+    @Override
+    public Void setPacketIsOpen(long packetId) {
+        ReceivePackageGD packageGD = getReceivePackageGD(packetId);
+        if (packageGD == null) {
+            return null;
+        }
+
+        packageGD.setIsOpen(true);
+        getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);
+        return null;
     }
 
     @Override
@@ -250,14 +256,22 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                         .list());
     }
 
-    private ReceivePackage queryReceivePackage(long bundleID) {
-        List<ReceivePackage> receivePackages = mDataMapper.transformToReceivePackage(
-                getDaoSession()
+    private ReceivePackage queryReceivePackage(long packetId) {
+        ReceivePackageGD packageGD = getReceivePackageGD(packetId);
+        if (packageGD == null) {
+            return null;
+        }
+
+        return mDataMapper.transform(packageGD);
+    }
+
+    private ReceivePackageGD getReceivePackageGD(long packetId) {
+        List<ReceivePackageGD> receivePackages = getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
-                        .where(ReceivePackageGDDao.Properties.Id.eq(bundleID))
+                        .where(ReceivePackageGDDao.Properties.Id.eq(packetId))
                         .limit(1)
-                        .list());
+                        .list();
         if (Lists.isEmptyOrNull(receivePackages)) {
             return null;
         } else {

@@ -49,6 +49,8 @@ public interface RedPacketStore {
         Observable<PackageInBundle> getPackageInBundle(long bundleID);
 
         Boolean isPacketOpen(long packetId);
+
+        Void setPacketIsOpen(long packetId);
     }
 
     interface RequestService {
@@ -100,5 +102,7 @@ public interface RedPacketStore {
         Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
 
         Observable<Boolean> isPacketOpen(String packetId);
+
+        Observable<Void> setPacketIsOpen(long packageId);
     }
 }
