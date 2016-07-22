@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.event.NotificationUpdatedEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -120,7 +121,6 @@ public class NotificationHelper {
     }*/
 
     public void processNotification(NotificationData notify) {
-
         if (notify.getTransType() > 0) {
             this.updateTransaction();
             this.updateBalance();
@@ -142,6 +142,8 @@ public class NotificationHelper {
         notificationStore.put(notify);
         this.showNotification(notify);
 
+        NotificationUpdatedEvent event = new NotificationUpdatedEvent();
+        AndroidApplication.instance().getAppComponent().eventBus().post(event);
     }
 
 

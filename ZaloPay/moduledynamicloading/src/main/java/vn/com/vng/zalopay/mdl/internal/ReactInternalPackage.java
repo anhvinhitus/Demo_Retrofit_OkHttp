@@ -6,6 +6,8 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,13 +37,15 @@ public class ReactInternalPackage implements ReactPackage {
     private INavigator navigator;
 
     private ZPAnalytics zpAnalytics;
+    private EventBus mEventBus;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
                                 IRedPacketPayService paymentService,
                                 ISweetAlertDialog sweetAlertDialog,
-                                INavigator navigator, ZPAnalytics zpAnalytics) {
+                                INavigator navigator, ZPAnalytics zpAnalytics,
+                                EventBus eventBus) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
@@ -50,6 +54,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.sweetAlertDialog = sweetAlertDialog;
         this.navigator = navigator;
         this.zpAnalytics = zpAnalytics;
+        this.mEventBus = eventBus;
     }
 
     @Override
@@ -61,6 +66,7 @@ public class ReactInternalPackage implements ReactPackage {
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
+        modules.add(new ReactEventEmitterNativeModule(reactContext, mEventBus));
         return modules;
     }
 
