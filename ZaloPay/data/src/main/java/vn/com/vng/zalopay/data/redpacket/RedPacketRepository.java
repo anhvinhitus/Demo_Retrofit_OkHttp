@@ -24,26 +24,43 @@ import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
  * Created by longlv on 13/07/2016.
  * Implementation for RedPacketStore.Repository
  */
-public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
+public class RedPacketRepository implements RedPacketStore.Repository {
 
-    public RedPacketStore.RequestService mRequestService;
-    private RedPacketStore.LocalStorage mLocalStorage;
-    private RedPacketDataMapper mDataMapper;
-    public UserConfig userConfig;
-    public User user;
+    private final RedPacketStore.RequestService mRequestService;
+    private final RedPacketStore.LocalStorage mLocalStorage;
+    private final RedPacketDataMapper mDataMapper;
+    private final User user;
 
-    public RedPacketRepositoryImpl(RedPacketStore.RequestService requestService, RedPacketStore.LocalStorage localStorage, RedPacketDataMapper dataMapper, UserConfig userConfig, User user) {
+    public RedPacketRepository(RedPacketStore.RequestService requestService,
+                               RedPacketStore.LocalStorage localStorage,
+                               RedPacketDataMapper dataMapper,
+                               User user) {
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
         this.mDataMapper = dataMapper;
         this.user = user;
-        this.userConfig = userConfig;
     }
 
     @Override
-    public Observable<BundleOrder> createBundleOrder(int quantity, long totalLuck, long amountEach, int type, String sendMessage) {
+    public Observable<BundleOrder> createBundleOrder(int quantity,
+                                                     long totalLuck,
+                                                     long amountEach,
+                                                     int type,
+                                                     String sendMessage) {
         return mRequestService.createBundleOrder(quantity, totalLuck, amountEach, type, user.uid, user.accesstoken, sendMessage)
-                .map(bundleOrderResponse -> new BundleOrder(bundleOrderResponse.getAppid(), bundleOrderResponse.getZptranstoken(), bundleOrderResponse.apptransid, bundleOrderResponse.appuser, bundleOrderResponse.apptime, bundleOrderResponse.embeddata, bundleOrderResponse.item, bundleOrderResponse.amount, bundleOrderResponse.description, bundleOrderResponse.payoption, bundleOrderResponse.mac, bundleOrderResponse.bundleID));
+                .map(bundleOrderResponse ->
+                        new BundleOrder(bundleOrderResponse.getAppid(),
+                                bundleOrderResponse.getZptranstoken(),
+                                bundleOrderResponse.apptransid,
+                                bundleOrderResponse.appuser,
+                                bundleOrderResponse.apptime,
+                                bundleOrderResponse.embeddata,
+                                bundleOrderResponse.item,
+                                bundleOrderResponse.amount,
+                                bundleOrderResponse.description,
+                                bundleOrderResponse.payoption,
+                                bundleOrderResponse.mac,
+                                bundleOrderResponse.bundleID));
     }
 
     @Override
@@ -62,7 +79,13 @@ public class RedPacketRepositoryImpl implements RedPacketStore.Repository {
     @Override
     public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId) {
         return mRequestService.getPackageStatus(packageID, zpTransID, user.uid, user.accesstoken, deviceId)
-                .map(packageStatusResponse -> new PackageStatus(packageStatusResponse.isprocessing, packageStatusResponse.zptransid, packageStatusResponse.reqdate, packageStatusResponse.amount, packageStatusResponse.balance, packageStatusResponse.data));
+                .map(packageStatusResponse ->
+                        new PackageStatus(packageStatusResponse.isprocessing,
+                                packageStatusResponse.zptransid,
+                                packageStatusResponse.reqdate,
+                                packageStatusResponse.amount,
+                                packageStatusResponse.balance,
+                                packageStatusResponse.data));
     }
 
     @Override

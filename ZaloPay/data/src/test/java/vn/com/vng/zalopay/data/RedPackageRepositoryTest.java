@@ -29,7 +29,7 @@ import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
-import vn.com.vng.zalopay.data.redpacket.RedPacketRepositoryImpl;
+import vn.com.vng.zalopay.data.redpacket.RedPacketRepository;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
@@ -92,7 +92,7 @@ public class RedPackageRepositoryTest {
         RedPacketDataMapper dataMapper = new RedPacketDataMapper();
         mLocalStorage = new RedPacketLocalStorage(daoSession, dataMapper);
 
-        mRepository = new RedPacketRepositoryImpl(mRequestService, mLocalStorage, dataMapper, null, new User("1"));
+        mRepository = new RedPacketRepository(mRequestService, mLocalStorage, dataMapper, new User("1"));
     }
 
     public class RequestServiceImpl implements RedPacketStore.RequestService {

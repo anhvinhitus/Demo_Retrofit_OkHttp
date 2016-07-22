@@ -11,7 +11,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
-import vn.com.vng.zalopay.data.redpacket.RedPacketRepositoryImpl;
+import vn.com.vng.zalopay.data.redpacket.RedPacketRepository;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -41,8 +41,11 @@ public class UserRedPacketModule {
 
     @UserScope
     @Provides
-    RedPacketStore.Repository provideRedPacketRepository(RedPacketStore.RequestService requestService, RedPacketStore.LocalStorage localStorage, RedPacketDataMapper dataMapper, UserConfig userConfig, User user) {
-        return new RedPacketRepositoryImpl(requestService, localStorage, dataMapper, userConfig, user);
+    RedPacketStore.Repository provideRedPacketRepository(RedPacketStore.RequestService requestService,
+                                                         RedPacketStore.LocalStorage localStorage,
+                                                         RedPacketDataMapper dataMapper,
+                                                         User user) {
+        return new RedPacketRepository(requestService, localStorage, dataMapper, user);
     }
 
     @UserScope
