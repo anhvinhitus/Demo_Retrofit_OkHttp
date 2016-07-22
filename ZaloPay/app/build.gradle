@@ -351,8 +351,7 @@ dependencies {
     }
     compile project(':reactnativemodules')
 
-    debugCompile(name: 'WALLET-debug', ext: 'aar')
-    releaseCompile(name: 'WALLET-release', ext: 'aar')
+    compile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
     compile project(':zalopayanalytics')
