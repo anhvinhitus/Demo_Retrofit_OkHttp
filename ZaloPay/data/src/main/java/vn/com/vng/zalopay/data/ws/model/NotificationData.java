@@ -152,4 +152,40 @@ public class NotificationData extends Event {
         }
         return bundleid;
     }
+
+    public String getAvatar() {
+        String avatar = "";
+        try {
+            if (embeddata.has("avatar")) {
+                avatar = embeddata.get("avatar").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return avatar;
+    }
+
+    public String getName() {
+        String name = "";
+        try {
+            if (embeddata.has("name")) {
+                name = embeddata.get("name").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return name;
+    }
+
+    public String getLiximessage() {
+        String liximessage = "";
+        try {
+            if (embeddata.has("liximessage")) {
+                liximessage = embeddata.get("liximessage").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return liximessage;
+    }
 }
