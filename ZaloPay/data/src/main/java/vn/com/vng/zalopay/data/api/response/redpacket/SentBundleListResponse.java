@@ -18,6 +18,6 @@ public class SentBundleListResponse extends BaseResponse {
     @SerializedName("totalofsentbundle")
     public long totalOfSentBundle;
 
-    @SerializedName("bundles")
+    @SerializedName("sentbundlelist")
     public List<SentBundleResponse> bundleResponseList;
 }

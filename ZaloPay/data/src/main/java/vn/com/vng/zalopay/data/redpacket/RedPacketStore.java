@@ -67,15 +67,15 @@ public interface RedPacketStore {
         Observable<PackageStatusResponse> getPackageStatus(@Field("packageid") long packageID, @Field("zptransid") long zpTransID, @Field("userid") String userid, @Field("accesstoken") String accessToken, @Field("deviceid") String deviceid);
 
         @FormUrlEncoded
-        @POST("/rpe/getSentBundleList")
+        @POST("redpackage/getsentbundlelist")
         Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
 
         @FormUrlEncoded
-        @POST("/rpe/getRevPackageList")
+        @POST("redpackage/getrevpackagelist")
         Observable<GetReceivePackageResponse> getReceivedPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
 
         @FormUrlEncoded
-        @POST("/rpe/getPackageInBundleList")
+        @POST("redpackage/getpackageinbundlelist")
         Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleid") long bundleid, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
     }
 
