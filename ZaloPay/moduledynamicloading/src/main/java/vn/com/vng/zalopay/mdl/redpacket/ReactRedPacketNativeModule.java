@@ -17,8 +17,6 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
-import org.greenrobot.eventbus.Subscribe;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +36,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
@@ -212,7 +211,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("startTaskGetTransactionStatus packetId [%s] transId [%s]", packageId, zpTransId);
-        showLoading();
+        //showLoading();
         if (mTimerGetTranStatus != null) {
             mTimerGetTranStatus.cancel();
         }
@@ -227,7 +226,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onFinish() {
                 Timber.d("onFinish");
-                hideLoading();
+                //hideLoading();
                 showDialogRetryGetTranStatus(packageId, zpTransId, promise);
             }
         }.start();
@@ -297,7 +296,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         if (mTimerGetTranStatus != null) {
                             mTimerGetTranStatus.cancel();
                         }
-                        hideLoading();
+                        //hideLoading();
                         successCallback(promise, transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
@@ -356,7 +355,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public void onError(Throwable e) {
                         Timber.w(e, "error on openPacket");
-                        hideLoading();
+                        //hideLoading();
                         if (e instanceof BodyException) {
                             int errorCode = ((BodyException) e).errorCode;
                             String message = ((BodyException) e).message;
@@ -474,7 +473,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getPacketsFromBundle(String bundleID, final Promise promise) {
+    public void getPacketsFromBundle(String strBundleID, final Promise promise) {
+        Timber.d("getPackageInBundle strBundleID [%s]", strBundleID);
         WritableArray array = Arguments.createArray();
         for (int i=0; i < 10; i++) {
             WritableMap map = Arguments.createMap();
@@ -488,6 +488,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }
 
         promise.resolve(array);
+
+//        long bundleID = 0;
+//        try {
+//            bundleID = Long.valueOf(strBundleID);
+//        } catch (NumberFormatException e) {
+//            Timber.w(e, "GetPackageInBundle Exception, ");
+//        }
+//        mRedPackageRepository.getPackageInBundle(bundleID).subscribe(new GetPacketInBundleSub(promise));
     }
 
     @ReactMethod
@@ -563,6 +571,19 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         promise.resolve(item);
     }
 
+    private void successCallback(Promise promise, WritableArray array) {
+        Timber.d("successCallback promise [%s]", promise);
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        if (array != null) {
+            item.putArray("data", array);
+        }
+        promise.resolve(item);
+    }
+
     private void errorCallback(Promise promise, int errorCode, String message) {
         Timber.d("errorCallback start errorCode [%s] message [%s]", errorCode, message);
         if (promise == null) {
@@ -574,5 +595,45 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             item.putString("message", message);
         }
         promise.resolve(item);
+    }
+
+    private class GetPacketInBundleSub extends DefaultSubscriber<List<PackageInBundle>> {
+        Promise mPromise;
+        public GetPacketInBundleSub(Promise promise) {
+            mPromise = promise;
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (mPromise != null) {
+                mPromise.reject(e);
+            }
+        }
+
+        @Override
+        public void onNext(List<PackageInBundle> packageInBundles) {
+            if (mPromise == null) {
+                return;
+            }
+            WritableArray writableArray = Arguments.createArray();
+            for (PackageInBundle packageInBundle : packageInBundles) {
+                if (packageInBundle == null) {
+                    continue;
+                }
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putDouble("packageid", packageInBundle.bundleID);
+                writableMap.putDouble("packageid", packageInBundle.packageID);
+                writableMap.putDouble("amount", packageInBundle.amount);
+                writableMap.putDouble("opentime", packageInBundle.openTime);
+                writableMap.putDouble("revzaloid", packageInBundle.revZaloID);
+                writableMap.putString("revzalopayid", packageInBundle.revZaloPayID);
+                writableMap.putBoolean("isluckiest", packageInBundle.isLuckiest);
+                writableMap.putString("revavatarurl", packageInBundle.revAvatarURL);
+                writableMap.putString("revfullname", packageInBundle.revFullName);
+                writableMap.putString("sendmessage", packageInBundle.sendMessage);
+                writableArray.pushMap(writableMap);
+            }
+            successCallback(mPromise, writableArray);
+        }
     }
 }

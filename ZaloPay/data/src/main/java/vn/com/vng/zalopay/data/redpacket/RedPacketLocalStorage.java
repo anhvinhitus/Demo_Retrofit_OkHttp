@@ -103,15 +103,20 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<PackageInBundle>> getPackageInBundle(int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(() -> querySentPackageList(pageIndex, limit))
+    public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit) {
+        return ObservableHelper.makeObservable(() -> querySentPackageList(bundleID, pageIndex, limit))
                 .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
     }
 
     @Override
-    public Observable<PackageInBundle> getPackageInBundle(long bundleID) {
+    public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> querySentPackage(bundleID))
                 .doOnNext(sentPackage -> Timber.d("get %s", sentPackage));
+    }
+
+    @Override
+    public Boolean isHavePackagesInDb(long bundleID) {
+        return getDaoSession().getPackageInBundleGDDao().queryBuilder().where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID)).count() > 0;
     }
 
     @Override
@@ -244,29 +249,24 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                         .list());
     }
 
-    private List<PackageInBundle> querySentPackageList(int pageIndex, int limit) {
+    private List<PackageInBundle> querySentPackageList(long bundleID, int pageIndex, int limit) {
         return mDataMapper.transformToPackageInBundle(
                 getDaoSession()
                         .getPackageInBundleGDDao()
                         .queryBuilder()
+                        .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
                         .offset(pageIndex * limit)
                         .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
                         .list());
     }
 
-    private PackageInBundle querySentPackage(long bundleID) {
-        List<PackageInBundle> sentPackages = mDataMapper.transformToPackageInBundle(
+    private List<PackageInBundle> querySentPackage(long bundleID) {
+        return mDataMapper.transformToPackageInBundle(
                 getDaoSession()
                         .getPackageInBundleGDDao()
                         .queryBuilder()
                         .where(PackageInBundleGDDao.Properties.Id.eq(bundleID))
-                        .limit(1)
                         .list());
-        if (Lists.isEmptyOrNull(sentPackages)) {
-            return null;
-        } else {
-            return sentPackages.get(0);
-        }
     }
 
     private List<ReceivePackage> queryReceivePackageList() {

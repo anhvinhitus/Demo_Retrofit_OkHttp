@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
@@ -26,6 +27,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
  * Implementation for RedPacketStore.Repository
  */
 public class RedPacketRepository implements RedPacketStore.Repository {
+    private final int LIMIT_ITEMS_PER_REQ = 20;
 
     private final RedPacketStore.RequestService mRequestService;
     private final RedPacketStore.LocalStorage mLocalStorage;
@@ -130,6 +132,45 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return mRequestService.getPackageInBundleList(bundleID, timestamp, count, order, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToPackageInBundle)
                 .doOnNext(this::insertPackageInBundle);
+    }
+
+    @Override
+    public Observable<Boolean> getAllPacketInBundleServer(long bundleId) {
+        Timber.d("getAllPacketInBundleServer bundleId [%s]", bundleId);
+        long timestamp = 0;
+        int count = LIMIT_ITEMS_PER_REQ;
+        int order = 1;
+        return ObservableHelper.makeObservable(() -> {
+            getPackageInBundlesServer(bundleId, timestamp, count, order);
+            return Boolean.TRUE;
+        });
+    }
+
+    private void getPackageInBundlesServer(final long bundleId, final long timestamp, final int count, final int sortOrder) {
+        Timber.d("transactionHistoryServer %s ", timestamp);
+        mRequestService.getPackageInBundleList(bundleId, timestamp, count, sortOrder, user.uid, user.accesstoken)
+                .map(mDataMapper::transformToPackageInBundle)
+                .doOnNext(this::insertPackageInBundle)
+                .doOnNext(packageInBundles -> {
+                    if (packageInBundles != null && packageInBundles.size() >= count) {
+                        long newTimeStamp = packageInBundles.get(0).openTime;
+                        getPackageInBundlesServer(bundleId, newTimeStamp, count, sortOrder);
+                    }
+                })
+                .subscribe(new DefaultSubscriber<>());
+    }
+
+    @Override
+    public Observable<List<PackageInBundle>> getPackageInBundle(long bundleId) {
+        if (mLocalStorage.isHavePackagesInDb(bundleId)) {
+            //return  mLocalStorage.getPackageInBundle(bundleId);
+            return mLocalStorage.getPackageInBundle(bundleId);
+        } else {
+//            getAllPacketInBundleServer(bundleId)
+//                    .doOnNext(result->{
+//                    });
+            return mLocalStorage.getPackageInBundle(bundleId);
+        }
     }
 
     @Override

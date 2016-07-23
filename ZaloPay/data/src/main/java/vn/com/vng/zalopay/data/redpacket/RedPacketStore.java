@@ -6,11 +6,10 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
-import rx.Subscription;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
@@ -19,12 +18,12 @@ import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
 /**
  * Created by longlv on 13/07/2016.
@@ -45,9 +44,9 @@ public interface RedPacketStore {
         Observable<ReceivePackage> getReceiveBundle(long bundleID);
 
         void putPackageInBundle(List<PackageInBundleGD> packageInBundleGDs);
-        Observable<List<PackageInBundle>> getPackageInBundle();
-        Observable<List<PackageInBundle>> getPackageInBundle(int pageIndex, int limit);
-        Observable<PackageInBundle> getPackageInBundle(long bundleID);
+        Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit);
+        Observable<List<PackageInBundle>> getPackageInBundle(long bundleID);
+        Boolean isHavePackagesInDb(long bundleID);
 
         Boolean isPacketOpen(long packetId);
 
@@ -106,6 +105,10 @@ public interface RedPacketStore {
 
         Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
 
+        Observable<Boolean> getAllPacketInBundleServer(long bundleId);
+
+        Observable<List<PackageInBundle>> getPackageInBundle(long bundleId);
+
         Observable<Boolean> isPacketOpen(String packetId);
 
         Observable<Void> setPacketIsOpen(long packageId, long amount);
@@ -113,5 +116,6 @@ public interface RedPacketStore {
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
         Observable<ReceivePackage> getReceivedPacket(long packetId);
+
     }
 }
