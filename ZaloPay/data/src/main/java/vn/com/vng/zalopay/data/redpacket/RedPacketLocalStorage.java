@@ -259,7 +259,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 getDaoSession()
                         .getPackageInBundleGDDao()
                         .queryBuilder()
-                        .where(PackageInBundleGDDao.Properties.Id.eq(bundleID))
+                        .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
                         .list());
     }
 

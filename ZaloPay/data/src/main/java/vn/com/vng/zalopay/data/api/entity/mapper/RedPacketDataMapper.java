@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
@@ -139,7 +140,7 @@ public class RedPacketDataMapper {
             PackageInBundle sentPackage = transform(packageInBundleGD);
             sentPackages.add(sentPackage);
         }
-        return null;
+        return sentPackages;
     }
 
     private PackageInBundle transform(PackageInBundleGD packageInBundleGD) {
@@ -223,10 +224,11 @@ public class RedPacketDataMapper {
     }
 
     public List<ReceivePackage> transform(List<ReceivePackageResponse> revpackageList) {
-        if (revpackageList == null
-                || revpackageList.size() <= 0) {
+        if (revpackageList == null || revpackageList.size() <= 0) {
+            Timber.w("Empty packet list");
             return null;
         }
+        Timber.d("Received packets size: %s", revpackageList.size());
         List<ReceivePackage> receivePackages = new ArrayList<>();
         for (ReceivePackageResponse response : revpackageList) {
             if (response == null) {
