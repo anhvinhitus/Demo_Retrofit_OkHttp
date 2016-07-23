@@ -131,7 +131,9 @@ public class NotificationHelper {
         if (NotificationType.isTransactionNotification(notify.getNotificationType())) {
             this.updateTransaction();
             this.updateBalance();
-        } else if (notify.getNotificationType() == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
+        }
+
+        if (notify.getNotificationType() == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             try {
                 JsonObject embeddata = notify.embeddata;
                 if (embeddata != null) {

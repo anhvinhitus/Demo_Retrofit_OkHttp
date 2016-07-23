@@ -27,7 +27,6 @@ class NotificationType {
                 notificationType == MONEY_WITHDRAW ||
                 notificationType == RECEIVE_RED_PACKET ||
                 notificationType == REFUND_RED_PACKET ||
-                notificationType == REFUND_TRANSACTION ||
-                notificationType == SEND_RED_PACKET;
+                notificationType == REFUND_TRANSACTION;
     }
 }
