@@ -97,12 +97,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<PackageInBundle>> getPackageInBundle() {
-        return ObservableHelper.makeObservable(this::querySentPackageList)
-                .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
-    }
-
-    @Override
     public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit) {
         return ObservableHelper.makeObservable(() -> querySentPackageList(bundleID, pageIndex, limit))
                 .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
