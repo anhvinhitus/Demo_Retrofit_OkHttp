@@ -146,6 +146,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message) {
+        Timber.d("Add received red packet: [packetId: %s, bundleId: %s, sender: %s, avatar: %s, message: %s",
+                packetId, bundleId, senderName, senderAvatar, message);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
             packageGD = new ReceivePackageGD();

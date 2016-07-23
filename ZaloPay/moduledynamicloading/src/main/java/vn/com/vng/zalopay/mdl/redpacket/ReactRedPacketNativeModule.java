@@ -410,7 +410,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                         @Override
                         public void onError(Throwable e) {
-                            promise.reject("EXCEPTION", Arrays.toString(e.getStackTrace()));
+                            promise.reject("EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
                         }
 
                         @Override
@@ -421,7 +421,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     });
             compositeSubscription.add(subscription);
         } catch (Exception ex) {
-            promise.reject("EXCEPTION", Arrays.toString(ex.getStackTrace()));
+            promise.reject("EXCEPTION", ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
         }
     }
 

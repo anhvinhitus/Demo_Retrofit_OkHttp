@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.redpacket;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
@@ -146,6 +147,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message) {
+        Timber.d("Add received red packet: [packetId: %s, bundleId: %s, sender: %s, avatar: %s, message: %s",
+                packetId, bundleId, senderName, senderAvatar, message);
         return ObservableHelper.makeObservable(() -> mLocalStorage.addReceivedRedPacket(packetId, bundleId, senderName, senderAvatar, message));
     }
 

@@ -123,8 +123,6 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putInt("appid", entity.appid);
         item.putString("destuserid", entity.destuserid);
 
-        Timber.d("transform bundleid [%s] packageid [%s]", entity.getBundleid(), entity.getPackageid());
-
         item.putString("packageid", String.valueOf(entity.getPackageid()));
         item.putString("bundleid", String.valueOf(entity.getBundleid()));
         item.putString("avatar", entity.getAvatar());
@@ -133,8 +131,6 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
         int transtype = entity.transtype;
         int notificationtype = entity.notificationtype;
-
-        Timber.d("transtype %s notificationtype %s", transtype, notificationtype);
 
         item.putString("title", TransactionType.getTitle(transtype));
         item.putInt("transtype", transtype);
