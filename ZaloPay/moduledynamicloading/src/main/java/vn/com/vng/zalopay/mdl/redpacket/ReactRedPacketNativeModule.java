@@ -464,10 +464,10 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             return null;
         }
         WritableMap writableMap = Arguments.createMap();
-        writableMap.putDouble("packetId", packet.packageID);
-        writableMap.putDouble("bundleId", packet.bundleID);
-        writableMap.putString("senderName", packet.senderFullName);
-        writableMap.putString("senderAvatar", packet.senderAvatar);
+        writableMap.putDouble("packetid", packet.packageID);
+        writableMap.putDouble("bundleid", packet.bundleID);
+        writableMap.putString("sendername", packet.senderFullName);
+        writableMap.putString("senderavatar", packet.senderAvatar);
         writableMap.putString("message", packet.message);
         writableMap.putDouble("amount", packet.amount);
         return writableMap;
@@ -512,11 +512,15 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             for (PackageInBundle packet : list) {
                                 WritableMap map = Arguments.createMap();
                                 map.putDouble("amount", packet.amount);
-                                map.putBoolean("isLuckiest", packet.isLuckiest);
-                                map.putString("revAvatarURL", packet.revAvatarURL);
-                                map.putString("revFullName", packet.revFullName);
-                                map.putDouble("openTime", packet.openTime);
-
+                                map.putBoolean("isluckiest", packet.isLuckiest);
+                                map.putString("revavatarurl", packet.revAvatarURL);
+                                map.putString("revfullname", packet.revFullName);
+                                map.putDouble("opentime", packet.openTime);
+//                                map.putDouble("bundleid", packet.bundleID);
+//                                map.putDouble("packageid", packet.packageID);
+//                                map.putDouble("revzaloid", packet.revZaloID);
+//                                map.putString("revzalopayid", packet.revZaloPayID);
+//                                map.putString("sendmessage", packet.sendMessage);
                                 array.pushMap(map);
                             }
 
@@ -720,43 +724,4 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         promise.resolve(item);
     }
 
-    private class GetPacketInBundleSub extends DefaultSubscriber<List<PackageInBundle>> {
-        Promise mPromise;
-        public GetPacketInBundleSub(Promise promise) {
-            mPromise = promise;
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (mPromise != null) {
-                mPromise.reject(e);
-            }
-        }
-
-        @Override
-        public void onNext(List<PackageInBundle> packageInBundles) {
-            if (mPromise == null) {
-                return;
-            }
-            WritableArray writableArray = Arguments.createArray();
-            for (PackageInBundle packageInBundle : packageInBundles) {
-                if (packageInBundle == null) {
-                    continue;
-                }
-                WritableMap writableMap = Arguments.createMap();
-                writableMap.putDouble("packageid", packageInBundle.bundleID);
-                writableMap.putDouble("packageid", packageInBundle.packageID);
-                writableMap.putDouble("amount", packageInBundle.amount);
-                writableMap.putDouble("opentime", packageInBundle.openTime);
-                writableMap.putDouble("revzaloid", packageInBundle.revZaloID);
-                writableMap.putString("revzalopayid", packageInBundle.revZaloPayID);
-                writableMap.putBoolean("isluckiest", packageInBundle.isLuckiest);
-                writableMap.putString("revavatarurl", packageInBundle.revAvatarURL);
-                writableMap.putString("revfullname", packageInBundle.revFullName);
-                writableMap.putString("sendmessage", packageInBundle.sendMessage);
-                writableArray.pushMap(writableMap);
-            }
-            successCallback(mPromise, writableArray);
-        }
-    }
 }
