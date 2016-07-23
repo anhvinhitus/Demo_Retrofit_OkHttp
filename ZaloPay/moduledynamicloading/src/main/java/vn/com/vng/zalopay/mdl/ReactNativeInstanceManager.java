@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.mdl;
 
+import android.content.Context;
+
 import com.facebook.react.ReactInstanceManager;
 
 /**
@@ -22,4 +24,7 @@ public interface ReactNativeInstanceManager {
      * @param e exception
      */
     void handleJSException(ReactBasedActivity activity, Exception e);
+
+    Context getActivityContext();
+    void setActivityContext(ReactBasedActivity activity);
 }

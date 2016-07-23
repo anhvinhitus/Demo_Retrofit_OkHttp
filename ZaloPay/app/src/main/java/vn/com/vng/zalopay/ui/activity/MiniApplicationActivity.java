@@ -136,7 +136,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return new ReactInternalPackage(transactionRepository,
                 notificationRepository, redPackageRepository,
                 friendRepository, paymentService, sweetAlertDialog,
-                navigator, zpAnalytics, eventBus);
+                navigator, zpAnalytics, eventBus, mReactNativeInstanceManager);
     }
 
     private void createUserComponent() {

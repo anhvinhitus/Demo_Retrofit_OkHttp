@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.facebook.react.ReactInstanceManager;
@@ -145,11 +146,23 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
         activity.handleException(e);
     }
 
+    private ReactBasedActivity mActivity;
+    @Override
+    public Context getActivityContext() {
+        return mActivity;
+    }
+
+    @Override
+    public void setActivityContext(ReactBasedActivity activity) {
+        mActivity = activity;
+    }
+
     @Override
     public void cleanup() {
         for (ReactInstanceManager manager : mInstance.values()) {
             manager.destroy();
         }
         mInstance.clear();
+        mActivity = null;
     }
 }

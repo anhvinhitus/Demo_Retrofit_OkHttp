@@ -474,8 +474,20 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getPackageInBundle(String bundleID) {
+    public void getPackagesFromBundle(String bundleID, final Promise promise) {
+        WritableArray array = Arguments.createArray();
+        for (int i=0; i < 10; i++) {
+            WritableMap map = Arguments.createMap();
+            map.putDouble("amount", 10000);
+            map.putBoolean("isLuckiest", i==5);
+            map.putString("revAvatarURL", "http://avatar.talk.zdn.vn/0/f/c/a/1/75/541e245926c3e1bc98e47d42fd1d1b90.jpg");
+            map.putString("revFullName", "Pham Van Bon");
+            map.putDouble("openTime", 1469093014972L);
 
+            array.pushMap(map);
+        }
+
+        promise.resolve(array);
     }
 
     @ReactMethod

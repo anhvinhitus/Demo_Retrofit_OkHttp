@@ -119,7 +119,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
      */
     protected ReactRootView createRootView() {
-        return new ReactRootView(this);
+        return new ReactRootView(getApplicationContext());
     }
 
     @Override
@@ -140,6 +140,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 
         this.initArgs(savedInstanceState);
 
+        nativeInstanceManager().setActivityContext(this);
         mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this);
         Timber.i("ReactInstanceManager currently has context: %s", mReactInstanceManager.hasStartedCreatingInitialContext());
 //        mReactInstanceManager.createReactContextInBackground();
@@ -192,6 +193,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
             nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
         }
+        nativeInstanceManager().setActivityContext(null);
         super.onDestroy();
     }
 

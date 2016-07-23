@@ -18,9 +18,11 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
+import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.redpacket.ReactRedPacketNativeModule;
+import vn.com.vng.zalopay.mdl.zpmodal.ReactModalHostManager;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -39,6 +41,7 @@ public class ReactInternalPackage implements ReactPackage {
 
     private ZPAnalytics zpAnalytics;
     private EventBus mEventBus;
+    private ReactNativeInstanceManager mReactNativeInstanceManager;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
@@ -46,7 +49,9 @@ public class ReactInternalPackage implements ReactPackage {
                                 IRedPacketPayService paymentService,
                                 AlertDialogProvider sweetAlertDialog,
                                 INavigator navigator, ZPAnalytics zpAnalytics,
-                                EventBus eventBus) {
+                                EventBus eventBus,
+                                ReactNativeInstanceManager reactNativeInstanceManager
+                                ) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
@@ -56,6 +61,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.navigator = navigator;
         this.zpAnalytics = zpAnalytics;
         this.mEventBus = eventBus;
+        this.mReactNativeInstanceManager = reactNativeInstanceManager;
     }
 
     @Override
@@ -77,6 +83,8 @@ public class ReactInternalPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        List<ViewManager> viewManagers = new ArrayList<>();
+        viewManagers.add(new ReactModalHostManager(reactContext, mReactNativeInstanceManager));
+        return viewManagers;
     }
 }
