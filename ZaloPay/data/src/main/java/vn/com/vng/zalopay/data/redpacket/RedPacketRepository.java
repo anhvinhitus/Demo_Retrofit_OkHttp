@@ -126,13 +126,13 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                     public void call(Subscriber<? super List<ReceivePackage>> subscriber) {
                         getAllReceivePacketServer().doOnCompleted(() -> {
                             mLocalStorage.getReceiveBundle().subscribe(subscriber);
-                        });
+                        }).subscribe(new DefaultSubscriber<>());
                     }
                 }));
     }
 
     private void getReceivePacketServer(long timestamp, int count, int sortOrder, Subscriber<? super Boolean> subscriber) {
-        Timber.d("transactionHistoryServer %s ", timestamp);
+        Timber.d("getReceivePacketServer %s ", timestamp);
         mRequestService.getReceivedPackageList(timestamp, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToReceivePackage)
                 .doOnNext(this::insertReceivePackages)
@@ -144,7 +144,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                     List<ReceivePackage> receivePackages= receivePacket.revpackageList;
                     if (receivePackages.size() >= count) {
                         long newOpenedTime = receivePackages.get(receivePackages.size()-1).openedTime;
-                        getSentBundleServer(newOpenedTime, count, sortOrder, subscriber);
+                        getReceivePacketServer(newOpenedTime, count, sortOrder, subscriber);
                     } else {
                         subscriber.onCompleted();
                     }
@@ -281,12 +281,14 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<Boolean> getAllSentBundlesServer() {
+        Timber.d("getAllSentBundlesServer");
         int timestamp = 0;
         int count = LIMIT_ITEMS_PER_REQ;
         int sortOrder = -1;
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
+                Timber.d("getAllSentBundlesServer call");
                 getSentBundleServer(timestamp, count, sortOrder, subscriber);
             }
         });
@@ -294,19 +296,21 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<List<SentBundle>> getSentBundleList() {
+        Timber.d("getSentBundleList");
         return Observable.merge(mLocalStorage.getAllSentBundle(),
         Observable.create(new Observable.OnSubscribe<List<SentBundle>>() {
             @Override
             public void call(Subscriber<? super List<SentBundle>> subscriber) {
+                Timber.d("getSentBundleList call");
                 getAllSentBundlesServer().doOnCompleted(() -> {
                     mLocalStorage.getAllSentBundle().subscribe(subscriber);
-                });
+                }).subscribe(new DefaultSubscriber<>());
             }
         }));
     }
 
     private void getSentBundleServer(long timestamp, int count, int sortOrder, Subscriber<? super Boolean> subscriber) {
-        Timber.d("transactionHistoryServer %s ", timestamp);
+        Timber.d("getSentBundleServer %s ", timestamp);
         mRequestService.getSentBundleList(timestamp, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToSentBundle)
                 .doOnNext(this::insertSentBundles)
