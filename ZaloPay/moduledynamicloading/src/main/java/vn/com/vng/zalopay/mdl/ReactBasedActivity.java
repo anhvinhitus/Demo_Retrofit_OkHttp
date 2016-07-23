@@ -119,7 +119,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
      */
     protected ReactRootView createRootView() {
-        return new ReactRootView(this);
+        return new ReactRootView(getWindow().getContext());
     }
 
     @Override

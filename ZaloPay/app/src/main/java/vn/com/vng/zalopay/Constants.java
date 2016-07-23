@@ -69,12 +69,4 @@ public class Constants {
         public static final String TRANSACTION_LOGS = "TransactionLogs";
         public static final String RED_PACKET = "RedPacket";
     }
-
-    public static class NotificationType {
-
-    }
-
-    public static class TransactionType {
-
-    }
 }

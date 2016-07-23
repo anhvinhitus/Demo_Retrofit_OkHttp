@@ -27,13 +27,13 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacket;
 import vn.com.vng.zalopay.event.NotificationUpdatedEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 6/15/16.
+ *
  */
 
 public class NotificationHelper {
@@ -128,10 +128,10 @@ public class NotificationHelper {
     }*/
 
     public void processNotification(NotificationData notify) {
-        if (notify.getTransType() > 0) {
+        if (NotificationType.isTransactionNotification(notify.getNotificationType())) {
             this.updateTransaction();
             this.updateBalance();
-        } else if (notify.getNotificationType() == 2) {
+        } else if (notify.getNotificationType() == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             try {
                 JsonObject embeddata = notify.embeddata;
                 if (embeddata != null) {
@@ -144,7 +144,7 @@ public class NotificationHelper {
             } catch (Exception ex) {
                 Timber.e(ex, "exception");
             }
-        } else if (notify.getNotificationType() == 103) {
+        } else if (notify.getNotificationType() == NotificationType.SEND_RED_PACKET) {
             // Process received red packet
             // {"userid":"160526000000502","destuserid":"160601000000002","message":"Nguyễn Hữu Hoà đã lì xì cho bạn.","zaloMessage":"da gui li xi cho ban. Vui long vao ... de nhan li xi.","embeddata":{"bundleid":160722000000430,"packageid":1607220000004300001,"avatar":"http://avatar.talk.zdn.vn/e/d/e/2/4/75/f1898a0a0a3f05bbb11088cb202d1c02.jpg","name":"Nguyễn Hữu Hoà","liximessage":"Best wishes."},"timestamp":1469190991786,"notificationtype":103}
             extractRedPacketFromNotification(notify);
