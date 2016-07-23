@@ -571,7 +571,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     public void onError(Throwable e) {
                         WritableMap writableMap = Arguments.createMap();
                         writableMap.putInt("code", 0);
-                        Timber.d(e, "Error while get sent packet");
+                        Timber.d(e, "Error while get sent bundle");
                         promise.reject("-1", e.getMessage());
                     }
 
@@ -586,7 +586,40 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getReceivePacketList(final Promise promise) {
+        Subscription subscription = mRedPackageRepository.getReceivePacketList()
+                .subscribe(new Observer<List<ReceivePackage>>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        WritableMap writableMap = Arguments.createMap();
+                        writableMap.putInt("code", 0);
+                        Timber.d(e, "Error while get receive packet");
+                        promise.reject("-1", e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<ReceivePackage> receivePackages) {
+                        WritableArray writableArray = transformReceivePacket(receivePackages);
+                        successCallback(promise, writableArray);
+                    }
+                });
+        compositeSubscription.add(subscription);
+    }
+
+    private WritableArray transformReceivePacket(List<ReceivePackage> receivePackages) {
+        WritableArray writableArray = Arguments.createArray();
+        if (receivePackages == null || receivePackages.size() <= 0) {
+            return  writableArray;
+        }
+        for (ReceivePackage receivePackage : receivePackages) {
+            WritableMap writableMap = transform(receivePackage);
+            writableArray.pushMap(writableMap);
+        }
+        return null;
     }
 
     private WritableArray transform(List<SentBundle> sentBundles) {

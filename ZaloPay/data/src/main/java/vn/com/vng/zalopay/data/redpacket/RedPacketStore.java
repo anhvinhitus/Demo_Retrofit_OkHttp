@@ -107,9 +107,11 @@ public interface RedPacketStore {
 
         Observable<GetReceivePacket> getReceivedPackageList(long timestamp, int count, int order);
 
-//        Observable<List<GetReceivePacket>> getReceivePacketList();
-//
-//        Observable<Boolean> getAllReceivePacketServer();
+        Observable<List<ReceivePackage>> getReceivePacketList();
+
+        Observable<ReceivePackage> getReceivedPacket(long packetId);
+
+        Observable<Boolean> getAllReceivePacketServer();
 
         Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
 
@@ -122,8 +124,5 @@ public interface RedPacketStore {
         Observable<Void> setPacketIsOpen(long packageId, long amount);
 
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
-
-        Observable<ReceivePackage> getReceivedPacket(long packetId);
-
     }
 }

@@ -118,6 +118,54 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                 .doOnNext(this::insertReceivePackages);
     }
 
+    @Override
+    public Observable<List<ReceivePackage>> getReceivePacketList() {
+        return Observable.merge(mLocalStorage.getReceiveBundle(),
+                Observable.create(new Observable.OnSubscribe<List<ReceivePackage>>() {
+                    @Override
+                    public void call(Subscriber<? super List<ReceivePackage>> subscriber) {
+                        getAllReceivePacketServer().doOnCompleted(() -> {
+                            mLocalStorage.getReceiveBundle().subscribe(subscriber);
+                        });
+                    }
+                }));
+    }
+
+    private void getReceivePacketServer(long timestamp, int count, int sortOrder, Subscriber<? super Boolean> subscriber) {
+        Timber.d("transactionHistoryServer %s ", timestamp);
+        mRequestService.getReceivedPackageList(timestamp, count, sortOrder, user.uid, user.accesstoken)
+                .map(mDataMapper::transformToReceivePackage)
+                .doOnNext(this::insertReceivePackages)
+                .doOnNext(receivePacket -> {
+                    subscriber.onNext(true);
+                    if (receivePacket == null || receivePacket.revpackageList == null) {
+                        return;
+                    }
+                    List<ReceivePackage> receivePackages= receivePacket.revpackageList;
+                    if (receivePackages.size() >= count) {
+                        long newOpenedTime = receivePackages.get(receivePackages.size()-1).openedTime;
+                        getSentBundleServer(newOpenedTime, count, sortOrder, subscriber);
+                    } else {
+                        subscriber.onCompleted();
+                    }
+                })
+                .doOnError(subscriber::onError)
+                .subscribe(new DefaultSubscriber<>());
+    }
+
+    @Override
+    public Observable<Boolean> getAllReceivePacketServer() {
+        int timestamp = 0;
+        int count = LIMIT_ITEMS_PER_REQ;
+        int sortOrder = -1;
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                getReceivePacketServer(timestamp, count, sortOrder, subscriber);
+            }
+        });
+    }
+
     private void insertReceivePackages(GetReceivePacket getReceivePacket) {
         if (getReceivePacket == null
                 || getReceivePacket.revpackageList == null
