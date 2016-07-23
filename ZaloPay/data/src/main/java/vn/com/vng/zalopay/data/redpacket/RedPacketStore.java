@@ -4,7 +4,9 @@ import java.util.List;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
@@ -70,21 +72,17 @@ public interface RedPacketStore {
         @POST("redpackage/submitopenpackage")
         Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageid") long packageID, @Field("bundleid") long bundleID, @Field("revzalopayid") String revZaloPayID, @Field("accesstoken") String accessToken);
 
-        @FormUrlEncoded
-        @POST("redpackage/getpackagestatus")
-        Observable<PackageStatusResponse> getPackageStatus(@Field("packageid") long packageID, @Field("zptransid") long zpTransID, @Field("userid") String userid, @Field("accesstoken") String accessToken, @Field("deviceid") String deviceid);
+        @GET("redpackage/getpackagestatus")
+        Observable<PackageStatusResponse> getPackageStatus(@Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
 
-        @FormUrlEncoded
-        @POST("redpackage/getsentbundlelist")
-        Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
+        @GET("redpackage/getsentbundlelist")
+        Observable<SentBundleListResponse> getSentBundleList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
-        @FormUrlEncoded
-        @POST("redpackage/getrevpackagelist")
-        Observable<GetReceivePackageResponse> getReceivedPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
+        @GET("redpackage/getrevpackagelist")
+        Observable<GetReceivePackageResponse> getReceivedPackageList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
-        @FormUrlEncoded
-        @POST("redpackage/getpackageinbundlelist")
-        Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleid") long bundleid, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken);
+        @GET("redpackage/getpackagesinbundle")
+        Observable<SentPackageInBundleResponse> getPackageInBundleList(@Query("bundleid") long bundleid, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
     }
 
     /**
@@ -107,7 +105,7 @@ public interface RedPacketStore {
 
         Observable<Boolean> getAllPacketInBundleServer(long bundleId);
 
-        Observable<List<PackageInBundle>> getPackageInBundle(long bundleId);
+        Observable<List<PackageInBundle>> getPacketsInBundle(long bundleId);
 
         Observable<Boolean> isPacketOpen(String packetId);
 

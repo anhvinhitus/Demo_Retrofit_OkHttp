@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.data.redpacket;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
@@ -27,7 +29,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
  * Implementation for RedPacketStore.Repository
  */
 public class RedPacketRepository implements RedPacketStore.Repository {
-    private final int LIMIT_ITEMS_PER_REQ = 20;
+    private final int LIMIT_ITEMS_PER_REQ = 30;
 
     private final RedPacketStore.RequestService mRequestService;
     private final RedPacketStore.LocalStorage mLocalStorage;
@@ -139,37 +141,51 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         Timber.d("getAllPacketInBundleServer bundleId [%s]", bundleId);
         long timestamp = 0;
         int count = LIMIT_ITEMS_PER_REQ;
-        int order = 1;
-        return ObservableHelper.makeObservable(() -> {
-            getPackageInBundlesServer(bundleId, timestamp, count, order);
-            return Boolean.TRUE;
+        int order = -1;
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                getPackageInBundlesServer(bundleId, timestamp, count, order, subscriber);
+            }
         });
     }
 
-    private void getPackageInBundlesServer(final long bundleId, final long timestamp, final int count, final int sortOrder) {
-        Timber.d("transactionHistoryServer %s ", timestamp);
+    private void getPackageInBundlesServer(final long bundleId, final long timestamp,
+                                           final int count, final int sortOrder,
+                                           Subscriber<? super Boolean> subscriber) {
+        Timber.d("getPackageInBundlesServer %s ", timestamp);
         mRequestService.getPackageInBundleList(bundleId, timestamp, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToPackageInBundle)
                 .doOnNext(this::insertPackageInBundle)
                 .doOnNext(packageInBundles -> {
+                    subscriber.onNext(true);
+
                     if (packageInBundles != null && packageInBundles.size() >= count) {
-                        long newTimeStamp = packageInBundles.get(0).openTime;
-                        getPackageInBundlesServer(bundleId, newTimeStamp, count, sortOrder);
+                        long newTimeStamp = packageInBundles.get(packageInBundles.size() - 1).openTime;
+                        getPackageInBundlesServer(bundleId, newTimeStamp, count, sortOrder, subscriber);
+                    } else {
+                        subscriber.onCompleted();
                     }
                 })
+                .doOnError(subscriber::onError)
                 .subscribe(new DefaultSubscriber<>());
     }
 
     @Override
-    public Observable<List<PackageInBundle>> getPackageInBundle(long bundleId) {
+    public Observable<List<PackageInBundle>> getPacketsInBundle(long bundleId) {
         if (mLocalStorage.isHavePackagesInDb(bundleId)) {
-            //return  mLocalStorage.getPackageInBundle(bundleId);
             return mLocalStorage.getPackageInBundle(bundleId);
         } else {
-//            getAllPacketInBundleServer(bundleId)
-//                    .doOnNext(result->{
-//                    });
-            return mLocalStorage.getPackageInBundle(bundleId);
+            return Observable.create(new Observable.OnSubscribe<List<PackageInBundle>>() {
+                @Override
+                public void call(Subscriber<? super List<PackageInBundle>> subscriber) {
+                    Timber.d("Begin to fetch packets from server for bundle: %s", bundleId);
+                    getAllPacketInBundleServer(bundleId).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
+                        Timber.d("Finished fetching packets for bundle %s", bundleId);
+                        mLocalStorage.getPackageInBundle(bundleId).subscribe(subscriber);
+                    }).subscribe(new DefaultSubscriber<>());
+                }
+            });
         }
     }
 

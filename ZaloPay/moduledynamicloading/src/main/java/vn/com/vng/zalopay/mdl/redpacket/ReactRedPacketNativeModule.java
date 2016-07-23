@@ -475,27 +475,52 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getPacketsFromBundle(String strBundleID, final Promise promise) {
         Timber.d("getPackageInBundle strBundleID [%s]", strBundleID);
-        WritableArray array = Arguments.createArray();
-        for (int i=0; i < 10; i++) {
-            WritableMap map = Arguments.createMap();
-            map.putDouble("amount", 10000);
-            map.putBoolean("isLuckiest", i==5);
-            map.putString("revAvatarURL", "http://avatar.talk.zdn.vn/0/f/c/a/1/75/541e245926c3e1bc98e47d42fd1d1b90.jpg");
-            map.putString("revFullName", "Pham Van Bon");
-            map.putDouble("openTime", 1469093014972L);
-
-            array.pushMap(map);
+        if (TextUtils.isEmpty(strBundleID)) {
+            promise.reject("EMPTY BUNDLEID", "Invalid argument");
+            return;
         }
+        try {
+            long bundleId = Long.parseLong(strBundleID);
+            mRedPackageRepository.getPacketsInBundle(bundleId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Subscriber<List<PackageInBundle>>() {
+                        @Override
+                        public void onCompleted() {
 
-        promise.resolve(array);
+                        }
 
-//        long bundleID = 0;
-//        try {
-//            bundleID = Long.valueOf(strBundleID);
-//        } catch (NumberFormatException e) {
-//            Timber.w(e, "GetPackageInBundle Exception, ");
-//        }
-//        mRedPackageRepository.getPackageInBundle(bundleID).subscribe(new GetPacketInBundleSub(promise));
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.w(e, "Exception while fetching packets");
+                            promise.reject("EXCEPTION", e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(List<PackageInBundle> packageInBundles) {
+                            WritableArray array = transform(packageInBundles);
+                            promise.resolve(array);
+                        }
+
+                        private WritableArray transform(List<PackageInBundle> list) {
+                            WritableArray array = Arguments.createArray();
+                            for (PackageInBundle packet : list) {
+                                WritableMap map = Arguments.createMap();
+                                map.putDouble("amount", packet.amount);
+                                map.putBoolean("isLuckiest", packet.isLuckiest);
+                                map.putString("revAvatarURL", packet.revAvatarURL);
+                                map.putString("revFullName", packet.revFullName);
+                                map.putDouble("openTime", packet.openTime);
+
+                                array.pushMap(map);
+                            }
+
+                            return array;
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.w(e, "Exception while fetching packets");
+            promise.reject("EXCEPTION", e.getMessage());
+        }
     }
 
     @ReactMethod
