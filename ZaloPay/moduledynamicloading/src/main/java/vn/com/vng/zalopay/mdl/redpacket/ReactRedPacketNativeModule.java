@@ -39,6 +39,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -555,6 +556,60 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         });
 
         compositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
+    public void getSentBundleList(final Promise promise) {
+        Subscription subscription = mRedPackageRepository.getSentBundleList()
+                .subscribe(new Observer<List<SentBundle>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        WritableMap writableMap = Arguments.createMap();
+                        writableMap.putInt("code", 0);
+                        Timber.d(e, "Error while get sent packet");
+                        promise.reject("-1", e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<SentBundle> sentBundles) {
+                        WritableArray writableArray = transform(sentBundles);
+                        successCallback(promise, writableArray);
+                    }
+                });
+        compositeSubscription.add(subscription);
+    }
+
+    private WritableArray transform(List<SentBundle> sentBundles) {
+        WritableArray writableArray = Arguments.createArray();
+        if (sentBundles == null || sentBundles.size() <= 0) {
+            return  writableArray;
+        }
+        for (SentBundle sentBundle : sentBundles) {
+            WritableMap writableMap = transform(sentBundle);
+            writableArray.pushMap(writableMap);
+        }
+        return null;
+    }
+
+    private WritableMap transform(SentBundle sentBundle) {
+        WritableMap writableMap = Arguments.createMap();
+        if (sentBundle == null) {
+            return writableMap;
+        }
+        writableMap.putDouble("bundleid", sentBundle.bundleID);
+        writableMap.putString("sendzalopayid", sentBundle.sendZaloPayID);
+        writableMap.putDouble("createtime", sentBundle.createTime);
+        writableMap.putDouble("lastOpenTime", sentBundle.lastOpenTime);
+        writableMap.putDouble("totalluck", sentBundle.totalLuck);
+        writableMap.putDouble("type", sentBundle.type);
+        writableMap.putDouble("numofpackages", sentBundle.numOfPackages);
+        writableMap.putDouble("numofopenedpakages", sentBundle.numOfOpenedPakages);
+        return writableMap;
     }
 
     @Override

@@ -101,7 +101,15 @@ public interface RedPacketStore {
 
         Observable<GetSentBundle> getSentBundleList(long timestamp, int count, int order);
 
+        Observable<List<SentBundle>> getSentBundleList();
+
+        Observable<Boolean> getAllSentBundlesServer();
+
         Observable<GetReceivePacket> getReceivedPackageList(long timestamp, int count, int order);
+
+//        Observable<List<GetReceivePacket>> getReceivePacketList();
+//
+//        Observable<Boolean> getAllReceivePacketServer();
 
         Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);
 

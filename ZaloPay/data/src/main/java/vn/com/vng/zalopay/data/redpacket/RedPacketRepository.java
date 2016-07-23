@@ -231,6 +231,48 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return ObservableHelper.makeObservable(() -> mLocalStorage.getReceivedPacket(packetId));
     }
 
+    @Override
+    public Observable<Boolean> getAllSentBundlesServer() {
+        int timestamp = 0;
+        int count = LIMIT_ITEMS_PER_REQ;
+        int sortOrder = -1;
+        return ObservableHelper.makeObservable(() -> {
+            getSentBundleServer(timestamp, count, sortOrder);
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<List<SentBundle>> getSentBundleList() {
+        return Observable.merge(mLocalStorage.getAllSentBundle(),
+        Observable.create(new Observable.OnSubscribe<List<SentBundle>>() {
+            @Override
+            public void call(Subscriber<? super List<SentBundle>> subscriber) {
+                getAllSentBundlesServer().doOnCompleted(() -> {
+                    mLocalStorage.getAllSentBundle().subscribe(subscriber);
+                });
+            }
+        }));
+    }
+
+    private void getSentBundleServer(long timestamp, int count, int sortOrder) {
+        Timber.d("transactionHistoryServer %s ", timestamp);
+        mRequestService.getSentBundleList(timestamp, count, sortOrder, user.uid, user.accesstoken)
+                .map(mDataMapper::transformToSentBundle)
+                .doOnNext(this::insertSentBundles)
+                .doOnNext(sentBundle -> {
+                    if (sentBundle == null || sentBundle.sentbundlelist == null) {
+                        return;
+                    }
+                    List<SentBundle> sentBundles = sentBundle.sentbundlelist;
+                    if (sentBundles.size() >= count) {
+                        long newTimeStamp = sentBundles.get(sentBundles.size()-1).createTime;
+                        getSentBundleServer(newTimeStamp, count, sortOrder);
+                    }
+                })
+                .subscribe(new DefaultSubscriber<>());
+    }
+
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
         List<PackageInBundleGD> packageInBundleGDs = mDataMapper.transformToPackageInBundleGD(packageInBundles);
         mLocalStorage.putPackageInBundle(packageInBundleGDs);
