@@ -236,9 +236,11 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         int timestamp = 0;
         int count = LIMIT_ITEMS_PER_REQ;
         int sortOrder = -1;
-        return ObservableHelper.makeObservable(() -> {
-            getSentBundleServer(timestamp, count, sortOrder);
-            return Boolean.TRUE;
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                getSentBundleServer(timestamp, count, sortOrder, subscriber);
+            }
         });
     }
 
@@ -255,21 +257,25 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }));
     }
 
-    private void getSentBundleServer(long timestamp, int count, int sortOrder) {
+    private void getSentBundleServer(long timestamp, int count, int sortOrder, Subscriber<? super Boolean> subscriber) {
         Timber.d("transactionHistoryServer %s ", timestamp);
         mRequestService.getSentBundleList(timestamp, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToSentBundle)
                 .doOnNext(this::insertSentBundles)
                 .doOnNext(sentBundle -> {
+                    subscriber.onNext(true);
                     if (sentBundle == null || sentBundle.sentbundlelist == null) {
                         return;
                     }
                     List<SentBundle> sentBundles = sentBundle.sentbundlelist;
                     if (sentBundles.size() >= count) {
                         long newTimeStamp = sentBundles.get(sentBundles.size()-1).createTime;
-                        getSentBundleServer(newTimeStamp, count, sortOrder);
+                        getSentBundleServer(newTimeStamp, count, sortOrder, subscriber);
+                    } else {
+                        subscriber.onCompleted();
                     }
                 })
+                .doOnError(subscriber::onError)
                 .subscribe(new DefaultSubscriber<>());
     }
 

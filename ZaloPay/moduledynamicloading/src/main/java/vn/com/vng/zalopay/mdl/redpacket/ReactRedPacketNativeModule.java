@@ -584,6 +584,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
+    @ReactMethod
+    public void getReceivePacketList(final Promise promise) {
+
+    }
+
     private WritableArray transform(List<SentBundle> sentBundles) {
         WritableArray writableArray = Arguments.createArray();
         if (sentBundles == null || sentBundles.size() <= 0) {
