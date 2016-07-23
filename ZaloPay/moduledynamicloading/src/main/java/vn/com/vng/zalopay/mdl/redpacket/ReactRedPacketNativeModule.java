@@ -503,6 +503,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                         private WritableArray transform(List<PackageInBundle> list) {
                             WritableArray array = Arguments.createArray();
+                            if (list == null) {
+                                Timber.d("transform: Null parameter");
+                                return array;
+                            }
+
                             for (PackageInBundle packet : list) {
                                 WritableMap map = Arguments.createMap();
                                 map.putDouble("amount", packet.amount);

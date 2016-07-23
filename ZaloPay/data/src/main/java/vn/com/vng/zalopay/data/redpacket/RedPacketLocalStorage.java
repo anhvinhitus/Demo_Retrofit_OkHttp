@@ -168,6 +168,20 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
+    public Long getLastOpenTimeForPacketsInBundle(long bundleId) {
+        List<PackageInBundleGD> packets = getDaoSession().getPackageInBundleGDDao().queryBuilder()
+                .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleId))
+                .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
+                .limit(1)
+                .list();
+        if (packets == null || packets.isEmpty()) {
+            return null;
+        }
+
+        return packets.get(0).getOpenTime();
+    }
+
+    @Override
     public void putReceivePackages(List<ReceivePackageGD> receivePackageGDs) {
         if (Lists.isEmptyOrNull(receivePackageGDs)) {
             emptyList();

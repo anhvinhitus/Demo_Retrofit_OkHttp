@@ -57,6 +57,8 @@ public interface RedPacketStore {
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
         ReceivePackage getReceivedPacket(long packetId);
+
+        Long getLastOpenTimeForPacketsInBundle(long bundleId);
     }
 
     interface RequestService {

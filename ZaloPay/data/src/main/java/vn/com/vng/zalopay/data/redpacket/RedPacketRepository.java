@@ -173,9 +173,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<List<PackageInBundle>> getPacketsInBundle(long bundleId) {
-        if (mLocalStorage.isHavePackagesInDb(bundleId)) {
-            return mLocalStorage.getPackageInBundle(bundleId);
-        } else {
+        if (shouldUpdatePacketsForBundle(bundleId)) {
             return Observable.create(new Observable.OnSubscribe<List<PackageInBundle>>() {
                 @Override
                 public void call(Subscriber<? super List<PackageInBundle>> subscriber) {
@@ -186,7 +184,26 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                     }).subscribe(new DefaultSubscriber<>());
                 }
             });
+        } else {
+            return mLocalStorage.getPackageInBundle(bundleId);
         }
+    }
+
+    private boolean shouldUpdatePacketsForBundle(long bundleId) {
+        Long lastOpenTime = mLocalStorage.getLastOpenTimeForPacketsInBundle(bundleId);
+
+        if (lastOpenTime == null) {
+            Timber.d("Last open time is NULL");
+            return true;
+        }
+
+        Timber.d("Last open time: %s, %s, %s", lastOpenTime, System.currentTimeMillis(), System.currentTimeMillis() - lastOpenTime);
+        if (lastOpenTime + 1000*60*60*24 > System.currentTimeMillis()) {
+            return true;
+        }
+
+        return false;
+
     }
 
     @Override
