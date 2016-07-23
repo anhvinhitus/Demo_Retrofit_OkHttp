@@ -474,7 +474,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getPackagesFromBundle(String bundleID, final Promise promise) {
+    public void getPacketsFromBundle(String bundleID, final Promise promise) {
         WritableArray array = Arguments.createArray();
         for (int i=0; i < 10; i++) {
             WritableMap map = Arguments.createMap();
