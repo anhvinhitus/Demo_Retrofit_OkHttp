@@ -8,18 +8,18 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  * Created by longlv on 15/07/2016.
  */
 public class ReceivePackageResponse extends BaseResponse {
-    @SerializedName("packageID")
+    @SerializedName("packageid")
     public long packageid;
-    @SerializedName("bundleID")
+    @SerializedName("bundleid")
     public long bundleid;
-    @SerializedName("revZaloPayID")
+    @SerializedName("revzalopayid")
     public String revzalopayid;
-    @SerializedName("sendZaloPayID")
+    @SerializedName("sendzalopayid")
     public String sendzalopayid;
-    @SerializedName("sendFullName")
+    @SerializedName("sendfullname")
     public String sendfullname;
     @SerializedName("amount")
     public long amount;
-    @SerializedName("openedTime")
+    @SerializedName("openedtime")
     public long openedtime;
 }

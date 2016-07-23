@@ -9,24 +9,24 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
  *
  */
 public class PackageInBundleResponse extends BaseResponse {
-    @SerializedName("packageID")
+    @SerializedName("packageid")
     public long packageid;
-    @SerializedName("bundleID")
+    @SerializedName("bundleid")
     public long bundleid;
-    @SerializedName("revZaloPayID")
+    @SerializedName("revzalopayid")
     public String revzalopayid;
-    @SerializedName("revZaloID")
+    @SerializedName("revzaloid")
     public long revzaloid;
-    @SerializedName("revFullName")
+    @SerializedName("revfullname")
     public String revfullname;
-    @SerializedName("revAvatarURL")
+    @SerializedName("revavatarurl")
     public String revavatarurl;
-    @SerializedName("openTime")
+    @SerializedName("opentime")
     public long opentime;
     @SerializedName("amount")
     public long amount;
-    @SerializedName("sendMessage")
+    @SerializedName("sendmessage")
     public String sendmessage;
-    @SerializedName("isLuckiest")
+    @SerializedName("isluckiest")
     public boolean isluckiest;
 }
