@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleResponse;
@@ -18,7 +18,6 @@ import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
@@ -198,12 +197,11 @@ public class RedPacketDataMapper {
         return new SentBundleGD(sentBundle.bundleID, sentBundle.sendZaloPayID, sentBundle.type, sentBundle.createTime, sentBundle.lastOpenTime, sentBundle.totalLuck, sentBundle.numOfOpenedPakages, sentBundle.numOfPackages);
     }
 
-    public GetSentBundle transformToSentBundle(SentBundleListResponse sentBundleResponse) {
+    public List<SentBundle> transformToSentBundle(SentBundleListResponse sentBundleResponse) {
         if (sentBundleResponse == null) {
             return null;
         }
-        List<SentBundle> sentBundles = transformToSentBundle(sentBundleResponse.bundleResponseList);
-        return new GetSentBundle(sentBundleResponse.totalOfSentAmount, sentBundleResponse.totalOfSentBundle, sentBundles);
+        return transformToSentBundle(sentBundleResponse.bundleResponseList);
     }
 
     public List<SentBundle> transformToSentBundle(List<SentBundleResponse> bundleResponseList) {
@@ -220,12 +218,11 @@ public class RedPacketDataMapper {
         return sentBundleList;
     }
 
-    public GetReceivePacket transformToReceivePackage(GetReceivePackageResponse response) {
+    public List<ReceivePackage> transformToReceivePackage(GetReceivePackageResponse response) {
         if (response == null) {
             return null;
         }
-        List<ReceivePackage> receivePackages = transform(response.receivePackageResponses);
-        return new GetReceivePacket(response.totalOfRevAmount, response.totalOfRevPackage, response.numOfLuckiestDraw, receivePackages);
+        return transform(response.receivePackageResponses);
     }
 
     public List<ReceivePackage> transform(List<ReceivePackageResponse> revpackageList) {

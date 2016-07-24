@@ -85,8 +85,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<SentBundle>> getSentBundle(int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(() -> querySentBundleList(pageIndex, limit))
+    public Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit) {
+        return ObservableHelper.makeObservable(() -> querySentBundleList(timeCreate, limit))
                 .doOnNext(redPackageList -> Timber.d("get %s", redPackageList.size()));
     }
 
@@ -94,6 +94,13 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     public Observable<SentBundle> getSentBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> querySentBundle(bundleID))
                 .doOnNext(sentBundle -> Timber.d("get %s", sentBundle));
+    }
+
+    @Override
+    public Boolean isHaveSentBundleInDb(long createTime) {
+        return getDaoSession().getSentBundleGDDao().queryBuilder()
+                .where(SentBundleGDDao.Properties.CreateTime.lt(createTime))
+                .count() > 0;
     }
 
     @Override
@@ -110,7 +117,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Boolean isHavePackagesInDb(long bundleID) {
-        return getDaoSession().getPackageInBundleGDDao().queryBuilder().where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID)).count() > 0;
+        return getDaoSession().getPackageInBundleGDDao().queryBuilder()
+                .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
+                .count() > 0;
     }
 
     @Override
@@ -196,14 +205,14 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<ReceivePackage>> getReceiveBundle() {
+    public Observable<List<ReceivePackage>> getAllReceiveBundle() {
         return ObservableHelper.makeObservable(this::queryReceivePackageList)
                 .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
     @Override
-    public Observable<List<ReceivePackage>> getReceiveBundle(int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(()-> queryReceivePackageList(pageIndex, limit))
+    public Observable<List<ReceivePackage>> getReceiveBundle(long timeCreate, int limit) {
+        return ObservableHelper.makeObservable(()-> queryReceivePackageList(timeCreate, limit))
                 .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
@@ -211,6 +220,13 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     public Observable<ReceivePackage> getReceiveBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> queryReceivePackage(bundleID))
                 .doOnNext(receivePackage -> Timber.d("get %s", receivePackage));
+    }
+
+    @Override
+    public Boolean isHaveReceivePacketInDb(long createTime) {
+        return getDaoSession().getReceivePackageGDDao().queryBuilder()
+                .where(ReceivePackageGDDao.Properties.CreateTime.lt(createTime))
+                .count() > 0;
     }
 
     private List<SentBundle> querySentBundleList() {
@@ -222,15 +238,29 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                         .list());
     }
 
-    private List<SentBundle> querySentBundleList(int pageIndex, int limit) {
+    private List<SentBundle> querySentBundleList(int limit) {
         return mDataMapper.transformDBToSentBundle(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
-                        .limit(limit)
-                        .offset(pageIndex * limit)
                         .orderDesc(SentBundleGDDao.Properties.CreateTime)
+                        .limit(limit)
                         .list());
+    }
+
+    private List<SentBundle> querySentBundleList(long timeCreate, int limit) {
+        if (timeCreate == 0) {
+            return querySentBundleList(limit);
+        } else {
+            return mDataMapper.transformDBToSentBundle(
+                    getDaoSession()
+                            .getSentBundleGDDao()
+                            .queryBuilder()
+                            .where(SentBundleGDDao.Properties.CreateTime.lt(timeCreate))
+                            .orderDesc(SentBundleGDDao.Properties.CreateTime)
+                            .limit(limit)
+                            .list());
+        }
     }
 
     private SentBundle querySentBundle(long bundleID) {
@@ -246,15 +276,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         } else {
             return sentBundles.get(0);
         }
-    }
-
-    private List<PackageInBundle> querySentPackageList() {
-        return mDataMapper.transformToPackageInBundle(
-                getDaoSession()
-                        .getPackageInBundleGDDao()
-                        .queryBuilder()
-                        .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
-                        .list());
     }
 
     private List<PackageInBundle> querySentPackageList(long bundleID, int pageIndex, int limit) {
@@ -282,18 +303,33 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
-                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
+                        .orderDesc(ReceivePackageGDDao.Properties.CreateTime)
                         .list());
     }
 
-    private List<ReceivePackage> queryReceivePackageList(int pageIndex, int limit) {
+    private List<ReceivePackage> queryReceivePackageList(int limit) {
         return mDataMapper.transformToReceivePackage(
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
-                        .offset(pageIndex*limit)
-                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
+                        .orderDesc(ReceivePackageGDDao.Properties.CreateTime)
+                        .limit(limit)
                         .list());
+    }
+
+    private List<ReceivePackage> queryReceivePackageList(long timeCreate, int limit) {
+        if (timeCreate == 0) {
+            return queryReceivePackageList(limit);
+        } else {
+            return mDataMapper.transformToReceivePackage(
+                    getDaoSession()
+                            .getReceivePackageGDDao()
+                            .queryBuilder()
+                            .where(ReceivePackageGDDao.Properties.CreateTime.lt(timeCreate))
+                            .orderDesc(ReceivePackageGDDao.Properties.CreateTime)
+                            .limit(limit)
+                            .list());
+        }
     }
 
     private ReceivePackage queryReceivePackage(long packetId) {
