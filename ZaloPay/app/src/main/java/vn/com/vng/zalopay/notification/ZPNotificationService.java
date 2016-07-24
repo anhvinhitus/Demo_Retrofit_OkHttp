@@ -130,6 +130,10 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private void connect(String token) {
         Timber.d("connect with token %s", token);
+        if (mWsConnection == null) {
+            return;
+        }
+
         if (!mWsConnection.isConnected()) {
             mWsConnection.setGCMToken(token);
             mWsConnection.connect();
