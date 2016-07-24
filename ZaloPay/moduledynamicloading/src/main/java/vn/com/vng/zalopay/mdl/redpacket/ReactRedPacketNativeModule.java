@@ -470,7 +470,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getSentBundleList(final double createTime, final double count, final Promise promise) {
+    public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int)count)
                 .subscribe(new Observer<List<SentBundle>>() {
                     @Override
@@ -496,7 +496,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getReceivePacketList(final double createTime, final double count, final Promise promise) {
+    public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Subscription subscription = mRedPackageRepository.getReceivePacketList((long)createTime, (int)count)
                 .subscribe(new Observer<List<ReceivePackage>>() {
                     @Override

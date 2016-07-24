@@ -47,6 +47,7 @@ class DataMapper {
         writableMap.putDouble("amount", packet.amount);
         writableMap.putDouble("isluckiest", packet.isLuckiest);
         writableMap.putDouble("createtime", packet.createTime);
+        writableMap.putDouble("opentime", packet.openedTime);
         return writableMap;
     }
 
@@ -61,11 +62,10 @@ class DataMapper {
         writableMap.putDouble("lastopentime", sentBundle.lastOpenTime);
         writableMap.putDouble("totalluck", sentBundle.totalLuck);
         writableMap.putDouble("type", sentBundle.type);
-        writableMap.putDouble("numofpackages", sentBundle.numOfPackages);
-        writableMap.putDouble("numofopenedpakages", sentBundle.numOfOpenedPakages);
+        writableMap.putDouble("numberpackage", sentBundle.numOfPackages);
+        writableMap.putDouble("numberopenpackage", sentBundle.numOfOpenedPakages);
         return writableMap;
     }
-
 
     static List<Long> transform(ReadableArray friends) {
         List<Long> friendList = new ArrayList<>();
