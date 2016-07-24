@@ -17,6 +17,8 @@ import vn.com.vng.zalopay.data.cache.model.BankCardGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -29,6 +31,8 @@ import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDBDao;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDBDao;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
@@ -50,6 +54,8 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig zaloFriendGDDaoConfig;
     private final DaoConfig transferRecentDaoConfig;
     private final DaoConfig notificationGDDaoConfig;
+    private final DaoConfig sentBundleSummaryDBDaoConfig;
+    private final DaoConfig receivePacketSummaryDBDaoConfig;
     private final DaoConfig packageInBundleGDDaoConfig;
     private final DaoConfig sentBundleGDDaoConfig;
     private final DaoConfig receivePackageGDDaoConfig;
@@ -62,6 +68,8 @@ public class DaoSession extends AbstractDaoSession {
     private final ZaloFriendGDDao zaloFriendGDDao;
     private final TransferRecentDao transferRecentDao;
     private final NotificationGDDao notificationGDDao;
+    private final SentBundleSummaryDBDao sentBundleSummaryDBDao;
+    private final ReceivePacketSummaryDBDao receivePacketSummaryDBDao;
     private final PackageInBundleGDDao packageInBundleGDDao;
     private final SentBundleGDDao sentBundleGDDao;
     private final ReceivePackageGDDao receivePackageGDDao;
@@ -94,6 +102,12 @@ public class DaoSession extends AbstractDaoSession {
         notificationGDDaoConfig = daoConfigMap.get(NotificationGDDao.class).clone();
         notificationGDDaoConfig.initIdentityScope(type);
 
+        sentBundleSummaryDBDaoConfig = daoConfigMap.get(SentBundleSummaryDBDao.class).clone();
+        sentBundleSummaryDBDaoConfig.initIdentityScope(type);
+
+        receivePacketSummaryDBDaoConfig = daoConfigMap.get(ReceivePacketSummaryDBDao.class).clone();
+        receivePacketSummaryDBDaoConfig.initIdentityScope(type);
+
         packageInBundleGDDaoConfig = daoConfigMap.get(PackageInBundleGDDao.class).clone();
         packageInBundleGDDaoConfig.initIdentityScope(type);
 
@@ -111,6 +125,8 @@ public class DaoSession extends AbstractDaoSession {
         zaloFriendGDDao = new ZaloFriendGDDao(zaloFriendGDDaoConfig, this);
         transferRecentDao = new TransferRecentDao(transferRecentDaoConfig, this);
         notificationGDDao = new NotificationGDDao(notificationGDDaoConfig, this);
+        sentBundleSummaryDBDao = new SentBundleSummaryDBDao(sentBundleSummaryDBDaoConfig, this);
+        receivePacketSummaryDBDao = new ReceivePacketSummaryDBDao(receivePacketSummaryDBDaoConfig, this);
         packageInBundleGDDao = new PackageInBundleGDDao(packageInBundleGDDaoConfig, this);
         sentBundleGDDao = new SentBundleGDDao(sentBundleGDDaoConfig, this);
         receivePackageGDDao = new ReceivePackageGDDao(receivePackageGDDaoConfig, this);
@@ -123,6 +139,8 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ZaloFriendGD.class, zaloFriendGDDao);
         registerDao(TransferRecent.class, transferRecentDao);
         registerDao(NotificationGD.class, notificationGDDao);
+        registerDao(SentBundleSummaryDB.class, sentBundleSummaryDBDao);
+        registerDao(ReceivePacketSummaryDB.class, receivePacketSummaryDBDao);
         registerDao(PackageInBundleGD.class, packageInBundleGDDao);
         registerDao(SentBundleGD.class, sentBundleGDDao);
         registerDao(ReceivePackageGD.class, receivePackageGDDao);
@@ -137,6 +155,8 @@ public class DaoSession extends AbstractDaoSession {
         zaloFriendGDDaoConfig.getIdentityScope().clear();
         transferRecentDaoConfig.getIdentityScope().clear();
         notificationGDDaoConfig.getIdentityScope().clear();
+        sentBundleSummaryDBDaoConfig.getIdentityScope().clear();
+        receivePacketSummaryDBDaoConfig.getIdentityScope().clear();
         packageInBundleGDDaoConfig.getIdentityScope().clear();
         sentBundleGDDaoConfig.getIdentityScope().clear();
         receivePackageGDDaoConfig.getIdentityScope().clear();
@@ -172,6 +192,14 @@ public class DaoSession extends AbstractDaoSession {
 
     public NotificationGDDao getNotificationGDDao() {
         return notificationGDDao;
+    }
+
+    public SentBundleSummaryDBDao getSentBundleSummaryDBDao() {
+        return sentBundleSummaryDBDao;
+    }
+
+    public ReceivePacketSummaryDBDao getReceivePacketSummaryDBDao() {
+        return receivePacketSummaryDBDao;
     }
 
     public PackageInBundleGDDao getPackageInBundleGDDao() {

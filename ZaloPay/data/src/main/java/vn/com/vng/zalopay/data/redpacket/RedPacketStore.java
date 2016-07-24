@@ -15,10 +15,14 @@ import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
+import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
+import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
@@ -32,6 +36,14 @@ import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 public interface RedPacketStore {
 
     interface LocalStorage {
+        void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB);
+        Observable<GetSentBundle> getSentBundleSummary();
+        Boolean isHaveSentBundleSunmmaryInDb();
+
+        void putReceivePacketSummary(ReceivePacketSummaryDB receivePacketSummaryDB);
+        Observable<GetReceivePacket> getReceivePacketSummary();
+        Boolean isHaveRevPacketSunmmaryInDb();
+
         void putSentBundle(SentBundleGD sentBundle);
         void putSentBundle(List<SentBundleGD> sentBundle);
         Observable<List<SentBundle>> getAllSentBundle();
@@ -124,5 +136,9 @@ public interface RedPacketStore {
         Observable<Void> setPacketIsOpen(long packageId, long amount);
 
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
+
+        Observable<GetSentBundle> getSendBundleSummary();
+
+        Observable<GetReceivePacket> getReceiveBundleSummary();
     }
 }

@@ -16,8 +16,11 @@ import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleRespons
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
@@ -197,11 +200,14 @@ public class RedPacketDataMapper {
         return new SentBundleGD(sentBundle.bundleID, sentBundle.sendZaloPayID, sentBundle.type, sentBundle.createTime, sentBundle.lastOpenTime, sentBundle.totalLuck, sentBundle.numOfOpenedPakages, sentBundle.numOfPackages);
     }
 
-    public List<SentBundle> transformToSentBundle(SentBundleListResponse sentBundleResponse) {
+    public GetSentBundle transformToSentBundle(SentBundleListResponse sentBundleResponse) {
         if (sentBundleResponse == null) {
             return null;
         }
-        return transformToSentBundle(sentBundleResponse.bundleResponseList);
+        List<SentBundle> sentBundles = transformToSentBundle(sentBundleResponse.bundleResponseList);
+        return new GetSentBundle(sentBundleResponse.totalOfSentAmount,
+                sentBundleResponse.totalOfSentBundle,
+                sentBundles);
     }
 
     public List<SentBundle> transformToSentBundle(List<SentBundleResponse> bundleResponseList) {
@@ -218,11 +224,14 @@ public class RedPacketDataMapper {
         return sentBundleList;
     }
 
-    public List<ReceivePackage> transformToReceivePackage(GetReceivePackageResponse response) {
+    public GetReceivePacket transformToReceivePackage(GetReceivePackageResponse response) {
         if (response == null) {
             return null;
         }
-        return transform(response.receivePackageResponses);
+        List<ReceivePackage> receivePackages = transform(response.receivePackageResponses);
+        return new GetReceivePacket(response.totalOfRevAmount,
+                response.totalOfRevPackage, response.numOfLuckiestDraw,
+                receivePackages);
     }
 
     public List<ReceivePackage> transform(List<ReceivePackageResponse> revpackageList) {
@@ -267,4 +276,38 @@ public class RedPacketDataMapper {
         return sentPackageList;
     }
 
+    public GetSentBundle transformToSentBundleSummary(List<SentBundleSummaryDB> list) {
+        if (list == null || list.size() <= 0 || list.get(0) == null) {
+            return null;
+        }
+        SentBundleSummaryDB sentBundleSummaryDB = list.get(0);
+        return new GetSentBundle(sentBundleSummaryDB.getTotalOfSentAmount(),
+                sentBundleSummaryDB.getTotalOfSentBundle(), null);
+    }
+
+    public GetReceivePacket transformToReceivePacketSummary(List<ReceivePacketSummaryDB> list) {
+        if (list == null || list.size() <= 0 || list.get(0) == null) {
+            return null;
+        }
+        ReceivePacketSummaryDB receivePacketSummarydb = list.get(0);
+        return new GetReceivePacket(receivePacketSummarydb.getTotalOfRevamount(),
+                receivePacketSummarydb.getTotalOfRevPackage(),
+                receivePacketSummarydb.getTotalOfLuckiestDraw(),
+                null);
+    }
+
+
+    public List<SentBundle> transformToSentBundles(GetSentBundle getSentBundle) {
+        if (getSentBundle == null) {
+            return null;
+        }
+        return getSentBundle.sentbundlelist;
+    }
+
+    public List<ReceivePackage> transformToReceivePackages(GetReceivePacket response) {
+        if (response == null) {
+            return null;
+        }
+        return response.revpackageList;
+    }
 }

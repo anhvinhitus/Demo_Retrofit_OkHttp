@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
@@ -134,6 +136,21 @@ class DataMapper {
         map.putString("revavatarurl", packet.revAvatarURL);
         map.putString("revfullname", packet.revFullName);
         map.putDouble("opentime", packet.openTime);
+        return map;
+    }
+
+    public static WritableMap transform(GetSentBundle summary) {
+        WritableMap map = Arguments.createMap();
+        map.putDouble("totalofsentamount", summary.totalofsentamount);
+        map.putDouble("totalofsentbundle", summary.totalofsentbundle);
+        return map;
+    }
+
+    public static WritableMap transform(GetReceivePacket summary) {
+        WritableMap map = Arguments.createMap();
+        map.putDouble("totalofrevamount", summary.totalofrevamount);
+        map.putDouble("totalofrevpackage", summary.totalofrevpackage);
+        map.putDouble("totalofluckiestdraw", summary.numofluckiestdraw);
         return map;
     }
 }

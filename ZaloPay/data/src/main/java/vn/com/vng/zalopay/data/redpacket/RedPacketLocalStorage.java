@@ -7,14 +7,20 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDBDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDBDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
@@ -32,6 +38,87 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     public RedPacketLocalStorage(DaoSession daoSession, RedPacketDataMapper dataMapper) {
         super(daoSession);
         this.mDataMapper = dataMapper;
+    }
+
+    @Override
+    public void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB) {
+        if (sentBundleSummaryDB == null ||
+                sentBundleSummaryDB.getTotalOfSentAmount() <= 0 ||
+                sentBundleSummaryDB.getTotalOfSentBundle() <= 0) {
+            return;
+        }
+        try {
+            //Delete all SentBundleSummary
+            getDaoSession().getSentBundleSummaryDBDao().deleteAll();
+            //save SentBundle to DB
+            getDaoSession().getSentBundleSummaryDBDao().insertOrReplaceInTx(sentBundleSummaryDB);
+            Timber.d("putSentBundleSummary data %s", sentBundleSummaryDB);
+        } catch (Exception e) {
+            Timber.w("Exception while trying to put SentBundleSummary to local storage: %s", e.getMessage());
+        }
+    }
+
+    @Override
+    public Observable<GetSentBundle> getSentBundleSummary() {
+        return ObservableHelper.makeObservable(this::querySentBundleSummary)
+                .doOnNext(sentBundleSummary -> Timber.d("get %s", sentBundleSummary));
+    }
+
+    @Override
+    public Boolean isHaveSentBundleSunmmaryInDb() {
+        return getDaoSession().getSentBundleSummaryDBDao().queryBuilder()
+                .count() > 0;
+    }
+
+    private GetSentBundle querySentBundleSummary() {
+        return mDataMapper.transformToSentBundleSummary(
+                getDaoSession()
+                        .getSentBundleSummaryDBDao()
+                        .queryBuilder()
+                        .orderDesc(SentBundleSummaryDBDao.Properties.TimeCreate)
+                        .limit(1)
+                        .list());
+    }
+
+    @Override
+    public void putReceivePacketSummary(ReceivePacketSummaryDB receivePacketSummaryDB) {
+        if (receivePacketSummaryDB == null ||
+                receivePacketSummaryDB.getTotalOfLuckiestDraw() <= 0 ||
+                receivePacketSummaryDB.getTotalOfRevamount() <= 0 ||
+                receivePacketSummaryDB.getTotalOfRevPackage() <= 0) {
+            return;
+        }
+        try {
+            //Delete all ReceivePacketSummary
+            getDaoSession().getReceivePacketSummaryDBDao().deleteAll();
+            //save ReceivePacketSummary to DB
+            getDaoSession().getReceivePacketSummaryDBDao().insertOrReplaceInTx(receivePacketSummaryDB);
+            Timber.d("putReceivePacketSummary data %s", receivePacketSummaryDB);
+        } catch (Exception e) {
+            Timber.w("Exception while trying to put ReceivePacketSummary to local storage: %s", e.getMessage());
+        }
+    }
+
+    @Override
+    public Observable<GetReceivePacket> getReceivePacketSummary() {
+        return ObservableHelper.makeObservable(this::queryReceivePacketSummary)
+                .doOnNext(receivePacketSummary -> Timber.d("get %s", receivePacketSummary));
+    }
+
+    @Override
+    public Boolean isHaveRevPacketSunmmaryInDb() {
+        return getDaoSession().getReceivePacketSummaryDBDao().queryBuilder()
+                .count() > 0;
+    }
+
+    private GetReceivePacket queryReceivePacketSummary() {
+        return mDataMapper.transformToReceivePacketSummary(
+                getDaoSession()
+                        .getReceivePacketSummaryDBDao()
+                        .queryBuilder()
+                        .orderDesc(ReceivePacketSummaryDBDao.Properties.TimeCreate)
+                        .limit(1)
+                        .list());
     }
 
     @Override

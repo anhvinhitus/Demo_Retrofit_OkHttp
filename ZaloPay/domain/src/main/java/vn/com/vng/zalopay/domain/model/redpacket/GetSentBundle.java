@@ -13,14 +13,14 @@ import java.util.List;
 public class GetSentBundle {
 
     public long totalofsentamount;
-    public long totalofsentbundle;
+    public int totalofsentbundle;
     public List<SentBundle> sentbundlelist;
 
     public GetSentBundle() {
 
     }
 
-    public GetSentBundle(long totalofsentamount, long totalofsentbundle, List<SentBundle> sentbundlelist) {
+    public GetSentBundle(long totalofsentamount, int totalofsentbundle, List<SentBundle> sentbundlelist) {
         this.totalofsentamount = totalofsentamount;
         this.totalofsentbundle = totalofsentbundle;
         this.sentbundlelist = sentbundlelist;

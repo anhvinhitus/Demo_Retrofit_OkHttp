@@ -8,14 +8,17 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
+import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
+import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
+import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
@@ -106,6 +109,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     public Observable<List<ReceivePackage>> getReceivedPackagesServer(long timeCreate, int count, int order) {
         return mRequestService.getReceivedPackageList(timeCreate, count, order, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToReceivePackage)
+                .doOnNext(this::insertRevPacketSummary)
+                .map(mDataMapper::transformToReceivePackages)
                 .doOnNext(this::insertReceivePackages);
     }
 
@@ -129,7 +134,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         Timber.d("getReceivePacketServer openedTime [%s] ", openedTime);
         mRequestService.getReceivedPackageList(openedTime, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToReceivePackage)
-                .doOnNext(this::insertReceivePackages)
+                .doOnNext(this::insertRevPacketSummary)
+                .map(mDataMapper::transformToReceivePackages)
                 .doOnNext(receivePacketList -> {
                     subscriber.onNext(true);
                     if (receivePacketList != null && receivePacketList.size() >= count) {
@@ -262,6 +268,69 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
+    public Observable<GetSentBundle> getSendBundleSummary() {
+        Timber.d("getSendBundleSummary");
+        if (shouldGetSentBundleSummaryServer()) {
+            Timber.d("getSendBundleSummary -> getSentBundleSummaryServer");
+            return getSentBundleSummaryServer();
+        } else {
+            Timber.d("getSendBundleSummary -> getSentBundleSummary");
+            return mLocalStorage.getSentBundleSummary();
+        }
+    }
+
+    private Observable<GetSentBundle> getSentBundleSummaryServer() {
+        return mRequestService.getSentBundleList(0, LIMIT_ITEMS_PER_REQ, ORDER, user.uid, user.accesstoken)
+                .map(mDataMapper::transformToSentBundle)
+                .doOnNext(this::insertSentBundleSummary)
+                .doOnNext(getSentBundle -> {
+                    if (getSentBundle != null) {
+                        insertSentBundles(getSentBundle.sentbundlelist);
+                    }
+                });
+    }
+
+    private boolean shouldGetSentBundleSummaryServer() {
+        return true;
+    }
+
+    @Override
+    public Observable<GetReceivePacket> getReceiveBundleSummary() {
+        Timber.d("getReceiveBundleSummary");
+        if (shouldGetRevPacketSummaryServer()) {
+            Timber.d("getReceiveBundleSummary -> getRevPacketSummaryServer");
+            return getRevPacketSummaryServer();
+        } else {
+            Timber.d("getReceiveBundleSummary -> getReceivePacketSummary");
+            return mLocalStorage.getReceivePacketSummary();
+        }
+    }
+
+    private Observable<GetReceivePacket> getRevPacketSummaryServer() {
+        return mRequestService.getReceivedPackageList(0, LIMIT_ITEMS_PER_REQ, ORDER, user.uid, user.accesstoken)
+                .map(mDataMapper::transformToReceivePackage)
+                .doOnNext(this::insertRevPacketSummary)
+                .doOnNext(getReceivePacket -> {
+                    if (getReceivePacket != null) {
+                        insertReceivePackages(getReceivePacket.revpackageList);
+                    }
+                });
+    }
+
+    private void insertRevPacketSummary(GetReceivePacket getReceivePacket) {
+        if (getReceivePacket == null) {
+            return;
+        }
+        mLocalStorage.putReceivePacketSummary(new ReceivePacketSummaryDB(null, getReceivePacket.totalofrevamount,
+                getReceivePacket.totalofrevpackage, getReceivePacket.numofluckiestdraw,
+                System.currentTimeMillis()));
+    }
+
+    private boolean shouldGetRevPacketSummaryServer() {
+        return true;
+    }
+
+    @Override
     public Observable<ReceivePackage> getReceivedPacket(long packetId) {
         return ObservableHelper.makeObservable(() -> mLocalStorage.getReceivedPacket(packetId));
     }
@@ -285,7 +354,18 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     public Observable<List<SentBundle>> getSentBundleListServer(long timestamp, int count, int order) {
         return mRequestService.getSentBundleList(timestamp, count, order, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToSentBundle)
+                .doOnNext(this::insertSentBundleSummary)
+                .map(mDataMapper::transformToSentBundles)
                 .doOnNext(this::insertSentBundles);
+    }
+
+    private void insertSentBundleSummary(GetSentBundle getSentBundle) {
+        if (getSentBundle == null) {
+            return;
+        }
+        mLocalStorage.putSentBundleSummary(new SentBundleSummaryDB(null, getSentBundle.totalofsentamount,
+                getSentBundle.totalofsentbundle,
+                System.currentTimeMillis()));
     }
 
     @Override
@@ -308,6 +388,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         Timber.d("getSentBundleServer %s ", timestamp);
         mRequestService.getSentBundleList(timestamp, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToSentBundle)
+                .doOnNext(this::insertSentBundleSummary)
+                .map(mDataMapper::transformToSentBundles)
                 .doOnNext(this::insertSentBundles)
                 .doOnNext(sentBundles -> {
                     subscriber.onNext(true);
@@ -323,7 +405,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
-        List<PackageInBundleGD> packageInBundleGDs = mDataMapper.transformToPackageInBundleGD(packageInBundles);
-        mLocalStorage.putPackageInBundle(packageInBundleGDs);
+        mLocalStorage.putPackageInBundle(mDataMapper.transformToPackageInBundleGD(packageInBundles));
     }
 }

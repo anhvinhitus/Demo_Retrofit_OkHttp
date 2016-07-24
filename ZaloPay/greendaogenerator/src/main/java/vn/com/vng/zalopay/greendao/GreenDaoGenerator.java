@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 28;
+    private static final int APP_DB_VERSION = 29;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -28,6 +28,19 @@ public class GreenDaoGenerator {
     }
 
     private static void addRedPacket(Schema appSchema) {
+        Entity sentBundleSummary = appSchema.addEntity("SentBundleSummaryDB");
+        sentBundleSummary.addIdProperty();
+        sentBundleSummary.addLongProperty("totalOfSentAmount");
+        sentBundleSummary.addIntProperty("totalOfSentBundle");
+        sentBundleSummary.addLongProperty("timeCreate");
+
+        Entity receivePacketSummary = appSchema.addEntity("ReceivePacketSummaryDB");
+        receivePacketSummary.addIdProperty();
+        receivePacketSummary.addLongProperty("totalOfRevamount");
+        receivePacketSummary.addIntProperty("totalOfRevPackage");
+        receivePacketSummary.addIntProperty("totalOfLuckiestDraw");
+        receivePacketSummary.addLongProperty("timeCreate");
+
         Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
         packageEntity.addIdProperty(); //packageId
         Property propertyBundleId = packageEntity.addLongProperty("bundleID").getProperty();
