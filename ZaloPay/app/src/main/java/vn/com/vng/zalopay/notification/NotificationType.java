@@ -29,4 +29,9 @@ class NotificationType {
                 notificationType == REFUND_RED_PACKET ||
                 notificationType == REFUND_TRANSACTION;
     }
+
+    static boolean shouldMarkRead(int notificationType) {
+        return notificationType == ORDER_PAYMENT ||
+                notificationType == TOPUP_WALLET;
+    }
 }

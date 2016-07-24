@@ -133,6 +133,11 @@ public class NotificationHelper {
             this.updateBalance();
         }
 
+        int notificationType = notify.getNotificationType();
+        if (NotificationType.shouldMarkRead(notificationType)) {
+            notify.setRead(true);
+        }
+
         if (notify.getNotificationType() == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             try {
                 JsonObject embeddata = notify.embeddata;
