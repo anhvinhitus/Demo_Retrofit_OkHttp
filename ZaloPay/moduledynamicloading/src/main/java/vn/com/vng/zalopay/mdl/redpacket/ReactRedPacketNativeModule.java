@@ -175,7 +175,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         if (bundleID <= 0) {
             return;
         }
-        List<Long> friendList = transform(friends);
+        List<Long> friendList = DataMapper.transform(friends);
         Subscription subscription = mRedPackageRepository.sendBundle(bundleID, friendList)
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
@@ -232,14 +232,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             }
         }.start();
     }
-
-    private void showLoading() {
-        mDialogProvider.showLoading(getCurrentActivity());
-    }
-
-    private void hideLoading() {
-        mDialogProvider.hideLoading();
-    }
+//
+//    private void showLoading() {
+//        mDialogProvider.showLoading(getCurrentActivity());
+//    }
+//
+//    private void hideLoading() {
+//        mDialogProvider.hideLoading();
+//    }
 
     private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("showDialogRetryGetTranStatus start");
@@ -298,32 +298,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             mTimerGetTranStatus.cancel();
                         }
                         //hideLoading();
-                        successCallback(promise, transform(packageStatus));
+                        successCallback(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
                         isRunningGetTranStatus = false;
                     }
                 });
-    }
-
-    private List<Long> transform(ReadableArray friends) {
-        List<Long> friendList = new ArrayList<>();
-        if (friends == null || friends.size() <= 0) {
-            return friendList;
-        }
-        for (int i = 0; i < friends.size(); i++) {
-            long friendId = 0;
-            try {
-                friendId = Long.valueOf(friends.getString(i));
-            } catch (NumberFormatException e) {
-                Timber.e(e, "transform friends from react native");
-            }
-            if (friendId <= 0) {
-                continue;
-            }
-            friendList.add(friendId);
-        }
-        return friendList;
     }
 
     @ReactMethod
@@ -382,7 +362,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 .map(new Func1<List<ZaloFriendGD>, WritableArray>() {
                     @Override
                     public WritableArray call(List<ZaloFriendGD> zaloFriendGDs) {
-                        return transformListFriend(zaloFriendGDs);
+                        return DataMapper.transform(zaloFriendGDs);
                     }
                 })
                 .subscribe(new GetAllFriendSubscriber(promise));
@@ -416,7 +396,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         @Override
                         public void onNext(ReceivePackage receivePackage) {
                             Timber.d("received packet: %s", receivePackage.packageID);
-                            promise.resolve(transform(receivePackage));
+                            promise.resolve(DataMapper.transform(receivePackage));
                         }
                     });
             compositeSubscription.add(subscription);
@@ -425,53 +405,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-    private WritableArray transformListFriend(List<ZaloFriendGD> zaloFriendGDs) {
-        if (Lists.isEmptyOrNull(zaloFriendGDs))
-            return null;
-        WritableArray listFriends = Arguments.createArray();
-        for (ZaloFriendGD zaloFriendGD : zaloFriendGDs) {
-            if (zaloFriendGD == null) {
-                continue;
-            }
-            WritableMap friendItem = Arguments.createMap();
-            friendItem.putString("displayName", zaloFriendGD.getDisplayName());
-            friendItem.putString("ascciDisplayName", zaloFriendGD.getFulltextsearch());
-            friendItem.putString("userId", String.valueOf(zaloFriendGD.getId()));
-            friendItem.putInt("userGender", zaloFriendGD.getUserGender());
-            friendItem.putBoolean("usingApp", zaloFriendGD.getUsingApp());
-            friendItem.putString("avatar", zaloFriendGD.getAvatar());
-            listFriends.pushMap(friendItem);
-        }
-        return listFriends;
-    }
-
-    private WritableMap transform(PackageStatus packageStatus) {
-        if (packageStatus == null) {
-            return null;
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.putBoolean("isprocessing", packageStatus.isProcessing);
-        writableMap.putString("zpTransid", packageStatus.zpTransID);
-        writableMap.putDouble("reqdate", packageStatus.reqdate);
-        writableMap.putDouble("amount", packageStatus.amount);
-        writableMap.putDouble("balance", packageStatus.balance);
-        writableMap.putString("data", packageStatus.data);
-        return writableMap;
-    }
-
-    private WritableMap transform(ReceivePackage packet) {
-        if (packet == null) {
-            return null;
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.putDouble("packetid", packet.packageID);
-        writableMap.putDouble("bundleid", packet.bundleID);
-        writableMap.putString("sendername", packet.senderFullName);
-        writableMap.putString("senderavatar", packet.senderAvatar);
-        writableMap.putString("message", packet.message);
-        writableMap.putDouble("amount", packet.amount);
-        return writableMap;
-    }
 
     @ReactMethod
     public void getPacketsFromBundle(String strBundleID, final Promise promise) {
@@ -498,34 +431,10 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                         @Override
                         public void onNext(List<PackageInBundle> packageInBundles) {
-                            WritableArray array = transform(packageInBundles);
+                            WritableArray array = DataMapper.transform(packageInBundles);
                             promise.resolve(array);
                         }
 
-                        private WritableArray transform(List<PackageInBundle> list) {
-                            WritableArray array = Arguments.createArray();
-                            if (list == null) {
-                                Timber.d("transform: Null parameter");
-                                return array;
-                            }
-
-                            for (PackageInBundle packet : list) {
-                                WritableMap map = Arguments.createMap();
-                                map.putDouble("amount", packet.amount);
-                                map.putBoolean("isluckiest", packet.isLuckiest);
-                                map.putString("revavatarurl", packet.revAvatarURL);
-                                map.putString("revfullname", packet.revFullName);
-                                map.putDouble("opentime", packet.openTime);
-//                                map.putDouble("bundleid", packet.bundleID);
-//                                map.putDouble("packageid", packet.packageID);
-//                                map.putDouble("revzaloid", packet.revZaloID);
-//                                map.putString("revzalopayid", packet.revZaloPayID);
-//                                map.putString("sendmessage", packet.sendMessage);
-                                array.pushMap(map);
-                            }
-
-                            return array;
-                        }
                     });
         } catch (Exception e) {
             Timber.w(e, "Exception while fetching packets");
@@ -581,7 +490,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(List<SentBundle> sentBundles) {
-                        WritableArray writableArray = transform(sentBundles);
+                        WritableArray writableArray = DataMapper.transform(sentBundles);
                         successCallback(promise, writableArray);
                     }
                 });
@@ -607,51 +516,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(List<ReceivePackage> receivePackages) {
-                        WritableArray writableArray = transformReceivePacket(receivePackages);
+                        WritableArray writableArray = DataMapper.transform(receivePackages);
                         successCallback(promise, writableArray);
                     }
                 });
         compositeSubscription.add(subscription);
-    }
-
-    private WritableArray transformReceivePacket(List<ReceivePackage> receivePackages) {
-        WritableArray writableArray = Arguments.createArray();
-        if (receivePackages == null || receivePackages.size() <= 0) {
-            return  writableArray;
-        }
-        for (ReceivePackage receivePackage : receivePackages) {
-            WritableMap writableMap = transform(receivePackage);
-            writableArray.pushMap(writableMap);
-        }
-        return null;
-    }
-
-    private WritableArray transform(List<SentBundle> sentBundles) {
-        WritableArray writableArray = Arguments.createArray();
-        if (sentBundles == null || sentBundles.size() <= 0) {
-            return  writableArray;
-        }
-        for (SentBundle sentBundle : sentBundles) {
-            WritableMap writableMap = transform(sentBundle);
-            writableArray.pushMap(writableMap);
-        }
-        return null;
-    }
-
-    private WritableMap transform(SentBundle sentBundle) {
-        WritableMap writableMap = Arguments.createMap();
-        if (sentBundle == null) {
-            return writableMap;
-        }
-        writableMap.putDouble("bundleid", sentBundle.bundleID);
-        writableMap.putString("sendzalopayid", sentBundle.sendZaloPayID);
-        writableMap.putDouble("createtime", sentBundle.createTime);
-        writableMap.putDouble("lastOpenTime", sentBundle.lastOpenTime);
-        writableMap.putDouble("totalluck", sentBundle.totalLuck);
-        writableMap.putDouble("type", sentBundle.type);
-        writableMap.putDouble("numofpackages", sentBundle.numOfPackages);
-        writableMap.putDouble("numofopenedpakages", sentBundle.numOfOpenedPakages);
-        return writableMap;
     }
 
     @Override

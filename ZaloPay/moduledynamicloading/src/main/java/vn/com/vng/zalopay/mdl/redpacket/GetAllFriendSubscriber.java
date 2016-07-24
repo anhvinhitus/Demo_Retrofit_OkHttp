@@ -13,8 +13,9 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
  * Created by longlv on 16/07/2016.
+ * Handle get all zalo friends result and translate to WritableArray for consuming in react native
  */
-public class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
+class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
 
     WeakReference<Promise> promiseWeakReference;
 
@@ -29,7 +30,7 @@ public class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
 
     @Override
     public void onError(Throwable e) {
-        Timber.w(e, "error on getting OpenPackageSubscriber");
+        Timber.w(e, "error while getting all friends");
         if (promiseWeakReference == null) {
             return;
         }
@@ -41,7 +42,7 @@ public class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
 
     @Override
     public void onNext(WritableArray writableArray) {
-        Timber.d("OpenPackageSubscriber %s", writableArray);
+        Timber.d("receive %s friends", writableArray.size());
 
         if (promiseWeakReference == null) {
             return;

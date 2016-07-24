@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by AnhHieu on 6/14/16.
+ * Parser for notification messages
  */
 public class MessageParser implements Parser {
 
@@ -67,45 +68,31 @@ public class MessageParser implements Parser {
             event.result = res.getResult();
             return event;
         } catch (Exception ex) {
-            Timber.w(ex, "processAuthenticationLoginSuccess");
+            Timber.w(ex, "Error while handling authentication result");
 
         }
         return null;
     }
 
     public Event processKickOutUser(int msgType, byte[] data) {
-        Timber.d("You kickedout");
+        Timber.d("Connection was kicked out by server");
         return null;
     }
 
     public Event processPushMessage(int msgType, byte[] data) {
         String str = new String(data);
-        Timber.d("notification %s", str);
-        NotificationData event = null;
-        if (!TextUtils.isEmpty(str)) {
-            try {
-                event = mGson.fromJson(str, NotificationData.class);
-                event.setMsgType(msgType);
-//                JsonObject embeddataJson = event.getEmbeddata();
-//                if (embeddataJson != null) {
-//                    if (embeddataJson.has("bundleid")) {
-//                        event.setBundleid(embeddataJson.get("bundleid").getAsLong());
-//                    }
-//                    if (embeddataJson.has("packageid")) {
-//                        event.setPackageid(embeddataJson.get("packageid").getAsLong());
-//                    }
-//                }
-                int notificationType = event.getNotificationType();
+        Timber.d("got notification message: %s", str);
+        if (TextUtils.isEmpty(str)) {
+            return null;
+        }
 
-                int transType = event.getTransType();
-
-                event.read = !((!user.uid.equals(event.userid) && transType > 0)
-                        || notificationType > 0);
-
-            } catch (Exception ex) {
-                Timber.w(ex, " Parse error");
-                event = null;
-            }
+        NotificationData event;
+        try {
+            event = mGson.fromJson(str, NotificationData.class);
+            event.setMsgType(msgType);
+        } catch (Exception ex) {
+            Timber.w(ex, "Error in parsing notification message");
+            event = null;
         }
         return event;
     }
