@@ -36,7 +36,7 @@ android {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
         versionCode 1
-        versionName "1.6.19"
+        versionName "1.6.20"
 
         multiDexEnabled true
 
