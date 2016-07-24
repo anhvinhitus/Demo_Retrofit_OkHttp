@@ -63,9 +63,12 @@ public class RedPacketDataMapper {
         return new ReceivePackage(receivePackageGD.getId(), receivePackageGD.getBundleID(),
                 receivePackageGD.getReceiverZaloPayID(), receivePackageGD.getSenderZaloPayID(),
                 receivePackageGD.getSenderFullName(),
-                receivePackageGD.getSenderAvatar(), receivePackageGD.getMessage(),
+                receivePackageGD.getSenderAvatar(),
+                receivePackageGD.getMessage(),
                 receivePackageGD.getAmount(),
                 openTime == null ? 0 : openTime,
+                receivePackageGD.getIsLuckiest(),
+                receivePackageGD.getCreateTime(),
                 receivePackageGD.getIsOpen());
     }
 
@@ -95,13 +98,15 @@ public class RedPacketDataMapper {
                 receivePackage.amount,
                 receivePackage.openedTime,
                 receivePackage.isOpen,
-                receivePackage.message
+                receivePackage.message,
+                receivePackage.isLuckiest,
+                receivePackage.createTime
         );
     }
 
     private SentBundle transform(SentBundleGD sentBundleGD) {
         List<PackageInBundle> sentPackages = transformToPackageInBundle(sentBundleGD.getSentPackages());
-        return new SentBundle(sentBundleGD.getId(), sentBundleGD.getSendZaloPayID(),
+        return new SentBundle(sentBundleGD.getId(), sentBundleGD.getSenderZaloPayID(),
                 sentBundleGD.getType(), sentBundleGD.getCreateTime(),
                 sentBundleGD.getLastOpenTime(), sentBundleGD.getTotalLuck(),
                 sentBundleGD.getNumOfOpenedPakages(), sentBundleGD.getNumOfPackages(),
@@ -238,9 +243,12 @@ public class RedPacketDataMapper {
                     new ReceivePackage(response.packageid, response.bundleid,
                             response.revzalopayid, response.sendzalopayid,
                             response.sendfullname,
-                            "", "",
+                            response.avatarofsender,
+                            response.sendmessage,
                             response.amount,
                             response.openedtime,
+                            response.isluckiest,
+                            response.createtime,
                             false));
         }
         return receivePackages;

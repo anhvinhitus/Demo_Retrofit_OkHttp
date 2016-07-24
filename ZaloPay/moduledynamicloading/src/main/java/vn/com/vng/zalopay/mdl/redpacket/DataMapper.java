@@ -45,6 +45,8 @@ class DataMapper {
         writableMap.putString("senderavatar", packet.senderAvatar);
         writableMap.putString("message", packet.message);
         writableMap.putDouble("amount", packet.amount);
+        writableMap.putDouble("isluckiest", packet.isLuckiest);
+        writableMap.putDouble("createtime", packet.createTime);
         return writableMap;
     }
 
@@ -56,7 +58,7 @@ class DataMapper {
         writableMap.putDouble("bundleid", sentBundle.bundleID);
         writableMap.putString("sendzalopayid", sentBundle.sendZaloPayID);
         writableMap.putDouble("createtime", sentBundle.createTime);
-        writableMap.putDouble("lastOpenTime", sentBundle.lastOpenTime);
+        writableMap.putDouble("lastopentime", sentBundle.lastOpenTime);
         writableMap.putDouble("totalluck", sentBundle.totalLuck);
         writableMap.putDouble("type", sentBundle.type);
         writableMap.putDouble("numofpackages", sentBundle.numOfPackages);

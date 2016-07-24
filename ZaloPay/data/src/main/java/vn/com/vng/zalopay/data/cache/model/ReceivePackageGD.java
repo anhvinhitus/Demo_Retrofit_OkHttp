@@ -20,6 +20,8 @@ public class ReceivePackageGD {
     private Long openedTime;
     private Boolean isOpen;
     private String message;
+    private Integer isLuckiest;
+    private Long createTime;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -36,7 +38,7 @@ public class ReceivePackageGD {
         this.id = id;
     }
 
-    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Boolean isOpen, String message) {
+    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Boolean isOpen, String message, Integer isLuckiest, Long createTime) {
         this.id = id;
         this.bundleID = bundleID;
         this.receiverZaloPayID = receiverZaloPayID;
@@ -47,6 +49,8 @@ public class ReceivePackageGD {
         this.openedTime = openedTime;
         this.isOpen = isOpen;
         this.message = message;
+        this.isLuckiest = isLuckiest;
+        this.createTime = createTime;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -133,6 +137,22 @@ public class ReceivePackageGD {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Integer getIsLuckiest() {
+        return isLuckiest;
+    }
+
+    public void setIsLuckiest(Integer isLuckiest) {
+        this.isLuckiest = isLuckiest;
+    }
+
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

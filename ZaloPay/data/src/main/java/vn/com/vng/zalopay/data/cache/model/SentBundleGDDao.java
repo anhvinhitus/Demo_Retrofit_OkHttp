@@ -24,7 +24,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property SendZaloPayID = new Property(1, String.class, "senderZaloPayID", false, "SEND_ZALO_PAY_ID");
+        public final static Property SenderZaloPayID = new Property(1, String.class, "senderZaloPayID", false, "SENDER_ZALO_PAY_ID");
         public final static Property Type = new Property(2, Integer.class, "type", false, "TYPE");
         public final static Property CreateTime = new Property(3, Long.class, "createTime", false, "CREATE_TIME");
         public final static Property LastOpenTime = new Property(4, Long.class, "lastOpenTime", false, "LAST_OPEN_TIME");
@@ -50,7 +50,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SENT_BUNDLE_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: id
-                "\"SEND_ZALO_PAY_ID\" TEXT NOT NULL ," + // 1: senderZaloPayID
+                "\"SENDER_ZALO_PAY_ID\" TEXT NOT NULL ," + // 1: senderZaloPayID
                 "\"TYPE\" INTEGER," + // 2: type
                 "\"CREATE_TIME\" INTEGER," + // 3: createTime
                 "\"LAST_OPEN_TIME\" INTEGER," + // 4: lastOpenTime
@@ -70,7 +70,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     protected void bindValues(SQLiteStatement stmt, SentBundleGD entity) {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
-        stmt.bindString(2, entity.getSendZaloPayID());
+        stmt.bindString(2, entity.getSenderZaloPayID());
  
         Integer type = entity.getType();
         if (type != null) {
@@ -135,7 +135,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     @Override
     public void readEntity(Cursor cursor, SentBundleGD entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
-        entity.setSendZaloPayID(cursor.getString(offset + 1));
+        entity.setSenderZaloPayID(cursor.getString(offset + 1));
         entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setCreateTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setLastOpenTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));

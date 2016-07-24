@@ -12,7 +12,7 @@ public class SentBundleGD {
 
     private long id;
     /** Not-null value. */
-    private String sendZaloPayID;
+    private String senderZaloPayID;
     private Integer type;
     private Long createTime;
     private Long lastOpenTime;
@@ -35,9 +35,9 @@ public class SentBundleGD {
         this.id = id;
     }
 
-    public SentBundleGD(long id, String sendZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages) {
+    public SentBundleGD(long id, String senderZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages) {
         this.id = id;
-        this.sendZaloPayID = sendZaloPayID;
+        this.senderZaloPayID = senderZaloPayID;
         this.type = type;
         this.createTime = createTime;
         this.lastOpenTime = lastOpenTime;
@@ -61,13 +61,13 @@ public class SentBundleGD {
     }
 
     /** Not-null value. */
-    public String getSendZaloPayID() {
-        return sendZaloPayID;
+    public String getSenderZaloPayID() {
+        return senderZaloPayID;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setSendZaloPayID(String sendZaloPayID) {
-        this.sendZaloPayID = sendZaloPayID;
+    public void setSenderZaloPayID(String senderZaloPayID) {
+        this.senderZaloPayID = senderZaloPayID;
     }
 
     public Integer getType() {

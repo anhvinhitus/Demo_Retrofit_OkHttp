@@ -33,6 +33,8 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         public final static Property OpenedTime = new Property(7, Long.class, "openedTime", false, "OPENED_TIME");
         public final static Property IsOpen = new Property(8, Boolean.class, "isOpen", false, "IS_OPEN");
         public final static Property Message = new Property(9, String.class, "message", false, "MESSAGE");
+        public final static Property IsLuckiest = new Property(10, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
+        public final static Property CreateTime = new Property(11, Long.class, "createTime", false, "CREATE_TIME");
     };
 
     private DaoSession daoSession;
@@ -60,7 +62,9 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
                 "\"AMOUNT\" INTEGER," + // 6: amount
                 "\"OPENED_TIME\" INTEGER," + // 7: openedTime
                 "\"IS_OPEN\" INTEGER," + // 8: isOpen
-                "\"MESSAGE\" TEXT);"); // 9: message
+                "\"MESSAGE\" TEXT," + // 9: message
+                "\"IS_LUCKIEST\" INTEGER," + // 10: isLuckiest
+                "\"CREATE_TIME\" INTEGER);"); // 11: createTime
     }
 
     /** Drops the underlying database table. */
@@ -119,6 +123,16 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         if (message != null) {
             stmt.bindString(10, message);
         }
+ 
+        Integer isLuckiest = entity.getIsLuckiest();
+        if (isLuckiest != null) {
+            stmt.bindLong(11, isLuckiest);
+        }
+ 
+        Long createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(12, createTime);
+        }
     }
 
     @Override
@@ -146,7 +160,9 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // amount
             cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // openedTime
             cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0, // isOpen
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // message
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // message
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // isLuckiest
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // createTime
         );
         return entity;
     }
@@ -164,6 +180,8 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         entity.setOpenedTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
         entity.setIsOpen(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
         entity.setMessage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setIsLuckiest(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setCreateTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
      }
     
     /** @inheritdoc */

@@ -120,15 +120,17 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<List<ReceivePackage>> getReceivePacketList() {
-        return Observable.merge(mLocalStorage.getReceiveBundle(),
-                Observable.create(new Observable.OnSubscribe<List<ReceivePackage>>() {
-                    @Override
-                    public void call(Subscriber<? super List<ReceivePackage>> subscriber) {
-                        getAllReceivePacketServer().doOnCompleted(() -> {
-                            mLocalStorage.getReceiveBundle().subscribe(subscriber);
-                        }).subscribe(new DefaultSubscriber<>());
-                    }
-                }));
+        getAllReceivePacketServer().subscribe(new DefaultSubscriber<>());
+        return mLocalStorage.getReceiveBundle();
+//        return Observable.merge(mLocalStorage.getReceiveBundle(),
+//                Observable.create(new Observable.OnSubscribe<List<ReceivePackage>>() {
+//                    @Override
+//                    public void call(Subscriber<? super List<ReceivePackage>> subscriber) {
+//                        getAllReceivePacketServer().doOnCompleted(() -> {
+//                            mLocalStorage.getReceiveBundle().subscribe(subscriber);
+//                        }).subscribe(new DefaultSubscriber<>());
+//                    }
+//                }));
     }
 
     private void getReceivePacketServer(long timestamp, int count, int sortOrder, Subscriber<? super Boolean> subscriber) {
@@ -297,16 +299,18 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<List<SentBundle>> getSentBundleList() {
         Timber.d("getSentBundleList");
-        return Observable.merge(mLocalStorage.getAllSentBundle(),
-        Observable.create(new Observable.OnSubscribe<List<SentBundle>>() {
-            @Override
-            public void call(Subscriber<? super List<SentBundle>> subscriber) {
-                Timber.d("getSentBundleList call");
-                getAllSentBundlesServer().doOnCompleted(() -> {
-                    mLocalStorage.getAllSentBundle().subscribe(subscriber);
-                }).subscribe(new DefaultSubscriber<>());
-            }
-        }));
+        getAllSentBundlesServer().subscribe(new DefaultSubscriber<>());
+        return mLocalStorage.getAllSentBundle();
+//        return Observable.merge(mLocalStorage.getAllSentBundle(),
+//        Observable.create(new Observable.OnSubscribe<List<SentBundle>>() {
+//            @Override
+//            public void call(Subscriber<? super List<SentBundle>> subscriber) {
+//                Timber.d("getSentBundleList call");
+//                getAllSentBundlesServer().doOnCompleted(() -> {
+//                    mLocalStorage.getAllSentBundle().subscribe(subscriber);
+//                }).subscribe(new DefaultSubscriber<>());
+//            }
+//        }));
     }
 
     private void getSentBundleServer(long timestamp, int count, int sortOrder, Subscriber<? super Boolean> subscriber) {
