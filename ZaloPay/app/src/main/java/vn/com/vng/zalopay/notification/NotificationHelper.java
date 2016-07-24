@@ -128,6 +128,10 @@ public class NotificationHelper {
     }*/
 
     public void processNotification(NotificationData notify) {
+        if (notify == null) {
+            return;
+        }
+
         if (NotificationType.isTransactionNotification(notify.getNotificationType())) {
             this.updateTransaction();
             this.updateBalance();
