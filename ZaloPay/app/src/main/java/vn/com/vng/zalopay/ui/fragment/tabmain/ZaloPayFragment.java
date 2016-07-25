@@ -45,7 +45,6 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 
 /**
  * Created by AnhHieu on 4/11/16.
- *
  */
 public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener, IZaloPayView, BannerPagerAdapter.IBannerClick {
 
@@ -271,14 +270,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onItemClick(int position) {
+
         if (position == 0) {
-            navigator.startPaymentApplicationActivity(getActivity(), 11);
+            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
             navigator.startLinkCardProcedureActivity(getActivity());
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-            navigator.startPaymentApplicationActivity(getActivity(), 12);
+            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.BUY_PHONE_CARD);
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
         }
     }

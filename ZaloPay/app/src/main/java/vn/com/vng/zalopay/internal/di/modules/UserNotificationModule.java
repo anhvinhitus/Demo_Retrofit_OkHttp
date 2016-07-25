@@ -32,7 +32,7 @@ public class UserNotificationModule {
 
     @UserScope
     @Provides
-    NotificationStore.Repository providesNotificationRespository(NotificationStore.LocalStorage storage) {
+    NotificationStore.Repository providesNotificationRepository(NotificationStore.LocalStorage storage) {
         return new NotificationRepository(storage);
     }
 

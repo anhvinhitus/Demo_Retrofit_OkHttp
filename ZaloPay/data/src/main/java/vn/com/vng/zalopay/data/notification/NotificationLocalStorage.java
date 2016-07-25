@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
+import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -228,15 +229,12 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
     @Override
     public void markAsRead(long nId) {
-
-        List<NotificationGD> list = queryNotification(nId);
-        for (NotificationGD notify : list) {
+        NotificationGD notify = getDaoSession().load(NotificationGD.class, nId);
+        if (notify != null) {
             notify.setRead(true);
-        }
-
-        if (!Lists.isEmptyOrNull(list)) {
-            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
-            eventBus.post(new NotificationChangeEvent());
+            Timber.d("markAsRead: nId %s", nId);
+            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, notify);
+            eventBus.post(new ReadNotifyEvent(notify.getId(), notify.getNotificationtype()));
         }
     }
 
@@ -249,7 +247,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
-            eventBus.post(new NotificationChangeEvent());
+            //  eventBus.post(new NotificationChangeEvent());
         }
     }
 

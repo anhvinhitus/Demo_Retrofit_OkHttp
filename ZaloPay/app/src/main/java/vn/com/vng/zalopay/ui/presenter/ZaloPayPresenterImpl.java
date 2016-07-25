@@ -13,6 +13,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
@@ -112,6 +113,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationChangeEventChange(NotificationChangeEvent event) {
         Timber.d("onNotificationChangeEventChange");
+        getTotalNotification(0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onReadNotify(ReadNotifyEvent event) {
+        Timber.d("onReadNotify");
         getTotalNotification(0);
     }
 

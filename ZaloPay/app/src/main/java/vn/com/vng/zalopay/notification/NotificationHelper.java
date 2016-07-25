@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
@@ -33,7 +34,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 6/15/16.
- *
  */
 
 public class NotificationHelper {
@@ -182,8 +182,8 @@ public class NotificationHelper {
             String message = embeddata.get("liximessage").getAsString();
 
             mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<>());
         } catch (Exception ex) {
             Timber.e(ex, "exception");
         }
@@ -201,25 +201,51 @@ public class NotificationHelper {
             String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
             String title = context.getString(R.string.app_name);
 
-            int notificationId = (int)event.getTransid();
+
             int notificationType = event.getNotificationType();
-            int transType = event.getTransType();
 
-            Intent intent = null;
-
-            if (transType > 0) {
-                intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.NOTIFICATIONS);
-                notificationId = transType;
-            } else if (notificationType == 2) {
-                intent = navigator.intentProfile(context);
-                notificationId = notificationType;
-            }
+            int notificationId = this.getNotificationIdSystem(notificationType);
+            Intent intent = this.intentByNotificationType(notificationType);
 
             create(context, notificationId,
                     intent,
                     R.mipmap.ic_launcher,
                     title, message);
         }
+    }
+
+
+    private int getNotificationIdSystem(int notifyType) {
+        int notificationId = 100;
+
+        if (NotificationType.isTransactionNotification(notifyType)) {
+            notificationId = 1;
+        } else if (NotificationType.isProfileNotification(notifyType)) {
+            notificationId = 2;
+        } else if (NotificationType.isRedPacket(notifyType)) {
+            notificationId = 3;
+        }
+
+        return notificationId;
+    }
+
+    private Intent intentByNotificationType(int notifyType) {
+        Intent intent;
+        if (NotificationType.isTransactionNotification(notifyType)) {
+            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.TRANSACTION_LOGS);
+        } else if (NotificationType.isProfileNotification(notifyType)) {
+            intent = navigator.intentProfile(context);
+        } else if (NotificationType.isRedPacket(notifyType)) {
+            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.NOTIFICATIONS);
+        } else {
+            intent = navigator.intentHomeActivity(context, false);
+        }
+        return intent;
+    }
+
+    public void closeNotificationByType(int notifyType) {
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        nm.cancel(getNotificationIdSystem(notifyType));
     }
 
 

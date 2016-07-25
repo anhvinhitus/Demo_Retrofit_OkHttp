@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.SocketConnection;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
@@ -162,6 +163,12 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             this.connectToServer();
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onReadNotify(ReadNotifyEvent event) {
+        notificationHelper.closeNotificationByType(event.notificationType);
+    }
+
 
     private boolean doInject() {
         createUserComponent();

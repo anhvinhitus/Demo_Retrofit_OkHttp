@@ -5,6 +5,7 @@ package vn.com.vng.zalopay.notification;
  * Constants for notification type
  */
 class NotificationType {
+
     public static final int ORDER_PAYMENT = 1;
     public static final int TOPUP_WALLET = 2;
     public static final int ADD_BANK_CARD = 3;
@@ -30,8 +31,20 @@ class NotificationType {
                 notificationType == REFUND_TRANSACTION;
     }
 
+    static boolean isProfileNotification(int notificationType) {
+        return notificationType == UPDATE_PROFILE_LEVEL_OK
+                || notificationType == UPLOAD_PROFILE_LEVEL_3
+                || notificationType == UPDATE_PROFILE_LEVEL_FAILED;
+    }
+
+    static boolean isRedPacket(int notificationType) {
+        return notificationType == SEND_RED_PACKET;
+    }
+
     static boolean shouldMarkRead(int notificationType) {
         return notificationType == ORDER_PAYMENT ||
                 notificationType == TOPUP_WALLET;
     }
+
+
 }
