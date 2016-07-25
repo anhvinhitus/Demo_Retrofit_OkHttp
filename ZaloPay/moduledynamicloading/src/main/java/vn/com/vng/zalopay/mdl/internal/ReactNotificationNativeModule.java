@@ -125,7 +125,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
         item.putString("packageid", String.valueOf(entity.getPackageid()));
         item.putString("bundleid", String.valueOf(entity.getBundleid()));
-        item.putString("avatar", entity.getAvatar());
+        item.putString("avatarurl", entity.getAvatar());
         item.putString("name", entity.getName());
         item.putString("liximessage", entity.getLiximessage());
 

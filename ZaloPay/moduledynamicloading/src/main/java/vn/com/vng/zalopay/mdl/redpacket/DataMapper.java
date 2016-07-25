@@ -41,8 +41,8 @@ class DataMapper {
             return null;
         }
         WritableMap writableMap = Arguments.createMap();
-        writableMap.putDouble("packetid", packet.packageID);
-        writableMap.putDouble("bundleid", packet.bundleID);
+        writableMap.putString("packageid", String.valueOf(packet.packageID));
+        writableMap.putString("bundleid", String.valueOf(packet.bundleID));
         writableMap.putString("sendername", packet.senderFullName);
         writableMap.putString("senderavatar", packet.senderAvatar);
         writableMap.putString("message", packet.message);
@@ -58,7 +58,7 @@ class DataMapper {
         if (sentBundle == null) {
             return writableMap;
         }
-        writableMap.putDouble("bundleid", sentBundle.bundleID);
+        writableMap.putString("bundleid", String.valueOf(sentBundle.bundleID));
         writableMap.putString("sendzalopayid", sentBundle.sendZaloPayID);
         writableMap.putDouble("createtime", sentBundle.createTime);
         writableMap.putDouble("lastopentime", sentBundle.lastOpenTime);
