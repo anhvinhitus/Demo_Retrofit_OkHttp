@@ -290,7 +290,7 @@ public class RedPacketDataMapper {
                             response.openedtime,
                             response.isluckiest,
                             response.createtime,
-                            false));
+                            true));
         }
         return receivePackages;
     }
