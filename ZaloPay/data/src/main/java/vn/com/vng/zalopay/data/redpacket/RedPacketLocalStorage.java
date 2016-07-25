@@ -184,10 +184,10 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Boolean isHaveSentBundleInDb(long createTime) {
+    public Boolean isHaveSentBundleInDb(long createTime, int count) {
         return getDaoSession().getSentBundleGDDao().queryBuilder()
                 .where(SentBundleGDDao.Properties.CreateTime.lt(createTime))
-                .count() > 0;
+                .count() >= count;
     }
 
     @Override
@@ -310,10 +310,10 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Boolean isHaveReceivePacketInDb(long createTime) {
+    public Boolean isHaveReceivePacketInDb(long createTime, int count) {
         return getDaoSession().getReceivePackageGDDao().queryBuilder()
                 .where(ReceivePackageGDDao.Properties.CreateTime.lt(createTime))
-                .count() > 0;
+                .count() >= count;
     }
 
     private List<SentBundle> querySentBundleList() {

@@ -476,6 +476,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
+        Timber.d("getSendBundleHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int)count)
                 .subscribe(new Observer<GetSentBundle>() {
                     @Override
@@ -485,6 +486,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onError(Throwable e) {
+                        Timber.d("getSendBundleHistoryWithTimeStamp onError");
                         WritableMap writableMap = Arguments.createMap();
                         writableMap.putInt("code", 0);
                         Timber.d(e, "Error while get sent bundle");
@@ -493,6 +495,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(GetSentBundle getSentBundle) {
+                        Timber.d("getSendBundleHistoryWithTimeStamp onNext getSentBundle [%s]", getSentBundle);
                         WritableMap writableMap = DataMapper.transform(getSentBundle);
                         successCallback(promise, writableMap);
                     }
@@ -502,6 +505,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
+        Timber.d("getReceivePacketHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPackageRepository.getReceivePacketList((long)createTime, (int)count)
                 .subscribe(new Observer<GetReceivePacket>() {
                     @Override

@@ -49,13 +49,13 @@ public interface RedPacketStore {
         Observable<List<SentBundle>> getAllSentBundle();
         Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit);
         Observable<SentBundle> getSentBundle(long bundleID);
-        Boolean isHaveSentBundleInDb(long createTime);
+        Boolean isHaveSentBundleInDb(long createTime, int count);
 
         void putReceivePackages(List<ReceivePackageGD> receiveBundleGDs);
         Observable<List<ReceivePackage>> getAllReceiveBundle();
         Observable<List<ReceivePackage>> getReceiveBundle(long timeCreate, int limit);
         Observable<ReceivePackage> getReceiveBundle(long bundleID);
-        Boolean isHaveReceivePacketInDb(long createTime);
+        Boolean isHaveReceivePacketInDb(long createTime, int count);
 
         void putPackageInBundle(List<PackageInBundleGD> packageInBundleGDs);
         Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit);
