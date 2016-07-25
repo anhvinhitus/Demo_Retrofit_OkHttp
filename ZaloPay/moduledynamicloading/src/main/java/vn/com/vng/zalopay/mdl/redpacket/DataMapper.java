@@ -65,6 +65,7 @@ class DataMapper {
         writableMap.putDouble("totalluck", sentBundle.totalLuck);
         writableMap.putDouble("type", sentBundle.type);
         writableMap.putDouble("numberpackage", sentBundle.numOfPackages);
+        writableMap.putString("sendmessage", sentBundle.sendMessage);
         writableMap.putDouble("numberopenpackage", sentBundle.numOfOpenedPakages);
         return writableMap;
     }

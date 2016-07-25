@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -43,6 +44,8 @@ public class ReactInternalPackage implements ReactPackage {
     private EventBus mEventBus;
     private ReactNativeInstanceManager mReactNativeInstanceManager;
 
+    private UserConfig mUserConfig;
+
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
@@ -50,7 +53,8 @@ public class ReactInternalPackage implements ReactPackage {
                                 AlertDialogProvider sweetAlertDialog,
                                 INavigator navigator, ZPAnalytics zpAnalytics,
                                 EventBus eventBus,
-                                ReactNativeInstanceManager reactNativeInstanceManager
+                                ReactNativeInstanceManager reactNativeInstanceManager,
+                                UserConfig userConfig
                                 ) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
@@ -62,6 +66,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.zpAnalytics = zpAnalytics;
         this.mEventBus = eventBus;
         this.mReactNativeInstanceManager = reactNativeInstanceManager;
+        this.mUserConfig = userConfig;
     }
 
     @Override
@@ -71,7 +76,7 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
-        modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService, sweetAlertDialog));
+        modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService, mUserConfig, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));
         return modules;
     }

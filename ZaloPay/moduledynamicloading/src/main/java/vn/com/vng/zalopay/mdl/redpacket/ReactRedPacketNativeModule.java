@@ -28,6 +28,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -50,6 +51,7 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
 public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
+    private UserConfig mUserConfig;
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private final IRedPacketPayService mPaymentService;
@@ -64,12 +66,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                                       RedPacketStore.Repository redPackageRepository,
                                       FriendStore.Repository friendRepository,
                                       IRedPacketPayService payService,
+                                      UserConfig userConfig,
                                       AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
         this.mPaymentService = payService;
         this.mDialogProvider = sweetAlertDialog;
+        this.mUserConfig = userConfig;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -520,6 +524,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
+    public void getCurrentUserInfo(Promise promise) {
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.putString("displayname", mUserConfig.getDisPlayName());
+        writableMap.putString("avatar", mUserConfig.getAvatar());
+        successCallback(promise, writableMap);
     }
 
     @Override

@@ -81,6 +81,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     ReactNativeInstanceManager mReactNativeInstanceManager;
 
+    @Inject
+    UserConfig mUserConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +139,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return new ReactInternalPackage(transactionRepository,
                 notificationRepository, redPackageRepository,
                 friendRepository, paymentService, sweetAlertDialog,
-                navigator, zpAnalytics, eventBus, mReactNativeInstanceManager);
+                navigator, zpAnalytics, eventBus, mReactNativeInstanceManager,
+                mUserConfig);
     }
 
     private void createUserComponent() {

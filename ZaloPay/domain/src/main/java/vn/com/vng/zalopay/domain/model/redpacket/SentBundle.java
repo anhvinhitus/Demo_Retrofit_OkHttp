@@ -18,13 +18,17 @@ public class SentBundle {
     public int totalLuck;
     public int numOfOpenedPakages;
     public int numOfPackages;
+    public String sendMessage;
     public List<PackageInBundle> packages;
 
     public SentBundle() {
 
     }
 
-    public SentBundle(long bundleID, String sendZaloPayID, int type, long createTime, long lastOpenTime, int totalLuck, int numOfOpenedPakages, int numOfPackages) {
+    public SentBundle(long bundleID, String sendZaloPayID,
+                      int type, long createTime, long lastOpenTime,
+                      int totalLuck, int numOfOpenedPakages,
+                      int numOfPackages, String sendMessage) {
         this.bundleID = bundleID;
         this.sendZaloPayID = sendZaloPayID;
         this.type = type;
@@ -33,10 +37,15 @@ public class SentBundle {
         this.totalLuck = totalLuck;
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
+        this.sendMessage = sendMessage;
         this.packages = null;
     }
 
-    public SentBundle(long bundleID, String sendZaloPayID, int type, long createTime, long lastOpenTime, int totalLuck, int numOfOpenedPakages, int numOfPackages, List<PackageInBundle> packages) {
+    public SentBundle(long bundleID, String sendZaloPayID,
+                      int type, long createTime, long lastOpenTime,
+                      int totalLuck, int numOfOpenedPakages,
+                      int numOfPackages, String sendMessage,
+                      List<PackageInBundle> packages) {
         this.bundleID = bundleID;
         this.sendZaloPayID = sendZaloPayID;
         this.type = type;
@@ -45,6 +54,7 @@ public class SentBundle {
         this.totalLuck = totalLuck;
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
+        this.sendMessage = sendMessage;
         this.packages = packages;
     }
 }

@@ -31,6 +31,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         public final static Property TotalLuck = new Property(5, Integer.class, "totalLuck", false, "TOTAL_LUCK");
         public final static Property NumOfOpenedPakages = new Property(6, Integer.class, "numOfOpenedPakages", false, "NUM_OF_OPENED_PAKAGES");
         public final static Property NumOfPackages = new Property(7, Integer.class, "numOfPackages", false, "NUM_OF_PACKAGES");
+        public final static Property SendMessage = new Property(8, String.class, "sendMessage", false, "SEND_MESSAGE");
     };
 
     private DaoSession daoSession;
@@ -56,7 +57,8 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
                 "\"LAST_OPEN_TIME\" INTEGER," + // 4: lastOpenTime
                 "\"TOTAL_LUCK\" INTEGER," + // 5: totalLuck
                 "\"NUM_OF_OPENED_PAKAGES\" INTEGER," + // 6: numOfOpenedPakages
-                "\"NUM_OF_PACKAGES\" INTEGER);"); // 7: numOfPackages
+                "\"NUM_OF_PACKAGES\" INTEGER," + // 7: numOfPackages
+                "\"SEND_MESSAGE\" TEXT);"); // 8: sendMessage
     }
 
     /** Drops the underlying database table. */
@@ -101,6 +103,11 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         if (numOfPackages != null) {
             stmt.bindLong(8, numOfPackages);
         }
+ 
+        String sendMessage = entity.getSendMessage();
+        if (sendMessage != null) {
+            stmt.bindString(9, sendMessage);
+        }
     }
 
     @Override
@@ -126,7 +133,8 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // lastOpenTime
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // totalLuck
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // numOfOpenedPakages
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7) // numOfPackages
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // numOfPackages
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // sendMessage
         );
         return entity;
     }
@@ -142,6 +150,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         entity.setTotalLuck(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
         entity.setNumOfOpenedPakages(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setNumOfPackages(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setSendMessage(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     /** @inheritdoc */

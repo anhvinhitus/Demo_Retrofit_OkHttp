@@ -31,4 +31,7 @@ public class SentBundleResponse extends BaseResponse {
 
     @SerializedName("numofpackages")
     public int numofpackages;
+
+    @SerializedName("sendmessage")
+    public String sendmessage;
 }

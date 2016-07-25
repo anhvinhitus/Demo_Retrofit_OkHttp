@@ -88,7 +88,7 @@ public class RedPacketDataMapper {
                 sentBundleGD.getType(), sentBundleGD.getCreateTime(),
                 sentBundleGD.getLastOpenTime(), sentBundleGD.getTotalLuck(),
                 sentBundleGD.getNumOfOpenedPakages(), sentBundleGD.getNumOfPackages(),
-                sentPackages);
+                sentBundleGD.getSendMessage(), sentPackages);
     }
 
     public List<PackageInBundle> transformToPackageInBundle(SentPackageInBundleResponse packageInBundlesResponse) {
@@ -147,7 +147,11 @@ public class RedPacketDataMapper {
         if (sentBundle == null) {
             return  null;
         }
-        return new SentBundleGD(sentBundle.bundleID, sentBundle.sendZaloPayID, sentBundle.type, sentBundle.createTime, sentBundle.lastOpenTime, sentBundle.totalLuck, sentBundle.numOfOpenedPakages, sentBundle.numOfPackages);
+        return new SentBundleGD(sentBundle.bundleID, sentBundle.sendZaloPayID,
+                sentBundle.type, sentBundle.createTime,
+                sentBundle.lastOpenTime, sentBundle.totalLuck,
+                sentBundle.numOfOpenedPakages, sentBundle.numOfPackages,
+                sentBundle.sendMessage);
     }
 
     public GetSentBundle transformToSentBundleSummary(SentBundleListResponse response) {
@@ -178,7 +182,11 @@ public class RedPacketDataMapper {
             if (bundleResponse == null) {
                 continue;
             }
-            sentBundleList.add(new SentBundle(bundleResponse.bundleid, bundleResponse.sendzalopayid , bundleResponse.type, bundleResponse.createtime, bundleResponse.lastopentime, bundleResponse.totalluck, bundleResponse.numofopenedpakages, bundleResponse.numofpackages));
+            sentBundleList.add(new SentBundle(bundleResponse.bundleid, bundleResponse.sendzalopayid ,
+                    bundleResponse.type, bundleResponse.createtime,
+                    bundleResponse.lastopentime, bundleResponse.totalluck,
+                    bundleResponse.numofopenedpakages, bundleResponse.numofpackages,
+                    bundleResponse.sendmessage));
         }
         return sentBundleList;
     }
