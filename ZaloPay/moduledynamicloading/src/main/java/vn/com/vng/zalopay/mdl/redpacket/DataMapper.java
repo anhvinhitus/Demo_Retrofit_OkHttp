@@ -140,8 +140,12 @@ class DataMapper {
 
     public static WritableMap transform(GetSentBundle summary) {
         WritableMap map = Arguments.createMap();
-        map.putDouble("totalofsentamount", summary.totalofsentamount);
-        map.putDouble("totalofsentbundle", summary.totalofsentbundle);
+        if (summary.totalofsentamount > 0) {
+            map.putDouble("totalofsentamount", summary.totalofsentamount);
+        }
+        if (summary.totalofsentbundle > 0) {
+            map.putDouble("totalofsentbundle", summary.totalofsentbundle);
+        }
         WritableArray sentBundleArray = transform(summary.sentbundlelist);
         map.putArray("sentbundlelist", sentBundleArray);
         return map;
@@ -149,9 +153,15 @@ class DataMapper {
 
     public static WritableMap transform(GetReceivePacket summary) {
         WritableMap map = Arguments.createMap();
-        map.putDouble("totalofrevamount", summary.totalofrevamount);
-        map.putDouble("totalofrevpackage", summary.totalofrevpackage);
-        map.putDouble("totalofluckiestdraw", summary.numofluckiestdraw);
+        if (summary.totalofrevamount > 0) {
+            map.putDouble("totalofrevamount", summary.totalofrevamount);
+        }
+        if (summary.totalofrevpackage > 0) {
+            map.putDouble("totalofrevpackage", summary.totalofrevpackage);
+        }
+        if (summary.numofluckiestdraw > 0) {
+            map.putDouble("totalofluckiestdraw", summary.numofluckiestdraw);
+        }
         WritableArray receivePacketArray = transform(summary.revpackageList);
         map.putArray("revpackagelist", receivePacketArray);
         return map;

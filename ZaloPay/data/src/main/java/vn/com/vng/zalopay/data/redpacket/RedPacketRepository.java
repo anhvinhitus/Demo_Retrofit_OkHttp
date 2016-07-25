@@ -132,7 +132,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                     mLocalStorage.getReceiveBundle(timeCreate, count)
                             .doOnError(e -> subscriber.onError(e))
                             .doOnNext(receivePackages -> {
-                                subscriber.onNext(new GetReceivePacket(0, 0, 0, receivePackages));
+                                subscriber.onNext(new GetReceivePacket(-1, -1, -1, receivePackages));
                             })
                             .doOnCompleted(() -> subscriber.onCompleted());
                 }
@@ -400,7 +400,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                     mLocalStorage.getSentBundle(timeCreate, count)
                             .doOnError(e -> subscriber.onError(e))
                             .doOnNext(sentBundles -> {
-                                subscriber.onNext(new GetSentBundle(0, 0, sentBundles));
+                                subscriber.onNext(new GetSentBundle(-1, -1, sentBundles));
                             })
                             .doOnCompleted(() -> subscriber.onCompleted());
                 }
