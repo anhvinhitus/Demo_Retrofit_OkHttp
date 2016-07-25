@@ -298,8 +298,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<ReceivePackage>> getReceiveBundle(long timeCreate, int limit) {
-        return ObservableHelper.makeObservable(()-> queryReceivePackageList(timeCreate, limit))
+    public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
+        return ObservableHelper.makeObservable(()-> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
     }
 
@@ -390,7 +390,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
-                        .orderDesc(ReceivePackageGDDao.Properties.CreateTime)
+                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
                         .list());
     }
 
@@ -399,7 +399,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
-                        .orderDesc(ReceivePackageGDDao.Properties.CreateTime)
+                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
                         .limit(limit)
                         .list());
     }
@@ -412,8 +412,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                     getDaoSession()
                             .getReceivePackageGDDao()
                             .queryBuilder()
-                            .where(ReceivePackageGDDao.Properties.CreateTime.lt(timeCreate))
-                            .orderDesc(ReceivePackageGDDao.Properties.CreateTime)
+                            .where(ReceivePackageGDDao.Properties.OpenedTime.lt(timeCreate))
+                            .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
                             .limit(limit)
                             .list());
         }

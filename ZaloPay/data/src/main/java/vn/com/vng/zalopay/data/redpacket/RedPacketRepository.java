@@ -120,18 +120,17 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<GetReceivePacket> getReceivePacketList(long timeCreate, final int count) {
-        Timber.d("getReceivePacketList timeCreate [%s] count [%s]", String.valueOf(timeCreate), String.valueOf(count));
-        if (shouldGetReceivePacketFromServer(timeCreate, count)) {
+    public Observable<GetReceivePacket> getReceivePacketList(long openTime, final int count) {
+        Timber.d("getReceivePacketList openTime [%s] count [%s]", String.valueOf(openTime), String.valueOf(count));
+        if (shouldGetReceivePacketFromServer(openTime, count)) {
             Timber.d("getReceivePacketList -> getReceivedPackagesServer");
-            //return getReceivedPackagesServer(timeCreate, count, ORDER);
             return Observable.create(new Observable.OnSubscribe<GetReceivePacket>() {
                 @Override
                 public void call(Subscriber<? super GetReceivePacket> subscriber) {
-                    Timber.d("Begin to fetch ReceivePacketList from server for timeCreate [%s] count [%s]", timeCreate, count);
-                    getReceivedPackagesServer(timeCreate, count, ORDER).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
-                        Timber.d("Finished fetching ReceivePacketList for timeCreate [%s] count [%s]", timeCreate, count);
-                        Observable<List<ReceivePackage>> obReceivePacket = mLocalStorage.getReceiveBundle(timeCreate, count);
+                    Timber.d("Begin to fetch ReceivePacketList from server for openTime [%s] count [%s]", openTime, count);
+                    getReceivedPackagesServer(openTime, count, ORDER).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
+                        Timber.d("Finished fetching ReceivePacketList for openTime [%s] count [%s]", openTime, count);
+                        Observable<List<ReceivePackage>> obReceivePacket = mLocalStorage.getReceiveBundle(openTime, count);
                         Observable<GetReceivePacket> obGetReceivePacket = mLocalStorage.getReceivePacketSummary();
                         Observable.zip(obReceivePacket, obGetReceivePacket, (receivePackages, getReceivePacket) ->
                                 new GetReceivePacket(getReceivePacket.totalofrevamount, getReceivePacket.totalofrevpackage,
@@ -160,8 +159,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
             return Observable.create(new Observable.OnSubscribe<GetReceivePacket>() {
                 @Override
                 public void call(Subscriber<? super GetReceivePacket> subscriber) {
-                    Timber.d("Finished fetching ReceivePacketList for timeCreate [%s] count [%s]", timeCreate, count);
-                    Observable<List<ReceivePackage>> obReceivePacket = mLocalStorage.getReceiveBundle(timeCreate, count);
+                    Timber.d("Finished fetching ReceivePacketList for openTime [%s] count [%s]", openTime, count);
+                    Observable<List<ReceivePackage>> obReceivePacket = mLocalStorage.getReceiveBundle(openTime, count);
                     Observable<GetReceivePacket> obGetReceivePacket = mLocalStorage.getReceivePacketSummary();
                     Observable.zip(obReceivePacket, obGetReceivePacket, (receivePackages, getReceivePacket) ->
                             new GetReceivePacket(getReceivePacket.totalofrevamount, getReceivePacket.totalofrevpackage,
