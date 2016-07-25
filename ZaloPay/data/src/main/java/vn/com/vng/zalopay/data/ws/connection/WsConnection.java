@@ -1,23 +1,13 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.TextUtils;
 
 import com.google.protobuf.AbstractMessage;
 
-import org.w3c.dom.Text;
-
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -41,14 +31,6 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public class WsConnection extends Connection implements ConnectionListener {
 
-    private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-    public static final int TYPE_FIELD_LENGTH = 1;
-    public static final int LENGTH_FIELD_LENGTH = 4;
-    public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
-    private static final int MAX_NUMBER_RETRY_CONNECT = 3;
-
-    private int PORT;
-    private String HOST;
 
     private NioEventLoopGroup group;
     private Channel mChannel;
@@ -67,15 +49,11 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private boolean isAuthenticated;
 
-    public WsConnection(Context context, Parser parser, UserConfig config) {
+    public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
+        super(host, port);
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-    }
-
-    public void setHostPort(String host, int port) {
-        this.HOST = host;
-        this.PORT = port;
     }
 
     public void setGCMToken(String token) {
@@ -86,10 +64,6 @@ public class WsConnection extends Connection implements ConnectionListener {
     public void connect() {
         if (mChannel != null && mChannel.isOpen()) {
             return;
-        }
-
-        if (TextUtils.isEmpty(HOST) || PORT == 0) {
-            throw new RuntimeException("Init host port notification");
         }
 
         Timber.i("Begin connecting");
@@ -105,7 +79,7 @@ public class WsConnection extends Connection implements ConnectionListener {
                     bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
                     bootstrap.option(ChannelOption.TCP_NODELAY, true);
                     bootstrap.option(ChannelOption.SO_TIMEOUT, 5000);
-                    channelFuture = bootstrap.connect(new InetSocketAddress(HOST, PORT));
+                    channelFuture = bootstrap.connect(new InetSocketAddress(mHost, mPort));
                     mChannel = channelFuture.sync().channel();
                     mState = Connection.State.Connecting;
                 } catch (InterruptedException e) {
@@ -214,17 +188,9 @@ public class WsConnection extends Connection implements ConnectionListener {
     }
 
 
-    private Message postResult(Event message) {
-        Message uiMsg = new Message();
-        uiMsg.what = message.msgType;
-        uiMsg.obj = message;
-        messageHandler.sendMessage(uiMsg);
-        return uiMsg;
-    }
-
     @Override
-    public void onError(int code, String message) {
-        Timber.d("onError %s", code);
+    public void onError(Exception e) {
+        Timber.d("onError %s", e);
         mState = Connection.State.Disconnected;
     }
 
@@ -268,46 +234,4 @@ public class WsConnection extends Connection implements ConnectionListener {
         }
         return false;
     }
-
-    protected final void onPostExecute(Event event) {
-        try {
-            if (listCallBack != null) {
-                for (int i = listCallBack.size() - 1; i >= 0; i--) {
-                    listCallBack.get(i).onReceiverEvent(event);
-                }
-            }
-        } catch (Exception ex) {
-            Timber.w(ex, "exception : ");
-        }
-    }
-
-
-    private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            WsConnection.this.onPostExecute((Event) msg.obj);
-        }
-    };
-
-
-    public void addReceiverListener(OnReceiverMessageListener listener) {
-        if (listCallBack == null) {
-            listCallBack = new ArrayList<>();
-        }
-
-        listCallBack.add(listener);
-    }
-
-    public void removeReceiverListener(OnReceiverMessageListener listener) {
-        if (listCallBack != null) {
-            listCallBack.remove(listener);
-        }
-    }
-
-    public void clearOnScrollListeners() {
-        if (listCallBack != null) {
-            listCallBack.clear();
-        }
-    }
-
 }
