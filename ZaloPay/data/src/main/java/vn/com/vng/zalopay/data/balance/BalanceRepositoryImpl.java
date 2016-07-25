@@ -29,17 +29,18 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     @Override
     public Observable<Long> balance() {
-        return Observable.merge(balanceLocal(), updateBalance()).doOnNext(aLong ->
-                mCurrentBalance = aLong
-        );
+        return Observable.merge(balanceLocal(), updateBalance());
     }
 
     @Override
     public Observable<Long> updateBalance() {
         return mRequestService.balance(mUser.uid, mUser.accesstoken)
-                .doOnNext(response -> mLocalStorage.putBalance(response.zpwbalance))
-                .map(balanceResponse1 -> balanceResponse1.zpwbalance)
-                .doOnNext(aLong -> mEventBus.post(new ChangeBalanceEvent(aLong)));
+                .doOnNext(response -> {
+                    mCurrentBalance = response.zpwbalance;
+                    mLocalStorage.putBalance(response.zpwbalance);
+                    mEventBus.post(new ChangeBalanceEvent(response.zpwbalance));
+                })
+                .map(balanceResponse1 -> balanceResponse1.zpwbalance);
     }
 
     public Long currentBalance() {
@@ -50,6 +51,10 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
     }
 
     private Observable<Long> balanceLocal() {
-        return mLocalStorage.getBalance();
+        return mLocalStorage.getBalance()
+                .doOnNext(balance -> {
+                    mCurrentBalance = balance;
+                })
+                ;
     }
 }
