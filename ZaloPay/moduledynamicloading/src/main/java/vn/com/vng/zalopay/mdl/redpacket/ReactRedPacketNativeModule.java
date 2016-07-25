@@ -39,7 +39,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
@@ -474,7 +473,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int)count)
-                .subscribe(new Observer<List<SentBundle>>() {
+                .subscribe(new Observer<GetSentBundle>() {
                     @Override
                     public void onCompleted() {
 
@@ -489,9 +488,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     }
 
                     @Override
-                    public void onNext(List<SentBundle> sentBundles) {
-                        WritableArray writableArray = DataMapper.transform(sentBundles);
-                        successCallback(promise, writableArray);
+                    public void onNext(GetSentBundle getSentBundle) {
+                        WritableMap writableMap = DataMapper.transform(getSentBundle);
+                        successCallback(promise, writableMap);
                     }
                 });
         compositeSubscription.add(subscription);
@@ -500,7 +499,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Subscription subscription = mRedPackageRepository.getReceivePacketList((long)createTime, (int)count)
-                .subscribe(new Observer<List<ReceivePackage>>() {
+                .subscribe(new Observer<GetReceivePacket>() {
                     @Override
                     public void onCompleted() {
 
@@ -515,62 +514,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     }
 
                     @Override
-                    public void onNext(List<ReceivePackage> receivePackages) {
-                        WritableArray writableArray = DataMapper.transform(receivePackages);
-                        successCallback(promise, writableArray);
+                    public void onNext(GetReceivePacket getReceivePacket) {
+                        WritableMap writableMap = DataMapper.transform(getReceivePacket);
+                        successCallback(promise, writableMap);
                     }
                 });
         compositeSubscription.add(subscription);
-    }
-
-    @ReactMethod
-    public void getSendSummary(final Promise promise) {
-        mRedPackageRepository.getSendBundleSummary()
-                .subscribe(new Observer<GetSentBundle>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        WritableMap writableMap = Arguments.createMap();
-                        writableMap.putInt("code", 0);
-                        Timber.d(e, "Error while get sent packet summary");
-                        promise.reject("-1", e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(GetSentBundle summary) {
-                        WritableMap writableMap = DataMapper.transform(summary);
-                        successCallback(promise, writableMap);
-                    }
-                });
-    }
-
-    @ReactMethod
-    public void getReceivePacketSummary(final Promise promise) {
-        mRedPackageRepository.getReceiveBundleSummary()
-                .subscribe(new Observer<GetReceivePacket>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        WritableMap writableMap = Arguments.createMap();
-                        writableMap.putInt("code", 0);
-                        Timber.d(e, "Error while get sent packet summary");
-                        promise.reject("-1", e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(GetReceivePacket summary) {
-                        WritableMap writableMap = DataMapper.transform(summary);
-                        successCallback(promise, writableMap);
-                    }
-                });
     }
 
     @Override

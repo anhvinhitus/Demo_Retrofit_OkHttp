@@ -317,7 +317,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<SentBundle> querySentBundleList() {
-        return mDataMapper.transformDBToSentBundle(
+        return mDataMapper.transformDBToSentBundles(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
@@ -326,7 +326,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<SentBundle> querySentBundleList(int limit) {
-        return mDataMapper.transformDBToSentBundle(
+        return mDataMapper.transformDBToSentBundles(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
@@ -339,7 +339,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (timeCreate == 0) {
             return querySentBundleList(limit);
         } else {
-            return mDataMapper.transformDBToSentBundle(
+            return mDataMapper.transformDBToSentBundles(
                     getDaoSession()
                             .getSentBundleGDDao()
                             .queryBuilder()
@@ -351,7 +351,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private SentBundle querySentBundle(long bundleID) {
-        List<SentBundle> sentBundles = mDataMapper.transformDBToSentBundle(
+        List<SentBundle> sentBundles = mDataMapper.transformDBToSentBundles(
                 getDaoSession()
                         .getSentBundleGDDao()
                         .queryBuilder()
@@ -386,7 +386,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<ReceivePackage> queryReceivePackageList() {
-        return mDataMapper.transformToReceivePackage(
+        return mDataMapper.transformDBToRevPackets(
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
@@ -395,7 +395,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<ReceivePackage> queryReceivePackageList(int limit) {
-        return mDataMapper.transformToReceivePackage(
+        return mDataMapper.transformDBToRevPackets(
                 getDaoSession()
                         .getReceivePackageGDDao()
                         .queryBuilder()
@@ -408,7 +408,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (timeCreate == 0) {
             return queryReceivePackageList(limit);
         } else {
-            return mDataMapper.transformToReceivePackage(
+            return mDataMapper.transformDBToRevPackets(
                     getDaoSession()
                             .getReceivePackageGDDao()
                             .queryBuilder()

@@ -111,15 +111,15 @@ public interface RedPacketStore {
 
         Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId);
 
-        Observable<List<SentBundle>> getSentBundleListServer(long timestamp, int count, int order);
+        Observable<GetSentBundle> getSentBundleListServer(long timestamp, int count, int order);
 
-        Observable<List<SentBundle>> getSentBundleList(long timeStamp, int count);
+        Observable<GetSentBundle> getSentBundleList(long timeStamp, int count);
 
         Observable<Boolean> getAllSentBundlesServer();
 
-        Observable<List<ReceivePackage>> getReceivedPackagesServer(long timestamp, int count, int order);
+        Observable<GetReceivePacket> getReceivedPackagesServer(long timestamp, int count, int order);
 
-        Observable<List<ReceivePackage>> getReceivePacketList(long timeStamp, int count);
+        Observable<GetReceivePacket> getReceivePacketList(long timeStamp, int count);
 
         Observable<ReceivePackage> getReceivedPacket(long packetId);
 

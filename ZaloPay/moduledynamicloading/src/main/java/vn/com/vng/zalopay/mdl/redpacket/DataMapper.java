@@ -125,7 +125,6 @@ class DataMapper {
             }
             array.pushMap(map);
         }
-
         return array;
     }
 
@@ -143,6 +142,8 @@ class DataMapper {
         WritableMap map = Arguments.createMap();
         map.putDouble("totalofsentamount", summary.totalofsentamount);
         map.putDouble("totalofsentbundle", summary.totalofsentbundle);
+        WritableArray sentBundleArray = transform(summary.sentbundlelist);
+        map.putArray("sentbundlelist", sentBundleArray);
         return map;
     }
 
@@ -151,6 +152,8 @@ class DataMapper {
         map.putDouble("totalofrevamount", summary.totalofrevamount);
         map.putDouble("totalofrevpackage", summary.totalofrevpackage);
         map.putDouble("totalofluckiestdraw", summary.numofluckiestdraw);
+        WritableArray receivePacketArray = transform(summary.revpackageList);
+        map.putArray("revpackagelist", receivePacketArray);
         return map;
     }
 }
