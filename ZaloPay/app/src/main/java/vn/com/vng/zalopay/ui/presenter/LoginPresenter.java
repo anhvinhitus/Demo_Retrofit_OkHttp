@@ -159,10 +159,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         mView.gotoMainActivity();
     }
 
-    private void gotoUpdateProfileLevel2() {
-        mView.gotoUpdateProfileLevel2();
-    }
-
     private final void onLoginSuccess(User user) {
         Timber.d("session %s uid %s need_invitation %s", user.accesstoken, user.uid, user.need_invitation);
         // Khởi tạo user component

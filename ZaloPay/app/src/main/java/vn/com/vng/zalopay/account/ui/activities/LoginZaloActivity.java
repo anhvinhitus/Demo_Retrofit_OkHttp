@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +20,7 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
+import vn.com.vng.zalopay.utils.UriUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -56,7 +58,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         if (!TextUtils.isEmpty(message)) {
             showDialog(message, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         }
-
     }
 
     @OnClick(R.id.layoutLoginZalo)
@@ -113,12 +114,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     public void gotoInvitationCode() {
         navigator.startInvitationCodeActivity(getContext());
-        finish();
-    }
-
-    @Override
-    public void gotoUpdateProfileLevel2() {
-        navigator.startUpdateProfileLevel2Activity(this, true);
         finish();
     }
 

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
@@ -120,6 +121,8 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     }
 
     private void setBirthDay(long time) {
+
+        Timber.d("setBirthDay: time %s", time);
         Date date = new Date(time * 1000);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String birthday = simpleDateFormat.format(date);

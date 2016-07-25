@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.notification;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -26,7 +27,9 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.ws.SocketConnection;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -34,7 +37,6 @@ import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 
 public class ZPNotificationService extends Service implements OnReceiverMessageListener {
 
@@ -67,7 +69,6 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     public void onCreate() {
         super.onCreate();
         Timber.d("onCreate");
-
         eventBus.register(this);
         boolean isInject = doInject();
     }
@@ -78,8 +79,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         if (NetworkHelper.isNetworkAvailable(this)) {
 
             if (mWsConnection == null) {
-                mWsConnection = new WsConnection(this, new MessageParser(userConfig, mGson), userConfig);
-                mWsConnection.setHostPort(BuildConfig.WS_HOST, BuildConfig.WS_PORT);
+                mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
+                        new MessageParser(userConfig, mGson), userConfig);
                 mWsConnection.addReceiverListener(this);
             }
 
@@ -100,7 +101,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         eventBus.unregister(this);
         if (mWsConnection != null) {
             mWsConnection.disconnect();
-            mWsConnection.clearOnScrollListeners();
+            mWsConnection.clearReceiverListener();
             mWsConnection = null;
         }
         super.onDestroy();
