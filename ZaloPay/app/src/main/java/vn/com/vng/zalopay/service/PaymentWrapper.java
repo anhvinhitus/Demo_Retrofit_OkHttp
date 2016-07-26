@@ -44,6 +44,7 @@ public class PaymentWrapper {
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
         public void onComplete(ZPPaymentResult pPaymentResult) {
+            Timber.d("onComplete");
             if (pPaymentResult == null) {
                 if (NetworkHelper.isNetworkAvailable(viewListener.getActivity())) {
                     responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
@@ -77,14 +78,17 @@ public class PaymentWrapper {
 
         @Override
         public void onCancel() {
+            Timber.d("onCancel");
+
             responseListener.onResponseCancel();
         }
 
         @Override
         public void onSMSCallBack(String appTransID) {
-
+            Timber.d("onSMSCallBack");
         }
     };
+
     public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
@@ -214,6 +218,9 @@ public class PaymentWrapper {
         if (balanceRepository != null) {
             paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
+
+
+        Timber.d("Call Pay to sdk");
         ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
     }
 

@@ -110,11 +110,10 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         String embeddata = "";
         if (embeddataJson != null) {
-            Timber.d("transformToNotificationGD embeddataJson [%s]", embeddataJson.toString());
             embeddata = embeddataJson.toString();
         }
 
-        Timber.d("embeddata put %s isRead %s  ", embeddata, notificationEntity.read);
+        Timber.d("put embeddata %s isRead %s  ", embeddata, notificationEntity.read);
 
         _notification.setEmbeddata(embeddata);
         _notification.setUserid(notificationEntity.getUserid());

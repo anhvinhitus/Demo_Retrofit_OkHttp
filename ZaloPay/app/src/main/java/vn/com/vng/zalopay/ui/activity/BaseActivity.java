@@ -209,17 +209,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpired(TokenExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+            showToast(R.string.exception_token_expired_message);
             getAppComponent().applicationSession().clearUserSession();
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpiredMain(TokenExpiredEvent event) {
-        showToast(R.string.exception_token_expired_message);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

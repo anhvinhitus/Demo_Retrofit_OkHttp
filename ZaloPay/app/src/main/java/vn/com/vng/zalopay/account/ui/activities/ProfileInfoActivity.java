@@ -69,8 +69,8 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     }
 
     @OnClick(R.id.layoutSigOutAndDelDB)
-    public void onClickSigoutAndDelDB(View view) {
-        presenter.sigoutAndCleanData();
+    public void onClickSignOutAndDelDB(View view) {
+        presenter.signOutAndCleanData();
     }
 
     @OnClick(R.id.layoutTransactionHistory)
