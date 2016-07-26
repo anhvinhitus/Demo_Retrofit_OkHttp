@@ -199,12 +199,13 @@ public class RedPacketDataMapper {
         Long openTime = receivePackageGD.getOpenedTime();
         Integer isLuckiest = receivePackageGD.getIsLuckiest();
         Long createTime = receivePackageGD.getCreateTime();
+        Long amount = receivePackageGD.getAmount();
         return new ReceivePackage(receivePackageGD.getId(), receivePackageGD.getBundleID(),
                 receivePackageGD.getReceiverZaloPayID(), receivePackageGD.getSenderZaloPayID(),
                 receivePackageGD.getSenderFullName(),
                 receivePackageGD.getSenderAvatar(),
                 receivePackageGD.getMessage(),
-                receivePackageGD.getAmount(),
+                amount == null ? 0 : amount,
                 openTime == null ? 0 : openTime,
                 isLuckiest == null ? 0 : isLuckiest,
                 createTime == null ? 0 : createTime,

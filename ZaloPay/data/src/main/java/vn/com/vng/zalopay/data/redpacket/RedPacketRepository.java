@@ -5,6 +5,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
@@ -132,25 +133,33 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                         Timber.d("Finished fetching ReceivePacketList for openTime [%s] count [%s]", openTime, count);
                         Observable<List<ReceivePackage>> obReceivePacket = mLocalStorage.getReceiveBundle(openTime, count);
                         Observable<GetReceivePacket> obGetReceivePacket = mLocalStorage.getReceivePacketSummary();
-                        Observable.zip(obReceivePacket, obGetReceivePacket, (receivePackages, getReceivePacket) ->
-                                new GetReceivePacket(getReceivePacket.totalofrevamount, getReceivePacket.totalofrevpackage,
-                                        getReceivePacket.numofluckiestdraw, receivePackages))
-                                .subscribe(new Observer<GetReceivePacket>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        subscriber.onCompleted();
-                                    }
+                        Observable.zip(obReceivePacket, obGetReceivePacket, (receivePackages, getReceivePacket) -> {
+                            long totalOfRevAmount = 0;
+                            int totalOfRevPackage = 0;
+                            int numOfLuckiestDraw = 0;
+                            if (getReceivePacket != null) {
+                                totalOfRevAmount = getReceivePacket.totalofrevamount;
+                                totalOfRevPackage = getReceivePacket.totalofrevpackage;
+                                numOfLuckiestDraw = getReceivePacket.numofluckiestdraw;
+                            }
+                            return new GetReceivePacket(totalOfRevAmount, totalOfRevPackage, numOfLuckiestDraw, receivePackages);
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        subscriber.onError(e);
-                                    }
+                        }).subscribe(new Observer<GetReceivePacket>() {
+                            @Override
+                            public void onCompleted() {
+                                subscriber.onCompleted();
+                            }
 
-                                    @Override
-                                    public void onNext(GetReceivePacket getReceivePacket) {
-                                        subscriber.onNext(getReceivePacket);
-                                    }
-                                });
+                            @Override
+                            public void onError(Throwable e) {
+                                subscriber.onError(e);
+                            }
+
+                            @Override
+                            public void onNext(GetReceivePacket getReceivePacket) {
+                                subscriber.onNext(getReceivePacket);
+                            }
+                        });
                     }).subscribe(new DefaultSubscriber<>());
                 }
             });
@@ -195,13 +204,12 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         mRequestService.getReceivedPackageList(openedTime, count, sortOrder, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToGetRevPacket)
                 .doOnNext(this::insertRevPacketSummary)
-//                .map(mDataMapper::transformToReceivePackages)
                 .doOnNext(this::insertReceivePackages)
                 .doOnNext(getReceivePacket -> {
                     subscriber.onNext(true);
                     if (getReceivePacket == null ||
-                            getReceivePacket.revpackageList == null &&
-                                    getReceivePacket.revpackageList.size() < count) {
+                            getReceivePacket.revpackageList == null ||
+                            getReceivePacket.revpackageList.size() < count) {
                         subscriber.onCompleted();
                     } else {
                         List<ReceivePackage> receivePackages = getReceivePacket.revpackageList;
@@ -307,11 +315,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
 
         Timber.d("Last open time: %s, %s, %s", lastOpenTime, System.currentTimeMillis(), System.currentTimeMillis() - lastOpenTime);
-        if (lastOpenTime + 1000 * 60 * 60 * 24 > System.currentTimeMillis()) {
-            return true;
-        }
-
-        return false;
+        return lastOpenTime + 1000 * 60 * 60 * 24 > System.currentTimeMillis();
 
     }
 
@@ -351,13 +355,11 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return mRequestService.getSentBundleList(0, LIMIT_ITEMS_PER_REQ, ORDER, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToSentBundleSummary)
                 .doOnNext(this::insertSentBundleSummary)
-                .doOnNext(getSentBundle -> {
-                    insertSentBundles(getSentBundle);
-                });
+                .doOnNext(this::insertSentBundles);
     }
 
     private boolean shouldGetSentBundleSummaryServer() {
-        return true;
+        return !mLocalStorage.isHaveSentBundleSunmmaryInDb();
     }
 
     @Override
@@ -376,9 +378,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return mRequestService.getReceivedPackageList(0, LIMIT_ITEMS_PER_REQ, ORDER, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToGetRevPacket)
                 .doOnNext(this::insertRevPacketSummary)
-                .doOnNext(getReceivePacket -> {
-                    insertReceivePackages(getReceivePacket);
-                });
+                .doOnNext(this::insertReceivePackages);
     }
 
     private void insertRevPacketSummary(GetReceivePacket getReceivePacket) {
@@ -391,7 +391,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     private boolean shouldGetRevPacketSummaryServer() {
-        return true;
+        return !mLocalStorage.isHaveRevPacketSunmmaryInDb();
     }
 
     @Override
@@ -446,24 +446,34 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                         Timber.d("Finished fetching SentBundleList for timeCreate [%s] count [%s]", timeCreate, count);
                         Observable<List<SentBundle>> obSentBundles = mLocalStorage.getSentBundle(timeCreate, count);
                         Observable<GetSentBundle> obGetSentBundle = mLocalStorage.getSentBundleSummary();
-                        Observable.zip(obSentBundles, obGetSentBundle, (sentBundles, getSentBundle) ->
-                                new GetSentBundle(getSentBundle.totalofsentamount, getSentBundle.totalofsentbundle, sentBundles))
-                                .subscribe(new Observer<GetSentBundle>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        subscriber.onCompleted();
-                                    }
+                        Observable.zip(obSentBundles, obGetSentBundle, new Func2<List, GetSentBundle, GetSentBundle>() {
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        subscriber.onError(e);
-                                    }
+                            @Override
+                            public GetSentBundle call(List sentBundles, GetSentBundle getSentBundle) {
+                                long totalOfSentAmount = 0;
+                                int totalOfSentBundle = 0;
+                                if (getSentBundle != null) {
+                                    totalOfSentAmount = getSentBundle.totalofsentamount;
+                                    totalOfSentBundle = getSentBundle.totalofsentbundle;
+                                }
+                                return new GetSentBundle(totalOfSentAmount, totalOfSentBundle, sentBundles);
+                            }
+                        }).subscribe(new Observer<GetSentBundle>() {
+                            @Override
+                            public void onCompleted() {
+                                subscriber.onCompleted();
+                            }
 
-                                    @Override
-                                    public void onNext(GetSentBundle getSentBundle) {
-                                        subscriber.onNext(getSentBundle);
-                                    }
-                                });
+                            @Override
+                            public void onError(Throwable e) {
+                                subscriber.onError(e);
+                            }
+
+                            @Override
+                            public void onNext(GetSentBundle getSentBundle) {
+                                subscriber.onNext(getSentBundle);
+                            }
+                        });
                     }).subscribe(new DefaultSubscriber<>());
                 }
             });
@@ -512,8 +522,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                 .doOnNext(getSentBundle -> {
                     subscriber.onNext(true);
                     if (getSentBundle == null ||
-                            getSentBundle.sentbundlelist == null &&
-                                    getSentBundle.sentbundlelist.size() < count) {
+                            getSentBundle.sentbundlelist == null ||
+                            getSentBundle.sentbundlelist.size() < count) {
                         subscriber.onCompleted();
                     } else {
                         List<SentBundle> sentBundles = getSentBundle.sentbundlelist;
