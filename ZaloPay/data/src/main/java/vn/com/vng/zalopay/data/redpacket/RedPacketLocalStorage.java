@@ -61,7 +61,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<GetSentBundle> getSentBundleSummary() {
         return ObservableHelper.makeObservable(this::querySentBundleSummary)
-                .doOnNext(sentBundleSummary -> Timber.d("get %s", sentBundleSummary));
+                .doOnNext(sentBundleSummary -> Timber.d("getSentBundleSummary %s", sentBundleSummary));
     }
 
     @Override
@@ -168,19 +168,20 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<List<SentBundle>> getAllSentBundle() {
         return ObservableHelper.makeObservable(this::querySentBundleList)
-                .doOnNext(redPackageList -> Timber.d("get %s", redPackageList.size()));
+                .doOnNext(redPackageList -> Timber.d("getAllSentBundle size [%s]", redPackageList.size()));
     }
 
     @Override
     public Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit) {
         return ObservableHelper.makeObservable(() -> querySentBundleList(timeCreate, limit))
-                .doOnNext(redPackageList -> Timber.d("get %s", redPackageList.size()));
+                .doOnNext(redPackageList -> Timber.d("getSentBundle timeCreate [%s] limit [%s] size [%s]",
+                        timeCreate, limit, redPackageList.size()));
     }
 
     @Override
     public Observable<SentBundle> getSentBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> querySentBundle(bundleID))
-                .doOnNext(sentBundle -> Timber.d("get %s", sentBundle));
+                .doOnNext(sentBundle -> Timber.d("getSentBundle bundleID [%s] sentBundle [%s]", bundleID, sentBundle));
     }
 
     @Override
@@ -193,13 +194,14 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit) {
         return ObservableHelper.makeObservable(() -> querySentPackageList(bundleID, pageIndex, limit))
-                .doOnNext(sentPackageList -> Timber.d("get %s", sentPackageList.size()));
+                .doOnNext(sentPackageList -> Timber.d("getPackageInBundle bundleID [%s] pageIndex [%s] limit [%s] size [%s]",
+                        bundleID, pageIndex, limit, sentPackageList.size()));
     }
 
     @Override
     public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> querySentPackage(bundleID))
-                .doOnNext(sentPackage -> Timber.d("get %s", sentPackage));
+                .doOnNext(sentPackage -> Timber.d("getPackageInBundle bundleID [%s] sentPackage [%s]", bundleID, sentPackage));
     }
 
     @Override
@@ -294,19 +296,21 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<List<ReceivePackage>> getAllReceiveBundle() {
         return ObservableHelper.makeObservable(this::queryReceivePackageList)
-                .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
+                .doOnNext(receivePackageList -> Timber.d("getAllReceiveBundle size [%s]", receivePackageList.size()));
     }
 
     @Override
     public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
         return ObservableHelper.makeObservable(()-> queryReceivePackageList(openTime, limit))
-                .doOnNext(receivePackageList -> Timber.d("get %s", receivePackageList.size()));
+                .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
+                        openTime, limit, receivePackageList.size()));
     }
 
     @Override
     public Observable<ReceivePackage> getReceiveBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> queryReceivePackage(bundleID))
-                .doOnNext(receivePackage -> Timber.d("get %s", receivePackage));
+                .doOnNext(receivePackage -> Timber.d("getReceiveBundle bundleID [%s] receivePackage [%s]",
+                        bundleID, receivePackage));
     }
 
     @Override
