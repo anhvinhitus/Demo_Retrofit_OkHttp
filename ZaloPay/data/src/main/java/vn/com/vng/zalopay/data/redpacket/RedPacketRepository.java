@@ -116,7 +116,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return mRequestService.getReceivedPackageList(timeCreate, count, order, user.uid, user.accesstoken)
                 .map(mDataMapper::transformToGetRevPacket)
                 .doOnNext(this::insertRevPacketSummary)
-                //.map(mDataMapper::transformToReceivePackages)
                 .doOnNext(this::insertReceivePackages);
     }
 

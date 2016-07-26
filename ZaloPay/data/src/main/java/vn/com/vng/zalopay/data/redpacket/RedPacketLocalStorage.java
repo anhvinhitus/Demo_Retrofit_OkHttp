@@ -83,9 +83,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public void putReceivePacketSummary(ReceivePacketSummaryDB receivePacketSummaryDB) {
         if (receivePacketSummaryDB == null ||
-                receivePacketSummaryDB.getTotalOfLuckiestDraw() <= 0 ||
-                receivePacketSummaryDB.getTotalOfRevamount() <= 0 ||
-                receivePacketSummaryDB.getTotalOfRevPackage() <= 0) {
+                receivePacketSummaryDB.getTotalOfLuckiestDraw() < 0 ||
+                receivePacketSummaryDB.getTotalOfRevamount() < 0 ||
+                receivePacketSummaryDB.getTotalOfRevPackage() < 0) {
             return;
         }
         try {
@@ -102,7 +102,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<GetReceivePacket> getReceivePacketSummary() {
         return ObservableHelper.makeObservable(this::queryReceivePacketSummary)
-                .doOnNext(receivePacketSummary -> Timber.d("get %s", receivePacketSummary));
+                .doOnNext(receivePacketSummary -> Timber.d("getReceivePacketSummary %s", receivePacketSummary));
     }
 
     @Override
