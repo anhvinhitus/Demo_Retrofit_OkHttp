@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.remobile.toast.RCTToastPackage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -131,6 +132,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.asList(
                 new MainReactPackage(),
+                new RCTToastPackage(),
                 reactInternalPackage(),
                 new RNDeviceInfo());
     }
