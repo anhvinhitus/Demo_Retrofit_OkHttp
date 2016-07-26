@@ -104,6 +104,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         if (e instanceof BodyException) {
                             int errorCode = ((BodyException) e).errorCode;
                             String message = ((BodyException) e).message;
+                            Timber.w(e, "error on errorCode [%s] msg [%s]", errorCode, message);
                             errorCallback(promise, errorCode, message);
                         }
                     }

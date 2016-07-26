@@ -43,8 +43,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB) {
         if (sentBundleSummaryDB == null ||
-                sentBundleSummaryDB.getTotalOfSentAmount() <= 0 ||
-                sentBundleSummaryDB.getTotalOfSentBundle() <= 0) {
+                sentBundleSummaryDB.getTotalOfSentAmount() < 0 ||
+                sentBundleSummaryDB.getTotalOfSentBundle() < 0) {
             return;
         }
         try {
