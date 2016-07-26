@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
@@ -34,6 +35,7 @@ public class ReactInternalPackage implements ReactPackage {
     private TransactionStore.Repository mRepository;
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
+    private BalanceStore.Repository mBalanceRepository;
     private IRedPacketPayService paymentService;
     private AlertDialogProvider sweetAlertDialog;
 
@@ -49,17 +51,18 @@ public class ReactInternalPackage implements ReactPackage {
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
+                                BalanceStore.Repository balanceRepository,
                                 IRedPacketPayService paymentService,
                                 AlertDialogProvider sweetAlertDialog,
                                 INavigator navigator, ZPAnalytics zpAnalytics,
                                 EventBus eventBus,
                                 ReactNativeInstanceManager reactNativeInstanceManager,
-                                UserConfig userConfig
-                                ) {
+                                UserConfig userConfig) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
+        this.mBalanceRepository = balanceRepository;
         this.paymentService = paymentService;
         this.sweetAlertDialog = sweetAlertDialog;
         this.navigator = navigator;
@@ -76,7 +79,7 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
-        modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, paymentService, mUserConfig, sweetAlertDialog));
+        modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUserConfig, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));
         return modules;
     }

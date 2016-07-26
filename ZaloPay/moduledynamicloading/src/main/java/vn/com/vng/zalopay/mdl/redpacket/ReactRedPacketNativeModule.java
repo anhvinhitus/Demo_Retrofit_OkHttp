@@ -28,6 +28,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
@@ -54,6 +55,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     private UserConfig mUserConfig;
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
+    private BalanceStore.Repository mBalanceRepository;
     private final IRedPacketPayService mPaymentService;
     private AlertDialogProvider mDialogProvider;
 
@@ -65,12 +67,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
                                       RedPacketStore.Repository redPackageRepository,
                                       FriendStore.Repository friendRepository,
+                                      BalanceStore.Repository balanceRepository,
                                       IRedPacketPayService payService,
                                       UserConfig userConfig,
                                       AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
+        this.mBalanceRepository = balanceRepository;
         this.mPaymentService = payService;
         this.mDialogProvider = sweetAlertDialog;
         this.mUserConfig = userConfig;
@@ -146,6 +150,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 if (bundleOrder != null) {
                     data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
                 }
+                mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
                 successCallback(promise, data);
             }
 
@@ -305,6 +310,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         successCallback(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
+                        mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
                         isRunningGetTranStatus = false;
                     }
                 });
@@ -478,7 +484,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Timber.d("getSendBundleHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
-        Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int)count)
+        Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int) count)
                 .subscribe(new Observer<GetSentBundle>() {
                     @Override
                     public void onCompleted() {
@@ -507,7 +513,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Timber.d("getReceivePacketHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
-        Subscription subscription = mRedPackageRepository.getReceivePacketList((long)createTime, (int)count)
+        Subscription subscription = mRedPackageRepository.getReceivePacketList((long) createTime, (int) count)
                 .subscribe(new Observer<GetReceivePacket>() {
                     @Override
                     public void onCompleted() {

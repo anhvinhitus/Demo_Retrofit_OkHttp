@@ -21,6 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -72,6 +73,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     AlertDialogProvider sweetAlertDialog;
+
+    @Inject
+    BalanceStore.Repository mBalanceRepository;
 
     @Inject
     INavigator navigator;
@@ -140,9 +144,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected ReactPackage reactInternalPackage() {
         return new ReactInternalPackage(transactionRepository,
                 notificationRepository, redPackageRepository,
-                friendRepository, paymentService, sweetAlertDialog,
-                navigator, zpAnalytics, eventBus, mReactNativeInstanceManager,
-                mUserConfig);
+                friendRepository, mBalanceRepository, paymentService,
+                sweetAlertDialog, navigator, zpAnalytics, eventBus,
+                mReactNativeInstanceManager, mUserConfig);
     }
 
     private void createUserComponent() {
