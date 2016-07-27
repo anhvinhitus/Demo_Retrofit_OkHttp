@@ -104,12 +104,10 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         if (getSentBundle == null) {
             return;
         }
-        List<SentBundle> sentBundles = getSentBundle.sentbundlelist;
-        if (sentBundles == null || sentBundles.size() <= 0) {
-            return;
+        List<SentBundleGD> sentBundleGDList = mDataMapper.transformToSenBundleGD(getSentBundle.sentbundlelist);
+        if (sentBundleGDList != null) {
+            mLocalStorage.putSentBundle(sentBundleGDList);
         }
-        List<SentBundleGD> sentBundleGDList = mDataMapper.transformToSenBundleGD(sentBundles);
-        mLocalStorage.putSentBundle(sentBundleGDList);
     }
 
     @Override
@@ -189,12 +187,11 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         if (getReceivePacket == null) {
             return;
         }
-        List<ReceivePackage> receivePackages = getReceivePacket.revpackageList;
-        if (receivePackages == null || receivePackages.size() <= 0) {
-            return;
+
+        List<ReceivePackageGD> receivePackageGDs = mDataMapper.transformToRevPacketsDB(getReceivePacket.revpackageList);
+        if (receivePackageGDs != null) {
+            mLocalStorage.putReceivePackages(receivePackageGDs);
         }
-        List<ReceivePackageGD> receivePackageGDs = mDataMapper.transformToRevPacketsDB(receivePackages);
-        mLocalStorage.putReceivePackages(receivePackageGDs);
     }
 
   /*  @Override
@@ -253,9 +250,15 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                     }).subscribe(new DefaultSubscriber<>());
                 }
             });
+
         } else {
             return mLocalStorage.getPackageInBundle(bundleId);
         }
+    }
+
+
+    private Observable<List<PackageInBundle>> getPacketsInBundleCache(long bundleId) {
+        return mLocalStorage.getPackageInBundle(bundleId);
     }
 
     private boolean shouldUpdatePacketsForBundle(long bundleId) {

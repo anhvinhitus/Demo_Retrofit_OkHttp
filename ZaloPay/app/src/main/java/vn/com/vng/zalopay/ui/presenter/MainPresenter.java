@@ -149,13 +149,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     PaymentWrapper paymentWrapper;
 
     public void pay(long appId, String zptranstoken) {
-       // showLoadingView();
+        showLoadingView();
         if (paymentWrapper == null) {
             paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
                 @Override
                 public Activity getActivity() {
                     if (homeView != null) {
-                        homeView.getActivity();
+                        return homeView.getActivity();
                     }
                     return null;
                 }

@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -112,7 +113,12 @@ public class PaymentWrapper {
     }
 
     private UserInfo getUserInfo() {
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
+
+        User user = null;
+        if (getUserComponent() != null) {
+            user = getUserComponent().currentUser();
+        }
+
         UserInfo mUserInfo = new UserInfo();
         if (user != null) {
             mUserInfo.zaloUserId = String.valueOf(user.zaloId);
@@ -141,7 +147,9 @@ public class PaymentWrapper {
             return;
         }
         Timber.d("payWithOrder: Order is valid");
+
         User user = AndroidApplication.instance().getUserComponent().currentUser();
+
         if (TextUtils.isEmpty(user.uid)) {
             Timber.i("payWithOrder: Uid is invalid");
             responseListener.onParameterError("uid");
@@ -225,18 +233,27 @@ public class PaymentWrapper {
     }
 
     private int getUserProfileLevel() {
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (user == null) {
-            return -1;
+        UserComponent userComponent = getUserComponent();
+        if (userComponent != null) {
+            return userComponent.currentUser().profilelevel;
         }
-        return user.profilelevel;
+        return -1;
+    }
+
+    private UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
     }
 
     private String getUserPermission() {
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (getUserComponent() == null) {
+            return null;
+        }
+
+        User user = getUserComponent().currentUser();
         if (user == null) {
             return null;
         }
+
         String permissionsStr = "{\"profilelevelpermisssion\":";
         permissionsStr += JsonUtil.toJsonArrayString(user.profilePermissions);
         permissionsStr += "}";

@@ -379,7 +379,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (presenter != null) {
             presenter.pay(event.appId, event.zptranstoken);
         }
-        eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
+        eventBus.removeStickyEvent(PaymentDataEvent.class);
     }
 
 }
