@@ -70,9 +70,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
+    // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
+    // when received notification
     private void getTotalNotification(long delay) {
         Subscription subscription = notificationRepository.totalNotificationUnRead()
-                .delay(delay, TimeUnit.MILLISECONDS)
+                .delaySubscription(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
         compositeSubscription.add(subscription);
@@ -131,6 +133,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
+        }
+
+        @Override
+        public void onCompleted() {
+            super.onCompleted();
+            Timber.d("notification subscription got complete signal");
         }
     }
 

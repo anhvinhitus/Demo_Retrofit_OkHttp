@@ -106,43 +106,22 @@ public class NotificationHelper {
 
     }
 
-  /*  public void create(Context context, int smallIcon, String contentTitle, String contentText) {
-        NotificationManager manager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setContentTitle(contentTitle)
-                .setContentText(contentText)
-                .setAutoCancel(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
-            builder.setLargeIcon(bm);
-            builder.setSmallIcon(R.drawable.ic_notify);
-        } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
-        }
-
-        Notification n = builder.build();
-        manager.notify(0, n);
-    }*/
-
     public void processNotification(NotificationData notify) {
         if (notify == null) {
             return;
         }
 
-        if (NotificationType.isTransactionNotification(notify.getNotificationType())) {
+        int notificationType = notify.getNotificationType();
+        if (NotificationType.isTransactionNotification(notificationType)) {
             this.updateTransaction();
             this.updateBalance();
         }
 
-        int notificationType = notify.getNotificationType();
         if (NotificationType.shouldMarkRead(notificationType)) {
             notify.setRead(true);
         }
 
-        if (notify.getNotificationType() == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
+        if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             try {
                 JsonObject embeddata = notify.embeddata;
                 if (embeddata != null) {
@@ -155,7 +134,7 @@ public class NotificationHelper {
             } catch (Exception ex) {
                 Timber.e(ex, "exception");
             }
-        } else if (notify.getNotificationType() == NotificationType.SEND_RED_PACKET) {
+        } else if (notificationType == NotificationType.SEND_RED_PACKET) {
             // Process received red packet
             // {"userid":"160526000000502","destuserid":"160601000000002","message":"Nguyễn Hữu Hoà đã lì xì cho bạn.","zaloMessage":"da gui li xi cho ban. Vui long vao ... de nhan li xi.","embeddata":{"bundleid":160722000000430,"packageid":1607220000004300001,"avatar":"http://avatar.talk.zdn.vn/e/d/e/2/4/75/f1898a0a0a3f05bbb11088cb202d1c02.jpg","name":"Nguyễn Hữu Hoà","liximessage":"Best wishes."},"timestamp":1469190991786,"notificationtype":103}
             extractRedPacketFromNotification(notify);
@@ -197,21 +176,22 @@ public class NotificationHelper {
     }
 
     private void showNotification(NotificationData event) {
-        if (!event.read) {
-            String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
-            String title = context.getString(R.string.app_name);
-
-
-            int notificationType = event.getNotificationType();
-
-            int notificationId = this.getNotificationIdSystem(notificationType);
-            Intent intent = this.intentByNotificationType(notificationType);
-
-            create(context, notificationId,
-                    intent,
-                    R.mipmap.ic_launcher,
-                    title, message);
+        if (event.read) {
+            return;
         }
+
+        String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
+        String title = context.getString(R.string.app_name);
+
+        int notificationType = event.getNotificationType();
+
+        int notificationId = this.getNotificationIdSystem(notificationType);
+        Intent intent = this.intentByNotificationType(notificationType);
+
+        create(context, notificationId,
+                intent,
+                R.mipmap.ic_launcher,
+                title, message);
     }
 
 
