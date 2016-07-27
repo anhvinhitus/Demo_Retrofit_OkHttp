@@ -127,7 +127,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
         @Override
         public void onNext(Integer integer) {
-            Timber.d("NotificationSubscriber %s", integer);
+            Timber.d("Got total %s unread notification messages", integer);
             if (mZaloPayView != null) {
                 mZaloPayView.setTotalNotify(integer);
             }
