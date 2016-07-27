@@ -20,8 +20,6 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.Arrays;
 import java.util.List;
 
-import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -32,8 +30,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
-import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
@@ -98,26 +94,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                                            final Promise promise) {
         Subscription subscription =
                 mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
-                        .subscribe(new DefaultSubscriber<BundleOrder>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
+                        .subscribe(new RedPacketSubscriber<BundleOrder>(promise) {
 
                             @Override
                             public void onError(Throwable e) {
                                 Timber.w(e, "error on getting CreateBundleOrderSubscriber");
-                                if (e instanceof BodyException) {
-                                    int errorCode = ((BodyException) e).errorCode;
-                                    String message = ((BodyException) e).message;
-                                    Timber.w(e, "error on errorCode [%s] msg [%s]", errorCode, message);
-                                    errorCallback(promise, errorCode, message);
-                                } else if (e instanceof NetworkConnectionException) {
-                                    int errorCode = PaymentError.ERR_CODE_INTERNET;
-                                    String message = PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET);
-                                    Timber.w(e, "error on errorCode [%s] msg [%s]", errorCode, message);
-                                    errorCallback(promise, errorCode, message);
-                                }
+                                super.onError(e);
                             }
 
                             @Override
@@ -159,9 +141,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             public void onResponseSuccess(Bundle bundle) {
                 Timber.d("pay onResponseSuccess bundle [%s]", bundle);
                 WritableMap data = Arguments.createMap();
-                if (bundleOrder != null) {
-                    data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
-                }
+                data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
                 mBalanceRepository.updateBalance();
                 successCallback(promise, data);
             }
@@ -174,7 +154,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseCancel() {
                 Timber.d("pay onResponseCancel");
-                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL,
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
             }
 
             @Override
@@ -204,20 +185,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         return aBoolean;
                     }
                 })
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new RedPacketSubscriber<Boolean>(promise) {
 
                     @Override
                     public void onError(Throwable e) {
                         Timber.w(e, "error on getting SubmitToSendSubscriber");
-                        if (e instanceof BodyException) {
-                            int errorCode = ((BodyException) e).errorCode;
-                            String message = ((BodyException) e).message;
-                            errorCallback(promise, errorCode, message);
-                        }
+                        super.onError(e);
                     }
 
                     @Override
@@ -248,19 +221,10 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onFinish() {
                 Timber.d("GetTranStatus onFinish");
-                //hideLoading();
                 showDialogRetryGetTranStatus(packageId, zpTransId, promise);
             }
         }.start();
     }
-//
-//    private void showLoading() {
-//        mDialogProvider.showLoading(getCurrentActivity());
-//    }
-//
-//    private void hideLoading() {
-//        mDialogProvider.hideLoading();
-//    }
 
     private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("showDialogRetryGetTranStatus packageId [%s] zpTransId [%s]", packageId, zpTransId);
@@ -301,10 +265,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<PackageStatus>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
 
                     @Override
                     public void onError(Throwable e) {
@@ -318,7 +278,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         if (mTimerGetTranStatus != null) {
                             mTimerGetTranStatus.cancel();
                         }
-                        //hideLoading();
                         successCallback(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
@@ -349,23 +308,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<SubmitOpenPackage>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new RedPacketSubscriber<SubmitOpenPackage>(promise) {
 
                     @Override
                     public void onError(Throwable e) {
                         Timber.w(e, "error on openPacket");
-                        //hideLoading();
-                        if (e instanceof BodyException) {
-                            int errorCode = ((BodyException) e).errorCode;
-                            String message = ((BodyException) e).message;
-                            errorCallback(promise, errorCode, message);
-                        } else {
-                            errorCallback(promise, PaymentError.ERR_CODE_UNKNOWN, null);
-                        }
+                        super.onError(e);
                     }
 
                     @Override
@@ -404,15 +352,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             Timber.d("packetId: %d", packetIdValue);
             Subscription subscription = mRedPackageRepository.getReceivedPacket(packetIdValue)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new Subscriber<ReceivePackage>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
+                    .subscribe(new RedPacketSubscriber<ReceivePackage>(promise) {
 
                         @Override
                         public void onError(Throwable e) {
-                            promise.reject("EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+                            super.onError(e);
                         }
 
                         @Override
@@ -427,7 +371,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-
     @ReactMethod
     public void getPacketsFromBundle(String strBundleID, final Promise promise) {
         Timber.d("getPackageInBundle strBundleID [%s]", strBundleID);
@@ -439,16 +382,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             long bundleId = Long.parseLong(strBundleID);
             mRedPackageRepository.getPacketsInBundle(bundleId)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new Subscriber<List<PackageInBundle>>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
+                    .subscribe(new RedPacketSubscriber<List<PackageInBundle>>(promise) {
 
                         @Override
                         public void onError(Throwable e) {
                             Timber.w(e, "Exception while fetching packets");
-                            promise.reject("EXCEPTION", e.getMessage());
+                            super.onError(e);
                         }
 
                         @Override
@@ -467,28 +406,22 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void isPacketOpen(final String packetId, final Promise promise) {
         Timber.d("query open status for packet: %s", packetId);
-        Subscription subscription = mRedPackageRepository.isPacketOpen(packetId).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
+        Subscription subscription = mRedPackageRepository.isPacketOpen(packetId)
+                .subscribe(new RedPacketSubscriber<Boolean>(promise) {
 
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                WritableMap writableMap = Arguments.createMap();
-                writableMap.putInt("code", 0);
-                Timber.d(e, "Error while query packet open status");
-                promise.reject("-1", e.getMessage());
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                WritableMap writableMap = Arguments.createMap();
-                writableMap.putInt("code", aBoolean ? 1 : 0);
-                Timber.d("open status [%s] for packet: %s", aBoolean, packetId);
-                promise.resolve(writableMap);
-            }
-        });
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        WritableMap writableMap = Arguments.createMap();
+                        writableMap.putInt("code", aBoolean ? 1 : 0);
+                        Timber.d("open status [%s] for packet: %s", aBoolean, packetId);
+                        promise.resolve(writableMap);
+                    }
+                });
 
         compositeSubscription.add(subscription);
     }
@@ -497,19 +430,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Timber.d("getSendBundleHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int) count)
-                .subscribe(new Observer<GetSentBundle>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new RedPacketSubscriber<GetSentBundle>(promise) {
 
                     @Override
                     public void onError(Throwable e) {
                         Timber.d("getSendBundleHistoryWithTimeStamp onError");
-                        WritableMap writableMap = Arguments.createMap();
-                        writableMap.putInt("code", 0);
-                        Timber.d(e, "Error while get sent bundle");
-                        promise.reject("-1", e.getMessage());
+                        super.onError(e);
                     }
 
                     @Override
@@ -526,18 +452,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
         Timber.d("getReceivePacketHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPackageRepository.getReceivePacketList((long) createTime, (int) count)
-                .subscribe(new Observer<GetReceivePacket>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new RedPacketSubscriber<GetReceivePacket>(promise) {
 
                     @Override
                     public void onError(Throwable e) {
-                        WritableMap writableMap = Arguments.createMap();
-                        writableMap.putInt("code", 0);
-                        Timber.d(e, "Error while get receive packet");
-                        promise.reject("-1", e.getMessage());
+                        super.onError(e);
                     }
 
                     @Override
