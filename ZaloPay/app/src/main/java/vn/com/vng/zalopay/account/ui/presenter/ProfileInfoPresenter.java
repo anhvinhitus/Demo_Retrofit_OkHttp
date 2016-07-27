@@ -89,8 +89,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     private void getBalance() {
-        BalanceStore.Repository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
-        Subscription subscription = repository.balance()
+        Subscription subscription = balanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());

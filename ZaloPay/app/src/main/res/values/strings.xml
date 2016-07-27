@@ -126,7 +126,10 @@
     <!-- Link CARDS START-->
     <string name="link_card_title">Quy trình lưu thẻ</string>
     <string name="link_card_step_one">+ <u><b>Bước 1</b></u>: Nhập thông tin thẻ.</string>
-    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: Để kiểm tra tính hợp lệ của thẻ</string>
+
+    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: Để kiểm tra tính hợp lệ của thẻ, hệ thống Lưu thẻ của Zalo Pay sẽ thực hiện một giao dịch nạp 20.000 VND vào tài khoản Zalo Pay từ tài khoản thẻ.
+Sau khi giao dịch hoàn thành, thẻ của bạn sẽ được lưu thành công.</string>
+
     <string name="link_card_step_two_1">- Tài khoản thẻ của bạn bị trừ <font size='16'><b>20.000</b></font> <font size='12'>VND</font></string>
     <string name="link_card_step_two_2">- Tài khoản Zalo Pay của bạn được cộng <font size='16'><b>20.000</b></font> <font size='12'>VND</font> tương ứng</string>
     <string name="link_card_step_note">Khi hoàn tất, thẻ của bạn được lưu thành công.</string>
@@ -206,7 +209,8 @@
 
     <string name="deposit">Gửi tiền vào tài khoản</string>
 
-    <string name="notify.from.zalopay">Thông báo từ Zalo Pay</string>
+    <string name="notify.from.zalopay">Bạn nhận được tin nhắn từ Zalo Pay</string>
+    <string name="you.have.unread.messages">Bạn có %s thông báo chưa đọc.</string>
     <string name="not_update_phone">Chưa cập nhật SĐT</string>
 
     <string name="txt_no_data">Không có dữ liệu</string>
@@ -227,6 +231,6 @@
     <string name="accept.card">Chấp nhận thẻ</string>
     <string name="no.need.cash.anymore">Không Cần Tiền Mặt Nữa</string>
 
-    <string name="lbl_update_profile_3_page_2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
-    <string name="lbl_update_profile_3_page_1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
+    <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
+    <string name="lbl.update.profile.3.page.1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
 </resources>

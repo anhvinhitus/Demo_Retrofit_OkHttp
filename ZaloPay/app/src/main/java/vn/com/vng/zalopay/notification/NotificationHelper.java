@@ -16,6 +16,7 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -28,7 +29,6 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
-import vn.com.vng.zalopay.event.NotificationUpdatedEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -87,25 +87,6 @@ public class NotificationHelper {
         manager.notify(id, n);
     }
 
-    public void createStackNotification(Context context, int id, String groupId, Intent intent, int smallIcon, String contentTitle, String contentText) {
-        NotificationManager manager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        PendingIntent p = intent != null ? PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT) : null;
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setContentIntent(p)
-                .setContentTitle(contentTitle)
-                .setContentText(contentText)
-                .setSmallIcon(smallIcon)
-                .setGroup(groupId)
-                .setAutoCancel(true);
-
-        Notification n = builder.build();
-        manager.notify(id, n);
-
-    }
-
     public void processNotification(NotificationData notify) {
         if (notify == null) {
             return;
@@ -141,10 +122,8 @@ public class NotificationHelper {
         }
 
         notifyRepository.put(notify);
-        this.showNotification(notify);
 
-        NotificationUpdatedEvent event = new NotificationUpdatedEvent();
-        AndroidApplication.instance().getAppComponent().eventBus().post(event);
+        this.showNotificationSystem(notify);
     }
 
     private void extractRedPacketFromNotification(NotificationData data) {
@@ -164,7 +143,7 @@ public class NotificationHelper {
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<>());
         } catch (Exception ex) {
-            Timber.e(ex, "exception");
+            Timber.e(ex, "Extract RedPacket error");
         }
     }
 
@@ -192,6 +171,41 @@ public class NotificationHelper {
                 intent,
                 R.mipmap.ic_launcher,
                 title, message);
+    }
+
+    private void showNotificationSystem(NotificationData notify) {
+        if (notify.read) {
+            return;
+        }
+        notifyRepository.totalNotificationUnRead()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NotificationSubscriber());
+
+    }
+
+    private void showNotificationSystem(int numberUnread) {
+        String title = context.getString(R.string.app_name);
+        String message = String.format(context.getString(R.string.you_have_unread_messages), numberUnread);
+        int notificationId = 200;
+        Intent intent = navigator.intentHomeActivity(context, false);
+
+        this.create(context, notificationId,
+                intent,
+                R.mipmap.ic_launcher,
+                title, message);
+    }
+
+    private class NotificationSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override
+        public void onNext(Integer integer) {
+            showNotificationSystem(integer);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.w(e, "Show notify error");
+        }
     }
 
 
@@ -225,6 +239,7 @@ public class NotificationHelper {
 
     public void closeNotificationSystem(long notifyId) {
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        nm.cancelAll();
         // nm.cancel(getNotificationIdSystem(notifyType));
     }
 

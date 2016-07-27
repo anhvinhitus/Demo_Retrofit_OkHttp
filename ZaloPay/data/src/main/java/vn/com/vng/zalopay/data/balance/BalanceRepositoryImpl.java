@@ -29,7 +29,7 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     @Override
     public Observable<Long> balance() {
-        return Observable.merge(balanceLocal(), updateBalance());
+        return Observable.mergeDelayError(balanceLocal(), updateBalance());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
                     mLocalStorage.putBalance(response.zpwbalance);
                     mEventBus.post(new ChangeBalanceEvent(response.zpwbalance));
                 })
-                .map(balanceResponse1 -> balanceResponse1.zpwbalance);
+                .map(response -> response.zpwbalance);
     }
 
     public Long currentBalance() {
