@@ -33,7 +33,9 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
@@ -96,33 +98,38 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                                            final Promise promise) {
         Subscription subscription =
                 mRedPackageRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
-                .subscribe(new DefaultSubscriber<BundleOrder>() {
-                    @Override
-                    public void onCompleted() {
+                        .subscribe(new DefaultSubscriber<BundleOrder>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.w(e, "error on getting CreateBundleOrderSubscriber");
-                        if (e instanceof BodyException) {
-                            int errorCode = ((BodyException) e).errorCode;
-                            String message = ((BodyException) e).message;
-                            Timber.w(e, "error on errorCode [%s] msg [%s]", errorCode, message);
-                            errorCallback(promise, errorCode, message);
-                        }
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.w(e, "error on getting CreateBundleOrderSubscriber");
+                                if (e instanceof BodyException) {
+                                    int errorCode = ((BodyException) e).errorCode;
+                                    String message = ((BodyException) e).message;
+                                    Timber.w(e, "error on errorCode [%s] msg [%s]", errorCode, message);
+                                    errorCallback(promise, errorCode, message);
+                                } else if (e instanceof NetworkConnectionException) {
+                                    int errorCode = PaymentError.ERR_CODE_INTERNET;
+                                    String message = PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET);
+                                    Timber.w(e, "error on errorCode [%s] msg [%s]", errorCode, message);
+                                    errorCallback(promise, errorCode, message);
+                                }
+                            }
 
-                    @Override
-                    public void onNext(BundleOrder bundleOrder) {
-                        Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
-                        if (bundleOrder == null) {
-                            errorCallback(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
-                        } else {
-                            pay(bundleOrder, promise);
-                        }
-                    }
-                });
+                            @Override
+                            public void onNext(BundleOrder bundleOrder) {
+                                Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
+                                if (bundleOrder == null) {
+                                    errorCallback(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
+                                } else {
+                                    pay(bundleOrder, promise);
+                                }
+                            }
+                        });
         compositeSubscription.add(subscription);
     }
 
@@ -140,7 +147,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseError(int status) {
                 Timber.d("pay onResponseError status [%s]", status);
-                errorCallback(promise, status, PaymentError.getErrorMessage(status));
+                if (!NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
+                    errorCallback(promise, PaymentError.ERR_CODE_INTERNET,
+                            PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+                } else {
+                    errorCallback(promise, status, PaymentError.getErrorMessage(status));
+                }
             }
 
             @Override
