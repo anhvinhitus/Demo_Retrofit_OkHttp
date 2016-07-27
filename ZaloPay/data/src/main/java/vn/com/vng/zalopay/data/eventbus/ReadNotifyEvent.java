@@ -5,10 +5,9 @@ package vn.com.vng.zalopay.data.eventbus;
  */
 public class ReadNotifyEvent {
     public long notificationId;
-    public int notificationType;
 
-    public ReadNotifyEvent(long notificationId, int notificationType) {
+    public ReadNotifyEvent(long notificationId) {
         this.notificationId = notificationId;
-        this.notificationType = notificationType;
     }
+
 }

@@ -128,7 +128,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         @Override
         public void onNext(Integer integer) {
             Timber.d("NotificationSubscriber %s", integer);
-            mZaloPayView.setTotalNotify(integer);
+            if (mZaloPayView != null) {
+                mZaloPayView.setTotalNotify(integer);
+            }
         }
 
         @Override

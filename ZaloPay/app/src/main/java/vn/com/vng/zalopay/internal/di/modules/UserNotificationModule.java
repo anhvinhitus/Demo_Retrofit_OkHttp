@@ -26,30 +26,23 @@ public class UserNotificationModule {
 
     @UserScope
     @Provides
-    NotificationStore.LocalStorage provideNotificationLocalStorage(@Named("daosession") DaoSession session, User user, EventBus eventBus) {
-        return new NotificationLocalStorage(session, user, eventBus);
+    NotificationStore.LocalStorage provideNotificationLocalStorage(@Named("daosession") DaoSession session, User user) {
+        return new NotificationLocalStorage(session, user);
     }
 
     @UserScope
     @Provides
-    NotificationStore.Repository providesNotificationRepository(NotificationStore.LocalStorage storage) {
-        return new NotificationRepository(storage);
+    NotificationStore.Repository providesNotificationRepository(NotificationStore.LocalStorage storage, EventBus eventBus) {
+        return new NotificationRepository(storage, eventBus);
     }
 
     @UserScope
     @Provides
     NotificationHelper providesNotificationHelper(Context context,
-                                                  NotificationStore.LocalStorage localStorage,
                                                   AccountStore.Repository repository,
+                                                  NotificationStore.Repository notifyRepository,
                                                   RedPacketStore.Repository redPacketRepository
-                                                  ) {
-        return new NotificationHelper(context, localStorage, repository, redPacketRepository);
+    ) {
+        return new NotificationHelper(context, notifyRepository, repository, redPacketRepository);
     }
-
-
-   /* @Provides
-    @UserScope
-    NotificationStore.RequestService providesNotificationStoreService(@Named("retrofitApi") Retrofit retrofit) {
-        return null;
-    }*/
 }

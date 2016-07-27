@@ -166,7 +166,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onReadNotify(ReadNotifyEvent event) {
-        notificationHelper.closeNotificationByType(event.notificationType);
+       notificationHelper.closeNotificationSystem(event.notificationId);
     }
 
 

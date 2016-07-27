@@ -226,4 +226,7 @@
     <string name="cancel">Huỷ</string>
     <string name="accept.card">Chấp nhận thẻ</string>
     <string name="no.need.cash.anymore">Không Cần Tiền Mặt Nữa</string>
+
+    <string name="lbl_update_profile_3_page_2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
+    <string name="lbl_update_profile_3_page_1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
 </resources>

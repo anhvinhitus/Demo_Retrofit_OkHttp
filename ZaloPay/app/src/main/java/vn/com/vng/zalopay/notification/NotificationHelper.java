@@ -40,16 +40,16 @@ public class NotificationHelper {
 
     final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
-    final NotificationStore.LocalStorage notificationStore;
+    final NotificationStore.Repository notifyRepository;
     final AccountStore.Repository accountRepository;
     final Context context;
     final RedPacketStore.Repository mRedPacketRepository;
 
     public NotificationHelper(Context applicationContext,
-                              NotificationStore.LocalStorage notificationStore,
+                              NotificationStore.Repository notifyRepository,
                               AccountStore.Repository accountRepository,
                               RedPacketStore.Repository redPacketRepository) {
-        this.notificationStore = notificationStore;
+        this.notifyRepository = notifyRepository;
         this.context = applicationContext;
         this.accountRepository = accountRepository;
         this.mRedPacketRepository = redPacketRepository;
@@ -140,7 +140,7 @@ public class NotificationHelper {
             extractRedPacketFromNotification(notify);
         }
 
-        notificationStore.put(notify);
+        notifyRepository.put(notify);
         this.showNotification(notify);
 
         NotificationUpdatedEvent event = new NotificationUpdatedEvent();
@@ -185,7 +185,7 @@ public class NotificationHelper {
 
         int notificationType = event.getNotificationType();
 
-        int notificationId = this.getNotificationIdSystem(notificationType);
+        int notificationId = this.getNotificationSystemId(notificationType);
         Intent intent = this.intentByNotificationType(notificationType);
 
         create(context, notificationId,
@@ -195,7 +195,7 @@ public class NotificationHelper {
     }
 
 
-    private int getNotificationIdSystem(int notifyType) {
+    private int getNotificationSystemId(int notifyType) {
         int notificationId = 100;
 
         if (NotificationType.isTransactionNotification(notifyType)) {
@@ -203,7 +203,7 @@ public class NotificationHelper {
         } else if (NotificationType.isProfileNotification(notifyType)) {
             notificationId = 2;
         } else if (NotificationType.isRedPacket(notifyType)) {
-            notificationId = 3;
+            notificationId = 103;
         }
 
         return notificationId;
@@ -223,9 +223,9 @@ public class NotificationHelper {
         return intent;
     }
 
-    public void closeNotificationByType(int notifyType) {
+    public void closeNotificationSystem(long notifyId) {
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
-        nm.cancel(getNotificationIdSystem(notifyType));
+        // nm.cancel(getNotificationIdSystem(notifyType));
     }
 
 
