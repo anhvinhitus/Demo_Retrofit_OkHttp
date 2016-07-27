@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.data;
 
-import java.util.HashMap;
-
 /**
  * Created by longlv on 27/07/2016.
- * convert form enum LixiStatusEnum of bangdq
+ * Convert from LixiStatusEnum which created by bangdq
  */
 
 public enum RedPacketNetworkErrorEnum {
@@ -127,13 +125,6 @@ public enum RedPacketNetworkErrorEnum {
     FRIENDS_MORE_THAN_PACKAGE(-89);
 
     private final int value;
-    private static final HashMap<Integer, RedPacketNetworkErrorEnum> returnMap = new HashMap();
-
-    static {
-        for (RedPacketNetworkErrorEnum returnCodeEnum : RedPacketNetworkErrorEnum.values()) {
-            returnMap.put(returnCodeEnum.value, returnCodeEnum);
-        }
-    }
 
     RedPacketNetworkErrorEnum(int value) {
         this.value = value;
@@ -141,10 +132,6 @@ public enum RedPacketNetworkErrorEnum {
 
     public int getValue() {
         return value;
-    }
-
-    public static RedPacketNetworkErrorEnum fromInt(int iValue) {
-        return returnMap.get(iValue);
     }
 
 }

@@ -96,7 +96,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Override
     public void onPause() {
-        Timber.d("onPause++++++++++++++++++");
+        Timber.d("onPause");
         super.onPause();
         if (eventBus.isRegistered(this)) {
             eventBus.unregister(this);

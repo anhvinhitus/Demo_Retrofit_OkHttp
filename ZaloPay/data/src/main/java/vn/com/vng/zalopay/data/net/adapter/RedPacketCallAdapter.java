@@ -86,19 +86,5 @@ final class RedPacketCallAdapter implements CallAdapter<Observable<?>> {
         } else {
             return Observable.error(new BodyException(body.err, body.message));
         }
-//        if (baseResponse.isSessionExpired()) {
-//            EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
-//            return Observable.error(new TokenException());
-//        } else if (baseResponse.isServerMaintain()) {
-//            EventBus.getDefault().post(new ServerMaintainEvent());
-//            return Observable.error(new ServerMaintainException());
-//        } else if (baseResponse.isInvitationCode()) {
-//            return Observable.error(new InvitationCodeException(body.err, body));
-//        } else if (baseResponse.isAccountSuspended()) {
-//            return Observable.error(new AccountSuspendedException());
-//        } else {
-//            return Observable.error(new BodyException(body.err, body.message));
-//        }
-//        return Observable.error(new BodyException(body.err, body.message));
     }
 }
