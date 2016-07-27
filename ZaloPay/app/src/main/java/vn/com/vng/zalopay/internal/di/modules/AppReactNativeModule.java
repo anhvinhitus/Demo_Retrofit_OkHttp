@@ -41,15 +41,14 @@ public class AppReactNativeModule {
 
         StringBuilder builder = new StringBuilder();
         if (BuildConfig.DEBUG) {
-            builder.append(Environment.getExternalStorageDirectory().getAbsolutePath());
+            builder.append(context.getExternalFilesDir(null));
         } else {
             builder.append(context.getFilesDir().getAbsolutePath());
+            builder.append(File.separator)
+                    .append(context.getPackageName());
         }
-
         builder.append(File.separator)
-                .append(context.getPackageName())
-                .append(File.separator)
-                .append("bundles");
+               .append("bundles");
 
         Timber.d("rootbundle %s", builder.toString());
 
