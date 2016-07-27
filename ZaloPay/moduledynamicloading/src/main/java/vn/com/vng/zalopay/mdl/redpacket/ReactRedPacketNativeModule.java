@@ -115,7 +115,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(BundleOrder bundleOrder) {
-                        Timber.d("onNext bundleOrder [%s]", bundleOrder);
+                        Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
                         if (bundleOrder == null) {
                             errorCallback(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
                         } else {
@@ -133,41 +133,41 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         mPaymentService.pay(getCurrentActivity(), bundleOrder, new IRedPacketPayListener() {
             @Override
             public void onParameterError(String param) {
-                Timber.d("onParameterError");
+                Timber.w("pay onParameterError");
                 errorCallback(promise, PaymentError.ERR_CODE_INPUT, param);
             }
 
             @Override
             public void onResponseError(int status) {
-                Timber.d("onResponseError status [%s]", status);
+                Timber.d("pay onResponseError status [%s]", status);
                 errorCallback(promise, status, PaymentError.getErrorMessage(status));
             }
 
             @Override
             public void onResponseSuccess(Bundle bundle) {
-                Timber.d("onResponseSuccess bundle [%s]", bundle);
+                Timber.d("pay onResponseSuccess bundle [%s]", bundle);
                 WritableMap data = Arguments.createMap();
                 if (bundleOrder != null) {
                     data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
                 }
-                mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
+                mBalanceRepository.updateBalance();
                 successCallback(promise, data);
             }
 
             @Override
             public void onResponseTokenInvalid() {
-
+                Timber.d("pay onResponseTokenInvalid");
             }
 
             @Override
             public void onResponseCancel() {
-                Timber.d("onResponseCancel");
+                Timber.d("pay onResponseCancel");
                 errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
             }
 
             @Override
             public void onNotEnoughMoney() {
-
+                Timber.d("pay onNotEnoughMoney");
             }
         });
     }
@@ -210,7 +210,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(Boolean result) {
-                        Timber.d("onNext result [%s]", result);
+                        Timber.d("SubmitToSendSubscriber onNext result [%s]", result);
                         WritableMap writableMap = Arguments.createMap();
                         writableMap.putBoolean("result", result);
                         successCallback(promise, writableMap);
@@ -229,13 +229,13 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         mTimerGetTranStatus = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Timber.d("onTick");
+                Timber.d("GetTranStatus onTick");
                 getpackagestatus(packageId, zpTransId, promise);
             }
 
             @Override
             public void onFinish() {
-                Timber.d("onFinish");
+                Timber.d("GetTranStatus onFinish");
                 //hideLoading();
                 showDialogRetryGetTranStatus(packageId, zpTransId, promise);
             }
@@ -251,7 +251,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 //    }
 
     private void showDialogRetryGetTranStatus(final long packageId, final long zpTransId, final Promise promise) {
-        Timber.d("showDialogRetryGetTranStatus start");
+        Timber.d("showDialogRetryGetTranStatus packageId [%s] zpTransId [%s]", packageId, zpTransId);
         if (getCurrentActivity() == null) {
             return;
         }
@@ -310,7 +310,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         successCallback(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
-                        mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
+                        mBalanceRepository.updateBalance();
                         isRunningGetTranStatus = false;
                     }
                 });
@@ -318,7 +318,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void openPacket(String strPackageID, String strBundleID, final Promise promise) {
-        Timber.d("openPacket start");
+        Timber.d("openPacket strPackageID [%s] strBundleID [%s]", strBundleID, strBundleID);
         final long packageID;
         final long bundleID;
         try {
@@ -329,7 +329,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             errorCallback(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
-        Timber.d("openPacket packageID [%s] bundleID [%s]", packageID, bundleID);
+        Timber.d("openPacket after cast packageID [%s] bundleID [%s]", packageID, bundleID);
         if (packageID <= 0 || bundleID <= 0) {
             errorCallback(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
@@ -358,7 +358,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(SubmitOpenPackage submitOpenPackage) {
-                        Timber.d("openPacket %s", submitOpenPackage);
+                        Timber.d("openPacket onNext [%s]", submitOpenPackage);
                         startTaskGetTransactionStatus(submitOpenPackage.packageID, submitOpenPackage.zpTransID, promise);
                     }
                 });
