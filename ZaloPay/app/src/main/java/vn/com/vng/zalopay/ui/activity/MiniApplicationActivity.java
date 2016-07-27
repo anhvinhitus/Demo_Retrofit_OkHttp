@@ -97,13 +97,17 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Override
     public void onPause() {
         super.onPause();
-        eventBus.unregister(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.unregister(this);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        eventBus.register(this);
+        if (eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
 
