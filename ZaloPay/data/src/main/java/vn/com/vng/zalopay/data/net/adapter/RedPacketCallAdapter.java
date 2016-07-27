@@ -13,14 +13,11 @@ import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Scheduler;
+import vn.com.vng.zalopay.data.RedPacketNetworkErrorEnum;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
-import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
-import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 
 /**
@@ -83,6 +80,12 @@ final class RedPacketCallAdapter implements CallAdapter<Observable<?>> {
 
     @NonNull
     private <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
+        if (baseResponse.err == RedPacketNetworkErrorEnum.INVALID_ACCESS_TOKEN.getValue()) {
+            EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
+            return Observable.error(new TokenException());
+        } else {
+            return Observable.error(new BodyException(body.err, body.message));
+        }
 //        if (baseResponse.isSessionExpired()) {
 //            EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
 //            return Observable.error(new TokenException());
@@ -96,6 +99,6 @@ final class RedPacketCallAdapter implements CallAdapter<Observable<?>> {
 //        } else {
 //            return Observable.error(new BodyException(body.err, body.message));
 //        }
-        return Observable.error(new BodyException(body.err, body.message));
+//        return Observable.error(new BodyException(body.err, body.message));
     }
 }

@@ -96,16 +96,18 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Override
     public void onPause() {
+        Timber.d("onPause++++++++++++++++++");
         super.onPause();
-        if (!eventBus.isRegistered(this)) {
+        if (eventBus.isRegistered(this)) {
             eventBus.unregister(this);
         }
     }
 
     @Override
     public void onResume() {
+        Timber.d("onResume");
         super.onResume();
-        if (eventBus.isRegistered(this)) {
+        if (!eventBus.isRegistered(this)) {
             eventBus.register(this);
         }
     }
@@ -188,12 +190,15 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
+        Timber.d("onTokenExpired");
         getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpiredMain(TokenExpiredEvent event) {
+        Timber.d("onTokenExpiredMain");
         showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe
