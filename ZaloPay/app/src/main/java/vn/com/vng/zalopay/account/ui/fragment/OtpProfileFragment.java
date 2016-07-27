@@ -195,7 +195,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     }
 
     @Subscribe
-    void onReceiveSmsMessages(ReceiveSmsEvent event) {
+    public void onReceiveSmsMessages(ReceiveSmsEvent event) {
         String pattern = "(.*)(\\d{6})(.*)";
         // Create a Pattern object
         Pattern r = Pattern.compile(pattern);

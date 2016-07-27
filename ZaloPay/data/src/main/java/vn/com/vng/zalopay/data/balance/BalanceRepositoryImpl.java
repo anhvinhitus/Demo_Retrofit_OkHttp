@@ -29,7 +29,8 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     @Override
     public Observable<Long> balance() {
-        return Observable.mergeDelayError(balanceLocal(), updateBalance());
+        return Observable.merge(balanceLocal(), updateBalance()
+                .onErrorResumeNext(throwable -> Observable.empty()));
     }
 
     @Override
