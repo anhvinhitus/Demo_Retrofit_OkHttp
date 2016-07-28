@@ -130,7 +130,7 @@ public class NotificationHelper {
         }
 
         if (notify.notificationtype == NotificationType.MONEY_TRANSFER
-                || mUser.uid.equals(notify.userid)) {
+                && mUser.uid.equals(notify.userid)) {
             notify.setRead(true);
         }
     }
