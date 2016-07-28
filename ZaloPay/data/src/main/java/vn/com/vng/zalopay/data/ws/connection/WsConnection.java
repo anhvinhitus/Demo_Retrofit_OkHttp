@@ -62,7 +62,7 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     @Override
     public void connect() {
-        if (mChannel != null && mChannel.isOpen()) {
+        if (mChannel != null && mChannel.isActive()) {
             return;
         }
 

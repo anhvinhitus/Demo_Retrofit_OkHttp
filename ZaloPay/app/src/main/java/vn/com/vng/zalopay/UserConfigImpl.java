@@ -3,8 +3,6 @@ package vn.com.vng.zalopay;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
