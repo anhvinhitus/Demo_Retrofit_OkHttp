@@ -56,7 +56,7 @@ enum Format {
 		return context.getResources().getString(mTitleId);
 	}	
 	
-	public static final Format byValue(String value) {
+	public static Format byValue(String value) {
 		return VALUE_MAP.get(value);
 	}
 	

@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.widget;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import vn.com.vng.zalopay.R;
 
@@ -91,7 +93,7 @@ public class WaveView extends RelativeLayout {
 
         animatorSet = new AnimatorSet();
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        ArrayList animatorList = new ArrayList<>();
+        List<Animator> animatorList = new ArrayList<>();
 
         for (int i = 0; i < rippleAmount; i++) {
             RippleView rippleView = new RippleView(getContext());

@@ -82,7 +82,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         compositeSubscription.add(subscription);
     }
 
-    private final void onGetBalanceError(Throwable e) {
+    private void onGetBalanceError(Throwable e) {
         Timber.w("onGetBalanceError %s", e);
         String message = ErrorMessageFactory.create(applicationContext, e);
         showErrorView(message);
@@ -92,7 +92,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
 
-    private final void onGetBalanceSuccess(Long balance) {
+    private void onGetBalanceSuccess(Long balance) {
         Timber.d("onGetBalanceSuccess %s", balance);
         menuView.setBalance(balance);
     }

@@ -82,7 +82,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         compositeSubscription.add(subscription);
     }
 
-    private final void getProfileSuccess() {
+    private void getProfileSuccess() {
         User user = userConfig.getCurrentUser();
         if (user != null) {
             mView.updateUserInfo(user);

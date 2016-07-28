@@ -8,7 +8,7 @@ public class BalanceTopupActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return new BalanceTopupFragment().newInstance();
+        return BalanceTopupFragment.newInstance();
     }
 
 }

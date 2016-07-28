@@ -18,8 +18,8 @@ import vn.com.vng.zalopay.account.models.ZaloProfile;
 public class ReqGetProfileListener implements ZaloOpenAPICallback {
 
     public interface IReqGetProfileListener {
-        public void onGetProfileSuccess(ZaloProfile zaloProfile);
-        public void onGetProfileFail(String msg);
+        void onGetProfileSuccess(ZaloProfile zaloProfile);
+        void onGetProfileFail(String msg);
     }
 
     public ReqGetProfileListener(IReqGetProfileListener reqGetProfileListener) {

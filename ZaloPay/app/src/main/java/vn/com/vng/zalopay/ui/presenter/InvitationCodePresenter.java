@@ -116,13 +116,13 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         mView.gotoMainActivity();
     }
 
-    private final void onLoginSuccess(User user) {
+    private void onLoginSuccess(User user) {
         this.hideLoadingView();
         AndroidApplication.instance().createUserComponent(user);
         this.gotoHomeScreen();
     }
 
-    private final void onLoginError(Throwable e) {
+    private void onLoginError(Throwable e) {
         hideLoadingView();
         if (e instanceof BodyException) {
             if (((BodyException) e).errorCode == NetworkError.INVITATION_CODE_INVALID) {

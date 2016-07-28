@@ -172,7 +172,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
-    private final void updateProfile() {
+    private void updateProfile() {
         String cmnd = mIdentityNumberView.getText().toString();
         String email = mEmailView.getText().toString();
         if (isValidatePageTwo()) {

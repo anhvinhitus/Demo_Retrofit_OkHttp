@@ -60,7 +60,7 @@ public class ParticipatedBankRecyclerAdapter extends AbsRecyclerAdapter<Integer,
             mLogoView.setImageResource(imgResource);
         }
 
-        private final void loadImage(ImageView image, String url) {
+        private void loadImage(ImageView image, String url) {
             Glide.with(context).load(url).centerCrop().placeholder(R.color.silver).into(image);
         }
     }

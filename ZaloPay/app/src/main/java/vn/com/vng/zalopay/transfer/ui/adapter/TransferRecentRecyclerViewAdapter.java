@@ -81,7 +81,7 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
     }
 
 
-    private final void loadImage(ImageView image, String url) {
+    private void loadImage(ImageView image, String url) {
         if (mContext == null) {
             return;
         }

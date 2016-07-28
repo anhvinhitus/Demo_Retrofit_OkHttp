@@ -34,12 +34,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
         final Call<T> call = mOriginalCall.clone();
 
         // Attempt to cancel the call if it is still in-flight on unsubscription.
-        subscriber.add(Subscriptions.create(new Action0() {
-            @Override
-            public void call() {
-                call.cancel();
-            }
-        }));
+        subscriber.add(Subscriptions.create(call::cancel));
 
         try {
             Response<T> response = call.execute();

@@ -116,12 +116,12 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         }
     }
 
-    private final void onUpdateSuccess() {
+    private void onUpdateSuccess() {
         mView.hideLoading();
         mView.updateSuccess();
     }
 
-    private final void onUpdateError(Throwable e) {
+    private void onUpdateError(Throwable e) {
         mView.hideLoading();
         String message = ErrorMessageFactory.create(applicationContext, e);
         mView.showError(message);

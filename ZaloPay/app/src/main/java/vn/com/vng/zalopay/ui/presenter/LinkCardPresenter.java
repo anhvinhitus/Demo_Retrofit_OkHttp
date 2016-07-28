@@ -145,7 +145,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
         params.accessToken = user.accesstoken;
-        ;
         params.userID = String.valueOf(user.uid);
         params.mapCard = mapCard;
 

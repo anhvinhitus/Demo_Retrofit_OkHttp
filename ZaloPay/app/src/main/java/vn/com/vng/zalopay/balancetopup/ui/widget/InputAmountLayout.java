@@ -164,7 +164,7 @@ public class InputAmountLayout extends LinearLayout {
     }
 
     public interface IListenerAmountChanged {
-        public void onAmountChanged(CharSequence amount);
+        void onAmountChanged(CharSequence amount);
     }
 
     protected void showError(String message){

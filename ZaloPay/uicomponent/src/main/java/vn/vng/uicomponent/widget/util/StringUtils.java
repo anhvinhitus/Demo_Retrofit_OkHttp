@@ -198,8 +198,6 @@ public class StringUtils {
         if (name == null)
             return re;
 
-        name.replace(" ", "");
-
         return name.replace(" ", "");
     }
 
@@ -277,8 +275,8 @@ public class StringUtils {
         if (TextUtils.isEmpty(strList))
             return result;
         String[] strArr = strList.split(",");
-        for (int i = 0; i < strArr.length; i++) {
-            String str = strArr[i].trim();
+        for (String aStrArr : strArr) {
+            String str = aStrArr.trim();
             if (TextUtils.isEmpty(str))
                 continue;
             result.add(str);

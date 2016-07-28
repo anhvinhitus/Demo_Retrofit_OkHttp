@@ -88,7 +88,7 @@ public class AndroidUtils {
     }
 
 
-    public static final String getScreenType() {
+    public static String getScreenType() {
         if (density == 0.75) {
             return "ldpi";
         } else if (density == 1) {
