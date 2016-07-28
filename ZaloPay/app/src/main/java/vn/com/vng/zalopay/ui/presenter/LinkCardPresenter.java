@@ -165,7 +165,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onError(BaseResponse pMessage) {
-            Timber.tag("LinkCardPresenter").e("onError: " + pMessage);
+            Timber.tag("LinkCardPresenter").d("RemoveMapCard onError: " + pMessage);
             mLinkCardView.hideLoading();
             if (pMessage == null) {
                 if (NetworkHelper.isNetworkAvailable(mLinkCardView.getContext())) {
