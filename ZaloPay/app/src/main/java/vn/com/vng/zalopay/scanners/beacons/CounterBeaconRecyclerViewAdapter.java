@@ -83,6 +83,7 @@ public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<Count
             super(view);
             mView = view;
             mBeaconLayout = (View) view.findViewById(R.id.beacon_layout);
+            mBeaconLayout.setClickable(true);
             mDescriptionView = (TextView) view.findViewById(R.id.counter_description);
             mAmountView = (TextView) view.findViewById(R.id.counter_order_amount);
         }

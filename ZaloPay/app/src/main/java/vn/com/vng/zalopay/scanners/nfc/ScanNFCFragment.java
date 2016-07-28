@@ -72,7 +72,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         String token = contents[1];
 
         if (paymentWrapper == null) {
-            mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
+            mNFCStatus.setText("Có lỗi phát sinh");
+            Timber.w("PaymentWrapper is NULL");
             return false;
         }
 
@@ -111,17 +112,18 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                 new PaymentWrapper.IResponseListener() {
                     @Override
                     public void onParameterError(String param) {
-                        mNFCStatus.setText(String.format("Parameter error: %s", param));
+                        mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
                     }
 
                     @Override
                     public void onResponseError(int status) {
-                        mNFCStatus.setText(String.format("Response error: %d", status));
+                        mNFCStatus.setText("");
+//                        mNFCStatus.setText(String.format("Response error: %d", status));
                     }
 
                     @Override
                     public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        mNFCStatus.setText("Payment succeeded");
+                        mNFCStatus.setText("Thanh toán thành công");
 
                     }
 

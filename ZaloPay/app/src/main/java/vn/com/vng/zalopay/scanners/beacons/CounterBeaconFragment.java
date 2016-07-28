@@ -80,8 +80,6 @@ public class CounterBeaconFragment extends BaseFragment {
         beaconScanner = new BeaconScanner(new BeaconListener());
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static CounterBeaconFragment newInstance(int columnCount) {
         CounterBeaconFragment fragment = new CounterBeaconFragment();
         Bundle args = new Bundle();
@@ -96,7 +94,7 @@ public class CounterBeaconFragment extends BaseFragment {
         getUserComponent().inject(this);
 
         if (!beaconScanner.initialize(this.getActivity())) {
-            showToast("Cannot initialize BLE");
+            showToast("Không thể khởi động Bluetooth");
             return;
         }
 
@@ -118,7 +116,6 @@ public class CounterBeaconFragment extends BaseFragment {
                     @Override
                     public void onResponseError(int status) {
                         Timber.d("Payment error: " + status);
-                        showToast("Error code: " + String.valueOf(status));
                         beaconScanner.startScan();
                     }
 

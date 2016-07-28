@@ -4,13 +4,17 @@
     android:id="@+id/beacon_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/default_margin_large"
-        android:paddingTop="@dimen/default_margin_large">
+        android:paddingTop="@dimen/default_margin_large"
+        android:clickable="false">
 
         <TextView
             android:id="@+id/counter_description"
@@ -22,6 +26,7 @@
             android:gravity="center_vertical"
             android:textAppearance="?attr/textAppearanceListItem"
             tools:text="VinMart - Bàn GD 2 - Hoá đơn bán lẻ"
+            android:clickable="false"
             />
 
         <TextView
@@ -31,6 +36,8 @@
             android:layout_margin="@dimen/text_margin"
             android:gravity="end|center_vertical"
             android:textSize="20sp"
-            tools:text="30.000 VND" />
+            tools:text="30.000 VND"
+            android:clickable="false"
+            />
     </LinearLayout>
 </LinearLayout>
