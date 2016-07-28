@@ -7,7 +7,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -66,14 +65,12 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
                 .subscribe(new VerifyOTPProfileSubscriber());
     }
 
-    private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<ProfilePermission> {
+    private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<Boolean> {
         public VerifyOTPProfileSubscriber() {
         }
 
         @Override
-        public void onNext(ProfilePermission permisssions) {
-            Timber.d("confirmOTP success profileLevel: %s", permisssions.profileLevel);
-            Timber.d("confirmOTP success profilePermissions: %s", permisssions.profilePermissions);
+        public void onNext(Boolean permissions) {
             OTPProfilePresenter.this.onVerifyOTPSucess();
         }
 

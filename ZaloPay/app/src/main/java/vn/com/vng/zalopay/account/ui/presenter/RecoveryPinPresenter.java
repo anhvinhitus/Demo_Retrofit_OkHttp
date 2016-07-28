@@ -7,6 +7,7 @@ import java.security.MessageDigest;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -23,12 +24,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 public class RecoveryPinPresenter extends BaseUserPresenter implements IPresenter<IRecoveryPinView> {
 
     IRecoveryPinView mView;
-    private Subscription subscriptionLogin;
-    private UserConfig mUserConfig;
-
-    public RecoveryPinPresenter(UserConfig userConfig) {
-        mUserConfig = userConfig;
-    }
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     public void setView(IRecoveryPinView iProfileView) {
@@ -42,7 +38,7 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
     }
 
     private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionLogin);
+        unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
@@ -84,10 +80,11 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
         showLoading();
         String pinSha256 = sha256(pin);
 
-        subscriptionLogin = accountRepository.recoverypin(pinSha256, null)
+        Subscription subscription = accountRepository.recoveryPin(pinSha256, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RecoveryPassCodeSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private final class RecoveryPassCodeSubscriber extends DefaultSubscriber<BaseResponse> {
@@ -109,7 +106,7 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
                 return;
             }
             if (e instanceof BodyException) {
-                BodyException bodyException = (BodyException)e;
+                BodyException bodyException = (BodyException) e;
                 RecoveryPinPresenter.this.onRecoveryPinError(bodyException.getMessage());
                 return;
             }

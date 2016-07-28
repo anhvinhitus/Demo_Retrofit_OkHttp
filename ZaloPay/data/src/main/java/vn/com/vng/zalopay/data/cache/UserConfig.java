@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -20,9 +20,9 @@ public interface UserConfig {
 
     void saveConfig(User user);
 
-    void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermissions);
+    void savePermission(int profileLevel, List<Permission> profilePermissions);
 
-    void updateProfile(int profileLevel, List<ProfilePermission.Permission> profilePermissions, String email, String identity);
+    void save(String email, String identity);
 
     void updateUserPhone(String phone);
 
@@ -37,8 +37,6 @@ public interface UserConfig {
     long getZaloId();
 
     void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
-
-    void save(String email, String identity);
 
     void saveZaloUserInfo(JSONObject json);
 

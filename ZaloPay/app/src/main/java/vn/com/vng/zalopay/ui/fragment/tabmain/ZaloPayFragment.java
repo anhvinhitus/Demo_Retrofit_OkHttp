@@ -76,6 +76,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @BindView(R.id.viewpager)
     ViewPager mBannerViewpager;
+
     BannerPagerAdapter mBannerPagerAdapter;
 
     @BindView(R.id.indicator)

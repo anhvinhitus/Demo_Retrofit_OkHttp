@@ -8,14 +8,12 @@ import com.google.gson.Gson;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
-import java.util.Collection;
 import java.util.List;
 
-import de.greenrobot.dao.AbstractDao;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.utils.JsonUtil;
@@ -74,7 +72,6 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
         editor.putInt(Constants.PREF_PROFILE_LEVEL, user.profilelevel);
         String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermissions);
-        Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
         editor.putLong(Constants.PREF_USER_PHONE, user.phonenumber);
         editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
 
@@ -102,13 +99,22 @@ public class UserConfigImpl implements UserConfig {
         editor.apply();
     }
 
-    public void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermissions) {
-        if (currentUser == null) {
+    @Override
+    public void savePermission(int profileLevel, List<Permission> profilePermissions) {
+        if (currentUser != null) {
+            currentUser.profilelevel = profileLevel;
+            currentUser.profilePermissions = profilePermissions;
             return;
         }
-        currentUser.profilelevel = profileLevel;
-        currentUser.profilePermissions = profilePermissions;
-        saveProfilePermissions(profileLevel, profilePermissions);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constants.PREF_PROFILE_LEVEL, profileLevel);
+        String permissionsStr = JsonUtil.toJsonArrayString(profilePermissions);
+
+        Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
+
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
+        editor.apply();
     }
 
     @Override
@@ -122,26 +128,6 @@ public class UserConfigImpl implements UserConfig {
             editor.putString(Constants.PREF_USER_EMAIL, email);
             editor.apply();
         }
-    }
-
-    @Override
-    public void updateProfile(int profileLevel, List<ProfilePermission.Permission> profilePermissions, String email, String identity) {
-
-        this.updateProfilePermissions(profileLevel, profilePermissions);
-
-        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(identity)) {
-            this.save(email, identity);
-        }
-    }
-
-    private void saveProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermissions) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(Constants.PREF_PROFILE_LEVEL, profileLevel);
-        Gson gson = new Gson();
-        String permissionsStr = JsonUtil.toJsonArrayString(profilePermissions);
-        Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
-        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
-        editor.apply();
     }
 
     public void loadConfig() {
@@ -163,6 +149,9 @@ public class UserConfigImpl implements UserConfig {
             currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
             currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0l);
             currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
+
+            Timber.d("loadConfig: permission %s", currentUser.profilePermissions);
+
             currentUser.identityNumber = preferences.getString(Constants.PREF_USER_IDENTITY_NUMBER, "");
         }
     }

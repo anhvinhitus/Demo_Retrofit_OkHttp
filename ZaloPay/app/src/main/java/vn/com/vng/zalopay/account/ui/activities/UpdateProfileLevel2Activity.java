@@ -51,9 +51,6 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     private String mCurrentPhone = null;
 
     @Inject
-    Navigator navigator;
-
-    @Inject
     PreProfilePresenter presenter;
 
     @BindView(R.id.imgAvatar)
