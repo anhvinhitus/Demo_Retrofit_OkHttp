@@ -121,7 +121,7 @@ public class NotificationHelper {
             extractRedPacketFromNotification(notify);
         }
 
-        notifyRepository.put(notify);
+        notifyRepository.putNotify(notify);
 
         this.showNotificationSystem(notify);
     }
@@ -177,6 +177,7 @@ public class NotificationHelper {
         if (notify.read) {
             return;
         }
+
         notifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
@@ -184,6 +185,10 @@ public class NotificationHelper {
     }
 
     private void showNotificationSystem(int numberUnread) {
+        if (numberUnread == 0) {
+            return;
+        }
+
         String title = context.getString(R.string.app_name);
         String message = String.format(context.getString(R.string.you_have_unread_messages), numberUnread);
         int notificationId = 200;
