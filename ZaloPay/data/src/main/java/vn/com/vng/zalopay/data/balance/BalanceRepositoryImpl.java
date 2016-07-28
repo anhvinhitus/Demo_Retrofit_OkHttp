@@ -4,6 +4,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -29,8 +30,10 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     @Override
     public Observable<Long> balance() {
-        return Observable.merge(balanceLocal(), updateBalance()
-                .onErrorResumeNext(throwable -> Observable.empty()));
+        return Observable.merge(
+                balanceLocal(),
+                updateBalance().onErrorResumeNext(throwable -> Observable.empty())
+        );
     }
 
     @Override
@@ -46,16 +49,15 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     public Long currentBalance() {
         if (mCurrentBalance == null) {
-            mCurrentBalance = 0l;
+            mCurrentBalance = 0L;
         }
         return mCurrentBalance;
     }
 
     private Observable<Long> balanceLocal() {
-        return mLocalStorage.getBalance()
-                .doOnNext(balance -> {
-                    mCurrentBalance = balance;
-                })
-                ;
+        return ObservableHelper.makeObservable(() -> {
+            mCurrentBalance = mLocalStorage.getBalance();
+            return mCurrentBalance;
+        });
     }
 }
