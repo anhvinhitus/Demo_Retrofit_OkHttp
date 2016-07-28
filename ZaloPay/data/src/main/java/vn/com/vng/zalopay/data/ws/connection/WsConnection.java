@@ -45,7 +45,6 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private final Parser parser;
     private final UserConfig userConfig;
-    List<OnReceiverMessageListener> listCallBack;
 
     private boolean isAuthenticated;
 
