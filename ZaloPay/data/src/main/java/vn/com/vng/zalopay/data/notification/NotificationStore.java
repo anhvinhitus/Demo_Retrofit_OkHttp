@@ -36,7 +36,7 @@ public interface NotificationStore {
 
         void markAsRead(long nId);
 
-        void put(NotificationData notify);
+        void putNotify(NotificationData notify);
 
         Observable<NotificationData> getNotify(long id);
     }

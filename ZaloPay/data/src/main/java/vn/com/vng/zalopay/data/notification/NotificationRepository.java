@@ -41,7 +41,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public void put(NotificationData notify) {
+    public void putNotify(NotificationData notify) {
         localStorage.put(notify);
         if (!notify.read) {
             eventBus.post(new NotificationChangeEvent());
