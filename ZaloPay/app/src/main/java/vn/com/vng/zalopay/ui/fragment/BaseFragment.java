@@ -115,7 +115,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void hideProgressDialog() {
-        if (mProgressDialog == null || mProgressDialog.isShowing()) {
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
             return;
         }
         mProgressDialog.dismiss();
