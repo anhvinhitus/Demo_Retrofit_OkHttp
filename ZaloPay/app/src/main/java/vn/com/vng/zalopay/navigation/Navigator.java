@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.ReactAppConfig;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
@@ -140,7 +140,7 @@ public class Navigator implements INavigator {
         if (context == null) {
             return;
         }
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
                 .setContentText(context.getString(R.string.txt_need_input_userinfo))
                 .setCancelText(context.getString(R.string.txt_close))
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -303,7 +303,7 @@ public class Navigator implements INavigator {
 
     @Override
     public Intent intentPaymentApp(Context context, int appId, Map<String, String> launchOptions) {
-        AppResource appResource = ReactAppConfig.getAppResource(appId);
+        AppResource appResource = PaymentAppConfig.getAppResource(appId);
         if (appResource == null) {
             return null;
         }

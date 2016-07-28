@@ -12,11 +12,13 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
+import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.ProfilePermission;
 
 /**
  * Created by AnhHieu on 7/3/16.
+ * AccountStore to provide User Profile management feature
  */
 public interface AccountStore {
 
@@ -42,7 +44,7 @@ public interface AccountStore {
         Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("loginuid") long zaloId, @Field("systemlogin") int systemlogin);
 
         @GET("um/getuserprofilelevel")
-        Observable<UpdateProfileResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
+        Observable<UserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
     }
 
     interface UploadPhotoService {
@@ -60,7 +62,7 @@ public interface AccountStore {
 
     interface Repository {
 
-        Observable<Boolean> updateProfile(String pin, String phonenumber);
+        Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber);
 
         Observable<ProfilePermission> verifyOTPProfile(String otp);
 
@@ -68,17 +70,17 @@ public interface AccountStore {
 
         Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin);
 
-        Observable<Boolean> updateProfile3(String identityNumber,
-                                           String email,
-                                           String fimgPath,
-                                           String bimgPath,
-                                           String avatarPath);
+        Observable<Boolean> updateUserProfileLevel3(String identityNumber,
+                                                    String email,
+                                                    String frontImagePath,
+                                                    String backImagePath,
+                                                    String avatarPath);
 
-        Observable<Boolean> updateProfile3(String identityNumber,
-                                           String email,
-                                           byte[] fimgPath,
-                                           byte[] bimgPath,
-                                           byte[] avatarPath);
+        Observable<Boolean> updateUserProfileLevel3(String identityNumber,
+                                                    String email,
+                                                    byte[] frontImage,
+                                                    byte[] backImage,
+                                                    byte[] avatar);
 
         Observable<ProfilePermission> getUserProfileLevel();
     }

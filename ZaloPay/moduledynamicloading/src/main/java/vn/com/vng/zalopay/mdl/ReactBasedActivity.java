@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.mdl;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -139,12 +140,14 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 
         this.initArgs(savedInstanceState);
 
+        nativeInstanceManager().setActivityContext(this);
         mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this);
         Timber.i("ReactInstanceManager currently has context: %s", mReactInstanceManager.hasStartedCreatingInitialContext());
 //        mReactInstanceManager.createReactContextInBackground();
         mReactRootView = createRootView();
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
         setContentView(mReactRootView);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected void initArgs(Bundle savedInstanceState){
@@ -190,6 +193,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
             nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
         }
+        nativeInstanceManager().setActivityContext(null);
         super.onDestroy();
     }
 

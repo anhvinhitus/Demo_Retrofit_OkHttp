@@ -96,7 +96,6 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
 
         @Override
         public void onNext(BaseResponse baseResponse) {
-            Timber.d("updateProfile baseResponse: %s" + baseResponse);
             RecoveryPinPresenter.this.onRecoveryPinSuccess();
         }
 
@@ -114,6 +113,7 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
                 RecoveryPinPresenter.this.onRecoveryPinError(bodyException.getMessage());
                 return;
             }
+
             Timber.e(e, "onError " + e);
             RecoveryPinPresenter.this.onRecoveryPinError();
         }

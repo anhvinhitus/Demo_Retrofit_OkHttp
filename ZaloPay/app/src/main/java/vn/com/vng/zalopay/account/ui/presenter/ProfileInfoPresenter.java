@@ -89,8 +89,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     private void getBalance() {
-        BalanceStore.Repository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
-        Subscription subscription = repository.balance()
+        Subscription subscription = balanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
@@ -117,7 +116,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
                 return;
             }
 
-            Timber.tag(TAG).e(e, " exception ");
+            Timber.e(e, " exception ");
         }
 
         @Override
@@ -126,7 +125,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
         }
     }
 
-    public void sigoutAndCleanData() {
+    public void signOutAndCleanData() {
         AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 

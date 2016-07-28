@@ -86,7 +86,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     public void loginZalo(Activity activity) {
         if (NetworkHelper.isNetworkAvailable(applicationContext)) {
-            showLoadingView();
+         //   showLoadingView();
             ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, new LoginListener(this));
         } else {
             showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
@@ -157,10 +157,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private void gotoHomeScreen() {
         mView.gotoMainActivity();
-    }
-
-    private void gotoUpdateProfileLevel2() {
-        mView.gotoUpdateProfileLevel2();
     }
 
     private final void onLoginSuccess(User user) {

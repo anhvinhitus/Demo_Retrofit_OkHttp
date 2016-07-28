@@ -27,28 +27,34 @@ import rx.Observable;
 import rx.Scheduler;
 
 public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
-    /**
-     * TODO
-     */
-    public static RxJavaCallAdapterFactory create(Context context) {
-        return new RxJavaCallAdapterFactory(null, context);
+    public enum AdapterType {
+        ZaloPay,
+        RedPacket
     }
 
     /**
      * TODO
      */
-    public static RxJavaCallAdapterFactory createWithScheduler(Scheduler scheduler, Context context) {
+    public static RxJavaCallAdapterFactory create(Context context, AdapterType adapterType) {
+        return new RxJavaCallAdapterFactory(null, context, adapterType);
+    }
+
+    /**
+     * TODO
+     */
+    public static RxJavaCallAdapterFactory createWithScheduler(Scheduler scheduler, Context context, AdapterType adapterType) {
         if (scheduler == null) throw new NullPointerException("scheduler == null");
-        return new RxJavaCallAdapterFactory(scheduler, context);
+        return new RxJavaCallAdapterFactory(scheduler, context, adapterType);
     }
 
     private final Scheduler scheduler;
-
     private Context mApplicationContext;
+    private final AdapterType mAdapterType;
 
-    private RxJavaCallAdapterFactory(Scheduler scheduler, Context context) {
+    private RxJavaCallAdapterFactory(Scheduler scheduler, Context context, AdapterType adapterType) {
         this.scheduler = scheduler;
         this.mApplicationContext = context;
+        this.mAdapterType = adapterType;
     }
 
     @Override
@@ -59,6 +65,13 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler) {
         Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
 
-        return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
+        switch (mAdapterType) {
+            case ZaloPay:
+                return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
+            case RedPacket:
+                return new RedPacketCallAdapter(mApplicationContext, observableType, scheduler);
+            default:
+                return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
+        }
     }
 }

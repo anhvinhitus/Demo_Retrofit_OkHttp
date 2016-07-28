@@ -1,26 +1,22 @@
 package vn.com.vng.zalopay.data.notification;
 
+import android.text.TextUtils;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import de.greenrobot.dao.async.AsyncSession;
-import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
-import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static java.util.Collections.emptyList;
@@ -34,14 +30,12 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     final AsyncSession asyncSession;
 
     final User user;
-    final EventBus eventBus;
 
-    public NotificationLocalStorage(DaoSession daoSession, User user, EventBus eventBus) {
+    public NotificationLocalStorage(DaoSession daoSession, User user) {
         super(daoSession);
         jsonParser = new JsonParser();
         asyncSession = getDaoSession().getNotificationGDDao().getSession().startAsyncSession();
         this.user = user;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -50,8 +44,6 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
         }
-
-
     }
 
     @Override
@@ -60,16 +52,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (item != null) {
             Timber.d("Put item %s", item.getMessage());
             getAsyncSession().insertInTx(NotificationGD.class, item);
-            if (!item.getRead()) {
-                eventBus.post(new NotificationChangeEvent());
-            }
         }
     }
 
 
     @Override
-    public Observable<List<NotificationData>> get(int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(() -> queryList(pageIndex, limit));
+    public List<NotificationData> get(int pageIndex, int limit) {
+        return queryList(pageIndex, limit);
     }
 
     AsyncSession getAsyncSession() {
@@ -104,12 +93,16 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationEntity.getDestuserid());
         _notification.setMessage(notificationEntity.getMessage());
         _notification.setTimestamp(notificationEntity.getTimestamp());
+        _notification.setNotificationtype(notificationEntity.getNotificationType());
         JsonObject embeddataJson = notificationEntity.getEmbeddata();
 
 
-        String embeddata = embeddataJson.toString();
+        String embeddata = "";
+        if (embeddataJson != null) {
+            embeddata = embeddataJson.toString();
+        }
 
-        Timber.d("embeddata put %s isRead %s  ", embeddata, notificationEntity.read);
+        Timber.d("put embeddata %s isRead %s  ", embeddata, notificationEntity.read);
 
         _notification.setEmbeddata(embeddata);
         _notification.setUserid(notificationEntity.getUserid());
@@ -139,14 +132,20 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         _notification.setDestuserid(notificationGD.getDestuserid());
         _notification.setMessage(notificationGD.getMessage());
         _notification.setTimestamp(notificationGD.getTimestamp());
+        _notification.setNotificationtype(notificationGD.getNotificationtype());
+
         String embeddata = notificationGD.getEmbeddata();
 
-        Timber.d("embeddata get %s ", embeddata);
-        try {
-            _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
-        } catch (Exception ex) {
+        Timber.d("embeddata [%s]", embeddata);
+        if (TextUtils.isEmpty(embeddata)) {
             _notification.setEmbeddata(new JsonObject());
-            Timber.w(ex, " parse exception Notification Entity");
+        } else {
+            try {
+                _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
+            } catch (Exception ex) {
+                _notification.setEmbeddata(new JsonObject());
+                Timber.w(ex, " parse exception Notification Entity");
+            }
         }
 
         _notification.setUserid(notificationGD.getUserid());
@@ -218,15 +217,11 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
     @Override
     public void markAsRead(long nId) {
-
-        List<NotificationGD> list = queryNotification(nId);
-        for (NotificationGD notify : list) {
+        NotificationGD notify = getDaoSession().load(NotificationGD.class, nId);
+        if (notify != null) {
             notify.setRead(true);
-        }
-
-        if (!Lists.isEmptyOrNull(list)) {
-            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
-            eventBus.post(new NotificationChangeEvent());
+            Timber.d("markAsRead: nId %s", nId);
+            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, notify);
         }
     }
 
@@ -239,12 +234,16 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         if (!Lists.isEmptyOrNull(list)) {
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
-            eventBus.post(new NotificationChangeEvent());
         }
     }
 
     @Override
-    public Observable<Integer> totalNotificationUnRead() {
-        return ObservableHelper.makeObservable(() -> (int) totalUnRead());
+    public int totalNotificationUnRead() {
+        return (int) totalUnRead();
+    }
+
+    @Override
+    public NotificationData get(long notifyId) {
+        return transform(getDaoSession().getNotificationGDDao().load(notifyId));
     }
 }

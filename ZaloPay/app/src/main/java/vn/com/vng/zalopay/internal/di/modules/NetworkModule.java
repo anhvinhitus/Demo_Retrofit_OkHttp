@@ -85,16 +85,29 @@ public class NetworkModule {
     @Provides
     @Singleton
     CallAdapter.Factory provideCallAdapter(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, Context context) {
-        return RxJavaCallAdapterFactory.create(context);
+        return RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.ZaloPay);
     }
 
     @Provides
     @Singleton
-    @Named("retrofit")
+    @Named("retrofitApi")
     Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(callAdapter)
+                .baseUrl(baseUrl)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("retrofitRedPacketApi")
+    Retrofit provideRetrofitRedPacketApi(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+        return new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)

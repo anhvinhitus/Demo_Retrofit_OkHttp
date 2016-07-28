@@ -75,6 +75,8 @@ public final class Strings {
     public static String stripAccents(String s) {
         s = Normalizer.normalize(s, Normalizer.Form.NFD);
         s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        s = s.replaceAll("Đ", "D");
+        s = s.replaceAll("đ", "d");
         return s;
     }
 }

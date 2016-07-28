@@ -1,0 +1,21 @@
+package vn.com.vng.zalopay.mdl.redpacket;
+
+import android.os.Bundle;
+
+/**
+ * Created by longlv on 19/07/2016.
+ * Listener of IRedPacketPayService
+ */
+public interface IRedPacketPayListener {
+    void onParameterError(String param);
+
+    void onResponseError(int status);
+
+    void onResponseSuccess(Bundle bundle);
+
+    void onResponseTokenInvalid();
+
+    void onResponseCancel();
+
+    void onNotEnoughMoney();
+}

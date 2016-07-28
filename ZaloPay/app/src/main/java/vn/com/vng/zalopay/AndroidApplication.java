@@ -29,12 +29,13 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
+import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public class AndroidApplication extends MultiDexApplication {
 
@@ -84,7 +85,7 @@ public class AndroidApplication extends MultiDexApplication {
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
         ZingMobilePayApplication.wrap(this);
-        Constants.IS_RELEASE = BuildConfig.ENV_LIVE;
+        Constants.IS_RELEASE = !BuildConfig.DEBUG;
         // Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
         Constants.setEnumEnvironment(BuildConfig.HOST_TYPE);
 
@@ -171,9 +172,9 @@ public class AndroidApplication extends MultiDexApplication {
                 return;
             }
 
-            if (t instanceof BodyException
+            if (t instanceof InvitationCodeException
+                    || t instanceof BodyException
                     || t instanceof TokenException
-                    || t instanceof InvitationCodeException
                     || t instanceof NetworkConnectionException) {
                 return;
             }

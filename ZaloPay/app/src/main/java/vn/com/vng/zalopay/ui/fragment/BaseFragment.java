@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.fragment;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,7 +17,6 @@ import com.bumptech.glide.Glide;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -111,21 +109,21 @@ public abstract class BaseFragment extends Fragment {
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
-            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-            mProgressDialog.setContentText("Loading");
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
     }
 
     public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing())
-            mProgressDialog.dismiss();
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.dismiss();
     }
 
     public void showErrorDialog(String message, String cancelText, final SweetAlertDialog.OnSweetClickListener cancelListener) {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE, R.style.alert_dialog)
                 .setContentText(message)
                 .setConfirmText(cancelText)
                 .setConfirmClickListener(cancelListener)
@@ -133,7 +131,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retrylListener) {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
+        new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE, R.style.alert_dialog)
                 .setContentText(retryMessage)
                 .setCancelText(cancelBtnText)
                 .setCancelClickListener(cancelListener)

@@ -1,16 +1,15 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.text.TextUtils;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -20,11 +19,9 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IProfileView> {
 
     IProfileView mView;
-    private UserConfig mUserConfig;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ProfilePresenter(UserConfig userConfig) {
-        mUserConfig = userConfig;
+    public ProfilePresenter() {
     }
 
     @Override
@@ -40,13 +37,10 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void resume() {
-        getBalance();
-        mView.updateUserInfo(userConfig.getCurrentUser());
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
@@ -54,42 +48,14 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     }
 
-    private void onGetBalanceSuccess(Long aLong) {
-        mView.updateBalance(aLong);
-    }
-
-    private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        public BalanceSubscriber() {
-        }
-
-        @Override
-        public void onCompleted() {
-            super.onCompleted();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
+    public void getProfile() {
+        User user = userConfig.getCurrentUser();
+        if (user != null) {
+            mView.updateUserInfo(user);
+            if (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber)) { // Chua get profile level 3
+                getUserProfile();
             }
-
-            Timber.tag(TAG).e(e, " exception ");
         }
-
-        @Override
-        public void onNext(Long aLong) {
-            ProfilePresenter.this.onGetBalanceSuccess(aLong);
-        }
-    }
-
-    private void getBalance() {
-        BalanceStore.Repository repository = AndroidApplication.instance().getUserComponent().balanceRepository();
-        Subscription subscription = repository.balance()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BalanceSubscriber());
-
-        compositeSubscription.add(subscription);
     }
 
     public void showLoading() {
@@ -106,5 +72,34 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     public void hideRetry() {
         mView.hideRetry();
+    }
+
+
+    private void getUserProfile() {
+        Subscription subscription = accountRepository.getUserProfileLevel()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProfileSubscriber());
+        compositeSubscription.add(subscription);
+    }
+
+    private final void getProfileSuccess() {
+        User user = userConfig.getCurrentUser();
+        if (user != null) {
+            mView.updateUserInfo(user);
+        }
+    }
+
+    private class ProfileSubscriber extends DefaultSubscriber<ProfilePermission> {
+
+        @Override
+        public void onCompleted() {
+            ProfilePresenter.this.getProfileSuccess();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
     }
 }

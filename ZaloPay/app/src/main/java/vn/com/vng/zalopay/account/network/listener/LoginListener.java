@@ -28,12 +28,14 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     public void onSkipProtectAcc(Dialog dialog) {
+        Timber.d("onSkipProtectAcc: onSkipProtectAcc");
         dialog.dismiss();
     }
 
     @Override
     public void onProtectAccComplete(int errorCode, String message, Dialog dialog) {
 
+        Timber.d("onProtectAccComplete");
         if (errorCode == 0) {
 
             ZaloSDK.Instance.isAuthenticate(new ValidateOAuthCodeCallback() {
@@ -53,9 +55,8 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     public void onAuthenError(int errorCode, String message) {
+        Timber.d("onAuthError errorCode: %s message: %s", errorCode, message);
 
-        Timber.d("onAuthenError errorCode: %s message: %s", errorCode, message);
-        super.onAuthenError(errorCode, message);
         if (mListener != null) {
             mListener.onAuthError(errorCode, message);
         }
@@ -63,7 +64,6 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     public void onGetOAuthComplete(OauthResponse response) {
-        super.onGetOAuthComplete(response);
         ZaloSDK.Instance.submitAppUserData(String.valueOf(ZaloSDK.Instance.getZaloId()), ZaloSDK.Instance.getLastestLoginChannel(), "zalo", "appUTMSource", null);
 
         long userId = response.getuId();
@@ -77,5 +77,15 @@ public class LoginListener extends OAuthCompleteListener {
         }
 
         mListener = null;
+    }
+
+    @Override
+    protected void onRequestAccountProtect(int errorCode, String errorMsg) {
+        Timber.d("onRequestAccountProtect");
+    }
+
+    @Override
+    public void onFinishLoading() {
+        Timber.d("onFinishLoading");
     }
 }

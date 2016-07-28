@@ -2,11 +2,12 @@ package vn.com.vng.zalopay;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 public class Constants {
     public static final int PROFILE_LEVEL_MIN = 2;
     public static final int CONNECTION_POOL_COUNT = 3;
-    public static final long KEEP_ALIVE_DURATION_MS = 30000l;
+    public static final long KEEP_ALIVE_DURATION_MS = 30000L;
     public static final long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
 
     public static final String PREF_USER_SESSION = "pref_user_session";
@@ -20,6 +21,7 @@ public class Constants {
     public static final String PREF_USER_BIRTHDAY = "pref_user_birth_date";
     public static final String PREF_USER_GENDER = "pref_user_gender";
     public static final String PREF_USER_PHONE = "pref_user_phone";
+    public static final String PREF_USER_IDENTITY_NUMBER = "pref_user_identity";
     public static final String PREF_PROFILE_LEVEL = "profilelevel";
     public static final String PREF_PROFILE_PERMISSIONS = "profilePermissions";
 
@@ -72,18 +74,5 @@ public class Constants {
         public static final String FAQ = "FAQ";
         public static final String TRANSACTION_LOGS = "TransactionLogs";
         public static final String RED_PACKET = "RedPacket";
-    }
-
-    public static class NotificationType {
-
-    }
-
-    public static class TransactionType {
-
-    }
-
-    public static class Apps {
-        public static final int INTERNAL = 1;
-        public static final int RED_PACKET = 6;
     }
 }

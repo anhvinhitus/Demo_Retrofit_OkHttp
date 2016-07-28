@@ -15,28 +15,27 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
 import vn.com.vng.zalopay.data.appresources.AppResource;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.internal.di.modules.RedPackageModule;
-import vn.com.vng.zalopay.internal.di.modules.WsModule;
-import vn.com.vng.zalopay.internal.di.modules.user.AccountModule;
-import vn.com.vng.zalopay.internal.di.modules.user.ApiUserModule;
-import vn.com.vng.zalopay.internal.di.modules.user.AppResourceModule;
-import vn.com.vng.zalopay.internal.di.modules.user.BalanceModule;
-import vn.com.vng.zalopay.internal.di.modules.user.FriendModule;
-import vn.com.vng.zalopay.internal.di.modules.user.NotificationModule;
-import vn.com.vng.zalopay.internal.di.modules.user.TransactionModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserControllerModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserModule;
-import vn.com.vng.zalopay.internal.di.modules.user.UserPresenterModule;
+import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
+import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
+import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
+import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
+import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
+import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
+import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
+import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
+import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
+import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
@@ -63,17 +62,16 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 @Subcomponent(
         modules = {
                 UserModule.class,
-                ApiUserModule.class,
+                UserApiModule.class,
                 UserControllerModule.class,
                 UserPresenterModule.class,
-                BalanceModule.class,
-                TransactionModule.class,
+                UserBalanceModule.class,
+                UserTransactionModule.class,
                 AppResourceModule.class,
-                NotificationModule.class,
-                WsModule.class,
-                AccountModule.class,
-                FriendModule.class,
-                RedPackageModule.class
+                UserNotificationModule.class,
+                UserAccountModule.class,
+                UserFriendModule.class,
+                UserRedPacketModule.class
         }
 )
 public interface UserComponent {
@@ -86,7 +84,7 @@ public interface UserComponent {
 
     ZaloPayRepository zaloPayRepository();
 
-    RedPackageStore.Repository redPackageStoreRepository();
+    RedPacketStore.Repository redPackageStoreRepository();
 
     IPaymentService paymentService();
 

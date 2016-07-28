@@ -11,12 +11,15 @@ import de.greenrobot.dao.DaoException;
 public class SentBundleGD {
 
     private long id;
+    /** Not-null value. */
+    private String senderZaloPayID;
     private Integer type;
     private Long createTime;
     private Long lastOpenTime;
     private Integer totalLuck;
     private Integer numOfOpenedPakages;
     private Integer numOfPackages;
+    private String sendMessage;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -24,7 +27,7 @@ public class SentBundleGD {
     /** Used for active entity operations. */
     private transient SentBundleGDDao myDao;
 
-    private List<SentPackageGD> sentPackages;
+    private List<PackageInBundleGD> sentPackages;
 
     public SentBundleGD() {
     }
@@ -33,14 +36,16 @@ public class SentBundleGD {
         this.id = id;
     }
 
-    public SentBundleGD(long id, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages) {
+    public SentBundleGD(long id, String senderZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages, String sendMessage) {
         this.id = id;
+        this.senderZaloPayID = senderZaloPayID;
         this.type = type;
         this.createTime = createTime;
         this.lastOpenTime = lastOpenTime;
         this.totalLuck = totalLuck;
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
+        this.sendMessage = sendMessage;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -55,6 +60,16 @@ public class SentBundleGD {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    /** Not-null value. */
+    public String getSenderZaloPayID() {
+        return senderZaloPayID;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setSenderZaloPayID(String senderZaloPayID) {
+        this.senderZaloPayID = senderZaloPayID;
     }
 
     public Integer getType() {
@@ -105,14 +120,22 @@ public class SentBundleGD {
         this.numOfPackages = numOfPackages;
     }
 
+    public String getSendMessage() {
+        return sendMessage;
+    }
+
+    public void setSendMessage(String sendMessage) {
+        this.sendMessage = sendMessage;
+    }
+
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<SentPackageGD> getSentPackages() {
+    public List<PackageInBundleGD> getSentPackages() {
         if (sentPackages == null) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            SentPackageGDDao targetDao = daoSession.getSentPackageGDDao();
-            List<SentPackageGD> sentPackagesNew = targetDao._querySentBundleGD_SentPackages(id);
+            PackageInBundleGDDao targetDao = daoSession.getPackageInBundleGDDao();
+            List<PackageInBundleGD> sentPackagesNew = targetDao._querySentBundleGD_SentPackages(id);
             synchronized (this) {
                 if(sentPackages == null) {
                     sentPackages = sentPackagesNew;

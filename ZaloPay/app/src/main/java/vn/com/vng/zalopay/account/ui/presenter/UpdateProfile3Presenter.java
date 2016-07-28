@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.vng.zalopay.utils.UriUtil;
 
 /**
  * Created by AnhHieu on 7/1/16.
@@ -67,7 +66,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         Timber.d("identityNumber %s email %s fimgPath %s bimgPath %s avatarPath %s", identityNumber, email, fimgPath, bimgPath, avatarPath);
 
         mView.showLoading();
-        Subscription subscription = accountRepository.updateProfile3(identityNumber, email, fimgPath, bimgPath, avatarPath)
+        Subscription subscription = accountRepository.updateUserProfileLevel3(identityNumber, email, fimgPath, bimgPath, avatarPath)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateSubscriber());
         compositeSubscription.add(subscription);
@@ -102,7 +101,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
         if (_fimgBytes != null && _bimgBytes != null && _avatarBytes != null) {
             Timber.d(" _fimg %s _bimg %s avatar %s", _fimgBytes.length, _bimgBytes.length, _avatarBytes.length);
-            Subscription subscription = accountRepository.updateProfile3(identityNumber, email,
+            Subscription subscription = accountRepository.updateUserProfileLevel3(identityNumber, email,
                     _fimgBytes,
                     _bimgBytes,
                     _avatarBytes)

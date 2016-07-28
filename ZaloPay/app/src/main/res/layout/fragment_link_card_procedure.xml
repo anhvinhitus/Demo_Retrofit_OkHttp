@@ -51,7 +51,7 @@
                     android:layout_marginTop="@dimen/spacing.large.t"
                     android:text="@string/link_card_step_two" />
 
-                <TextView
+            <!--    <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing.medium.t"
@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing.large.t"
-                    android:text="@string/link_card_step_note" />
+                    android:text="@string/link_card_step_note" />-->
             </LinearLayout>
 
             <View

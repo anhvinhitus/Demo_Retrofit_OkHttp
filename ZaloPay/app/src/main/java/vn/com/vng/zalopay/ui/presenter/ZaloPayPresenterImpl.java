@@ -13,6 +13,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
@@ -69,9 +70,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
+    // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
+    // when received notification
     private void getTotalNotification(long delay) {
         Subscription subscription = notificationRepository.totalNotificationUnRead()
-                .delay(delay, TimeUnit.MILLISECONDS)
+                .delaySubscription(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
         compositeSubscription.add(subscription);
@@ -115,15 +118,29 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         getTotalNotification(0);
     }
 
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onReadNotify(ReadNotifyEvent event) {
+        Timber.d("onReadNotify");
+        getTotalNotification(0);
+    }
+
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
         @Override
         public void onNext(Integer integer) {
-            Timber.d("NotificationSubscriber %s", integer);
-            mZaloPayView.setTotalNotify(integer);
+            Timber.d("Got total %s unread notification messages", integer);
+            if (mZaloPayView != null) {
+                mZaloPayView.setTotalNotify(integer);
+            }
         }
 
         @Override
         public void onError(Throwable e) {
+        }
+
+        @Override
+        public void onCompleted() {
+            super.onCompleted();
+            Timber.d("notification subscription got complete signal");
         }
     }
 

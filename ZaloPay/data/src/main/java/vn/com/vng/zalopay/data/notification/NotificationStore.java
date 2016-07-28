@@ -19,9 +19,11 @@ public interface NotificationStore {
 
         void markAsReadAll();
 
-        Observable<List<NotificationData>> get(int pageIndex, int limit);
+        List<NotificationData> get(int pageIndex, int limit);
 
-        Observable<Integer> totalNotificationUnRead();
+        int totalNotificationUnRead();
+
+        NotificationData get(long notifyId);
     }
 
     interface RequestService {
@@ -33,5 +35,9 @@ public interface NotificationStore {
         Observable<Integer> totalNotificationUnRead();
 
         void markAsRead(long nId);
+
+        void put(NotificationData notify);
+
+        Observable<NotificationData> getNotify(long id);
     }
 }

@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
@@ -24,6 +24,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     private SweetAlertDialog mErrorDialog;
+    protected SweetAlertDialog mProgressDialog;
 
     @Override
     protected void setupActivityComponent() {
@@ -40,7 +41,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         return null;
     }
 
-    protected ProgressDialog mProgressDialog;
 
     @Inject
     LoginPresenter loginPresenter;
@@ -55,7 +55,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         if (!TextUtils.isEmpty(message)) {
             showDialog(message, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         }
-
     }
 
     @OnClick(R.id.layoutLoginZalo)
@@ -64,12 +63,18 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         zpAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
     }
 
-   /* @Override
+    @Override
     public void onResume() {
         super.onResume();
-        loginPresenter.pause();
-    }
 
+        GlobalEventHandlingService.Message message = getAppComponent().globalEventService().popMessage();
+        if (message == null) {
+            return;
+        }
+
+        showDialog(message.content, message.messageType, message.title);
+    }
+/*
     @Override
     public void onPause() {
         super.onPause();
@@ -80,6 +85,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void onDestroy() {
         destroyErrorDialog();
         loginPresenter.destroy();
+        hideLoading();
+        mProgressDialog = null;
         super.onDestroy();
     }
 
@@ -110,26 +117,20 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    public void gotoUpdateProfileLevel2() {
-        navigator.startUpdateProfileLevel2Activity(this, true);
-        finish();
-    }
-
-    @Override
     public void showLoading() {
         Timber.d("showLoading");
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), getString(R.string.login), getString(R.string.loading));
-            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setCancelable(false);
         }
-
         mProgressDialog.show();
     }
 
     public void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+        if (mProgressDialog == null || mProgressDialog.isShowing()) {
+            return;
         }
+        mProgressDialog.dismiss();
     }
 
     @Override
@@ -144,7 +145,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void showError(String message) {
         Timber.d("showError message %s", message);
         if (mErrorDialog == null) {
-            mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+            mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE, R.style.alert_dialog)
                     .setConfirmText(getContext().getString(R.string.txt_close))
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override

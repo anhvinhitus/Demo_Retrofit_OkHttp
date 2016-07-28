@@ -73,7 +73,7 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_NAME, user.dname);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
         editor.putInt(Constants.PREF_PROFILE_LEVEL, user.profilelevel);
-        String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermisssions);
+        String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermissions);
         Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
         editor.putLong(Constants.PREF_USER_PHONE, user.phonenumber);
         editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
@@ -102,20 +102,43 @@ public class UserConfigImpl implements UserConfig {
         editor.apply();
     }
 
-    public void updateProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
+    public void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermissions) {
         if (currentUser == null) {
             return;
         }
-        currentUser.profilelevel = profilelevel;
-        currentUser.profilePermisssions = profilePermisssions;
-        saveProfilePermissions(profilelevel, profilePermisssions);
+        currentUser.profilelevel = profileLevel;
+        currentUser.profilePermissions = profilePermissions;
+        saveProfilePermissions(profileLevel, profilePermissions);
     }
 
-    private void saveProfilePermissions(int profilelevel, List<ProfilePermission.Permission> profilePermisssions) {
+    @Override
+    public void save(String email, String identity) {
+        if (currentUser != null) {
+            currentUser.email = email;
+            currentUser.identityNumber = identity;
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(Constants.PREF_USER_IDENTITY_NUMBER, identity);
+            editor.putString(Constants.PREF_USER_EMAIL, email);
+            editor.apply();
+        }
+    }
+
+    @Override
+    public void updateProfile(int profileLevel, List<ProfilePermission.Permission> profilePermissions, String email, String identity) {
+
+        this.updateProfilePermissions(profileLevel, profilePermissions);
+
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(identity)) {
+            this.save(email, identity);
+        }
+    }
+
+    private void saveProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermissions) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(Constants.PREF_PROFILE_LEVEL, profilelevel);
+        editor.putInt(Constants.PREF_PROFILE_LEVEL, profileLevel);
         Gson gson = new Gson();
-        String permissionsStr = JsonUtil.toJsonArrayString(profilePermisssions);
+        String permissionsStr = JsonUtil.toJsonArrayString(profilePermissions);
         Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
         editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
         editor.apply();
@@ -140,6 +163,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
             currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0l);
             currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
+            currentUser.identityNumber = preferences.getString(Constants.PREF_USER_IDENTITY_NUMBER, "");
         }
     }
 
@@ -158,6 +182,7 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_PROFILE_PERMISSIONS);
         editor.remove(Constants.PREF_INVITATION_SESSION);
         editor.remove(Constants.PREF_INVITATION_USERID);
+        editor.remove(Constants.PREF_USER_IDENTITY_NUMBER);
         editor.apply();
     }
 

@@ -5,8 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.ws.model.Event;
 
 /**
  * Created by AnhHieu on 6/20/16.
@@ -27,6 +25,12 @@ public class NotificationData extends Event {
 
     @SerializedName("embeddata")
     public JsonObject embeddata;
+
+    @SerializedName("transtype")
+    public int transtype;
+
+    @SerializedName("notificationtype")
+    public int notificationtype;
 
     @SerializedName("userid")
     public String userid;
@@ -114,26 +118,74 @@ public class NotificationData extends Event {
     }
 
     public int getTransType() {
-        int transType = -1;
-        try {
-            if (embeddata.has(Constants.TRANSTYPE)) {
-                transType = embeddata.get(Constants.TRANSTYPE).getAsInt();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return transType;
+        return transtype;
     }
 
     public int getNotificationType() {
-        int notificationType = -1;
+        return notificationtype;
+    }
+
+    public void setNotificationtype(int notificationtype) {
+        this.notificationtype = notificationtype;
+    }
+
+    public long getPackageid() {
+        long packetId = -1;
         try {
-            if (embeddata.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
-                notificationType = embeddata.get(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
+            if (embeddata.has("packageid")) {
+                packetId = embeddata.get("packageid").getAsLong();
             }
         } catch (Exception e) {
             Timber.w(e, "exception : ");
         }
-        return notificationType;
+        return packetId;
+    }
+
+    public long getBundleid() {
+        long bundleid = -1;
+        try {
+            if (embeddata.has("bundleid")) {
+                bundleid = embeddata.get("bundleid").getAsLong();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return bundleid;
+    }
+
+    public String getAvatar() {
+        String avatar = "";
+        try {
+            if (embeddata.has("avatar")) {
+                avatar = embeddata.get("avatar").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return avatar;
+    }
+
+    public String getName() {
+        String name = "";
+        try {
+            if (embeddata.has("name")) {
+                name = embeddata.get("name").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return name;
+    }
+
+    public String getLiximessage() {
+        String liximessage = "";
+        try {
+            if (embeddata.has("liximessage")) {
+                liximessage = embeddata.get("liximessage").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception : ");
+        }
+        return liximessage;
     }
 }

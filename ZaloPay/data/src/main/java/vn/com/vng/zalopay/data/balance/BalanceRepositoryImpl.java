@@ -4,6 +4,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -29,27 +30,34 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     @Override
     public Observable<Long> balance() {
-        return Observable.merge(balanceLocal(), updateBalance()).doOnNext(aLong ->
-                mCurrentBalance = aLong
+        return Observable.merge(
+                balanceLocal(),
+                updateBalance().onErrorResumeNext(throwable -> Observable.empty())
         );
     }
 
     @Override
     public Observable<Long> updateBalance() {
         return mRequestService.balance(mUser.uid, mUser.accesstoken)
-                .doOnNext(response -> mLocalStorage.putBalance(response.zpwbalance))
-                .map(balanceResponse1 -> balanceResponse1.zpwbalance)
-                .doOnNext(aLong -> mEventBus.post(new ChangeBalanceEvent(aLong)));
+                .doOnNext(response -> {
+                    mCurrentBalance = response.zpwbalance;
+                    mLocalStorage.putBalance(response.zpwbalance);
+                    mEventBus.post(new ChangeBalanceEvent(response.zpwbalance));
+                })
+                .map(response -> response.zpwbalance);
     }
 
     public Long currentBalance() {
         if (mCurrentBalance == null) {
-            mCurrentBalance = 0l;
+            mCurrentBalance = 0L;
         }
         return mCurrentBalance;
     }
 
     private Observable<Long> balanceLocal() {
-        return mLocalStorage.getBalance();
+        return ObservableHelper.makeObservable(() -> {
+            mCurrentBalance = mLocalStorage.getBalance();
+            return mCurrentBalance;
+        });
     }
 }

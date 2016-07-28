@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -251,9 +250,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     @Override
     public void showLoading() {
         if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
-            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-            mProgressDialog.setContentText("Loading");
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();

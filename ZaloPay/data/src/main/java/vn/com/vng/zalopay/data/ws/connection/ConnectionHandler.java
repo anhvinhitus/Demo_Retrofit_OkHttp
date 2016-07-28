@@ -27,8 +27,12 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
 
         Timber.d("channelRead0 %s", Thread.currentThread().getName());
 
-        if (listener != null) {
-            listener.onReceived(msg);
+        try {
+            if (listener != null) {
+                listener.onReceived(msg);
+            }
+        } catch (Exception ex) {
+            Timber.e(ex, "Exception while parsing notification message");
         }
     }
 

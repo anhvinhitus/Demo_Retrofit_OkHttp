@@ -16,4 +16,5 @@ public class UpdateProfileResponse extends BaseResponse {
 
     @SerializedName("profilelevelpermisssion")
     public List<ProfilePermission.Permission> profilePermissions;
+
 }

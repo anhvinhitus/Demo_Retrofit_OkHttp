@@ -8,6 +8,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -214,14 +215,16 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new MainReactPackage(),
                 new RNSendIntentPackage(),
                 new ReactNativeContacts(),
+                new ZContactsPackage(),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
         );
     }
 
     private void createUserComponent() {
         Timber.d(" user component %s", getUserComponent());
-        if (getUserComponent() != null)
+        if (getUserComponent() != null) {
             return;
+        }
 
         UserConfig userConfig = getAppComponent().userConfig();
         Timber.d(" userConfig %s", userConfig.isSignIn());

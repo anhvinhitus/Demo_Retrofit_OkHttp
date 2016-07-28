@@ -35,6 +35,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
         public final static Property TransferType = new Property(9, Integer.class, "transferType", false, "TRANSFER_TYPE");
         public final static Property Amount = new Property(10, Long.class, "amount", false, "AMOUNT");
         public final static Property Message = new Property(11, String.class, "message", false, "MESSAGE");
+        public final static Property TimeCreate = new Property(12, Long.class, "timeCreate", false, "TIME_CREATE");
     };
 
 
@@ -50,7 +51,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TRANSFER_RECENT\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"ZALO_PAY_ID\" TEXT," + // 1: zaloPayId
                 "\"USER_NAME\" TEXT," + // 2: userName
                 "\"DISPLAY_NAME\" TEXT," + // 3: displayName
@@ -61,7 +62,8 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
                 "\"PHONE_NUMBER\" TEXT," + // 8: phoneNumber
                 "\"TRANSFER_TYPE\" INTEGER," + // 9: transferType
                 "\"AMOUNT\" INTEGER," + // 10: amount
-                "\"MESSAGE\" TEXT);"); // 11: message
+                "\"MESSAGE\" TEXT," + // 11: message
+                "\"TIME_CREATE\" INTEGER);"); // 12: timeCreate
     }
 
     /** Drops the underlying database table. */
@@ -134,6 +136,11 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
         if (message != null) {
             stmt.bindString(12, message);
         }
+ 
+        Long timeCreate = entity.getTimeCreate();
+        if (timeCreate != null) {
+            stmt.bindLong(13, timeCreate);
+        }
     }
 
     /** @inheritdoc */
@@ -157,7 +164,8 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // phoneNumber
             cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // transferType
             cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // amount
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // message
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // message
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // timeCreate
         );
         return entity;
     }
@@ -177,6 +185,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
         entity.setTransferType(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
         entity.setAmount(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
         entity.setMessage(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setTimeCreate(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
      }
     
     /** @inheritdoc */

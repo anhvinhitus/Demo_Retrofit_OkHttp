@@ -1,15 +1,65 @@
 package vn.com.vng.zalopay.mdl;
 
+import android.text.TextUtils;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
+
+import timber.log.Timber;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
  * Created by huuhoa on 7/14/16.
  * Internal helpers
  */
-class Helpers {
+public class Helpers {
+    public static void promiseResolveError(Promise promise, int errorCode, String message) {
+        Timber.d("promiseResolveError start errorCode [%s] message [%s]", errorCode, message);
+        if (promise == null) {
+            Timber.i("Null promise. Doing nothing");
+            return;
+        }
+
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", errorCode);
+        if (!TextUtils.isEmpty(message)) {
+            item.putString("message", message);
+        }
+        promise.resolve(item);
+    }
+
+    public static void promiseResolveSuccess(Promise promise, WritableMap object) {
+        Timber.d("promiseResolveSuccess promise [%s]", promise);
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        if (object != null) {
+            item.putMap("data", object);
+        }
+        promise.resolve(item);
+    }
+
+    public static void promiseResolveSuccess(Promise promise, WritableArray array) {
+        Timber.d("promiseResolveSuccess promise [%s]", promise);
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        if (array != null) {
+            item.putArray("data", array);
+        }
+        promise.resolve(item);
+    }
+
     static String readableMapToString(ReadableMap param) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");

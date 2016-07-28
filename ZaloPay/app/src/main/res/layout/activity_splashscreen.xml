@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:adjustViewBounds="true"
             android:scaleType="center"
             android:src="@drawable/ic_bg" />
 
@@ -24,15 +24,17 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_zalopay" />
+            android:src="@drawable/ic_logo_zalopay" />
 
-       <!--  <include
-                layout="@layout/progress"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="45dp" />-->
+        <TextView
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="56dp"
+            android:text="@string/no.need.cash.anymore"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16dp" />
     </FrameLayout>
-
 
 </FrameLayout>

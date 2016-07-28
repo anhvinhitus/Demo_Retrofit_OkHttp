@@ -18,19 +18,20 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.http.Field;
 import rx.Observable;
 import rx.Observer;
-import vn.com.vng.zalopay.data.api.entity.mapper.RedPackageDataMapper;
+import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.RevPackageInBundleResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SentBundleListResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SentPackageInBundleResponse;
-import vn.com.vng.zalopay.data.api.response.redpackage.SubmitOpenPackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.redpacket.RedPackageLocalStorage;
-import vn.com.vng.zalopay.data.redpacket.RedPackageRepositoryImpl;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
-import vn.com.vng.zalopay.domain.model.BundleOrder;
+import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
+import vn.com.vng.zalopay.data.redpacket.RedPacketRepository;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -47,9 +48,9 @@ public class RedPackageRepositoryTest {
     int type = 1;
     String message = "Chuc may man lan sau";
 
-    RedPackageStore.LocalStorage mLocalStorage;
-    RedPackageStore.Repository mRepository;
-    RedPackageStore.RequestService mRequestService;
+    RedPacketStore.LocalStorage mLocalStorage;
+    RedPacketStore.Repository mRepository;
+    RedPacketStore.RequestService mRequestService;
 
     //declare Variable
     BundleOrderResponse bundleOrderResponse;
@@ -76,9 +77,7 @@ public class RedPackageRepositoryTest {
         baseResponse.message="";
 
         submitOpenPackageResponse = new SubmitOpenPackageResponse();
-        submitOpenPackageResponse.bundleId = 123321L;
-        submitOpenPackageResponse.packageID = 987L;
-        submitOpenPackageResponse.zpTransID = "lx123456";
+        submitOpenPackageResponse.zptransid = 123456;
     }
 
     @Before
@@ -90,13 +89,13 @@ public class RedPackageRepositoryTest {
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
-        RedPackageDataMapper dataMapper = new RedPackageDataMapper();
-        mLocalStorage = new RedPackageLocalStorage(daoSession, dataMapper);
+        RedPacketDataMapper dataMapper = new RedPacketDataMapper();
+        mLocalStorage = new RedPacketLocalStorage(daoSession, dataMapper);
 
-        mRepository = new RedPackageRepositoryImpl(mRequestService, mLocalStorage, dataMapper, null, new User("1"));
+        mRepository = new RedPacketRepository(mRequestService, mLocalStorage, dataMapper, new User("1"));
     }
 
-    public class RequestServiceImpl implements RedPackageStore.RequestService {
+    public class RequestServiceImpl implements RedPacketStore.RequestService {
 
         @Override
         public Observable<BundleOrderResponse> createBundleOrder(@Field("quantity") int quantity, @Field("totalLuck") long totalLuck, @Field("amountEach") long amountEach, @Field("type") int type, @Field("sendZaloPayID") String sendZaloPayID, @Field("accessToken") String accessToken, @Field("sendMessage") String sendMessage) {
@@ -114,7 +113,17 @@ public class RedPackageRepositoryTest {
         }
 
         @Override
+        public Observable<PackageStatusResponse> getPackageStatus(@Field("packageid") long packageID, @Field("zptransid") long zpTransID, @Field("userid") String userid, @Field("accesstoken") String accessToken, @Field("deviceid") String deviceid) {
+            return null;
+        }
+
+        @Override
         public Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
+            return null;
+        }
+
+        @Override
+        public Observable<GetReceivePackageResponse> getReceivedPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken) {
             return null;
         }
 
@@ -123,10 +132,6 @@ public class RedPackageRepositoryTest {
             return null;
         }
 
-        @Override
-        public Observable<RevPackageInBundleResponse> getRevPackageList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
-            return null;
-        }
     }
 
     @Test
@@ -166,7 +171,7 @@ public class RedPackageRepositoryTest {
     @Test
     public void testRedPackage() throws Exception{
 //        CountDownLatch countDownLatch = new CountDownLatch(6);
-//        final List<RedPackage> redPackages = new ArrayList<>();
+//        final List<RedPacket> redPackages = new ArrayList<>();
 //        final List<BundleOrder> bundleOrders = new ArrayList<>();
 
 //        mRequestService.sendBundle(bundleOrderResponse.bundleID, "u1|u2|u3", "323242", "adsfsafa")
@@ -185,12 +190,12 @@ public class RedPackageRepositoryTest {
 //            @Override
 //            public void onNext(BaseResponse baseResponse) {
 //                System.out.println("Got baseResponse: " + String.valueOf(baseResponse));
-//                mLocalStorage.updateRedPackage(bundleOrderResponse.bundleID, RedPackage.RedPackageState.SENT.getValue());
+//                mLocalStorage.updateRedPackage(bundleOrderResponse.bundleID, RedPacket.RedPacketState.SENT.getValue());
 //                countDownLatch.countDown();
 //            }
 //        });
 
-//        mLocalStorage.getAllRedPackage().subscribe(new Observer<List<RedPackage>>() {
+//        mLocalStorage.getAllRedPackage().subscribe(new Observer<List<RedPacket>>() {
 //            @Override
 //            public void onCompleted() {
 //                countDownLatch.countDown();
@@ -203,7 +208,7 @@ public class RedPackageRepositoryTest {
 //            }
 //
 //            @Override
-//            public void onNext(List<RedPackage> redPackageList) {
+//            public void onNext(List<RedPacket> redPackageList) {
 //                for (int i = 0; i < redPackageList.size(); i++) {
 //                    System.out.print("bundleId:" + redPackageList.get(i).bundleId);
 //                    System.out.print("state:" + redPackageList.get(i).state);

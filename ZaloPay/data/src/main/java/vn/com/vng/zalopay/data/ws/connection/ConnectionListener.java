@@ -6,8 +6,8 @@ public interface ConnectionListener {
 
     void onReceived(byte[] data);
 
-    void onError(int code, String message);
-
     void onDisconnected(int code, String message);
+
+    void onError(Exception error);
 
 }

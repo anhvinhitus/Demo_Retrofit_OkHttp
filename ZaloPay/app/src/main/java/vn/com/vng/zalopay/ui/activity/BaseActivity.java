@@ -209,27 +209,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpired(TokenExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+            showToast(R.string.exception_token_expired_message);
             getAppComponent().applicationSession().clearUserSession();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpiredMain(TokenExpiredEvent event) {
-        showToast(R.string.exception_token_expired_message);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
+        if (this instanceof LoginZaloActivity) {
+            showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+        } else {
             getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
             getAppComponent().applicationSession().clearUserSession();
-        } else {
-            showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         }
     }
 
@@ -270,7 +266,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected void showDialog(String message, int alertType, String confirmText) {
-        SweetAlertDialog alertDialog = new SweetAlertDialog(this, alertType);
+        SweetAlertDialog alertDialog = new SweetAlertDialog(this, alertType, R.style.alert_dialog);
         alertDialog.setContentText(message);
         alertDialog.setConfirmText(confirmText);
         alertDialog.show();

@@ -3,22 +3,20 @@ package vn.com.vng.zalopay.data.ws.parser;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.model.User;
 
 
 /**
  * Created by AnhHieu on 6/14/16.
+ * Parser for notification messages
  */
 public class MessageParser implements Parser {
 
@@ -70,38 +68,31 @@ public class MessageParser implements Parser {
             event.result = res.getResult();
             return event;
         } catch (Exception ex) {
-            Timber.w(ex, "processAuthenticationLoginSuccess");
+            Timber.w(ex, "Error while handling authentication result");
 
         }
         return null;
     }
 
     public Event processKickOutUser(int msgType, byte[] data) {
-        Timber.d("You kickedout");
+        Timber.d("Connection was kicked out by server");
         return null;
     }
 
     public Event processPushMessage(int msgType, byte[] data) {
         String str = new String(data);
-        Timber.d("notification %s", str);
-        NotificationData event = null;
-        if (!TextUtils.isEmpty(str)) {
-            try {
-                event = mGson.fromJson(str, NotificationData.class);
-                event.setMsgType(msgType);
-                JsonObject embeddataJson = event.getEmbeddata();
+        Timber.d("got notification message: %s", str);
+        if (TextUtils.isEmpty(str)) {
+            return null;
+        }
 
-                int notificationType = event.getNotificationType();
-
-                int transType = event.getTransType();
-
-                event.read = !((!user.uid.equals(event.userid) && transType > 0)
-                        || notificationType > 0);
-
-            } catch (Exception ex) {
-                Timber.w(ex, " Parse error");
-                event = null;
-            }
+        NotificationData event;
+        try {
+            event = mGson.fromJson(str, NotificationData.class);
+            event.setMsgType(msgType);
+        } catch (Exception ex) {
+            Timber.w(ex, "Error in parsing notification message");
+            event = null;
         }
         return event;
     }

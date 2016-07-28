@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.activity;
 
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -26,13 +25,14 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 4/21/16.
  */
 public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanView {
 
-    private ProgressDialog mProgressDialog;
+    private SweetAlertDialog mProgressDialog;
 
     @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
@@ -153,14 +153,15 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     public void showLoading() {
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if (mProgressDialog != null)
+        if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
 

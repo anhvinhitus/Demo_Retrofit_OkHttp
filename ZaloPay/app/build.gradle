@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.frogermcs.androiddevmetrics'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 buildscript {
@@ -37,11 +36,12 @@ android {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
         versionCode 1
-        versionName "1.6.14"
+        versionName "1.6.24"
 
         multiDexEnabled true
 
-        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+        buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
+        buildConfigField 'int', 'PAYAPPID', '1'
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -141,10 +141,8 @@ android {
         production {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
-            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
@@ -153,8 +151,6 @@ android {
         sandbox {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
@@ -164,10 +160,7 @@ android {
         staging {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
             buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.STAGING'
-            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
@@ -176,8 +169,6 @@ android {
         internalProduction {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
@@ -187,8 +178,6 @@ android {
         internalSandbox {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
@@ -198,8 +187,6 @@ android {
         internalStaging {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
             buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'true'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.STAGING'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
@@ -210,8 +197,6 @@ android {
             // IAP dev with sandbox environment
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
             buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
@@ -222,8 +207,6 @@ android {
             // IAP dev with live environment
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
@@ -234,8 +217,6 @@ android {
             // IAP dev with live environment
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
             buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
-            buildConfigField 'int', 'PAYAPPID', '1'
-            buildConfigField 'boolean', 'ENV_LIVE', 'false'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.STAGING'
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
@@ -370,12 +351,13 @@ dependencies {
     }
     compile project(':reactnativemodules')
 
-    debugCompile(name: 'WALLET-debug', ext: 'aar')
-    releaseCompile(name: 'WALLET-release', ext: 'aar')
+    compile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
     compile project(':sounddecoder')
     compile project(':zalopayanalytics')
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 

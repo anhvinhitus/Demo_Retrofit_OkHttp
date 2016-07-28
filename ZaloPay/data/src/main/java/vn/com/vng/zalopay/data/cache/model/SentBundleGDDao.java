@@ -24,12 +24,14 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property Type = new Property(1, Integer.class, "type", false, "TYPE");
-        public final static Property CreateTime = new Property(2, Long.class, "createTime", false, "CREATE_TIME");
-        public final static Property LastOpenTime = new Property(3, Long.class, "lastOpenTime", false, "LAST_OPEN_TIME");
-        public final static Property TotalLuck = new Property(4, Integer.class, "totalLuck", false, "TOTAL_LUCK");
-        public final static Property NumOfOpenedPakages = new Property(5, Integer.class, "numOfOpenedPakages", false, "NUM_OF_OPENED_PAKAGES");
-        public final static Property NumOfPackages = new Property(6, Integer.class, "numOfPackages", false, "NUM_OF_PACKAGES");
+        public final static Property SenderZaloPayID = new Property(1, String.class, "senderZaloPayID", false, "SENDER_ZALO_PAY_ID");
+        public final static Property Type = new Property(2, Integer.class, "type", false, "TYPE");
+        public final static Property CreateTime = new Property(3, Long.class, "createTime", false, "CREATE_TIME");
+        public final static Property LastOpenTime = new Property(4, Long.class, "lastOpenTime", false, "LAST_OPEN_TIME");
+        public final static Property TotalLuck = new Property(5, Integer.class, "totalLuck", false, "TOTAL_LUCK");
+        public final static Property NumOfOpenedPakages = new Property(6, Integer.class, "numOfOpenedPakages", false, "NUM_OF_OPENED_PAKAGES");
+        public final static Property NumOfPackages = new Property(7, Integer.class, "numOfPackages", false, "NUM_OF_PACKAGES");
+        public final static Property SendMessage = new Property(8, String.class, "sendMessage", false, "SEND_MESSAGE");
     };
 
     private DaoSession daoSession;
@@ -49,12 +51,14 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SENT_BUNDLE_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: id
-                "\"TYPE\" INTEGER," + // 1: type
-                "\"CREATE_TIME\" INTEGER," + // 2: createTime
-                "\"LAST_OPEN_TIME\" INTEGER," + // 3: lastOpenTime
-                "\"TOTAL_LUCK\" INTEGER," + // 4: totalLuck
-                "\"NUM_OF_OPENED_PAKAGES\" INTEGER," + // 5: numOfOpenedPakages
-                "\"NUM_OF_PACKAGES\" INTEGER);"); // 6: numOfPackages
+                "\"SENDER_ZALO_PAY_ID\" TEXT NOT NULL ," + // 1: senderZaloPayID
+                "\"TYPE\" INTEGER," + // 2: type
+                "\"CREATE_TIME\" INTEGER," + // 3: createTime
+                "\"LAST_OPEN_TIME\" INTEGER," + // 4: lastOpenTime
+                "\"TOTAL_LUCK\" INTEGER," + // 5: totalLuck
+                "\"NUM_OF_OPENED_PAKAGES\" INTEGER," + // 6: numOfOpenedPakages
+                "\"NUM_OF_PACKAGES\" INTEGER," + // 7: numOfPackages
+                "\"SEND_MESSAGE\" TEXT);"); // 8: sendMessage
     }
 
     /** Drops the underlying database table. */
@@ -68,35 +72,41 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     protected void bindValues(SQLiteStatement stmt, SentBundleGD entity) {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
+        stmt.bindString(2, entity.getSenderZaloPayID());
  
         Integer type = entity.getType();
         if (type != null) {
-            stmt.bindLong(2, type);
+            stmt.bindLong(3, type);
         }
  
         Long createTime = entity.getCreateTime();
         if (createTime != null) {
-            stmt.bindLong(3, createTime);
+            stmt.bindLong(4, createTime);
         }
  
         Long lastOpenTime = entity.getLastOpenTime();
         if (lastOpenTime != null) {
-            stmt.bindLong(4, lastOpenTime);
+            stmt.bindLong(5, lastOpenTime);
         }
  
         Integer totalLuck = entity.getTotalLuck();
         if (totalLuck != null) {
-            stmt.bindLong(5, totalLuck);
+            stmt.bindLong(6, totalLuck);
         }
  
         Integer numOfOpenedPakages = entity.getNumOfOpenedPakages();
         if (numOfOpenedPakages != null) {
-            stmt.bindLong(6, numOfOpenedPakages);
+            stmt.bindLong(7, numOfOpenedPakages);
         }
  
         Integer numOfPackages = entity.getNumOfPackages();
         if (numOfPackages != null) {
-            stmt.bindLong(7, numOfPackages);
+            stmt.bindLong(8, numOfPackages);
+        }
+ 
+        String sendMessage = entity.getSendMessage();
+        if (sendMessage != null) {
+            stmt.bindString(9, sendMessage);
         }
     }
 
@@ -117,12 +127,14 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     public SentBundleGD readEntity(Cursor cursor, int offset) {
         SentBundleGD entity = new SentBundleGD( //
             cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // type
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // createTime
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // lastOpenTime
-            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // totalLuck
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // numOfOpenedPakages
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6) // numOfPackages
+            cursor.getString(offset + 1), // senderZaloPayID
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // type
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // createTime
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // lastOpenTime
+            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // totalLuck
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // numOfOpenedPakages
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // numOfPackages
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // sendMessage
         );
         return entity;
     }
@@ -131,12 +143,14 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     @Override
     public void readEntity(Cursor cursor, SentBundleGD entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
-        entity.setType(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
-        entity.setCreateTime(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setLastOpenTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setTotalLuck(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
-        entity.setNumOfOpenedPakages(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setNumOfPackages(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setSenderZaloPayID(cursor.getString(offset + 1));
+        entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setCreateTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setLastOpenTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setTotalLuck(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
+        entity.setNumOfOpenedPakages(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setNumOfPackages(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setSendMessage(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     /** @inheritdoc */

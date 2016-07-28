@@ -17,6 +17,7 @@
         android:gravity="center"
         android:padding="@dimen/app_padding"
         android:text="@string/txt_home_qrcode"
+        android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize.tiny" />
 
@@ -32,6 +33,7 @@
         android:gravity="center"
         android:padding="@dimen/app_padding"
         android:text="@string/txt_home_deposit"
+        android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize.tiny" />
 

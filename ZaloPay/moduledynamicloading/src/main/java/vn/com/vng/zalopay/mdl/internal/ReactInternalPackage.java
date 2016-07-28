@@ -6,16 +6,25 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.INavigator;
+import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
+import vn.com.vng.zalopay.mdl.redpacket.ReactRedPacketNativeModule;
+import vn.com.vng.zalopay.mdl.zpmodal.ReactModalHostManager;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -24,24 +33,43 @@ import vn.com.vng.zalopay.mdl.INavigator;
 public class ReactInternalPackage implements ReactPackage {
 
     private TransactionStore.Repository mRepository;
-    private RedPackageStore.Repository mRedPackageRepository;
+    private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
+    private BalanceStore.Repository mBalanceRepository;
+    private IRedPacketPayService paymentService;
+    private AlertDialogProvider sweetAlertDialog;
 
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
 
     private ZPAnalytics zpAnalytics;
+    private EventBus mEventBus;
+    private ReactNativeInstanceManager mReactNativeInstanceManager;
+
+    private UserConfig mUserConfig;
 
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
-                                RedPackageStore.Repository redPackageRepository,
+                                RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
-                                INavigator navigator, ZPAnalytics zpAnalytics) {
+                                BalanceStore.Repository balanceRepository,
+                                IRedPacketPayService paymentService,
+                                AlertDialogProvider sweetAlertDialog,
+                                INavigator navigator, ZPAnalytics zpAnalytics,
+                                EventBus eventBus,
+                                ReactNativeInstanceManager reactNativeInstanceManager,
+                                UserConfig userConfig) {
         this.mRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
+        this.mBalanceRepository = balanceRepository;
+        this.paymentService = paymentService;
+        this.sweetAlertDialog = sweetAlertDialog;
         this.navigator = navigator;
         this.zpAnalytics = zpAnalytics;
+        this.mEventBus = eventBus;
+        this.mReactNativeInstanceManager = reactNativeInstanceManager;
+        this.mUserConfig = userConfig;
     }
 
     @Override
@@ -51,8 +79,8 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
-        modules.add(new ReactRedPackageNativeModule(reactContext, mRedPackageRepository, mFriendRepository));
-        modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository));
+        modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUserConfig, sweetAlertDialog));
+        modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));
         return modules;
     }
 
@@ -63,6 +91,8 @@ public class ReactInternalPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        List<ViewManager> viewManagers = new ArrayList<>();
+        viewManagers.add(new ReactModalHostManager(reactContext, mReactNativeInstanceManager));
+        return viewManagers;
     }
 }

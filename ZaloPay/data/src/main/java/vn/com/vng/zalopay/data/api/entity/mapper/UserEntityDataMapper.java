@@ -21,7 +21,7 @@ public class UserEntityDataMapper {
             user.expirein = response.expirein;
             user.uid = response.userid;
             user.profilelevel = response.profilelevel;
-            user.profilePermisssions = response.profilelevelpermisssion;
+            user.profilePermissions = response.profilelevelpermission;
             user.phonenumber = response.phonenumber;
         }
 

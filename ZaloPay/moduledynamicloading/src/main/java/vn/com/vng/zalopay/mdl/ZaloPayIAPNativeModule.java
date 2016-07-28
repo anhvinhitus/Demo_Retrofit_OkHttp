@@ -89,10 +89,10 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
                 reportInvalidParameter(promise, Constants.AMOUNT);
                 return;
             }
-            if (TextUtils.isEmpty(order.getItem())) {
-                reportInvalidParameter(promise, Constants.ITEM);
-                return;
-            }
+//            if (TextUtils.isEmpty(order.getItem())) {
+//                reportInvalidParameter(promise, Constants.ITEM);
+//                return;
+//            }
             if (TextUtils.isEmpty(order.getDescription())) {
                 reportInvalidParameter(promise, Constants.DESCRIPTION);
                 return;
@@ -104,25 +104,9 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
 
             mPaymentService.pay(getCurrentActivity(), promise, order);
         } catch (Exception e) {
-            errorCallback(promise, PaymentError.ERR_CODE_INPUT);
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, null);
             //e.printStackTrace();
         }
-    }
-
-    private void errorCallback(Promise promise, int errorCode) {
-        errorCallback(promise, errorCode, null);
-    }
-
-    private void errorCallback(Promise promise, int errorCode, String message) {
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", errorCode);
-        if (!TextUtils.isEmpty(message)) {
-            item.putString("message", message);
-        }
-        promise.resolve(item);
     }
 
     @ReactMethod
@@ -166,6 +150,6 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
 
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
         Timber.d("Invalid parameter [%s]", parameterName);
-        errorCallback(promise, PaymentError.ERR_CODE_INPUT, message);
+        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, message);
     }
 }

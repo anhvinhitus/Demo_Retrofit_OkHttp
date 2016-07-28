@@ -23,15 +23,14 @@ public class BalanceLocalStorage extends SqlBaseScopeImpl implements BalanceStor
     }
 
     @Override
-    public Observable<Long> getBalance() {
-        return ObservableHelper.makeObservable(() -> {
-            String balance = getDataManifest(Constants.MANIF_BALANCE);
-            Long ret = 0l;
-            try {
-                ret = Long.parseLong(balance);
-            } catch (Exception e) {
-            }
-            return ret;
-        });
+    public long getBalance() {
+        String balance = getDataManifest(Constants.MANIF_BALANCE);
+        long ret;
+        try {
+            ret = Long.parseLong(balance);
+        } catch (Exception e) {
+            ret = 0;
+        }
+        return ret;
     }
 }

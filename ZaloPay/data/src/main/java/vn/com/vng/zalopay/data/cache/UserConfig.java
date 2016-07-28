@@ -20,7 +20,9 @@ public interface UserConfig {
 
     void saveConfig(User user);
 
-    void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermisssions);
+    void updateProfilePermissions(int profileLevel, List<ProfilePermission.Permission> profilePermissions);
+
+    void updateProfile(int profileLevel, List<ProfilePermission.Permission> profilePermissions, String email, String identity);
 
     void updateUserPhone(String phone);
 
@@ -36,6 +38,8 @@ public interface UserConfig {
 
     void saveUserInfo(long zaloId, String avatar, String displayName, long birthData, int userGender);
 
+    void save(String email, String identity);
+
     void saveZaloUserInfo(JSONObject json);
 
     String getAvatar();
@@ -44,7 +48,7 @@ public interface UserConfig {
 
     boolean isSignIn();
 
-  //  void clearAllUserDB();
+    //  void clearAllUserDB();
 
     /*INVITATION*/
     void saveInvitationInfo(String uid, String session);

@@ -11,7 +11,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.google.gson.JsonObject;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -20,10 +23,10 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.message.TransactionType;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
@@ -33,12 +36,16 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 public class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private NotificationStore.Repository repository;
+    private final EventBus mEventBus;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactNotificationNativeModule(ReactApplicationContext reactContext, NotificationStore.Repository repository) {
+    public ReactNotificationNativeModule(ReactApplicationContext reactContext,
+                                         NotificationStore.Repository repository,
+                                         EventBus eventBus) {
         super(reactContext);
         this.repository = repository;
+        this.mEventBus = eventBus;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -76,8 +83,6 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
     private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;
-
-
         public NotificationSubscriber(Promise promise) {
             promiseWeakReference = new WeakReference<>(promise);
         }
@@ -118,30 +123,19 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         item.putInt("appid", entity.appid);
         item.putString("destuserid", entity.destuserid);
 
-        int transtype = 0;
-        int notificationtype = 1;
+        item.putString("packageid", String.valueOf(entity.getPackageid()));
+        item.putString("bundleid", String.valueOf(entity.getBundleid()));
+        item.putString("avatarurl", entity.getAvatar());
+        item.putString("name", entity.getName());
+        item.putString("liximessage", entity.getLiximessage());
 
-        try {
-            JsonObject embeddata = entity.getEmbeddata();
-            if (embeddata.has(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE)) {
-                notificationtype = embeddata.get(Constants.PARAM_RESPONSE_NOTIFICATION_TYPE).getAsInt();
-            }
-
-            if (embeddata.has(Constants.TRANSTYPE)) {
-                transtype = embeddata.get(Constants.TRANSTYPE).getAsInt();
-            }
-        } catch (Exception ex) {
-            Timber.w(ex, " exception parse");
-        }
-
-        Timber.d("transtype %s notificationtype %s", transtype, notificationtype);
+        int transtype = entity.transtype;
+        int notificationtype = entity.notificationtype;
 
         item.putString("title", TransactionType.getTitle(transtype));
         item.putInt("transtype", transtype);
         item.putInt("notificationtype", notificationtype);
         item.putDouble("transid", entity.getTransid());
-
-        Timber.d("notify Id %s", entity.notificationId);
 
         item.putString("notificationid", String.valueOf(entity.notificationId));
         return item;
@@ -166,12 +160,14 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
     @Override
     public void onHostResume() {
-        Timber.d(" Actvity `onResume`");
+        Timber.d(" Activity `onResume`");
+        mEventBus.register(this);
     }
 
     @Override
     public void onHostPause() {
-        Timber.d(" Actvity `onPause`");
+        Timber.d(" Activity `onPause`");
+        mEventBus.unregister(this);
     }
 
     @Override
@@ -190,5 +186,18 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
     }
 
+    public void sendEvent(String eventName) {
+        ReactApplicationContext reactContext = getReactApplicationContext();
+        if (reactContext == null) {
+            return;
+        }
+
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
+    }
+
+    @Subscribe
+    public void onNotificationUpdated(NotificationChangeEvent event) {
+        sendEvent("zalopayNotificationsAdded");
+    }
 
 }

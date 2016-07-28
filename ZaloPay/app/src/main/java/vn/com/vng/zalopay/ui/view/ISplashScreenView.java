@@ -7,8 +7,6 @@ public interface ISplashScreenView {
 
     void gotoHomeScreen();
 
-    void gotoUpdateProfileLevel2();
-
     void gotoLoginScreen();
 
     void showLoading();

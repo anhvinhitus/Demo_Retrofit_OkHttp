@@ -1,18 +1,20 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.ui.presenter.SplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 
@@ -31,10 +33,14 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         return fragment;
     }
 
+
+    public SplashScreenFragment() {
+        mLinks = null;
+    }
+
     private boolean interstitialCanceled = false;
 
-    @Inject
-    Navigator navigator;
+    private String mLinks;
 
     @Inject
     SplashScreenPresenter presenter;
@@ -65,6 +71,8 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        handleDeepLinks();
         presenter.verifyUser();
     }
 
@@ -85,40 +93,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void gotoHomeScreen() {
         interstitialCanceled = true;
-        if (!onOpenDeepLinks()) {
-            navigator.startHomeActivity(getContext(), false);
-            getActivity().finish();
-        }
-    }
-
-    private boolean onOpenDeepLinks() {
-        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoken={}"'
-        Uri data = getActivity().getIntent().getData();
-        if (data != null
-            //&& data.isHierarchical()
-                ) {
-
-            String appid = data.getQueryParameter(Constants.APPID);
-            String zptranstoken = data.getQueryParameter(Constants.ZPTRANSTOKEN);
-            if (TextUtils.isEmpty(appid) && TextUtils.isEmpty(zptranstoken)) {
-            }else{
-                Timber.d("appid %s zptranstoken %s ", appid, zptranstoken);
-                if (TextUtils.isEmpty(appid) || !TextUtils.isDigitsOnly(appid) || TextUtils.isEmpty(zptranstoken)) {
-                    showToast(R.string.exception_data_invalid);
-                } else {
-                    navigator.startHomeActivity(getActivity(), Long.parseLong(appid), zptranstoken);
-                }
-
-                getActivity().finish();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void gotoUpdateProfileLevel2() {
-        navigator.startUpdateProfileLevel2Activity(getContext(), false);
+        navigator.startHomeActivity(getContext(), false);
         getActivity().finish();
     }
 
@@ -130,11 +105,30 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
     public void hideLoading() {
+    }
 
+    private void handleDeepLinks() {
+        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoken={}"'
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.getData() != null) {
+            Uri data = intent.getData();
+            mLinks = String.valueOf(intent.getData());
+            Timber.d("handleDeepLinks: mLinks %s", mLinks);
+            if (this.mLinks.startsWith("zalopay-1://")) {
+                String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
+                String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
+                if (TextUtils.isEmpty(appid) || !TextUtils.isDigitsOnly(appid) || TextUtils.isEmpty(zptranstoken)) {
+                    showToast(R.string.exception_data_invalid);
+                } else {
+                    EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+                    eventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken));
+                    Timber.d("postSticky payment");
+                }
+            }
+        }
     }
 }

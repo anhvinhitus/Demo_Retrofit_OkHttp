@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,11 +13,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.text.TextUtils;
 import android.view.Gravity;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 
@@ -29,8 +27,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
@@ -49,7 +47,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
 
 
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    //private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected int getResLayoutId() {
@@ -88,6 +86,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.setView(this);
+        presenter.initialize();
+
         if (getIntent() != null) {
             this.mCurrentMenuId = getIntent().getIntExtra("menuId", MenuItemUtil.HOME_ID);
         } else {
@@ -114,29 +114,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         toggle.syncState();
 
 
-        //init SDK
-        presenter.initialize();
-
         startZaloPayService();
         presenter.getZaloFriend();
 
-        payWithTransToken();
-    }
-
-    private void payWithTransToken() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(Constants.ARG_APPID) && bundle.containsKey(Constants.ARG_ZPTRANSTOKEN)) {
-                long appId = bundle.getLong(Constants.ARG_APPID, 0);
-                String zptranstoken = bundle.getString(Constants.ARG_ZPTRANSTOKEN);
-                if (appId > 0 && !TextUtils.isEmpty(zptranstoken)) {
-                    presenter.pay(appId, zptranstoken);
-                } else {
-                    showToast(R.string.exception_data_invalid);
-                    finish();
-                }
-            }
-        }
     }
 
     @Override
@@ -185,7 +165,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void onClickProfile() {
-//        navigator.startUpdateProfileLevel2Activity(this);
+//        navigator.startUpdateProfileLevel2Activity(this, false);
         navigator.startProfileInfoActivity(this);
     }
 
@@ -354,7 +334,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             return;
         }
 
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType);
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType, R.style.alert_dialog);
         alertDialog.setConfirmText(message.title);
         alertDialog.setContentText(message.content);
         alertDialog.show();
@@ -377,9 +357,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
-            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-            mProgressDialog.setContentText("Loading");
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
@@ -388,6 +366,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPayWithTransToken(final PaymentDataEvent event) {
+        if (presenter != null) {
+            presenter.pay(event.appId, event.zptranstoken);
+        }
+        eventBus.removeStickyEvent(PaymentDataEvent.class);
     }
 
 }

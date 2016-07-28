@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -28,7 +30,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.ReactAppConfig;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
@@ -166,7 +168,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         List<Integer> bannerResource = new ArrayList<>();
         bannerResource.add(R.drawable.bn_1);
         bannerResource.add(R.drawable.bn_2);
-        bannerResource.add(R.drawable.bn_4);
+        // bannerResource.add(R.drawable.bn_4);
         mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource, this);
         mBannerViewpager.setAdapter(mBannerPagerAdapter);
         mBannerIndicator.setViewPager(mBannerViewpager);
@@ -198,9 +200,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app, int position) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-        if (app.appid == Constants.Apps.INTERNAL) {
+        if (app.appid == PaymentAppConfig.Constants.INTERNAL) {
             navigator.startTransferMoneyActivity(getActivity());
-        } else if (app.appid == Constants.Apps.RED_PACKET) {
+        } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
             navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.RED_PACKET);
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
@@ -209,7 +211,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         this.logActionApp(position);
     }
 
-    // FIXME: 6/28/16 
     private void logActionApp(int position) {
         Timber.d("Tap on app at position %d", position);
 
@@ -217,19 +218,19 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @OnClick(R.id.btn_deposit)
-    public void onBtnDepositClick(View view) {
+    public void onBtnDepositClick() {
         navigator.startDepositActivity(getActivity());
         zpAnalytics.trackEvent(ZPEvents.TAPADDCASH);
     }
 
     @OnClick(R.id.btn_link_card)
-    public void onBtnLinkCardClick(View view) {
+    public void onBtnLinkCardClick() {
         navigator.startLinkCardActivity(getActivity());
         zpAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
     }
 
     @OnClick(R.id.btn_qr_code)
-    public void onBtnQrCodeClick(View view) {
+    public void onBtnQrCodeClick() {
         startQRCodeActivity();
         zpAnalytics.trackEvent(ZPEvents.TAPSCANQR);
     }
@@ -254,7 +255,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     private List<AppResource> getListData() {
         if (Lists.isEmptyOrNull(mListApps)) {
-            mListApps = new ArrayList<>(ReactAppConfig.APP_RESOURCE_LIST);
+            mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
         }
         return mListApps;
     }
@@ -270,6 +271,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             if (total > 0) {
                 mNotifyView.setText(String.valueOf(total));
                 mNotifyView.setVisibility(View.VISIBLE);
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
+                mNotifyView.startAnimation(animation);
             } else {
                 mNotifyView.setVisibility(View.GONE);
             }
@@ -278,14 +281,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onItemClick(int position) {
+
         if (position == 0) {
-            navigator.startPaymentApplicationActivity(getActivity(), 11);
+            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
             navigator.startLinkCardProcedureActivity(getActivity());
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-            navigator.startPaymentApplicationActivity(getActivity(), 12);
+            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.BUY_PHONE_CARD);
             zpAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
         }
     }
@@ -304,6 +308,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     static Map<Integer, Integer> sActionMap;
+
     static {
         sActionMap = new HashMap<>();
         sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);

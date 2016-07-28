@@ -33,4 +33,5 @@ public class ChannelFactory extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("bytesEncoder", new ByteArrayEncoder());
         pipeline.addLast("handler", new ConnectionHandler(context, listener));
     }
+
 }

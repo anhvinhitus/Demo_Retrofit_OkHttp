@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.remobile.toast.RCTToastPackage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -20,10 +21,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPackageStore;
+import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
@@ -35,6 +37,8 @@ import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
+import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -59,10 +63,19 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     TransactionStore.Repository transactionRepository;
 
     @Inject
-    RedPackageStore.Repository redPackageRepository;
+    RedPacketStore.Repository redPackageRepository;
 
     @Inject
     FriendStore.Repository friendRepository;
+
+    @Inject
+    IRedPacketPayService paymentService;
+
+    @Inject
+    AlertDialogProvider sweetAlertDialog;
+
+    @Inject
+    BalanceStore.Repository mBalanceRepository;
 
     @Inject
     INavigator navigator;
@@ -73,6 +86,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     ReactNativeInstanceManager mReactNativeInstanceManager;
 
+    @Inject
+    UserConfig mUserConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +96,20 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Override
     public void onPause() {
+        Timber.d("onPause");
         super.onPause();
-        eventBus.unregister(this);
+        if (eventBus.isRegistered(this)) {
+            eventBus.unregister(this);
+        }
     }
 
     @Override
     public void onResume() {
+        Timber.d("onResume");
         super.onResume();
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
 
@@ -120,13 +142,17 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.asList(
                 new MainReactPackage(),
+                new RCTToastPackage(),
                 reactInternalPackage(),
                 new RNDeviceInfo());
     }
 
     protected ReactPackage reactInternalPackage() {
         return new ReactInternalPackage(transactionRepository,
-                notificationRepository, redPackageRepository, friendRepository, navigator, zpAnalytics);
+                notificationRepository, redPackageRepository,
+                friendRepository, mBalanceRepository, paymentService,
+                sweetAlertDialog, navigator, zpAnalytics, eventBus,
+                mReactNativeInstanceManager, mUserConfig);
     }
 
     private void createUserComponent() {
@@ -164,12 +190,15 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onTokenExpired(TokenExpiredEvent event) {
+        Timber.d("onTokenExpired");
         getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpiredMain(TokenExpiredEvent event) {
+        Timber.d("onTokenExpiredMain");
         showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe

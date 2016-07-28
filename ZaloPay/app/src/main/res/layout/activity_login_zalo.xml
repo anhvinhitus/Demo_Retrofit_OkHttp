@@ -1,75 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
 
     <FrameLayout
+        android:id="@+id/layoutLogo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/spacing.medium"
-        android:layout_weight="0.30">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="center"
-                android:src="@drawable/ic_bg" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingTop="@dimen/spacing.tiny"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_zalopay" />
-        </FrameLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.70">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/loremipsum"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_bg"/>
 
         <LinearLayout
-            android:id="@+id/layoutLoginZalo"
-            android:layout_width="266dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/bg_btn_login_zalo_selector"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:adjustViewBounds="true"
-                android:paddingLeft="@dimen/login_button_merge"
-                android:paddingRight="@dimen/login_button_merge"
-                android:paddingTop="@dimen/login_button_merge"
-                android:paddingBottom="@dimen/login_button_merge_bottom"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_zalo" />
-
-            <View
-                android:layout_width="@dimen/separate"
-                android:layout_height="match_parent"
-                android:background="@color/separate.login" />
-
-            <TextView
-                style="@style/Account.Login.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/loremipsum"
+                android:paddingTop="@dimen/spacing.tiny"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_logo_zalopay"/>
+
+            <TextView
+                style="@style/TextView.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/login_with_zalo" />
+                android:text="@string/no.need.cash.anymore"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"/>
         </LinearLayout>
     </FrameLayout>
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.35"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.65"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:id="@+id/layoutLoginZalo"
+                android:layout_width="239dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_login_zalo_selector"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <ImageView
+                    android:layout_width="37dp"
+                    android:layout_height="37dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:contentDescription="@string/loremipsum"
+                    android:src="@drawable/ic_zalo"/>
+
+                <TextView
+                    style="@style/Account.Login.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/login_with_zalo"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        layout="@layout/bottom_login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"/>
+</RelativeLayout>

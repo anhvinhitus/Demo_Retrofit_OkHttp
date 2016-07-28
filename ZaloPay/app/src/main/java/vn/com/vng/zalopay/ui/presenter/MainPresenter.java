@@ -89,8 +89,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     public void initialize() {
-        this.initializeAppConfig();
         this.loadGatewayInfoPaymentSDK();
+        this.initializeAppConfig();
     }
 
     private void initializeAppConfig() {
@@ -155,13 +155,16 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 @Override
                 public Activity getActivity() {
                     if (homeView != null) {
-                        homeView.getActivity();
+                        return homeView.getActivity();
                     }
                     return null;
                 }
             }, new PaymentWrapper.IResponseListener() {
                 @Override
                 public void onParameterError(String param) {
+
+                    Timber.d("onParameterError");
+
                     if (homeView == null) {
                         return;
                     }
@@ -171,13 +174,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     } else if ("uid".equalsIgnoreCase(param)) {
                         homeView.showError(applicationContext.getString(R.string.user_invalid));
                     } else if ("token".equalsIgnoreCase(param)) {
-                        hideLoadingView();
                         homeView.showError(applicationContext.getString(R.string.order_invalid));
                     }
+
+                    hideLoadingView();
                 }
 
                 @Override
                 public void onResponseError(int status) {
+                    Timber.d("onResponseError");
                     if (homeView == null) {
                         return;
                     }
@@ -191,19 +196,24 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                 @Override
                 public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                    Timber.d("onResponseSuccess");
                     updateTransaction();
                     updateBalance();
+                    hideLoadingView();
 
-                    if (homeView != null && homeView.getActivity() != null) {
+                   /* if (homeView != null && homeView.getActivity() != null) {
                         homeView.getActivity().finish();
-                    }
+                    }*/
                 }
 
                 @Override
                 public void onResponseTokenInvalid() {
+                    Timber.d("onResponseTokenInvalid");
                     if (homeView == null) {
                         return;
                     }
+
+                    hideLoadingView();
 
                   /*  homeView.onTokenInvalid();
                     clearAndLogout();*/
@@ -211,6 +221,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                 @Override
                 public void onResponseCancel() {
+                    Timber.d("onResponseCancel");
                     if (homeView == null) {
                         return;
                     }
@@ -222,11 +233,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                 @Override
                 public void onNotEnoughMoney() {
+
+                    Timber.d("onNotEnoughMoney");
+
                     if (homeView == null) {
                         return;
                     }
-
+                    hideLoadingView();
                     navigator.startDepositActivity(applicationContext);
+
                 }
             });
         }
@@ -247,10 +262,14 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void showLoadingView() {
-        homeView.showLoading();
+        if (homeView != null) {
+            homeView.showLoading();
+        }
     }
 
     private void hideLoadingView() {
-        homeView.hideLoading();
+        if (homeView != null) {
+            homeView.hideLoading();
+        }
     }
 }

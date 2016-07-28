@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 20;
+    private static final int APP_DB_VERSION = 30;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -22,15 +22,28 @@ public class GreenDaoGenerator {
         addZaloContact(appSchema);
         addTransferRecent(appSchema);
         addNotification(appSchema);
-        addSentBundle(appSchema);
-        addReceiveBundle(appSchema);
+        addRedPacket(appSchema);
 
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
-    private static void addSentBundle(Schema appSchema) {
-        Entity packageEntity = appSchema.addEntity("SentPackageGD");
-        Property propertyBundleId = packageEntity.addIdProperty().unique().notNull().getProperty();//bundleID
+    private static void addRedPacket(Schema appSchema) {
+        Entity sentBundleSummary = appSchema.addEntity("SentBundleSummaryDB");
+        sentBundleSummary.addIdProperty();
+        sentBundleSummary.addLongProperty("totalOfSentAmount");
+        sentBundleSummary.addIntProperty("totalOfSentBundle");
+        sentBundleSummary.addLongProperty("timeCreate");
+
+        Entity receivePacketSummary = appSchema.addEntity("ReceivePacketSummaryDB");
+        receivePacketSummary.addIdProperty();
+        receivePacketSummary.addLongProperty("totalOfRevamount");
+        receivePacketSummary.addIntProperty("totalOfRevPackage");
+        receivePacketSummary.addIntProperty("totalOfLuckiestDraw");
+        receivePacketSummary.addLongProperty("timeCreate");
+
+        Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
+        packageEntity.addIdProperty(); //packageId
+        Property propertyBundleId = packageEntity.addLongProperty("bundleID").getProperty();
         packageEntity.addStringProperty("revZaloPayID");
         packageEntity.addLongProperty("revZaloID");
         packageEntity.addStringProperty("revFullName");
@@ -42,34 +55,32 @@ public class GreenDaoGenerator {
 
         Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
         sentBundleEntity.addIdProperty().unique().notNull();//bundleId
+        sentBundleEntity.addStringProperty("senderZaloPayID").notNull();//sendZaloPayID
         sentBundleEntity.addIntProperty("type");
         sentBundleEntity.addLongProperty("createTime");
         sentBundleEntity.addLongProperty("lastOpenTime");
         sentBundleEntity.addIntProperty("totalLuck");
         sentBundleEntity.addIntProperty("numOfOpenedPakages");
         sentBundleEntity.addIntProperty("numOfPackages");
+        sentBundleEntity.addStringProperty("sendMessage");
         ToMany sentBundleToPackage = sentBundleEntity.addToMany(packageEntity, propertyBundleId);
         sentBundleToPackage.setName("sentPackages");
         sentBundleToPackage.orderDesc(openTime);
-    }
 
-    private static void addReceiveBundle(Schema appSchema) {
-        Entity revPackageEntity = appSchema.addEntity("ReceivePackageGD");
-        Property revBundleId = revPackageEntity.addIdProperty().unique().notNull().getProperty();//BundleId
-        revPackageEntity.addLongProperty("packageId");
-        revPackageEntity.addStringProperty("sendZaloPayID");
-        revPackageEntity.addStringProperty("sendFullName");
-        revPackageEntity.addLongProperty("amount");
-        Property openTime = revPackageEntity.addLongProperty("openedTime").getProperty();
-
-        Entity receiveBundleEntity = appSchema.addEntity("ReceiveBundleGD");
-        receiveBundleEntity.addIdProperty().unique().notNull();//Bundle
-        receiveBundleEntity.addIntProperty("type");
-        receiveBundleEntity.addLongProperty("createTime");
-        receiveBundleEntity.addIntProperty("totalLuck");
-        receiveBundleEntity.addIntProperty("numOfOpenedPakages");
-        receiveBundleEntity.addIntProperty("numOfPackages");
-        ToMany revBundleToPackage = receiveBundleEntity.addToMany(revPackageEntity, revBundleId);
+        Entity receivePackageGD = appSchema.addEntity("ReceivePackageGD");
+        receivePackageGD.addIdProperty().unique().notNull();//packageID
+        receivePackageGD.addLongProperty("bundleID");
+        receivePackageGD.addStringProperty("receiverZaloPayID");
+        receivePackageGD.addStringProperty("senderZaloPayID");
+        receivePackageGD.addStringProperty("senderFullName");
+        receivePackageGD.addStringProperty("senderAvatar");
+        receivePackageGD.addLongProperty("amount");
+        receivePackageGD.addLongProperty("openedTime");
+        receivePackageGD.addBooleanProperty("isOpen");
+        receivePackageGD.addStringProperty("message");
+        receivePackageGD.addIntProperty("isLuckiest");
+        receivePackageGD.addLongProperty("createTime");
+        ToMany revBundleToPackage = receivePackageGD.addToMany(packageEntity, propertyBundleId);
         revBundleToPackage.setName("receivePackages");
         revBundleToPackage.orderDesc(openTime);
     }
@@ -90,8 +101,7 @@ public class GreenDaoGenerator {
 
     private static void addTransferRecent(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("TransferRecent");
-        appInfoEntity.addIdProperty();//zaloId
-//        appInfoEntity.addLongProperty("userId").notNull().unique();
+        appInfoEntity.addIdProperty().autoincrement();//zaloId
         appInfoEntity.addStringProperty("zaloPayId");
         appInfoEntity.addStringProperty("userName");
         appInfoEntity.addStringProperty("displayName");
@@ -103,6 +113,7 @@ public class GreenDaoGenerator {
         appInfoEntity.addIntProperty("transferType");
         appInfoEntity.addLongProperty("amount");
         appInfoEntity.addStringProperty("message");
+        appInfoEntity.addLongProperty("timeCreate");
     }
 
     private static void addApplicationInfo(Schema schema) {
@@ -196,7 +207,8 @@ public class GreenDaoGenerator {
         notificationGD.addStringProperty("userid");
         notificationGD.addStringProperty("destuserid");
         notificationGD.addBooleanProperty("read");
-        
+        notificationGD.addIntProperty("notificationtype");
+
         notificationGD.addStringProperty("embeddata");
     }
 
