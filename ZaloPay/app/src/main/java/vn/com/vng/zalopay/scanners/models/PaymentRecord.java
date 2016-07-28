@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.scanners.models;
 import android.util.Base64;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.Crc16;
 import vn.com.vng.zalopay.utils.DebugUtils;
 import vn.com.vng.zalopay.utils.MemoryUtils;
 
@@ -67,6 +68,11 @@ public class PaymentRecord {
         currentPos += 16;
         long crc16 = MemoryUtils.extractShort(data, currentPos);
 
+        long computedCrc16 = Crc16.crcb(data);
+        if (computedCrc16 != crc16) {
+            Timber.d("Invalid scanRecord. CRC checksum is not matched.");
+            return null;
+        }
         return new PaymentRecord(manufacturerId, amount, appid, transactionToken, crc16);
     }
 }
