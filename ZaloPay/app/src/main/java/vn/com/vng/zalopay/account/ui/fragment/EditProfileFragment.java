@@ -108,7 +108,7 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
         this.setEmail(user.email);
         this.setGender(user.getGender());
 
-        if (user.profilelevel < 3) {
+        if (user.profilelevel == 2) {
             mLayoutCmnd.setClickable(true);
             mLayoutEmail.setClickable(true);
         } else {
