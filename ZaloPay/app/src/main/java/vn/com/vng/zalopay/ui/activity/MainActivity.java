@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.text.TextUtils;
 import android.view.Gravity;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -25,13 +23,11 @@ import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -338,7 +334,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             return;
         }
 
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType);
+        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType, R.style.alert_dialog);
         alertDialog.setConfirmText(message.title);
         alertDialog.setContentText(message.content);
         alertDialog.show();
@@ -361,9 +357,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
-            mProgressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-            mProgressDialog.setContentText("Loading");
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();

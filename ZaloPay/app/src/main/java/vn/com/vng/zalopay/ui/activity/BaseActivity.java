@@ -266,7 +266,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected void showDialog(String message, int alertType, String confirmText) {
-        SweetAlertDialog alertDialog = new SweetAlertDialog(this, alertType);
+        SweetAlertDialog alertDialog = new SweetAlertDialog(this, alertType, R.style.alert_dialog);
         alertDialog.setContentText(message);
         alertDialog.setConfirmText(confirmText);
         alertDialog.show();

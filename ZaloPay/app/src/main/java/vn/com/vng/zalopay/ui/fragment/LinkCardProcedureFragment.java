@@ -106,12 +106,12 @@ public class LinkCardProcedureFragment extends BaseFragment implements ILinkCard
 
     @Override
     public void showLoading() {
-        showProgressDialog();
+        super.showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
-        hideProgressDialog();
+        super.hideProgressDialog();
     }
 
     @Override
