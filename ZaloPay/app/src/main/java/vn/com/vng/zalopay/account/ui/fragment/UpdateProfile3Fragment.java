@@ -215,12 +215,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void showLoading() {
-        showProgressDialog();
+        super.showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
-        hideProgressDialog();
+        super.hideProgressDialog();
     }
 
     @Override

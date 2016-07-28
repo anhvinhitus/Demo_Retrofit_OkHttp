@@ -107,12 +107,12 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @Override
     public void showLoading() {
-        showProgressDialog();
+        super.showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
-        hideProgressDialog();
+        super.hideProgressDialog();
     }
 
     @Override

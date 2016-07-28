@@ -1,9 +1,7 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,13 +18,13 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-import vn.com.vng.zalopay.utils.UriUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     private SweetAlertDialog mErrorDialog;
+    protected SweetAlertDialog mProgressDialog;
 
     @Override
     protected void setupActivityComponent() {
@@ -43,7 +41,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         return null;
     }
 
-    protected ProgressDialog mProgressDialog;
 
     @Inject
     LoginPresenter loginPresenter;
@@ -88,6 +85,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void onDestroy() {
         destroyErrorDialog();
         loginPresenter.destroy();
+        hideLoading();
+        mProgressDialog = null;
         super.onDestroy();
     }
 
@@ -121,17 +120,17 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void showLoading() {
         Timber.d("showLoading");
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), getString(R.string.login), getString(R.string.loading));
-            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setCancelable(false);
         }
-
         mProgressDialog.show();
     }
 
     public void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+        if (mProgressDialog == null || mProgressDialog.isShowing()) {
+            return;
         }
+        mProgressDialog.dismiss();
     }
 
     @Override
@@ -146,7 +145,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void showError(String message) {
         Timber.d("showError message %s", message);
         if (mErrorDialog == null) {
-            mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+            mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE, R.style.alert_dialog)
                     .setConfirmText(getContext().getString(R.string.txt_close))
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
