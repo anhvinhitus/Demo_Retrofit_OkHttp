@@ -66,7 +66,7 @@ public class PaymentRecord {
         String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
 //        transactionToken = "DQ5ZWRbtdc4NKCQckstZLg";
         currentPos += 16;
-        long crc16 = MemoryUtils.extractShort(data, currentPos);
+        long crc16 = MemoryUtils.extractShort(data, currentPos) & 0xFFFF;
 
         byte[] crcdata = MemoryUtils.extractBytes(data, 0, data.length - 2);
         long computedCrc16 = Crc16.crcb(crcdata);
