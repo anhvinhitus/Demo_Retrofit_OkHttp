@@ -29,9 +29,6 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 
 public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoView {
 
-    @Inject
-    Navigator navigator;
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 

@@ -8,7 +8,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -76,7 +75,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
 
     private void getUserProfile() {
-        Subscription subscription = accountRepository.getUserProfileLevel()
+        Subscription subscription = accountRepository.getUserProfileLevelCloud()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ProfileSubscriber());
@@ -90,7 +89,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
     }
 
-    private class ProfileSubscriber extends DefaultSubscriber<ProfilePermission> {
+    private class ProfileSubscriber extends DefaultSubscriber<Boolean> {
 
         @Override
         public void onCompleted() {
@@ -99,7 +98,6 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
         @Override
         public void onError(Throwable e) {
-
         }
     }
 }

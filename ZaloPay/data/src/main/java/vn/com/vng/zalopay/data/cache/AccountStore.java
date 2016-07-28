@@ -14,7 +14,6 @@ import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
 
 /**
  * Created by AnhHieu on 7/3/16.
@@ -62,13 +61,13 @@ public interface AccountStore {
 
     interface Repository {
 
-        Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber);
+        Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber);
 
-        Observable<ProfilePermission> verifyOTPProfile(String otp);
+        Observable<Boolean> verifyOTPProfile(String otp);
 
-        Observable<BaseResponse> recoverypin(String pin, String otp);
+        Observable<BaseResponse> recoveryPin(String pin, String otp);
 
-        Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin);
+        Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin);
 
         Observable<Boolean> updateUserProfileLevel3(String identityNumber,
                                                     String email,
@@ -82,6 +81,6 @@ public interface AccountStore {
                                                     byte[] backImage,
                                                     byte[] avatar);
 
-        Observable<ProfilePermission> getUserProfileLevel();
+        Observable<Boolean> getUserProfileLevelCloud();
     }
 }

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
@@ -34,7 +35,6 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
 public class TransferPresenter extends BaseZaloPayPresenter implements IPresenter<ITransferView> {
 
     private ITransferView mView;
-    private Subscription subscriptionGetOrder;
     private PaymentWrapper paymentWrapper;
     private User user;
 
@@ -43,6 +43,8 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     private MappingZaloAndZaloPay mCurrentMappingZaloAndZaloPay;
     private long mCurrentAmount;
     private String mCurrentMessage;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     TransferStore.LocalStorage mTransferLocalStorage;
 
@@ -179,10 +181,11 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         if (zaloId <= 0) {
             return;
         }
-        subscriptionGetOrder = accountRepository.getuserinfo(zaloId, 1)
+        Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetUserInfoSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     public void transferMoney(long amount, String message, ZaloFriend zaloFriend, MappingZaloAndZaloPay userMapZaloAndZaloPay) {
@@ -207,10 +210,12 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 return;
             }
             mView.showLoading();
-            subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), userMapZaloAndZaloPay.getZaloPayId(), message)
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), userMapZaloAndZaloPay.getZaloPayId(), message)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber(amount, message, zaloFriend, userMapZaloAndZaloPay));
+
+            compositeSubscription.add(subscription);
         }
 
     }
@@ -279,8 +284,8 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             if (zaloFriend == null || userMapZaloAndZaloPay == null) {
                 return;
             }
-            int transationType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
-            TransferRecent transferRecent = new TransferRecent(userMapZaloAndZaloPay.getZaloId(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transationType, mCurrentAmount, mCurrentMessage, System.currentTimeMillis());
+            int transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
+            TransferRecent transferRecent = new TransferRecent(userMapZaloAndZaloPay.getZaloId(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transactionType, mCurrentAmount, mCurrentMessage, System.currentTimeMillis());
             mTransferLocalStorage.append(transferRecent);
         } catch (NumberFormatException e) {
             if (BuildConfig.DEBUG) {
@@ -296,6 +301,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
     @Override
     public void destroyView() {
+        unsubscribeIfNotNull(compositeSubscription);
         this.mView = null;
     }
 
@@ -311,6 +317,5 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
     @Override
     public void destroy() {
-        unsubscribeIfNotNull(subscriptionGetOrder);
     }
 }

@@ -27,12 +27,9 @@ public final class User extends Person {
 
     public long phonenumber;
 
-    public List<ProfilePermission.Permission> profilePermissions;
+    public List<Permission> profilePermissions;
 
     public User() {
-    }
-
-    public User(SharedPreferences preferences) {
     }
 
     public String getSession() {
@@ -48,8 +45,9 @@ public final class User extends Person {
     }
 
     public void setPermissions(String jsonArray) {
+
         profilePermissions = fromJson(jsonArray,
-                new TypeToken<ArrayList<ProfilePermission.Permission>>() {
+                new TypeToken<ArrayList<Permission>>() {
                 }.getType());
     }
 

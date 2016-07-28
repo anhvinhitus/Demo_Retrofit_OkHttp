@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.data.api.entity.PermissionEntity;
 
 /**
  * Created by AnhHieu on 7/19/16.
@@ -29,6 +29,6 @@ public class UserProfileLevelResponse extends BaseResponse {
     public int profilelevel;
 
     @SerializedName("profilelevelpermisssion")
-    public List<ProfilePermission.Permission> profilePermissions;
+    public List<PermissionEntity> permisstion;
 
 }

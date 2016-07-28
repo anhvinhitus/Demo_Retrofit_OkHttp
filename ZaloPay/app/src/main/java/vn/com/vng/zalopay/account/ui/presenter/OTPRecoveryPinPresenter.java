@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.presenter;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPRecoveryPinView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -18,7 +19,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPresenter<IOTPRecoveryPinView> {
 
     IOTPRecoveryPinView mView;
-    private Subscription subscriptionLogin;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     public void setView(IOTPRecoveryPinView iProfileView) {
@@ -32,7 +33,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
     }
 
     private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionLogin);
+        unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
@@ -60,6 +61,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
         hideLoading();
         mView.confirmOTPError(msg);
     }
+
     private void onVerifyOTPSucess() {
         hideLoading();
         mView.confirmOTPSuccess();
@@ -67,10 +69,11 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
     public void verifyOtp(String otp) {
         showLoading();
-        subscriptionLogin = accountRepository.recoverypin(null, otp)
+        Subscription subscription = accountRepository.recoveryPin(null, otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifyOTPRecoveryPinSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private final class VerifyOTPRecoveryPinSubscriber extends DefaultSubscriber<BaseResponse> {
@@ -92,7 +95,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
                 return;
             }
             if (e instanceof BodyException) {
-                BodyException bodyException = (BodyException)e;
+                BodyException bodyException = (BodyException) e;
                 OTPRecoveryPinPresenter.this.onConfirmOTPError(bodyException.getMessage());
                 return;
             }

@@ -16,6 +16,7 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -28,7 +29,6 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -149,9 +149,10 @@ public class NotificationHelper {
 
 
     private void updateProfilePermission() {
-        accountRepository.getUserProfileLevel()
+        Subscription subscription = accountRepository.getUserProfileLevelCloud()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<ProfilePermission>());
+                .subscribe(new DefaultSubscriber<Boolean>());
+
     }
 
     private void showNotification(NotificationData event) {

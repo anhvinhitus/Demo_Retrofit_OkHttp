@@ -1,20 +1,21 @@
 package vn.com.vng.zalopay.data.repository;
 
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
+import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.domain.model.ProfilePermission;
+import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by longlv on 03/06/2016.
- *
  */
 public class AccountRepositoryImpl implements AccountStore.Repository {
 
@@ -24,15 +25,17 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     final User mUser;
     final UserConfig mUserConfig;
 
+    UserEntityDataMapper userEntityDataMapper;
 
     public AccountRepositoryImpl(AccountStore.RequestService accountService,
                                  AccountStore.UploadPhotoService photoService,
                                  UserConfig userConfig,
-                                 User user) {
+                                 User user, UserEntityDataMapper userEntityDataMapper) {
         this.mRequestService = accountService;
         this.mUploadPhotoService = photoService;
         this.mUser = user;
         this.mUserConfig = userConfig;
+        this.userEntityDataMapper = userEntityDataMapper;
     }
 
     @Override
@@ -42,63 +45,37 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<ProfilePermission> verifyOTPProfile(String otp) {
+    public Observable<Boolean> verifyOTPProfile(String otp) {
         return mRequestService.verifyOTPProfile(mUser.uid, mUser.accesstoken, otp)
-                .map(baseResponse -> {
-                    ProfilePermission profilePermission = new ProfilePermission();
-                    profilePermission.profileLevel = baseResponse.profilelevel;
-                    profilePermission.profilePermissions = baseResponse.profilePermissions;
-                    return profilePermission;
-                })
-                .doOnNext(profilePermission -> {
-                    mUserConfig.updateProfilePermissions(
-                            profilePermission.profileLevel,
-                            profilePermission.profilePermissions);
-                });
+                .doOnNext(response -> savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion))
+                ).map(response -> Boolean.TRUE);
     }
 
     @Override
-    public Observable<ProfilePermission> getUserProfileLevel() {
+    public Observable<Boolean> getUserProfileLevelCloud() {
         return mRequestService.getUserProfileLevel(mUser.uid, mUser.accesstoken)
                 .doOnNext(response -> {
-                    mUser.profilelevel = response.profilelevel;
-                    mUser.profilePermissions = response.profilePermissions;
-                    mUser.email = response.email;
-                    mUser.identityNumber = response.identityNumber;
-
-                    mUserConfig.updateProfile(
-                            response.profilelevel,
-                            response.profilePermissions,
-                            response.email,
-                            response.identityNumber);
-                })
-                .map(baseResponse -> {
-                    ProfilePermission profilePermission = new ProfilePermission();
-                    profilePermission.profileLevel = baseResponse.profilelevel;
-                    profilePermission.profilePermissions = baseResponse.profilePermissions;
-                    return profilePermission;
-                });
+                    savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion));
+                    saveUserInfo(response.email, response.identityNumber);
+                }).map(response -> Boolean.TRUE)
+                ;
     }
 
     @Override
-    public Observable<BaseResponse> recoverypin(String pin, String otp) {
+    public Observable<BaseResponse> recoveryPin(String pin, String otp) {
         return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, otp);
     }
 
     @Override
-    public Observable<MappingZaloAndZaloPay> getuserinfo(long zaloId, int systemlogin) {
-        if (zaloId <= 0) {
-            return null;
-        }
-
-        return mRequestService.getuserinfo(mUser.uid, mUser.accesstoken, zaloId, systemlogin)
+    public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
+        return mRequestService.getuserinfo(mUser.uid, mUser.accesstoken, zaloId, systemLogin)
                 .map(mappingZaloAndZaloPayResponse -> {
-            MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
-            mappingZaloAndZaloPay.setZaloId(zaloId);
-            mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
-            mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
-            return mappingZaloAndZaloPay;
-        });
+                    MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
+                    mappingZaloAndZaloPay.setZaloId(zaloId);
+                    mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
+                    mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
+                    return mappingZaloAndZaloPay;
+                });
     }
 
     @Override
@@ -142,10 +119,6 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 frontImageBodyRequest,
                 backImageBodyRequest,
                 avatarBodyRequest)
-              /*  .doOnNext(baseResponse1 -> {
-                    mUser.email = email;
-                    mUser.identityNumber = identityNumber;
-                })*/
                 .map(baseResponse -> Boolean.TRUE);
     }
 
@@ -162,4 +135,16 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         return RequestBody.create(MediaType.parse("text/plain"), param);
     }
 
+
+    private void savePermission(int profileLevel, List<Permission> permissions) {
+        mUser.profilelevel = profileLevel;
+        mUser.profilePermissions = permissions;
+        mUserConfig.savePermission(profileLevel, permissions);
+    }
+
+    private void saveUserInfo(String email, String identityNumber) {
+        mUser.email = email;
+        mUser.identityNumber = identityNumber;
+        mUserConfig.save(email, identityNumber);
+    }
 }

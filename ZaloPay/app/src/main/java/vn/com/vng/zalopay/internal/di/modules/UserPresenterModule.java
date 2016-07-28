@@ -104,8 +104,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    RecoveryPinPresenter provideResetPassCodePresenter(UserConfig userConfig) {
-        return new RecoveryPinPresenter(userConfig);
+    RecoveryPinPresenter provideResetPassCodePresenter() {
+        return new RecoveryPinPresenter();
     }
 
     @UserScope

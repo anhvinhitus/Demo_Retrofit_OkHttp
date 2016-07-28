@@ -20,16 +20,12 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 public class ProfileInfoActivity extends BaseActivity implements IProfileInfoView {
-
-    @Inject
-    Navigator navigator;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;

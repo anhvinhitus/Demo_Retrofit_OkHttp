@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -34,8 +35,8 @@ public class UserAccountModule {
 
     @UserScope
     @Provides
-    AccountStore.Repository providesAccountRepository(AccountStore.RequestService service, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user) {
-        return new AccountRepositoryImpl(service, photoService, userConfig, user);
+    AccountStore.Repository providesAccountRepository(AccountStore.RequestService service, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user, UserEntityDataMapper mapper) {
+        return new AccountRepositoryImpl(service, photoService, userConfig, user, mapper);
     }
 
     @UserScope
