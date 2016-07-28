@@ -212,7 +212,7 @@ public class UserConfigImpl implements UserConfig {
         long zaloId = json.optLong("userId");
         String displayName = json.optString("displayName");
         String avatar = json.optString("largeAvatar");
-        long birthday = json.optInt("birthDate");
+        long birthday = json.optLong("birthDate");
         int userGender = json.optInt("userGender");
 
         saveUserInfo(zaloId, avatar, displayName, birthday, userGender);
