@@ -14,6 +14,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactMethod;
 
+import java.util.Arrays;
+
+import timber.log.Timber;
+
 /**
  * Created by LAP11123-local on 7/25/2016.
  */
@@ -103,11 +107,22 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
         Uri contactURI = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         ContentResolver cr = getReactApplicationContext().getApplicationContext().getContentResolver();
 
-        // Query contact information from Contact provider
-        Cursor cur = cr.query(contactURI, null, null, null, null);
+        Cursor cur = null;
+        try {
+            // Query contact information from Contact provider
+            cur = cr.query(contactURI, null, null, null, null);
 
-        if (cur.getCount() > 0) {
-            bExistedContact = true;
+            if (cur.getCount() > 0) {
+                bExistedContact = true;
+            }
+        } catch (Exception e) {
+            Timber.e("EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+            resultCallback.invoke(e);
+            return;
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
         }
 
         resultCallback.invoke(bExistedContact);
