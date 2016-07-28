@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -44,8 +45,9 @@ public class NotificationHelper {
     final AccountStore.Repository accountRepository;
     final Context context;
     final RedPacketStore.Repository mRedPacketRepository;
+    final User mUser;
 
-    public NotificationHelper(Context applicationContext,
+    public NotificationHelper(Context applicationContext, User user,
                               NotificationStore.Repository notifyRepository,
                               AccountStore.Repository accountRepository,
                               RedPacketStore.Repository redPacketRepository) {
@@ -53,6 +55,7 @@ public class NotificationHelper {
         this.context = applicationContext;
         this.accountRepository = accountRepository;
         this.mRedPacketRepository = redPacketRepository;
+        this.mUser = user;
     }
 
 
@@ -92,15 +95,10 @@ public class NotificationHelper {
             return;
         }
 
-        int notificationType = notify.getNotificationType();
-        if (NotificationType.isTransactionNotification(notificationType)) {
-            this.updateTransaction();
-            this.updateBalance();
-        }
+        this.shouldUpdateTransAndBalance(notify);
+        this.shouldMarkRead(notify);
 
-        if (NotificationType.shouldMarkRead(notificationType)) {
-            notify.setRead(true);
-        }
+        int notificationType = notify.getNotificationType();
 
         if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             try {
@@ -125,6 +123,25 @@ public class NotificationHelper {
 
         this.showNotificationSystem(notify);
     }
+
+    private void shouldMarkRead(NotificationData notify) {
+        if (NotificationType.shouldMarkRead(notify.notificationtype)) {
+            notify.setRead(true);
+        }
+
+        if (notify.notificationtype == NotificationType.MONEY_TRANSFER
+                || mUser.uid.equals(notify.userid)) {
+            notify.setRead(true);
+        }
+    }
+
+    private void shouldUpdateTransAndBalance(NotificationData notify) {
+        if (NotificationType.isTransactionNotification(notify.notificationtype)) {
+            this.updateTransaction();
+            this.updateBalance();
+        }
+    }
+
 
     private void extractRedPacketFromNotification(NotificationData data) {
         try {

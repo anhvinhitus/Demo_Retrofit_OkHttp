@@ -42,8 +42,7 @@ class NotificationType {
     }
 
     static boolean shouldMarkRead(int notificationType) {
-        return notificationType == ORDER_PAYMENT ||
-                notificationType == TOPUP_WALLET;
+        return notificationType == ORDER_PAYMENT;
     }
 
 

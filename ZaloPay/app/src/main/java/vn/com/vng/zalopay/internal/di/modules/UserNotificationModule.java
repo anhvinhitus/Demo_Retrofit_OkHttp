@@ -38,11 +38,11 @@ public class UserNotificationModule {
 
     @UserScope
     @Provides
-    NotificationHelper providesNotificationHelper(Context context,
+    NotificationHelper providesNotificationHelper(Context context, User user,
                                                   AccountStore.Repository repository,
                                                   NotificationStore.Repository notifyRepository,
                                                   RedPacketStore.Repository redPacketRepository
     ) {
-        return new NotificationHelper(context, notifyRepository, repository, redPacketRepository);
+        return new NotificationHelper(context, user, notifyRepository, repository, redPacketRepository);
     }
 }
