@@ -65,7 +65,7 @@
     <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
     <string name="btn_pay_now">Thanh Toán</string>
-    <string name="btn_deposit">Gửi Tiền</string>
+    <string name="btn_deposit">Nạp Tiền</string>
 
     <string name="txt_close">Đóng</string>
     <string name="txt_retry">Thử lại</string>
@@ -92,7 +92,7 @@
     <string name="txt_leftmenu_home">Trang Chủ</string>
     <string name="txt_leftmenu_notification">Thông Báo</string>
     <string name="txt_leftmenu_scan_qrcode">Quét Mã QR</string>
-    <string name="txt_leftmenu_deposit">Gửi Tiền</string>
+    <string name="txt_leftmenu_deposit">Nạp Tiền</string>
     <string name="txt_leftmenu_transfer">Chuyển Tiền</string>
     <string name="txt_leftmenu_transaction_history">Lịch Sử Giao Dịch</string>
     <string name="txt_leftmenu_faq">FAQ</string>
@@ -106,9 +106,9 @@
     <string name="txt_link_card_remove_link">Xóa thẻ</string>
     <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
 
-    <string name="txt_home_qrcode">QUÉT MÃ QR</string>
-    <string name="txt_home_deposit">GỬI TIỀN</string>
-    <string name="txt_home_link_card">LƯU THẺ</string>
+    <string name="txt_home_qrcode">Quét Mã QR</string>
+    <string name="txt_home_deposit">Nạp Tiền</string>
+    <string name="txt_home_link_card">Lưu Thẻ</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -206,7 +206,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="deposit">Gửi tiền vào tài khoản</string>
+    <string name="deposit">Nạp tiền vào tài khoản</string>
 
     <string name="notify.from.zalopay">Bạn nhận được tin nhắn từ Zalo Pay</string>
     <string name="you.have.unread.messages">Bạn có %s thông báo chưa đọc.</string>
