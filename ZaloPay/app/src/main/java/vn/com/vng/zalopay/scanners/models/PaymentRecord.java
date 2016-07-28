@@ -68,7 +68,9 @@ public class PaymentRecord {
         currentPos += 16;
         long crc16 = MemoryUtils.extractShort(data, currentPos);
 
-        long computedCrc16 = Crc16.crcb(data);
+        byte[] crcdata = MemoryUtils.extractBytes(data, 0, data.length - 2);
+        long computedCrc16 = Crc16.crcb(crcdata);
+        Timber.d("Checksum data: [origin: 0x%X, computed: 0x%X]", crc16, computedCrc16);
         if (computedCrc16 != crc16) {
             Timber.d("Invalid scanRecord. CRC checksum is not matched.");
             return null;

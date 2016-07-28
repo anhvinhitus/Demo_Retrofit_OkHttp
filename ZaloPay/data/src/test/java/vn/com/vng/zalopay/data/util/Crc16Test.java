@@ -30,13 +30,24 @@ public class Crc16Test {
         int output = 0x79E1;
         Assert.assertEquals(crc, output);
 
-        crc = Crc16.crcb((byte) 0x07a, (byte) 0x86, (byte) 0x10, (byte) 0x00, (byte) 0x01
-                , (byte) 0x00, (byte) 0x0f, (byte) 0x9a, (byte) 0x7c, (byte) 0xea
-                , (byte) 0x46, (byte) 0x78, (byte) 0xcf, (byte) 0x07, (byte) 0x37
-                , (byte) 0x5e, (byte) 0x59, (byte) 0x77, (byte) 0x5d, (byte) 0x08,
-                (byte) 0x4b, (byte) 0xbc, (byte) 0xa0, (byte) 0xa7, (byte) 0xf);
+        crc = Crc16.crcb(
+                (byte) 0x07, (byte) 0xa8, (byte) 0x61, (byte) 0x00, (byte) 0x00
+                , (byte) 0x10, (byte) 0x00, (byte) 0xf9, (byte) 0xa7, (byte) 0xce
+                , (byte) 0xa4, (byte) 0x67, (byte) 0x8c, (byte) 0xf0, (byte) 0x73
+                , (byte) 0x75, (byte) 0xe5, (byte) 0x97, (byte) 0x75, (byte) 0xd0
+                , (byte) 0x84, (byte) 0xbb, (byte) 0xca, (byte) 0x0a, (byte) 0x7f);
         output = 32522;
 
+
+//        Assert.assertEquals(crc, output);
+
+        crc = Crc16.crcb(
+                (byte) 0xa8, (byte) 0x61, (byte) 0x00, (byte) 0x00, (byte) 0x10,
+                (byte) 0x00, (byte) 0xf1, (byte) 0x4f, (byte) 0xe9, (byte) 0xb5,
+                (byte) 0xc9, (byte) 0xd4, (byte) 0xdb, (byte) 0xca, (byte) 0x09,
+                (byte) 0xa2, (byte) 0x84, (byte) 0xe8, (byte) 0xc5, (byte) 0x60,
+                (byte) 0xc4, (byte) 0x2a);
+        output = 0xe640;
         Assert.assertEquals(crc, output);
     }
 
@@ -46,5 +57,17 @@ public class Crc16Test {
         int output = 0x8921;
 
         Assert.assertEquals(crc, output);
+
+        crc = Crc16.crc("1");
+        System.out.println(String.format("crc16 of [1] = [%d]", crc));
+        crc = Crc16.crc("12");
+        System.out.println(String.format("crc16 of [12] = [%d]", crc));
+
+        crc = Crc16.crcb((byte) 0x01);
+        System.out.println(String.format("crc16 of [0x01] = [%d]", crc));
+
+        crc = Crc16.crcb((byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04);
+        System.out.println(String.format("crc16 of [0x01, 0x02, 0x03, 0x04] = [%d]", crc));
+
     }
 }
