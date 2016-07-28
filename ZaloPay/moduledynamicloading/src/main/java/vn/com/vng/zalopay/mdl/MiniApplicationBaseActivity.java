@@ -16,7 +16,8 @@ public abstract class MiniApplicationBaseActivity extends ReactBasedActivity {
 
     protected @Nullable String getBundleAssetName() {
         return "index.android.bundle";
-    };
+    }
+
     protected @Nullable String getJSBundleFile() {
         return null;
     }

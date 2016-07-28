@@ -37,7 +37,7 @@ enum Buffer {
 		return context.getResources().getString(mTitleId);
 	}	
 	
-	public static final Buffer byValue(String value) {
+	public static Buffer byValue(String value) {
 		return VALUE_MAP.get(value);
 	}
 	

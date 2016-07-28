@@ -32,7 +32,7 @@ public class BankCard {
         if (TextUtils.isEmpty(bankCardTmp.first6cardno) || TextUtils.isEmpty(bankCardTmp.last4cardno)) {
             return false;
         }
-        if (bankCardTmp.first6cardno.equals(this.first6cardno) && bankCardTmp.last4cardno.equals(bankCardTmp.last4cardno)) {
+        if (bankCardTmp.first6cardno.equals(this.first6cardno) && bankCardTmp.last4cardno.equals(this.last4cardno)) {
             return true;
         }
         return false;

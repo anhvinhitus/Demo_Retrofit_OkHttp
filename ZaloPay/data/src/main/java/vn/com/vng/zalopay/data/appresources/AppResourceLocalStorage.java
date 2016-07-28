@@ -72,7 +72,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
             app.setStateDownload(state);
             if (state >= 2) {
                 app.setNumRetry(0);
-                app.setTimeDownload(0l);
+                app.setTimeDownload(0L);
             }
         }
 

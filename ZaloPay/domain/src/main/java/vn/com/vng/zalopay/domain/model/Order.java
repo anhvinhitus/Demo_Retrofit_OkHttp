@@ -260,7 +260,7 @@ public class Order extends AbstractData {
         stringBuilder.append(", ");
         stringBuilder.append("amount: ");
         stringBuilder.append(amount);
-        stringBuilder.append(", ");;
+        stringBuilder.append(", ");
         stringBuilder.append("description: ");
         stringBuilder.append(description);
         stringBuilder.append(", ");

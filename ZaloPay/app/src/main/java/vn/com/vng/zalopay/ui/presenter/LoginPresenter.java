@@ -159,7 +159,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         mView.gotoMainActivity();
     }
 
-    private final void onLoginSuccess(User user) {
+    private void onLoginSuccess(User user) {
         Timber.d("session %s uid %s need_invitation %s", user.accesstoken, user.uid, user.need_invitation);
         // Khởi tạo user component
 
@@ -173,7 +173,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         }
     }
 
-    private final void onLoginError(Throwable e) {
+    private void onLoginError(Throwable e) {
         if (e instanceof InvitationCodeException) {
             mView.gotoInvitationCode();
         } else {

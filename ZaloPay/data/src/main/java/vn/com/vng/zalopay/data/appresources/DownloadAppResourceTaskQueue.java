@@ -59,7 +59,7 @@ public class DownloadAppResourceTaskQueue {
         return null;
     }
 
-    public static final DownloadAppResourceTaskQueue create(Context context, Class<?> cls) {
+    public static DownloadAppResourceTaskQueue create(Context context, Class<?> cls) {
         return new DownloadAppResourceTaskQueue(context, cls);
     }
 }

@@ -120,7 +120,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
         }
 
-        private final void setImage(ImageView image, String url) {
+        private void setImage(ImageView image, String url) {
             image.setVisibility(View.VISIBLE);
 
             try {
@@ -137,7 +137,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
             }
         }
 
-        private final void loadImage(ImageView image, String url) {
+        private void loadImage(ImageView image, String url) {
             Glide.with(context).load(url).centerCrop().placeholder(R.color.silver).into(image);
         }
 

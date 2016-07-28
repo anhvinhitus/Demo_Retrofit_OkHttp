@@ -78,8 +78,10 @@ public class LogActivity extends ListActivity {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case CAT_WHAT:
-				final List<String> lines = (List<String>) msg.obj;
-				cat(lines);
+				if (msg.obj instanceof List) {
+					final List<String> lines = (List<String>) msg.obj;
+					cat(lines);
+				}
 				break;
 			case CLEAR_WHAT:
 				mLogEntryAdapter.clear();

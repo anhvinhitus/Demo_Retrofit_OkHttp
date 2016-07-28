@@ -29,26 +29,20 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
     @Override
     public Observable<Order> getOrder(long appId, String zptranstoken) {
         return zaloPayService.getorder(user.uid, user.accesstoken, appId, zptranstoken)
-                .map(new Func1<GetOrderResponse, Order>() {
-            @Override
-            public Order call(GetOrderResponse getOrderResponse) {
-                getOrderResponse.setAppid(appId);
-                getOrderResponse.setZptranstoken(zptranstoken);
-                return zaloPayEntityDataMapper.transform(getOrderResponse);
-            }
-        });
+                .map(getOrderResponse -> {
+                    getOrderResponse.setAppid(appId);
+                    getOrderResponse.setZptranstoken(zptranstoken);
+                    return zaloPayEntityDataMapper.transform(getOrderResponse);
+                });
     }
 
     @Override
     public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description) {
         return zaloPayService.createwalletorder(user.uid, user.accesstoken, appId, amount, transtype, appUser, description)
-                .map(new Func1<GetOrderResponse, Order>() {
-            @Override
-            public Order call(GetOrderResponse getOrderResponse) {
-                getOrderResponse.setAppid(appId);
-                getOrderResponse.amount = amount;
-                return zaloPayEntityDataMapper.transform(getOrderResponse);
-            }
-        });
+                .map(getOrderResponse -> {
+                    getOrderResponse.setAppid(appId);
+                    getOrderResponse.amount = amount;
+                    return zaloPayEntityDataMapper.transform(getOrderResponse);
+                });
     }
 }

@@ -14,6 +14,7 @@ import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Subscription;
@@ -94,7 +95,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public WritableArray call(TransHistory transHistory) {
-                        return transform(Arrays.asList(transHistory));
+                        return transform(Collections.singletonList(transHistory));
                     }
                 }).subscribe(new TransactionLogSubscriber(promise));
 

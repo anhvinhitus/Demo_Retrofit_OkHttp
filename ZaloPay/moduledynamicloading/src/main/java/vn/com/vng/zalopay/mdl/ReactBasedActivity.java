@@ -61,7 +61,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      */
     protected @Nullable String getBundleAssetName() {
         return "index.android.bundle";
-    };
+    }
 
     /**
      * Returns a custom path of the bundle file. This is used in cases the bundle should be loaded

@@ -80,7 +80,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
-    private final void onGetAppResourceSuccess(List<AppResource> resources) {
+    private void onGetAppResourceSuccess(List<AppResource> resources) {
         // mZaloPayView.insertApps(resources);
     }
 

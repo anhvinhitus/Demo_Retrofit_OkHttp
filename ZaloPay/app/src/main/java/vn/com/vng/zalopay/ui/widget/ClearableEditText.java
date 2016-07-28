@@ -241,7 +241,7 @@ public class ClearableEditText extends EditText {
         String s = this.getString();
         this.setCompoundDrawablePadding(10);
         Bitmap mBitmap;
-        if (s.toString().length() > 0) {
+        if (s.length() > 0) {
             if (this.drawableRightDelete == null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     this.drawableRightDelete = getContext().getDrawable(R.drawable.ic_remove_circle);
