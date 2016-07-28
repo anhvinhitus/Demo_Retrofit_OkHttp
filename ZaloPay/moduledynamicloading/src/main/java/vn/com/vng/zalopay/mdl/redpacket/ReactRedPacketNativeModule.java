@@ -41,6 +41,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
+import vn.com.vng.zalopay.mdl.Helpers;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
@@ -106,7 +107,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             public void onNext(BundleOrder bundleOrder) {
                                 Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
                                 if (bundleOrder == null) {
-                                    errorCallback(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
+                                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
                                 } else {
                                     pay(bundleOrder, promise);
                                 }
@@ -123,17 +124,17 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onParameterError(String param) {
                 Timber.w("pay onParameterError");
-                errorCallback(promise, PaymentError.ERR_CODE_INPUT, param);
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, param);
             }
 
             @Override
             public void onResponseError(int status) {
                 Timber.d("pay onResponseError status [%s]", status);
                 if (!NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
-                    errorCallback(promise, PaymentError.ERR_CODE_INTERNET,
+                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET,
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
                 } else {
-                    errorCallback(promise, status, PaymentError.getErrorMessage(status));
+                    Helpers.promiseResolveError(promise, status, PaymentError.getErrorMessage(status));
                 }
             }
 
@@ -143,7 +144,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 WritableMap data = Arguments.createMap();
                 data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
                 mBalanceRepository.updateBalance();
-                successCallback(promise, data);
+                Helpers.promiseResolveSuccess(promise, data);
             }
 
             @Override
@@ -154,7 +155,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseCancel() {
                 Timber.d("pay onResponseCancel");
-                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL,
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL,
                         PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
             }
 
@@ -172,11 +173,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "submitToSendBundle throw NumberFormatException");
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, "Invalid bundleId");
             return;
         }
         if (bundleID <= 0) {
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, "Invalid bundleId");
             return;
         }
+
         List<Long> friendList = DataMapper.transform(friends);
         Subscription subscription = mRedPackageRepository.sendBundle(bundleID, friendList)
                 .map(new Func1<Boolean, Boolean>() {
@@ -198,7 +202,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         Timber.d("SubmitToSendSubscriber onNext result [%s]", result);
                         WritableMap writableMap = Arguments.createMap();
                         writableMap.putBoolean("result", result);
-                        successCallback(promise, writableMap);
+                        Helpers.promiseResolveSuccess(promise, writableMap);
                     }
                 });
         compositeSubscription.add(subscription);
@@ -235,7 +239,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         DialogInterface.OnCancelListener onCancelListener = new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
                 dialog.dismiss();
             }
         };
@@ -278,7 +282,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         if (mTimerGetTranStatus != null) {
                             mTimerGetTranStatus.cancel();
                         }
-                        successCallback(promise, DataMapper.transform(packageStatus));
+                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
                         mBalanceRepository.updateBalance();
@@ -297,12 +301,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "openPacket throw NumberFormatException");
-            errorCallback(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
         Timber.d("openPacket after cast packageID [%s] bundleID [%s]", packageID, bundleID);
         if (packageID <= 0 || bundleID <= 0) {
-            errorCallback(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
         Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
@@ -353,12 +357,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             Subscription subscription = mRedPackageRepository.getReceivedPacket(packetIdValue)
                     .subscribeOn(Schedulers.io())
                     .subscribe(new RedPacketSubscriber<ReceivePackage>(promise) {
-
-                        @Override
-                        public void onError(Throwable e) {
-                            super.onError(e);
-                        }
-
                         @Override
                         public void onNext(ReceivePackage receivePackage) {
                             Timber.d("received packet: %s", receivePackage.packageID);
@@ -408,12 +406,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Timber.d("query open status for packet: %s", packetId);
         Subscription subscription = mRedPackageRepository.isPacketOpen(packetId)
                 .subscribe(new RedPacketSubscriber<Boolean>(promise) {
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                    }
-
                     @Override
                     public void onNext(Boolean aBoolean) {
                         WritableMap writableMap = Arguments.createMap();
@@ -431,18 +423,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Timber.d("getSendBundleHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPackageRepository.getSentBundleList((long) createTime, (int) count)
                 .subscribe(new RedPacketSubscriber<GetSentBundle>(promise) {
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("getSendBundleHistoryWithTimeStamp onError");
-                        super.onError(e);
-                    }
-
                     @Override
                     public void onNext(GetSentBundle getSentBundle) {
                         Timber.d("getSendBundleHistoryWithTimeStamp onNext getSentBundle [%s]", getSentBundle);
                         WritableMap writableMap = DataMapper.transform(getSentBundle);
-                        successCallback(promise, writableMap);
+                        Helpers.promiseResolveSuccess(promise, writableMap);
                     }
                 });
         compositeSubscription.add(subscription);
@@ -453,16 +438,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Timber.d("getReceivePacketHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPackageRepository.getReceivePacketList((long) createTime, (int) count)
                 .subscribe(new RedPacketSubscriber<GetReceivePacket>(promise) {
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                    }
-
                     @Override
                     public void onNext(GetReceivePacket getReceivePacket) {
-                        WritableMap writableMap = DataMapper.transform(getReceivePacket);
-                        successCallback(promise, writableMap);
+                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(getReceivePacket));
                     }
                 });
         compositeSubscription.add(subscription);
@@ -473,7 +451,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         WritableMap writableMap = Arguments.createMap();
         writableMap.putString("displayname", mUserConfig.getDisPlayName());
         writableMap.putString("avatar", mUserConfig.getAvatar());
-        successCallback(promise, writableMap);
+        Helpers.promiseResolveSuccess(promise, writableMap);
     }
 
     @Override
@@ -506,44 +484,4 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             subscription.clear();
         }
     }
-
-    private void successCallback(Promise promise, WritableMap object) {
-        Timber.d("successCallback promise [%s]", promise);
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
-        if (object != null) {
-            item.putMap("data", object);
-        }
-        promise.resolve(item);
-    }
-
-    private void successCallback(Promise promise, WritableArray array) {
-        Timber.d("successCallback promise [%s]", promise);
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
-        if (array != null) {
-            item.putArray("data", array);
-        }
-        promise.resolve(item);
-    }
-
-    private void errorCallback(Promise promise, int errorCode, String message) {
-        Timber.d("errorCallback start errorCode [%s] message [%s]", errorCode, message);
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", errorCode);
-        if (!TextUtils.isEmpty(message)) {
-            item.putString("message", message);
-        }
-        promise.resolve(item);
-    }
-
 }

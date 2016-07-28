@@ -160,13 +160,13 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
     @Override
     public void onHostResume() {
-        Timber.d(" Actvity `onResume`");
+        Timber.d(" Activity `onResume`");
         mEventBus.register(this);
     }
 
     @Override
     public void onHostPause() {
-        Timber.d(" Actvity `onPause`");
+        Timber.d(" Activity `onPause`");
         mEventBus.unregister(this);
     }
 

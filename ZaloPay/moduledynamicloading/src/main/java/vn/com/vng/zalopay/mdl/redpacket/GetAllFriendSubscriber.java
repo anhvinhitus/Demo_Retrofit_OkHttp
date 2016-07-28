@@ -9,6 +9,7 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.mdl.Helpers;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 
 /**
@@ -21,11 +22,6 @@ class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
 
     public GetAllFriendSubscriber(Promise promise) {
         promiseWeakReference = new WeakReference<>(promise);
-    }
-
-    @Override
-    public void onCompleted() {
-
     }
 
     @Override
@@ -49,10 +45,7 @@ class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
         }
 
         Promise promise = promiseWeakReference.get();
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.putInt("code", PaymentError.ERR_CODE_SUCCESS);
-        writableMap.putArray("data", writableArray);
-        promise.resolve(writableMap);
+        Helpers.promiseResolveSuccess(promise, writableArray);
         promiseWeakReference.clear();
     }
 }
