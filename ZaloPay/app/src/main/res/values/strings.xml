@@ -127,8 +127,7 @@
     <string name="link_card_title">Quy trình lưu thẻ</string>
     <string name="link_card_step_one">+ <u><b>Bước 1</b></u>: Nhập thông tin thẻ.</string>
 
-    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: Để kiểm tra tính hợp lệ của thẻ, hệ thống Lưu thẻ của Zalo Pay sẽ thực hiện một giao dịch nạp 20.000 VND vào tài khoản Zalo Pay từ tài khoản thẻ.
-Sau khi giao dịch hoàn thành, thẻ của bạn sẽ được lưu thành công.</string>
+    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài khoản thẻ vào tài khoản Zalo Pay của bạn để kiểm tra tính hợp lệ.</string>
 
     <string name="link_card_step_two_1">- Tài khoản thẻ của bạn bị trừ <font size='16'><b>20.000</b></font> <font size='12'>VND</font></string>
     <string name="link_card_step_two_2">- Tài khoản Zalo Pay của bạn được cộng <font size='16'><b>20.000</b></font> <font size='12'>VND</font> tương ứng</string>
