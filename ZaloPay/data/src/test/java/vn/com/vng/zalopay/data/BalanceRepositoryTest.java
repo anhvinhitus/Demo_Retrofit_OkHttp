@@ -60,8 +60,8 @@ public class BalanceRepositoryTest {
         }
 
         @Override
-        public Observable<Long> getBalance() {
-            return Observable.just(mValue);
+        public long getBalance() {
+            return mValue;
         }
     }
 
@@ -123,8 +123,8 @@ public class BalanceRepositoryTest {
             }
 
             @Override
-            public Observable<Long> getBalance() {
-                return Observable.just(mValue);
+            public long getBalance() {
+                return mValue;
             }
         };
 
