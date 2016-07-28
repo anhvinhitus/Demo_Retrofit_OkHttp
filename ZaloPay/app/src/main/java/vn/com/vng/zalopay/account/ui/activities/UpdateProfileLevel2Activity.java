@@ -34,6 +34,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -240,8 +241,14 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
         });
         tvTermsOfUser2.setClickable(true);
         tvTermsOfUser2.setMovementMethod (LinkMovementMethod.getInstance());
-        tvTermsOfUser3.setClickable(true);
-        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
+//        tvTermsOfUser3.setClickable(true);
+//        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
+        tvTermsOfUser3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showToast(UpdateProfileLevel2Activity.this, "Chức năng sẽ sớm được ra mắt.");
+            }
+        });
     }
 
     @Override
