@@ -29,6 +29,15 @@ public class Crc16Test {
 
         int output = 0x79E1;
         Assert.assertEquals(crc, output);
+
+        crc = Crc16.crcb((byte) 0x07a, (byte) 0x86, (byte) 0x10, (byte) 0x00, (byte) 0x01
+                , (byte) 0x00, (byte) 0x0f, (byte) 0x9a, (byte) 0x7c, (byte) 0xea
+                , (byte) 0x46, (byte) 0x78, (byte) 0xcf, (byte) 0x07, (byte) 0x37
+                , (byte) 0x5e, (byte) 0x59, (byte) 0x77, (byte) 0x5d, (byte) 0x08,
+                (byte) 0x4b, (byte) 0xbc, (byte) 0xa0, (byte) 0xa7, (byte) 0xf);
+        output = 32522;
+
+        Assert.assertEquals(crc, output);
     }
 
     @Test
