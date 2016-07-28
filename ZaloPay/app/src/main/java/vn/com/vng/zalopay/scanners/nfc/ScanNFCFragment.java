@@ -62,7 +62,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     private boolean processOrder(String orderToken) {
         String[] contents = orderToken.split(":");
         if (contents.length < 2) {
-            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(getActivity(), 0, SweetAlertDialog.ERROR_TYPE)
                     .setContentText(String.format("Nội dung thẻ Nfc không hợp lệ.\nNội dung: [%s]", orderToken))
                     .show();
             return false;

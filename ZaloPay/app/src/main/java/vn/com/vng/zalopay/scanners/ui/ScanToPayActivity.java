@@ -44,7 +44,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
-    private static final int TAB_TOTAL = 4;
+    private static final int TAB_TOTAL = 3;
     private static final int TAB_NFC = 0;
     private static final int TAB_BEACON = 2;
     private static final int TAB_SOUND = 3;
@@ -153,10 +153,12 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_bluetooth, 0, 0);
         mTabLayout.getTabAt(TAB_BEACON).setCustomView(tabThree);
 
-        TextView tabFour = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
-        tabFour.setText("Âm thanh");
-        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_sound, 0, 0);
-        mTabLayout.getTabAt(TAB_SOUND).setCustomView(tabFour);
+        if (TAB_TOTAL > TAB_SOUND) {
+            TextView tabFour = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
+            tabFour.setText("Âm thanh");
+            tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_sound, 0, 0);
+            mTabLayout.getTabAt(TAB_SOUND).setCustomView(tabFour);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -164,8 +166,8 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         // Android M Permission check 
         if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("This app needs location access");
-            builder.setMessage("Please grant location access so this app can detect beacons.");
+            builder.setTitle("Cần lấy thông tin vị trí");
+            builder.setMessage("Xin hãy cho phép Zalo Pay sử dụng thông tin vị trí để hỗ trợ tốt thanh toán bằng Bluetooth");
             builder.setPositiveButton(android.R.string.ok, null);
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 public void onDismiss(DialogInterface dialog) {
@@ -185,8 +187,8 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                     Timber.d("coarse location permission granted");
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Functionality limited");
-                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setTitle("Hạn chế tính năng");
+                    builder.setMessage("Do Zalo Pay chưa được cấp quyền lấy thông tin vị trí, Zalo Pay chưa thể hỗ trợ thanh toán bằng Bluetooth");
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
