@@ -173,9 +173,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
 
     private void initContent() {
         adapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
-
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
 
         if (profileType == Constants.PRE_PROFILE_TYPE) {
             viewPager.setCurrentItem(0);
