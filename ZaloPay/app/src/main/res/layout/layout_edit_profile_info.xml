@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutEditProfileInfo"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/layoutEditProfileInfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical">
 
     <TextView
         android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/button.height"
         android:layout_alignParentBottom="true"
         android:background="@color/bg_btn_blue"
         android:gravity="center"
         android:text="@string/btn_update"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -46,7 +45,7 @@
                     android:hint="@string/hint_fullname"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -64,7 +63,7 @@
                     android:hint="@string/hint_email"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -82,7 +81,7 @@
                     android:hint="@string/hint_phone"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -100,7 +99,7 @@
                     android:hint="@string/cmnd_passpost"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -118,7 +117,7 @@
                     android:hint="@string/address"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -141,7 +140,7 @@
                     android:inputType="none"
                     android:longClickable="@null"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -164,7 +163,7 @@
                     android:inputType="none"
                     android:longClickable="@null"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -187,7 +186,7 @@
                     android:inputType="none"
                     android:longClickable="@null"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -210,7 +209,7 @@
                     android:inputType="none"
                     android:longClickable="@null"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
