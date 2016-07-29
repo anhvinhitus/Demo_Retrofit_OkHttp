@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -46,6 +47,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     private ZaloFriend zaloFriend;
     private long mAmount = 0;
     private String mMessage = "";
+    private String mValidMinAmount = "";
+    private String mValidMaxAmount = "";
 
     @Inject
     TransferPresenter mPresenter;
@@ -82,28 +85,53 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         if (zaloFriend == null) {
             return;
         }
+        if (!isValidAmount()) {
+            return;
+        }
         mPresenter.transferMoney(mAmount, edtTransferMsg.getText().toString(), zaloFriend, userMapZaloAndZaloPay);
         setEnableBtnContinue(false);
     }
 
+    public boolean isValidMinAmount() {
+        if (mAmount < Constants.MIN_TRANSFER_MONEY) {
+            showAmountError(mValidMinAmount);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidMaxAmount() {
+        if (mAmount > Constants.MAX_TRANSFER_MONEY) {
+            showAmountError(mValidMaxAmount);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidAmount() {
+        if (!isValidMinAmount()) {
+            return false;
+        }
+
+        if (!isValidMaxAmount()) {
+            return false;
+        }
+
+        return true;
+    }
+
     private void showAmountError(String error) {
-        if (TextUtils.isEmpty(error)) {
+        if (!TextUtils.isEmpty(error)) {
             textInputAmount.setErrorEnabled(true);
             textInputAmount.setError(error);
         } else {
-            textInputAmount.setErrorEnabled(false);
-            textInputAmount.setError(null);
+            hideAmountError();
         }
     }
 
     private void hideAmountError() {
         textInputAmount.setErrorEnabled(false);
         textInputAmount.setError(null);
-    }
-
-    public boolean isValidAmount() {
-        String otp = edtAmount.getText().toString();
-        return !TextUtils.isEmpty(otp);
     }
 
     @Override
@@ -154,6 +182,10 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 mMessage = transferRecent.getMessage();
             }
         }
+        mValidMinAmount = String.format(getResources().getString(R.string.min_money),
+                CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY, true));
+        mValidMaxAmount = String.format(getResources().getString(R.string.max_money),
+                CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY, true));
     }
 
     @Override
@@ -170,6 +202,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             @Override
             public void afterTextChanged(Editable s) {
                 super.afterTextChanged(s);
+                hideAmountError();
+                isValidMaxAmount();
                 checkShowBtnContinue();
             }
         });

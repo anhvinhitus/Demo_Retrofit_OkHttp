@@ -118,9 +118,9 @@
 
     <string name="action_notifications">Thông báo</string>
 
-    <string name="min_money">Tối thiểu %s</string>
-    <string name="max_money">Số tiền bạn nhập không vượt quá 10.000.000 VND </string>
-    <string name="valid_empty_money">Số tiền tối thiểu %s</string>
+    <string name="title_min_money">Tối thiểu %s</string>
+    <string name="min_money">Số tiền tối thiểu %s</string>
+    <string name="max_money">Số tiền không được vượt quá %s</string>
     <string name="valid_money">Số tiền phải là bội số của 10.000 VND </string>
     <string name="input_amount">Nhập số tiền</string>
 

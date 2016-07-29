@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -31,10 +32,9 @@ import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
  */
 public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView {
     // TODO: Rename parameter arguments, choose names that match
-    private final int MIN_AMOUNT = 20000;
-    private final int MAX_AMOUNT = 10000000;
     private long mAmount = 0;
     private String mValidMinAmount = "";
+    private String mValidMaxAmount = "";
 
     @Inject
     BalanceTopupPresenter balanceTopupPresenter;
@@ -77,7 +77,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     public boolean isValidMinAmount() {
-        if (mAmount < MIN_AMOUNT) {
+        if (mAmount < Constants.MIN_DEPOSIT_MONEY) {
             showAmountError(mValidMinAmount);
             return false;
         }
@@ -85,8 +85,8 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     public boolean isValidMaxAmount() {
-        if (mAmount > MAX_AMOUNT) {
-            showAmountError(getResources().getString(R.string.max_money));
+        if (mAmount > Constants.MAX_DEPOSIT_MONEY ) {
+            showAmountError(mValidMaxAmount);
             return false;
         }
         return true;
@@ -140,8 +140,10 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mValidMinAmount = String.format(getResources().getString(R.string.valid_empty_money),
-                CurrencyUtil.formatCurrency(MIN_AMOUNT, true));
+        mValidMinAmount = String.format(getResources().getString(R.string.min_money),
+                CurrencyUtil.formatCurrency(Constants.MIN_DEPOSIT_MONEY, true));
+        mValidMaxAmount = String.format(getResources().getString(R.string.max_money),
+                CurrencyUtil.formatCurrency(Constants.MAX_DEPOSIT_MONEY, true));
     }
 
     @Override
@@ -163,8 +165,8 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
                 checkShowBtnContinue();
             }
         });
-        tvResourceMoney.setText(String.format(getResources().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(MIN_AMOUNT, false)));
+        tvResourceMoney.setText(String.format(getResources().getString(R.string.title_min_money),
+                CurrencyUtil.formatCurrency(Constants.MIN_DEPOSIT_MONEY, false)));
     }
 
     private void checkShowBtnContinue() {
