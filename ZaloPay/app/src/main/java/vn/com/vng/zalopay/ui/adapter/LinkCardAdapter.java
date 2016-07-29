@@ -116,7 +116,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
         public void bindView(final BankCard bankCard) {
             Timber.d("bindView bankCard.type:%s", bankCard.type);
-            bindBankCard(mRoot, imgLogo, bankCard);
+            bindBankCard(mRoot, imgLogo, bankCard, true);
             mCardNumber.setText(BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno));
         }
     }
@@ -152,7 +152,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
         }
     }
 
-    private void setBankBackground(View mRoot, BankImageSetting bankInfos) {
+    private void setBankBackground(View mRoot, BankImageSetting bankInfos, boolean borderTopOnly) {
         if (mRoot == null || bankInfos == null) {
             return;
         }
@@ -164,14 +164,22 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
-        gradientDrawable.setCornerRadius(8);
+        float radius = getContext().getResources().getDimension(R.dimen.border);
+        if (borderTopOnly) {
+            gradientDrawable.setCornerRadii(new float[]{radius, radius,
+                    radius, radius,
+                    0, 0,
+                    0, 0});
+        } else {
+            gradientDrawable.setCornerRadius(radius);
+        }
         mRoot.setBackground(gradientDrawable);
     }
 
-    public void bindBankCard(View mRoot, ImageView imgLogo, BankCard bankCard) {
+    public void bindBankCard(View mRoot, ImageView imgLogo, BankCard bankCard, boolean borderTopOnly) {
         BankImageSetting bankImageSetting = findBank(bankCard);
         setBankIcon(imgLogo, bankImageSetting.bankIcon);
-        setBankBackground(mRoot, bankImageSetting);
+        setBankBackground(mRoot, bankImageSetting, borderTopOnly);
     }
 
     public class BottomHolder extends RecyclerView.ViewHolder {
@@ -197,6 +205,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     }
 
     private final static HashMap<String, BankImageSetting> mBankSettings = new HashMap<>();
+
     static {
         mBankSettings.put(ECardType.JCB.toString(), new BankImageSetting(R.drawable.ic_jcb, R.color.bg_jcb_start, R.color.bg_jcb_end));
         mBankSettings.put(ECardType.VISA.toString(), new BankImageSetting(R.drawable.ic_visa, R.color.bg_visa_start, R.color.bg_visa_end));

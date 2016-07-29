@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#66000000">
+    android:background="#aa000000">
 
     <FrameLayout
         android:id="@+id/layoutLinkCard"

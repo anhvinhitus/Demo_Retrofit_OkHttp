@@ -125,7 +125,7 @@
     <string name="input_amount">Nhập số tiền</string>
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
-    <string name="link_card_other">Thêm thẻ</string>
+    <string name="link_card_other">Thêm Thẻ</string>
 
     <!-- Link CARDS START-->
     <string name="link_card_title">Quy trình lưu thẻ</string>
