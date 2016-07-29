@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing.large.t"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
                     android:text="@string/link_card_step_two" />
 
             <!--    <TextView
@@ -71,22 +71,15 @@
                     android:text="@string/link_card_step_note" />-->
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1.0" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.0"
                 android:orientation="vertical">
 
                 <TextView
                     style="@style/TextView.Group.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing.small"
                     android:paddingLeft="@dimen/spacing.medium.t"
                     android:paddingTop="@dimen/spacing.large.t"
                     android:text="@string/support_banks"
@@ -100,7 +93,7 @@
                     android:layout_weight="1.0"
                     android:background="@color/background"
                     android:clipToPadding="false"
-                    android:padding="@dimen/spacing.tiny"
+                    android:padding="@dimen/spacing.small"
                     app:layoutManager="GridLayoutManager"
                     tools:listitem="@layout/fragment_participated_bank_item" />
             </LinearLayout>
