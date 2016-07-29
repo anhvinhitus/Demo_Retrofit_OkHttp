@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.mdl;
 
+import android.renderscript.Double2;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
@@ -34,7 +35,7 @@ public class Helpers {
         promise.resolve(item);
     }
 
-    public static void promiseResolveSuccess(Promise promise, WritableMap object) {
+    public static void promiseResolveSuccess(Promise promise, Object object) {
         Timber.d("promiseResolveSuccess promise [%s]", promise);
         if (promise == null) {
             return;
@@ -42,20 +43,19 @@ public class Helpers {
         WritableMap item = Arguments.createMap();
         item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
         if (object != null) {
-            item.putMap("data", object);
-        }
-        promise.resolve(item);
-    }
-
-    public static void promiseResolveSuccess(Promise promise, WritableArray array) {
-        Timber.d("promiseResolveSuccess promise [%s]", promise);
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
-        if (array != null) {
-            item.putArray("data", array);
+            if (object instanceof WritableMap) {
+                item.putMap("data", (WritableMap) object);
+            } else if (object instanceof WritableArray) {
+                item.putArray("data", (WritableArray) object);
+            } else if (object instanceof Boolean) {
+                item.putBoolean("data", (Boolean) object);
+            } else if (object instanceof Double) {
+                item.putDouble("data", (Double) object);
+            } else if (object instanceof Long) {
+                item.putDouble("data", (Long) object);
+            } else if (object instanceof Integer) {
+                item.putInt("data", (Integer) object);
+            }
         }
         promise.resolve(item);
     }

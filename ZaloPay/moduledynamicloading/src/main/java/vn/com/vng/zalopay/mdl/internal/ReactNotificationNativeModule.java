@@ -57,7 +57,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
     @ReactMethod
     public void getNotification(int pageIndex, int count, Promise promise) {
-        Timber.d("get transaction index %s count %s", pageIndex, count);
+        Timber.d("get notification index %s count %s", pageIndex, count);
         Subscription subscription = repository.getNotification(pageIndex, count)
                 .map(new Func1<List<NotificationData>, WritableArray>() {
 
@@ -94,7 +94,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
         @Override
         public void onError(Throwable e) {
-            Timber.w(e, "error on getting transaction logs");
+            Timber.w(e, "error on getting notification logs");
         }
 
         @Override

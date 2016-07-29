@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.data.repository;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
-import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
+import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 
 /**
@@ -18,12 +18,12 @@ public class ZaloPayIAPRepositoryImpl implements ZaloPayIAPRepository {
     }
 
     @Override
-    public Observable<MerChantUserInfo> getMerchantUserInfo(long appId) {
+    public Observable<MerchantUserInfo> getMerchantUserInfo(long appId) {
         return zaloPayIAPFactory.getMerchantUserInfo(appId).map(this::transform);
     }
 
-    private MerChantUserInfo transform(GetMerchantUserInfoResponse response) {
-        MerChantUserInfo ret = new MerChantUserInfo();
+    private MerchantUserInfo transform(GetMerchantUserInfoResponse response) {
+        MerchantUserInfo ret = new MerchantUserInfo();
         ret.birthdate = response.birthdate;
         ret.displayname = response.displayname;
         ret.muid = response.muid;
