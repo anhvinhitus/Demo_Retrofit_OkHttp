@@ -75,7 +75,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseTokenInvalid() {
-
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID,
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));
             }
 
             @Override
