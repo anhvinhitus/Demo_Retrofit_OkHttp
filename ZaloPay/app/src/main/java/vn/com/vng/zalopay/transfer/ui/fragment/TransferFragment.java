@@ -86,6 +86,26 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         setEnableBtnContinue(false);
     }
 
+    private void showAmountError(String error) {
+        if (TextUtils.isEmpty(error)) {
+            textInputAmount.setErrorEnabled(true);
+            textInputAmount.setError(error);
+        } else {
+            textInputAmount.setErrorEnabled(false);
+            textInputAmount.setError(null);
+        }
+    }
+
+    private void hideAmountError() {
+        textInputAmount.setErrorEnabled(false);
+        textInputAmount.setError(null);
+    }
+
+    public boolean isValidAmount() {
+        String otp = edtAmount.getText().toString();
+        return !TextUtils.isEmpty(otp);
+    }
+
     @Override
     public void setEnableBtnContinue(boolean isEnable) {
         btnContinue.setEnabled(isEnable);
