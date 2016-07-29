@@ -17,6 +17,9 @@ public class PaymentError {
     public static int ERR_CODE_INTERNET = 3;
 
     //none error
+    public static int ERR_CODE_TOKEN_INVALID = -3;
+
+    //none error
     public static int ERR_CODE_USER_CANCEL = 4;
 
     //lỗi hệ thống
@@ -41,6 +44,8 @@ public class PaymentError {
             errorMessage = "Thông tin người dùng không hợp lệ.";
         } else if (errorCode == ERR_CODE_USER_CANCEL) {
             errorMessage = "Người dùng huỷ bỏ giao dịch.";
+        } else if (errorCode == ERR_CODE_TOKEN_INVALID) {
+            errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!";
         }
         return errorMessage;
     }
