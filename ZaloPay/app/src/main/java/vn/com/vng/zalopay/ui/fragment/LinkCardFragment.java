@@ -132,7 +132,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         View layoutLinkCard = mBottomSheetDialog.findViewById(R.id.layoutLinkCard);
         ImageView imgLogo = (ImageView)mBottomSheetDialog.findViewById(R.id.iv_logo);
         if (mAdapter != null) {
-            mAdapter.bindBankCard(layoutLinkCard, imgLogo, mCurrentBankCard);
+            mAdapter.bindBankCard(layoutLinkCard, imgLogo, mCurrentBankCard, false);
         }
 //        mBottomSheetDialog.show();
 //        mBottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
