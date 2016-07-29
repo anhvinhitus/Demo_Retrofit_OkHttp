@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -205,7 +206,7 @@ public class NotificationHelper {
         String title = context.getString(R.string.app_name);
         String message = String.format(context.getString(R.string.you_have_unread_messages), numberUnread);
         int notificationId = 200;
-        Intent intent = navigator.intentHomeActivity(context, false);
+        Intent intent = new Intent(context, NotificationActivity.class);
 
         this.create(context, notificationId,
                 intent,
