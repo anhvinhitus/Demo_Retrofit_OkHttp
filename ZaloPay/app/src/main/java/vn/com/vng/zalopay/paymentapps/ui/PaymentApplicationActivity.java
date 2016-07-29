@@ -24,8 +24,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
@@ -39,6 +42,7 @@ import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -242,14 +246,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         return AndroidApplication.instance().getUserComponent();
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onTokenExpired(TokenExpiredEvent event) {
-        getAppComponent().applicationSession().clearUserSession();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpiredMain(TokenExpiredEvent event) {
+        Timber.d("Receive token expired");
         showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe
@@ -257,6 +258,22 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         reactInstanceCaughtError();
         handleException(event.getInnerException());
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onServerMaintain(ServerMaintainEvent event) {
+        Timber.i("Receive server maintain event");
+        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
+        getAppComponent().applicationSession().clearUserSession();
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountSuspended(AccountSuspendedException event) {
+        Timber.i("Receive Suspended event");
+        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_zpw_account_suspended));
+        getAppComponent().applicationSession().clearUserSession();
+    }
+
 
     @Override
     protected void handleException(Throwable e) {

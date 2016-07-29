@@ -23,7 +23,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -188,18 +190,28 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return mReactNativeInstanceManager;
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onTokenExpired(TokenExpiredEvent event) {
-        Timber.d("onTokenExpired");
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenExpiredMain(TokenExpiredEvent event) {
+        Timber.d("Receive token expired");
+        showToast(R.string.exception_token_expired_message);
         getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpiredMain(TokenExpiredEvent event) {
-        Timber.d("onTokenExpiredMain");
-        showToast(R.string.exception_token_expired_message);
+    public void onServerMaintain(ServerMaintainEvent event) {
+        Timber.i("Receive server maintain event");
+        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
+        getAppComponent().applicationSession().clearUserSession();
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountSuspended(AccountSuspendedException event) {
+        Timber.i("Receive Suspended event");
+        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_zpw_account_suspended));
         getAppComponent().applicationSession().clearUserSession();
     }
+
 
     @Subscribe
     public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {
