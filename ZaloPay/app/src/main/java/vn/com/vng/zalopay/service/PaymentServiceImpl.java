@@ -1,11 +1,8 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
-import android.text.TextUtils;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -14,15 +11,13 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.MerChantUserInfo;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
+import vn.com.vng.zalopay.mdl.Helpers;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -30,6 +25,7 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 02/06/2016.
+ *
  */
 public class PaymentServiceImpl implements IPaymentService {
 
@@ -37,7 +33,7 @@ public class PaymentServiceImpl implements IPaymentService {
     final BalanceStore.Repository mBalanceRepository;
     final User user;
     final TransactionStore.Repository mTransactionRepository;
-    private PaymentWrapper paymentWrapper;
+    private PaymentWrapper mPaymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -54,7 +50,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
         final WeakReference<Activity> mWeakReference = new WeakReference<Activity>(activity);
 
-        this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
+        this.mPaymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mWeakReference.get();
@@ -67,14 +63,14 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseError(int status) {
-                errorCallback(promise, status);
+                Helpers.promiseResolveError(promise, status, null);
             }
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 updateTransaction();
                 balanceUpdate();
-                successCallback(promise, null);
+                Helpers.promiseResolveSuccess(promise, null);
             }
 
             @Override
@@ -84,7 +80,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseCancel() {
-                errorCallback(promise, PaymentError.ERR_CODE_USER_CANCEL);
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL, null);
                 destroyVariable();
             }
 
@@ -94,7 +90,7 @@ public class PaymentServiceImpl implements IPaymentService {
             }
         });
 
-        this.paymentWrapper.payWithOrder(order);
+        this.mPaymentWrapper.payWithOrder(order);
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
@@ -110,37 +106,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
         Timber.d("Invalid parameter [%s]", parameterName);
-        errorCallback(promise, PaymentError.ERR_CODE_INPUT, message);
-    }
-
-    private void successCallback(Promise promise, WritableMap object) {
-        Timber.d("successCallback promise [%s]", promise);
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
-        if (object != null) {
-            item.putMap("data", object);
-        }
-        promise.resolve(item);
-    }
-
-
-    private void errorCallback(Promise promise, int errorCode) {
-        errorCallback(promise, errorCode, null);
-    }
-
-    private void errorCallback(Promise promise, int errorCode, String message) {
-        if (promise == null) {
-            return;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putInt("code", errorCode);
-        if (!TextUtils.isEmpty(message)) {
-            item.putString("message", message);
-        }
-        promise.resolve(item);
+        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, message);
     }
 
     @Override
@@ -149,13 +115,13 @@ public class PaymentServiceImpl implements IPaymentService {
         Timber.d("get user info appId %s", appId);
 
         Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
-                .subscribe(new UserInfoSubscriber(promise));
+                .subscribe(new MerchantUserInfoSubscriber(promise));
         compositeSubscription.add(subscription);
     }
 
     public void destroyVariable() {
 //        paymentListener = null;
-        paymentWrapper = null;
+        mPaymentWrapper = null;
         unsubscribeIfNotNull(compositeSubscription);
     }
 
@@ -168,55 +134,4 @@ public class PaymentServiceImpl implements IPaymentService {
         mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
     }
 
-    private final class UserInfoSubscriber extends DefaultSubscriber<MerChantUserInfo> {
-
-        private Promise promise;
-
-        public UserInfoSubscriber(Promise promise) {
-            this.promise = promise;
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from based activity
-                return;
-            }
-
-            Timber.w(e, "Error on getting merchant user information");
-
-            errorCallback(promise, getErrorCode(e));
-        }
-
-        @Override
-        public void onNext(MerChantUserInfo merChantUserInfo) {
-
-            Timber.d("get user info %s %s ", merChantUserInfo, merChantUserInfo.muid);
-
-            successCallback(promise, transform(merChantUserInfo));
-        }
-
-        private WritableMap transform(MerChantUserInfo merChantUserInfo) {
-            if (merChantUserInfo == null) {
-                return null;
-            }
-
-            WritableMap data = Arguments.createMap();
-            data.putString("mUid", merChantUserInfo.muid);
-            data.putString("mAccessToken", merChantUserInfo.maccesstoken);
-            data.putString("displayName", merChantUserInfo.displayname);
-            data.putString("dateOfBirth", merChantUserInfo.birthdate);
-            data.putString("gender", String.valueOf(merChantUserInfo.usergender));
-            return data;
-        }
-
-        private int getErrorCode(Throwable e) {
-            if (e instanceof BodyException) {
-                return ((BodyException) e).errorCode;
-            } else {
-                return PaymentError.ERR_CODE_UNKNOWN;
-            }
-        }
-    }
 }

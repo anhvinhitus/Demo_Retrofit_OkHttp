@@ -90,7 +90,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
-        Timber.w("Begin setupFragmentComponent");
+        Timber.d("Begin setupFragmentComponent");
         getUserComponent().inject(this);
 
         if (!beaconScanner.initialize(this.getActivity())) {
@@ -142,7 +142,7 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
                 }
         );
-        Timber.w("Finish setupFragmentComponent");
+        Timber.d("Finish setupFragmentComponent");
     }
 
     @Override
