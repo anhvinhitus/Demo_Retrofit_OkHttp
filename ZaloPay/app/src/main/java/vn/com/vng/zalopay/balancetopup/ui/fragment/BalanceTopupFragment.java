@@ -1,44 +1,40 @@
 package vn.com.vng.zalopay.balancetopup.ui.fragment;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.balancetopup.ui.activity.ConfirmTransactionActivity;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
-import vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BalanceTopupFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link BalanceTopupFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView, InputAmountLayout.IListenerAmountChanged {
+public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView {
     // TODO: Rename parameter arguments, choose names that match
-    private final int MIN_AMOUNT = 10000;
-
-    private OnFragmentInteractionListener mListener;
-    private String mValidAmount = "";
+    private final int MIN_AMOUNT = 20000;
+    private final int MAX_AMOUNT = 10000000;
+    private long mAmount = 0;
+    private String mValidMinAmount = "";
 
     @Inject
     BalanceTopupPresenter balanceTopupPresenter;
@@ -46,29 +42,70 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @BindView(R.id.tvResourceMoney)
     TextView tvResourceMoney;
 
-    @BindView(R.id.inputAmountLayout)
-    InputAmountLayout inputAmountLayout;
+    @BindView(R.id.textInputAmount)
+    TextInputLayout textInputAmount;
+
+    @BindView(R.id.edtAmount)
+    EditText edtAmount;
 
     @BindView(R.id.btnDeposit)
     View btnDeposit;
 
-    @OnClick(R.id.btnDeposit)
-    public void onClickDeposit() {
-        if (inputAmountLayout.getAmount() < MIN_AMOUNT || inputAmountLayout.getAmount()%10000 != 0) {
-            showError(mValidAmount);
-            return;
+    View.OnClickListener onClickDeposit = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!isValidAmount()) {
+                return;
+            }
+            showProgressDialog();
+            balanceTopupPresenter.deposit(mAmount);
         }
-        showProgressDialog();
-        balanceTopupPresenter.deposit(inputAmountLayout.getAmount());
+    };
+
+    private void showAmountError(String error) {
+        if (!TextUtils.isEmpty(error)) {
+            textInputAmount.setErrorEnabled(true);
+            textInputAmount.setError(error);
+        } else {
+            hideAmountError();
+        }
     }
 
-    private void gotoConfirmTransaction() {
-        Intent intent = new Intent(getContext(), ConfirmTransactionActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong(Constants.ARG_AMOUNT, inputAmountLayout.getAmount());
-//        bundle.putString(Constants.ARG_PAYEE, bankSpinner.getSelectedCharSequence().toString());
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private void hideAmountError() {
+        textInputAmount.setErrorEnabled(false);
+        textInputAmount.setError(null);
+    }
+
+    public boolean isValidMinAmount() {
+        if (mAmount < MIN_AMOUNT) {
+            showAmountError(mValidMinAmount);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidMaxAmount() {
+        if (mAmount > MAX_AMOUNT) {
+            showAmountError(getResources().getString(R.string.max_money));
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidAmount() {
+        if (!isValidMinAmount()) {
+            return false;
+        }
+
+        if (!isValidMaxAmount()) {
+            return false;
+        }
+
+        if (mAmount % 10000 != 0) {
+            showAmountError(getString(R.string.valid_money));
+            return false;
+        }
+        return true;
     }
 
     public BalanceTopupFragment() {
@@ -103,19 +140,41 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-        mValidAmount = String.format(getResources().getString(R.string.min_money), CurrencyUtil.formatCurrency(MIN_AMOUNT, true));
+        mValidMinAmount = String.format(getResources().getString(R.string.valid_empty_money),
+                CurrencyUtil.formatCurrency(MIN_AMOUNT, true));
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         balanceTopupPresenter.setView(this);
-        inputAmountLayout.requestFocusEdittext();
-        inputAmountLayout.setListener(this);
-        String validAmount = String.format(getResources().getString(R.string.min_money), CurrencyUtil.formatCurrency(MIN_AMOUNT, false));
-        tvResourceMoney.setText(validAmount);
+        edtAmount.requestFocus();
+        edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
+            @Override
+            public void onValueUpdate(long value) {
+                mAmount = value;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                super.afterTextChanged(s);
+                hideAmountError();
+                isValidMaxAmount();
+                checkShowBtnContinue();
+            }
+        });
+        tvResourceMoney.setText(String.format(getResources().getString(R.string.min_money),
+                CurrencyUtil.formatCurrency(MIN_AMOUNT, false)));
+    }
+
+    private void checkShowBtnContinue() {
+        if (mAmount <= 0) {
+            btnDeposit.setBackgroundResource(R.color.bg_btn_gray);
+            btnDeposit.setOnClickListener(null);
+        } else {
+            btnDeposit.setBackgroundResource(R.drawable.bg_btn_blue);
+            btnDeposit.setOnClickListener(onClickDeposit);
+        }
     }
 
     @Override
@@ -123,37 +182,10 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         super.onActivityCreated(savedInstanceState);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         balanceTopupPresenter.destroyView();
-        if (inputAmountLayout != null) {
-            inputAmountLayout.removeListener();
-        }
     }
 
     @Override
@@ -188,30 +220,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     @Override
-    public void onAmountChanged(CharSequence amount) {
-        if (TextUtils.isEmpty(amount)) {
-            btnDeposit.setBackgroundResource(R.color.bg_btn_gray);
-        } else {
-            btnDeposit.setBackgroundResource(R.drawable.bg_btn_blue);
-        }
-    }
-
-    @Override
     public void onTokenInvalid() {
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

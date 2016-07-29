@@ -73,7 +73,7 @@
     <string name="txt_cancel_html"><u>Bỏ qua</u></string>
 
     <!--Activity lable START-->
-    <string name="title_activity_balance_topup">Gửi tiền</string>
+    <string name="title_activity_balance_topup">Nạp tiền</string>
     <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
 
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
@@ -117,7 +117,10 @@
 
     <string name="action_notifications">Thông báo</string>
 
-    <string name="min_money">Số tiền phải là bội số của %s </string>
+    <string name="min_money">Tối thiểu %s</string>
+    <string name="max_money">Số tiền bạn nhập không vượt quá 10.000.000 VND </string>
+    <string name="valid_empty_money">Số tiền tối thiểu %s</string>
+    <string name="valid_money">Số tiền phải là bội số của 10.000 VND </string>
     <string name="input_amount">Nhập số tiền</string>
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>

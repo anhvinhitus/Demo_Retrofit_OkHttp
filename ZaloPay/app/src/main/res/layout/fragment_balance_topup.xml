@@ -1,11 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background"
+                android:orientation="vertical"
+                tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
     <ScrollView
         android:id="@+id/ScrollView"
@@ -24,7 +24,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:orientation="horizontal"
-                android:padding="@dimen/spacing.medium">
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingRight="@dimen/spacing.medium.t"
+                android:paddingTop="@dimen/spacing.medium">
 
                 <TextView
                     android:id="@+id/tvResourceMoney"
@@ -33,7 +35,7 @@
                     android:gravity="right"
                     android:text="@string/min_money"
                     android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.small" />
+                    android:textSize="@dimen/textsize.small"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -42,13 +44,52 @@
                     android:gravity="right"
                     android:text="@string/vnd"
                     android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.tiny.s" />
+                    android:textSize="@dimen/textsize.tiny.s"/>
             </LinearLayout>
 
-            <vn.com.vng.zalopay.balancetopup.ui.widget.InputAmountLayout
-                android:id="@+id/inputAmountLayout"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/spacing.medium.t">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing.tiny"
+                    android:layout_marginRight="@dimen/spacing.medium.t"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
+                    android:orientation="vertical"
+                    app:errorEnabled="false">
+
+                    <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                        android:id="@+id/edtAmount"
+                        style="@style/TextView.Item.Main"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:ellipsize="end"
+                        android:gravity="bottom"
+                        android:hint="@string/hint_amount"
+                        android:inputType="number"
+                        android:maxLength="17"
+                        android:maxLines="1"
+                        android:paddingBottom="@dimen/spacing.tiny"
+                        android:paddingTop="@dimen/spacing.tiny"
+                        android:singleLine="true"/>
+                </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate"/>
         </LinearLayout>
     </ScrollView>
 
@@ -59,5 +100,5 @@
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:background="@color/bg_btn_gray"
-        android:text="@string/btn_deposit" />
+        android:text="@string/btn_deposit"/>
 </RelativeLayout>

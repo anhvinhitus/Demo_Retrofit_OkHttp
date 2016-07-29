@@ -27,6 +27,7 @@
             android:background="@color/white"
             android:ellipsize="end"
             android:hint="@string/hint_zalo_contact"
+            android:textColorHint="@color/hint"
             android:lines="1"
             android:paddingBottom="@dimen/spacing.medium"
             android:paddingLeft="@dimen/spacing.medium.t"
