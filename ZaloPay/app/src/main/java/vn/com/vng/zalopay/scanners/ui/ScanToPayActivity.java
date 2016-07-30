@@ -145,9 +145,6 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
             mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
 
-            mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
-
-
             mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabView("Bluetooth", R.drawable.ic_pay_tab_bluetooth));
 
             if (TAB_TOTAL > TAB_SOUND) {
