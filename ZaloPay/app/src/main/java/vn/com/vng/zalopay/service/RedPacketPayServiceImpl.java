@@ -33,7 +33,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
 
         final WeakReference<Activity> mWeakReference = new WeakReference<>(activity);
 
-        this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
+        this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, mTransactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mWeakReference.get();
@@ -41,23 +41,21 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onParameterError(param);
                 }
             }
 
             @Override
             public void onResponseError(int status) {
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onResponseError(status);
                 }
             }
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                updateTransaction();
-                balanceUpdate();
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onResponseSuccess(null);
                 }
             }
@@ -88,11 +86,4 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         paymentWrapper = null;
     }
 
-    private void updateTransaction() {
-        mTransactionRepository.updateTransaction();
-    }
-
-    private void balanceUpdate() {
-        mBalanceRepository.updateBalance();
-    }
 }

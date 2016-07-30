@@ -43,5 +43,10 @@ public interface TransactionStore {
         Observable<Boolean> initialize();
 
         Observable<TransHistory> getTransaction(long id);
+
+        Observable<Boolean> updateTransactionFail();
+
+        Observable<Boolean> updateTransactionSuccess();
+
     }
 }

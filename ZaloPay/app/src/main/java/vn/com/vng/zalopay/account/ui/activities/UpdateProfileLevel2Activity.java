@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -81,7 +82,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
         if (adapter == null) {
             return;
         }
-        AbsProfileFragment fragment = (AbsProfileFragment)adapter.getItem(viewPager.getCurrentItem());
+        AbsProfileFragment fragment = (AbsProfileFragment) adapter.getItem(viewPager.getCurrentItem());
         fragment.onClickContinue();
     }
 
@@ -110,43 +111,13 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     }
 
     private void initPaymentWrapper() {
-        paymentWrapper = new PaymentWrapper(null, null, new PaymentWrapper.IViewListener() {
+        final WeakReference<Activity> weakReference = new WeakReference<Activity>(this);
+        paymentWrapper = new PaymentWrapper(null, null, null, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
-                return UpdateProfileLevel2Activity.this;
+                return weakReference.get();
             }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                showToast(param);
-            }
-
-            @Override
-            public void onResponseError(int status) {
-                if (status == PaymentError.ERR_CODE_INTERNET) {
-                    showToast("Vui lòng kiểm tra kết nối mạng và thử lại.");
-                }
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                getAppComponent().applicationSession().clearUserSession();
-            }
-
-            @Override
-            public void onResponseCancel() {
-
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                navigator.startDepositActivity(UpdateProfileLevel2Activity.this);
-            }
-        });
+        }, null);
     }
 
     private void initData() {
@@ -204,6 +175,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             return;
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -223,7 +195,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             return;
         }
         Timber.d("updateUserInfo, birthday: %s", user.birthDate);
-        Date date = new Date(user.birthDate*1000);
+        Date date = new Date(user.birthDate * 1000);
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
         tvName.setText(user.dname);
         tvSex.setText(user.getGender());
@@ -238,7 +210,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             }
         });
         tvTermsOfUser2.setClickable(true);
-        tvTermsOfUser2.setMovementMethod (LinkMovementMethod.getInstance());
+        tvTermsOfUser2.setMovementMethod(LinkMovementMethod.getInstance());
 //        tvTermsOfUser3.setClickable(true);
 //        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
         tvTermsOfUser3.setOnClickListener(new View.OnClickListener() {
@@ -297,7 +269,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
     }
 
     @Override
-    public void onConfirmOTPSucess() {
+    public void onConfirmOTPSuccess() {
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
         presenter.saveUserPhone(mCurrentPhone);
@@ -306,14 +278,19 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
             paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {
                 @Override
                 public void onSuccess() {
-                    showToast("Lưu thẻ thành công.");
-                    getActivity().finish();
+                    if (getActivity() != null) {
+                        showToast("Lưu thẻ thành công.");
+                        getActivity().finish();
+                    }
+
                 }
 
                 @Override
                 public void onError(String s) {
-                    showToast("Lưu thẻ thất bại.");
-                    getActivity().finish();
+                    if (getActivity() != null) {
+                        showToast("Lưu thẻ thất bại.");
+                        getActivity().finish();
+                    }
                 }
             });
         } else if (getActivity() != null && !getActivity().isFinishing()) {

@@ -14,6 +14,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -39,7 +40,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     BalanceStore.Repository mBalanceRepository;
 
     @Inject
-    Navigator mNavigator;
+    TransactionStore.Repository mTransactionRepository;
+
 
     public ScanNFCFragment() {
         // Required empty public constructor
@@ -98,11 +100,12 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     public void setReaderPresenter(NFCReaderPresenter presenter) {
         readerPresenter = presenter;
     }
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
 
-        paymentWrapper = new PaymentWrapper(mBalanceRepository, zaloPayRepository,
+        paymentWrapper = new PaymentWrapper(mBalanceRepository, zaloPayRepository, mTransactionRepository,
                 new PaymentWrapper.IViewListener() {
                     @Override
                     public Activity getActivity() {
@@ -139,7 +142,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
                     @Override
                     public void onNotEnoughMoney() {
-                        mNavigator.startDepositActivity(ScanNFCFragment.this.getContext());
+                        navigator.startDepositActivity(ScanNFCFragment.this.getContext());
                     }
                 });
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -11,6 +12,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -37,6 +39,7 @@ import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 public class PaymentWrapper {
     public interface IGetOrderCallback {
         void onResponseSuccess(Order order);
+
         void onResponseError(int status);
     }
 
@@ -44,6 +47,9 @@ public class PaymentWrapper {
     private final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
     private final BalanceStore.Repository balanceRepository;
+    private final TransactionStore.Repository transactionRepository;
+
+
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
         public void onComplete(ZPPaymentResult pPaymentResult) {
@@ -57,7 +63,12 @@ public class PaymentWrapper {
             } else {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+
                     responseListener.onResponseSuccess(pPaymentResult);
+
+                    updateBalance();
+                    updateTransactionSuccess();
+
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                     responseListener.onResponseTokenInvalid();
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
@@ -75,6 +86,9 @@ public class PaymentWrapper {
                     responseListener.onNotEnoughMoney();
                 } else {
                     responseListener.onResponseError(resultStatus);
+
+                    updateBalance();
+                    updateTransctionFail();
                 }
             }
         }
@@ -92,11 +106,13 @@ public class PaymentWrapper {
         }
     };
 
-    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, IViewListener viewListener, IResponseListener responseListener) {
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, TransactionStore.Repository transactionRepository,
+                          IViewListener viewListener, IResponseListener responseListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
         this.responseListener = responseListener;
+        this.transactionRepository = transactionRepository;
     }
 
     public void payWithToken(long appId, String transactionToken) {
@@ -358,5 +374,25 @@ public class PaymentWrapper {
                 responseListener.onParameterError("token");
             }
         }
+    }
+
+
+    private void updateTransactionSuccess() {
+        Subscription subscription = transactionRepository.updateTransactionSuccess()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+    }
+
+    private void updateTransctionFail() {
+        Subscription subscription = transactionRepository.updateTransactionFail()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+    }
+
+    private void updateBalance() {
+        // update balance
+        Subscription subscription = balanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
     }
 }

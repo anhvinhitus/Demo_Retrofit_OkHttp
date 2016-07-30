@@ -80,7 +80,7 @@ public class CounterBeaconFragment extends BaseFragment {
         }
 
         mPaymentWrapper = new PaymentWrapper(mBalanceRepository,
-                zaloPayRepository,
+                zaloPayRepository, mTransactionRepository,
                 new PaymentWrapper.IViewListener() {
                     @Override
                     public Activity getActivity() {
@@ -102,7 +102,6 @@ public class CounterBeaconFragment extends BaseFragment {
 
                     @Override
                     public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        mTransactionRepository.updateTransaction();
                         CounterBeaconFragment.this.getActivity().finish();
                     }
 

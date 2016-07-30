@@ -17,6 +17,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
@@ -46,7 +47,7 @@ public class ScanSoundFragment extends BaseFragment {
     BalanceStore.Repository mBalanceRepository;
 
     @Inject
-    Navigator mNavigator;
+    TransactionStore.Repository mTransactionRepository;
 
     @OnClick(R.id.btnStartScanSound)
     public void onClickStartScanSound(View view) {
@@ -144,7 +145,7 @@ public class ScanSoundFragment extends BaseFragment {
         getUserComponent().inject(this);
 
         paymentWrapper = new PaymentWrapper(mBalanceRepository,
-                zaloPayRepository,
+                zaloPayRepository,mTransactionRepository,
                 new PaymentWrapper.IViewListener() {
                     @Override
                     public Activity getActivity() {
@@ -183,7 +184,7 @@ public class ScanSoundFragment extends BaseFragment {
 
                     @Override
                     public void onNotEnoughMoney() {
-                        mNavigator.startDepositActivity(ScanSoundFragment.this.getContext());
+                        navigator.startDepositActivity(ScanSoundFragment.this.getContext());
                     }
                 }
         );

@@ -150,7 +150,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     @Override
     public void confirmOTPSuccess() {
         if (mListener != null) {
-            mListener.onConfirmOTPSucess();
+            mListener.onConfirmOTPSuccess();
         }
     }
 
@@ -221,6 +221,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnOTPFragmentListener {
-        void onConfirmOTPSucess();
+        void onConfirmOTPSuccess();
     }
 }

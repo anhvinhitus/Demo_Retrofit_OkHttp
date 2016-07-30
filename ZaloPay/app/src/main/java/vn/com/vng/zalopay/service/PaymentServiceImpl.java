@@ -25,7 +25,6 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 02/06/2016.
- *
  */
 public class PaymentServiceImpl implements IPaymentService {
 
@@ -50,7 +49,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
         final WeakReference<Activity> mWeakReference = new WeakReference<Activity>(activity);
 
-        this.mPaymentWrapper = new PaymentWrapper(mBalanceRepository, null, new PaymentWrapper.IViewListener() {
+        this.mPaymentWrapper = new PaymentWrapper(mBalanceRepository, null, mTransactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mWeakReference.get();
@@ -68,8 +67,6 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                updateTransaction();
-                balanceUpdate();
                 Helpers.promiseResolveSuccess(promise, null);
             }
 
@@ -124,15 +121,6 @@ public class PaymentServiceImpl implements IPaymentService {
 //        paymentListener = null;
         mPaymentWrapper = null;
         unsubscribeIfNotNull(compositeSubscription);
-    }
-
-    private void updateTransaction() {
-        mTransactionRepository.updateTransaction().subscribe(new DefaultSubscriber<Boolean>());
-    }
-
-    private void balanceUpdate() {
-        // update balance
-        mBalanceRepository.updateBalance().subscribe(new DefaultSubscriber<>());
     }
 
 }

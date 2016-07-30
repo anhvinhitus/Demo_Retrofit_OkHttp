@@ -58,7 +58,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         this.user = user;
         this.mTransferLocalStorage = localStorage;
 
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -92,8 +92,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 if (mView == null) {
                     return;
                 }
-                updateTransaction();
-                updateBalance();
 
                 if (mView.getActivity() != null) {
                     mView.getActivity().setResult(Activity.RESULT_OK, null);

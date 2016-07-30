@@ -37,7 +37,7 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
     public LinkCardProcedurePresenter(User user) {
         this.user = user;
-        paymentWrapper = new PaymentWrapper(null, null, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -60,9 +60,6 @@ public class LinkCardProcedurePresenter extends BaseZaloPayPresenter implements 
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                updateTransaction();
-                updateBalance();
-
                 ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
                 if (paymentInfo == null) {
                     return;
