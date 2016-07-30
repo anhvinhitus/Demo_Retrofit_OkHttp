@@ -48,7 +48,8 @@
                 android:text="@string/terms_of_use_1"
                 android:textColor="@color/deposit.title"
                 android:textColorLink="@color/colorPrimary"
-                android:textSize="13sp"/>
+                android:textSize="13sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tvTermsOfUser2"
