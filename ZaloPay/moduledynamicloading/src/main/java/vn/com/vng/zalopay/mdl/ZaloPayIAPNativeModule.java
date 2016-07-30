@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
 
 import java.util.Locale;
 
@@ -120,6 +118,11 @@ public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
         if (getCurrentActivity() != null) {
             getCurrentActivity().finish();
         }
+    }
+
+    @ReactMethod
+    public void logError(String message) {
+        Timber.w(message);
     }
 
     @Override
