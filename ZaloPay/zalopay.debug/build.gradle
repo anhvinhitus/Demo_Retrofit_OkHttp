@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 
 def cfg = rootProject.ext.configuration
 
@@ -10,7 +9,7 @@ android {
     defaultConfig {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 2
+        versionCode 1
         versionName "1.0"
     }
     buildTypes {
@@ -21,36 +20,11 @@ android {
     }
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-        flatDir {
-            dirs "../libs"
-        }
-    }
-
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-    }
-}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     def libs = rootProject.ext.libraries
     def tests = rootProject.ext.testingLibraries
 
-    compile libs.support_annotations
-    compile libs.dagger
-    apt libs.daggerCompiler
-    provided libs.javaxAnnotation
-
     testCompile tests.junit
-    compile libs.support_appcompat_v7
-    compile libs.timber
     compile libs.react_native
-    compile libs.animated_gif
-
-    compile project(':data')
-    compile project(':zalopayanalytics')
 }

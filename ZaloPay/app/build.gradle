@@ -35,7 +35,7 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 2
+        versionCode 3
         versionName "1.6.31"
 
         multiDexEnabled true
@@ -343,6 +343,7 @@ dependencies {
 
     debugCompile project(':debugviewer')
     releaseCompile project(':debugviewer-release')
+    debugCompile project(':zalopay.debug')
 
     compile project(':data')
     compile project(':uicomponent')
