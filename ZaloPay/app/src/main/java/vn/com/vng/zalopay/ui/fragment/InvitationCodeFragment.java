@@ -144,6 +144,14 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         super.onResume();
 
         Timber.d("Resume invitation code fragment");
+        try {
+            detectInvitationCode();
+        } catch (Throwable ex) {
+            Timber.w(ex, "Failed to detect invitation code from clipboard");
+        }
+    }
+
+    private void detectInvitationCode() {
         ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         if (!clipboardManager.hasPrimaryClip()) {
             Timber.d("Clipboard is empty");
