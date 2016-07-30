@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,12 +11,16 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
@@ -130,5 +137,45 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     public void showLabelError() {
         mTvInviteView.setTextColor(Color.RED);
         mTvInviteView.setText(R.string.exception_code_invalid);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Timber.d("Resume invitation code fragment");
+        ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        if (!clipboardManager.hasPrimaryClip()) {
+            Timber.d("Clipboard is empty");
+            return;
+        }
+
+        ClipData clipData = clipboardManager.getPrimaryClip();
+        if (clipData == null || clipData.getItemCount() == 0) {
+            Timber.d("Clipboard is empty");
+            return;
+        }
+
+        ClipData.Item item = clipData.getItemAt(0);
+        CharSequence itemText = item.getText();
+        if (itemText == null || itemText.length() == 0) {
+            Timber.d("Cannot get text from Clipboard");
+            return;
+        }
+
+        String value = itemText.toString();
+        Timber.d("Text on clipboard: %s", value);
+
+        String pattern = "(.*)(\\d{8})(.*)";
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(value);
+        if (m.find()) {
+            Timber.d("Found Invitation code: %s", m.group(2));
+            mILCodeView.setPassword(m.group(2));
+            mButtonContinueView.setEnabled(true);
+        } else {
+            Timber.d("Could not find any invitation code");
+        }
     }
 }
