@@ -49,7 +49,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
+                android:layout_height="@dimen/separate_stroke"
                 android:background="@color/separate"/>
 
             <FrameLayout

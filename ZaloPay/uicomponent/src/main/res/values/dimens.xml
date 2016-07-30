@@ -86,7 +86,7 @@
     <dimen name="default_padding_xlarge">28dp</dimen>
 
 
-    <dimen name="separate">1px</dimen>
+    <dimen name="separate">0.5dp</dimen>
     <dimen name="left_menu_icon">48dp</dimen>
     <dimen name="button_conner_radius">30dp</dimen>
 
