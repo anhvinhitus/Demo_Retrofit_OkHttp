@@ -25,14 +25,15 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.transfer.models.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.transfer.models.RecentTransaction;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -49,6 +50,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     private String mMessage = "";
     private String mValidMinAmount = "";
     private String mValidMaxAmount = "";
+    private long MIN_AMOUNT = 0;
+    private long MAX_AMOUNT = 0;
 
     @Inject
     TransferPresenter mPresenter;
@@ -93,7 +96,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     public boolean isValidMinAmount() {
-        if (mAmount < Constants.MIN_TRANSFER_MONEY) {
+        if (mAmount < MIN_AMOUNT) {
             showAmountError(mValidMinAmount);
             return false;
         }
@@ -101,7 +104,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     public boolean isValidMaxAmount() {
-        if (mAmount > Constants.MAX_TRANSFER_MONEY) {
+        if (mAmount > MAX_AMOUNT) {
             showAmountError(mValidMaxAmount);
             return false;
         }
@@ -182,10 +185,28 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 mMessage = transferRecent.getMessage();
             }
         }
+
+        initLimitMoney();
+    }
+
+    private void initLimitMoney() {
+        try {
+            MIN_AMOUNT = CShareData.getInstance(getActivity()).getMinTranferValue();
+            MAX_AMOUNT = CShareData.getInstance(getActivity()).getMaxTranferValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (MIN_AMOUNT <= 0) {
+            MIN_AMOUNT = Constants.MIN_TRANSFER_MONEY;
+        }
+        if (MAX_AMOUNT <= 0) {
+            MAX_AMOUNT = Constants.MAX_TRANSFER_MONEY;
+        }
+
         mValidMinAmount = String.format(getResources().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY, true));
+                CurrencyUtil.formatCurrency(MIN_AMOUNT, true));
         mValidMaxAmount = String.format(getResources().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY, true));
+                CurrencyUtil.formatCurrency(MAX_AMOUNT, true));
     }
 
     @Override
@@ -272,6 +293,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void onDestroy() {
         mPresenter.destroy();
+        CShareData.dispose();
         super.onDestroy();
     }
 
