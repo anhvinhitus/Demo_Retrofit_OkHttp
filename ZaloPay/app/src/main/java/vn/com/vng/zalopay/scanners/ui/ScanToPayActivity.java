@@ -115,13 +115,6 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                             mScanSoundFragment.stopRecording();
                         }
                     }
-
-/*
-                    for (int i = 0; i < TAB_TOTAL; i++) {
-                        View tab = mTabLayout.getTabAt(i).getCustomView();
-                        View icon = tab.findViewById(R.id.tabIcon);
-                        icon.setSelected(i == position);
-                    }*/
                 }
 
                 @Override
@@ -150,8 +143,10 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         try {
             mTabLayout.getTabAt(TAB_NFC).setCustomView(genTabView("NFC", R.drawable.ic_pay_tab_nfc));
 
+            mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
 
             mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
+
 
             mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabView("Bluetooth", R.drawable.ic_pay_tab_bluetooth));
 
@@ -162,6 +157,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         } catch (NullPointerException e) {
             Timber.w(e, "Should not happen in ScanToPayActivity");
         }
+
     }
 
     private View genTabView(String tabName, int resIcon) {
@@ -294,7 +290,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                 }
                 case TAB_BEACON: {
 //                    return ScanSoundFragment.newInstance();
-                    mScanBeaconFragment = CounterBeaconFragment.newInstance(1);
+                    mScanBeaconFragment = CounterBeaconFragment.newInstance();
                     return mScanBeaconFragment;
                 }
 

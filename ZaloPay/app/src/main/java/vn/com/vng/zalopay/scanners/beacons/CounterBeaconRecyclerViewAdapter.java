@@ -12,21 +12,21 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment.OnListFragmentInteractionListener;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
 import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link BeaconDevice} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- */
+
 public class CounterBeaconRecyclerViewAdapter extends AbsRecyclerAdapter<BeaconDevice, CounterBeaconRecyclerViewAdapter.ViewHolder> {
 
 
-    OnListFragmentInteractionListener listener;
+    public interface OnClickBeaconDeviceListener {
+        void onClickBeaconListener(BeaconDevice beacon);
+    }
 
-    public CounterBeaconRecyclerViewAdapter(Context context, OnListFragmentInteractionListener listener) {
+    OnClickBeaconDeviceListener listener;
+
+    public CounterBeaconRecyclerViewAdapter(Context context, OnClickBeaconDeviceListener listener) {
         super(context);
         this.listener = listener;
     }
@@ -50,7 +50,7 @@ public class CounterBeaconRecyclerViewAdapter extends AbsRecyclerAdapter<BeaconD
             Timber.d("onListItemClick: position %s", position);
             BeaconDevice item = getItem(position);
             if (item != null && listener != null) {
-                listener.onListFragmentInteraction(item);
+                listener.onClickBeaconListener(item);
             }
         }
 

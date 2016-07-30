@@ -6,15 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,16 +32,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
-/**
- * A fragment representing a list of Items.
- * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class CounterBeaconFragment extends BaseFragment {
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
-    private MenuItem fav;
 
     private BeaconScanner beaconScanner;
     private CounterBeaconRecyclerViewAdapter mViewAdapter;
@@ -76,10 +62,9 @@ public class CounterBeaconFragment extends BaseFragment {
         beaconScanner = new BeaconScanner(new BeaconListener());
     }
 
-    public static CounterBeaconFragment newInstance(int columnCount) {
+    public static CounterBeaconFragment newInstance() {
         CounterBeaconFragment fragment = new CounterBeaconFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -149,50 +134,16 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-//
-//        fav = menu.add("refresh");
-//        fav.setIcon(R.drawable.ic_more_horiz);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Timber.d("onCreateView begin");
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        // Set the adapter
-        if (mColumnCount <= 1) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        } else {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
-        }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mViewAdapter = new CounterBeaconRecyclerViewAdapter(getContext(), new SelectDeviceListener());
         mRecyclerView.setAdapter(mViewAdapter);
 
-        Timber.d("onCreateView finish");
-        return view;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == fav.getItemId()) {
-            Timber.d("Reload list beacon");
-            resetDeviceList();
-            beaconScanner.startScan();
-            return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -245,16 +196,6 @@ public class CounterBeaconFragment extends BaseFragment {
         });
     }
 
-    //
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (!isVisibleToUser) {
-//            beaconScanner.stopScan();
-//        } else {
-//            beaconScanner.startScan();
-//        }
-//    }
     private void stopBeaconScanner() {
         getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
@@ -272,17 +213,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
     private void resetDeviceList() {
         mViewAdapter.removeAll();
-    //    mMainLooperHandler.post(updateDatasetRunnable);
     }
-
-  /*  private final Runnable updateDatasetRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mViewAdapter != null) {
-                mViewAdapter.notifyDataSetChanged();
-            }
-        }
-    };*/
 
     public void startScanning() {
         startBeaconScanner();
@@ -292,9 +223,9 @@ public class CounterBeaconFragment extends BaseFragment {
         stopBeaconScanner();
     }
 
-    private class SelectDeviceListener implements OnListFragmentInteractionListener {
+    private class SelectDeviceListener implements CounterBeaconRecyclerViewAdapter.OnClickBeaconDeviceListener {
         @Override
-        public void onListFragmentInteraction(BeaconDevice item) {
+        public void onClickBeaconListener(BeaconDevice item) {
             if (item.paymentRecord == null) {
                 return;
             }
@@ -309,21 +240,6 @@ public class CounterBeaconFragment extends BaseFragment {
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(BeaconDevice item);
-    }
-
     private class BeaconListener implements BeaconScanner.BeaconListener {
         private int REQUEST_ENABLE_BT = 1;
 
@@ -336,6 +252,9 @@ public class CounterBeaconFragment extends BaseFragment {
 
         @Override
         public void onDiscoverDevice(String deviceName, int rssi, PaymentRecord data) {
+
+            Timber.d(" threadName %s", Thread.currentThread().getName());
+
             String title = deviceName;
             if (deviceName == null) {
                 title = "<NULL>";
@@ -357,20 +276,6 @@ public class CounterBeaconFragment extends BaseFragment {
                 // fetch order info
                 mPaymentWrapper.getOrder(data.appId, data.transactionToken, new GetOrderCallback(device));
             }
-
-           /* if (mDeviceList.contains(device)) {
-                Timber.d("Replace existing device");
-                int position = mDeviceList.indexOf(device);
-                mDeviceList.set(position, device);
-            } else {
-                Timber.d("Add new device");
-                mDeviceList.add(device);
-            }
-
-            if (mMainLooperHandler != null) {
-                mMainLooperHandler.post(updateDatasetRunnable);
-            }
-*/
 
             mViewAdapter.insertOrReplace(device);
 
@@ -396,17 +301,14 @@ public class CounterBeaconFragment extends BaseFragment {
 
         @Override
         public void onResponseSuccess(Order order) {
+
+            Timber.d("threadName %s", Thread.currentThread().getName());
+
             Timber.i("Got order information for transaction %s", device.paymentRecord.transactionToken);
             OrderCache cache = mTransactionCache.get(device.paymentRecord.transactionToken);
             cache.status = OrderCache.STATUS_CACHED;
             cache.order = order;
             mTransactionCache.put(device.paymentRecord.transactionToken, cache);
-            /*BeaconDevice device = this.device.cloneWithOrder(order);
-            int position = mViewAdapter.getItems().indexOf(device);
-            mDeviceList.set(position, device);
-            if (mMainLooperHandler != null) {
-                mMainLooperHandler.post(updateDatasetRunnable);
-            }*/
 
             int position = mViewAdapter.getItems().indexOf(device);
             if (position >= 0) {
