@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:paddingLeft="@dimen/spacing.medium.t"
                 android:paddingTop="@dimen/spacing.large.t"
                 android:text="@string/link_card_title"
-                android:textAllCaps="true" />
+                android:textAllCaps="true"/>
 
             <LinearLayout
                 android:id="@+id/layoutContent"
@@ -43,32 +43,34 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/link_card_step_one" />
+                    android:text="@string/link_card_step_one"
+                    android:textColor="@color/c_text_black"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing.medium.s"
-                    android:text="@string/link_card_step_two" />
+                    android:text="@string/link_card_step_two"
+                    android:textColor="@color/c_text_black"/>
 
-            <!--    <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.medium.t"
-                    android:layout_marginTop="@dimen/spacing.large.t"
-                    android:text="@string/link_card_step_two_1" />
+                <!--    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing.medium.t"
+                        android:layout_marginTop="@dimen/spacing.large.t"
+                        android:text="@string/link_card_step_two_1" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.medium.t"
-                    android:text="@string/link_card_step_two_2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing.medium.t"
+                        android:text="@string/link_card_step_two_2" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing.large.t"
-                    android:text="@string/link_card_step_note" />-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing.large.t"
+                        android:text="@string/link_card_step_note" />-->
             </LinearLayout>
 
             <LinearLayout
@@ -83,7 +85,7 @@
                     android:paddingLeft="@dimen/spacing.medium.t"
                     android:paddingTop="@dimen/spacing.large.t"
                     android:text="@string/support_banks"
-                    android:textAllCaps="true" />
+                    android:textAllCaps="true"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/listView"
@@ -95,7 +97,7 @@
                     android:clipToPadding="false"
                     android:padding="@dimen/spacing.small"
                     app:layoutManager="GridLayoutManager"
-                    tools:listitem="@layout/fragment_participated_bank_item" />
+                    tools:listitem="@layout/fragment_participated_bank_item"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -109,5 +111,5 @@
         android:layout_weight="0.0"
         android:background="@drawable/bg_btn_blue"
         android:gravity="center"
-        android:text="@string/btn_continue" />
+        android:text="@string/btn_continue"/>
 </LinearLayout>
