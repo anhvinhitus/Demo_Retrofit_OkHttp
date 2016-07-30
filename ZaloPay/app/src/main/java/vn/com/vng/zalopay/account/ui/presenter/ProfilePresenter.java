@@ -36,6 +36,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void resume() {
+        getProfile();
     }
 
     @Override
@@ -54,6 +55,17 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
             if (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber)) { // Chua get profile level 3
                 getUserProfile();
             }
+        }
+    }
+
+    public int getProfileLevel() {
+        User user = userConfig.getCurrentUser();
+        if (user == null) {
+            return 0;
+        } else if (userConfig.getCurrentUser() == null) {
+            return 0;
+        } else {
+            return userConfig.getCurrentUser().profilelevel;
         }
     }
 
