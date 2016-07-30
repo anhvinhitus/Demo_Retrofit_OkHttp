@@ -147,17 +147,21 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
     private void setupTabIcons() {
 
-        mTabLayout.getTabAt(TAB_NFC).setCustomView(genTabView("NFC", R.drawable.ic_pay_tab_nfc));
+        try {
+            mTabLayout.getTabAt(TAB_NFC).setCustomView(genTabView("NFC", R.drawable.ic_pay_tab_nfc));
 
 
-        mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
+            mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
 
-        mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabView("Bluetooth", R.drawable.ic_pay_tab_bluetooth));
+            mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabView("Bluetooth", R.drawable.ic_pay_tab_bluetooth));
 
-        if (TAB_TOTAL > TAB_SOUND) {
-            mTabLayout.getTabAt(TAB_SOUND).setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
+            if (TAB_TOTAL > TAB_SOUND) {
+                mTabLayout.getTabAt(TAB_SOUND).setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
+            }
+            mTabLayout.getTabAt(TAB_NFC).getCustomView().setSelected(true);
+        } catch (NullPointerException e) {
+            Timber.w(e, "Should not happen in ScanToPayActivity");
         }
-        mTabLayout.getTabAt(TAB_NFC).getCustomView().setSelected(true);
     }
 
     private View genTabView(String tabName, int resIcon) {
