@@ -10,51 +10,41 @@
         android:orientation="vertical"
         tools:context=".scanners.nfc.ScanNFCFragment">
 
-        <LinearLayout
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/scan_nfc_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textSize="40dp" />
+            <ImageView
+                android:layout_width="118dp"
+                android:layout_height="118dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="60dp"
+                android:layout_marginRight="50dp"
+                android:src="@drawable/ic_pay_machine" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/default_margin"
-                android:gravity="center_horizontal"
-                android:text="Đặt điện thoại ở gần máy tính tiền để bắt đầu giao dịch"
-                android:textSize="14sp" />
+            <ImageView
+                android:layout_width="184dp"
+                android:layout_height="223dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="35dp"
+                android:src="@drawable/ic_pay_hand" />
+        </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/btn_read_nfc"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="bottom"
-                android:background="@color/bg_btn_blue"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/Button.Default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/btn_emulate_nfc" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_pay_machine" />
 
     </vn.com.vng.zalopay.ui.widget.WaveView>
+
+    <TextView
+        style="@style/TextView.Default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="140dp"
+        android:gravity="center"
+        android:text="@string/lbl.nfc.fragment"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_large" />
+
+
 </FrameLayout>

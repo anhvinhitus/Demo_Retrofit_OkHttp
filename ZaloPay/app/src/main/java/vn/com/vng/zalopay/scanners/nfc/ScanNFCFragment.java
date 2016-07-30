@@ -47,20 +47,20 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         // Required empty public constructor
     }
 
-    @BindView(R.id.scan_nfc_status)
-    TextView mNFCStatus;
+    /*  @BindView(R.id.scan_nfc_status)
+      TextView mNFCStatus;
 
-    @BindView(R.id.btn_read_nfc)
-    View mBtnEmulateNfcReceive;
+      @BindView(R.id.btn_read_nfc)
+      View mBtnEmulateNfcReceive;
 
-    @OnClick(R.id.btn_read_nfc)
-    void onReadNFC() {
-        if (BuildConfig.DEBUG) {
-            String emulateContent = "3:j4lT_UrWh98EBA3UbF-jjQ";
-            processOrder(emulateContent);
-        }
-    }
-
+      @OnClick(R.id.btn_read_nfc)
+      void onReadNFC() {
+          if (BuildConfig.DEBUG) {
+              String emulateContent = "3:j4lT_UrWh98EBA3UbF-jjQ";
+              processOrder(emulateContent);
+          }
+      }
+  */
     private boolean processOrder(String orderToken) {
         String[] contents = orderToken.split(":");
         if (contents.length < 2) {
@@ -74,7 +74,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         String token = contents[1];
 
         if (paymentWrapper == null) {
-            mNFCStatus.setText("Có lỗi phát sinh");
+            //mNFCStatus.setText("Có lỗi phát sinh");
             Timber.w("PaymentWrapper is NULL");
             return false;
         }
@@ -115,18 +115,18 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                 new PaymentWrapper.IResponseListener() {
                     @Override
                     public void onParameterError(String param) {
-                        mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
+                        //mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
                     }
 
                     @Override
                     public void onResponseError(int status) {
-                        mNFCStatus.setText("");
-//                        mNFCStatus.setText(String.format("Response error: %d", status));
+                        //mNFCStatus.setText("");
+//                        //mNFCStatus.setText(String.format("Response error: %d", status));
                     }
 
                     @Override
                     public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        mNFCStatus.setText("Thanh toán thành công");
+                        //mNFCStatus.setText("Thanh toán thành công");
 
                     }
 
@@ -205,16 +205,16 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     public void onInitDone(int status) {
         switch (status) {
             case STATUS_NOT_AVAILABLE:
-                mBtnEmulateNfcReceive.setEnabled(true);
-                mNFCStatus.setText("NFC is not available");
+                //mBtnEmulateNfcReceive.setEnabled(true);
+                //mNFCStatus.setText("NFC is not available");
                 break;
             case STATUS_DISABLE:
-                mBtnEmulateNfcReceive.setVisibility(View.GONE);
-                mNFCStatus.setText("NFC is disabled");
+                // mBtnEmulateNfcReceive.setVisibility(View.GONE);
+                //mNFCStatus.setText("NFC is disabled");
                 break;
             case STATUS_ENABLE:
-                mBtnEmulateNfcReceive.setVisibility(View.GONE);
-                mNFCStatus.setText("NFC ready");
+                //mBtnEmulateNfcReceive.setVisibility(View.GONE);
+                //mNFCStatus.setText("NFC ready");
                 break;
         }
     }
@@ -229,7 +229,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.NFC_SCANNING);
 
         if (paymentWrapper == null) {
-            mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
+            //mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
             return;
         }
 
