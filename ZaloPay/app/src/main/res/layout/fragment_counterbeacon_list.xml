@@ -14,5 +14,5 @@
         android:background="@color/white"
         app:layoutManager="LinearLayoutManager"
         tools:context=".scanners.beacons.CounterBeaconFragment"
-        tools:listitem="@layout/fragment_counterbeacon" />
+        tools:listitem="@layout/row_counter_beacon" />
 </FrameLayout>

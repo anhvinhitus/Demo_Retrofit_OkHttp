@@ -11,7 +11,7 @@ public class BeaconDevice {
     public final String id;
     public final int rssi;
     public final PaymentRecord paymentRecord;
-    public final Order order;
+    public Order order;
     public final long timestamp;
 
     public BeaconDevice(String id, int rssi, PaymentRecord paymentRecord, Order order) {
@@ -25,7 +25,7 @@ public class BeaconDevice {
     @Override
     public boolean equals(Object o) {
         if (o instanceof BeaconDevice) {
-            return id.equalsIgnoreCase(((BeaconDevice)o).id);
+            return id.equalsIgnoreCase(((BeaconDevice) o).id);
         }
         return super.equals(o);
     }
@@ -36,6 +36,6 @@ public class BeaconDevice {
 
     boolean isExpired() {
         long currentTime = System.currentTimeMillis();
-        return (currentTime - timestamp > 4*1000);
+        return (currentTime - timestamp > 4 * 1000);
     }
 }

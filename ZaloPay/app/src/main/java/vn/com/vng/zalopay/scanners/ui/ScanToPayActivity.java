@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -113,6 +115,13 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                             mScanSoundFragment.stopRecording();
                         }
                     }
+
+/*
+                    for (int i = 0; i < TAB_TOTAL; i++) {
+                        View tab = mTabLayout.getTabAt(i).getCustomView();
+                        View icon = tab.findViewById(R.id.tabIcon);
+                        icon.setSelected(i == position);
+                    }*/
                 }
 
                 @Override
@@ -138,27 +147,26 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
     private void setupTabIcons() {
 
-        TextView tabOne = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
-        tabOne.setText("NFC");
-        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_nfc, 0, 0);
-        mTabLayout.getTabAt(TAB_NFC).setCustomView(tabOne);
+        mTabLayout.getTabAt(TAB_NFC).setCustomView(genTabView("NFC", R.drawable.ic_pay_tab_nfc));
 
-        TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
-        tabTwo.setText("QR");
-        tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_qr, 0, 0);
-        mTabLayout.getTabAt(TAB_QR).setCustomView(tabTwo);
 
-        TextView tabThree = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
-        tabThree.setText("Bluetooth");
-        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_bluetooth, 0, 0);
-        mTabLayout.getTabAt(TAB_BEACON).setCustomView(tabThree);
+        mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
+
+        mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabView("Bluetooth", R.drawable.ic_pay_tab_bluetooth));
 
         if (TAB_TOTAL > TAB_SOUND) {
-            TextView tabFour = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
-            tabFour.setText("Âm thanh");
-            tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_pay_tab_sound, 0, 0);
-            mTabLayout.getTabAt(TAB_SOUND).setCustomView(tabFour);
+            mTabLayout.getTabAt(TAB_SOUND).setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
         }
+        mTabLayout.getTabAt(TAB_NFC).getCustomView().setSelected(true);
+    }
+
+    private View genTabView(String tabName, int resIcon) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_tablayout, null);
+        TextView tabNameView = (TextView) view.findViewById(R.id.tabName);
+        ImageView tabIconView = (ImageView) view.findViewById(R.id.tabIcon);
+        tabNameView.setText(tabName);
+        tabIconView.setImageResource(resIcon);
+        return view;
     }
 
     @TargetApi(Build.VERSION_CODES.M)

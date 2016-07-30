@@ -1,91 +1,105 @@
 package vn.com.vng.zalopay.scanners.beacons;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment.OnListFragmentInteractionListener;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-
-import java.util.List;
+import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
+import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link BeaconDevice} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class CounterBeaconRecyclerViewAdapter extends RecyclerView.Adapter<CounterBeaconRecyclerViewAdapter.ViewHolder> {
+public class CounterBeaconRecyclerViewAdapter extends AbsRecyclerAdapter<BeaconDevice, CounterBeaconRecyclerViewAdapter.ViewHolder> {
 
-    private final List<BeaconDevice> mValues;
-    private final OnListFragmentInteractionListener mListener;
 
-    public CounterBeaconRecyclerViewAdapter(List<BeaconDevice> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    OnListFragmentInteractionListener listener;
+
+    public CounterBeaconRecyclerViewAdapter(Context context, OnListFragmentInteractionListener listener) {
+        super(context);
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_counterbeacon, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(mInflater.inflate(R.layout.row_counter_beacon, parent, false), mOnItemClickListener);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        String amount = "";
-        if (holder.mItem.order != null) {
-            amount = CurrencyUtil.formatCurrency(holder.mItem.order.getAmount());
-            String description = holder.mItem.order.getDescription();
-            if (TextUtils.isEmpty(description)) {
-                description = "Thanh toán cho hoá đơn";
-            }
-            holder.mDescriptionView.setText(description);
-        } else if (holder.mItem.paymentRecord != null) {
-            amount = CurrencyUtil.formatCurrency(holder.mItem.paymentRecord.amount);
-            holder.mDescriptionView.setText("Hoá đơn: ");
-        } else {
-            holder.mDescriptionView.setText(mValues.get(position).id);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        BeaconDevice item = getItem(position);
+        if (item != null) {
+            holder.bindView(item);
         }
-        holder.mAmountView.setText(amount);
+    }
 
-        holder.mBeaconLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timber.i("Click on Beacon");
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onListItemClick(View anchor, int position) {
+            Timber.d("onListItemClick: position %s", position);
+            BeaconDevice item = getItem(position);
+            if (item != null && listener != null) {
+                listener.onListFragmentInteraction(item);
             }
-        });
-    }
+        }
 
-    @Override
-    public int getItemCount() {
-        return mValues.size();
-    }
+        @Override
+        public boolean onListItemLongClick(View anchor, int position) {
+            return false;
+        }
+    };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mDescriptionView;
-        public final TextView mAmountView;
-        public final View mBeaconLayout;
-        public BeaconDevice mItem;
 
-        public ViewHolder(View view) {
+        @BindView(R.id.counter_description)
+        TextView mDescriptionView;
+
+        @BindView(R.id.counter_order_amount)
+        TextView mAmountView;
+
+        private OnItemClickListener listener;
+
+        public ViewHolder(View view, OnItemClickListener listener) {
             super(view);
-            mView = view;
-            mBeaconLayout = (View) view.findViewById(R.id.beacon_layout);
-            mBeaconLayout.setClickable(true);
-            mDescriptionView = (TextView) view.findViewById(R.id.counter_description);
-            mAmountView = (TextView) view.findViewById(R.id.counter_order_amount);
+            ButterKnife.bind(this, view);
+            this.listener = listener;
+        }
+
+        public void bindView(BeaconDevice mItem) {
+            String amount = "";
+            if (mItem.order != null) {
+                amount = CurrencyUtil.formatCurrency(mItem.order.getAmount());
+                String description = mItem.order.getDescription();
+                if (TextUtils.isEmpty(description)) {
+                    description = "Thanh toán cho hoá đơn";
+                }
+                mDescriptionView.setText(description);
+            } else if (mItem.paymentRecord != null) {
+                amount = CurrencyUtil.formatCurrency(mItem.paymentRecord.amount);
+                mDescriptionView.setText("Hoá đơn: ");
+            } else {
+                mDescriptionView.setText(mItem.id);
+            }
+            mAmountView.setText(amount);
+
+        }
+
+        @OnClick(R.id.beacon_layout)
+        public void onClickItemLayout(View v) {
+            if (listener != null) {
+                listener.onListItemClick(v, getAdapterPosition());
+            }
         }
 
         @Override

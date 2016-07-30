@@ -16,6 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -24,19 +32,10 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.inject.Inject;
 
 /**
  * A fragment representing a list of Items.
@@ -53,7 +52,6 @@ public class CounterBeaconFragment extends BaseFragment {
     private CounterBeaconRecyclerViewAdapter mViewAdapter;
     private Handler mMainLooperHandler;
 
-    private final List<BeaconDevice> mDeviceList = new ArrayList<>();
     private PaymentWrapper mPaymentWrapper;
     private final HashMap<String, OrderCache> mTransactionCache = new HashMap<>();
 
@@ -66,12 +64,10 @@ public class CounterBeaconFragment extends BaseFragment {
     @Inject
     BalanceStore.Repository mBalanceRepository;
 
-    @Inject
-    Navigator mNavigator;
-
 
     @BindView(R.id.beaconList)
     RecyclerView mRecyclerView;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -138,7 +134,7 @@ public class CounterBeaconFragment extends BaseFragment {
 
                     @Override
                     public void onNotEnoughMoney() {
-                        mNavigator.startDepositActivity(CounterBeaconFragment.this.getContext());
+                        navigator.startDepositActivity(CounterBeaconFragment.this.getContext());
                     }
                 }
         );
@@ -180,7 +176,7 @@ public class CounterBeaconFragment extends BaseFragment {
         } else {
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
         }
-        mViewAdapter = new CounterBeaconRecyclerViewAdapter(mDeviceList, new SelectDeviceListener());
+        mViewAdapter = new CounterBeaconRecyclerViewAdapter(getContext(), new SelectDeviceListener());
         mRecyclerView.setAdapter(mViewAdapter);
 
         Timber.d("onCreateView finish");
@@ -209,8 +205,9 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mMainLooperHandler = null;
         stopBeaconScanner();
+        mMainLooperHandler.removeCallbacks(removeDeviceExpiredRunnable);
+        mMainLooperHandler = null;
     }
 
     @Override
@@ -226,6 +223,7 @@ public class CounterBeaconFragment extends BaseFragment {
     }
 
     private Timer timer;
+
     private void startBeaconScanner() {
         if (timer == null) {
             timer = new Timer();
@@ -273,18 +271,18 @@ public class CounterBeaconFragment extends BaseFragment {
     }
 
     private void resetDeviceList() {
-        mDeviceList.clear();
-        mMainLooperHandler.post(updateDatasetRunnable);
+        mViewAdapter.removeAll();
+    //    mMainLooperHandler.post(updateDatasetRunnable);
     }
 
-    private final Runnable updateDatasetRunnable = new Runnable() {
+  /*  private final Runnable updateDatasetRunnable = new Runnable() {
         @Override
         public void run() {
             if (mViewAdapter != null) {
                 mViewAdapter.notifyDataSetChanged();
             }
         }
-    };
+    };*/
 
     public void startScanning() {
         startBeaconScanner();
@@ -360,7 +358,7 @@ public class CounterBeaconFragment extends BaseFragment {
                 mPaymentWrapper.getOrder(data.appId, data.transactionToken, new GetOrderCallback(device));
             }
 
-            if (mDeviceList.contains(device)) {
+           /* if (mDeviceList.contains(device)) {
                 Timber.d("Replace existing device");
                 int position = mDeviceList.indexOf(device);
                 mDeviceList.set(position, device);
@@ -372,6 +370,10 @@ public class CounterBeaconFragment extends BaseFragment {
             if (mMainLooperHandler != null) {
                 mMainLooperHandler.post(updateDatasetRunnable);
             }
+*/
+
+            mViewAdapter.insertOrReplace(device);
+
         }
 
         @Override
@@ -399,11 +401,18 @@ public class CounterBeaconFragment extends BaseFragment {
             cache.status = OrderCache.STATUS_CACHED;
             cache.order = order;
             mTransactionCache.put(device.paymentRecord.transactionToken, cache);
-            BeaconDevice device = this.device.cloneWithOrder(order);
-            int position = mDeviceList.indexOf(device);
+            /*BeaconDevice device = this.device.cloneWithOrder(order);
+            int position = mViewAdapter.getItems().indexOf(device);
             mDeviceList.set(position, device);
             if (mMainLooperHandler != null) {
                 mMainLooperHandler.post(updateDatasetRunnable);
+            }*/
+
+            int position = mViewAdapter.getItems().indexOf(device);
+            if (position >= 0) {
+                BeaconDevice device = mViewAdapter.getItem(position);
+                device.order = order;
+                mViewAdapter.notifyItemChanged(position);
             }
         }
 
@@ -429,17 +438,25 @@ public class CounterBeaconFragment extends BaseFragment {
     private class MyTimerTask extends TimerTask {
         @Override
         public void run() {
+            mMainLooperHandler.post(removeDeviceExpiredRunnable);
+        }
+    }
+
+    private final Runnable removeDeviceExpiredRunnable = new Runnable() {
+        @Override
+        public void run() {
             List<BeaconDevice> expiredList = new ArrayList<>();
-            for (BeaconDevice device : mDeviceList) {
+            for (BeaconDevice device : mViewAdapter.getItems()) {
                 if (device.isExpired()) {
                     expiredList.add(device);
                 }
             }
 
             if (!expiredList.isEmpty()) {
-                mDeviceList.removeAll(expiredList);
-                mMainLooperHandler.post(updateDatasetRunnable);
+                mViewAdapter.removeAll(expiredList);
             }
         }
-    }
+    };
+
+
 }
