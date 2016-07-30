@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
 
 import retrofit2.Call;
 import retrofit2.CallAdapter;
@@ -13,6 +15,7 @@ import retrofit2.Response;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Scheduler;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
@@ -28,9 +31,11 @@ import vn.com.vng.zalopay.data.exception.TokenException;
  * CallAdapter for pre-processing Server response
  */
 final class ZaloPayCallAdapter implements CallAdapter<Observable<?>> {
+    private final int REST_RETRY_COUNT = 3;
     private final Context mContext;
     private final Type mResponseType;
     private final Scheduler mScheduler;
+    private int mRestRetryCount;
 
     ZaloPayCallAdapter(Context context, Type responseType, Scheduler scheduler) {
         this.mContext = context;
@@ -45,9 +50,33 @@ final class ZaloPayCallAdapter implements CallAdapter<Observable<?>> {
 
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
+        mRestRetryCount = REST_RETRY_COUNT;
         Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call))
-                .flatMap(this::makeObservableFromResponse);
+                .retryWhen(errors -> errors.flatMap(error -> {
+                    Timber.d("adapt mRestRetryCount [%s] error [%s]", mRestRetryCount, error);
+                    boolean needRetry = false;
+                    if (mRestRetryCount >= 1) {
+                        if (error instanceof IOException) {
+                            needRetry = true;
+                        } else if (error instanceof SocketTimeoutException) {
+                            Timber.d("adapt SocketTimeoutException");
+                            needRetry = true;
+                        } else if (error instanceof HttpException) {
+                            Timber.d("adapt ((HttpException) error).code() [%s]", ((HttpException) error).code());
+                            if (((HttpException) error).code() > 404) {
+                                needRetry = true;
+                            }
+                        }
+                    }
 
+                    if (needRetry) {
+                        mRestRetryCount--;
+                        return Observable.just(null);
+                    } else {
+                        return Observable.error(error);
+                    }
+                }))
+                .flatMap(this::makeObservableFromResponse);
         if (mScheduler == null) {
             return observable;
         }
@@ -57,6 +86,7 @@ final class ZaloPayCallAdapter implements CallAdapter<Observable<?>> {
 
     @NonNull
     private <R> Observable<? extends R> makeObservableFromResponse(Response<R> response) {
+        Timber.d("makeObservableFromResponse response [%s]", response);
         if (response == null) {
             return Observable.error(new HttpEmptyResponseException());
         }

@@ -77,7 +77,7 @@ public class NetworkModule {
         builder.cache(cache);
         builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.KEEP_ALIVE_DURATION_MS, TimeUnit.MILLISECONDS));
         builder.connectTimeout(10, TimeUnit.SECONDS);
-        builder.readTimeout(10, TimeUnit.SECONDS);
+        builder.readTimeout(5, TimeUnit.SECONDS);
         return builder.build();
     }
 
