@@ -7,21 +7,26 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 6/12/16.
  */
-public class WaveView extends RelativeLayout {
+public class WaveView extends FrameLayout {
 
     private static final int DEFAULT_RIPPLE_COUNT = 6;
     private static final int DEFAULT_DURATION_TIME = 3000;
@@ -88,41 +93,91 @@ public class WaveView extends RelativeLayout {
         }
         paint.setColor(rippleColor);
 
-        RelativeLayout.LayoutParams rippleParams = new RelativeLayout.LayoutParams((int) (2 * (rippleRadius + rippleStrokeWidth)), (int) (2 * (rippleRadius + rippleStrokeWidth)));
-        rippleParams.addRule(CENTER_IN_PARENT, TRUE);
+        FrameLayout.LayoutParams rippleParams = new FrameLayout.LayoutParams((int) (2 * (rippleRadius + rippleStrokeWidth)), (int) (2 * (rippleRadius + rippleStrokeWidth)));
+        //rippleParams.addRule(CENTER_IN_PARENT, TRUE);
+        rippleParams.bottomMargin = AndroidUtils.dp(42);
+        rippleParams.gravity = Gravity.CENTER;
 
         animatorSet = new AnimatorSet();
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
         List<Animator> animatorList = new ArrayList<>();
 
         for (int i = 0; i < rippleAmount; i++) {
-            RippleView rippleView = new RippleView(getContext());
+            final RippleView rippleView = new RippleView(getContext());
             addView(rippleView, rippleParams);
+            rippleView.setVisibility(GONE);
             rippleViewList.add(rippleView);
 
             final ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(rippleView, "ScaleX", 1.0f, rippleScale);
-            scaleXAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            scaleXAnimator.setRepeatMode(ObjectAnimator.RESTART);
+            // scaleXAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+            //  scaleXAnimator.setRepeatMode(ObjectAnimator.RESTART);
             scaleXAnimator.setStartDelay(i * rippleDelay);
+            scaleXAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    rippleView.setVisibility(VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    rippleView.setVisibility(GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    //  rippleView.setVisibility(VISIBLE);
+                }
+            });
             scaleXAnimator.setDuration(rippleDurationTime);
             animatorList.add(scaleXAnimator);
 
             final ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(rippleView, "ScaleY", 1.0f, rippleScale);
-            scaleYAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            scaleYAnimator.setRepeatMode(ObjectAnimator.RESTART);
+            //  scaleYAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+            //   scaleYAnimator.setRepeatMode(ObjectAnimator.RESTART);
+
             scaleYAnimator.setStartDelay(i * rippleDelay);
             scaleYAnimator.setDuration(rippleDurationTime);
             animatorList.add(scaleYAnimator);
 
-         /*  final ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(rippleView, "Alpha", 1.0f, 0.9f);
-            alphaAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            alphaAnimator.setRepeatMode(ObjectAnimator.RESTART);
+            final ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(rippleView, "Alpha", 1.0f, 0.0f);
+            //  alphaAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+            // alphaAnimator.setRepeatMode(ObjectAnimator.RESTART);
             alphaAnimator.setStartDelay(i * rippleDelay);
             alphaAnimator.setDuration(rippleDurationTime);
-            animatorList.add(alphaAnimator);*/
+            animatorList.add(alphaAnimator);
         }
 
         animatorSet.playTogether(animatorList);
+    }
+
+
+    private class AnimatorRepeat implements Animator.AnimatorListener {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            Timber.d("onAnimationStart");
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            Timber.d("onAnimationEnd");
+            animatorSet.setStartDelay(2000);
+            animatorSet.start();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
     }
 
     private class RippleView extends View {
@@ -142,20 +197,34 @@ public class WaveView extends RelativeLayout {
     }
 
     public void startRippleAnimation() {
-        if (!isRippleAnimationRunning()) {
-            for (RippleView rippleView : rippleViewList) {
+     /*   if (!isRippleAnimationRunning()) {
+          *//*  for (RippleView rippleView : rippleViewList) {
                 rippleView.setVisibility(VISIBLE);
-            }
+            }*//*
+            animatorSet.addListener(new AnimatorRepeat());
             animatorSet.start();
             animationRunning = true;
+        }*/
+
+        Timber.d("startRippleAnimation");
+        if (!animatorSet.isRunning()) {
+            animatorSet.addListener(new AnimatorRepeat());
+            animatorSet.start();
         }
+
+        animationRunning = true;
     }
 
     public void stopRippleAnimation() {
-        if (isRippleAnimationRunning()) {
+      /*  if (isRippleAnimationRunning()) {
+
+        }*/
+        if (animatorSet.isRunning()) {
             animatorSet.end();
-            animationRunning = false;
         }
+        animatorSet.removeAllListeners();
+
+        animationRunning = false;
     }
 
     public boolean isRippleAnimationRunning() {

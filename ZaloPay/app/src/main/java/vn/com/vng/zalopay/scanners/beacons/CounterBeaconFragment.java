@@ -133,6 +133,7 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mViewAdapter = new CounterBeaconRecyclerViewAdapter(getContext(), new SelectDeviceListener());
     }
 
     @Override
@@ -140,9 +141,7 @@ public class CounterBeaconFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mViewAdapter = new CounterBeaconRecyclerViewAdapter(getContext(), new SelectDeviceListener());
         mRecyclerView.setAdapter(mViewAdapter);
-
     }
 
     @Override

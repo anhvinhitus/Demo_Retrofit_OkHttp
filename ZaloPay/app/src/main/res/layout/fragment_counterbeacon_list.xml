@@ -5,14 +5,11 @@
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/beaconList"
-        android:name="vn.com.vng.zalopay.scanners.ui.CounterBeaconFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/height_tab_pay_with_margin"
         android:background="@color/white"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".scanners.beacons.CounterBeaconFragment"
-        tools:listitem="@layout/row_counter_beacon" />
+        app:layoutManager="LinearLayoutManager" />
+
 </FrameLayout>

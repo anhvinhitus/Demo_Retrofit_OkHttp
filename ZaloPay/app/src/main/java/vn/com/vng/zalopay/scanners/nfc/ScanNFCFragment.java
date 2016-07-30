@@ -3,7 +3,10 @@ package vn.com.vng.zalopay.scanners.nfc;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -21,6 +24,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.WaveView;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -47,20 +51,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         // Required empty public constructor
     }
 
-    /*  @BindView(R.id.scan_nfc_status)
-      TextView mNFCStatus;
-
-      @BindView(R.id.btn_read_nfc)
-      View mBtnEmulateNfcReceive;
-
-      @OnClick(R.id.btn_read_nfc)
-      void onReadNFC() {
-          if (BuildConfig.DEBUG) {
-              String emulateContent = "3:j4lT_UrWh98EBA3UbF-jjQ";
-              processOrder(emulateContent);
-          }
-      }
-  */
     private boolean processOrder(String orderToken) {
         String[] contents = orderToken.split(":");
         if (contents.length < 2) {
@@ -147,6 +137,25 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                 });
     }
 
+    @BindView(R.id.imHand)
+    ImageView mHandView;
+
+    @BindView(R.id.waveView)
+    WaveView mWareWaveView;
+
+    boolean is;
+
+    @OnClick(R.id.imMachine)
+    public void onClickAnimation() {
+        Timber.d("onClickAnimation: animation start");
+        /*if (is) {
+            ViewCompat.animate(mHandView).withLayer().translationX(0).translationY(0).start();
+        } else {
+            ViewCompat.animate(mHandView).withLayer().translationX(125).translationY(150).start();
+        }
+        is = !is;*/
+    }
+
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_scan_nfc;
@@ -166,6 +175,32 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
             readerPresenter.setView(this);
             readerPresenter.initialize();
         }
+
+        starAnimation();
+
+    }
+
+    private void starAnimation() {
+        ViewCompat.setTranslationX(mHandView, 150);
+        ViewCompat.setTranslationY(mHandView, 150);
+        ViewCompat.animate(mHandView)
+                .withLayer().setDuration(2000)
+                .translationX(0).translationY(0)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWareWaveView != null) {
+                            mWareWaveView.startRippleAnimation();
+                        }
+                    }
+                })
+                .start();
+
+
+    }
+
+    private void stopAnimation() {
+        mWareWaveView.stopRippleAnimation();
     }
 
     @Override
@@ -173,6 +208,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         if (readerPresenter != null) {
             readerPresenter.destroyView();
         }
+        mHandView.clearAnimation();
+        stopAnimation();
         super.onDestroyView();
     }
 
