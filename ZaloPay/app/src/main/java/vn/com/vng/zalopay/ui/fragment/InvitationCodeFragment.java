@@ -98,6 +98,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @Override
     public void onDestroyView() {
+        mILCodeView.setOnPasswordChangedListener(null);
         presenter.destroyView();
         super.onDestroyView();
     }
