@@ -88,7 +88,7 @@ public class BeaconScanner {
             mListener.shouldRequestEnableBluetooth();
         } else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                mBluetoothAdapter.startLeScan(mLeScanCallback18);
+                mBluetoothAdapter.startLeScan(getScanCallback18());
             } else {
                 mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
                 settings = new ScanSettings.Builder()
@@ -111,7 +111,7 @@ public class BeaconScanner {
             if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
                 return;
             } else {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback18);
+                mBluetoothAdapter.stopLeScan(getScanCallback18());
             }
         } else {
             if (mLEScanner == null) {
@@ -164,6 +164,13 @@ public class BeaconScanner {
 
     }
 
+    private BluetoothAdapter.LeScanCallback getScanCallback18() {
+        if (mLeScanCallback18 == null) {
+            mLeScanCallback18 = new LeScanCallback18();
+        }
+        return mLeScanCallback18;
+    }
+
     private LeScanCallback21 mLeScanCallback21;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -193,7 +200,7 @@ public class BeaconScanner {
         }
     }
 
-    private BluetoothAdapter.LeScanCallback mLeScanCallback18 = new LeScanCallback18();
+    private BluetoothAdapter.LeScanCallback mLeScanCallback18;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private class LeScanCallback18 implements BluetoothAdapter.LeScanCallback {
