@@ -108,10 +108,12 @@ public class WaveView extends FrameLayout {
             rippleView.setVisibility(GONE);
             rippleViewList.add(rippleView);
 
+            int duration = rippleDurationTime;
+            int timeDelay = i * rippleDelay * 2;
+
             final ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(rippleView, "ScaleX", 1.0f, rippleScale);
-            // scaleXAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            //  scaleXAnimator.setRepeatMode(ObjectAnimator.RESTART);
-            scaleXAnimator.setStartDelay(i * rippleDelay);
+            scaleXAnimator.setStartDelay(timeDelay);
+            scaleXAnimator.setDuration(duration);
             scaleXAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -125,30 +127,23 @@ public class WaveView extends FrameLayout {
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
-
                 }
 
                 @Override
                 public void onAnimationRepeat(Animator animation) {
-                    //  rippleView.setVisibility(VISIBLE);
                 }
             });
-            scaleXAnimator.setDuration(rippleDurationTime);
+
             animatorList.add(scaleXAnimator);
 
             final ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(rippleView, "ScaleY", 1.0f, rippleScale);
-            //  scaleYAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            //   scaleYAnimator.setRepeatMode(ObjectAnimator.RESTART);
-
-            scaleYAnimator.setStartDelay(i * rippleDelay);
-            scaleYAnimator.setDuration(rippleDurationTime);
+            scaleYAnimator.setStartDelay(timeDelay);
+            scaleYAnimator.setDuration(duration);
             animatorList.add(scaleYAnimator);
 
             final ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(rippleView, "Alpha", 1.0f, 0.0f);
-            //  alphaAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-            // alphaAnimator.setRepeatMode(ObjectAnimator.RESTART);
-            alphaAnimator.setStartDelay(i * rippleDelay);
-            alphaAnimator.setDuration(rippleDurationTime);
+            alphaAnimator.setStartDelay(timeDelay);
+            alphaAnimator.setDuration(duration);
             animatorList.add(alphaAnimator);
         }
 
