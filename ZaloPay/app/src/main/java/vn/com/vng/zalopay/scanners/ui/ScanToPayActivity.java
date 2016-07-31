@@ -89,7 +89,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
                 @Override
                 public void onPageSelected(int position) {
-                    Timber.e("Select page: %d", position);
+                    Timber.d("Select page: %d", position);
                     if (position == TAB_NFC) {
                         // should enable NFC reader handler
                         mNFCTabActivated = true;
@@ -152,7 +152,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
             }
             mTabLayout.getTabAt(TAB_NFC).getCustomView().setSelected(true);
         } catch (NullPointerException e) {
-            Timber.w(e, "Should not happen in ScanToPayActivity");
+            Timber.w(e, "Should not happened in ScanToPayActivity");
         }
 
     }
