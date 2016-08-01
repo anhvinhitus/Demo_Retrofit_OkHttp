@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -11,18 +12,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <vn.vng.uicomponent.widget.image.TintableImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_pay_tab_bluetooth" />
+            android:src="@drawable/ic_pay_tab_bluetooth"
+            app:tint="@color/tint_menu_item" />
 
-        <ImageView
+        <vn.vng.uicomponent.widget.image.TintableImageView
             android:id="@+id/radar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_pay_tab_bluetooth_rotate" />
+            android:src="@drawable/ic_pay_tab_bluetooth_rotate"
+            app:tint="@color/tint_menu_item" />
+
     </FrameLayout>
 
 
