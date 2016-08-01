@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import retrofit2.adapter.rxjava.HttpException;
@@ -49,11 +50,12 @@ public class ErrorMessageFactory {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
             message = mHttpStatusCode.get(((HttpException) exception).code());
+        } else if (exception instanceof UnknownHostException) {
+            message = context.getString(R.string.exception_unknown_host);
         } else if (exception instanceof ServerMaintainException) {
             message = null;
         }
 
         return message;
     }
-
 }

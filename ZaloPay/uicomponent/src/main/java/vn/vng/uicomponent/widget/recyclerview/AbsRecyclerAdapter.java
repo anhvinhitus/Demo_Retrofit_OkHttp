@@ -75,11 +75,10 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public void remove(T values) {
-        synchronized (_lock) {
-            mItems.remove(values);
+        int location = mItems.indexOf(values);
+        if (location >= 0) {
+            remove(location);
         }
-        //notifyItemRemoved();
-        notifyDataSetChanged();
     }
 
     public void remove(int location) {
@@ -87,6 +86,20 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
             mItems.remove(location);
         }
         notifyItemRemoved(location);
+    }
+
+    public void removeAll() {
+        synchronized (_lock) {
+            mItems.clear();
+        }
+        notifyDataSetChanged();
+    }
+
+    public void removeAll(Collection<T> items) {
+        synchronized (_lock) {
+            mItems.removeAll(items);
+        }
+        notifyDataSetChanged();
     }
 
     public void insert(T object, int index) {
@@ -101,6 +114,18 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
             mItems.add(object);
         }
         notifyItemInserted(getItemCount());
+    }
+
+    public void insertOrReplace(T object) {
+        int location = mItems.indexOf(object);
+        if (location >= 0) {
+            synchronized (_lock) {
+                mItems.set(location, object);
+                notifyItemChanged(location);
+            }
+        } else {
+            insert(object);
+        }
     }
 
 

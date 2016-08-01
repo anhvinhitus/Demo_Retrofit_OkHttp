@@ -33,7 +33,6 @@ public class AppConfigFactory {
     private String mno = "mno";
     private String devicemodel = "devicemodel";
 
-
     public AppConfigFactory(Context context, AppConfigService service,
                             User user, SqlitePlatformScope sqlitePlatformScope) {
 
@@ -71,6 +70,5 @@ public class AppConfigFactory {
     public Observable<List<CardEntity>> listCardCache() {
         return sqlitePlatformScope.listCard();
     }
-
 
 }

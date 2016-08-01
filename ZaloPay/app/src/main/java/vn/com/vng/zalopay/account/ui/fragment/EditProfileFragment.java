@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -84,7 +83,6 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPresenter.getProfile();
     }
 
     @Override
@@ -195,6 +193,10 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutCmnd)
     public void onClickCmnd(View v) {
+        if (mPresenter.getProfileLevel() < 2) {
+            showToast("Vui lòng cập nhật số điện thoại trước.");
+            return;
+        }
         if (tvCMND.length() == 0) {
             navigator.startUpdateProfile3Activity(getContext());
         }
@@ -202,6 +204,10 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutEmail)
     public void onClickEmail(View v) {
+        if (mPresenter.getProfileLevel() < 2) {
+            showToast("Vui lòng cập nhật số điện thoại trước.");
+            return;
+        }
         if (tvEmail.length() == 0) {
             navigator.startUpdateProfile3Activity(getContext());
         }

@@ -49,6 +49,6 @@ public class TintableImageView extends ImageView {
 
     private void updateTintColor() {
         int color = tint.getColorForState(getDrawableState(), 0);
-        setColorFilter(color);
+        setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY);
     }
 }

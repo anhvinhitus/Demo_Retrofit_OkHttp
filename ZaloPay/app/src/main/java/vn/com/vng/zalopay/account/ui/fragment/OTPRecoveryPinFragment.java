@@ -199,7 +199,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
 
     @Subscribe
-    void onReceiveSmsMessages(ReceiveSmsEvent event) {
+    public void onReceiveSmsMessages(ReceiveSmsEvent event) {
         String pattern = "(.*)(\\d{6})(.*)";
         // Create a Pattern object
         Pattern r = Pattern.compile(pattern);

@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
@@ -45,6 +46,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 
 /**
  * Created by AnhHieu on 4/11/16.
+ * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener, IZaloPayView, BannerPagerAdapter.IBannerClick {
 
@@ -234,8 +236,17 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         zpAnalytics.trackEvent(ZPEvents.TAPSCANQR);
     }
 
+    @OnClick(R.id.btn_scan_to_pay)
+    public void onScanToPayClick(View view) {
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
+        navigator.startScanToPayActivity(getActivity());
+    }
+
     private void startQRCodeActivity() {
         if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
+            getAppComponent().monitorTiming().startEvent(MonitorEvents.QR_SCANNING);
             navigator.startQrCodeActivity(getActivity());
         }
     }

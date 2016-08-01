@@ -86,7 +86,7 @@
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
-    <string name="label_invitation_code">Nhập mã để sử dụng Zalo Pay</string>
+    <string name="label_invitation_code">Nhập mã kích hoạt ứng dụng\nđể có mã kích hoạt, liên hệ <a href="mailto:hotro@zalopay.vn">hotro@zalopay.vn</a></string>
 
     <!--Left Menu lable START-->
     <string name="txt_leftmenu_home">Trang Chủ</string>
@@ -109,6 +109,7 @@
     <string name="txt_home_qrcode">Quét Mã QR</string>
     <string name="txt_home_deposit">Nạp Tiền</string>
     <string name="txt_home_link_card">Lưu Thẻ</string>
+    <string name="txt_home_scantopay">Trả Tiền</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -192,6 +193,9 @@
     <string name="hint_fullname">Họ tên</string>
 
     <string name="show_passcode">Hiện mã PIN?</string>
+    <string name="title_activity_scan_to_pay">Trả tiền</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="btn_emulate_nfc">Giả lập Nfc</string>
 
     <string name="show">Hiện</string>
     <string name="hide">Ẩn</string>
@@ -201,12 +205,22 @@
     <string name="reset_pin">Tạo lại mã PIN</string>
     <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
 
+    <string name="receiver_start_record">Start record</string>
+    <string name="receiver_end_record">End Record</string>
+    <string name="record_impossible">Unfortunately, it is not possible to record calls in this device. (Usually because another application/service is using the microphone in the background)</string>
+    <string name="recording">Recording</string>
+    <string name="recording_ticker">Recording is now Starting</string>
+    <string name="recording_text">If recording was enabled, recording should have started, if not you can enable recording in the application, the phone will stop the recording when the conversation ends</string>
+
+    <string name="btn_start_scan_sound">Start scan</string>
+    <string name="btn_stop_scan_sound">Stop scan</string>
+    <string name="test_jni">Test JNI</string>
+
     <string name="transfer_acc_zalopay">Đến tài khoản Zalo</string>
     <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="deposit">Nạp tiền vào tài khoản</string>
@@ -235,4 +249,5 @@
 
     <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
     <string name="lbl.update.profile.3.page.1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
+    <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
 </resources>

@@ -38,6 +38,22 @@
         android:textSize="@dimen/textsize.tiny" />
 
     <TextView
+        android:id="@+id/btn_scan_to_pay"
+        style="@style/TextView.Default"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        android:background="?selector"
+        android:drawablePadding="@dimen/spacing.medium.s"
+        android:drawableTop="@drawable/ic_tratien"
+        android:gravity="center"
+        android:padding="@dimen/app_padding"
+        android:text="@string/txt_home_scantopay"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize.tiny" />
+
+    <TextView
         android:id="@+id/btn_link_card"
         style="@style/TextView.Default"
         android:layout_width="match_parent"
@@ -48,7 +64,7 @@
         android:drawableTop="@drawable/ic_lienketthe"
         android:gravity="center"
         android:padding="@dimen/app_padding"
-        android:text="@string/link.card"
+        android:text="@string/txt_home_link_card"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize.tiny" />

@@ -35,8 +35,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 1
-        versionName "1.6.22"
+        versionCode 8
+        versionName "1.8"
 
         multiDexEnabled true
 
@@ -142,7 +142,7 @@ android {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.LIVE'
-            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "false"
+            buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
@@ -343,6 +343,7 @@ dependencies {
 
     debugCompile project(':debugviewer')
     releaseCompile project(':debugviewer-release')
+    debugCompile project(':zalopay.debug')
 
     compile project(':data')
     compile project(':uicomponent')
@@ -354,6 +355,7 @@ dependencies {
     compile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
+    compile project(':sounddecoder')
     compile project(':zalopayanalytics')
 }
 

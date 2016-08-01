@@ -42,6 +42,10 @@ import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
+import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
+import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
+import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
@@ -144,11 +148,19 @@ public interface UserComponent {
 
     void inject(ProfileInfoActivity a);
 
+    void inject(ScanNFCFragment fragment);
+
+    void inject(CounterBeaconFragment fragment);
+
     void inject(ProfileInfo2Activity a);
 
     void inject(UpdateProfileLevel2Activity a);
 
     void inject(ChangePinActivity a);
+
+    void inject(ScanSoundFragment fragment);
+
+    void inject(QRCodeFragment f);
 
     void inject(TransferHomeActivity activity);
 

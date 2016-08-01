@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.data.cache;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
+import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.domain.model.User;
 

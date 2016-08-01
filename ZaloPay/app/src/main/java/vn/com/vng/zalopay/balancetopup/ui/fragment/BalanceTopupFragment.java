@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -192,8 +193,9 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         balanceTopupPresenter.destroy();
+        CShareData.dispose();
+        super.onDestroy();
     }
 
     @Override

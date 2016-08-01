@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.activity.AbsQRScanActivity;
@@ -102,6 +103,8 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.QR_SCANNING);
+
         qrCodePresenter.destroy();
         hideLoading();
         mProgressDialog = null;
@@ -126,11 +129,16 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
         } catch (Exception ex) {
         }
 
+        getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
         qrCodePresenter.pay(result);
     }
 
     protected void setupActivityComponent() {
         AndroidApplication.instance().getUserComponent().inject(this);
+    }
+
+    protected ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
     }
 
     @Override
@@ -192,10 +200,6 @@ public class QRCodeScannerActivity extends AbsQRScanActivity implements IQRScanV
             userConfig.loadConfig();
             AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
         }
-    }
-
-    public ApplicationComponent getAppComponent() {
-        return AndroidApplication.instance().getAppComponent();
     }
 
     public UserComponent getUserComponent() {

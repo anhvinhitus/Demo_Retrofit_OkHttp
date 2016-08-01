@@ -102,7 +102,6 @@ public class UserConfigImpl implements UserConfig {
         if (currentUser != null) {
             currentUser.profilelevel = profileLevel;
             currentUser.profilePermissions = profilePermissions;
-            return;
         }
 
         SharedPreferences.Editor editor = preferences.edit();

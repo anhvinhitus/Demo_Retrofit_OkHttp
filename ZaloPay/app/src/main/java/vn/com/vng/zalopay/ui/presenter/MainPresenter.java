@@ -151,7 +151,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void pay(long appId, String zptranstoken) {
         showLoadingView();
         if (paymentWrapper == null) {
-            paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, new PaymentWrapper.IViewListener() {
+            paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
                 @Override
                 public Activity getActivity() {
                     if (homeView != null) {
@@ -197,8 +197,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 @Override
                 public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                     Timber.d("onResponseSuccess");
-                    updateTransaction();
-                    updateBalance();
                     hideLoadingView();
 
                    /* if (homeView != null && homeView.getActivity() != null) {

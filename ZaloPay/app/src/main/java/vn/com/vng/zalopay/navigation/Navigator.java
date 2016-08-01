@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
@@ -128,6 +129,11 @@ public class Navigator implements INavigator {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    public void startScanToPayActivity(Activity activity) {
+        Intent intent = new Intent(activity, ScanToPayActivity.class);
+        activity.startActivity(intent);
     }
 
     private void showUpdateProfileInfoDialog(final Context context) {

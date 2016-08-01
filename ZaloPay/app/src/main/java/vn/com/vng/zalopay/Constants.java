@@ -59,6 +59,12 @@ public class Constants {
     public static final int PRE_PROFILE_TYPE = 1;
     public static final int PIN_PROFILE_TYPE = 2;
 
+    public static final int STATE_START_RECORDING = 4;
+    public static final int STATE_STOP_RECORDING = 5;
+
+    public static final String COMMANDTYPE = "commandType";
+    public static final String RECORDNAME = "recordName";
+
     public static final int REQUEST_CODE_TRANSFER = 124;
 
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";

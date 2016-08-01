@@ -121,4 +121,22 @@ public class TransactionRepository implements TransactionStore.Repository {
         return mTransactionLocalStorage.getTransaction(id)
                 .map(transHistoryEntity -> zaloPayEntityDataMapper.transform(transHistoryEntity)); //Todo: Test lại trường hợp result = null
     }
+
+    @Override
+    public Observable<Boolean> updateTransactionFail() {
+        return ObservableHelper.makeObservable(() -> {
+            reloadListTransactionSync(TRANSACTION_LENGTH, TRANSACTION_STATUS_FAIL);
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<Boolean> updateTransactionSuccess() {
+        return ObservableHelper.makeObservable(() -> {
+            reloadListTransactionSync(TRANSACTION_LENGTH, TRANSACTION_STATUS_SUCCESS);
+            return Boolean.TRUE;
+        });
+
+    }
+
 }

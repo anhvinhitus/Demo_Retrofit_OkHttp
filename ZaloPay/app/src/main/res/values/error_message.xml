@@ -7,6 +7,7 @@
     <string name="exception.no.connection.try.again">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
     <string name="exception.retry.connection">Không thể kết nối\n Nhấn để thử lại</string>
     <string name="exception.timeout.message">Mạng không ổn định. Vui lòng thử lại!</string>
+    <string name="exception.unknown.host">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
 
     <string name="get_zalo_contact_error">Lấy danh sách bạn Zalo thất bại!</string>
     <string name="get_mapping_zalo_zalopay_error">Lấy thông tin tài khoản Zalo thất bại!</string>
