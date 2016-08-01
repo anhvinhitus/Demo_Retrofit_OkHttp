@@ -15,6 +15,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -103,8 +105,11 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                     if (mScanBeaconFragment != null) {
                         if (position == TAB_BEACON) {
                             mScanBeaconFragment.startScanning();
+                            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+                            mRadarView.startAnimation(animation);
                         } else {
                             mScanBeaconFragment.stopScanning();
+                            mRadarView.clearAnimation();
                         }
                     }
 
@@ -145,11 +150,12 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
             mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
 
-            mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabView("Bluetooth", R.drawable.ic_pay_tab_bluetooth));
+            mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabBeacon("Bluetooth"));
 
             if (TAB_TOTAL > TAB_SOUND) {
                 mTabLayout.getTabAt(TAB_SOUND).setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
             }
+
             mTabLayout.getTabAt(TAB_NFC).getCustomView().setSelected(true);
         } catch (NullPointerException e) {
             Timber.w(e, "Should not happened in ScanToPayActivity");
@@ -163,6 +169,17 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         ImageView tabIconView = (ImageView) view.findViewById(R.id.tabIcon);
         tabNameView.setText(tabName);
         tabIconView.setImageResource(resIcon);
+        return view;
+    }
+
+
+    private ImageView mRadarView;
+
+    private View genTabBeacon(String tabName) {
+        View view = LayoutInflater.from(this).inflate(R.layout.custom_tab_beacon, null);
+        TextView tabNameView = (TextView) view.findViewById(R.id.tabName);
+        tabNameView.setText(tabName);
+        mRadarView = (ImageView) view.findViewById(R.id.radar);
         return view;
     }
 
