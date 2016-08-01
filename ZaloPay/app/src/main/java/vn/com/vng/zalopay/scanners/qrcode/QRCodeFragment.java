@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -8,20 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
-
 import javax.inject.Inject;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/7/16.
@@ -46,11 +43,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     @Inject
     QRCodePresenter qrCodePresenter;
 
-    @Inject
-    Navigator navigator;
-
-
-    private ProgressDialog mProgressDialog;
+    private SweetAlertDialog mProgressDialog;
 
     @Override
     public int getResLayoutId() {
@@ -78,9 +71,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
 
     @Override
     public void onTokenInvalid() {
-        ZaloSDK.Instance.unauthenticate();
-        navigator.startLoginActivity(getContext(), null);
-        getActivity().finish();
     }
 
     @Nullable
@@ -97,6 +87,11 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onDestroyView() {
         qrCodePresenter.destroyView();
         super.onDestroyView();
@@ -105,25 +100,25 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     @Override
     public void showLoading() {
         if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if (mProgressDialog != null)
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
     }
 
     @Override
     public void showRetry() {
-
     }
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override
@@ -131,4 +126,43 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         hideLoading();
     }
+
+    @Override
+    public void resumeScanner() {
+        start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            start();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        pause();
+    }
+
+    private boolean mIsVisibleToUser = false;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Timber.d("isVisibleToUser %s", isVisibleToUser);
+        if (isVisibleToUser) {
+            start();
+        } else {
+            pause();
+        }
+        mIsVisibleToUser = isVisibleToUser;
+    }
+
+    public boolean isVisibleToUser() {
+        return mIsVisibleToUser;
+    }
+
+
 }

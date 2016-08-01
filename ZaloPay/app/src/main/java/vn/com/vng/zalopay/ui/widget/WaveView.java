@@ -217,6 +217,7 @@ public class WaveView extends FrameLayout {
         if (animatorSet.isRunning()) {
             animatorSet.end();
         }
+
         animatorSet.removeAllListeners();
 
         animationRunning = false;

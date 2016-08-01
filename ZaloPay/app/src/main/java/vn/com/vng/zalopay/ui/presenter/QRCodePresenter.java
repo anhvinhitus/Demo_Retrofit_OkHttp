@@ -28,15 +28,18 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     private PaymentWrapper paymentWrapper;
 
     public QRCodePresenter() {
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
-                return mView.getActivity();
+                if (mView != null) {
+                    return mView.getActivity();
+                }
+                return null;
             }
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
-                if(mView ==null){
+                if (mView == null) {
                     return;
                 }
 
@@ -53,7 +56,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseError(int status) {
-                if(mView ==null){
+                if (mView == null) {
                     return;
                 }
 
@@ -73,7 +76,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseTokenInvalid() {
-                if(mView ==null){
+                if (mView == null) {
                     return;
                 }
 
@@ -83,7 +86,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseCancel() {
-                if(mView ==null){
+                if (mView == null) {
                     return;
                 }
 
@@ -93,7 +96,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onNotEnoughMoney() {
-                if(mView ==null){
+                if (mView == null) {
                     return;
                 }
 

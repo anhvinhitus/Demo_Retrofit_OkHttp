@@ -38,7 +38,7 @@ public abstract class AbsQrScanFragment extends Fragment {
                 if (BuildConfig.DEBUG) {
                     barcodeScannerView.setStatusText(result.getText());
                 }
-                barcodeScannerView.pause();
+                AbsQrScanFragment.this.pause();
                 handleResult(result.getText());
             }
         }
@@ -48,17 +48,14 @@ public abstract class AbsQrScanFragment extends Fragment {
         }
     };
 
-    public void resumeScanner() {
-        if (barcodeScannerView != null) {
-            barcodeScannerView.resume();
-        }
+
+    public int getResLayoutId() {
+        return R.layout.capture_appcompat;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Nullable
@@ -78,23 +75,16 @@ public abstract class AbsQrScanFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        resumeScanner();
-    }
-
-    public int getResLayoutId() {
-        return R.layout.capture_appcompat;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        barcodeScannerView.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        barcodeScannerView.pause();
     }
 
     public void triggerScan(View view) {
@@ -108,5 +98,24 @@ public abstract class AbsQrScanFragment extends Fragment {
     protected void vibrate() {
         Vibrator vibrator = (Vibrator) getActivity().getSystemService(Activity.VIBRATOR_SERVICE);
         vibrator.vibrate(200);
+    }
+
+
+    public void pause() {
+        if (barcodeScannerView != null) {
+            barcodeScannerView.pause();
+        }
+    }
+
+    public void start() {
+        if (barcodeScannerView != null) {
+            barcodeScannerView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        pause();
     }
 }

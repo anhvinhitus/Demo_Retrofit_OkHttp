@@ -143,19 +143,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     @BindView(R.id.waveView)
     WaveView mWareWaveView;
 
-    boolean is;
-
-    @OnClick(R.id.imMachine)
-    public void onClickAnimation() {
-        Timber.d("onClickAnimation: animation start");
-        /*if (is) {
-            ViewCompat.animate(mHandView).withLayer().translationX(0).translationY(0).start();
-        } else {
-            ViewCompat.animate(mHandView).withLayer().translationX(125).translationY(150).start();
-        }
-        is = !is;*/
-    }
-
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_scan_nfc;
@@ -200,7 +187,9 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     }
 
     private void stopAnimation() {
-        mWareWaveView.stopRippleAnimation();
+        if (mWareWaveView != null) {
+            mWareWaveView.stopRippleAnimation();
+        }
     }
 
     @Override

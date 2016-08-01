@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -154,16 +155,21 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        BaseFragment activeFragment = getActiveFragment();
-        if (activeFragment == null || !activeFragment.onBackPressed()) {
-            super.onBackPressed();
-            this.logActionNavigationBack();
+        Fragment activeFragment = getActiveFragment();
+        if (activeFragment != null) {
+            if (activeFragment instanceof BaseFragment) {
+                if (((BaseFragment) activeFragment).onBackPressed()) {
+                    return;
+                }
+            }
         }
+
+        this.logActionNavigationBack();
+        super.onBackPressed();
     }
 
-
-    protected BaseFragment getActiveFragment() {
-        return (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+    protected Fragment getActiveFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     @Override
