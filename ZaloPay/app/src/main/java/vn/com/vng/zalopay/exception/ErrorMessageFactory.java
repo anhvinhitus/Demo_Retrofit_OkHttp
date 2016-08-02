@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import vn.com.vng.zalopay.R;
@@ -55,6 +56,8 @@ public class ErrorMessageFactory {
         } else if (exception instanceof UnknownHostException) {
             message = context.getString(R.string.exception_unknown_host);
         } else if (exception instanceof SSLHandshakeException) {
+            message = context.getString(R.string.exception_no_connection);
+        } else if (exception instanceof SSLPeerUnverifiedException) {
             message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof ServerMaintainException) {
             message = null;
