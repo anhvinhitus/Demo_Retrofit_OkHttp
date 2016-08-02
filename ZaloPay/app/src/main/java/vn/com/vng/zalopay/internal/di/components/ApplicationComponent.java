@@ -88,8 +88,6 @@ public interface ApplicationComponent {
 
     void inject(DownloadService service);
 
-    void inject(NetworkReceiver receiver);
-
     void inject(InvitationCodeFragment f);
 
 }

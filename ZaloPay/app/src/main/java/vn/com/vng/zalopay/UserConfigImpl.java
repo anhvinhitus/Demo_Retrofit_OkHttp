@@ -146,9 +146,6 @@ public class UserConfigImpl implements UserConfig {
             currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
             currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0L);
             currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
-
-            Timber.d("loadConfig: permission %s", currentUser.profilePermissions);
-
             currentUser.identityNumber = preferences.getString(Constants.PREF_USER_IDENTITY_NUMBER, "");
         }
     }

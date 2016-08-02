@@ -20,15 +20,9 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
  */
 public class NetworkReceiver extends BroadcastReceiver {
 
-    @Inject
-    EventBus eventBus;
+    EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
     public NetworkReceiver() {
-        try {
-            AndroidApplication.instance().getAppComponent().inject(this);
-        } catch (Exception e) {
-
-        }
     }
 
     @Override

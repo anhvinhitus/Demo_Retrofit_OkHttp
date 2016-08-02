@@ -51,6 +51,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
         try {
             InstanceID.getInstance(applicationContext).deleteInstanceID();
         } catch (IOException e) {
+            Timber.d("unsubscriber gcm exception %s", e);
         }
 
         applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
