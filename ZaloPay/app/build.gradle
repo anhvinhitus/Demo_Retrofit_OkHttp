@@ -341,8 +341,11 @@ dependencies {
     compile libs.parceler
     apt libs.parceler_apt
 
-    debugCompile project(':debugviewer')
-    releaseCompile project(':debugviewer-release')
+    debugCompile(name: 'debugviewer', ext: 'aar')
+    releaseCompile(name: 'debugviewer-noops', ext: 'aar')
+    compile(name: 'WALLET-release', ext: 'aar')
+    compile(name: 'soundtranscoder-release', ext: 'aar')
+
     debugCompile project(':zalopay.debug')
 
     compile project(':data')
@@ -351,9 +354,6 @@ dependencies {
     compile project(':zalosdk') {
     }
     compile project(':reactnativemodules')
-
-    compile(name: 'WALLET-release', ext: 'aar')
-    compile(name: 'soundtranscoder-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
     compile project(':zalopayanalytics')
