@@ -1,3 +1,4 @@
+/*
 package vn.vng.uicomponent.widget.util;
 
 import android.content.Context;
@@ -6,9 +7,11 @@ import android.preference.PreferenceManager;
 
 import java.util.Set;
 
+*/
 /**
  * Created by AnhHieu on 9/24/15.
- */
+ *//*
+
 public class PrefUtils {
 
     static SharedPreferences mPref;
@@ -68,3 +71,4 @@ public class PrefUtils {
     }
 
 }
+*/

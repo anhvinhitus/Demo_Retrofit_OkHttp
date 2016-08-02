@@ -2,12 +2,8 @@ package vn.com.vng.zalopay.transfer.models;
 
 import android.database.Cursor;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.account.Constants;
 import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
 
 /**
@@ -64,21 +60,6 @@ public class RecentTransaction {
         this.transferType = transferType;
         this.amount = amount;
         this.message = message;
-    }
-
-    public RecentTransaction(JSONObject jsonObject) throws JSONException {
-        super();
-        if (jsonObject == null) {
-            return;
-        }
-//        Timber.d("Profile_jsonObject: %s", jsonObject.toString());
-        userId = jsonObject.getLong(Constants.USERID);
-        userName = jsonObject.getString(Constants.USERNAME);
-        displayName = jsonObject.getString(Constants.DISPLAYNAME);
-        avatar = jsonObject.getString(Constants.AVATAR);
-        userGender = jsonObject.getInt(Constants.USERGENDER);
-        birthday = jsonObject.getString(Constants.BIRTHDAY);
-        usingApp = jsonObject.getBoolean(Constants.USINGAPP);
     }
 
     public RecentTransaction(Cursor cursor) {

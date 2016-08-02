@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.notification;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -23,14 +21,11 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.ws.SocketConnection;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
-import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -51,7 +46,6 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     }
 
     final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-    final SharedPreferences sharedPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
     final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
     final Gson mGson = AndroidApplication.instance().getAppComponent().gson();
 
@@ -121,10 +115,10 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
             subscribeTopics(token);
-            sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
+           // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
             Timber.e(ex, "exception");
-            sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
+          //  sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
         }
 
         this.connect(token);

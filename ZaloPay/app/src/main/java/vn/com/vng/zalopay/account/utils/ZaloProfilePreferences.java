@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.account.utils;
 
 import android.content.SharedPreferences;
@@ -8,9 +9,11 @@ import javax.inject.Singleton;
 import vn.com.vng.zalopay.account.Constants;
 import vn.com.vng.zalopay.account.models.ZaloProfile;
 
+*/
 /**
  * Created by longlv on 22/04/2016.
- */
+ *//*
+
 @Singleton
 public class ZaloProfilePreferences {
 
@@ -175,3 +178,4 @@ public class ZaloProfilePreferences {
         return mPreferences.getString(Constants.STORAGE_KEY_ZALO_GOOGLEID, "");
     }
 }
+*/

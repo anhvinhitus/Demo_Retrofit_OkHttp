@@ -1,11 +1,16 @@
+/*
 package vn.com.vng.zalopay.account;
 
+*/
 /**
  * Created by longlv on 22/04/2016.
- */
+ *//*
+
 public class Constants {
 
-    /* Zalo profile START */
+    */
+/* Zalo profile START *//*
+
     public static final String RESULT = "result";
     public static final String USERID = "userId";
     public static final String USERNAME = "userName";
@@ -19,9 +24,13 @@ public class Constants {
     public static final String TWITTERID = "twitterId";
     public static final String GOOGLEID = "googleId";
     public static final String USINGAPP = "usingApp";
-    /* Zalo profile END */
+    */
+/* Zalo profile END *//*
 
-    /* ZaloProfile Preferences start */
+
+    */
+/* ZaloProfile Preferences start *//*
+
     public static final String ZALO_PROFILE_PREFERENCES = "ZALO_PROFILE_PREFERENCES";
     public static final String STORAGE_KEY_ZALO_AUTHCODE = "STORAGE_KEY_ZALO_AUTHCODE";
     public static final String STORAGE_KEY_ZALO_CHANNEL = "STORAGE_KEY_ZALO_CHANNEL";
@@ -37,9 +46,12 @@ public class Constants {
     public static final String STORAGE_KEY_ZALO_TWITTERID = "STORAGE_KEY_ZALO_TWITTERID";
     public static final String STORAGE_KEY_ZALO_GOOGLEID = "STORAGE_KEY_ZALO_GOOGLEID";
 
-    /* ZaloProfile Preferences end */
+    */
+/* ZaloProfile Preferences end *//*
+
 
     public static final String ZALOPAYID = "zaloPayId";
     public static final String AMOUNT = "amount";
     public static final String MESSAGE = "message";
 }
+*/

@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.domain.model;
 
-import android.content.SharedPreferences;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

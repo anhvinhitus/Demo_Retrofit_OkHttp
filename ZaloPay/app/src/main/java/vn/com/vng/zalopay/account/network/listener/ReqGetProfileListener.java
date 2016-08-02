@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.account.network.listener;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
@@ -12,9 +13,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.Constants;
 import vn.com.vng.zalopay.account.models.ZaloProfile;
 
+*/
 /**
  * Created by longlv on 22/04/2016.
- */
+ *//*
+
 public class ReqGetProfileListener implements ZaloOpenAPICallback {
 
     public interface IReqGetProfileListener {
@@ -50,3 +53,4 @@ public class ReqGetProfileListener implements ZaloOpenAPICallback {
         }
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.account.models;
 
 import android.os.Parcel;
@@ -10,9 +11,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.Constants;
 import vn.com.vng.zalopay.domain.model.AbstractData;
 
+*/
 /**
  * Created by longlv on 22/04/2016.
- */
+ *//*
+
 public class ZaloProfile extends AbstractData {
 
     private long userId;
@@ -204,3 +207,4 @@ public class ZaloProfile extends AbstractData {
         this.googleId = googleId;
     }
 }
+*/

@@ -12,7 +12,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
-import vn.com.vng.zalopay.account.utils.ZaloProfilePreferences;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -22,16 +21,15 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.AppApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
+import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.MonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
-import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.receiver.NetworkReceiver;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
@@ -63,7 +61,7 @@ public interface ApplicationComponent {
 
     BundleService bundleService();
 
-    ZaloProfilePreferences profilePreferences();
+    /*ZaloProfilePreferences profilePreferences();*/
 
     PassportRepository passportRepository();
 
