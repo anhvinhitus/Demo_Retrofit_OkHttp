@@ -355,7 +355,7 @@ dependencies {
     compile(name: 'WALLET-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
-    compile project(':sounddecoder')
+    compile project(':soundtranscoder')
     compile project(':zalopayanalytics')
 }
 
