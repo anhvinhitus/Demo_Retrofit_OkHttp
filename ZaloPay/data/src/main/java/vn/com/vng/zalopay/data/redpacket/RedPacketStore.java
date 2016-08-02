@@ -54,6 +54,8 @@ public interface RedPacketStore {
         Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit);
         Observable<SentBundle> getSentBundle(long bundleID);
         Boolean isHaveSentBundleInDb(long createTime, int count);
+        Integer getBundleStatus(long bundleId);
+        Void setBundleStatus(long bundleId, int status);
 
         void putReceivePackages(List<ReceivePackageGD> receiveBundleGDs);
         Observable<List<ReceivePackage>> getAllReceiveBundle();
@@ -70,7 +72,6 @@ public interface RedPacketStore {
         RedPacketAppInfo getRedPacketAppInfo();
 
         Integer getPacketStatus(long packetId);
-
         Void setPacketStatus(long packetId, long amount, int status);
 
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
@@ -155,6 +156,8 @@ public interface RedPacketStore {
         Observable<RedPacketAppInfo> getAppInfoServer(String checksum);
 
         Observable<RedPacketAppInfo> getRedPacketAppInfo();
+
+        Observable<Void> setBundleStatus(long bundleId, int status);
 
    /*     Observable<GetSentBundle> getSendBundleSummary();
 

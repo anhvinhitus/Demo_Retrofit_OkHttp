@@ -15,6 +15,24 @@ public class BundleStatusResponse extends BaseResponse {
         4: REFUND
     */
 
+    public enum BundleStatusEnum {
+        UNKNOWN(0),
+        INIT(1),
+        PACKAGE_GEN(2),
+        AVAILABLE(3),
+        REFUND(4);
+
+        int value;
+
+        BundleStatusEnum(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
     public int bundleStatus;
 
 }

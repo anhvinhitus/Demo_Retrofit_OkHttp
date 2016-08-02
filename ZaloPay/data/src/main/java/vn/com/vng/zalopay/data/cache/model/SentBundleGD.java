@@ -20,6 +20,7 @@ public class SentBundleGD {
     private Integer numOfOpenedPakages;
     private Integer numOfPackages;
     private String sendMessage;
+    private Integer status;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -36,7 +37,7 @@ public class SentBundleGD {
         this.id = id;
     }
 
-    public SentBundleGD(long id, String senderZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages, String sendMessage) {
+    public SentBundleGD(long id, String senderZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages, String sendMessage, Integer status) {
         this.id = id;
         this.senderZaloPayID = senderZaloPayID;
         this.type = type;
@@ -46,6 +47,7 @@ public class SentBundleGD {
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
         this.sendMessage = sendMessage;
+        this.status = status;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -126,6 +128,14 @@ public class SentBundleGD {
 
     public void setSendMessage(String sendMessage) {
         this.sendMessage = sendMessage;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

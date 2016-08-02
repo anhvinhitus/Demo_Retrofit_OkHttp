@@ -19,6 +19,7 @@ public class SentBundle {
     public int numOfOpenedPakages;
     public int numOfPackages;
     public String sendMessage;
+    public int status;
     public List<PackageInBundle> packages;
 
     public SentBundle() {
@@ -28,7 +29,8 @@ public class SentBundle {
     public SentBundle(long bundleID, String sendZaloPayID,
                       int type, long createTime, long lastOpenTime,
                       int totalLuck, int numOfOpenedPakages,
-                      int numOfPackages, String sendMessage) {
+                      int numOfPackages, String sendMessage,
+                      int status) {
         this.bundleID = bundleID;
         this.sendZaloPayID = sendZaloPayID;
         this.type = type;
@@ -38,6 +40,7 @@ public class SentBundle {
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
         this.sendMessage = sendMessage;
+        this.status = status;
         this.packages = null;
     }
 
@@ -45,7 +48,7 @@ public class SentBundle {
                       int type, long createTime, long lastOpenTime,
                       int totalLuck, int numOfOpenedPakages,
                       int numOfPackages, String sendMessage,
-                      List<PackageInBundle> packages) {
+                      int status, List<PackageInBundle> packages) {
         this.bundleID = bundleID;
         this.sendZaloPayID = sendZaloPayID;
         this.type = type;
@@ -55,6 +58,7 @@ public class SentBundle {
         this.numOfOpenedPakages = numOfOpenedPakages;
         this.numOfPackages = numOfPackages;
         this.sendMessage = sendMessage;
+        this.status = status;
         this.packages = packages;
     }
 }

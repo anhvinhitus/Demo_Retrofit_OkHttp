@@ -327,6 +327,11 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
     }
 
+    @Override
+    public Observable<Void> setBundleStatus(long bundleId, int status) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.setBundleStatus(bundleId, status));
+    }
+
     private boolean shouldUpdateRedPacketAppInfo() {
         RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
         if (redPacketAppInfo == null) {

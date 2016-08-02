@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
@@ -86,13 +87,13 @@ public class RedPacketDataMapper {
         return new PackageInBundle(packageInBundleGD.getId(), packageInBundleGD.getBundleID(), packageInBundleGD.getRevZaloPayID(), packageInBundleGD.getRevZaloID(), packageInBundleGD.getRevFullName(), packageInBundleGD.getRevAvatarURL(), packageInBundleGD.getOpenTime(), packageInBundleGD.getAmount(), packageInBundleGD.getSendMessage(), packageInBundleGD.getIsLuckiest() == 1);
     }
 
-    private SentBundle transform(SentBundleGD sentBundleGD) {
+    public SentBundle transform(SentBundleGD sentBundleGD) {
         List<PackageInBundle> sentPackages = transformToPackageInBundle(sentBundleGD.getSentPackages());
         return new SentBundle(sentBundleGD.getId(), sentBundleGD.getSenderZaloPayID(),
                 sentBundleGD.getType(), sentBundleGD.getCreateTime(),
                 sentBundleGD.getLastOpenTime(), sentBundleGD.getTotalLuck(),
                 sentBundleGD.getNumOfOpenedPakages(), sentBundleGD.getNumOfPackages(),
-                sentBundleGD.getSendMessage(), sentPackages);
+                sentBundleGD.getSendMessage(), sentBundleGD.getStatus(), sentPackages);
     }
 
     public List<PackageInBundle> transformToPackageInBundle(SentPackageInBundleResponse packageInBundlesResponse) {
@@ -155,7 +156,7 @@ public class RedPacketDataMapper {
                 sentBundle.type, sentBundle.createTime,
                 sentBundle.lastOpenTime, sentBundle.totalLuck,
                 sentBundle.numOfOpenedPakages, sentBundle.numOfPackages,
-                sentBundle.sendMessage);
+                sentBundle.sendMessage, sentBundle.status);
     }
 
     public GetSentBundle transformToSentBundleSummary(SentBundleListResponse response) {
@@ -190,7 +191,7 @@ public class RedPacketDataMapper {
                     bundleResponse.type, bundleResponse.createtime,
                     bundleResponse.lastopentime, bundleResponse.totalluck,
                     bundleResponse.numofopenedpakages, bundleResponse.numofpackages,
-                    bundleResponse.sendmessage));
+                    bundleResponse.sendmessage, BundleStatusResponse.BundleStatusEnum.AVAILABLE.getValue()));
         }
         return sentBundleList;
     }

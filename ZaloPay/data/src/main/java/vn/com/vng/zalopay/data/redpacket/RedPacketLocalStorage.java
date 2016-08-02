@@ -5,6 +5,7 @@ import java.util.List;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
+import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
@@ -194,6 +195,34 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         return getDaoSession().getSentBundleGDDao().queryBuilder()
                 .where(SentBundleGDDao.Properties.CreateTime.lt(createTime))
                 .count() >= count;
+    }
+
+    @Override
+    public Integer getBundleStatus(long bundleId) {
+        Timber.d("query status for bundle: %s", bundleId);
+        SentBundle sentBundle = querySentBundle(bundleId);
+        if (sentBundle == null) {
+            Timber.d("SentBundle not found");
+            return BundleStatusResponse.BundleStatusEnum.UNKNOWN.getValue();
+        }
+
+        Timber.d("query status for sentBundle: %s, status: %s", bundleId, sentBundle.status);
+        return sentBundle.status;
+    }
+
+    @Override
+    public Void setBundleStatus(long bundleId, int status) {
+        Timber.d("set status for SentBundle: %s", bundleId);
+        SentBundleGD sentBundleGD= querySentBundleGD(bundleId);
+        if (sentBundleGD == null) {
+            Timber.d("SentBundle not found");
+            return null;
+        }
+
+        sentBundleGD.setStatus(status);
+        getDaoSession().getSentBundleGDDao().insertOrReplace(sentBundleGD);
+        Timber.d("SentBundle is set to be opened");
+        return null;
     }
 
     @Override
@@ -395,19 +424,22 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         }
     }
 
-    private SentBundle querySentBundle(long bundleID) {
-        List<SentBundle> sentBundles = mDataMapper.transformDBToSentBundles(
-                getDaoSession()
-                        .getSentBundleGDDao()
-                        .queryBuilder()
-                        .where(SentBundleGDDao.Properties.Id.eq(bundleID))
-                        .limit(1)
-                        .list());
-        if (Lists.isEmptyOrNull(sentBundles)) {
+    private SentBundleGD querySentBundleGD(long bundleID) {
+        List<SentBundleGD> sentBundleGDs = getDaoSession()
+                .getSentBundleGDDao()
+                .queryBuilder()
+                .where(SentBundleGDDao.Properties.Id.eq(bundleID))
+                .limit(1)
+                .list();
+        if (Lists.isEmptyOrNull(sentBundleGDs)) {
             return null;
         } else {
-            return sentBundles.get(0);
+            return sentBundleGDs.get(0);
         }
+    }
+
+    private SentBundle querySentBundle(long bundleID) {
+        return mDataMapper.transform(querySentBundleGD(bundleID));
     }
 
     private List<PackageInBundle> querySentPackageList(long bundleID, int pageIndex, int limit) {
