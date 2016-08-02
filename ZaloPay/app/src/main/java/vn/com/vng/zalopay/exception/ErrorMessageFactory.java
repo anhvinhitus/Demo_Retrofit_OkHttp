@@ -8,6 +8,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import retrofit2.adapter.rxjava.HttpException;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
@@ -52,6 +54,8 @@ public class ErrorMessageFactory {
             message = mHttpStatusCode.get(((HttpException) exception).code());
         } else if (exception instanceof UnknownHostException) {
             message = context.getString(R.string.exception_unknown_host);
+        } else if (exception instanceof SSLHandshakeException) {
+            message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof ServerMaintainException) {
             message = null;
         }
