@@ -18,7 +18,7 @@ public class ReceivePackageGD {
     private String senderAvatar;
     private Long amount;
     private Long openedTime;
-    private Boolean isOpen;
+    private Integer status;
     private String message;
     private Integer isLuckiest;
     private Long createTime;
@@ -38,7 +38,7 @@ public class ReceivePackageGD {
         this.id = id;
     }
 
-    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Boolean isOpen, String message, Integer isLuckiest, Long createTime) {
+    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Integer status, String message, Integer isLuckiest, Long createTime) {
         this.id = id;
         this.bundleID = bundleID;
         this.receiverZaloPayID = receiverZaloPayID;
@@ -47,7 +47,7 @@ public class ReceivePackageGD {
         this.senderAvatar = senderAvatar;
         this.amount = amount;
         this.openedTime = openedTime;
-        this.isOpen = isOpen;
+        this.status = status;
         this.message = message;
         this.isLuckiest = isLuckiest;
         this.createTime = createTime;
@@ -123,12 +123,12 @@ public class ReceivePackageGD {
         this.openedTime = openedTime;
     }
 
-    public Boolean getIsOpen() {
-        return isOpen;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setIsOpen(Boolean isOpen) {
-        this.isOpen = isOpen;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getMessage() {

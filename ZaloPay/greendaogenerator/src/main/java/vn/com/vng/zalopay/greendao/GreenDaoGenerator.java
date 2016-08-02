@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 30;
+    private static final int APP_DB_VERSION = 32;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -76,13 +76,24 @@ public class GreenDaoGenerator {
         receivePackageGD.addStringProperty("senderAvatar");
         receivePackageGD.addLongProperty("amount");
         receivePackageGD.addLongProperty("openedTime");
-        receivePackageGD.addBooleanProperty("isOpen");
+        receivePackageGD.addIntProperty("status");
         receivePackageGD.addStringProperty("message");
         receivePackageGD.addIntProperty("isLuckiest");
         receivePackageGD.addLongProperty("createTime");
         ToMany revBundleToPackage = receivePackageGD.addToMany(packageEntity, propertyBundleId);
         revBundleToPackage.setName("receivePackages");
         revBundleToPackage.orderDesc(openTime);
+
+        Entity appInfoGD = appSchema.addEntity("RedPacketAppInfoGD");
+        appInfoGD.addIdProperty().autoincrement();
+        appInfoGD.addStringProperty("checksum");
+        appInfoGD.addLongProperty("expiredTime");
+        appInfoGD.addLongProperty("minAmounTeach");
+        appInfoGD.addLongProperty("maxTotalAmountPerBundle");
+        appInfoGD.addIntProperty("maxPackageQuantity");
+        appInfoGD.addIntProperty("maxCountHist");
+        appInfoGD.addIntProperty("maxMessageLength");
+        appInfoGD.addLongProperty("bundleExpiredTime");
     }
 
     private static void addZaloContact(Schema appSchema) {

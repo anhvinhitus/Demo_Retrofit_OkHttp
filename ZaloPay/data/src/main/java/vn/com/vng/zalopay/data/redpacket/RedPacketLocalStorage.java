@@ -14,15 +14,20 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDBDao;
+import vn.com.vng.zalopay.data.cache.model.RedPacketAppInfoGD;
+import vn.com.vng.zalopay.data.cache.model.RedPacketAppInfoGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDBDao;
+import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 import static java.util.Collections.emptyList;
@@ -211,21 +216,57 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 .count() > 0;
     }
 
+    private RedPacketAppInfoGD queryRedPacketAppInfo() {
+        List<RedPacketAppInfoGD> redPacketAppInfos = getDaoSession().getRedPacketAppInfoGDDao().queryBuilder()
+                .orderDesc(RedPacketAppInfoGDDao.Properties.Id).limit(1).list();
+        if (redPacketAppInfos == null || redPacketAppInfos.size() <= 0) {
+            return null;
+        }
+        return redPacketAppInfos.get(0);
+    }
+
     @Override
-    public Boolean isPacketOpen(long packetId) {
+    public RedPacketAppInfo getRedPacketAppInfo() {
+        return transform(queryRedPacketAppInfo());
+    }
+
+    @Override
+    public void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo) {
+        if (redPacketAppInfo == null || redPacketAppInfo.appConfigEntity == null) {
+            return;
+        }
+        RedPacketAppInfoGD redPacketAppInfoGD = new RedPacketAppInfoGD(null, redPacketAppInfo.checksum, redPacketAppInfo.expiredTime,
+                redPacketAppInfo.appConfigEntity.minAmounTeach, redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle,
+                redPacketAppInfo.appConfigEntity.maxPackageQuantity, redPacketAppInfo.appConfigEntity.maxCountHist,
+                redPacketAppInfo.appConfigEntity.maxMessageLength, redPacketAppInfo.appConfigEntity.bundleExpiredTime);
+        getDaoSession().getRedPacketAppInfoGDDao().insertOrReplaceInTx(redPacketAppInfoGD);
+    }
+
+    private RedPacketAppInfo transform(RedPacketAppInfoGD redPacketAppInfoGD) {
+        if (redPacketAppInfoGD == null) {
+            return null;
+        }
+        return new RedPacketAppInfo(false, redPacketAppInfoGD.getChecksum(), redPacketAppInfoGD.getExpiredTime(),
+                new AppConfigEntity(redPacketAppInfoGD.getBundleExpiredTime(), redPacketAppInfoGD.getMaxCountHist(),
+                        redPacketAppInfoGD.getMaxMessageLength(), redPacketAppInfoGD.getMaxPackageQuantity(),
+                        redPacketAppInfoGD.getMaxTotalAmountPerBundle(), redPacketAppInfoGD.getMinAmounTeach()));
+    }
+
+    @Override
+    public Integer getPacketStatus(long packetId) {
         Timber.d("query status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
             Timber.d("Packet not found");
-            return Boolean.FALSE;
+            return RedPacketStatus.Unknown.getValue();
         }
 
-        Timber.d("query status for packet: %s, result: %s", packetId, packageGD.getIsOpen());
-        return packageGD.getIsOpen();
+        Timber.d("query status for packet: %s, status: %s", packetId, packageGD.getStatus());
+        return packageGD.getStatus();
     }
 
     @Override
-    public Void setPacketIsOpen(long packetId, long amount) {
+    public Void setPacketStatus(long packetId, long amount, int status) {
         Timber.d("set open status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
@@ -233,7 +274,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             return null;
         }
 
-        packageGD.setIsOpen(true);
+        packageGD.setStatus(status);
         packageGD.setAmount(amount);
         packageGD.setOpenedTime(System.currentTimeMillis());
         getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);
@@ -249,7 +290,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (packageGD == null) {
             packageGD = new ReceivePackageGD();
             packageGD.setId(packetId);
-            packageGD.setIsOpen(false);
+            packageGD.setStatus(RedPacketStatus.Opened.getValue());
         }
         packageGD.setBundleID(bundleId);
         packageGD.setSenderFullName(senderName);
@@ -301,7 +342,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
-        return ObservableHelper.makeObservable(()-> queryReceivePackageList(openTime, limit))
+        return ObservableHelper.makeObservable(() -> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
                         openTime, limit, receivePackageList.size()));
     }
@@ -434,11 +475,11 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     private ReceivePackageGD getReceivePackageGD(long packetId) {
         List<ReceivePackageGD> receivePackages = getDaoSession()
-                        .getReceivePackageGDDao()
-                        .queryBuilder()
-                        .where(ReceivePackageGDDao.Properties.Id.eq(packetId))
-                        .limit(1)
-                        .list();
+                .getReceivePackageGDDao()
+                .queryBuilder()
+                .where(ReceivePackageGDDao.Properties.Id.eq(packetId))
+                .limit(1)
+                .list();
         if (Lists.isEmptyOrNull(receivePackages)) {
             return null;
         } else {

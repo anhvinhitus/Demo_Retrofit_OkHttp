@@ -1,12 +1,11 @@
 package vn.com.vng.zalopay.data.redpacket;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
@@ -21,11 +20,12 @@ import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
 /**
@@ -98,6 +98,12 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                                 packageStatusResponse.amount,
                                 packageStatusResponse.balance,
                                 packageStatusResponse.data));
+    }
+
+    @Override
+    public Observable<BundleStatus> getBundleStatus(long bundleID) {
+        return mRequestService.getBundleStatus(bundleID, user.uid, user.accesstoken)
+                .map(bundleStatusResponse -> new BundleStatus(bundleStatusResponse.bundleStatus));
     }
 
     private void insertSentBundles(GetSentBundle getSentBundle) {
@@ -256,7 +262,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
     }
 
-
     private Observable<List<PackageInBundle>> getPacketsInBundleCache(long bundleId) {
         return mLocalStorage.getPackageInBundle(bundleId);
     }
@@ -275,16 +280,16 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> isPacketOpen(String packetIdStr) {
+    public Observable<Integer> getPacketStatus(String packetIdStr) {
         return ObservableHelper.makeObservable(() -> {
             long packetId = Long.parseLong(packetIdStr);
-            return mLocalStorage.isPacketOpen(packetId);
+            return mLocalStorage.getPacketStatus(packetId);
         });
     }
 
     @Override
-    public Observable<Void> setPacketIsOpen(long packageId, long amount) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketIsOpen(packageId, amount));
+    public Observable<Void> setPacketStatus(long packageId, long amount, int status) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketStatus(packageId, amount, status));
     }
 
     @Override
@@ -292,6 +297,50 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         Timber.d("Add received red packet: [packetId: %s, bundleId: %s, sender: %s, avatar: %s, message: %s",
                 packetId, bundleId, senderName, senderAvatar, message);
         return ObservableHelper.makeObservable(() -> mLocalStorage.addReceivedRedPacket(packetId, bundleId, senderName, senderAvatar, message));
+    }
+
+    @Override
+    public Observable<RedPacketAppInfo> getAppInfoServer(String checksum) {
+        return mRequestService.getAppInfo(checksum, user.uid, user.accesstoken)
+                .map(mDataMapper::transform)
+                .doOnNext(mLocalStorage::putRedPacketAppInfo);
+    }
+
+    @Override
+    public Observable<RedPacketAppInfo> getRedPacketAppInfo() {
+        if (shouldUpdateRedPacketAppInfo()) {
+            return Observable.create(new Observable.OnSubscribe<RedPacketAppInfo>() {
+                @Override
+                public void call(Subscriber<? super RedPacketAppInfo> subscriber) {
+                    Timber.d("Begin to fetch RedPacketAppInfo from server");
+                    RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
+                    String checksum = redPacketAppInfo==null?"":redPacketAppInfo.checksum;
+                    getAppInfoServer(checksum).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
+                        Timber.d("Finished fetching AppInfo");
+                        ObservableHelper.makeObservable(mLocalStorage::getRedPacketAppInfo).subscribe(subscriber);
+                    }).subscribe(new DefaultSubscriber<>());
+                }
+            });
+
+        } else {
+            return ObservableHelper.makeObservable(mLocalStorage::getRedPacketAppInfo);
+        }
+    }
+
+    private boolean shouldUpdateRedPacketAppInfo() {
+        RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
+        if (redPacketAppInfo == null) {
+            return true;
+        } else if (TextUtils.isEmpty(redPacketAppInfo.checksum)) {
+            return true;
+        } else {
+            long expiredTime = redPacketAppInfo.expiredTime;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime > expiredTime) {
+                return true;
+            }
+        }
+        return false;
     }
 
    /* @Override

@@ -18,7 +18,7 @@ public class ReceivePackage {
     public long openedTime;
     public int isLuckiest;
     public long createTime;
-    public boolean isOpen;
+    public int status;
 
     public ReceivePackage() {
 
@@ -30,7 +30,7 @@ public class ReceivePackage {
                           String senderAvatar, String message,
                           long amount, long openedTime,
                           int isLuckiest, long createTime,
-                          boolean isOpen) {
+                          int status) {
         this.packageID = packageID;
         this.bundleID = bundleID;
         this.revZaloPayID = revZaloPayID;
@@ -42,6 +42,6 @@ public class ReceivePackage {
         this.openedTime = openedTime;
         this.isLuckiest = isLuckiest;
         this.createTime = createTime;
-        this.isOpen = isOpen;
+        this.status = status;
     }
 }

@@ -10,6 +10,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
@@ -19,10 +20,13 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 import static java.util.Collections.emptyList;
@@ -54,7 +58,7 @@ public class RedPacketDataMapper {
                     sentPackage.revZaloID, sentPackage.revFullName,
                     sentPackage.revAvatarURL, sentPackage.openTime,
                     sentPackage.amount, sentPackage.sendMessage,
-                    sentPackage.isLuckiest?1:0);
+                    sentPackage.isLuckiest ? 1 : 0);
             sentPackageGDs.add(packageInBundleGD);
         }
         return sentPackageGDs;
@@ -63,7 +67,7 @@ public class RedPacketDataMapper {
     public List<PackageInBundle> transformToPackageInBundle(List<PackageInBundleGD> list) {
         List<PackageInBundle> sentPackages = new ArrayList<>();
         if (list == null || list.size() <= 0) {
-            return  sentPackages;
+            return sentPackages;
         }
         for (PackageInBundleGD packageInBundleGD : list) {
             if (packageInBundleGD.getId() <= 0) {
@@ -77,9 +81,9 @@ public class RedPacketDataMapper {
 
     private PackageInBundle transform(PackageInBundleGD packageInBundleGD) {
         if (packageInBundleGD == null) {
-            return  null;
+            return null;
         }
-        return new PackageInBundle(packageInBundleGD.getId(), packageInBundleGD.getBundleID(), packageInBundleGD.getRevZaloPayID(), packageInBundleGD.getRevZaloID(), packageInBundleGD.getRevFullName(), packageInBundleGD.getRevAvatarURL(), packageInBundleGD.getOpenTime(), packageInBundleGD.getAmount(), packageInBundleGD.getSendMessage(), packageInBundleGD.getIsLuckiest()==1);
+        return new PackageInBundle(packageInBundleGD.getId(), packageInBundleGD.getBundleID(), packageInBundleGD.getRevZaloPayID(), packageInBundleGD.getRevZaloID(), packageInBundleGD.getRevFullName(), packageInBundleGD.getRevAvatarURL(), packageInBundleGD.getOpenTime(), packageInBundleGD.getAmount(), packageInBundleGD.getSendMessage(), packageInBundleGD.getIsLuckiest() == 1);
     }
 
     private SentBundle transform(SentBundleGD sentBundleGD) {
@@ -145,7 +149,7 @@ public class RedPacketDataMapper {
 
     private SentBundleGD transform(SentBundle sentBundle) {
         if (sentBundle == null) {
-            return  null;
+            return null;
         }
         return new SentBundleGD(sentBundle.bundleID, sentBundle.sendZaloPayID,
                 sentBundle.type, sentBundle.createTime,
@@ -182,7 +186,7 @@ public class RedPacketDataMapper {
             if (bundleResponse == null) {
                 continue;
             }
-            sentBundleList.add(new SentBundle(bundleResponse.bundleid, bundleResponse.sendzalopayid ,
+            sentBundleList.add(new SentBundle(bundleResponse.bundleid, bundleResponse.sendzalopayid,
                     bundleResponse.type, bundleResponse.createtime,
                     bundleResponse.lastopentime, bundleResponse.totalluck,
                     bundleResponse.numofopenedpakages, bundleResponse.numofpackages,
@@ -209,7 +213,7 @@ public class RedPacketDataMapper {
                 openTime == null ? 0 : openTime,
                 isLuckiest == null ? 0 : isLuckiest,
                 createTime == null ? 0 : createTime,
-                receivePackageGD.getIsOpen());
+                receivePackageGD.getStatus());
     }
 
     public List<ReceivePackage> transformDBToRevPackets(List<ReceivePackageGD> list) {
@@ -217,7 +221,7 @@ public class RedPacketDataMapper {
             return emptyList();
         }
         List<ReceivePackage> receivePackages = new ArrayList<>();
-        for (ReceivePackageGD receivePackageGD: list) {
+        for (ReceivePackageGD receivePackageGD : list) {
             if (receivePackageGD == null || receivePackageGD.getId() <= 0) {
                 continue;
             }
@@ -233,7 +237,7 @@ public class RedPacketDataMapper {
             return emptyList();
         }
         List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
-        for (ReceivePackage receivePackage: receivePackages) {
+        for (ReceivePackage receivePackage : receivePackages) {
             if (receivePackage == null || receivePackage.packageID <= 0) {
                 continue;
             }
@@ -253,7 +257,7 @@ public class RedPacketDataMapper {
                 receivePackage.senderFullName, receivePackage.senderAvatar,
                 receivePackage.amount,
                 receivePackage.openedTime,
-                receivePackage.isOpen,
+                receivePackage.status,
                 receivePackage.message,
                 receivePackage.isLuckiest,
                 receivePackage.createTime
@@ -291,7 +295,7 @@ public class RedPacketDataMapper {
                             response.openedtime,
                             response.isluckiest,
                             response.createtime,
-                            true));
+                            RedPacketStatus.Opened.getValue()));
         }
         return receivePackages;
     }
@@ -305,5 +309,23 @@ public class RedPacketDataMapper {
                 receivePacketSummarydb.getTotalOfRevPackage(),
                 receivePacketSummarydb.getTotalOfLuckiestDraw(),
                 null);
+    }
+
+    public RedPacketAppInfo transform(RedPacketAppInfoResponse response) {
+        if (response == null) {
+            return null;
+        }
+
+        return new RedPacketAppInfo(response.isUpdateAppInfo, response.checksum,
+                response.expiredTime, transform(response.appConfigResponse));
+    }
+
+    private AppConfigEntity transform(RedPacketAppInfoResponse.AppConfigResponse appConfigResponse) {
+        if (appConfigResponse == null) {
+            return null;
+        }
+        return new AppConfigEntity(appConfigResponse.bundleExpiredTime, appConfigResponse.maxCountHist,
+                appConfigResponse.maxMessageLength, appConfigResponse.maxPackageQuantity,
+                appConfigResponse.maxTotalAmountPerBundle, appConfigResponse.minAmounTeach);
     }
 }

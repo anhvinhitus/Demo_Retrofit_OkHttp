@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
@@ -39,6 +40,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.mdl.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.Helpers;
@@ -130,7 +132,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseError(int status) {
                 Timber.d("pay onResponseError status [%s]", status);
-                if (!NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
+                if (getCurrentActivity() != null && !NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
                     Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET,
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
                 } else {
@@ -284,7 +286,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         }
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
-                        mRedPackageRepository.setPacketIsOpen(packageId, packageStatus.amount).subscribe(new DefaultSubscriber<Void>());
+                        mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue()).subscribe(new DefaultSubscriber<Void>());
                         mBalanceRepository.updateBalance();
                         isRunningGetTranStatus = false;
                     }
@@ -318,6 +320,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     public void onError(Throwable e) {
                         Timber.w(e, "error on openPacket");
                         super.onError(e);
+                        mRedPackageRepository.setPacketStatus(packageID, 0, RedPacketStatus.Invalid.getValue()).subscribe(new DefaultSubscriber<Void>());
                     }
 
                     @Override
@@ -402,15 +405,15 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void isPacketOpen(final String packetId, final Promise promise) {
+    public void getPacketStatus(final String packetId, final Promise promise) {
         Timber.d("query open status for packet: %s", packetId);
-        Subscription subscription = mRedPackageRepository.isPacketOpen(packetId)
-                .subscribe(new RedPacketSubscriber<Boolean>(promise) {
+        Subscription subscription = mRedPackageRepository.getPacketStatus(packetId)
+                .subscribe(new RedPacketSubscriber<Integer>(promise) {
                     @Override
-                    public void onNext(Boolean aBoolean) {
+                    public void onNext(Integer status) {
                         WritableMap writableMap = Arguments.createMap();
-                        writableMap.putInt("code", aBoolean ? 1 : 0);
-                        Timber.d("open status [%s] for packet: %s", aBoolean, packetId);
+                        writableMap.putInt("code", status);
+                        Timber.d("open status [%s] for packet: %s", status, packetId);
                         promise.resolve(writableMap);
                     }
                 });
@@ -452,6 +455,19 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         writableMap.putString("displayname", mUserConfig.getDisPlayName());
         writableMap.putString("avatar", mUserConfig.getAvatar());
         Helpers.promiseResolveSuccess(promise, writableMap);
+    }
+
+    @ReactMethod
+    public void getAppInfo(final Promise promise) {
+        Subscription subscription = mRedPackageRepository.getRedPacketAppInfo()
+                .subscribe(new RedPacketSubscriber<RedPacketAppInfo>(promise) {
+                    @Override
+                    public void onNext(RedPacketAppInfo redPacketAppInfo) {
+                        WritableMap writableMap = Arguments.createMap();
+                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(redPacketAppInfo));
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     @Override

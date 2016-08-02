@@ -16,13 +16,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.http.Field;
+import retrofit2.http.Query;
 import rx.Observable;
 import rx.Observer;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
@@ -118,6 +121,11 @@ public class RedPackageRepositoryTest {
         }
 
         @Override
+        public Observable<BundleStatusResponse> getBundleStatus(@Query("bundleid") long bundleID, @Query("userid") String userid, @Query("accesstoken") String accessToken) {
+            return null;
+        }
+
+        @Override
         public Observable<SentBundleListResponse> getSentBundleList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
             return null;
         }
@@ -129,6 +137,11 @@ public class RedPackageRepositoryTest {
 
         @Override
         public Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
+            return null;
+        }
+
+        @Override
+        public Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken) {
             return null;
         }
 
