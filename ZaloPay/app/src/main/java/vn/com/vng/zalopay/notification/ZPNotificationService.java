@@ -93,7 +93,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             });
         }
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override
