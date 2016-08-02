@@ -353,9 +353,9 @@ dependencies {
     compile project(':reactnativemodules')
 
     compile(name: 'WALLET-release', ext: 'aar')
+    compile(name: 'soundtranscoder-release', ext: 'aar')
 
     compile project(':moduledynamicloading')
-    compile project(':soundtranscoder')
     compile project(':zalopayanalytics')
 }
 
