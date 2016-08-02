@@ -62,8 +62,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private CountDownTimer mTimerGetTranStatus;
-    private boolean isRunningGetTranStatus;
+    private CountDownTimer mTimerGetStatus;
+    private boolean isRunningGetStatus;
 
     public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
                                       RedPacketStore.Repository redPackageRepository,
@@ -213,11 +213,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("startTaskGetTransactionStatus packetId [%s] transId [%s]", packageId, zpTransId);
         //showLoading();
-        if (mTimerGetTranStatus != null) {
-            mTimerGetTranStatus.cancel();
+        if (mTimerGetStatus != null) {
+            mTimerGetStatus.cancel();
         }
-        isRunningGetTranStatus = false;
-        mTimerGetTranStatus = new CountDownTimer(30000, 1000) {
+        isRunningGetStatus = false;
+        mTimerGetStatus = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Timber.d("GetTranStatus onTick");
@@ -262,11 +262,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     private void getpackagestatus(final long packageId, final long zpTransId, final Promise promise) {
-        Timber.d("getpackagestatus isRunningGetTranStatus [%s]", isRunningGetTranStatus);
-        if (isRunningGetTranStatus) {
+        Timber.d("getpackagestatus isRunningGetStatus [%s]", isRunningGetStatus);
+        if (isRunningGetStatus) {
             return;
         }
-        isRunningGetTranStatus = true;
+        isRunningGetStatus = true;
         mRedPackageRepository.getpackagestatus(packageId, zpTransId, "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -275,20 +275,20 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public void onError(Throwable e) {
                         Timber.d("getpackagestatus onError");
-                        isRunningGetTranStatus = false;
+                        isRunningGetStatus = false;
                     }
 
                     @Override
                     public void onNext(PackageStatus packageStatus) {
-                        Timber.d("getpackagestatus onNext, mTimerGetTranStatus [%s]", mTimerGetTranStatus);
-                        if (mTimerGetTranStatus != null) {
-                            mTimerGetTranStatus.cancel();
+                        Timber.d("getpackagestatus onNext, mTimerGetStatus [%s]", mTimerGetStatus);
+                        if (mTimerGetStatus != null) {
+                            mTimerGetStatus.cancel();
                         }
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue()).subscribe(new DefaultSubscriber<Void>());
                         mBalanceRepository.updateBalance();
-                        isRunningGetTranStatus = false;
+                        isRunningGetStatus = false;
                     }
                 });
     }
