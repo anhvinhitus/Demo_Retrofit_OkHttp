@@ -128,7 +128,11 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     public Observable<GetReceivePacket> getReceivePacketList(long openTime, final int count) {
         Timber.d("getReceivePacketList openTime [%s] count [%s]", String.valueOf(openTime), String.valueOf(count));
         if (shouldGetReceivePacketFromServer(openTime, count)) {
-            return getReceivePacketListCloud(openTime, count);
+            return getReceivePacketListCloud(openTime, count)
+                    .onErrorResumeNext(throwable -> {
+                        Timber.d("getReceivePacketList onErrorResumeNext throwable: [%s]", throwable);
+                        return getReceivePacketListCache(openTime, count);
+                    });
         } else {
             return getReceivePacketListCache(openTime, count);
         }
@@ -314,7 +318,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                 public void call(Subscriber<? super RedPacketAppInfo> subscriber) {
                     Timber.d("Begin to fetch RedPacketAppInfo from server");
                     RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
-                    String checksum = redPacketAppInfo==null?"":redPacketAppInfo.checksum;
+                    String checksum = redPacketAppInfo == null ? "" : redPacketAppInfo.checksum;
                     getAppInfoServer(checksum).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
                         Timber.d("Finished fetching AppInfo");
                         ObservableHelper.makeObservable(mLocalStorage::getRedPacketAppInfo).subscribe(subscriber);
@@ -445,10 +449,12 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     public Observable<GetSentBundle> getSentBundleList(final long timeCreate, final int count) {
         Timber.d("getSentBundleList timeCreate [%s] count [%s]", String.valueOf(timeCreate), String.valueOf(count));
         if (shouldGetSentBundleFromServer(timeCreate, count)) {
-            Timber.d("getSentBundleList -> getSentBundleListServer");
-            return getSentBundleListCloud(timeCreate, count);
+            return getSentBundleListCloud(timeCreate, count)
+                    .onErrorResumeNext(throwable -> {
+                        Timber.d("getSentBundleList onErrorResumeNext throwable: [%s]", throwable);
+                        return getSentBundleListCache(timeCreate, count);
+                    });
         } else {
-            Timber.d("getSentBundleList -> getSentBundleListDB");
             return getSentBundleListCache(timeCreate, count);
         }
     }
