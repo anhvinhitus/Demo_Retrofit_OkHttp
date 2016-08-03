@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.api.response.redpacket;
 
+import com.google.gson.annotations.SerializedName;
+
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 
 /**
@@ -33,6 +35,7 @@ public class BundleStatusResponse extends BaseResponse {
         }
     }
 
+    @SerializedName("bundlestatus")
     public int bundleStatus;
 
 }

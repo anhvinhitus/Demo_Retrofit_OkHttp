@@ -172,10 +172,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     private void startTaskGetBundleStatus(final long bundleId, final Promise promise) {
         Timber.d("startTaskGetBundleStatus bundleId [%s]", bundleId);
-        if (mTimerGetStatus != null) {
-            mTimerGetStatus.cancel();
-        }
-        isRunningGetStatus = false;
+        stopTaskGetStatus();
         mTimerGetStatus = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -219,6 +216,27 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 onCancelListener, onConfirmListener);
     }
 
+    private void stopTaskGetStatus() {
+        if (mTimerGetStatus != null) {
+            mTimerGetStatus.cancel();
+        }
+        isRunningGetStatus = false;
+    }
+
+    private void promiseResolveGetBundleStatus(Promise promise, boolean result) {
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.putBoolean("result", result);
+        Helpers.promiseResolveSuccess(promise, writableMap);
+    }
+
+    private void onGetBundleStatusFinish(Promise promise, long bundleId, boolean result, int status) {
+        Timber.d("onGetBundleStatusFinish bundleId [%s] result [%s] status [%s]", bundleId, result, status);
+        promiseResolveGetBundleStatus(promise, result);
+        stopTaskGetStatus();
+        Timber.d("onGetBundleStatusFinish, set status: [%s] for bundle: [%s] result [%s]", status, bundleId, result);
+        mRedPackageRepository.setBundleStatus(bundleId, status).subscribe(new DefaultSubscriber<Void>());
+    }
+
     private void getBundleStatus(final long bundleId, final Promise promise) {
         Timber.d("getBundleStatus bundleId [%s] isRunning [%s]", bundleId, isRunningGetStatus);
         if (isRunningGetStatus) {
@@ -233,28 +251,18 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public void onError(Throwable e) {
                         Timber.d("getBundleStatus onError");
-                        isRunningGetStatus = false;
+                        onGetBundleStatusFinish(promise, bundleId, false,
+                                BundleStatusResponse.BundleStatusEnum.UNKNOWN.getValue());
                     }
 
                     @Override
                     public void onNext(BundleStatus bundleStatus) {
-                        Timber.d("getBundleStatus onNext, mTimerGetStatus [%s]", mTimerGetStatus);
-                        WritableMap writableMap = Arguments.createMap();
+                        Timber.d("getBundleStatus onNext, status [%s]", bundleStatus.bundleStatus);
                         if (bundleStatus.bundleStatus == BundleStatusResponse.BundleStatusEnum.AVAILABLE.getValue()) {
-                            writableMap.putBoolean("result", true);
+                            onGetBundleStatusFinish(promise, bundleId, true, bundleStatus.bundleStatus);
                         } else {
-                            writableMap.putBoolean("result", false);
+                            isRunningGetStatus = false;
                         }
-                        Helpers.promiseResolveSuccess(promise, writableMap);
-
-                        if (mTimerGetStatus != null) {
-                            mTimerGetStatus.cancel();
-                        }
-                        Timber.d("set submit status: [%s] for bundle: %s", bundleStatus.bundleStatus, bundleId);
-                        mRedPackageRepository.setBundleStatus(bundleId, bundleStatus.bundleStatus)
-                                .subscribe(new DefaultSubscriber<Void>());
-                        mBalanceRepository.updateBalance();
-                        isRunningGetStatus = false;
                     }
                 });
     }
@@ -293,6 +301,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public void onNext(Boolean result) {
                         Timber.d("SubmitToSendSubscriber onNext result [%s]", result);
+                        mBalanceRepository.updateBalance();
                         startTaskGetBundleStatus(bundleID, promise);
                     }
                 });
@@ -301,11 +310,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
         Timber.d("startTaskGetTransactionStatus packetId [%s] transId [%s]", packageId, zpTransId);
-        //showLoading();
-        if (mTimerGetStatus != null) {
-            mTimerGetStatus.cancel();
-        }
-        isRunningGetStatus = false;
+        stopTaskGetStatus();
         mTimerGetStatus = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -370,14 +375,11 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public void onNext(PackageStatus packageStatus) {
                         Timber.d("getpackagestatus onNext, mTimerGetStatus [%s]", mTimerGetStatus);
-                        if (mTimerGetStatus != null) {
-                            mTimerGetStatus.cancel();
-                        }
+                        stopTaskGetStatus();
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
                         mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue()).subscribe(new DefaultSubscriber<Void>());
                         mBalanceRepository.updateBalance();
-                        isRunningGetStatus = false;
                     }
                 });
     }
