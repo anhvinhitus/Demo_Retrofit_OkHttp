@@ -20,9 +20,9 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.internal.di.modules.AppApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
+import vn.com.vng.zalopay.internal.di.modules.AppMonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
-import vn.com.vng.zalopay.internal.di.modules.MonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.mdl.BundleService;
@@ -36,7 +36,7 @@ import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, AppApiModule.class, AppControllerModule.class,
-        MonitorModule.class,
+        AppMonitorModule.class,
         AppReactNativeModule.class})
 public interface ApplicationComponent {
     //Exposed to sub-graphs.

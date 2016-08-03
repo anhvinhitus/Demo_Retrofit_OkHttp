@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.monitors.MonitorTimingImpl;
  * Provide monitor modules
  */
 @Module
-public class MonitorModule {
+public class AppMonitorModule {
     @Provides
     @Singleton
     IMonitorTiming provideTimingMonitor(IMonitorReport monitorReport) {
@@ -23,7 +23,7 @@ public class MonitorModule {
 
     @Provides
     @Singleton
-    IMonitorReport providePonitorReport() {
+    IMonitorReport provideMonitorReport() {
         return new MonitorReportImpl();
     }
 }
