@@ -4,8 +4,8 @@ import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+
 import rx.Observable;
-import rx.Subscriber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -23,6 +23,8 @@ public interface TransactionStore {
         boolean isHaveTransactionInDb();
 
         Observable<TransHistoryEntity> getTransaction(long id);
+
+        void updateStatusType(long transId, int statusType);
     }
 
     interface RequestService {
@@ -47,6 +49,8 @@ public interface TransactionStore {
         Observable<Boolean> updateTransactionFail();
 
         Observable<Boolean> updateTransactionSuccess();
+
+        Observable<Boolean> updateTransactionStatusSuccess(long transId);
 
     }
 }

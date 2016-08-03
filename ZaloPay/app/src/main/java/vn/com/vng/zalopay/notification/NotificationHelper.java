@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -46,17 +47,21 @@ public class NotificationHelper {
     final AccountStore.Repository accountRepository;
     final Context context;
     final RedPacketStore.Repository mRedPacketRepository;
+    final TransactionStore.Repository transactionRepository;
     final User mUser;
 
     public NotificationHelper(Context applicationContext, User user,
                               NotificationStore.Repository notifyRepository,
                               AccountStore.Repository accountRepository,
-                              RedPacketStore.Repository redPacketRepository) {
+                              RedPacketStore.Repository redPacketRepository,
+                              TransactionStore.Repository transactionRepository
+    ) {
         this.notifyRepository = notifyRepository;
         this.context = applicationContext;
         this.accountRepository = accountRepository;
         this.mRedPacketRepository = redPacketRepository;
         this.mUser = user;
+        this.transactionRepository = transactionRepository;
     }
 
 
@@ -102,22 +107,13 @@ public class NotificationHelper {
         int notificationType = notify.getNotificationType();
 
         if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
-            try {
-                JsonObject embeddata = notify.embeddata;
-                if (embeddata != null) {
-                    int status = embeddata.get("status").getAsInt();
-                    int profileLevel = embeddata.get("profilelevel").getAsInt();
-                    if (profileLevel > 2 && status == 1) {
-                        updateProfilePermission();
-                    }
-                }
-            } catch (Exception ex) {
-                Timber.e(ex, "exception");
-            }
+            updateProfilePermission(notify);
         } else if (notificationType == NotificationType.SEND_RED_PACKET) {
             // Process received red packet
             // {"userid":"160526000000502","destuserid":"160601000000002","message":"Nguyễn Hữu Hoà đã lì xì cho bạn.","zaloMessage":"da gui li xi cho ban. Vui long vao ... de nhan li xi.","embeddata":{"bundleid":160722000000430,"packageid":1607220000004300001,"avatar":"http://avatar.talk.zdn.vn/e/d/e/2/4/75/f1898a0a0a3f05bbb11088cb202d1c02.jpg","name":"Nguyễn Hữu Hoà","liximessage":"Best wishes."},"timestamp":1469190991786,"notificationtype":103}
             extractRedPacketFromNotification(notify);
+        } else if (notificationType == NotificationType.RETRY_TRANSACTION) {
+            updateTransactionStatus(notify);
         }
 
         notifyRepository.putNotify(notify);
@@ -165,31 +161,28 @@ public class NotificationHelper {
         }
     }
 
-
-    private void updateProfilePermission() {
-        Subscription subscription = accountRepository.getUserProfileLevelCloud()
+    private void updateTransactionStatus(NotificationData notify) {
+        Subscription subscription = transactionRepository.updateTransactionStatusSuccess(notify.transid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-
     }
 
-    private void showNotification(NotificationData event) {
-        if (event.read) {
-            return;
+
+    private void updateProfilePermission(NotificationData notify) {
+        try {
+            JsonObject embeddata = notify.embeddata;
+            if (embeddata != null) {
+                int status = embeddata.get("status").getAsInt();
+                int profileLevel = embeddata.get("profilelevel").getAsInt();
+                if (profileLevel > 2 && status == 1) {
+                    Subscription subscription = accountRepository.getUserProfileLevelCloud()
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new DefaultSubscriber<Boolean>());
+                }
+            }
+        } catch (Exception ex) {
+            Timber.e(ex, "exception");
         }
-
-        String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
-        String title = context.getString(R.string.app_name);
-
-        int notificationType = event.getNotificationType();
-
-        int notificationId = this.getNotificationSystemId(notificationType);
-        Intent intent = this.intentByNotificationType(notificationType);
-
-        create(context, notificationId,
-                intent,
-                R.mipmap.ic_launcher,
-                title, message);
     }
 
     private void showNotificationSystem(NotificationData notify) {
@@ -233,34 +226,6 @@ public class NotificationHelper {
     }
 
 
-    private int getNotificationSystemId(int notifyType) {
-        int notificationId = 100;
-
-        if (NotificationType.isTransactionNotification(notifyType)) {
-            notificationId = 1;
-        } else if (NotificationType.isProfileNotification(notifyType)) {
-            notificationId = 2;
-        } else if (NotificationType.isRedPacket(notifyType)) {
-            notificationId = 103;
-        }
-
-        return notificationId;
-    }
-
-    private Intent intentByNotificationType(int notifyType) {
-        Intent intent;
-        if (NotificationType.isTransactionNotification(notifyType)) {
-            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.TRANSACTION_LOGS);
-        } else if (NotificationType.isProfileNotification(notifyType)) {
-            intent = navigator.intentProfile(context);
-        } else if (NotificationType.isRedPacket(notifyType)) {
-            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.NOTIFICATIONS);
-        } else {
-            intent = navigator.intentHomeActivity(context, false);
-        }
-        return intent;
-    }
-
     public void closeNotificationSystem(long notifyId) {
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         nm.cancelAll();
@@ -289,4 +254,53 @@ public class NotificationHelper {
     protected UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
     }
+
+
+   /* private void showNotification(NotificationData event) {
+        if (event.read) {
+            return;
+        }
+
+        String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
+        String title = context.getString(R.string.app_name);
+
+        int notificationType = event.getNotificationType();
+
+        int notificationId = this.getNotificationSystemId(notificationType);
+        Intent intent = this.intentByNotificationType(notificationType);
+
+        create(context, notificationId,
+                intent,
+                R.mipmap.ic_launcher,
+                title, message);
+    }*/
+
+  /*  private int getNotificationSystemId(int notifyType) {
+        int notificationId = 100;
+
+        if (NotificationType.isTransactionNotification(notifyType)) {
+            notificationId = 1;
+        } else if (NotificationType.isProfileNotification(notifyType)) {
+            notificationId = 2;
+        } else if (NotificationType.isRedPacket(notifyType)) {
+            notificationId = 103;
+        }
+
+        return notificationId;
+    }
+
+    private Intent intentByNotificationType(int notifyType) {
+        Intent intent;
+        if (NotificationType.isTransactionNotification(notifyType)) {
+            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.TRANSACTION_LOGS);
+        } else if (NotificationType.isProfileNotification(notifyType)) {
+            intent = navigator.intentProfile(context);
+        } else if (NotificationType.isRedPacket(notifyType)) {
+            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.NOTIFICATIONS);
+        } else {
+            intent = navigator.intentHomeActivity(context, false);
+        }
+        return intent;
+    }*/
+
 }

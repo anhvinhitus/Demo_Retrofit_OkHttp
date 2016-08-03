@@ -177,12 +177,24 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 
 
     private TransHistoryEntity getTransactionById(long id) {
-        List<TransactionLog> list = getDaoSession().getTransactionLogDao().queryBuilder().where(TransactionLogDao.Properties.Transid.eq(id)).list();
+        TransactionLog transactionLog = queryTransactionById(id);
+        return transform(transactionLog);
+    }
+
+    private TransactionLog queryTransactionById(long id) {
+        List<TransactionLog> list = getDaoSession().getTransactionLogDao().queryBuilder()
+                .where(TransactionLogDao.Properties.Transid.eq(id)).list();
         if (Lists.isEmptyOrNull(list)) {
             return null;
         }
-        TransactionLog transactionLog = list.get(0);
-        return transform(transactionLog);
+        return list.get(0);
+    }
+
+    @Override
+    public void updateStatusType(long transId, int status) {
+        TransactionLog transactionLog = queryTransactionById(transId);
+        transactionLog.setStatustype(status);
+        getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
     }
 }
 

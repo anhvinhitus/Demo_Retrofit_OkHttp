@@ -139,4 +139,12 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     }
 
+
+    @Override
+    public Observable<Boolean> updateTransactionStatusSuccess(final long transId) {
+        return ObservableHelper.makeObservable(() -> {
+            mTransactionLocalStorage.updateStatusType(transId, TRANSACTION_STATUS_SUCCESS);
+            return Boolean.TRUE;
+        });
+    }
 }
