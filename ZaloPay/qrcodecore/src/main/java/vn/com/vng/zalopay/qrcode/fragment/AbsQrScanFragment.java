@@ -30,15 +30,20 @@ public abstract class AbsQrScanFragment extends Fragment {
     protected final String TAG = this.getClass().getSimpleName();
 
     private CompoundBarcodeView barcodeScannerView;
+    private boolean canHandleResult = true;
 
     private BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
+            if (!canHandleResult) {
+                return;
+            }
+
             if (result.getText() != null) {
+                AbsQrScanFragment.this.pause();
                 if (BuildConfig.DEBUG) {
                     barcodeScannerView.setStatusText(result.getText());
                 }
-                AbsQrScanFragment.this.pause();
                 handleResult(result.getText());
             }
         }
@@ -105,12 +110,15 @@ public abstract class AbsQrScanFragment extends Fragment {
         if (barcodeScannerView != null) {
             barcodeScannerView.pause();
         }
+
+        canHandleResult = false;
     }
 
     public void start() {
         if (barcodeScannerView != null) {
             barcodeScannerView.resume();
         }
+        canHandleResult = true;
     }
 
     @Override
