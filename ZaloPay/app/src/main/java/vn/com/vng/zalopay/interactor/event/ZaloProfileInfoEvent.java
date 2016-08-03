@@ -11,9 +11,15 @@ public class ZaloProfileInfoEvent {
 
     public String avatar;
 
-    public ZaloProfileInfoEvent(long userId, String displayName, String avatar) {
+    public long birthDay;
+
+    public int userGender;
+
+    public ZaloProfileInfoEvent(long userId, String displayName, String avatar, long birthDay, int userGender) {
         this.userId = userId;
         this.displayName = displayName;
         this.avatar = avatar;
+        this.birthDay = birthDay;
+        this.userGender = userGender;
     }
 }

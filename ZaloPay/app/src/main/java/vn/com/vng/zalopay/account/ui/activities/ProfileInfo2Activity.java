@@ -63,6 +63,9 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
+        if (mEditProfileFragment != null) {
+            mEditProfileFragment.updateUserInfo(user);
+        }
     }
 
     @BindView(R.id.layoutChangePin)

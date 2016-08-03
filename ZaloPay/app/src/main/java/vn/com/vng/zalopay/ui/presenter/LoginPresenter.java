@@ -41,8 +41,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private Subscription subscriptionLogin;
 
+    private LoginListener mLoginListener;
+
     @Inject
     public LoginPresenter() {
+        mLoginListener = new LoginListener(this);
     }
 
     @Override
@@ -54,7 +57,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     @Override
     public void destroyView() {
         hideLoadingView();
-
+        this.mLoginListener = null;
         this.mView = null;
         Timber.d("destroyView:");
     }
@@ -88,7 +91,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     public void loginZalo(Activity activity) {
         if (NetworkHelper.isNetworkAvailable(applicationContext)) {
          //   showLoadingView();
-            ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, new LoginListener(this));
+            ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
         } else {
             showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
         }
