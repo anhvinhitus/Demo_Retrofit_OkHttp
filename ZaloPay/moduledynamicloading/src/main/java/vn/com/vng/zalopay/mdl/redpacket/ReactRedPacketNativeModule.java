@@ -552,7 +552,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 .subscribe(new RedPacketSubscriber<RedPacketAppInfo>(promise) {
                     @Override
                     public void onNext(RedPacketAppInfo redPacketAppInfo) {
-                        WritableMap writableMap = Arguments.createMap();
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(redPacketAppInfo));
                     }
                 });
