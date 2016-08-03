@@ -20,7 +20,7 @@
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize.tiny" />
-
+<!--
     <TextView
         android:id="@+id/btn_deposit"
         style="@style/TextView.Default"
@@ -36,7 +36,7 @@
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize.tiny" />
-
+-->
     <TextView
         android:id="@+id/btn_scan_to_pay"
         style="@style/TextView.Default"
