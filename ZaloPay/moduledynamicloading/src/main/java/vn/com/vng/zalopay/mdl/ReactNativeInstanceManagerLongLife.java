@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -159,10 +157,14 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
 
     @Override
     public void cleanup() {
-        for (ReactInstanceManager manager : mInstance.values()) {
-            manager.destroy();
+        try {
+            for (ReactInstanceManager manager : mInstance.values()) {
+                manager.destroy();
+            }
+            mInstance.clear();
+            mActivity = null;
+        } catch (Exception e) {
+            Timber.w(e, "Error on cleanup of ReactNativeInstanceManagerLongLife");
         }
-        mInstance.clear();
-        mActivity = null;
     }
 }
