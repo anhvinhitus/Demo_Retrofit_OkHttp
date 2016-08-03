@@ -37,7 +37,7 @@ public class PaymentError {
         } else if (errorCode == ERR_CODE_INPUT) {
             errorMessage = "Thông tin đầu vào thiếu hoặc không hợp lệ.";
         } else if (errorCode == ERR_CODE_INTERNET) {
-            errorMessage = "Lỗi kết nối mạng.";
+            errorMessage = "Vui lòng kiểm tra kết nối mạng và thử lại.";
         } else if (errorCode == ERR_CODE_SYSTEM) {
             errorMessage = "Lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.";
         } else if (errorCode == ERR_CODE_USER_INFO) {

@@ -1,12 +1,13 @@
 package vn.com.vng.zalopay.mdl.redpacket;
 
-import android.text.TextUtils;
-
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.WritableMap;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
+
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -28,17 +29,22 @@ public class RedPacketSubscriber<T> extends DefaultSubscriber<T> {
 
     @Override
     public void onError(Throwable e) {
+        Timber.d("onError exception [%s]", e);
         if (mPromise == null) {
             return;
         }
 
         if (e instanceof BodyException) {
             Helpers.promiseResolveError(mPromise, ((BodyException) e).errorCode, ((BodyException) e).message);
-        } else if (e instanceof NetworkConnectionException) {
+        } else if (e instanceof NetworkConnectionException ||
+                e instanceof SocketTimeoutException ||
+                e instanceof UnknownHostException ||
+                e instanceof SSLHandshakeException ||
+                e instanceof SSLPeerUnverifiedException ) {
             Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_INTERNET,
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
         } else {
-            mPromise.reject("EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+            Helpers.promiseReject(mPromise, "EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
         }
     }
 }

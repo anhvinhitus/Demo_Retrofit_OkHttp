@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.mdl;
 
-import android.renderscript.Double2;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
@@ -20,6 +19,10 @@ import vn.com.vng.zalopay.mdl.error.PaymentError;
  * Internal helpers
  */
 public class Helpers {
+    public static void promiseReject(Promise promise, String code, String message) {
+        promise.reject(code, message);
+    }
+
     public static void promiseResolveError(Promise promise, int errorCode, String message) {
         Timber.d("promiseResolveError start errorCode [%s] message [%s]", errorCode, message);
         if (promise == null) {
