@@ -262,6 +262,15 @@ public final class ZPMsgProtos {
      */
     com.google.protobuf.ByteString
         getPushembeddataBytes();
+
+    /**
+     * <code>optional uint32 sourceid = 7;</code>
+     */
+    boolean hasSourceid();
+    /**
+     * <code>optional uint32 sourceid = 7;</code>
+     */
+    int getSourceid();
   }
   /**
    * Protobuf type {@code protobuf.MessageSendUser}
@@ -346,6 +355,11 @@ public final class ZPMsgProtos {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
               pushembeddata_ = bs;
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              sourceid_ = input.readUInt32();
               break;
             }
           }
@@ -559,6 +573,21 @@ public final class ZPMsgProtos {
       }
     }
 
+    public static final int SOURCEID_FIELD_NUMBER = 7;
+    private int sourceid_;
+    /**
+     * <code>optional uint32 sourceid = 7;</code>
+     */
+    public boolean hasSourceid() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional uint32 sourceid = 7;</code>
+     */
+    public int getSourceid() {
+      return sourceid_;
+    }
+
     private void initFields() {
       data_ = com.google.protobuf.ByteString.EMPTY;
       signature_ = "";
@@ -566,6 +595,7 @@ public final class ZPMsgProtos {
       usrid_ = 0L;
       pushtitle_ = "";
       pushembeddata_ = "";
+      sourceid_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -606,6 +636,9 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(6, getPushembeddataBytes());
       }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeUInt32(7, sourceid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -638,6 +671,10 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, getPushembeddataBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(7, sourceid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -768,6 +805,8 @@ public final class ZPMsgProtos {
         bitField0_ = (bitField0_ & ~0x00000010);
         pushembeddata_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
+        sourceid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -820,6 +859,10 @@ public final class ZPMsgProtos {
           to_bitField0_ |= 0x00000020;
         }
         result.pushembeddata_ = pushembeddata_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.sourceid_ = sourceid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -859,6 +902,9 @@ public final class ZPMsgProtos {
           bitField0_ |= 0x00000020;
           pushembeddata_ = other.pushembeddata_;
           onChanged();
+        }
+        if (other.hasSourceid()) {
+          setSourceid(other.getSourceid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1218,6 +1264,38 @@ public final class ZPMsgProtos {
   }
   bitField0_ |= 0x00000020;
         pushembeddata_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int sourceid_ ;
+      /**
+       * <code>optional uint32 sourceid = 7;</code>
+       */
+      public boolean hasSourceid() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional uint32 sourceid = 7;</code>
+       */
+      public int getSourceid() {
+        return sourceid_;
+      }
+      /**
+       * <code>optional uint32 sourceid = 7;</code>
+       */
+      public Builder setSourceid(int value) {
+        bitField0_ |= 0x00000040;
+        sourceid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 sourceid = 7;</code>
+       */
+      public Builder clearSourceid() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        sourceid_ = 0;
         onChanged();
         return this;
       }
@@ -2655,6 +2733,15 @@ public final class ZPMsgProtos {
      * <code>optional uint64 mtuid = 5;</code>
      */
     long getMtuid();
+
+    /**
+     * <code>optional uint32 sourceid = 6;</code>
+     */
+    boolean hasSourceid();
+    /**
+     * <code>optional uint32 sourceid = 6;</code>
+     */
+    int getSourceid();
   }
   /**
    * Protobuf type {@code protobuf.DataResponseUser}
@@ -2731,6 +2818,11 @@ public final class ZPMsgProtos {
             case 40: {
               bitField0_ |= 0x00000010;
               mtuid_ = input.readUInt64();
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              sourceid_ = input.readUInt32();
               break;
             }
           }
@@ -2848,12 +2940,28 @@ public final class ZPMsgProtos {
       return mtuid_;
     }
 
+    public static final int SOURCEID_FIELD_NUMBER = 6;
+    private int sourceid_;
+    /**
+     * <code>optional uint32 sourceid = 6;</code>
+     */
+    public boolean hasSourceid() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional uint32 sourceid = 6;</code>
+     */
+    public int getSourceid() {
+      return sourceid_;
+    }
+
     private void initFields() {
       msgtype_ = 0;
       data_ = com.google.protobuf.ByteString.EMPTY;
       status_ = 0;
       mtaid_ = 0L;
       mtuid_ = 0L;
+      sourceid_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2891,6 +2999,9 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeUInt64(5, mtuid_);
       }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeUInt32(6, sourceid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2919,6 +3030,10 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(5, mtuid_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(6, sourceid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3047,6 +3162,8 @@ public final class ZPMsgProtos {
         bitField0_ = (bitField0_ & ~0x00000008);
         mtuid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
+        sourceid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -3095,6 +3212,10 @@ public final class ZPMsgProtos {
           to_bitField0_ |= 0x00000010;
         }
         result.mtuid_ = mtuid_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.sourceid_ = sourceid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3125,6 +3246,9 @@ public final class ZPMsgProtos {
         }
         if (other.hasMtuid()) {
           setMtuid(other.getMtuid());
+        }
+        if (other.hasSourceid()) {
+          setSourceid(other.getSourceid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3320,6 +3444,38 @@ public final class ZPMsgProtos {
       public Builder clearMtuid() {
         bitField0_ = (bitField0_ & ~0x00000010);
         mtuid_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int sourceid_ ;
+      /**
+       * <code>optional uint32 sourceid = 6;</code>
+       */
+      public boolean hasSourceid() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional uint32 sourceid = 6;</code>
+       */
+      public int getSourceid() {
+        return sourceid_;
+      }
+      /**
+       * <code>optional uint32 sourceid = 6;</code>
+       */
+      public Builder setSourceid(int value) {
+        bitField0_ |= 0x00000020;
+        sourceid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 sourceid = 6;</code>
+       */
+      public Builder clearSourceid() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        sourceid_ = 0;
         onChanged();
         return this;
       }
@@ -4972,6 +5128,15 @@ public final class ZPMsgProtos {
      * <code>optional uint64 mtuid = 4;</code>
      */
     long getMtuid();
+
+    /**
+     * <code>optional uint32 sourceid = 5;</code>
+     */
+    boolean hasSourceid();
+    /**
+     * <code>optional uint32 sourceid = 5;</code>
+     */
+    int getSourceid();
   }
   /**
    * Protobuf type {@code protobuf.StatusMessageClient}
@@ -5043,6 +5208,11 @@ public final class ZPMsgProtos {
             case 32: {
               bitField0_ |= 0x00000008;
               mtuid_ = input.readUInt64();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              sourceid_ = input.readUInt32();
               break;
             }
           }
@@ -5145,11 +5315,27 @@ public final class ZPMsgProtos {
       return mtuid_;
     }
 
+    public static final int SOURCEID_FIELD_NUMBER = 5;
+    private int sourceid_;
+    /**
+     * <code>optional uint32 sourceid = 5;</code>
+     */
+    public boolean hasSourceid() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional uint32 sourceid = 5;</code>
+     */
+    public int getSourceid() {
+      return sourceid_;
+    }
+
     private void initFields() {
       userid_ = 0L;
       status_ = 0;
       mtaid_ = 0L;
       mtuid_ = 0L;
+      sourceid_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5184,6 +5370,9 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeUInt64(4, mtuid_);
       }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeUInt32(5, sourceid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5208,6 +5397,10 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(4, mtuid_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(5, sourceid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5334,6 +5527,8 @@ public final class ZPMsgProtos {
         bitField0_ = (bitField0_ & ~0x00000004);
         mtuid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
+        sourceid_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -5378,6 +5573,10 @@ public final class ZPMsgProtos {
           to_bitField0_ |= 0x00000008;
         }
         result.mtuid_ = mtuid_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.sourceid_ = sourceid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5405,6 +5604,9 @@ public final class ZPMsgProtos {
         }
         if (other.hasMtuid()) {
           setMtuid(other.getMtuid());
+        }
+        if (other.hasSourceid()) {
+          setSourceid(other.getSourceid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -5569,6 +5771,38 @@ public final class ZPMsgProtos {
         return this;
       }
 
+      private int sourceid_ ;
+      /**
+       * <code>optional uint32 sourceid = 5;</code>
+       */
+      public boolean hasSourceid() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional uint32 sourceid = 5;</code>
+       */
+      public int getSourceid() {
+        return sourceid_;
+      }
+      /**
+       * <code>optional uint32 sourceid = 5;</code>
+       */
+      public Builder setSourceid(int value) {
+        bitField0_ |= 0x00000010;
+        sourceid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 sourceid = 5;</code>
+       */
+      public Builder clearSourceid() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        sourceid_ = 0;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:protobuf.StatusMessageClient)
     }
 
@@ -5619,27 +5853,28 @@ public final class ZPMsgProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\024PATH/zpmsguser.proto\022\010protobuf\"\177\n\017Mess" +
-      "ageSendUser\022\014\n\004data\030\001 \002(\014\022\021\n\tsignature\030\002" +
-      " \002(\t\022\022\n\nexpiretime\030\003 \001(\003\022\r\n\005usrid\030\004 \001(\004\022" +
-      "\021\n\tpushtitle\030\005 \001(\t\022\025\n\rpushembeddata\030\006 \001(" +
-      "\t\"Q\n\014MessageLogin\022\r\n\005usrid\030\001 \002(\004\022\r\n\005toke" +
-      "n\030\002 \002(\t\022\016\n\006ostype\030\003 \001(\005\022\023\n\013devicetoken\030\004" +
-      " \001(\t\"9\n\nResultAuth\022\r\n\005usrid\030\001 \002(\004\022\016\n\006res" +
-      "ult\030\002 \002(\005\022\014\n\004code\030\003 \001(\005\"_\n\020DataResponseU" +
-      "ser\022\017\n\007msgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014\022\016\n\006st" +
-      "atus\030\003 \001(\005\022\r\n\005mtaid\030\004 \001(\004\022\r\n\005mtuid\030\005 \001(\004",
-      "\"\253\001\n\013MsgPushUser\022\023\n\013devicetoken\030\001 \002(\t\022\016\n" +
-      "\006ostype\030\002 \002(\005\022\r\n\005alert\030\003 \002(\t\022\r\n\005sound\030\004 " +
-      "\001(\t\022\r\n\005badge\030\005 \001(\005\022\021\n\tactionkey\030\006 \001(\t\022\025\n" +
-      "\rpushembeddata\030\007 \001(\t\022\021\n\tserviceid\030\010 \001(\t\022" +
-      "\r\n\005msgid\030\t \001(\t\"S\n\023StatusMessageClient\022\016\n" +
-      "\006userid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022\r\n\005mtaid\030\003" +
-      " \001(\004\022\r\n\005mtuid\030\004 \001(\004*6\n\rMessageStatus\022\014\n\010" +
-      "RECEIVED\020\001\022\n\n\006READED\020\002\022\013\n\007DELETED\020\003*0\n\006O" +
-      "SType\022\007\n\003IOS\020\001\022\013\n\007ANDROID\020\002\022\020\n\014WINDOW_PH" +
-      "ONE\020\003B2\n#vn.com.vng.zalopay.data.ws.prot",
-      "obufB\013ZPMsgProtos"
+      "\n\024PATH/zpmsguser.proto\022\010protobuf\"\221\001\n\017Mes" +
+      "sageSendUser\022\014\n\004data\030\001 \002(\014\022\021\n\tsignature\030" +
+      "\002 \002(\t\022\022\n\nexpiretime\030\003 \001(\003\022\r\n\005usrid\030\004 \001(\004" +
+      "\022\021\n\tpushtitle\030\005 \001(\t\022\025\n\rpushembeddata\030\006 \001" +
+      "(\t\022\020\n\010sourceid\030\007 \001(\r\"Q\n\014MessageLogin\022\r\n\005" +
+      "usrid\030\001 \002(\004\022\r\n\005token\030\002 \002(\t\022\016\n\006ostype\030\003 \001" +
+      "(\005\022\023\n\013devicetoken\030\004 \001(\t\"9\n\nResultAuth\022\r\n" +
+      "\005usrid\030\001 \002(\004\022\016\n\006result\030\002 \002(\005\022\014\n\004code\030\003 \001" +
+      "(\005\"q\n\020DataResponseUser\022\017\n\007msgtype\030\001 \002(\005\022" +
+      "\014\n\004data\030\002 \002(\014\022\016\n\006status\030\003 \001(\005\022\r\n\005mtaid\030\004",
+      " \001(\004\022\r\n\005mtuid\030\005 \001(\004\022\020\n\010sourceid\030\006 \001(\r\"\253\001" +
+      "\n\013MsgPushUser\022\023\n\013devicetoken\030\001 \002(\t\022\016\n\006os" +
+      "type\030\002 \002(\005\022\r\n\005alert\030\003 \002(\t\022\r\n\005sound\030\004 \001(\t" +
+      "\022\r\n\005badge\030\005 \001(\005\022\021\n\tactionkey\030\006 \001(\t\022\025\n\rpu" +
+      "shembeddata\030\007 \001(\t\022\021\n\tserviceid\030\010 \001(\t\022\r\n\005" +
+      "msgid\030\t \001(\t\"e\n\023StatusMessageClient\022\016\n\006us" +
+      "erid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022\r\n\005mtaid\030\003 \001(" +
+      "\004\022\r\n\005mtuid\030\004 \001(\004\022\020\n\010sourceid\030\005 \001(\r*6\n\rMe" +
+      "ssageStatus\022\014\n\010RECEIVED\020\001\022\n\n\006READED\020\002\022\013\n" +
+      "\007DELETED\020\003*0\n\006OSType\022\007\n\003IOS\020\001\022\013\n\007ANDROID",
+      "\020\002\022\020\n\014WINDOW_PHONE\020\003B2\n#vn.com.vng.zalop" +
+      "ay.data.ws.protobufB\013ZPMsgProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5658,7 +5893,7 @@ public final class ZPMsgProtos {
     internal_static_protobuf_MessageSendUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_MessageSendUser_descriptor,
-        new java.lang.String[] { "Data", "Signature", "Expiretime", "Usrid", "Pushtitle", "Pushembeddata", });
+        new java.lang.String[] { "Data", "Signature", "Expiretime", "Usrid", "Pushtitle", "Pushembeddata", "Sourceid", });
     internal_static_protobuf_MessageLogin_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_protobuf_MessageLogin_fieldAccessorTable = new
@@ -5676,7 +5911,7 @@ public final class ZPMsgProtos {
     internal_static_protobuf_DataResponseUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_DataResponseUser_descriptor,
-        new java.lang.String[] { "Msgtype", "Data", "Status", "Mtaid", "Mtuid", });
+        new java.lang.String[] { "Msgtype", "Data", "Status", "Mtaid", "Mtuid", "Sourceid", });
     internal_static_protobuf_MsgPushUser_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_protobuf_MsgPushUser_fieldAccessorTable = new
@@ -5688,7 +5923,7 @@ public final class ZPMsgProtos {
     internal_static_protobuf_StatusMessageClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_StatusMessageClient_descriptor,
-        new java.lang.String[] { "Userid", "Status", "Mtaid", "Mtuid", });
+        new java.lang.String[] { "Userid", "Status", "Mtaid", "Mtuid", "Sourceid", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

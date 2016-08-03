@@ -94,7 +94,7 @@ public abstract class Connection {
 
     public Message postResult(Event message) {
         Message uiMsg = new Message();
-        uiMsg.what = message.msgType;
+        uiMsg.what = message.getMsgType();
         uiMsg.obj = message;
         messageHandler.sendMessage(uiMsg);
         return uiMsg;

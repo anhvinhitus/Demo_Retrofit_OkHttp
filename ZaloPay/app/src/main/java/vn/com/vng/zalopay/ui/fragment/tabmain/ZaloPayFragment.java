@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.ws.Client;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -63,9 +66,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
 
     private final static int SPAN_COUNT_APPLICATION = 3;
-
-    @Inject
-    Navigator navigator;
 
     @Inject
     ZaloPayPresenter presenter;
@@ -111,6 +111,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
+
     }
 
     @Override

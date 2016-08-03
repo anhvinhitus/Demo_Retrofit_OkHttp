@@ -42,8 +42,8 @@ public class UserNotificationModule {
     NotificationHelper providesNotificationHelper(Context context, User user,
                                                   AccountStore.Repository repository,
                                                   NotificationStore.Repository notifyRepository,
-                                                  RedPacketStore.Repository redPacketRepository, TransactionStore.Repository trasactionRepository
+                                                  RedPacketStore.Repository redPacketRepository, TransactionStore.Repository transactionRepository
     ) {
-        return new NotificationHelper(context, user, notifyRepository, repository, redPacketRepository, trasactionRepository);
+        return new NotificationHelper(context, user, notifyRepository, repository, redPacketRepository, transactionRepository);
     }
 }

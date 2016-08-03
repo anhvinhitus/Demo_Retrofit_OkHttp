@@ -108,10 +108,10 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
     public void onMessage(byte[] data) {
         Event message = parser.parserMessage(data);
         if (message != null) {
-            Timber.d("onReceived message.msgType %s", message.msgType);
-            if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
+            Timber.d("onReceived message.msgType %s", message.getMsgType());
+            if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
 
-            } else if (message.msgType == MessageType.Response.KICK_OUT) {
+            } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
                 Timber.d("onReceived KICK_OUT");
                 disconnect();
                 return;

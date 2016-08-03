@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.Enums;
@@ -171,14 +172,26 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
         if (message != null) {
-            Timber.d("onReceived message.msgType %s", message.msgType);
-            if (message.msgType == MessageType.Response.AUTHEN_LOGIN_RESULT) {
+            Timber.d("onReceived message.msgType %s", message.getMsgType());
+            if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
-            } else if (message.msgType == MessageType.Response.KICK_OUT) {
+            } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
                 Timber.d("onReceived KICK_OUT");
                 disconnect();
                 return;
             } else {
+                long uid = -1;
+                if (message instanceof NotificationData) {
+                    try {
+                        uid = Long.parseLong(((NotificationData) message).userid);
+                    } catch (Exception ex) {
+                    }
+                }
+
+                long mtaid = message.getMtaid();
+                long mtuid = message.getMtuid();
+
+                sendFeedbackStatus(mtaid, mtuid, uid);
                 postResult(message);
             }
 
@@ -232,5 +245,29 @@ public class WsConnection extends Connection implements ConnectionListener {
             return sendAuthentication(user.accesstoken, Long.parseLong(user.uid));
         }
         return false;
+    }
+
+    public boolean sendFeedbackStatus(long mtaid, long mtuid, long uid) {
+
+        if (mtaid <= 0 && mtuid <= 0) {
+            return true;
+        }
+
+        Timber.d("sendFeedbackStatus: mtaid %s mtuid %s uid %s");
+
+        ZPMsgProtos.StatusMessageClient.Builder statusMsg = ZPMsgProtos.StatusMessageClient.newBuilder()
+                .setStatus(ZPMsgProtos.MessageStatus.RECEIVED.getNumber());
+
+        if (mtaid > 0) {
+            statusMsg.setMtaid(mtaid);
+        }
+        if (mtuid > 0) {
+            statusMsg.setMtuid(mtuid);
+        }
+        if (uid > 0) {
+            statusMsg.setUserid(uid);
+        }
+
+        return send(MessageType.Request.FEEDBACK, statusMsg.build());
     }
 }
