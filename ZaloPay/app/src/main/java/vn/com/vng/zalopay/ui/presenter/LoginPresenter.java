@@ -162,7 +162,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private void onLoginSuccess(User user) {
         Timber.d("session %s uid %s need_invitation %s", user.accesstoken, user.uid, user.need_invitation);
         // Khởi tạo user component
-
+        hideLoadingView();
         if (user.need_invitation == 1) {
             zpAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
             zpAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
@@ -174,12 +174,12 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void onLoginError(Throwable e) {
+        hideLoadingView();
         if (e instanceof InvitationCodeException) {
             mView.gotoInvitationCode();
         } else {
 
             Timber.w(e, "exception  ");
-            hideLoadingView();
             String message = ErrorMessageFactory.create(applicationContext, e);
             showErrorView(message);
             zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);

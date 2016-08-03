@@ -19,6 +19,8 @@ class NotificationType {
     public static final int SEND_RED_PACKET = 103;
     public static final int UPLOAD_PROFILE_LEVEL_3 = 104;
     public static final int REFUND_TRANSACTION = 105;
+    public static final int REFUND_TRANSACTION_BANK = 106;
+    public static final int RETRY_TRANSACTION = 107;
 
     static boolean isTransactionNotification(int notificationType) {
         return notificationType == ORDER_PAYMENT ||
@@ -28,7 +30,10 @@ class NotificationType {
                 notificationType == MONEY_WITHDRAW ||
                 notificationType == RECEIVE_RED_PACKET ||
                 notificationType == REFUND_RED_PACKET ||
-                notificationType == REFUND_TRANSACTION;
+                notificationType == REFUND_TRANSACTION ||
+                notificationType == RETRY_TRANSACTION ||
+                notificationType == REFUND_TRANSACTION_BANK
+                ;
     }
 
     static boolean isProfileNotification(int notificationType) {

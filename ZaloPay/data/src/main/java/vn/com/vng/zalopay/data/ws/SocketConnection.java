@@ -153,4 +153,8 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
         }
         return false;
     }
+
+    public void setGCMToken(String token){
+
+    }
 }

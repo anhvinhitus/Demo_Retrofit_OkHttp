@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -55,12 +56,12 @@ public class TCPClient {
             try {
                 mRun = true;
 
-                Timber.d("connect: host %s port %s ", mURI.getHost(), mURI.getPort());
 
-                mSocket = new Socket(mURI.getHost(), mURI.getPort());
+                mSocket = new Socket();
                 mSocket.setKeepAlive(true);
                 mSocket.setTcpNoDelay(true);
                 mSocket.setSoTimeout(5000);
+                mSocket.connect(new InetSocketAddress(mHost, mPort));
 
                 byte[] buffer = new byte[1024 * 2];
 
