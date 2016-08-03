@@ -4,6 +4,7 @@ package vn.com.vng.zalopay.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -16,7 +17,7 @@ public class QRCodeScannerActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zpAnalytics.trackEvent(ZPEvents.SCANQR_LAUNCH);
+        ZPAnalytics.trackEvent(ZPEvents.SCANQR_LAUNCH);
 
     }
 
@@ -37,7 +38,7 @@ public class QRCodeScannerActivity extends BaseToolBarActivity {
     @Override
     public void onBackPressed() {
        super.onBackPressed();
-        zpAnalytics.trackEvent(ZPEvents.SCANQR_NAVIGATEBACK);
+        ZPAnalytics.trackEvent(ZPEvents.SCANQR_NAVIGATEBACK);
     }
 }
 

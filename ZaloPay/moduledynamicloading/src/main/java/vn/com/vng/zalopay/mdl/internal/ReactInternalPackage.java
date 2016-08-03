@@ -42,7 +42,6 @@ public class ReactInternalPackage implements ReactPackage {
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
 
-    private ZPAnalytics zpAnalytics;
     private EventBus mEventBus;
     private ReactNativeInstanceManager mReactNativeInstanceManager;
 
@@ -54,7 +53,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 BalanceStore.Repository balanceRepository,
                                 IRedPacketPayService paymentService,
                                 AlertDialogProvider sweetAlertDialog,
-                                INavigator navigator, ZPAnalytics zpAnalytics,
+                                INavigator navigator,
                                 EventBus eventBus,
                                 ReactNativeInstanceManager reactNativeInstanceManager,
                                 UserConfig userConfig) {
@@ -66,7 +65,6 @@ public class ReactInternalPackage implements ReactPackage {
         this.paymentService = paymentService;
         this.sweetAlertDialog = sweetAlertDialog;
         this.navigator = navigator;
-        this.zpAnalytics = zpAnalytics;
         this.mEventBus = eventBus;
         this.mReactNativeInstanceManager = reactNativeInstanceManager;
         this.mUserConfig = userConfig;
@@ -77,7 +75,7 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext, navigator, zpAnalytics));
+        modules.add(new ReactInternalNativeModule(reactContext, navigator));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUserConfig, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));

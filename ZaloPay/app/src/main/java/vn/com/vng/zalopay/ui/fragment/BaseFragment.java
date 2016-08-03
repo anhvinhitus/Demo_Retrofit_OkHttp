@@ -43,9 +43,7 @@ public abstract class BaseFragment extends Fragment {
     private SweetAlertDialog mProgressDialog;
     private Unbinder unbinder;
 
-    protected final ZPAnalytics zpAnalytics = AndroidApplication.instance().getAppComponent().zpAnalytics();
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -12,7 +12,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
@@ -75,8 +74,6 @@ public interface ApplicationComponent {
     Navigator navigator();
 
     ApplicationSession applicationSession();
-
-    ZPAnalytics zpAnalytics();
 
     /*INJECT*/
 

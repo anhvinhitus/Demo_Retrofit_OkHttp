@@ -19,6 +19,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -102,7 +103,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         if (mView != null) { // chua destroy view
             if (!NetworkHelper.isNetworkAvailable(applicationContext)) {
                 showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
-                zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
+                ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
             } else if (errorCode == -1111) {
                 Timber.d("onAuthError User click backpress");
             } else {
@@ -110,7 +111,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
                     message = applicationContext.getString(R.string.exception_login_zalo_error);
                 }
                 showErrorView(message);
-                zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
+                ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
             }
             hideLoadingView();
         }
@@ -126,7 +127,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             this.loginPayment(zaloId, authCode);
         }
 
-        zpAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
+        ZPAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
     }
 
 
@@ -164,12 +165,12 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         // Khởi tạo user component
         hideLoadingView();
         if (user.need_invitation == 1) {
-            zpAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
-            zpAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
+            ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
+            ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
         } else {
             AndroidApplication.instance().createUserComponent(user);
             this.gotoHomeScreen();
-            zpAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
+            ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
         }
     }
 
@@ -182,7 +183,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             Timber.w(e, "exception  ");
             String message = ErrorMessageFactory.create(applicationContext, e);
             showErrorView(message);
-            zpAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
+            ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }
 
     }

@@ -26,6 +26,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
@@ -187,46 +188,46 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 break;
             case MenuItemUtil.APPLICATION_INFO_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCASH);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCASH);
                 break;
             case MenuItemUtil.FAQ_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFAQ);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFAQ);
                 break;
             case MenuItemUtil.HOME_ID:
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHOME);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHOME);
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 startQRCodeActivity();
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
                 presenter.logout();
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTION_LOGS);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
                 break;
             case MenuItemUtil.SAVE_CARD_ID:
                 navigator.startLinkCardActivity(this);
-                zpAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
                 break;
 
         }

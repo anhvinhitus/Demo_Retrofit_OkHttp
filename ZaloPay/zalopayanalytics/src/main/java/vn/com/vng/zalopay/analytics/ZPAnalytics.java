@@ -6,18 +6,14 @@ import java.util.List;
 import timber.log.Timber;
 
 public class ZPAnalytics {
-    private final List<ZPTracker> mTrackerList;
-
-    ZPAnalytics(List<ZPTracker> trackerList) {
-        this.mTrackerList = trackerList;
-    }
+    static List<ZPTracker> sTrackerList = new ArrayList<>();
 
     /**
      * Log custom event. Events are defined in https://docs.google.com/spreadsheets/d/1kdqC78-qMsRGY_n4hMyzUsbHlS3Gl4yWwgr62qLO8Co/edit#gid=0
      *
      * @param eventId Id of the event that we want to log
      */
-    public void trackEvent(int eventId) {
+    public static void trackEvent(int eventId) {
         trackEvent(eventId, null);
     }
 
@@ -27,41 +23,38 @@ public class ZPAnalytics {
      * @param eventId    Id of the event that we want to log
      * @param eventValue (optional) provide value for a given event
      */
-    public void trackEvent(int eventId, Long eventValue) {
-        for (ZPTracker tracker : mTrackerList) {
+    public static void trackEvent(int eventId, Long eventValue) {
+        for (ZPTracker tracker : sTrackerList) {
             tracker.trackEvent(eventId, eventValue);
         }
     }
 
-    public void trackScreen(String screenName) {
-        for (ZPTracker tracker : mTrackerList) {
+    public static void trackScreen(String screenName) {
+        for (ZPTracker tracker : sTrackerList) {
             tracker.trackScreen(screenName);
         }
     }
 
-    public static class Builder {
-        private final List<ZPTracker> mTrackerList;
-
-        public Builder() {
-            mTrackerList = new ArrayList<>();
+    public static void addTracker(ZPTracker tracker) {
+        if (sTrackerList.contains(tracker)) {
+            return;
         }
 
-        public Builder addTracker(ZPTracker tracker) {
-            if (mTrackerList.contains(tracker)) {
-                return this;
-            }
+        sTrackerList.add(tracker);
+    }
 
-            mTrackerList.add(tracker);
-            return this;
-        }
+    public static void addDefaultTracker() {
+        addTracker(new DefaultTracker());
+    }
 
-        public Builder addDefaultTracker() {
-            return addTracker(new DefaultTracker());
+    public static void removeTracker(ZPTracker tracker) {
+        if (sTrackerList.contains(tracker)) {
+            sTrackerList.remove(tracker);
         }
+    }
 
-        public ZPAnalytics build() {
-            return new ZPAnalytics(mTrackerList);
-        }
+    public static void removeAll() {
+        sTrackerList.clear();
     }
 
     static class DefaultTracker implements ZPTracker {
@@ -75,12 +68,12 @@ public class ZPAnalytics {
                 message = String.format("Event [%d] - value [%s]", eventId, eventValue);
             }
 
-            Timber.tag("ZPAnalytics").i(message);
+            Timber.tag("ZPAnalytics").d(message);
         }
 
         @Override
         public void trackScreen(String screenName) {
-            //Timber.tag("ZPAnalytics").d(screenName);
+            Timber.tag("ZPAnalytics").d("Screen [%s]", screenName);
         }
     }
 }

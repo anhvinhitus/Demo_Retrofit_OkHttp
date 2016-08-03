@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
@@ -17,6 +19,7 @@ import io.fabric.sdk.android.Fabric;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import timber.log.Timber;
 import vn.com.vng.iot.debugviewer.DebugViewer;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -30,6 +33,8 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.service.ZPTrackerAnswers;
+import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
@@ -79,6 +84,9 @@ public class AndroidApplication extends MultiDexApplication {
 
         Fabric.with(this, new Crashlytics());
 
+        // Initialize ZPAnalytics
+        initializeZaloPayAnalytics();
+
         initAppComponent();
         initializeFileFolder();
 
@@ -90,7 +98,17 @@ public class AndroidApplication extends MultiDexApplication {
         Constants.setEnumEnvironment(BuildConfig.HOST_TYPE);
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
-        appComponent.zpAnalytics().trackEvent(ZPEvents.APP_LAUNCH);
+        ZPAnalytics.trackEvent(ZPEvents.APP_LAUNCH);
+    }
+
+    private void initializeZaloPayAnalytics() {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+        final Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+
+        ZPAnalytics.addDefaultTracker();
+        ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
+        ZPAnalytics.addTracker(new ZPTrackerAnswers());
     }
 
 

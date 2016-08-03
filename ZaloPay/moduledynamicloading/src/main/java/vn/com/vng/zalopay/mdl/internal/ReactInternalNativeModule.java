@@ -26,14 +26,11 @@ import vn.com.vng.zalopay.mdl.INavigator;
 public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     INavigator navigator;
-    private ZPAnalytics zpAnalytics;
 
     public ReactInternalNativeModule(ReactApplicationContext reactContext,
-                                     INavigator navigator,
-                                     ZPAnalytics zpAnalytics) {
+                                     INavigator navigator) {
         super(reactContext);
         this.navigator = navigator;
-        this.zpAnalytics = zpAnalytics;
     }
 
     /// The purpose of this method is to return the string name of the NativeModule
@@ -93,7 +90,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
         Timber.d("trackEvent eventId %s", eventId);
 
-        zpAnalytics.trackEvent(eventId);
+        ZPAnalytics.trackEvent(eventId);
     }
 
     @ReactMethod

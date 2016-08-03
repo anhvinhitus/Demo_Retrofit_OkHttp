@@ -12,6 +12,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
@@ -60,7 +61,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @OnClick(R.id.layoutLoginZalo)
     public void onClickLogin(View v) {
         loginPresenter.loginZalo(this);
-        zpAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
+        ZPAnalytics.trackEvent(ZPEvents.TAP_LOGIN);
     }
 
     @Override

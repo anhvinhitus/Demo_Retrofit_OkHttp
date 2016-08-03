@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -156,7 +157,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             hideLoadingView();
 
-            zpAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
+            ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
 
             mView.resumeScanner();
@@ -164,7 +165,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             Timber.i("Invalid JSON input: %s", e.getMessage());
             hideLoadingView();
 
-            zpAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
+            ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
             qrDataInvalid();
 
             mView.resumeScanner();

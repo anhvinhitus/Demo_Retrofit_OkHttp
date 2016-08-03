@@ -27,6 +27,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -281,7 +282,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
             presenter.removeLinkCard(mCurrentBankCard);
-            zpAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.root) {
             mBottomSheetDialog.dismiss();

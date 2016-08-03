@@ -82,9 +82,6 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     INavigator navigator;
 
     @Inject
-    ZPAnalytics zpAnalytics;
-
-    @Inject
     ReactNativeInstanceManager mReactNativeInstanceManager;
 
     @Inject
@@ -151,7 +148,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return new ReactInternalPackage(transactionRepository,
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
-                sweetAlertDialog, navigator, zpAnalytics, eventBus,
+                sweetAlertDialog, navigator, eventBus,
                 mReactNativeInstanceManager, mUserConfig);
     }
 
