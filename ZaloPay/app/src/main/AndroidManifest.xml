@@ -180,10 +180,6 @@
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.activity.LinkCardProcedureActivity"
-            android:label="@string/title.activity.add.card"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:theme="@style/AppTheme.NoActionBar.AppColor" />
 

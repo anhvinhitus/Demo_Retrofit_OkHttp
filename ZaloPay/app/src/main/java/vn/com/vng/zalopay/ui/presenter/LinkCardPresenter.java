@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
@@ -22,13 +24,20 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -39,13 +48,60 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
 
     private ILinkCardView mLinkCardView;
-    private Subscription subscription;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private PaymentWrapper paymentWrapper;
 
     @Inject
     User user;
 
     public LinkCardPresenter(User user) {
         this.user = user;
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
+            @Override
+            public Activity getActivity() {
+                return mLinkCardView.getActivity();
+            }
+        }, new PaymentWrapper.IResponseListener() {
+            @Override
+            public void onParameterError(String param) {
+                mLinkCardView.showError(param);
+            }
+
+            @Override
+            public void onResponseError(int status) {
+                if (status == PaymentError.ERR_CODE_INTERNET) {
+                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                }
+//                else {
+//                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+//                }
+            }
+
+            @Override
+            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+                if (paymentInfo == null) {
+                    return;
+                }
+                mLinkCardView.onAddCardSuccess(paymentInfo.mappedCreditCard);
+            }
+
+            @Override
+            public void onResponseTokenInvalid() {
+                mLinkCardView.onTokenInvalid();
+                clearAndLogout();
+            }
+
+            @Override
+            public void onResponseCancel() {
+
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+
+            }
+        });
     }
 
     @Override
@@ -56,13 +112,12 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     @Override
     public void destroyView() {
         mLinkCardView = null;
-        unsubscribeIfNotNull(subscription);
-        subscription = null;
+        unsubscribeIfNotNull(mCompositeSubscription);
     }
 
     public void getListCard() {
         mLinkCardView.showLoading();
-        subscription = makeObservable(new Callable<List<BankCard>>() {
+        Subscription subscription = makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
                 List<DMappedCard> mapCardLis = CShareData.getInstance(mLinkCardView.getActivity()).getMappedCardList(user.uid);
@@ -70,6 +125,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LinkCardSubscriber());
+        mCompositeSubscription.add(subscription);
     }
 
 
@@ -203,6 +259,90 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 //            tmp.add(new BankCard("Nguyen Van A", "213134", "1231", "123VCB",234324234));
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
+    }
+
+    public void addLinkCard() {
+        if (user.profilelevel < 2) {
+            navigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext(), false);
+        } else {
+            long value = 10000;
+            if (mLinkCardView.getActivity() != null) {
+                try {
+                    value = CShareData.getInstance(mLinkCardView.getActivity()).getLinkCardValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            mLinkCardView.showLoading();
+            String description = mLinkCardView.getContext().getString(R.string.link_card);
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CreateWalletOrderSubscriber());
+            mCompositeSubscription.add(subscription);
+        }
+    }
+
+    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+        public CreateWalletOrderSubscriber() {
+        }
+
+        @Override
+        public void onNext(Order order) {
+            Timber.d("CreateWalletOrderSubscriber onNext order: [%s]" + order);
+            LinkCardPresenter.this.onCreateWalletOrderSuccess(order);
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            Timber.w(e, "CreateWalletOrderSubscriber onError exception: [%s]" + e);
+            LinkCardPresenter.this.onCreateWalletOrderError(e);
+        }
+    }
+
+    private void onCreateWalletOrderError(Throwable e) {
+        Timber.d("onCreateWalletOrderError exception: [%s]" + e);
+        hideLoadingView();
+        String message = ErrorMessageFactory.create(mLinkCardView.getContext(), e);
+        showErrorView(message);
+    }
+
+    private void onCreateWalletOrderSuccess(Order order) {
+        Timber.d("onCreateWalletOrderSuccess order: [%s]", order);
+        paymentWrapper.linkCard(order);
+        hideLoadingView();
+    }
+
+    private void showLoadingView() {
+        if (mLinkCardView == null) {
+            return;
+        }
+        mLinkCardView.showLoading();
+    }
+
+    private void hideLoadingView() {
+        if (mLinkCardView == null) {
+            return;
+        }
+        mLinkCardView.hideLoading();
+    }
+
+    private void showErrorView(String message) {
+        if (mLinkCardView == null) {
+            return;
+        }
+        mLinkCardView.hideLoading();
+        mLinkCardView.showError(message);
     }
 
     public String detectCardType(String bankcode, String first6cardno) {

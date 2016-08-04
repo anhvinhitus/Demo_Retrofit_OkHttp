@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,11 +33,11 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.BankCardUtil;
+import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -120,7 +119,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
-            navigator.startIntroActivity(getContext());
+            navigator.startIntroActivity(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -148,7 +147,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
         }
 
         View layoutLinkCard = mBottomSheetDialog.findViewById(R.id.layoutLinkCard);
-        ImageView imgLogo = (ImageView)mBottomSheetDialog.findViewById(R.id.iv_logo);
+        ImageView imgLogo = (ImageView) mBottomSheetDialog.findViewById(R.id.iv_logo);
         if (mAdapter != null) {
             mAdapter.bindBankCard(layoutLinkCard, imgLogo, mCurrentBankCard, false);
         }
@@ -222,6 +221,30 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     }
 
     @Override
+    public void onAddCardSuccess(DMappedCard card) {
+        if (card == null) {
+            return;
+        }
+        BankCard bankCard = new BankCard(card.cardname, card.first6cardno,
+                card.last4cardno, card.bankcode, card.expiretime);
+        try {
+            Timber.d("onActivityResult first6CardNo: %s", card.first6cardno);
+            bankCard.type = presenter.detectCardType(card.bankcode, card.first6cardno);
+            Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
+        } catch (Exception e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
+        updateData(bankCard);
+    }
+
+    @Override
+    public void onTokenInvalid() {
+
+    }
+
+    @Override
     public void showLoading() {
         super.showProgressDialog();
     }
@@ -249,8 +272,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @OnClick(R.id.btn_add_card)
     public void onClickAddBankCard() {
-        navigator.startLinkCardProcedureActivity(this);
-
+        presenter.addLinkCard();
     }
 
     @Override
@@ -262,30 +284,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == LinkCardActivity.REQUEST_CODE) {
-                Bundle bundle = data.getExtras();
-                if (bundle == null) {
-                    return;
-                }
-                String carname = bundle.getString(Constants.CARDNAME);
-                String first6CardNo = bundle.getString(Constants.FIRST6CARDNO);
-                String last4CardNo = bundle.getString(Constants.LAST4CARDNO);
-                String bankcode = bundle.getString(Constants.BANKCODE);
-                long expiretime = bundle.getLong(Constants.EXPIRETIME);
-                BankCard bankCard = new BankCard(carname, first6CardNo, last4CardNo, bankcode, expiretime);
-                try {
-                    Timber.d("onActivityResult first6CardNo: %s", first6CardNo);
-                    bankCard.type = presenter.detectCardType(bankcode, first6CardNo);
-                    Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
-                } catch (Exception e) {
-                    if (BuildConfig.DEBUG) {
-                        e.printStackTrace();
-                    }
-                }
-                updateData(bankCard);
-                return;
-            }
+        if (requestCode == Constants.REQUEST_CODE_INTRO) {
+            presenter.addLinkCard();
+            return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
