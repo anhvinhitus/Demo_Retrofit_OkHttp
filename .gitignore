@@ -3,7 +3,6 @@
 *~
 .gradle
 *.iml
-*.properties
 ZaloPay/*/build/
 ZaloPay/build/
 ZaloPay/local.properties
@@ -11,6 +10,8 @@ ZaloPay/local.properties
 scripts/error.csv
 scripts/JavaApplication1.jar
 scripts/README.md
+
+fabric.properties
 
 # [Android] ========================
 # Built application files
