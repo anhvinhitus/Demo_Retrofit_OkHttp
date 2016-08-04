@@ -45,7 +45,6 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
- *
  */
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
     public final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
@@ -383,13 +382,11 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public boolean checkShowIntroSaveCard() {
-        if (isOpenedIntroActivity()) {
-            return false;
-        } else {
-            setOpenedIntroActivity();
+        if (!isOpenedIntroActivity()) {
             mLinkCardView.startIntroActivityForResult();
             return true;
         }
+        return false;
     }
 
     public void setOpenedIntroActivity() {

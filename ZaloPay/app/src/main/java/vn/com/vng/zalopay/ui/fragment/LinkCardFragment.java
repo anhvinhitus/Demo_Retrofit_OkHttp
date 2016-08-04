@@ -121,8 +121,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
-            presenter.setOpenedIntroActivity();
-            navigator.startIntroActivity(getContext());
+            startIntroActivity();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -204,8 +203,14 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         super.onDestroy();
     }
 
+    private void startIntroActivity() {
+        presenter.setOpenedIntroActivity();
+        navigator.startIntroActivity(getContext());
+    }
+
     @Override
     public void startIntroActivityForResult() {
+        presenter.setOpenedIntroActivity();
         navigator.startIntroActivityForResult(this);
     }
 
