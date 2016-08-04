@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.redpacket;
+package vn.com.vng.zalopay.react.redpacket;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;

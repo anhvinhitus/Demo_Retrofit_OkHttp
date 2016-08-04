@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl;
+package vn.com.vng.zalopay.react;
 
 import android.content.Intent;
 import android.text.TextUtils;
@@ -16,7 +16,7 @@ import java.util.Locale;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 5/16/16.

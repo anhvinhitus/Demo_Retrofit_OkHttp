@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.internal;
+package vn.com.vng.zalopay.react;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -12,18 +12,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
-import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.AlertDialogProvider;
-import vn.com.vng.zalopay.mdl.redpacket.ReactRedPacketNativeModule;
+import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
+import vn.com.vng.zalopay.react.redpacket.ReactRedPacketNativeModule;
 import vn.com.vng.zalopay.mdl.zpmodal.ReactModalHostManager;
 
 /**

@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;

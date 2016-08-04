@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;

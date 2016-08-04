@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.redpacket;
+package vn.com.vng.zalopay.react.redpacket;
 
 import android.os.Bundle;
 

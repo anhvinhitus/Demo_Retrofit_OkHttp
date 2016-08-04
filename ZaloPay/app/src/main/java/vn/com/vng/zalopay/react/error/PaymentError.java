@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.error;
+package vn.com.vng.zalopay.react.error;
 
 /**
  * Created by longlv on 16/05/2016.

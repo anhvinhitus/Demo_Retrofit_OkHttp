@@ -13,13 +13,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
-import vn.com.vng.zalopay.mdl.Helpers;
-import vn.com.vng.zalopay.mdl.IPaymentService;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.IPaymentService;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 

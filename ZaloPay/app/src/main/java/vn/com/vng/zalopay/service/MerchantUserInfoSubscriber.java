@@ -9,8 +9,8 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
-import vn.com.vng.zalopay.mdl.Helpers;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 7/29/16.

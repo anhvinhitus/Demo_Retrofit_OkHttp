@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.internal;
+package vn.com.vng.zalopay.react;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -12,8 +12,6 @@ import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
-import vn.com.vng.zalopay.mdl.IPaymentService;
-import vn.com.vng.zalopay.mdl.ZaloPayIAPNativeModule;
 
 /**
  * Created by AnhHieu on 5/16/16.

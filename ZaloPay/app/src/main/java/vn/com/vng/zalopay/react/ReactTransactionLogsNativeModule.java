@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.internal;
+package vn.com.vng.zalopay.react;
 
 import android.content.Intent;
 

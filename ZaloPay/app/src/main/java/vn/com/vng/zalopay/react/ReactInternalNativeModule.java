@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.internal;
+package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.mdl.INavigator;
 
 /**
  * Created by huuhoa on 4/25/16.

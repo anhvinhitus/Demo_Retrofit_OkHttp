@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl;
+package vn.com.vng.zalopay.react;
 
 import android.text.TextUtils;
 
@@ -12,7 +12,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 7/14/16.

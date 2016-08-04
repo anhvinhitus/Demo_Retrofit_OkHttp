@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.redpacket;
+package vn.com.vng.zalopay.react.redpacket;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,9 +44,8 @@ import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
-import vn.com.vng.zalopay.mdl.AlertDialogProvider;
-import vn.com.vng.zalopay.mdl.Helpers;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by longlv on 17/07/2016.

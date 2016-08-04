@@ -22,9 +22,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
@@ -37,13 +35,12 @@ import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
-import vn.com.vng.zalopay.mdl.IPaymentService;
+import vn.com.vng.zalopay.react.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ModuleName;
-import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
+import vn.com.vng.zalopay.react.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.

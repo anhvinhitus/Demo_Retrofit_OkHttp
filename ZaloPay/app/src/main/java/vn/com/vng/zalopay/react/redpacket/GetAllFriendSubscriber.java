@@ -1,16 +1,13 @@
-package vn.com.vng.zalopay.mdl.redpacket;
+package vn.com.vng.zalopay.react.redpacket;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.mdl.Helpers;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.Helpers;
 
 /**
  * Created by longlv on 16/07/2016.

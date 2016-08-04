@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.mdl.AlertDialogProvider;
+import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**

@@ -8,7 +8,6 @@ import retrofit2.Retrofit;
 import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
 import vn.com.vng.zalopay.data.redpacket.RedPacketRepository;
@@ -16,8 +15,8 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.mdl.AlertDialogProvider;
+import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.service.RedPacketPayServiceImpl;
 
 /**

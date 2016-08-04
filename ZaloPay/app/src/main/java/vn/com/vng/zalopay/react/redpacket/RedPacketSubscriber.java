@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl.redpacket;
+package vn.com.vng.zalopay.react.redpacket;
 
 import com.facebook.react.bridge.Promise;
 
@@ -13,8 +13,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.mdl.Helpers;
-import vn.com.vng.zalopay.mdl.error.PaymentError;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by longlv on 28/07/2016.

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.mdl;
+package vn.com.vng.zalopay.react.redpacket;
 
 import android.content.Context;
 import android.content.DialogInterface;
