@@ -352,7 +352,7 @@ dependencies {
 
     compile project(':data')
     compile project(':uicomponent')
-    compile project(':qrcodecore')
+    compile ('vn.com.vng.zalopay:qrcodecore:1.0')
     compile project(':zalosdk') {
     }
     compile project(':reactnativemodules')
