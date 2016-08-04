@@ -46,22 +46,68 @@ public class MessageParser implements Parser {
 
     private Event processMessage(byte[] msg) throws Exception {
         ZPMsgProtos.DataResponseUser respMsg = ZPMsgProtos.DataResponseUser.parseFrom(msg);
-        switch (respMsg.getMsgtype()) {
-            case MessageType.Response.KICK_OUT:
-                return processKickOutUser(respMsg.getMsgtype(), respMsg.getData().toByteArray());
-            case MessageType.Response.PUSH_NOTIFICATION:
-                return processPushMessage(respMsg);
-            case MessageType.Response.AUTHEN_LOGIN_RESULT:
-                return processAuthenticationLoginSuccess(respMsg.getMsgtype(), respMsg.getData().toByteArray());
-            default:
+
+        if (!respMsg.hasMtaid() && !respMsg.hasMtuid()) {
+            Timber.e("Notification mtaid and mtuid not have");
+            return null;
         }
 
-        return null;
+        if (respMsg.hasMtaid() && respMsg.hasMtuid()) {
+            Timber.e("Notification mtaid and mtuid both have");
+            return null;
+        }
+
+        if (!respMsg.hasData()) {
+            //  Timber.e("Notification no data");
+            //  return null;
+        }
+
+        Event event = null;
+
+        if (respMsg.hasData()) {
+
+            byte[] data = respMsg.getData().toByteArray();
+
+            switch (respMsg.getMsgtype()) {
+                case MessageType.Response.KICK_OUT:
+                    event = processKickOutUser(data);
+                    break;
+                case MessageType.Response.PUSH_NOTIFICATION:
+                    event = processPushMessage(data);
+                    break;
+                case MessageType.Response.AUTHEN_LOGIN_RESULT:
+                    event = processAuthenticationLoginSuccess(data);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (event == null) {
+            event = new Event();
+        }
+
+        event.setMsgType(respMsg.getMsgtype());
+
+        if (respMsg.hasMtaid()) {
+            event.setMtaid(respMsg.getMtaid());
+        }
+
+        if (respMsg.hasMtuid()) {
+            event.setMtuid(respMsg.getMtuid());
+        }
+
+        if (respMsg.hasSourceid()) {
+            event.setSourceid(respMsg.getSourceid());
+        }
+
+        return event;
     }
 
-    public Event processAuthenticationLoginSuccess(int msgType, byte[] data) {
+    public Event processAuthenticationLoginSuccess(byte[] data) {
+
         try {
-            AuthenticationData event = new AuthenticationData(msgType);
+            AuthenticationData event = new AuthenticationData();
             ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
             Timber.d("Result %s code %s", res.getResult(), res.getCode());
             event.code = res.getCode();
@@ -70,27 +116,22 @@ public class MessageParser implements Parser {
             return event;
         } catch (Exception ex) {
             Timber.w(ex, "Error while handling authentication result");
-
         }
+
         return null;
     }
 
-    public Event processKickOutUser(int msgType, byte[] data) {
+    public Event processKickOutUser(byte[] data) {
         Timber.d("Connection was kicked out by server");
         return null;
     }
 
-    public Event processPushMessage(ZPMsgProtos.DataResponseUser respMsg) {
+    public Event processPushMessage(byte[] data) {
+
         try {
-            String str = null;
-            if (respMsg.hasData()) {
-                str = new String(respMsg.getData().toByteArray());
-            }
-
-            Timber.d("notification message :  %s", str);
-
             NotificationData event = new NotificationData();
-
+            String str = new String(data);
+            Timber.d("notification message :  %s", str);
             if (!TextUtils.isEmpty(str)) {
                 try {
                     event = mGson.fromJson(str, NotificationData.class);
@@ -99,20 +140,6 @@ public class MessageParser implements Parser {
                     Timber.w(e, "parse notification error %s", str);
                     event = new NotificationData();
                 }
-            }
-
-            event.setMsgType(respMsg.getMsgtype());
-
-            if (respMsg.hasMtaid()) {
-                event.setMtaid(respMsg.getMtaid());
-            }
-
-            if (respMsg.hasMtuid()) {
-                event.setMtuid(respMsg.getMtuid());
-            }
-
-            if (respMsg.hasSourceid()) {
-                event.setSourceid(respMsg.getSourceid());
             }
 
             return event;

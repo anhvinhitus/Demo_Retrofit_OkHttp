@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
@@ -36,7 +37,6 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
 public class ZPNotificationService extends Service implements OnReceiverMessageListener {
 
-    private static final String TAG = "ZPNotificationService";
     private static final String[] TOPICS = {"global"};
 
     /*Server API Key: AIzaSyCweupE81mBm3_m8VOoFTUbuhBF82r_GwI
@@ -65,7 +65,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         super.onCreate();
         Timber.d("onCreate");
         eventBus.register(this);
-        boolean isInject = doInject();
+        doInject();
     }
 
     @Override
@@ -158,9 +158,17 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadNotify(ReadNotifyEvent event) {
-        notificationHelper.closeNotificationSystem(-1);
+        notificationHelper.closeNotificationSystem();
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNotificationUpdated(NotificationChangeEvent event) {
+        Timber.d("on Notification updated %s", event.read);
+        if (!event.read) {
+            notificationHelper.showNotificationSystem();
+        }
     }
 
 

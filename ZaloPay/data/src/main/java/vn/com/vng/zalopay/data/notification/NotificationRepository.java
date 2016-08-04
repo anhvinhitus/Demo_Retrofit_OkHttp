@@ -5,6 +5,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -35,17 +37,25 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public void markAsRead(long nId) {
         localStorage.markAsRead(nId);
-       // eventBus.post(new ReadNotifyEvent());
+        // eventBus.post(new ReadNotifyEvent());
     }
 
     @Override
-    public Observable<Boolean> putNotify(NotificationData notify) {
+    public Observable<Long> putNotify(NotificationData notify) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.put(notify);
-            if (!notify.read) {
-                localStorage.increaseTotalNotify();
+
+            long rowId = localStorage.putSync(notify);
+
+            Timber.d("put notification rowId  [%s]", rowId);
+
+            if (rowId >= 0) {
+                if (!notify.read) {
+                    localStorage.increaseTotalNotify();
+                }
+                eventBus.post(new NotificationChangeEvent(notify.read));
             }
-            return Boolean.TRUE;
+
+            return rowId;
         });
     }
 

@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationLocalStorage;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -40,10 +41,14 @@ public class UserNotificationModule {
     @UserScope
     @Provides
     NotificationHelper providesNotificationHelper(Context context, User user,
-                                                  AccountStore.Repository repository,
+                                                  AccountStore.Repository accountRepository,
                                                   NotificationStore.Repository notifyRepository,
-                                                  RedPacketStore.Repository redPacketRepository, TransactionStore.Repository transactionRepository
+                                                  RedPacketStore.Repository redPacketRepository,
+                                                  TransactionStore.Repository transactionRepository,
+                                                  BalanceStore.Repository balanceRepository
     ) {
-        return new NotificationHelper(context, user, notifyRepository, repository, redPacketRepository, transactionRepository);
+        return new NotificationHelper(context, user,
+                notifyRepository, accountRepository, redPacketRepository,
+                transactionRepository, balanceRepository);
     }
 }

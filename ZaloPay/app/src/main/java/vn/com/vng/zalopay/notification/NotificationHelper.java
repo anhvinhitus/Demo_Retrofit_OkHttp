@@ -12,23 +12,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
-import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -36,7 +33,6 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 /**
@@ -45,7 +41,6 @@ import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 public class NotificationHelper {
 
-    final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
     final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
     final NotificationStore.Repository notifyRepository;
@@ -53,6 +48,7 @@ public class NotificationHelper {
     final Context context;
     final RedPacketStore.Repository mRedPacketRepository;
     final TransactionStore.Repository transactionRepository;
+    final BalanceStore.Repository balanceRepository;
     final User mUser;
 
 
@@ -60,7 +56,8 @@ public class NotificationHelper {
                               NotificationStore.Repository notifyRepository,
                               AccountStore.Repository accountRepository,
                               RedPacketStore.Repository redPacketRepository,
-                              TransactionStore.Repository transactionRepository
+                              TransactionStore.Repository transactionRepository,
+                              BalanceStore.Repository balanceRepository
     ) {
         this.notifyRepository = notifyRepository;
         this.context = applicationContext;
@@ -68,6 +65,7 @@ public class NotificationHelper {
         this.mRedPacketRepository = redPacketRepository;
         this.mUser = user;
         this.transactionRepository = transactionRepository;
+        this.balanceRepository = balanceRepository;
     }
 
 
@@ -91,11 +89,11 @@ public class NotificationHelper {
                 .setAutoCancel(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), smallIcon);
             builder.setLargeIcon(bm);
             builder.setSmallIcon(R.drawable.ic_notify);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(smallIcon);
         }
 
         Notification n = builder.build();
@@ -120,15 +118,13 @@ public class NotificationHelper {
             updateTransactionStatus(notify);
         }
 
-
         this.putNotification(notify);
-        this.showNotificationSystem(notify);
     }
 
     private void putNotification(NotificationData notify) {
         Subscription subscription = notifyRepository.putNotify(notify)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<Long>());
     }
 
     private void shouldMarkRead(NotificationData notify) {
@@ -195,21 +191,13 @@ public class NotificationHelper {
         }
     }
 
-    private void showNotificationSystem(NotificationData notify) {
-        if (notify.read) {
-            return;
-        }
-
-        eventBus.post(new NotificationChangeEvent());
-
-        notifyRepository.totalNotificationUnRead()
+    public void showNotificationSystem() {
+        Subscription subscription = notifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
-
     }
 
     private void showNotificationSystem(int numberUnread) {
-
         if (numberUnread == 0) {
             return;
         }
@@ -239,29 +227,22 @@ public class NotificationHelper {
     }
 
 
-    public void closeNotificationSystem(long notifyId) {
+    public void closeNotificationSystem() {
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         nm.cancelAll();
-        // nm.cancel(getNotificationIdSystem(notifyType));
     }
 
 
     private void updateTransaction() {
-        UserComponent userComponent = getUserComponent();
-        if (userComponent != null) {
-            userComponent.transactionRepository().updateTransaction()
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Boolean>());
-        }
+        Subscription subscription = transactionRepository.updateTransaction()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     private void updateBalance() {
-        UserComponent userComponent = getUserComponent();
-        if (userComponent != null) {
-            userComponent.balanceRepository().updateBalance()
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<>());
-        }
+        Subscription subscription = balanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
     }
 
     protected UserComponent getUserComponent() {

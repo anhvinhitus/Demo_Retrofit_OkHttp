@@ -82,7 +82,7 @@ public class WsConnection extends Connection implements ConnectionListener {
                     bootstrap.handler(new ChannelFactory(context, WsConnection.this));
                     bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
                     bootstrap.option(ChannelOption.TCP_NODELAY, true);
-                    bootstrap.option(ChannelOption.SO_TIMEOUT, 5000);
+                    bootstrap.option(ChannelOption.SO_TIMEOUT, 10000);
                     channelFuture = bootstrap.connect(new InetSocketAddress(mHost, mPort));
                     mChannel = channelFuture.sync().channel();
                     mState = Connection.State.Connecting;
@@ -177,19 +177,16 @@ public class WsConnection extends Connection implements ConnectionListener {
         Event message = parser.parserMessage(data);
         if (message != null) {
             Timber.d("onReceived message.msgType %s", message.getMsgType());
+
             if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
-                sendFeedbackStatus(message);
             } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
-                Timber.d("onReceived KICK_OUT");
                 disconnect();
-                return;
             } else {
-                sendFeedbackStatus(message);
                 postResult(message);
             }
 
-
+            sendFeedbackStatus(message);
         }
     }
 
@@ -261,7 +258,7 @@ public class WsConnection extends Connection implements ConnectionListener {
             return true;
         }
 
-        Timber.d("sendFeedbackStatus: mtaid %s mtuid %s uid %s");
+        Timber.d("Send feedback status with mtaid %s mtuid %s uid %s", mtaid, mtuid, uid);
 
         ZPMsgProtos.StatusMessageClient.Builder statusMsg = ZPMsgProtos.StatusMessageClient.newBuilder()
                 .setStatus(ZPMsgProtos.MessageStatus.RECEIVED.getNumber());

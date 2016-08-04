@@ -113,9 +113,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onNotificationChangeEventChange(NotificationChangeEvent event) {
-        Timber.d("onNotificationChangeEventChange");
-        getTotalNotification(0);
+    public void onNotificationUpdated(NotificationChangeEvent event) {
+        Timber.d("on Notification updated %s", event.read);
+        if (!event.read) {
+            getTotalNotification(0);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

@@ -56,6 +56,14 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
     }
 
+    @Override
+    public long putSync(NotificationData val) {
+        NotificationGD item = transform(val);
+        if (item != null) {
+            return getDaoSession().getNotificationGDDao().insert(item);
+        }
+        return -1;
+    }
 
     @Override
     public List<NotificationData> get(int pageIndex, int limit) {
@@ -114,8 +122,10 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             _notification.setId(notificationEntity.notificationId);
         } else {
             _notification.setId(null);
-
         }
+
+        _notification.setMtaid(notificationEntity.getMtaid());
+        _notification.setMtuid(notificationEntity.getMtuid());
 
         return _notification;
     }
