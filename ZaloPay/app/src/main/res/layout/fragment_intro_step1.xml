@@ -2,7 +2,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/background_intro"
-              android:orientation="vertical" >
+              android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -28,21 +28,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/intro.title.step1"
-            android:textColor="@color/white"
-            android:textSize="20sp"/>
+            style="@style/Intro.TextView.Title"
+            android:text="@string/intro.title.step1"/>
 
         <TextView
-            android:id="@+id/tvIntro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Intro.TextView.Content"
             android:layout_marginTop="@dimen/spacing.medium"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/spacing.small"
-            android:text="@string/intro.content.step1"
-            android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:text="@string/intro.content.step1"/>
     </LinearLayout>
 </LinearLayout>
