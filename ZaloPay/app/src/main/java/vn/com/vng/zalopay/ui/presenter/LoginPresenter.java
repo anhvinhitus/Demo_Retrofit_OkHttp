@@ -45,12 +45,12 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     @Inject
     public LoginPresenter() {
-        mLoginListener = new LoginListener(this);
     }
 
     @Override
     public void setView(ILoginView view) {
         this.mView = view;
+        mLoginListener = new LoginListener(this);
         Timber.d("setView: mview %s", mView);
     }
 
