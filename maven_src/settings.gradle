@@ -2,4 +2,4 @@ include ':zalopayanalytics'
 include ':debugviewer'
 include ':debugviewer-noops'
 include ':qrcodecore'
-
+include ':reactnativemodules'

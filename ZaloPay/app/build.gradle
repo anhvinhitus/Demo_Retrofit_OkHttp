@@ -344,19 +344,16 @@ dependencies {
     debugCompile libs.debugViewer
     releaseCompile libs.debugViewer_noops
     compile libs.zalopay_analytics
+    compile ('vn.com.vng.zalopay:qrcodecore:1.0')
+    compile ('vn.com.vng.zalopay:rnmodules:1.0')
 
     compile(name: 'WALLET-release', ext: 'aar')
     compile(name: 'soundtranscoder-release', ext: 'aar')
 
     debugCompile project(':zalopay.debug')
-
+    compile project(':zalosdk')
     compile project(':data')
     compile project(':uicomponent')
-    compile ('vn.com.vng.zalopay:qrcodecore:1.0')
-    compile project(':zalosdk') {
-    }
-    compile project(':reactnativemodules')
-
     compile project(':moduledynamicloading')
 }
 

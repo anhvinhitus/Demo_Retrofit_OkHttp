@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: '../maven-push.gradle'
 
 def cfg = rootProject.ext.configuration
 
@@ -17,6 +18,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+repositories {
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$projectDir/../../maven_local"
     }
 }
 
