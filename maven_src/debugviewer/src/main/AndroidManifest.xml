@@ -1,32 +1,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="vn.com.vng.iot.debugviewer">
+    package="vn.com.vng.debugviewer">
 
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="vn.com.vng.iot.debugviewer.LogActivity"
+            android:name="vn.com.vng.debugviewer.LogActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
-                <action android:name="vn.com.vng.iot.debugviewer.intent.START" />
+                <action android:name="vn.com.vng.debugviewer.intent.START" />
             </intent-filter>
         </activity>
         <activity
-            android:name="vn.com.vng.iot.debugviewer.PrefsActivity"
+            android:name="vn.com.vng.debugviewer.PrefsActivity"
             android:label="@string/app_prefs" />
 
-        <!--<service android:name="vn.com.vng.iot.debugviewer.SaveService" />-->
-        <!--<service android:name="vn.com.vng.iot.debugviewer.ShareService" />-->
+        <!--<service android:name="vn.com.vng.debugviewer.SaveService" />-->
+        <!--<service android:name="vn.com.vng.debugviewer.ShareService" />-->
 
-        <!--<receiver android:name="vn.com.vng.iot.debugviewer.SaveReceiver" >-->
+        <!--<receiver android:name="vn.com.vng.debugviewer.SaveReceiver" >-->
             <!--<intent-filter>-->
-                <!--<action android:name="vn.com.vng.iot.debugviewer.intent.SAVE" />-->
+                <!--<action android:name="vn.com.vng.debugviewer.intent.SAVE" />-->
             <!--</intent-filter>-->
         <!--</receiver>-->
-        <!--<receiver android:name="vn.com.vng.iot.debugviewer.ShareReceiver" >-->
+        <!--<receiver android:name="vn.com.vng.debugviewer.ShareReceiver" >-->
             <!--<intent-filter>-->
-                <!--<action android:name="vn.com.vng.iot.debugviewer.intent.SHARE" />-->
+                <!--<action android:name="vn.com.vng.debugviewer.intent.SHARE" />-->
             <!--</intent-filter>-->
         <!--</receiver>-->
     </application>
