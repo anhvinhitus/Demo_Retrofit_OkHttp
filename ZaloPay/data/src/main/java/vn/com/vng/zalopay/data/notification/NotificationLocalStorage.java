@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.greenrobot.dao.async.AsyncSession;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
@@ -237,13 +238,29 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
     }
 
-    @Override
-    public int totalNotificationUnRead() {
-        return (int) totalUnRead();
-    }
 
     @Override
     public NotificationData get(long notifyId) {
         return transform(getDaoSession().getNotificationGDDao().load(notifyId));
     }
+
+    @Override
+    public void markReadAllNotify() {
+        insertDataManifest(Constants.MANIFEST_TOTAL_NOTIFICATION, String.valueOf(0));
+    }
+
+    @Override
+    public void increaseTotalNotify() {
+        int total = getDataManifest(Constants.MANIFEST_TOTAL_NOTIFICATION, 0);
+
+        total++;
+
+        insertDataManifest(Constants.MANIFEST_TOTAL_NOTIFICATION, String.valueOf(total));
+    }
+
+    @Override
+    public int totalNotificationUnRead() {
+        return getDataManifest(Constants.MANIFEST_TOTAL_NOTIFICATION, 0);
+    }
+
 }

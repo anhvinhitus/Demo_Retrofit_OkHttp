@@ -23,7 +23,12 @@ public interface NotificationStore {
 
         int totalNotificationUnRead();
 
+        void markReadAllNotify();
+
+        void increaseTotalNotify();
+
         NotificationData get(long notifyId);
+
     }
 
     interface RequestService {
@@ -36,8 +41,13 @@ public interface NotificationStore {
 
         void markAsRead(long nId);
 
-        void putNotify(NotificationData notify);
+        Observable<Boolean> putNotify(NotificationData notify);
 
         Observable<NotificationData> getNotify(long id);
+
+        Observable<Boolean> markReadAllNotify();
+
+        Observable<Boolean> increaseTotalNotify();
+
     }
 }

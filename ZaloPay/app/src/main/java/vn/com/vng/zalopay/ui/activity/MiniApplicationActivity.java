@@ -16,6 +16,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -25,10 +27,12 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
+import vn.com.vng.zalopay.data.notification.NotificationLocalStorage;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -38,6 +42,7 @@ import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.internal.ModuleName;
 import vn.com.vng.zalopay.mdl.internal.ReactInternalPackage;
 import vn.com.vng.zalopay.mdl.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -90,6 +95,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        this.shouldMarkAllNotify();
     }
 
     @Override
@@ -220,5 +227,13 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     public void showToast(int message) {
         ToastUtil.showToast(this, message);
+    }
+
+    private void shouldMarkAllNotify() {
+        if (ModuleName.NOTIFICATIONS.equals(getMainComponentName())) {
+            notificationRepository.markReadAllNotify()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<Boolean>());
+        }
     }
 }

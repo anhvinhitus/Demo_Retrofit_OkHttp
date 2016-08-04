@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.mdl.internal.ModuleName;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -187,11 +188,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 }
                 break;
             case MenuItemUtil.APPLICATION_INFO_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.ABOUT);
+                navigator.startMiniAppActivity(this, ModuleName.ABOUT);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
                 break;
             case MenuItemUtil.CONTACT_SUPPORT_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.HELP);
+                navigator.startMiniAppActivity(this, ModuleName.HELP);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
                 break;
             case MenuItemUtil.DEPOSIT_ID:
@@ -199,14 +200,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCASH);
                 break;
             case MenuItemUtil.FAQ_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.FAQ);
+                navigator.startMiniAppActivity(this, ModuleName.FAQ);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFAQ);
                 break;
             case MenuItemUtil.HOME_ID:
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHOME);
                 break;
             case MenuItemUtil.NOTIFICATION_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.NOTIFICATIONS);
+                navigator.startMiniAppActivity(this, ModuleName.NOTIFICATIONS);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
@@ -218,7 +219,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startMiniAppActivity(this, Constants.ModuleName.TRANSACTION_LOGS);
+                navigator.startMiniAppActivity(this, ModuleName.TRANSACTION_LOGS);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:

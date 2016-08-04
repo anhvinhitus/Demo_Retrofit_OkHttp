@@ -16,6 +16,8 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 
+import org.greenrobot.eventbus.EventBus;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -25,6 +27,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -42,6 +45,7 @@ import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 public class NotificationHelper {
 
     final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+    final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
     final NotificationStore.Repository notifyRepository;
     final AccountStore.Repository accountRepository;
@@ -49,6 +53,7 @@ public class NotificationHelper {
     final RedPacketStore.Repository mRedPacketRepository;
     final TransactionStore.Repository transactionRepository;
     final User mUser;
+
 
     public NotificationHelper(Context applicationContext, User user,
                               NotificationStore.Repository notifyRepository,
@@ -109,16 +114,20 @@ public class NotificationHelper {
         if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             updateProfilePermission(notify);
         } else if (notificationType == NotificationType.SEND_RED_PACKET) {
-            // Process received red packet
-            // {"userid":"160526000000502","destuserid":"160601000000002","message":"Nguyễn Hữu Hoà đã lì xì cho bạn.","zaloMessage":"da gui li xi cho ban. Vui long vao ... de nhan li xi.","embeddata":{"bundleid":160722000000430,"packageid":1607220000004300001,"avatar":"http://avatar.talk.zdn.vn/e/d/e/2/4/75/f1898a0a0a3f05bbb11088cb202d1c02.jpg","name":"Nguyễn Hữu Hoà","liximessage":"Best wishes."},"timestamp":1469190991786,"notificationtype":103}
             extractRedPacketFromNotification(notify);
         } else if (notificationType == NotificationType.RETRY_TRANSACTION) {
             updateTransactionStatus(notify);
         }
 
-        notifyRepository.putNotify(notify);
 
+        this.putNotification(notify);
         this.showNotificationSystem(notify);
+    }
+
+    private void putNotification(NotificationData notify) {
+        Subscription subscription = notifyRepository.putNotify(notify)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     private void shouldMarkRead(NotificationData notify) {
@@ -190,6 +199,8 @@ public class NotificationHelper {
             return;
         }
 
+        eventBus.post(new NotificationChangeEvent());
+
         notifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
@@ -197,6 +208,7 @@ public class NotificationHelper {
     }
 
     private void showNotificationSystem(int numberUnread) {
+
         if (numberUnread == 0) {
             return;
         }

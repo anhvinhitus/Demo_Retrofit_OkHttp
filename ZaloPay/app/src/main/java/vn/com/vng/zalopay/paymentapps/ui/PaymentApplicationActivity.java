@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.internal.ModuleName;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -90,7 +91,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     protected void initArgs(Bundle savedInstanceState) {
-        mComponentName = Constants.ModuleName.PAYMENT_MAIN;
+        mComponentName = ModuleName.PAYMENT_MAIN;
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();

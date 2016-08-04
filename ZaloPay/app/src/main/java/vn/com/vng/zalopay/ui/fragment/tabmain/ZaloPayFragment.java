@@ -32,6 +32,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.mdl.internal.ModuleName;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -142,7 +143,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.NOTIFICATIONS);
+                navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
                 ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
             }
         });
@@ -203,7 +204,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         if (app.appid == PaymentAppConfig.Constants.INTERNAL) {
             navigator.startTransferMoneyActivity(getActivity());
         } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
-            navigator.startMiniAppActivity(getActivity(), Constants.ModuleName.RED_PACKET);
+            navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
         }

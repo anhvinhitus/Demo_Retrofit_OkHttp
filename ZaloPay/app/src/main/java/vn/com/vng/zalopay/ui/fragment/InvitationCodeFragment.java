@@ -86,6 +86,8 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
         mButtonContinueView.setEnabled(mILCodeView.length() == invitationCodeLength);
         mButtonContinueView.registerAvoidMultipleRapidClicks();
+
+       // mILCodeView.setLetterSpacing();
     }
 
     @OnTextChanged(R.id.passCodeInput)

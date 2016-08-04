@@ -115,10 +115,10 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
             subscribeTopics(token);
-           // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
+            // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
             Timber.e(ex, "exception");
-          //  sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
+            //  sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
         }
 
         this.connect(token);
@@ -160,7 +160,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onReadNotify(ReadNotifyEvent event) {
-       notificationHelper.closeNotificationSystem(event.notificationId);
+        notificationHelper.closeNotificationSystem(-1);
     }
 
 
