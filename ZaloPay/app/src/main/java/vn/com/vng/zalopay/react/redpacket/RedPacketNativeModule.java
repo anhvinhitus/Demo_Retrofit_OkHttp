@@ -51,7 +51,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
  * Created by longlv on 17/07/2016.
  * define methods that had been called by React Native
  */
-public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
+public class RedPacketNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
     private UserConfig mUserConfig;
@@ -66,13 +66,13 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     private CountDownTimer mTimerGetStatus;
     private boolean isRunningGetStatus;
 
-    public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
-                                      RedPacketStore.Repository redPackageRepository,
-                                      FriendStore.Repository friendRepository,
-                                      BalanceStore.Repository balanceRepository,
-                                      IRedPacketPayService payService,
-                                      UserConfig userConfig,
-                                      AlertDialogProvider sweetAlertDialog) {
+    public RedPacketNativeModule(ReactApplicationContext reactContext,
+                                 RedPacketStore.Repository redPackageRepository,
+                                 FriendStore.Repository friendRepository,
+                                 BalanceStore.Repository balanceRepository,
+                                 IRedPacketPayService payService,
+                                 UserConfig userConfig,
+                                 AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
@@ -123,7 +123,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         if (bundleOrder == null) {
             return;
         }
-        mPaymentService.pay(getCurrentActivity(), bundleOrder, new IRedPacketPayListener() {
+        mPaymentService.pay(getCurrentActivity(), bundleOrder, new RedPacketPayListener() {
             @Override
             public void onParameterError(String param) {
                 Timber.w("pay onParameterError");

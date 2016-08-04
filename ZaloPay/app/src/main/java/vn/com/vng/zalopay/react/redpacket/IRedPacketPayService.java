@@ -9,5 +9,5 @@ import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
  * define methods that RedPacket will use to pay
  */
 public interface IRedPacketPayService {
-    void pay(Activity activity, BundleOrder bundleOrder, IRedPacketPayListener listener);
+    void pay(Activity activity, BundleOrder bundleOrder, RedPacketPayListener listener);
 }
