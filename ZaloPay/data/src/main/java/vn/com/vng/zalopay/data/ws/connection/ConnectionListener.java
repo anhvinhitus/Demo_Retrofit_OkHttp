@@ -8,6 +8,6 @@ public interface ConnectionListener {
 
     void onDisconnected(int code, String message);
 
-    void onError(Exception error);
+    void onError(Throwable error);
 
 }

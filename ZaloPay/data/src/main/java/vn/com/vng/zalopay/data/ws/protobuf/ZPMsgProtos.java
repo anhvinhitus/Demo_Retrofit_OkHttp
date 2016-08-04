@@ -190,6 +190,88 @@ public final class ZPMsgProtos {
     // @@protoc_insertion_point(enum_scope:protobuf.OSType)
   }
 
+  /**
+   * Protobuf enum {@code protobuf.MessageType}
+   */
+  public enum MessageType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>AUTHEN_LOGIN = 1;</code>
+     */
+    AUTHEN_LOGIN(0, 1),
+    /**
+     * <code>FEEDBACK = 2;</code>
+     */
+    FEEDBACK(1, 2),
+    ;
+
+    /**
+     * <code>AUTHEN_LOGIN = 1;</code>
+     */
+    public static final int AUTHEN_LOGIN_VALUE = 1;
+    /**
+     * <code>FEEDBACK = 2;</code>
+     */
+    public static final int FEEDBACK_VALUE = 2;
+
+
+    public final int getNumber() { return value; }
+
+    public static MessageType valueOf(int value) {
+      switch (value) {
+        case 1: return AUTHEN_LOGIN;
+        case 2: return FEEDBACK;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<MessageType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<MessageType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<MessageType>() {
+            public MessageType findValueByNumber(int number) {
+              return MessageType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.getDescriptor().getEnumTypes().get(2);
+    }
+
+    private static final MessageType[] VALUES = values();
+
+    public static MessageType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private MessageType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:protobuf.MessageType)
+  }
+
   public interface MessageSendUserOrBuilder extends
       // @@protoc_insertion_point(interface_extends:protobuf.MessageSendUser)
       com.google.protobuf.MessageOrBuilder {
@@ -5873,8 +5955,9 @@ public final class ZPMsgProtos {
       "\004\022\r\n\005mtuid\030\004 \001(\004\022\020\n\010sourceid\030\005 \001(\r*6\n\rMe" +
       "ssageStatus\022\014\n\010RECEIVED\020\001\022\n\n\006READED\020\002\022\013\n" +
       "\007DELETED\020\003*0\n\006OSType\022\007\n\003IOS\020\001\022\013\n\007ANDROID",
-      "\020\002\022\020\n\014WINDOW_PHONE\020\003B2\n#vn.com.vng.zalop" +
-      "ay.data.ws.protobufB\013ZPMsgProtos"
+      "\020\002\022\020\n\014WINDOW_PHONE\020\003*-\n\013MessageType\022\020\n\014A" +
+      "UTHEN_LOGIN\020\001\022\014\n\010FEEDBACK\020\002B2\n#vn.com.vn" +
+      "g.zalopay.data.ws.protobufB\013ZPMsgProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

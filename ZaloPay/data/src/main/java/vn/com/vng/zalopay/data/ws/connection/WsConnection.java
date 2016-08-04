@@ -5,7 +5,10 @@ import android.text.TextUtils;
 
 import com.google.protobuf.AbstractMessage;
 
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ConnectTimeoutException;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
@@ -201,9 +205,15 @@ public class WsConnection extends Connection implements ConnectionListener {
 
 
     @Override
-    public void onError(Exception e) {
+    public void onError(Throwable e) {
         Timber.d("onError %s", e);
         mState = Connection.State.Disconnected;
+
+        if (e instanceof SocketTimeoutException) {
+        } else if (e instanceof ConnectTimeoutException) {
+        } else if (e instanceof ConnectException) {
+        } else if (e instanceof UnknownHostException) {
+        }
     }
 
     @Override
@@ -232,7 +242,7 @@ public class WsConnection extends Connection implements ConnectionListener {
             loginMsg.setDevicetoken(gcmToken);
         }
 
-        return send(MessageType.Request.AUTHEN_LOGIN, loginMsg.build());
+        return send(ZPMsgProtos.MessageType.AUTHEN_LOGIN.getNumber(), loginMsg.build());
     }
 
     public boolean isAuthenticated() {
@@ -268,6 +278,6 @@ public class WsConnection extends Connection implements ConnectionListener {
             statusMsg.setUserid(uid);
         }
 
-        return send(MessageType.Request.FEEDBACK, statusMsg.build());
+        return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
     }
 }

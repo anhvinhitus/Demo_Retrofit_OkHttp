@@ -143,7 +143,7 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
             loginMsg.setDevicetoken(gcmToken);
         }
 
-        return send(MessageType.Request.AUTHEN_LOGIN, loginMsg.build());
+        return send(ZPMsgProtos.MessageType.AUTHEN_LOGIN.getNumber(), loginMsg.build());
     }
 
     public boolean sendAuthentication() {
@@ -155,6 +155,6 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
     }
 
     public void setGCMToken(String token){
-
+        gcmToken = token;
     }
 }

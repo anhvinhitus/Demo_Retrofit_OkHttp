@@ -68,4 +68,12 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
             listener.onDisconnected(-1, "");
         }
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
+        if (listener != null) {
+            listener.onError(cause);
+        }
+    }
 }
