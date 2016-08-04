@@ -179,23 +179,13 @@ public class WsConnection extends Connection implements ConnectionListener {
             Timber.d("onReceived message.msgType %s", message.getMsgType());
             if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
+                sendFeedbackStatus(message);
             } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
                 Timber.d("onReceived KICK_OUT");
                 disconnect();
                 return;
             } else {
-                long uid = -1;
-                if (message instanceof NotificationData) {
-                    try {
-                        uid = Long.parseLong(((NotificationData) message).userid);
-                    } catch (Exception ex) {
-                    }
-                }
-
-                long mtaid = message.getMtaid();
-                long mtuid = message.getMtuid();
-
-                sendFeedbackStatus(mtaid, mtuid, uid);
+                sendFeedbackStatus(message);
                 postResult(message);
             }
 
@@ -257,7 +247,15 @@ public class WsConnection extends Connection implements ConnectionListener {
         return false;
     }
 
-    public boolean sendFeedbackStatus(long mtaid, long mtuid, long uid) {
+    public boolean sendFeedbackStatus(Event event) {
+        long mtaid = event.getMtaid();
+        long mtuid = event.getMtuid();
+        long uid = -1;
+
+        try {
+            uid = Long.parseLong(userConfig.getCurrentUser().uid);
+        } catch (Exception ex) {
+        }
 
         if (mtaid <= 0 && mtuid <= 0) {
             return true;
