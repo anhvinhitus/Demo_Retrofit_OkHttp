@@ -6,8 +6,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -18,6 +21,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
@@ -48,7 +52,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
 
     @BindView(R.id.passCodeInput)
-    GridPasswordView mILCodeView;
+    EditText mILCodeView;
 
     @Inject
     InvitationCodePresenter presenter;
@@ -58,6 +62,9 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @BindView(R.id.lb_invite)
     TextView mTvInviteView;
+
+
+    int invitationCodeLength = 8;
 
     @Override
     protected int getResLayoutId() {
@@ -75,39 +82,30 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
 
-        final int invitationCodeLength = getResources().getInteger(R.integer.invitation_code_length);
+        invitationCodeLength = getResources().getInteger(R.integer.invitation_code_length);
 
+        mButtonContinueView.setEnabled(mILCodeView.length() == invitationCodeLength);
         mButtonContinueView.registerAvoidMultipleRapidClicks();
-        mILCodeView.setPasswordVisibility(true);
-        mButtonContinueView.setEnabled(false);
+    }
 
-        mILCodeView.setOnPasswordChangedListener(new GridPasswordView.OnPasswordChangedListener() {
-            @Override
-            public void onTextChanged(String s) {
-                Timber.d("onTextChanged: pass %s", s);
-                mButtonContinueView.setEnabled(s.length() == invitationCodeLength);
-            }
-
-            @Override
-            public void onInputFinish(String s) {
-
-            }
-        });
-
+    @OnTextChanged(R.id.passCodeInput)
+    public void onTextChangePassCode(CharSequence s) {
+        mButtonContinueView.setEnabled(s.length() == invitationCodeLength);
     }
 
     @Override
     public void onDestroyView() {
-        mILCodeView.setOnPasswordChangedListener(null);
         presenter.destroyView();
         super.onDestroyView();
     }
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnSend(View v) {
-        String code = mILCodeView.getPassWord();
+        String code = mILCodeView.getText().toString();
         if (TextUtils.isEmpty(code)) {
             showToast(R.string.invitation_code_empty_error);
+        } else if (!TextUtils.isDigitsOnly(code)) {
+            showToast(R.string.invitation_code_invalid);
         } else {
             presenter.sendCode(code);
         }
@@ -181,7 +179,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         Matcher m = r.matcher(value);
         if (m.find()) {
             Timber.d("Found Invitation code: %s", m.group(2));
-            mILCodeView.setPassword(m.group(2));
+            mILCodeView.setText(m.group(2));
             mButtonContinueView.setEnabled(true);
         } else {
             Timber.d("Could not find any invitation code");

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/white"
-             android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,26 +16,14 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="190dp"
+                android:layout_height="209dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="118dp">
-
-                <View
-                    android:layout_width="220dp"
-                    android:layout_height="220dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/bg_circle_invitation_stroke"/>
-
-                <ImageView
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/bg_circle_invitation"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_invitation_code"/>
-            </FrameLayout>
+                android:layout_marginBottom="96dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_invitation_code" />
 
             <TextView
                 android:id="@+id/lb_invite"
@@ -47,21 +34,21 @@
                 android:gravity="center"
                 android:text="@string/label_invitation_code"
                 android:textColor="@color/txt_item_sub"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
-            <vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView
+            <EditText
                 android:id="@+id/passCodeInput"
-                android:layout_width="320dp"
-                android:layout_height="40dp"
+                style="@style/EditText.Default"
+                android:layout_width="278dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="96dp"
-                app:gpvGridColor="#ffffff"
-                app:gpvLineColor="#858585"
-                app:gpvLineWidth="1dp"
-                app:gpvPasswordLength="@integer/invitation_code_length"
-                app:gpvPasswordType="numberPassword"
-                app:gpvTextColor="#000000"
-                app:gpvTextSize="20sp"/>
+                android:background="@drawable/edt_border_invitation"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:maxLength="@integer/invitation_code_length"
+                android:textSize="18dp" />
+
         </FrameLayout>
     </ScrollView>
 
@@ -73,5 +60,5 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@drawable/bg_btn_blue"
-        android:text="Xác nhận"/>
+        android:text="Xác nhận" />
 </FrameLayout>
