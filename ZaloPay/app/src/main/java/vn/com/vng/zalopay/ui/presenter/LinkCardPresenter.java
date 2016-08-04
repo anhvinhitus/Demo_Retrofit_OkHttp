@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -50,13 +52,16 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     private ILinkCardView mLinkCardView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private PaymentWrapper paymentWrapper;
+    private SharedPreferences mSharedPreferences;
 
     @Inject
     User user;
 
-    public LinkCardPresenter(User user) {
+    public LinkCardPresenter(User user, SharedPreferences sharedPreferences) {
         this.user = user;
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
+        this.mSharedPreferences = sharedPreferences;
+
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mLinkCardView.getActivity();
@@ -376,4 +381,19 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         return ECardType.UNDEFINE.toString();
     }
 
+    public void checkShowIntroSaveCard() {
+        if (isOpenedIntroActivity()) {
+            return;
+        }
+        mLinkCardView.startIntroActivity();
+        setOpenedIntroActivity();
+    }
+
+    private void setOpenedIntroActivity() {
+        mSharedPreferences.edit().putBoolean(Constants.PreferencesSaveCard.FIRST_OPEN_SAVE_CARD_KEY, true).apply();
+    }
+
+    private boolean isOpenedIntroActivity() {
+        return mSharedPreferences.getBoolean(Constants.PreferencesSaveCard.FIRST_OPEN_SAVE_CARD_KEY, false);
+    }
 }

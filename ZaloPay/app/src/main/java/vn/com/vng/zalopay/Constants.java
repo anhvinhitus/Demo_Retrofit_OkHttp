@@ -2,6 +2,7 @@ package vn.com.vng.zalopay;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 public class Constants {
     public static final int PROFILE_LEVEL_MIN = 2;
@@ -61,4 +62,7 @@ public class Constants {
  /*   public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String REGISTRATION_COMPLETE = "registrationComplete";*/
 
+    public static class PreferencesSaveCard {
+        public static final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
+    }
 }

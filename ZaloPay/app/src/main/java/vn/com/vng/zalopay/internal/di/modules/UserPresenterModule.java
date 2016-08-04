@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import android.content.SharedPreferences;
+
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
@@ -48,8 +50,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    LinkCardPresenter provideLinkCardPresenter(User user) {
-        return new LinkCardPresenter(user);
+    LinkCardPresenter provideLinkCardPresenter(User user, SharedPreferences sharedPreferences) {
+        return new LinkCardPresenter(user, sharedPreferences);
     }
 
     @UserScope
