@@ -341,8 +341,10 @@ dependencies {
     compile libs.parceler
     apt libs.parceler_apt
 
-    debugCompile(name: 'debugviewer', ext: 'aar')
-    releaseCompile(name: 'debugviewer-noops', ext: 'aar')
+    debugCompile libs.debugViewer
+    releaseCompile libs.debugViewer_noops
+    compile libs.zalopay_analytics
+
     compile(name: 'WALLET-release', ext: 'aar')
     compile(name: 'soundtranscoder-release', ext: 'aar')
 
@@ -356,7 +358,6 @@ dependencies {
     compile project(':reactnativemodules')
 
     compile project(':moduledynamicloading')
-    compile libs.zalopay_analytics
 }
 
 apply plugin: 'com.google.gms.google-services'

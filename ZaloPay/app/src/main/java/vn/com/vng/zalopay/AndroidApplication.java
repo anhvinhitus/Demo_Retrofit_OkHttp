@@ -18,7 +18,7 @@ import java.io.File;
 import io.fabric.sdk.android.Fabric;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import timber.log.Timber;
-import vn.com.vng.iot.debugviewer.DebugViewer;
+import vn.com.vng.debugviewer.DebugViewer;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
