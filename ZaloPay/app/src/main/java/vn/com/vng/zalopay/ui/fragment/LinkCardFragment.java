@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -102,7 +103,10 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         recyclerView.setHasFixedSize(true);
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
         if (animator != null) {
-            animator.setSupportsChangeAnimations(false);
+            if (animator instanceof SimpleItemAnimator) {
+                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            }
+            //animator.setSupportsChangeAnimations(false);
         }
 //        recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         recyclerView.setAdapter(mAdapter);
