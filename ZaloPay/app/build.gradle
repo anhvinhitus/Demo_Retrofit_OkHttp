@@ -356,7 +356,7 @@ dependencies {
     compile project(':reactnativemodules')
 
     compile project(':moduledynamicloading')
-    compile project(':zalopayanalytics')
+    compile libs.zalopay_analytics
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -64,6 +64,8 @@ ext {
 
     parcelerVersion = "1.1.5"
 
+    zalopayanalyticsVersion = "1.0"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
@@ -106,7 +108,9 @@ ext {
             netty_codec            : "io.netty:netty-codec:${nettyVesion}",
 
             parceler               : "org.parceler:parceler-api:${parcelerVersion}",
-            parceler_apt           : "org.parceler:parceler:${parcelerVersion}"
+            parceler_apt           : "org.parceler:parceler:${parcelerVersion}",
+
+            zalopay_analytics      : "vn.com.vng.zalopay:analytics:${zalopayanalyticsVersion}"
 
     ]
 

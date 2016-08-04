@@ -52,5 +52,5 @@ dependencies {
     compile libs.animated_gif
 
     compile project(':data')
-    compile project(':zalopayanalytics')
+    compile libs.zalopay_analytics
 }
