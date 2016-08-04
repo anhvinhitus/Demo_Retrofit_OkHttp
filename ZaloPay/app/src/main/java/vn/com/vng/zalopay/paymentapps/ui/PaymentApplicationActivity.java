@@ -24,6 +24,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
@@ -41,6 +42,7 @@ import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -50,7 +52,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
 
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
-    private static final int ELECTRIC_BILL_APP_ID = 17;
 
     private String mComponentName;
 
@@ -101,9 +102,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
         }
 
-        if (appResource != null &&
-                (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID ||
-                        appResource.appid == ELECTRIC_BILL_APP_ID)) {
+        if (appResource != null && appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
             mLaunchOptions.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
         }
 
