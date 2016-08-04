@@ -14,7 +14,7 @@ public interface ILinkCardView extends ILoadDataView {
 
     Activity getActivity();
 
-    void startIntroActivity();
+    void startIntroActivityForResult();
 
     void setData(List<BankCard> bankCards);
 

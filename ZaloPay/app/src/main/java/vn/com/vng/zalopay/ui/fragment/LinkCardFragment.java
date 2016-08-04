@@ -41,6 +41,7 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 
 /**
  * Created by AnhHieu on 5/10/16.
+ *
  */
 public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
@@ -109,7 +110,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
         initBottomSheet();
         showOrHidekLinkCardEmpty();
-        presenter.checkShowIntroSaveCard();
     }
 
     @Override
@@ -121,7 +121,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
-            startIntroActivity();
+            presenter.setOpenedIntroActivity();
+            navigator.startIntroActivity(getContext());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -204,8 +205,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
-    public void startIntroActivity() {
-        navigator.startIntroActivity(this);
+    public void startIntroActivityForResult() {
+        navigator.startIntroActivityForResult(this);
     }
 
     @Override

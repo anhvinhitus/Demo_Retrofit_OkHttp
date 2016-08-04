@@ -297,7 +297,12 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startIntroActivity(Fragment fragment) {
+    public void startIntroActivity(Context context) {
+        Intent intent = new Intent(context, IntroActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startIntroActivityForResult(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), IntroActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }

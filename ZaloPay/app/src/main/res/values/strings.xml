@@ -70,7 +70,7 @@
     <string name="txt_close">Đóng</string>
     <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
-    <string name="txt_cancel_html"><u>Bỏ qua</u></string>
+    <string name="btn_cancel">Bỏ Qua</string>
 
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
