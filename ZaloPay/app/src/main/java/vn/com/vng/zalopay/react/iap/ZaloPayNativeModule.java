@@ -17,7 +17,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.react.Helpers;
-import vn.com.vng.zalopay.react.IPaymentService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**

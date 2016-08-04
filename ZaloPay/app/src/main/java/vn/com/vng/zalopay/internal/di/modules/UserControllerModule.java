@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.react.IPaymentService;
+import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.service.PaymentServiceImpl;
 
 /**

@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.ReactRedPacketNativeModule;

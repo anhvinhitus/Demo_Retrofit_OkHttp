@@ -36,7 +36,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
-import vn.com.vng.zalopay.react.INavigator;
+import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ModuleName;

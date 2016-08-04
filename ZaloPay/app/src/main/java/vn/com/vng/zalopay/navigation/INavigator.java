@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.react;
+package vn.com.vng.zalopay.navigation;
 
 import android.content.Context;
 import android.content.Intent;

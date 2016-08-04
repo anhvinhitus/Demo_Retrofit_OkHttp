@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.mdl.BundleService;
-import vn.com.vng.zalopay.react.INavigator;
+import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigExternalDev;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigInternalDev;
 import vn.com.vng.zalopay.mdl.impl.BundleReactConfigRelease;

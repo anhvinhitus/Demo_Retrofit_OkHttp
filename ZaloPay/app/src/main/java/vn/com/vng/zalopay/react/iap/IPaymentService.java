@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.react;
+package vn.com.vng.zalopay.react.iap;
 
 import android.app.Activity;
 

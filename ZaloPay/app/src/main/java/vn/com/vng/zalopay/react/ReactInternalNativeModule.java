@@ -17,6 +17,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.navigation.INavigator;
 
 /**
  * Created by huuhoa on 4/25/16.

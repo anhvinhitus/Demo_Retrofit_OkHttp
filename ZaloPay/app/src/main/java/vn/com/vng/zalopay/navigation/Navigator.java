@@ -27,7 +27,6 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.react.INavigator;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
