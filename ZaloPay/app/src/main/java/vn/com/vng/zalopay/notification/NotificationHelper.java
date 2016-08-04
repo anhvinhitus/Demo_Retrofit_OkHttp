@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -266,53 +267,5 @@ public class NotificationHelper {
     protected UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
     }
-
-
-   /* private void showNotification(NotificationData event) {
-        if (event.read) {
-            return;
-        }
-
-        String message = TextUtils.isEmpty(event.message) ? context.getString(R.string.notify_from_zalopay) : event.message;
-        String title = context.getString(R.string.app_name);
-
-        int notificationType = event.getNotificationType();
-
-        int notificationId = this.getNotificationSystemId(notificationType);
-        Intent intent = this.intentByNotificationType(notificationType);
-
-        create(context, notificationId,
-                intent,
-                R.mipmap.ic_launcher,
-                title, message);
-    }*/
-
-  /*  private int getNotificationSystemId(int notifyType) {
-        int notificationId = 100;
-
-        if (NotificationType.isTransactionNotification(notifyType)) {
-            notificationId = 1;
-        } else if (NotificationType.isProfileNotification(notifyType)) {
-            notificationId = 2;
-        } else if (NotificationType.isRedPacket(notifyType)) {
-            notificationId = 103;
-        }
-
-        return notificationId;
-    }
-
-    private Intent intentByNotificationType(int notifyType) {
-        Intent intent;
-        if (NotificationType.isTransactionNotification(notifyType)) {
-            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.TRANSACTION_LOGS);
-        } else if (NotificationType.isProfileNotification(notifyType)) {
-            intent = navigator.intentProfile(context);
-        } else if (NotificationType.isRedPacket(notifyType)) {
-            intent = navigator.getIntentMiniAppActivity(context, Constants.ModuleName.NOTIFICATIONS);
-        } else {
-            intent = navigator.intentHomeActivity(context, false);
-        }
-        return intent;
-    }*/
 
 }

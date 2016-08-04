@@ -45,6 +45,7 @@ import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
+import vn.vng.uicomponent.widget.textview.RoundTextView;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -93,7 +94,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     /*
     * View của menu
     * */
-    TextView mNotifyView;
+    RoundTextView mNotifyView;
 
     @Override
     protected void setupFragmentComponent() {
@@ -139,7 +140,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
         View view = menuItem.getActionView();
-        mNotifyView = (TextView) view.findViewById(R.id.tvNotificationCount);
+        mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,7 +219,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
-//    @OnClick(R.id.btn_deposit)
+    //    @OnClick(R.id.btn_deposit)
     public void onBtnDepositClick() {
         navigator.startDepositActivity(getActivity());
         ZPAnalytics.trackEvent(ZPEvents.TAPADDCASH);
@@ -269,13 +270,14 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void setTotalNotify(int total) {
         if (mNotifyView != null) {
-            if (total > 0) {
-                mNotifyView.setText(String.valueOf(total));
-                mNotifyView.setVisibility(View.VISIBLE);
-                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
-                mNotifyView.startAnimation(animation);
+            if (mNotifyView.isShown()) {
+                mNotifyView.show(total);
             } else {
-                mNotifyView.setVisibility(View.GONE);
+                mNotifyView.show(total);
+                if (total > 0) {
+                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
+                    mNotifyView.startAnimation(animation);
+                }
             }
         }
     }

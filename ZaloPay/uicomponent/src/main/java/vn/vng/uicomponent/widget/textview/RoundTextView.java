@@ -68,17 +68,10 @@ public class RoundTextView extends TextView {
             return;
         }
         ViewGroup.LayoutParams lp = rtv.getLayoutParams();
-        // RoundViewDelegate delegate = rtv.getDelegate();
         rtv.setVisibility(View.VISIBLE);
         if (num <= 0) {
             setVisibility(typeHide);
             return;
-           /* delegate.setStrokeWidth(0);
-            rtv.setText("");
-
-            lp.width = (int) (5 * density);
-            lp.height = (int) (5 * density);
-            rtv.setLayoutParams(lp);*/
         } else {
             lp.height = (int) (18 * density);
             if (num > 0 && num < 10) {//
@@ -94,16 +87,6 @@ public class RoundTextView extends TextView {
                 rtv.setText("99+");
             }
             rtv.setLayoutParams(lp);
-            /*lp.height = (int) (18 * density);
-            if (num > 0 && num <= 5) {//
-                lp.width = (int) (18 * density);
-                rtv.setText(num + "");
-            } else {
-                lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                rtv.setPadding((int) (6 * density), 0, (int) (6 * density), 0);
-                rtv.setText("5+");
-            }
-            rtv.setLayoutParams(lp);*/
         }
     }
 

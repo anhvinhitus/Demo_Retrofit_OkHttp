@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.data.ws;
 
-import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -19,7 +18,6 @@ import timber.log.Timber;
 public class TCPClient {
 
     private Socket mSocket;
-    private Uri mURI;
     private Listener mListener;
 
     private Thread mThread;
