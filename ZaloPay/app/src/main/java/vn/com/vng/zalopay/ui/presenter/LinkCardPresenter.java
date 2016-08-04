@@ -18,7 +18,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -46,8 +45,10 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
+ *
  */
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
+    public final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
 
     private ILinkCardView mLinkCardView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -390,10 +391,10 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void setOpenedIntroActivity() {
-        mSharedPreferences.edit().putBoolean(Constants.PreferencesSaveCard.FIRST_OPEN_SAVE_CARD_KEY, true).apply();
+        mSharedPreferences.edit().putBoolean(FIRST_OPEN_SAVE_CARD_KEY, true).apply();
     }
 
     private boolean isOpenedIntroActivity() {
-        return mSharedPreferences.getBoolean(Constants.PreferencesSaveCard.FIRST_OPEN_SAVE_CARD_KEY, false);
+        return mSharedPreferences.getBoolean(FIRST_OPEN_SAVE_CARD_KEY, false);
     }
 }
