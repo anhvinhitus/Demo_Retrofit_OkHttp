@@ -8,25 +8,13 @@
   <packaging>aar</packaging>
   <name>ZaloPayAnalytics</name>
   <description>Analytics lib for Zalo Pay</description>
-  <url>https://github.com/github_username/ProjectName</url>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <url>https://zalopay.vn</url>
   <developers>
     <developer>
-      <id>github_username</id>
-      <name>GitHub FullName</name>
+      <id>huuhoa</id>
+      <name>Nguyen Huu Hoa</name>
     </developer>
   </developers>
-  <scm>
-    <connection>scm:git@github.com:github_username/ProjectName.git</connection>
-    <developerConnection>scm:git@github.com:github_username/ProjectName.git</developerConnection>
-    <url>https://github.com/github_username/ProjectName</url>
-  </scm>
   <dependencies>
     <dependency>
       <groupId>com.jakewharton.timber</groupId>
