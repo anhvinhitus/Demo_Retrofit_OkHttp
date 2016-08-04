@@ -49,7 +49,6 @@ public class IntroFragment extends BaseFragment {
     @OnClick(R.id.tvContinue)
     public void onClickContinue() {
         if (mViewPager.getCurrentItem() >= mPagerAdapter.getCount()) {
-
             getActivity().finish();
         } else {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1);
@@ -83,8 +82,7 @@ public class IntroFragment extends BaseFragment {
      */
     // TODO: Rename and change types and number of parameters
     public static IntroFragment newInstance() {
-        IntroFragment fragment = new IntroFragment();
-        return fragment;
+        return new IntroFragment();
     }
 
     @Override
