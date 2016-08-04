@@ -45,6 +45,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
+ *
  */
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
     public final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
@@ -69,13 +70,13 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
-                mLinkCardView.showError(param);
+                showErrorView(param);
             }
 
             @Override
             public void onResponseError(int status) {
                 if (status == PaymentError.ERR_CODE_INTERNET) {
-                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                    showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
 //                else {
 //                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
@@ -121,7 +122,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void getListCard() {
-        mLinkCardView.showLoading();
+        showLoadingView();
         Subscription subscription = makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
@@ -187,11 +188,11 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     protected final void onGetLinkCardSuccess(List<BankCard> list) {
         mLinkCardView.setData(list);
-        mLinkCardView.hideLoading();
+        hideLoadingView();
     }
 
     public void removeLinkCard(BankCard bankCard) {
-        mLinkCardView.showLoading();
+        showLoadingView();
 
         ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
         DMappedCard mapCard = new DMappedCard();
@@ -201,8 +202,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         mapCard.bankcode = bankCard.bankcode;
 
         if (user == null) {
-            mLinkCardView.showError("Thông tin người dùng không hợp lệ.");
-            mLinkCardView.hideLoading();
+            showErrorView("Thông tin người dùng không hợp lệ.");
             return;
         }
         params.accessToken = user.accesstoken;
@@ -216,7 +216,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         @Override
         public void onSuccess(DMappedCard mapCard) {
             Timber.tag("LinkCardPresenter").d("removed map card: %s", mapCard);
-            mLinkCardView.hideLoading();
+            hideLoadingView();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
                 mLinkCardView.removeData(bankCard);
@@ -226,19 +226,19 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         @Override
         public void onError(BaseResponse pMessage) {
             Timber.tag("LinkCardPresenter").d("RemoveMapCard onError: " + pMessage);
-            mLinkCardView.hideLoading();
+            hideLoadingView();
             if (pMessage == null) {
                 if (NetworkHelper.isNetworkAvailable(mLinkCardView.getContext())) {
-                    mLinkCardView.showError("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+                    showErrorView("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
                 } else {
-                    mLinkCardView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                    showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
-                mLinkCardView.showError(mLinkCardView.getContext().getString(R.string.exception_token_expired_message));
+                showErrorView(mLinkCardView.getContext().getString(R.string.exception_token_expired_message));
                 AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
-                mLinkCardView.showError(pMessage.returnmessage);
+                showErrorView(pMessage.returnmessage);
             }
         }
     }
@@ -278,7 +278,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
                     e.printStackTrace();
                 }
             }
-            mLinkCardView.showLoading();
+            showLoadingView();
             String description = mLinkCardView.getContext().getString(R.string.link_card);
             Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
                     .subscribeOn(Schedulers.io())

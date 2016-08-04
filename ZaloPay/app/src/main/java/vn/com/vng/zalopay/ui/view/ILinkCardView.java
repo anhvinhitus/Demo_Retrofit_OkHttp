@@ -9,6 +9,7 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 
 /**
  * Created by AnhHieu on 5/11/16.
+ *
  */
 public interface ILinkCardView extends ILoadDataView {
 
