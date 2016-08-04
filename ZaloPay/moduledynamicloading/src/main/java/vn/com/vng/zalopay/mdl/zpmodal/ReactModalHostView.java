@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -192,7 +193,7 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
     }
     Timber.d("Create new Dialog for modal in ReactNative");
     mDialog = new Dialog(mReactNativeInstanceManager.getActivityContext(), theme);
-
+    mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     mDialog.setContentView(mHostView);
     updateProperties();
 
