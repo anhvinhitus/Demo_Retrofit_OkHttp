@@ -319,7 +319,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (packageGD == null) {
             packageGD = new ReceivePackageGD();
             packageGD.setId(packetId);
-            packageGD.setStatus(RedPacketStatus.Opened.getValue());
+            packageGD.setStatus(RedPacketStatus.CanOpen.getValue());
         }
         packageGD.setBundleID(bundleId);
         packageGD.setSenderFullName(senderName);
