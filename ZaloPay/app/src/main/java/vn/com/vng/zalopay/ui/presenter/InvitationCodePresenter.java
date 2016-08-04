@@ -118,7 +118,11 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
 
     private void onLoginSuccess(User user) {
         this.hideLoadingView();
-        AndroidApplication.instance().createUserComponent(user);
+
+        if (AndroidApplication.instance().getUserComponent() != null) {
+            AndroidApplication.instance().createUserComponent(user);
+        }
+
         this.gotoHomeScreen();
     }
 

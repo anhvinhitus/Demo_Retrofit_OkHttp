@@ -16,9 +16,9 @@
 
 package vn.com.vng.zalopay.notification;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.google.gson.Gson;
@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -59,51 +60,43 @@ public class MyGcmListenerService extends GcmListenerService {
             sendNotification(event);
         }*/
 
+        createUserComponent();
+
         sendNotification(message);
-    }
-
-    private NotificationData parseMessage(String message) {
-        Timber.d("sendNotification: message %s", message);
-
-        NotificationData event = null;
-        try {
-            if (TextUtils.isEmpty(message)) {
-                return null;
-            }
-            if (userConfig.hasCurrentUser()) {
-                return null;
-            }
-
-            User user = userConfig.getCurrentUser();
-            event = mGson.fromJson(message, NotificationData.class);
-            int transType = event.getTransType();
-            event.read = !(!user.uid.equals(event.userid) && transType > 0);
-        } catch (Exception ex) {
-            Timber.e(ex, "exception parse gcm");
-        }
-
-        return event;
-    }
-
-    private void sendNotification(NotificationData notify) {
-        if (notify != null) {
-            UserComponent userComponent = AndroidApplication.instance().getUserComponent();
-            if (userComponent != null) {
-                NotificationHelper notificationHelper = userComponent.notificationHelper();
-                notificationHelper.processNotification(notify);
-            }
-        }
     }
 
     private void sendNotification(String message) {
         if (!TextUtils.isEmpty(message)) {
-            UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+            UserComponent userComponent = getUserComponent();
+            Timber.d("Create notification with userComponent %s", userComponent);
             if (userComponent != null) {
+
+                Intent intent = new Intent(getApplicationContext(), NotificationActivity.class);
+
                 NotificationHelper notificationHelper = userComponent.notificationHelper();
-                notificationHelper.create(getApplicationContext(), 1, navigator.intentHomeActivity(getApplicationContext(), false), R.mipmap.ic_launcher, getString(R.string.app_name), message);
+                notificationHelper.create(getApplicationContext(), 1, intent,
+                        R.mipmap.ic_launcher, getString(R.string.app_name), message);
             }
+        }
+
+    }
+
+    private void createUserComponent() {
+
+        Timber.d(" user component %s", getUserComponent());
+
+        if (getUserComponent() != null)
+            return;
+
+        UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+        Timber.d(" userConfig %s", userConfig.isSignIn());
+        if (userConfig.isSignIn()) {
+            userConfig.loadConfig();
+            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
         }
     }
 
-
+    public UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
+    }
 }

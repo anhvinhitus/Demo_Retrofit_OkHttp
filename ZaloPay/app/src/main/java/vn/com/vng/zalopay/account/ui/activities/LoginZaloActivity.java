@@ -128,10 +128,9 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     public void hideLoading() {
-        if (mProgressDialog == null || mProgressDialog.isShowing()) {
-            return;
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
         }
-        mProgressDialog.dismiss();
     }
 
     @Override
