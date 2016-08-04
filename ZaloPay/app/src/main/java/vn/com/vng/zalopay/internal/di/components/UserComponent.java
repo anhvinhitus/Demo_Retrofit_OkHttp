@@ -56,7 +56,6 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.fragment.IntroFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
-import vn.com.vng.zalopay.ui.fragment.LinkCardProcedureFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 @UserScope
@@ -112,8 +111,6 @@ public interface UserComponent {
     void inject(BalanceTopupFragment f);
 
     void inject(LeftMenuFragment f);
-
-    void inject(LinkCardProcedureFragment f);
 
     void inject(ProfileFragment f);
 

@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
-import vn.com.vng.zalopay.ui.presenter.LinkCardProcedurePresenter;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
@@ -51,12 +50,6 @@ public class UserPresenterModule {
     @Provides
     LinkCardPresenter provideLinkCardPresenter(User user) {
         return new LinkCardPresenter(user);
-    }
-
-    @UserScope
-    @Provides
-    LinkCardProcedurePresenter provideLinkCardProcedurePresenter(User user) {
-        return new LinkCardProcedurePresenter(user);
     }
 
     @UserScope

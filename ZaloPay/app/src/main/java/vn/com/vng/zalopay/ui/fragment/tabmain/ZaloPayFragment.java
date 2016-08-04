@@ -287,7 +287,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
-            navigator.startLinkCardProcedureActivity(getActivity());
+            navigator.startLinkCardActivity(getActivity());
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
             navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.BUY_PHONE_CARD);

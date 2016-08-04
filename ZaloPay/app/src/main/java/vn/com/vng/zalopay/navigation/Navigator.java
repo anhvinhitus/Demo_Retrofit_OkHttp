@@ -38,7 +38,6 @@ import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.IntroActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
-import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -192,26 +191,6 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startLinkCardProcedureActivity(Activity activity) {
-        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showUpdateProfileInfoDialog(activity);
-        } else {
-            Intent intent = new Intent(activity, LinkCardProcedureActivity.class);
-            activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
-        }
-    }
-
-    public void startLinkCardProcedureActivity(Fragment activity) {
-        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            if (activity != null) {
-                showUpdateProfileInfoDialog(activity.getContext());
-            }
-        } else {
-            Intent intent = new Intent(activity.getContext(), LinkCardProcedureActivity.class);
-            activity.startActivityForResult(intent, LinkCardActivity.REQUEST_CODE);
-        }
-    }
-
     public void startPaymentApplicationActivity(Context context, int appId) {
         Map<String, String> options = new HashMap<>();
         options.put("view", "main");
@@ -318,8 +297,8 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startIntroActivity(Context context) {
-        Intent intent = new Intent(context, IntroActivity.class);
-        context.startActivity(intent);
+    public void startIntroActivity(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), IntroActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }
 }

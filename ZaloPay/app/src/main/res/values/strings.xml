@@ -127,19 +127,6 @@
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_other">Thêm Thẻ</string>
 
-    <!-- Link CARDS START-->
-    <string name="link_card_title">Quy trình lưu thẻ</string>
-    <string name="link_card_step_one">+ <u><b>Bước 1</b></u>: Nhập thông tin thẻ.</string>
-
-    <string name="link_card_step_two">+ <u><b>Bước 2</b></u>: Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài khoản thẻ vào tài khoản Zalo Pay của bạn để kiểm tra tính hợp lệ.</string>
-
-    <string name="link_card_step_two_1">- Tài khoản thẻ của bạn bị trừ <font size='16'><b>20.000</b></font> <font size='12'>VND</font></string>
-    <string name="link_card_step_two_2">- Tài khoản Zalo Pay của bạn được cộng <font size='16'><b>20.000</b></font> <font size='12'>VND</font> tương ứng</string>
-    <string name="link_card_step_note">Khi hoàn tất, thẻ của bạn được lưu thành công.</string>
-
-    <string name="support_banks">Các ngân hàng được hỗ trợ</string>
-    <!-- Link CARDS END-->
-
     <string name="alert_processing">Đang xử lý</string>
 
     <string name="hint_birthday">Năm sinh</string>
@@ -251,10 +238,12 @@
     <string name="lbl.update.profile.3.page.1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
     <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
 
+    <!-- Link CARDS START-->
     <string name="intro.title.step1">Bước 1</string>
     <string name="intro.content.step1">Nhập thông tin thẻ\n Gồm: Số thẻ, tên chủ thẻ.</string>
     <string name="intro.title.step2">Bước 2</string>
     <string name="intro.content.step2">Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài\n khoản thẻ vào tài khoản Zalo Pay của bạn\n để kiểm tra tính hợp lệ.</string>
     <string name="intro.title.step3">CHẤP NHẬN THẺ</string>
     <string name="intro.content.step3">Zalo Pay hỗ trợ các thẻ ATM nội địa và\n thẻ tín dụng.</string>
+    <!-- Link CARDS END-->
 </resources>
