@@ -63,7 +63,7 @@ public class Helpers {
         promise.resolve(item);
     }
 
-    static String readableMapToString(ReadableMap param) {
+    public static String readableMapToString(ReadableMap param) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         ReadableMapKeySetIterator iterator = param.keySetIterator();
@@ -101,7 +101,7 @@ public class Helpers {
         return builder.toString();
     }
 
-    static String readableArrayToString(ReadableArray param) {
+    public static String readableArrayToString(ReadableArray param) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         for (int index = 0; index < param.size(); index ++) {

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.react;
+package vn.com.vng.zalopay.react.iap;
 
 import android.content.Intent;
 import android.text.TextUtils;
@@ -16,21 +16,22 @@ import java.util.Locale;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.IPaymentService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 5/16/16.
  * API for PaymentApp integration
  */
-
-public class ZaloPayIAPNativeModule extends ReactContextBaseJavaModule
+public class ZaloPayNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
     final IPaymentService mPaymentService;
     final long mAppId; // AppId này là appid js cắm vào
 
-    public ZaloPayIAPNativeModule(ReactApplicationContext reactContext,
-                                  IPaymentService paymentService,
-                                  long appId) {
+    public ZaloPayNativeModule(ReactApplicationContext reactContext,
+                               IPaymentService paymentService,
+                               long appId) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;

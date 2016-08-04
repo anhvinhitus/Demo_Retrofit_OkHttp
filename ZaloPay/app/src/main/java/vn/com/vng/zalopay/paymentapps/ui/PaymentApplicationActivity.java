@@ -39,7 +39,7 @@ import vn.com.vng.zalopay.react.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
 import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ModuleName;
-import vn.com.vng.zalopay.react.ReactIAPPackage;
+import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**

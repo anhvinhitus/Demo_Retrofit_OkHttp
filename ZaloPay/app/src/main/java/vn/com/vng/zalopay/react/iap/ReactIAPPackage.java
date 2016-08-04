@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.react;
+package vn.com.vng.zalopay.react.iap;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -12,9 +12,11 @@ import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
+import vn.com.vng.zalopay.react.IPaymentService;
 
 /**
  * Created by AnhHieu on 5/16/16.
+ * In-app-payment package
  */
 public class ReactIAPPackage implements ReactPackage {
     final ZaloPayIAPRepository zaloPayIAPRepository;
@@ -34,7 +36,7 @@ public class ReactIAPPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayIAPNativeModule(reactContext, paymentService, appId));
+        modules.add(new ZaloPayNativeModule(reactContext, paymentService, appId));
         return modules;
     }
 
