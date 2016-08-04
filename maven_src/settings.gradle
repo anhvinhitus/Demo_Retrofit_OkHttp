@@ -1,1 +1,4 @@
 include ':zalopayanalytics'
+include ':debugviewer'
+include ':debugviewer-noops'
+

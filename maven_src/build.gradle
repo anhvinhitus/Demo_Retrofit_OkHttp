@@ -6,6 +6,111 @@ ext {
             minSdk           : 16,
             targetSdk        : 23
     ]
+
+    supportVersion = '23.2.1'
+    playServiceVersion = "9.0.0"
+    //Libraries Version
+    daggerVersion = '2.2'
+    butterKnifeVersion = '8.0.1'
+    recyclerViewVersion = '21.0.3'
+    rxJavaVersion = '1.1.4'
+    rxAndroidVersion = '1.2.0'
+
+    javaxAnnotationVersion = '10.0-b28'
+
+    gsonVersion = '2.6.2'
+
+    okHttpVersion = '3.3.1'
+    okHttpLoggingInterceptor = '3.3.1'
+    retrofitVersion = '2.1.0'
+    retrofitConverterVersion = '2.1.0'
+    retrofitAdapterVersion = '2.1.0'
+
+    androidAnnotationsVersion = '21.0.3'
+    timberVersion = '4.1.2'
+    glideVersion = "3.7.0"
+    glideOkhttp3IntegrationVersion = "1.4.0@aar"
+    eventBusVersion = "3.0.0"
+    greendaoVersion = "2.2.0"
+
+    //Testing
+    robolectricVersion = '3.0'
+    jUnitVersion = '4.12'
+    assertJVersion = '1.7.1'
+    mockitoVersion = '1.9.5'
+    dexmakerVersion = '1.0'
+    espressoVersion = '2.0'
+    testingSupportLibVersion = '0.1'
+    leakCanaryVersion = '1.4-beta2'
+    robolectricVersion = '3.0'
+
+    zxingVersion = "3.2.1"
+    zxingAndroidCoreVersion = "3.2.1"
+    zxingAndroidEmbeddedVersion = "3.2.0@aar"
+
+    reactNativeVersion = "0.27.2"
+    animatedGifVersion = "0.10.0"
+
+    multidexVersion = "1.0.1"
+
+    crashlyticsVersion = "2.5.5@aar"
+
+    protobufVersion = "2.6.1"
+    nettyVesion = "4.1.1.Final"
+
+    parcelerVersion = "1.1.5"
+
+    zalopayanalyticsVersion = "1.0"
+
+    libraries = [
+            daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
+            dagger                 : "com.google.dagger:dagger:${daggerVersion}",
+            butterKnife            : "com.jakewharton:butterknife:${butterKnifeVersion}",
+            butterKnifeCompiler    : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
+            retrofit               : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitAdapter        : "com.squareup.retrofit2:adapter-rxjava:${retrofitAdapterVersion}",
+            retrofitConverter      : "com.squareup.retrofit2:converter-gson:${retrofitConverterVersion}",
+            retrofitLogging        : "com.squareup.okhttp3:logging-interceptor:${okHttpLoggingInterceptor}",
+            timber                 : "com.jakewharton.timber:timber:${timberVersion}",
+            rxJava                 : "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid              : "io.reactivex:rxandroid:${rxAndroidVersion}",
+            okHttp                 : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+            greenDao               : "org.greenrobot:greendao:${greendaoVersion}",
+            greenDaoGenerator      : "org.greenrobot:greendao-generator:${greendaoVersion}",
+            eventbus               : "org.greenrobot:eventbus:${eventBusVersion}",
+            glide                  : "com.github.bumptech.glide:glide:${glideVersion}",
+            glideIntegration       : "com.github.bumptech.glide:okhttp3-integration:${glideOkhttp3IntegrationVersion}",
+            gson                   : "com.google.code.gson:gson:${gsonVersion}",
+            zxing                  : "com.google.zxing:core:${zxingVersion}",
+            zxing_android_core     : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
+            zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
+
+            support_support_v4     : "com.android.support:support-v4:${supportVersion}",
+            support_appcompat_v7   : "com.android.support:appcompat-v7:${supportVersion}",
+            support_recyclerview_v7: "com.android.support:recyclerview-v7:${supportVersion}",
+            support_design         : "com.android.support:design:${supportVersion}",
+            support_cardview_v7    : "com.android.support:cardview-v7:${supportVersion}",
+            support_annotations    : "com.android.support:support-annotations:${supportVersion}",
+
+            react_native           : "com.facebook.react:react-native:${reactNativeVersion}",
+            animated_gif           : "com.facebook.fresco:animated-gif:${animatedGifVersion}",
+            play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
+
+            crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
+            protobuf               : "com.google.protobuf:protobuf-java:${protobufVersion}",
+            netty_transport        : "io.netty:netty-transport:${nettyVesion}",
+            netty_codec            : "io.netty:netty-codec:${nettyVesion}",
+
+            parceler               : "org.parceler:parceler-api:${parcelerVersion}",
+            parceler_apt           : "org.parceler:parceler:${parcelerVersion}",
+    ]
+
+    testingLibraries = [
+            junit      : "junit:junit:${jUnitVersion}",
+            robolectric: "org.robolectric:robolectric:${robolectricVersion}"
+    ]
 }
 
 buildscript {
