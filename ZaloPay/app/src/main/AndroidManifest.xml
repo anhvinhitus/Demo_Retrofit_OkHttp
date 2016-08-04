@@ -242,7 +242,7 @@
         <activity
             android:name=".transfer.ui.activities.TransferActivity"
             android:label="@string/title.activity.transfer" />
-
+        <activity android:name=".ui.activity.IntroActivity" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

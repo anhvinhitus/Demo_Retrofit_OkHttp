@@ -250,4 +250,11 @@
     <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
     <string name="lbl.update.profile.3.page.1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
     <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
+
+    <string name="intro.title.step1">Bước 1</string>
+    <string name="intro.content.step1">Nhập thông tin thẻ\n Gồm: Số thẻ, tên chủ thẻ.</string>
+    <string name="intro.title.step2">Bước 2</string>
+    <string name="intro.content.step2">Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài\n khoản thẻ vào tài khoản Zalo Pay của bạn\n để kiểm tra tính hợp lệ.</string>
+    <string name="intro.title.step3">CHẤP NHẬN THẺ</string>
+    <string name="intro.content.step3">Zalo Pay hỗ trợ các thẻ ATM nội địa và\n thẻ tín dụng.</string>
 </resources>

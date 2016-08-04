@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background_intro"
+              android:orientation="vertical"
+              android:weightSum="1.0"
+              tools:context="vn.com.vng.zalopay.ui.fragment.IntroFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.34"
+        android:background="@drawable/ic_bg_intro">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:contentDescription="@string/loremipsum"
+            android:scaleType="center"
+            android:src="@drawable/ic_intro_step3"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.66"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTitleIntro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/intro.title.step3"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/tvIntro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/spacing.small"
+            android:text="@string/intro.content.step3"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
+    </LinearLayout>
+</LinearLayout>

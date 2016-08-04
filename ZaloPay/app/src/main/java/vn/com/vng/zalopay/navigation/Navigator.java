@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
 import vn.com.vng.zalopay.transfer.ui.fragment.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.fragment.ZaloContactFragment;
+import vn.com.vng.zalopay.ui.activity.IntroActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardProcedureActivity;
@@ -315,5 +316,10 @@ public class Navigator implements INavigator {
         }
         intent.putExtra("launchOptions", options);
         return intent;
+    }
+
+    public void startIntroActivity(Context context) {
+        Intent intent = new Intent(context, IntroActivity.class);
+        context.startActivity(intent);
     }
 }

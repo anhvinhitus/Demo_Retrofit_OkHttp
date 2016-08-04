@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -87,7 +90,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         mAdapter = new LinkCardAdapter(getContext(), this);
     }
 
@@ -106,6 +109,20 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView, Lin
 
         initBottomSheet();
         showOrHidekLinkCardEmpty();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_intro, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_intro) {
+            navigator.startIntroActivity(getContext());
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initBottomSheet() {
