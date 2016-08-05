@@ -136,6 +136,12 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                 if (getCurrentActivity() != null && !NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
                     Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET.value(),
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+                } else if (paymentError == PaymentError.ERR_CODE_FAIL) {
+                    //PaymentSDK đã hiển thị lỗi -> ko care lỗi này nữa
+                    Helpers.promiseResolveError(promise, paymentError.value(), null);
+                } else if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
+                    //User ấn back -> ko care lỗi này nữa
+                    Helpers.promiseResolveError(promise, paymentError.value(), null);
                 } else {
                     Helpers.promiseResolveError(promise, paymentError.value(), PaymentError.getErrorMessage(paymentError));
                 }
