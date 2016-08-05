@@ -14,8 +14,11 @@ import com.facebook.react.bridge.ReadableMap;
 import java.util.Locale;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
@@ -124,6 +127,14 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void logError(String message) {
         Timber.w(message);
+    }
+
+    @ReactMethod
+    public void logout() {
+        Timber.d("Payment app %s request to logout", mAppId);
+        ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
+        applicationSession.setMessageAtLogin(AndroidApplication.instance().getString(R.string.exception_token_expired_message));
+        applicationSession.clearUserSession();
     }
 
     @Override
