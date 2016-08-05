@@ -160,6 +160,16 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 
+    /**
+     * Called when a new intent is passed to the activity
+     *
+     * @param intent
+     */
+    @Override
+    public void onNewIntent(Intent intent) {
+        Timber.d("onNewIntent called from based");
+    }
+
     @Override
     public void onHostResume() {
         Timber.d(" Activity `onResume`");
