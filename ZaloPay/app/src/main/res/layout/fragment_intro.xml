@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_weight="0.0"
-        android:background="@color/separate"/>
+        android:background="@color/intro.line"/>
 
     <FrameLayout
         android:layout_width="match_parent"

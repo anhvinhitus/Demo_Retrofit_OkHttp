@@ -19,6 +19,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:contentDescription="@string/loremipsum"
             android:scaleType="center"
+            android:layout_marginBottom="@dimen/spacing.medium"
             android:src="@drawable/ic_intro_step3"/>
     </FrameLayout>
 
@@ -27,7 +28,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.66"
         android:background="@color/colorPrimary"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <TextView
@@ -36,7 +37,6 @@
 
         <TextView
             style="@style/Intro.TextView.Content"
-            android:layout_marginTop="@dimen/spacing.medium"
             android:text="@string/intro.content.step3"/>
     </LinearLayout>
 </LinearLayout>
