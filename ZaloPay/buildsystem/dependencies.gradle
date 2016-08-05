@@ -24,8 +24,8 @@ ext {
 
     gsonVersion = '2.6.2'
 
-    okHttpVersion = '3.3.1'
-    okHttpLoggingInterceptor = '3.3.1'
+    okHttpVersion = '3.4.1'
+    okHttpLoggingInterceptor = '3.4.1'
     retrofitVersion = '2.1.0'
     retrofitConverterVersion = '2.1.0'
     retrofitAdapterVersion = '2.1.0'
