@@ -16,6 +16,7 @@ import java.util.Locale;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
@@ -135,6 +136,23 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
         ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
         applicationSession.setMessageAtLogin(AndroidApplication.instance().getString(R.string.exception_token_expired_message));
         applicationSession.clearUserSession();
+    }
+
+    @ReactMethod
+    public void trackEvent(Integer eventId, Integer eventValue) {
+        Timber.d("trackEvent eventId %s", eventId);
+        if (eventValue != null) {
+            long value = eventValue;
+            ZPAnalytics.trackEvent(eventId, value);
+        } else {
+            ZPAnalytics.trackEvent(eventId);
+        }
+    }
+
+    @ReactMethod
+    public void trackEvent(Integer eventId) {
+        Timber.d("trackEvent eventId %s", eventId);
+        ZPAnalytics.trackEvent(eventId);
     }
 
     @Override
