@@ -18,6 +18,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -29,6 +30,7 @@ public abstract class BaseAppPresenter {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+    protected final RxBus rxBus = AndroidApplication.instance().getAppComponent().rxBus();
 
     protected final PassportRepository passportRepository = AndroidApplication.instance().getAppComponent().passportRepository();
     protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();

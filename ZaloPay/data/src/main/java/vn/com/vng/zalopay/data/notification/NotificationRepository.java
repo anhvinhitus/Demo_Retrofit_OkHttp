@@ -8,6 +8,7 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 
@@ -18,10 +19,12 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     final NotificationStore.LocalStorage localStorage;
     final EventBus eventBus;
+    final RxBus mRxBus;
 
-    public NotificationRepository(NotificationStore.LocalStorage localStorage, EventBus eventBus) {
+    public NotificationRepository(NotificationStore.LocalStorage localStorage, EventBus eventBus, RxBus rxBus) {
         this.localStorage = localStorage;
         this.eventBus = eventBus;
+        this.mRxBus = rxBus;
     }
 
     @Override
@@ -40,6 +43,10 @@ public class NotificationRepository implements NotificationStore.Repository {
         // eventBus.post(new ReadNotifyEvent());
     }
 
+
+    /*
+    * emit error MTAID, MTUID đã tồn tại trong db
+    * */
     @Override
     public Observable<Long> putNotify(NotificationData notify) {
         return ObservableHelper.makeObservable(() -> {
@@ -52,7 +59,12 @@ public class NotificationRepository implements NotificationStore.Repository {
                 if (!notify.read) {
                     localStorage.increaseTotalNotify();
                 }
+
                 eventBus.post(new NotificationChangeEvent(notify.read));
+
+                if (mRxBus.hasObservers()) {
+                    mRxBus.send(new NotificationChangeEvent(notify.read));
+                }
             }
 
             return rowId;

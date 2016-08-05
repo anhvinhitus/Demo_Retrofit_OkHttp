@@ -10,6 +10,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -47,6 +49,10 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private final Parser parser;
     private final UserConfig userConfig;
+
+
+    private Timer mTimer;
+    private TimerTask timerTask;
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
@@ -110,6 +116,8 @@ public class WsConnection extends Connection implements ConnectionListener {
             group.shutdownGracefully();
         }
         mState = State.Disconnected;
+
+        stopTimerCheckConnect();
     }
 
     @Override
@@ -159,6 +167,8 @@ public class WsConnection extends Connection implements ConnectionListener {
         mState = State.Connected;
         //    numRetry = 0;
         sendAuthentication();
+
+        stopTimerCheckConnect();
     }
 
     @Override
@@ -191,18 +201,29 @@ public class WsConnection extends Connection implements ConnectionListener {
         } else if (e instanceof ConnectException) {
         } else if (e instanceof UnknownHostException) {
         }
+
+        startTimerCheckConnect();
     }
 
     @Override
     public void onDisconnected(int code, String message) {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
-        disconnect();
 
-        if (NetworkHelper.isNetworkAvailable(context) && userConfig.hasCurrentUser() && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
-            connect();
+        if (mChannel != null) {
+            mChannel.disconnect();
         }
-        numRetry++;
+
+        if (group != null) {
+            group.shutdownGracefully();
+        }
+
+        if (NetworkHelper.isNetworkAvailable(context)
+                && userConfig.hasCurrentUser()
+                && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
+            connect();
+            numRetry++;
+        }
     }
 
 
@@ -261,5 +282,39 @@ public class WsConnection extends Connection implements ConnectionListener {
         }
 
         return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
+    }
+
+
+    private void startTimerCheckConnect() {
+        stopTimerCheckConnect();
+
+        mTimer = new Timer();
+        timerTask = new CheckConnectionTask();
+
+        mTimer.schedule(timerTask, 0, 5 * 60 * 1000);
+    }
+
+    private void stopTimerCheckConnect() {
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+            mTimer = null;
+        }
+    }
+
+    private class CheckConnectionTask extends TimerTask {
+
+        @Override
+        public void run() {
+            Timber.d("Begin check connection");
+            if (NetworkHelper.isNetworkAvailable(context)) {
+                connect();
+            }
+        }
     }
 }

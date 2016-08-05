@@ -6,8 +6,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -32,6 +36,23 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void setView(IZaloPayView o) {
         this.mZaloPayView = o;
         eventBus.register(this);
+
+      /*  ConnectableObservable<Object> notifyEmitter = rxBus.toObserverable().publish();
+
+        compositeSubscription
+                .add(notifyEmitter.publish(new Func1<Observable<Object>, Observable<List<Object>>>() {
+                    @Override
+                    public Observable<List<Object>> call(Observable<Object> stream) {
+                        return stream.buffer(stream.debounce(1, TimeUnit.SECONDS));
+                    }
+                }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Object>>() {
+                    @Override
+                    public void call(List<Object> taps) {
+
+                    }
+                }));
+
+        compositeSubscription.add(notifyEmitter.connect());*/
     }
 
     @Override

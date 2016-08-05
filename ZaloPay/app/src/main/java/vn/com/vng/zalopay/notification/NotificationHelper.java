@@ -124,7 +124,12 @@ public class NotificationHelper {
     private void putNotification(NotificationData notify) {
         Subscription subscription = notifyRepository.putNotify(notify)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Long>());
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d("insert db error conflict MTAID, MTUID %s", e.getClass().getCanonicalName());
+                    }
+                });
     }
 
     private void shouldMarkRead(NotificationData notify) {
