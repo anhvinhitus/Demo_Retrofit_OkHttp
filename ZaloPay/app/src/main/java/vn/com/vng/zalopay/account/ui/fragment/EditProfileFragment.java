@@ -58,6 +58,11 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.layoutEmail)
     View mLayoutEmail;
 
+    @BindView(R.id.tvZaloPayId)
+    TextView tvZaloPayId;
+
+    @BindView(R.id.tvZaloId)
+    TextView tvZaloId;
 
     @Override
     protected void setupFragmentComponent() {
@@ -113,9 +118,9 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
             mLayoutCmnd.setClickable(false);
             mLayoutEmail.setClickable(false);
         }
-/*
-        String zaloPayId = String.valueOf(user.uid);
-        String zaloId = String.valueOf(user.zaloId);*/
+
+        tvZaloPayId.setText(user.uid);
+        tvZaloId.setText(String.valueOf(user.zaloId));
     }
 
     private void setBirthDay(long time) {

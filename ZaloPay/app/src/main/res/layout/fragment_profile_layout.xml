@@ -180,4 +180,59 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing.medium"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing.medium">
+
+        <TextView
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/zalopay_id"/>
+
+        <TextView
+            android:id="@+id/tvZaloPayId"
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:hint="@string/not_update"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing.medium">
+
+        <TextView
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/zalo_id"/>
+
+        <TextView
+            android:id="@+id/tvZaloId"
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:hint="@string/not_update"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
 </LinearLayout>
