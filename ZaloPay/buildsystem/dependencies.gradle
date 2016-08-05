@@ -52,7 +52,7 @@ ext {
     zxingAndroidCoreVersion = "3.2.1"
     zxingAndroidEmbeddedVersion = "3.2.0@aar"
 
-    reactNativeVersion = "0.27.2"
+    reactNativeVersion = "0.31.0"
     animatedGifVersion = "0.10.0"
 
     multidexVersion = "1.0.1"
