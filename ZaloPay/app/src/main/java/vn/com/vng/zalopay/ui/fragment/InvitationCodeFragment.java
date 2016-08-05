@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -89,7 +90,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         mButtonContinueView.registerAvoidMultipleRapidClicks();
 
         if (Build.VERSION.SDK_INT >= 21) {
-            mILCodeView.setLetterSpacing(2);
+            mILCodeView.setLetterSpacing(0.7f);
         }
     }
 
