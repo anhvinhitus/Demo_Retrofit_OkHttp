@@ -85,7 +85,21 @@ public class PaymentWrapper {
                     responseListener.onResponseError(resultStatus);
                     responseListener.onNotEnoughMoney();
                 } else {
-                    responseListener.onResponseError(resultStatus);
+                    if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_CLOSE.getNum()) {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID.getNum()) {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE.getNum()) {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET.getNum()) {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                    } else {
+                        responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
+                    }
 
                     updateBalance();
                     updateTransctionFail();
