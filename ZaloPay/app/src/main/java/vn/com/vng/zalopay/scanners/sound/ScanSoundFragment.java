@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 
@@ -19,7 +18,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
@@ -163,7 +162,7 @@ public class ScanSoundFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onResponseError(int status) {
+                    public void onResponseError(PaymentError paymentError) {
                         startTranscoder();
                     }
 

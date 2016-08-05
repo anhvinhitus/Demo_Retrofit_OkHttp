@@ -56,12 +56,12 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             }
 
             @Override
-            public void onResponseError(int status) {
+            public void onResponseError(PaymentError paymentError) {
                 if (mView == null) {
                     return;
                 }
 
-                if (status == PaymentError.ERR_CODE_INTERNET) {
+                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     mView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
                 }
                 hideLoadingView();

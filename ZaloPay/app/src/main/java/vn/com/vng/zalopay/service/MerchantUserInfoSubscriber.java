@@ -60,7 +60,7 @@ final class MerchantUserInfoSubscriber extends DefaultSubscriber<MerchantUserInf
         if (e instanceof BodyException) {
             return ((BodyException) e).errorCode;
         } else {
-            return PaymentError.ERR_CODE_UNKNOWN;
+            return PaymentError.ERR_CODE_UNKNOWN.value();
         }
     }
 }

@@ -102,7 +102,8 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
             mPaymentService.pay(getCurrentActivity(), promise, order);
         } catch (Exception e) {
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, null);
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(),
+                    PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             //e.printStackTrace();
         }
     }
@@ -153,6 +154,6 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
         Timber.d("Invalid parameter [%s]", parameterName);
-        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, message);
+        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), message);
     }
 }

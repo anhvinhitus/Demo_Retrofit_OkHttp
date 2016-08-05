@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -95,8 +96,8 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onResponseError(int status) {
-                        Timber.d("Payment error: " + status);
+                    public void onResponseError(PaymentError paymentError) {
+                        Timber.d("Payment error: " + paymentError.value());
                         beaconScanner.startScan();
                     }
 

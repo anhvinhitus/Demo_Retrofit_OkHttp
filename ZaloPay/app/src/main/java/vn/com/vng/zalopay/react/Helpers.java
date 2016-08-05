@@ -44,7 +44,7 @@ public class Helpers {
             return;
         }
         WritableMap item = Arguments.createMap();
-        item.putInt("code", PaymentError.ERR_CODE_SUCCESS);
+        item.putInt("code", PaymentError.ERR_CODE_SUCCESS.value());
         if (object != null) {
             if (object instanceof WritableMap) {
                 item.putMap("data", (WritableMap) object);

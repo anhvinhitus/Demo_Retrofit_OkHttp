@@ -74,8 +74,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
-            public void onResponseError(int status) {
-                if (status == PaymentError.ERR_CODE_INTERNET) {
+            public void onResponseError(PaymentError paymentError) {
+                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
 //                else {

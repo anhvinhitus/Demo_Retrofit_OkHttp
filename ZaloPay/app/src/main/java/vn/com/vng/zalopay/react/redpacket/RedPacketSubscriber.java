@@ -41,7 +41,7 @@ public class RedPacketSubscriber<T> extends DefaultSubscriber<T> {
                 e instanceof UnknownHostException ||
                 e instanceof SSLHandshakeException ||
                 e instanceof SSLPeerUnverifiedException ) {
-            Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_INTERNET,
+            Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_INTERNET.value(),
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
         } else {
             Helpers.promiseReject(mPromise, "EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));

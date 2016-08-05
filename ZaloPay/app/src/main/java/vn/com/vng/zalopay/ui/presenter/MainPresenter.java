@@ -181,13 +181,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 }
 
                 @Override
-                public void onResponseError(int status) {
+                public void onResponseError(PaymentError paymentError) {
                     Timber.d("onResponseError");
                     if (homeView == null) {
                         return;
                     }
 
-                    if (status == PaymentError.ERR_CODE_INTERNET) {
+                    if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                         homeView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
                     }
 

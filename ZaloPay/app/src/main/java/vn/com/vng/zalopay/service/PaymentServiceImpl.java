@@ -24,6 +24,7 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 02/06/2016.
+ * Implement IPaymentService
  */
 public class PaymentServiceImpl implements IPaymentService {
 
@@ -46,7 +47,7 @@ public class PaymentServiceImpl implements IPaymentService {
     @Override
     public void pay(Activity activity, final Promise promise, Order order) {
 
-        final WeakReference<Activity> mWeakReference = new WeakReference<Activity>(activity);
+        final WeakReference<Activity> mWeakReference = new WeakReference<>(activity);
 
         this.mPaymentWrapper = new PaymentWrapper(mBalanceRepository, null, mTransactionRepository, new PaymentWrapper.IViewListener() {
             @Override
@@ -60,8 +61,9 @@ public class PaymentServiceImpl implements IPaymentService {
             }
 
             @Override
-            public void onResponseError(int status) {
-                Helpers.promiseResolveError(promise, status, null);
+            public void onResponseError(PaymentError paymentError) {
+                Helpers.promiseResolveError(promise, paymentError.value(),
+                        PaymentError.getErrorMessage(paymentError));
             }
 
             @Override
@@ -71,13 +73,14 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseTokenInvalid() {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID,
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
                         PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));
             }
 
             @Override
             public void onResponseCancel() {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL, null);
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(),
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
                 destroyVariable();
             }
 
@@ -103,7 +106,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
         Timber.d("Invalid parameter [%s]", parameterName);
-        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, message);
+        Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), message);
     }
 
     @Override

@@ -53,11 +53,11 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             }
 
             @Override
-            public void onResponseError(int status) {
+            public void onResponseError(PaymentError paymentError) {
                 if (mView == null) {
                     return;
                 }
-                if (status == PaymentError.ERR_CODE_INTERNET) {
+                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
                 /*else {

@@ -8,6 +8,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -47,9 +48,9 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             }
 
             @Override
-            public void onResponseError(int status) {
+            public void onResponseError(PaymentError paymentError) {
                 if (listener != null) {
-                    listener.onResponseError(status);
+                    listener.onResponseError(paymentError);
                 }
             }
 

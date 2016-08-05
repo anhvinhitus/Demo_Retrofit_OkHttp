@@ -110,7 +110,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                             public void onNext(BundleOrder bundleOrder) {
                                 Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
                                 if (bundleOrder == null) {
-                                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, "bundleOrder null");
+                                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), "bundleOrder null");
                                 } else {
                                     pay(bundleOrder, promise);
                                 }
@@ -127,17 +127,17 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onParameterError(String param) {
                 Timber.w("pay onParameterError");
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, param);
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), param);
             }
 
             @Override
-            public void onResponseError(int status) {
-                Timber.d("pay onResponseError status [%s]", status);
+            public void onResponseError(PaymentError paymentError) {
+                Timber.d("pay onResponseError status [%s]", paymentError.value());
                 if (getCurrentActivity() != null && !NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
-                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET,
+                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET.value(),
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
                 } else {
-                    Helpers.promiseResolveError(promise, status, PaymentError.getErrorMessage(status));
+                    Helpers.promiseResolveError(promise, paymentError.value(), PaymentError.getErrorMessage(paymentError));
                 }
             }
 
@@ -158,7 +158,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseCancel() {
                 Timber.d("pay onResponseCancel");
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL,
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(),
                         PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
             }
 
@@ -196,7 +196,8 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         DialogInterface.OnCancelListener onCancelListener = new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(),
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
                 dialog.dismiss();
             }
         };
@@ -273,11 +274,11 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "submitToSendBundle throw NumberFormatException");
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, "Invalid bundleId");
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), "Invalid bundleId");
             return;
         }
         if (bundleID <= 0) {
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, "Invalid bundleId");
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), "Invalid bundleId");
             return;
         }
 
@@ -334,7 +335,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         DialogInterface.OnCancelListener onCancelListener = new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
                 dialog.dismiss();
             }
         };
@@ -393,12 +394,12 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             bundleID = Long.valueOf(strBundleID);
         } catch (NumberFormatException e) {
             Timber.e(e, "openPacket throw NumberFormatException");
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
         Timber.d("openPacket after cast packageID [%s] bundleID [%s]", packageID, bundleID);
         if (packageID <= 0 || bundleID <= 0) {
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
             return;
         }
         Subscription subscription = mRedPackageRepository.submitOpenPackage(packageID, bundleID)
