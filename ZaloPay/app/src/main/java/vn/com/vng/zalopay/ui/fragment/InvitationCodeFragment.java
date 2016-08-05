@@ -8,11 +8,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.view.ViewCompat;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 
@@ -31,6 +35,7 @@ import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
+import vn.vng.uicomponent.widget.KeyboardFrameLayout;
 import vn.vng.uicomponent.widget.button.GuardButton;
 
 /**
@@ -65,8 +70,19 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @BindView(R.id.lb_invite)
     TextView mTvInviteView;
 
+    @BindView(R.id.rootView)
+    KeyboardFrameLayout mRootView;
 
     int invitationCodeLength = 8;
+
+    @BindView(R.id.iv_logo)
+    ImageView mLogoView;
+
+    @BindView(R.id.scrollView)
+    ScrollView mScrollView;
+
+    @BindView(R.id.container)
+    View mContainerView;
 
     @Override
     protected int getResLayoutId() {
@@ -92,6 +108,39 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         if (Build.VERSION.SDK_INT >= 21) {
             mILCodeView.setLetterSpacing(0.7f);
         }
+
+
+        mRootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+            @Override
+            public void onKeyBoardShow(int height) {
+
+                int childHeight = mContainerView.getHeight();
+
+
+                boolean isScrollable = mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
+
+
+                Timber.d("onKeyBoardShow: height %s childHeight %s isScrollable %s", height, childHeight, isScrollable);
+
+                if (isScrollable) {
+                    ViewCompat.setPivotX(mLogoView, mLogoView.getWidth() / 2);
+                    ViewCompat.setScaleX(mLogoView, 0.89f);
+
+                    ViewCompat.setPivotY(mLogoView, mLogoView.getHeight());
+                    ViewCompat.setScaleY(mLogoView, 0.89f);
+                } else {
+                    ViewCompat.setScaleX(mLogoView, 1f);
+                    ViewCompat.setScaleY(mLogoView, 1f);
+                }
+            }
+
+            @Override
+            public void onKeyBoardHide() {
+                ViewCompat.setScaleX(mLogoView, 1f);
+                ViewCompat.setScaleY(mLogoView, 1f);
+                Timber.d("onKeyBoardHide");
+            }
+        });
     }
 
     @OnTextChanged(R.id.passCodeInput)
@@ -191,4 +240,9 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
             Timber.d("Could not find any invitation code");
         }
     }
+
+
+  /*  ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
+    int childHeight = ((LinearLayout)findViewById(R.id.scrollContent)).getHeight();
+    boolean isScrollable = scrollView.getHeight() < childHeight + scrollView.getPaddingTop() + scrollView.getPaddingBottom();*/
 }
