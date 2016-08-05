@@ -53,7 +53,7 @@ public class PaymentWrapper {
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
         public void onComplete(ZPPaymentResult pPaymentResult) {
-            Timber.d("onComplete");
+            Timber.d("pay onComplete pPaymentResult [%s]", pPaymentResult);
             if (pPaymentResult == null) {
                 if (NetworkHelper.isNetworkAvailable(viewListener.getActivity())) {
                     responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
@@ -62,6 +62,7 @@ public class PaymentWrapper {
                 }
             } else {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
+                Timber.d("pay onComplete resultStatus [%s]", resultStatus);
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
 
                     responseListener.onResponseSuccess(pPaymentResult);
@@ -109,14 +110,14 @@ public class PaymentWrapper {
 
         @Override
         public void onCancel() {
-            Timber.d("onCancel");
+            Timber.d("pay onCancel");
 
             responseListener.onResponseCancel();
         }
 
         @Override
         public void onSMSCallBack(String appTransID) {
-            Timber.d("onSMSCallBack");
+            Timber.d("pay onSMSCallBack");
         }
     };
 
