@@ -10,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.List;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -22,10 +21,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.Enums;
@@ -50,8 +47,6 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     private final Parser parser;
     private final UserConfig userConfig;
-
-    private boolean isAuthenticated;
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
@@ -119,18 +114,12 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     @Override
     public boolean isConnected() {
-        if (mChannel != null) {
-            return mChannel.isActive();
-        }
-        return false;
+        return mChannel != null && mChannel.isActive();
     }
 
     @Override
     public boolean isConnecting() {
-        if (mChannel != null) {
-            return mChannel.isOpen();
-        }
-        return false;
+        return mChannel != null && mChannel.isOpen();
     }
 
     @Override
@@ -156,6 +145,7 @@ public class WsConnection extends Connection implements ConnectionListener {
                 mChannel.writeAndFlush(bufTemp.array());
                 return true;
             } catch (Exception ex) {
+                Timber.e(ex, "send message to server socket error");
             }
         }
 
@@ -232,10 +222,6 @@ public class WsConnection extends Connection implements ConnectionListener {
         return send(ZPMsgProtos.MessageType.AUTHEN_LOGIN.getNumber(), loginMsg.build());
     }
 
-    public boolean isAuthenticated() {
-        return isAuthenticated;
-    }
-
     public boolean sendAuthentication() {
         if (userConfig.hasCurrentUser()) {
             User user = userConfig.getCurrentUser();
@@ -252,6 +238,7 @@ public class WsConnection extends Connection implements ConnectionListener {
         try {
             uid = Long.parseLong(userConfig.getCurrentUser().uid);
         } catch (Exception ex) {
+            Timber.d("parse uid exception %s");
         }
 
         if (mtaid <= 0 && mtuid <= 0) {

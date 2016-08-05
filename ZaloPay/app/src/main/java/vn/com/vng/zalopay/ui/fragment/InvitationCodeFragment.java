@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputFilter;
@@ -87,7 +88,9 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         mButtonContinueView.setEnabled(mILCodeView.length() == invitationCodeLength);
         mButtonContinueView.registerAvoidMultipleRapidClicks();
 
-       // mILCodeView.setLetterSpacing();
+        if (Build.VERSION.SDK_INT >= 21) {
+            mILCodeView.setLetterSpacing(2);
+        }
     }
 
     @OnTextChanged(R.id.passCodeInput)

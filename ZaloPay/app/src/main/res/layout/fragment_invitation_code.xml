@@ -13,6 +13,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -20,7 +21,7 @@
                 android:layout_width="190dp"
                 android:layout_height="209dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="96dp"
+                android:layout_marginBottom="86dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_invitation_code" />
@@ -30,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="38dp"
+                android:layout_marginTop="44dp"
                 android:gravity="center"
                 android:text="@string/label_invitation_code"
                 android:textColor="@color/txt_item_sub"
@@ -42,7 +43,7 @@
                 android:layout_width="278dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="96dp"
+                android:layout_marginTop="104dp"
                 android:background="@drawable/edt_border_invitation"
                 android:gravity="center"
                 android:inputType="numberDecimal"
@@ -60,5 +61,5 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@drawable/bg_btn_blue"
-        android:text="Xác nhận" />
+        android:text="Xác Nhận" />
 </FrameLayout>
