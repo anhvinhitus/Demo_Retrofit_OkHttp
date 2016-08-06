@@ -127,6 +127,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     Timber.d("loadGatewayInfoPaymentSDK onError null");
                 }
             }
+
+            @Override
+            public void onUpVersion(String s, String s1) {
+                
+            }
         });
     }
 
