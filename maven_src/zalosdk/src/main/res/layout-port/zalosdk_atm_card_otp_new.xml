@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aa000000"
+    android:padding="10dp" >
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/zalosdk_round_corner" >
+
+        <include
+            android:id="@+id/zalosdk_header"
+            layout="@layout/zalosdk_header" />
+
+        <include
+            android:id="@+id/payment_method_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/zalosdk_header"
+            layout="@layout/payment_method_container" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/payment_method_container"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/payment_group_button_submit_height"
+            android:fillViewport="true"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/view_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="7dip" >
+
+                    <EditText
+                        android:id="@+id/zalosdk_otp_ctl"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/zalosdk_otp_note_ctl"
+                        android:layout_marginTop="3dip"
+                        android:background="@drawable/zalosdk_border06"
+                        android:hint="@string/zalosdk_otp"
+                        android:imeOptions="actionNext|flagNoExtractUi"
+                        android:inputType="textNoSuggestions"
+                        android:maxLength="12"
+                        android:padding="10dip"
+                        android:singleLine="true"
+                        android:textColor="#292f33"
+                        android:textSize="@dimen/sdk_form_input_size" />
+
+                    <LinearLayout
+                        android:id="@+id/captcha_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/zalosdk_otp_ctl"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal" >
+
+                        <EditText
+                            android:id="@+id/zalosdk_captchar_ctl"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/zalosdk_border06"
+                            android:hint="@string/zalosdk_captchar_inputing"
+                            android:imeOptions="actionGo|flagNoExtractUi"
+                            android:inputType="textNoSuggestions"
+                            android:maxLength="12"
+                            android:padding="10dip"
+                            android:singleLine="true"
+                            android:textColor="#292f33"
+                            android:textSize="@dimen/sdk_form_input_size" />
+
+                        <ImageView
+                            android:id="@+id/zalosdk_captchar_img_ctl"
+                            android:layout_width="0dp"
+                            android:layout_height="35dip"
+                            android:layout_marginLeft="2dp"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/zalosdk_app_name"
+                            android:scaleType="fitCenter" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/payment_group_button_submit_height"
+            android:layout_alignParentBottom="true"
+            layout="@layout/zalosdk_button_submit_module" />
+    </RelativeLayout>
+
+</RelativeLayout>

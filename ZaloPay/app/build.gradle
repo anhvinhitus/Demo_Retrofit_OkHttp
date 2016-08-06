@@ -346,12 +346,12 @@ dependencies {
     compile libs.zalopay_analytics
     compile ('vn.com.vng.zalopay:qrcodecore:1.0')
     compile ('vn.com.vng.zalopay:rnmodules:1.0')
+    compile ('com.zalo:zalosdk:1.1.0328')
 
     compile(name: 'WALLET-release', ext: 'aar')
     compile(name: 'soundtranscoder-release', ext: 'aar')
 
     debugCompile project(':zalopay.debug')
-    compile project(':zalosdk')
     compile project(':data')
     compile project(':uicomponent')
     compile project(':moduledynamicloading')
