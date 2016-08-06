@@ -19,7 +19,7 @@
     <dependency>
       <groupId>com.facebook.react</groupId>
       <artifactId>react-native</artifactId>
-      <version>0.27.2</version>
+      <version>0.31.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

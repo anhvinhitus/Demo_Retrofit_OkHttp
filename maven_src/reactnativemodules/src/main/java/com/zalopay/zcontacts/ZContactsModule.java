@@ -78,6 +78,16 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
         }
     }
 
+    /**
+     * Called when a new intent is passed to the activity
+     *
+     * @param intent
+     */
+    @Override
+    public void onNewIntent(Intent intent) {
+        Timber.d("onNewIntent called from based");
+    }
+    
     @ReactMethod
     public void openContacts(Callback successCallback, Callback cancelCallback) {
         Activity currentActivity = getCurrentActivity();
