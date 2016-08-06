@@ -35,8 +35,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 10
-        versionName "1.9.1"
+        versionCode 11
+        versionName "2.0.1"
 
         multiDexEnabled true
 
@@ -345,7 +345,12 @@ dependencies {
     releaseCompile libs.debugViewer_noops
     compile libs.zalopay_analytics
     compile ('vn.com.vng.zalopay:qrcodecore:1.0')
-    compile ('vn.com.vng.zalopay:rnmodules:1.0')
+    compile ('vn.com.vng.zalopay:rnmodules:1.0') {
+        exclude module: 'bolts-android'
+    }
+    compile (libs.react_native) {
+        exclude module: 'bolts-android'
+    }
     compile ('com.zalo:zalosdk:1.1.0328')
 
     compile(name: 'WALLET-release', ext: 'aar')
@@ -354,7 +359,9 @@ dependencies {
     debugCompile project(':zalopay.debug')
     compile project(':data')
     compile project(':uicomponent')
-    compile project(':moduledynamicloading')
+    compile (project(':moduledynamicloading')) {
+        exclude group: 'com.parse.bolts', module: 'bolts-android'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

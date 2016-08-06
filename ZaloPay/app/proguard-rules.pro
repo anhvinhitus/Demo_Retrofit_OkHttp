@@ -32,12 +32,22 @@
 # (unless you are using a system that supports de-obfuscate the stack traces).
 -dontobfuscate
 
+-keep class vn.com.vng.zalopay.react.** { *; }
+-keep class vn.com.vng.zalopay.domain.** { *; }
+-keep class vn.com.vng.zalopay.data.** { *; }
+-keep class vn.com.vng.zalopay.event.** { *; }
+
 # React Native
 
 # Keep our interfaces so they can be used by other ProGuard rules.
 # See http://sourceforge.net/p/proguard/bugs/466/
 -keep,allowobfuscation @interface com.facebook.proguard.annotations.DoNotStrip
 -keep,allowobfuscation @interface com.facebook.proguard.annotations.KeepGettersAndSetters
+-keep class com.facebook.react.bridge.Promise
+-keep class com.facebook.react.bridge.ReadableMap
+-keep class com.facebook.react.bridge.ReadableArray
+
+-dontwarn bolts.**
 
 # Do not strip any method/class that is annotated with @DoNotStrip
 -keep @com.facebook.proguard.annotations.DoNotStrip class *
