@@ -19,7 +19,7 @@ public enum Level {
 
     private int mValue;
 
-    private Level(int value) {
+    Level(int value) {
         mValue = value;
     }
 }

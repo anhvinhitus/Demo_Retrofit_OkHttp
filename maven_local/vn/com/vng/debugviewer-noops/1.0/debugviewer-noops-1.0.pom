@@ -15,12 +15,4 @@
       <name>Nguyen Huu Hoa</name>
     </developer>
   </developers>
-  <dependencies>
-    <dependency>
-      <groupId>com.android.support</groupId>
-      <artifactId>appcompat-v7</artifactId>
-      <version>23.2.1</version>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
 </project>
