@@ -246,7 +246,14 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
     @Subscribe
     public void onGetTransactionComplete(TransactionChangeEvent event) {
-        sendEvent("zalopayTransactionAdded");
+
+        Timber.d("get transaction complete");
+
+        String eventName = "zalopayTransactionSuccessAdded";
+        if (!event.typeSuccess) {
+            eventName = "zalopayTransactionFailAdded";
+        }
+        sendEvent(eventName);
     }
 
 

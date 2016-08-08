@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.transaction;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +12,9 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
+import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
@@ -25,6 +29,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     private TransactionStore.RequestService mTransactionRequestService;
     private User mUser;
     private final SqlZaloPayScope mSqlZaloPayScope;
+    private final EventBus mEventBus;
 
     private static final int TRANSACTION_STATUS_SUCCESS = 1;
     private static final int TRANSACTION_STATUS_FAIL = 2;
@@ -35,12 +40,15 @@ public class TransactionRepository implements TransactionStore.Repository {
             User user,
             SqlZaloPayScope sqlZaloPayScope,
             TransactionStore.LocalStorage transactionLocalStorage,
-            TransactionStore.RequestService transactionRequestService) {
+            TransactionStore.RequestService transactionRequestService,
+            EventBus eventBus) {
+
         this.zaloPayEntityDataMapper = zaloPayEntityDataMapper;
         mUser = user;
         mSqlZaloPayScope = sqlZaloPayScope;
         mTransactionLocalStorage = transactionLocalStorage;
         mTransactionRequestService = transactionRequestService;
+        mEventBus = eventBus;
     }
 
     @Override
@@ -95,18 +103,21 @@ public class TransactionRepository implements TransactionStore.Repository {
                     if (response.data.size() >= count) {
                         transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, statusType);
                     } else {
-                        setLoadedTransaction(statusType);
+                        onLoadedTransactionComplete(statusType);
                     }
                 })
                 .subscribe(new DefaultSubscriber<>());
     }
 
-    private void setLoadedTransaction(int statusType) {
-        if (statusType == TRANSACTION_STATUS_FAIL) {
-            mTransactionLocalStorage.setLoadedTransactionFail(true);
-        } else {
+    private void onLoadedTransactionComplete(int statusType) {
+
+        boolean typeSuccess = statusType == TRANSACTION_STATUS_SUCCESS;
+        if (typeSuccess) {
             mTransactionLocalStorage.setLoadedTransactionSuccess(true);
+        } else {
+            mTransactionLocalStorage.setLoadedTransactionFail(true);
         }
+        mEventBus.post(new TransactionChangeEvent(typeSuccess));
     }
 
     private void writeTransactionResp(TransactionHistoryResponse response, int statusType) {
