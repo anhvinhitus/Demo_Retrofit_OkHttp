@@ -160,6 +160,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseTokenInvalid() {
                 Timber.d("pay onResponseTokenInvalid");
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(), null);
             }
 
             @Override
@@ -172,6 +173,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onNotEnoughMoney() {
                 Timber.d("pay onNotEnoughMoney");
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_MONEY_NOT_ENOUGH.value(), null);
             }
         });
     }
