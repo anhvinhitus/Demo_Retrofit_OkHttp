@@ -149,12 +149,6 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-    @ReactMethod
-    public void trackEvent(Integer eventId) {
-        Timber.d("trackEvent eventId %s", eventId);
-        ZPAnalytics.trackEvent(eventId);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
