@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -26,8 +28,12 @@ public class UserTransactionModule {
                                                              User user,
                                                              SqlZaloPayScope sqlZaloPayScope,
                                                              TransactionStore.LocalStorage transactionLocalStorage,
-                                                             TransactionStore.RequestService transactionRequestService) {
-        return new TransactionRepository(zaloPayEntityDataMapper, user, sqlZaloPayScope, transactionLocalStorage, transactionRequestService);
+                                                             TransactionStore.RequestService transactionRequestService,
+                                                             EventBus eventBus) {
+        return new TransactionRepository(zaloPayEntityDataMapper,
+                user, sqlZaloPayScope,
+                transactionLocalStorage,
+                transactionRequestService, eventBus);
     }
 
 

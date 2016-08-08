@@ -88,11 +88,13 @@ public class WsConnection extends Connection implements ConnectionListener {
                     mChannel = channelFuture.sync().channel();
                     mState = Connection.State.Connecting;
                 } catch (InterruptedException e) {
-                    Timber.e(e, "InterruptedException");
+                    Timber.e(e, "Connect socket error with InterruptedException");
                     mState = Connection.State.Disconnected;
+                    WsConnection.this.onError(e);
                 } catch (Exception e) {
-                    Timber.e(e, "Connect ws Exception");
+                    Timber.e(e, "Connect socket exception");
                     mState = Connection.State.Disconnected;
+                    WsConnection.this.onError(e);
                 }
             }
         }.start();
