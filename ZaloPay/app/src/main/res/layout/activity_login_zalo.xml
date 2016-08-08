@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:text="@string/no.need.cash.anymore"
+                android:text="@string/slogan"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"/>
         </LinearLayout>

@@ -232,7 +232,7 @@
     <string name="accept">Đồng ý</string>
     <string name="cancel">Huỷ</string>
     <string name="accept.card">Chấp nhận thẻ</string>
-    <string name="no.need.cash.anymore">Chẳng Cần Tiền Mặt Nữa</string>
+    <string name="slogan">Thanh toán trong <font size='18'>2</font> giây</string>
 
     <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
     <string name="lbl.update.profile.3.page.1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
