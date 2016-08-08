@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.react;
 
 import android.content.Intent;
+import android.util.Pair;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -11,19 +12,28 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
+import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 5/8/16.
@@ -31,14 +41,15 @@ import vn.com.vng.zalopay.domain.model.TransHistory;
 public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private TransactionStore.Repository mRepository;
-
+    private final EventBus mEventBus;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository) {
+    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository, EventBus eventBus) {
         super(reactContext);
         this.mRepository = repository;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
+        this.mEventBus = eventBus;
     }
 
     @Override
@@ -47,29 +58,44 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getTransactions(int pageIndex, int count, Promise promise) {
+    public void getTransactions(final int pageIndex, int count, final Promise promise) {
 
         Timber.d("get transaction index %s count %s", pageIndex, count);
 
         Subscription subscription = mRepository.getTransactions(pageIndex, count)
-                .map(new Func1<List<TransHistory>, WritableArray>() {
+
+                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
-                    public WritableArray call(List<TransHistory> transHistories) {
-                        return transform(transHistories);
+                    public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
+                        int code = PaymentError.ERR_CODE_SUCCESS.value();
+                        if (Lists.isEmptyOrNull(transactions) && pageIndex == 1) {
+                            boolean isLoad = mRepository.isLoadedTransactionSuccess();
+                            if (!isLoad) {
+                                code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                            }
+                        }
+                        return new Pair<>(code, transform(transactions));
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
-
         compositeSubscription.add(subscription);
     }
 
     @ReactMethod
-    public void getTransactionsFail(int pageIndex, int count, Promise promise) {
+    public void getTransactionsFail(final int pageIndex, int count, Promise promise) {
         Subscription subscription = mRepository.getTransactionsFail(pageIndex, count)
-                .map(new Func1<List<TransHistory>, WritableArray>() {
+                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
-                    public WritableArray call(List<TransHistory> transHistories) {
-                        return transform(transHistories);
+                    public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
+                        int code = PaymentError.ERR_CODE_SUCCESS.value();
+                        if (Lists.isEmptyOrNull(transactions) && pageIndex == 1) {
+                            boolean isLoad = mRepository.isLoadedTransactionFail();
+                            if (!isLoad) {
+                                code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                            }
+                        }
+
+                        return new Pair<>(code, transform(transactions));
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
@@ -90,19 +116,21 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
             promise.reject("-1", "Invalid input");
             return;
         }
-        Subscription subscription = mRepository.getTransaction(value)
-                .map(new Func1<TransHistory, WritableArray>() {
 
+        Subscription subscription = mRepository.getTransaction(value)
+                .map(new Func1<TransHistory, Pair<Integer, WritableArray>>() {
                     @Override
-                    public WritableArray call(TransHistory transHistory) {
-                        return transform(Collections.singletonList(transHistory));
+                    public Pair<Integer, WritableArray> call(TransHistory transactions) {
+                        int code = PaymentError.ERR_CODE_SUCCESS.value();
+                        return new Pair<>(code, transform(Collections.singletonList(transactions)));
                     }
-                }).subscribe(new TransactionLogSubscriber(promise));
+                })
+                .subscribe(new TransactionLogSubscriber(promise));
 
         compositeSubscription.add(subscription);
     }
 
-    private class TransactionLogSubscriber extends DefaultSubscriber<WritableArray> {
+    private class TransactionLogSubscriber extends DefaultSubscriber<Pair<Integer, WritableArray>> {
 
         WeakReference<Promise> promiseWeakReference;
 
@@ -122,17 +150,15 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         }
 
         @Override
-        public void onNext(WritableArray writableArray) {
-
-            Timber.d("transaction log %s", writableArray);
-
-            if (promiseWeakReference == null) {
-                return;
-            }
-
+        public void onNext(Pair<Integer, WritableArray> resp) {
             Promise promise = promiseWeakReference.get();
-            promise.resolve(writableArray);
-            promiseWeakReference.clear();
+            if (promise != null) {
+                if (resp.first == PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
+                    Helpers.promiseResolveError(promise, resp.first, "transaction has not been loaded");
+                } else {
+                    Helpers.promiseResolveSuccess(promise, resp.second);
+                }
+            }
         }
     }
 
@@ -154,11 +180,13 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onHostResume() {
         Timber.d("onResume");
+        mEventBus.register(this);
     }
 
     @Override
     public void onHostPause() {
         Timber.d("onPause");
+        mEventBus.unregister(this);
     }
 
     @Override
@@ -206,4 +234,20 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         }
         return result;
     }
+
+    public void sendEvent(String eventName) {
+        ReactApplicationContext reactContext = getReactApplicationContext();
+        if (reactContext == null) {
+            return;
+        }
+
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
+    }
+
+    @Subscribe
+    public void onGetTransactionComplete(TransactionChangeEvent event) {
+        sendEvent("zalopayTransactionAdded");
+    }
+
+
 }

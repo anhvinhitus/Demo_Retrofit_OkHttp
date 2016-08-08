@@ -6,7 +6,7 @@ import timber.log.Timber;
  * Created by longlv on 16/05/2016.
  * Define error code & error message for PaymentWrapper
  */
-public enum  PaymentError {
+public enum PaymentError {
     ERR_CODE_FAIL(-1),
     ERR_CODE_UNKNOWN(0),
     ERR_CODE_SUCCESS(1),
@@ -18,7 +18,9 @@ public enum  PaymentError {
     ERR_CODE_SERVICE_MAINTENANCE(6),
     ERR_CODE_MONEY_NOT_ENOUGH(7),
     ERR_CODE_SYSTEM(5000),
-    ERR_CODE_USER_INFO(5001);
+    ERR_CODE_USER_INFO(5001),
+    ERR_CODE_TRANSACTION_NOT_LOADED(1000)
+    ;
 
     private int value;
 

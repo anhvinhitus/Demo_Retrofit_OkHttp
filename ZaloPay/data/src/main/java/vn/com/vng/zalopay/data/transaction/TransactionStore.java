@@ -25,6 +25,14 @@ public interface TransactionStore {
         Observable<TransHistoryEntity> getTransaction(long id);
 
         void updateStatusType(long transId, int statusType);
+
+        void setLoadedTransactionSuccess(boolean loaded);
+
+        void setLoadedTransactionFail(boolean loaded);
+
+        boolean isLoadedTransactionSuccess();
+
+        boolean isLoadedTransactionFail();
     }
 
     interface RequestService {
@@ -51,6 +59,10 @@ public interface TransactionStore {
         Observable<Boolean> updateTransactionSuccess();
 
         Observable<Boolean> updateTransactionStatusSuccess(long transId);
+
+        Boolean isLoadedTransactionSuccess();
+
+        Boolean isLoadedTransactionFail();
 
     }
 }

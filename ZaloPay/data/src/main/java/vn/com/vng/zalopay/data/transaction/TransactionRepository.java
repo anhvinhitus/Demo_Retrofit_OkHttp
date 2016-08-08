@@ -94,9 +94,19 @@ public class TransactionRepository implements TransactionStore.Repository {
                 .doOnNext(response -> {
                     if (response.data.size() >= count) {
                         transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, statusType);
+                    } else {
+                        setLoadedTransaction(statusType);
                     }
                 })
                 .subscribe(new DefaultSubscriber<>());
+    }
+
+    private void setLoadedTransaction(int statusType) {
+        if (statusType == TRANSACTION_STATUS_FAIL) {
+            mTransactionLocalStorage.setLoadedTransactionFail(true);
+        } else {
+            mTransactionLocalStorage.setLoadedTransactionSuccess(true);
+        }
     }
 
     private void writeTransactionResp(TransactionHistoryResponse response, int statusType) {
@@ -146,5 +156,15 @@ public class TransactionRepository implements TransactionStore.Repository {
             mTransactionLocalStorage.updateStatusType(transId, TRANSACTION_STATUS_SUCCESS);
             return Boolean.TRUE;
         });
+    }
+
+    @Override
+    public Boolean isLoadedTransactionSuccess() {
+        return mTransactionLocalStorage.isLoadedTransactionSuccess();
+    }
+
+    @Override
+    public Boolean isLoadedTransactionFail() {
+        return mTransactionLocalStorage.isLoadedTransactionFail();
     }
 }

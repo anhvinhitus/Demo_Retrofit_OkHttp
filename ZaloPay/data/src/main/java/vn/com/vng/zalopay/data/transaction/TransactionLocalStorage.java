@@ -6,6 +6,7 @@ import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -195,6 +196,26 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         TransactionLog transactionLog = queryTransactionById(transId);
         transactionLog.setStatustype(status);
         getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
+    }
+
+    @Override
+    public void setLoadedTransactionSuccess(boolean loaded) {
+        insertDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_SUCCESS, loaded ? String.valueOf(1) : String.valueOf(0));
+    }
+
+    @Override
+    public void setLoadedTransactionFail(boolean loaded) {
+        insertDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_FAIL, loaded ? String.valueOf(1) : String.valueOf(0));
+    }
+
+    @Override
+    public boolean isLoadedTransactionSuccess() {
+        return getDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_SUCCESS, 0) == 1;
+    }
+
+    @Override
+    public boolean isLoadedTransactionFail() {
+        return getDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_FAIL, 0) == 1;
     }
 }
 

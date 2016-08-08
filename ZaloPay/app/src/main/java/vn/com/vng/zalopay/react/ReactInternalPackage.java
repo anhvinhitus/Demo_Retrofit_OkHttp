@@ -31,7 +31,7 @@ import vn.com.vng.zalopay.mdl.zpmodal.ReactModalHostManager;
  */
 public class ReactInternalPackage implements ReactPackage {
 
-    private TransactionStore.Repository mRepository;
+    private TransactionStore.Repository mTransactionRepository;
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private BalanceStore.Repository mBalanceRepository;
@@ -56,7 +56,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 EventBus eventBus,
                                 ReactNativeInstanceManager reactNativeInstanceManager,
                                 UserConfig userConfig) {
-        this.mRepository = repository;
+        this.mTransactionRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;
@@ -75,7 +75,7 @@ public class ReactInternalPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator));
-        modules.add(new ReactTransactionLogsNativeModule(reactContext, mRepository));
+        modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mEventBus));
         modules.add(new RedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUserConfig, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));
         return modules;
