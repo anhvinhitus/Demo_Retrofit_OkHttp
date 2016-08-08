@@ -238,25 +238,20 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         return result;
     }
 
-    public void sendEvent(String eventName) {
+    public void sendEvent(String eventName, Object param) {
         ReactApplicationContext reactContext = getReactApplicationContext();
         if (reactContext == null) {
             return;
         }
 
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, param);
     }
 
     @Subscribe
     public void onGetTransactionComplete(TransactionChangeEvent event) {
-
-        Timber.d("get transaction complete");
-
-        String eventName = "zalopayTransactionsSuccessUpdate";
-        if (!event.typeSuccess) {
-            eventName = "zalopayTransactionsFailUpdate";
-        }
-        sendEvent(eventName);
+        WritableMap item = Arguments.createMap();
+        item.putInt("statusType", event.typeSuccess);
+        sendEvent("zalopayTransactionsUpdated", item);
     }
 
 

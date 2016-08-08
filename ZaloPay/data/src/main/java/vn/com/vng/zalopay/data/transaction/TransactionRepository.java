@@ -124,7 +124,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
 
         if (hasData) {
-            mEventBus.post(new TransactionChangeEvent(typeSuccess));
+            mEventBus.post(new TransactionChangeEvent(statusType));
         }
     }
 
