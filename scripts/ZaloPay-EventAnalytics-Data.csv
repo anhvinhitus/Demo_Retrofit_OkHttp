@@ -87,3 +87,5 @@ EventId,Category,Action
 1902,Notifications,Notifications_TapTransactionItem
 1903,Notifications,Notifications_TapProfileItem
 1904,Notifications,Notifications_TapPromotionItem
+2000,Timing Get Order,Timing_GetOrder
+2001,Timing Scan QR,Timing_ScanQR

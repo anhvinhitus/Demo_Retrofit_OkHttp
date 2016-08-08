@@ -94,6 +94,6 @@ cat = print_convert_category(data)
 
 en = print_zpevents(data, ac, cat)
 print(en)
-write_file('../ZaloPay/zalopayanalytics/src/main/java/vn/com/vng/zalopay/analytics/ZPEvents.java', en)
+write_file('../maven_src/zalopayanalytics/src/main/java/vn/com/vng/zalopay/analytics/ZPEvents.java', en)
 
 print("Done!")

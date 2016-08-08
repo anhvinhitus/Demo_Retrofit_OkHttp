@@ -92,6 +92,8 @@ public class ZPEvents {
     public static final int NOTIFICATIONS_TAPTRANSACTIONITEM = 1902;
     public static final int NOTIFICATIONS_TAPPROFILEITEM = 1903;
     public static final int NOTIFICATIONS_TAPPROMOTIONITEM = 1904;
+    public static final int TIMING_GETORDER = 2000;
+    public static final int TIMING_SCANQR = 2001;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -271,6 +273,10 @@ public class ZPEvents {
                 return "Notifications_TapProfileItem";
             case NOTIFICATIONS_TAPPROMOTIONITEM:
                 return "Notifications_TapPromotionItem";
+            case TIMING_GETORDER:
+                return "Timing_GetOrder";
+            case TIMING_SCANQR:
+                return "Timing_ScanQR";
             default:
                 return "DefaultAction";
         }
@@ -454,6 +460,10 @@ public class ZPEvents {
                 return "Notifications";
             case NOTIFICATIONS_TAPPROMOTIONITEM:
                 return "Notifications";
+            case TIMING_GETORDER:
+                return "Timing Get Order";
+            case TIMING_SCANQR:
+                return "Timing Scan QR";
             default:
                 return "DefaultCategory";
         }

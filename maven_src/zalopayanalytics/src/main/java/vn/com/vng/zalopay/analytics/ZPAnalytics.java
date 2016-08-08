@@ -35,6 +35,12 @@ public class ZPAnalytics {
         }
     }
 
+    public static void trackTiming(int eventId, long value) {
+        for (ZPTracker tracker : sTrackerList) {
+            tracker.trackTiming(eventId, value);
+        }
+    }
+
     public static void addTracker(ZPTracker tracker) {
         if (sTrackerList.contains(tracker)) {
             return;
@@ -74,6 +80,11 @@ public class ZPAnalytics {
         @Override
         public void trackScreen(String screenName) {
             Timber.tag("ZPAnalytics").d("Screen [%s]", screenName);
+        }
+
+        @Override
+        public void trackTiming(int eventId, long value) {
+            Timber.tag("ZPAnalytics").d("Timing [%s-%s]", eventId, value);
         }
     }
 }
