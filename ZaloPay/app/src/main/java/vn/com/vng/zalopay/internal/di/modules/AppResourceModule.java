@@ -52,6 +52,6 @@ public class AppResourceModule {
                                                         @Named("rootbundle") String rootBundle) {
         return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
-                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle);
+                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle, BuildConfig.VERSION_NAME);
     }
 }

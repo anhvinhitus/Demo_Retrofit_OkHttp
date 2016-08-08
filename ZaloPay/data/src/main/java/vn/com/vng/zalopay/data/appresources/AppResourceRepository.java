@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.data.appresources;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -14,8 +13,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 /**
  * Created by huuhoa on 6/17/16.
@@ -32,6 +31,7 @@ public class AppResourceRepository implements AppResource.Repository {
     private final String mRootBundle;
     private final AppResource.RequestService mRequestService;
     private final AppResource.LocalStorage mLocalStorage;
+    private String appVersion;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResource.RequestService requestService,
@@ -40,7 +40,8 @@ public class AppResourceRepository implements AppResource.Repository {
                                  DownloadAppResourceTaskQueue taskQueue,
                                  OkHttpClient okHttpClient,
                                  boolean download,
-                                 String rootBundle) {
+                                 String rootBundle,
+                                 String appVersion) {
         this.mAppConfigEntityDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
@@ -49,6 +50,7 @@ public class AppResourceRepository implements AppResource.Repository {
         this.taskQueue = taskQueue;
         this.mOkHttpClient = okHttpClient;
         this.mDownloadAppResource = download;
+        this.appVersion = appVersion;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class AppResourceRepository implements AppResource.Repository {
 
         Timber.d("appIds react-native list %s", appIds);
 
-        return mRequestService.insideappresource(appIds, checksumlist.toString(), mRequestParameters)
+        return mRequestService.insideappresource(appIds, checksumlist.toString(), mRequestParameters, appVersion)
                 .doOnNext(this::processAppResourceResponse)
                 ;
     }
