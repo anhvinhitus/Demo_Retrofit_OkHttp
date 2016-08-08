@@ -209,7 +209,7 @@ public class NotificationHelper {
 
         String title = context.getString(R.string.app_name);
         String message = String.format(context.getString(R.string.you_have_unread_messages), numberUnread);
-        int notificationId = 200;
+        int notificationId = 1;
         Intent intent = new Intent(context, NotificationActivity.class);
 
         this.create(context, notificationId,
