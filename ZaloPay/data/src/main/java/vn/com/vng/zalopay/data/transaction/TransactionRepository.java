@@ -86,30 +86,35 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     public void reloadListTransactionSync(int count, int statusType) {
-        long lastUpdated = 0;
+        long lastUpdated;
         if (statusType == TRANSACTION_STATUS_FAIL) {
             lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION_FAIL, 0);
         } else {
             lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
         }
-        transactionHistoryServer(lastUpdated, count, 1, statusType);
+        transactionHistoryServer(lastUpdated, count, 1, statusType, 0);
     }
 
-    private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, int statusType) {
-        Timber.d("transactionHistoryServer %s ", timestamp);
+    private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, int statusType, int deep) {
+        Timber.d("get transaction from server %s ", timestamp);
         mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, sortOrder, statusType)
-                .doOnNext(transactionHistoryResponse -> writeTransactionResp(transactionHistoryResponse, statusType))
+                .doOnNext(response -> writeTransactionResp(response, statusType))
                 .doOnNext(response -> {
-                    if (response.data.size() >= count) {
-                        transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, statusType);
+                    int size = response.data.size();
+                    if (size >= count) {
+                        transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, statusType, deep + 1);
                     } else {
-                        onLoadedTransactionComplete(statusType);
+
+                        boolean hasData = (size == 0 && timestamp == 0) // Update Ui cho lần đâu tiên.
+                                || size > 0 || deep > 0;
+
+                        onLoadedTransactionComplete(statusType, hasData);
                     }
                 })
                 .subscribe(new DefaultSubscriber<>());
     }
 
-    private void onLoadedTransactionComplete(int statusType) {
+    private void onLoadedTransactionComplete(int statusType, boolean hasData) {
 
         boolean typeSuccess = statusType == TRANSACTION_STATUS_SUCCESS;
         if (typeSuccess) {
@@ -117,7 +122,10 @@ public class TransactionRepository implements TransactionStore.Repository {
         } else {
             mTransactionLocalStorage.setLoadedTransactionFail(true);
         }
-        mEventBus.post(new TransactionChangeEvent(typeSuccess));
+
+        if (hasData) {
+            mEventBus.post(new TransactionChangeEvent(typeSuccess));
+        }
     }
 
     private void writeTransactionResp(TransactionHistoryResponse response, int statusType) {

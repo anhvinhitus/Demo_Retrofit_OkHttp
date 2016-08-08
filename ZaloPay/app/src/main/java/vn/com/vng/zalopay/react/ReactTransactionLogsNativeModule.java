@@ -58,9 +58,9 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getTransactions(final int pageIndex, int count, final Promise promise) {
+    public void getTransactionsSuccess(final int pageIndex, int count, final Promise promise) {
 
-        Timber.d("get transaction index %s count %s", pageIndex, count);
+        Timber.d("get transaction success index %s count %s", pageIndex, count);
 
         Subscription subscription = mRepository.getTransactions(pageIndex, count)
 
@@ -68,7 +68,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
                         int code = PaymentError.ERR_CODE_SUCCESS.value();
-                        if (Lists.isEmptyOrNull(transactions) && pageIndex == 1) {
+                        if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
                             boolean isLoad = mRepository.isLoadedTransactionSuccess();
                             if (!isLoad) {
                                 code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
@@ -83,12 +83,15 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getTransactionsFail(final int pageIndex, int count, Promise promise) {
+
+        Timber.d("get transaction fail index %s count %s", pageIndex, count);
+
         Subscription subscription = mRepository.getTransactionsFail(pageIndex, count)
                 .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
                         int code = PaymentError.ERR_CODE_SUCCESS.value();
-                        if (Lists.isEmptyOrNull(transactions) && pageIndex == 1) {
+                        if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
                             boolean isLoad = mRepository.isLoadedTransactionFail();
                             if (!isLoad) {
                                 code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
@@ -249,9 +252,9 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
 
         Timber.d("get transaction complete");
 
-        String eventName = "zalopayTransactionSuccessAdded";
+        String eventName = "zalopayTransactionsSuccessUpdate";
         if (!event.typeSuccess) {
-            eventName = "zalopayTransactionFailAdded";
+            eventName = "zalopayTransactionsFailUpdate";
         }
         sendEvent(eventName);
     }
