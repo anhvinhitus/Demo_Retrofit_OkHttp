@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
@@ -417,7 +418,9 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                     public void onError(Throwable e) {
                         Timber.w(e, "error on openPacket");
                         super.onError(e);
-                        mRedPackageRepository.setPacketStatus(packageID, 0, RedPacketStatus.Invalid.getValue()).subscribe(new DefaultSubscriber<Void>());
+                        if (e instanceof BodyException) {
+                            mRedPackageRepository.setPacketStatus(packageID, 0, RedPacketStatus.Invalid.getValue()).subscribe(new DefaultSubscriber<Void>());
+                        }
                     }
 
                     @Override
