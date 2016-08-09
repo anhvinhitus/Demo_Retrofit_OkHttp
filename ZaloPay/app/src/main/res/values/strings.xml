@@ -24,6 +24,8 @@
     <string name="notification">Thông báo</string>
     <string name="transaction">Giao dịch</string>
 
+    <string name="overbalance">Số Dư</string>
+
     <string name="transfer.money">Chuyển Tiền</string>
     <string name="recharge.money.phone">Nạp Tiền \nĐiện Thoại</string>
     <string name="bill">Hoá đơn</string>
@@ -109,7 +111,7 @@
     <string name="txt_home_qrcode">Quét Mã QR</string>
     <string name="txt_home_deposit">Nạp Tiền</string>
     <string name="txt_home_link_card">Lưu Thẻ</string>
-    <string name="txt_home_scantopay">Trả Tiền</string>
+    <string name="txt_home_scantopay">Thanh Toán</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -180,7 +182,7 @@
     <string name="hint_fullname">Họ tên</string>
 
     <string name="show_passcode">Hiện mã PIN?</string>
-    <string name="title_activity_scan_to_pay">Trả tiền</string>
+    <string name="title_activity_scan_to_pay">Thanh toán</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="btn_emulate_nfc">Giả lập Nfc</string>
 

@@ -15,6 +15,7 @@ import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
@@ -36,23 +37,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void setView(IZaloPayView o) {
         this.mZaloPayView = o;
         eventBus.register(this);
-
-      /*  ConnectableObservable<Object> notifyEmitter = rxBus.toObserverable().publish();
-
-        compositeSubscription
-                .add(notifyEmitter.publish(new Func1<Observable<Object>, Observable<List<Object>>>() {
-                    @Override
-                    public Observable<List<Object>> call(Observable<Object> stream) {
-                        return stream.buffer(stream.debounce(1, TimeUnit.SECONDS));
-                    }
-                }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<Object>>() {
-                    @Override
-                    public void call(List<Object> taps) {
-
-                    }
-                }));
-
-        compositeSubscription.add(notifyEmitter.connect());*/
     }
 
     @Override
@@ -79,6 +63,17 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void initialize() {
         this.getTotalNotification(2000);
         this.listAppResource();
+        this.getBalance();
+    }
+
+    @Override
+    public void getBalance() {
+        Subscription subscription = balanceRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BalanceSubscriber());
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -126,6 +121,22 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     }
 
+    private class BalanceSubscriber extends DefaultSubscriber<Long> {
+        public BalanceSubscriber() {
+        }
+
+        @Override
+        public void onNext(Long aLong) {
+            ZaloPayPresenterImpl.this.onGetBalanceSuccess(aLong);
+        }
+    }
+
+    private void onGetBalanceSuccess(Long balance) {
+        Timber.d("onGetBalanceSuccess %s", balance);
+        mZaloPayView.setBalance(balance);
+    }
+
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChange(NetworkChangeEvent event) {
         if (!event.isOnline && mZaloPayView != null) {
@@ -147,6 +158,14 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         getTotalNotification(0);
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChangeEvent(ChangeBalanceEvent event) {
+        if (mZaloPayView != null) {
+            mZaloPayView.setBalance(event.balance);
+        }
+    }
+
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
         @Override
         public void onNext(Integer integer) {
@@ -155,16 +174,5 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 mZaloPayView.setTotalNotify(integer);
             }
         }
-
-        @Override
-        public void onError(Throwable e) {
-        }
-
-        @Override
-        public void onCompleted() {
-            super.onCompleted();
-            Timber.d("notification subscription got complete signal");
-        }
     }
-
 }

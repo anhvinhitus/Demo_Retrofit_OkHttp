@@ -13,4 +13,6 @@ public interface IZaloPayView {
     void setTotalNotify(int total);
 
     void showNetworkError();
+
+    void setBalance(long balance);
 }

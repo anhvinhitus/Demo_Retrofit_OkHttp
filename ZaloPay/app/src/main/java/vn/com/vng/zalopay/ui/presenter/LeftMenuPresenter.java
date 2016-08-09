@@ -56,9 +56,10 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void initializeZaloPay() {
-        transactionRepository.initialize()
+        Subscription subscription = transactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -151,4 +152,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
             this.initializeZaloPay();
         }
     }
+
+
 }

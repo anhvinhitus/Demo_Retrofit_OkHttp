@@ -43,6 +43,7 @@ import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.vng.uicomponent.widget.textview.RoundTextView;
 
 /**
@@ -88,6 +89,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @BindView(R.id.listView)
     RecyclerView listView;
+
+    @BindView(R.id.tv_balance)
+    TextView mBalanceView;
 
     /*
     * View của menu
@@ -229,11 +233,17 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
     }
 
-    @OnClick(R.id.btn_qr_code)
+ /*   @OnClick(R.id.btn_balance)
     public void onBtnQrCodeClick() {
         startQRCodeActivity();
         ZPAnalytics.trackEvent(ZPEvents.TAPSCANQR);
     }
+       private void startQRCodeActivity() {
+        if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
+            getAppComponent().monitorTiming().startEvent(MonitorEvents.QR_SCANNING);
+            navigator.startQrCodeActivity(getActivity());
+        }
+    }*/
 
     @OnClick(R.id.btn_scan_to_pay)
     public void onScanToPayClick(View view) {
@@ -241,13 +251,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
         getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
         navigator.startScanToPayActivity(getActivity());
-    }
-
-    private void startQRCodeActivity() {
-        if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
-            getAppComponent().monitorTiming().startEvent(MonitorEvents.QR_SCANNING);
-            navigator.startQrCodeActivity(getActivity());
-        }
     }
 
     //Test
@@ -278,6 +281,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 }
             }
         }
+    }
+
+    @Override
+    public void setBalance(long balance) {
+        mBalanceView.setText(CurrencyUtil.formatCurrency(balance));
     }
 
     @Override

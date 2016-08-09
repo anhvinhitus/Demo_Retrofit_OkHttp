@@ -7,4 +7,6 @@ public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView>
     void initialize();
 
     void listAppResource();
+
+    void getBalance();
 }

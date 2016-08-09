@@ -49,10 +49,10 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
     private static final int TAB_TOTAL = 3;
-    private static final int TAB_NFC = 0;
+    private static final int TAB_NFC = 1;
     private static final int TAB_BEACON = 2;
     private static final int TAB_SOUND = 3;
-    private static final int TAB_QR = 1;
+    private static final int TAB_QR = 0;
 
     /**
      * The {@link ViewPager} that will host the section contents.
