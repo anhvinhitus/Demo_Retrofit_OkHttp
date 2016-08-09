@@ -75,7 +75,6 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
 
             @Override
             public void onResponseTokenInvalid() {
-
                 if (mView == null) {
                     return;
                 }
@@ -84,8 +83,14 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
             }
 
             @Override
-            public void onResponseCancel() {
-
+            public void onAppError(String msg) {
+                if (mView == null) {
+                    return;
+                }
+                if (mView.getContext() != null) {
+                    mView.showError(mView.getContext().getString(R.string.exception_generic));
+                }
+                mView.hideLoading();
             }
 
             @Override
@@ -103,7 +108,6 @@ public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPres
     @Override
     public void destroyView() {
         this.mView = null;
-//        this.zpPaymentListener = null;
     }
 
     @Override

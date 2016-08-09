@@ -19,15 +19,17 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.JsonUtil;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.application.ZingMobilePayService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.entity.enumeration.EPaymentStatus;
+import vn.com.zalopay.wallet.entity.error.CError;
 import vn.com.zalopay.wallet.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
@@ -109,10 +111,15 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onCancel() {
-            Timber.d("pay onCancel");
-
-            responseListener.onResponseCancel();
+        public void onError(CError cError) {
+            Timber.d("pay onError code [%s] msg [%s]", cError.payError, cError.messError);
+            if (cError.payError == EPayError.DATA_INVALID) {
+                responseListener.onParameterError(cError.messError);
+            } else if (cError.payError == EPayError.COMPONENT_NULL) {
+                responseListener.onAppError(cError.messError);
+            } else {
+                responseListener.onAppError(cError.messError);
+            }
         }
 
         @Override
@@ -269,7 +276,7 @@ public class PaymentWrapper {
             paymentInfo.userInfo = getUserInfo();
         }
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
-            zpPaymentListener.onCancel();
+            zpPaymentListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
             return;
         }
         if (balanceRepository != null) {
@@ -277,7 +284,8 @@ public class PaymentWrapper {
         }
 
 
-        Timber.d("Call Pay to sdk");
+        Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
+                viewListener.getActivity(), paymentChannel, paymentInfo);
         ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
     }
 
@@ -355,7 +363,7 @@ public class PaymentWrapper {
 
         void onResponseTokenInvalid();
 
-        void onResponseCancel();
+        void onAppError(String msg);
 
         void onNotEnoughMoney();
     }

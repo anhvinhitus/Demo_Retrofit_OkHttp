@@ -99,8 +99,11 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
-            public void onResponseCancel() {
-
+            public void onAppError(String msg) {
+                if (mLinkCardView == null || mLinkCardView.getContext() == null) {
+                    return;
+                }
+                showErrorView(mLinkCardView.getContext().getString(R.string.exception_generic));
             }
 
             @Override

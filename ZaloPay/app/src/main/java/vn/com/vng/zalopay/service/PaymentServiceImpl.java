@@ -78,9 +78,9 @@ public class PaymentServiceImpl implements IPaymentService {
             }
 
             @Override
-            public void onResponseCancel() {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(),
-                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+            public void onAppError(String msg) {
+                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_SYSTEM.value(),
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
                 destroyVariable();
             }
 

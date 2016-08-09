@@ -17,7 +17,7 @@ public interface RedPacketPayListener {
 
     void onResponseTokenInvalid();
 
-    void onResponseCancel();
+    void onAppError(String msg);
 
     void onNotEnoughMoney();
 }

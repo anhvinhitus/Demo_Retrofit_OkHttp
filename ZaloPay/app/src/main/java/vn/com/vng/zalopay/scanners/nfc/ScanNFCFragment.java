@@ -122,7 +122,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                     }
 
                     @Override
-                    public void onResponseCancel() {
+                    public void onAppError(String msg) {
 
                     }
 

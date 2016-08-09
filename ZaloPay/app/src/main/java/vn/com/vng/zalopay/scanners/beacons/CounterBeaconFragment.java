@@ -112,8 +112,9 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onResponseCancel() {
-                        Timber.d("User cancel transaction");
+                    public void onAppError(String msg) {
+                        Timber.d("onAppError msg[%s]", msg);
+                        showToast(getString(R.string.exception_generic));
                         beaconScanner.startScan();
                     }
 

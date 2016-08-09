@@ -67,9 +67,9 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             }
 
             @Override
-            public void onResponseCancel() {
+            public void onAppError(String msg) {
                 if (listener != null) {
-                    listener.onResponseCancel();
+                    listener.onAppError(msg);
                 }
                 destroyVariable();
             }

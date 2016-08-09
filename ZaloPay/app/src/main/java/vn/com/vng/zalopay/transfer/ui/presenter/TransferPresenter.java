@@ -75,9 +75,11 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 } else if ("uid".equalsIgnoreCase(param)) {
                     mView.showError(mView.getContext().getString(R.string.user_invalid));
                 } else if ("token".equalsIgnoreCase(param)) {
-                    mView.hideLoading();
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
+                } else if (!TextUtils.isEmpty(param)){
+                    mView.showError(param);
                 }
+                mView.hideLoading();
             }
 
             @Override
@@ -118,9 +120,12 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             }
 
             @Override
-            public void onResponseCancel() {
+            public void onAppError(String msg) {
                 if (mView == null) {
                     return;
+                }
+                if (mView.getContext() != null) {
+                    mView.showError(mView.getContext().getString(R.string.exception_generic));
                 }
                 mView.hideLoading();
             }

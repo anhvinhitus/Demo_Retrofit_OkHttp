@@ -86,11 +86,13 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             }
 
             @Override
-            public void onResponseCancel() {
+            public void onAppError(String msg) {
                 if (mView == null) {
                     return;
                 }
-
+                if (mView.getContext() != null) {
+                    mView.showError(mView.getContext().getString(R.string.exception_generic));
+                }
                 hideLoadingView();
                 mView.resumeScanner();
             }

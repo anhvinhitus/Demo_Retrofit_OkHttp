@@ -177,8 +177,7 @@ public class ScanSoundFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onResponseCancel() {
-
+                    public void onAppError(String msg) {
                     }
 
                     @Override

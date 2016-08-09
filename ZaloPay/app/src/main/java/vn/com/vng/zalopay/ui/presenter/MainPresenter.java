@@ -38,12 +38,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     FriendStore.Repository mFriendRepository;
     OkHttpClient mOkHttpClient;
+    OkHttpClient mOkHttpClientTimeoutLonger;
 
     private boolean isLoadedGateWayInfo;
 
-    public MainPresenter(FriendStore.Repository friendRepository, OkHttpClient okHttpClient) {
+    public MainPresenter(FriendStore.Repository friendRepository, OkHttpClient okHttpClient,
+                        OkHttpClient okHttpClientTimeoutLonger) {
         this.mFriendRepository = friendRepository;
         this.mOkHttpClient = okHttpClient;
+        this.mOkHttpClientTimeoutLonger = okHttpClientTimeoutLonger;
     }
 
     public void getZaloFriend() {
@@ -92,7 +95,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     public void initialize() {
-        ZingMobilePayApplication.setHttpClient(mOkHttpClient.newBuilder());
+        ZingMobilePayApplication.setHttpClient(mOkHttpClient);
+        ZingMobilePayApplication.setHttpClientTimeoutLonger(mOkHttpClientTimeoutLonger);
         this.loadGatewayInfoPaymentSDK();
         this.initializeAppConfig();
     }
@@ -227,15 +231,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 }
 
                 @Override
-                public void onResponseCancel() {
-                    Timber.d("onResponseCancel");
+                public void onAppError(String msg) {
+                    Timber.d("onAppError msg [%s]", msg);
                     if (homeView == null) {
                         return;
                     }
+                    if (homeView.getContext() != null) {
+                        homeView.showError(homeView.getContext().getString(R.string.exception_generic));
+                    }
                     hideLoadingView();
-/*
-                    hideLoadingView();
-                    homeView.resumeScanner();*/
                 }
 
                 @Override
