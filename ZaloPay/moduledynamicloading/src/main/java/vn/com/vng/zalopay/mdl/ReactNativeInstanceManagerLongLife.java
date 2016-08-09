@@ -7,6 +7,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -15,7 +16,8 @@ import timber.log.Timber;
  * Manage cached version of created ReactInstanceManager
  */
 public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceManager {
-    private HashMap<String, ReactInstanceManager> mInstance = new HashMap<>();
+    private Map<String, ReactInstanceManager> mInstance = new HashMap<>();
+    private Map<String, Boolean> mNameMapping = new HashMap<>();
 
     public ReactNativeInstanceManagerLongLife() {
     }
@@ -32,7 +34,7 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
             return null;
         }
 
-        String mapping = getMappingString(activity);
+        String mapping = createMapping(activity);
 
         if (mInstance != null && mInstance.containsKey(mapping)) {
             Timber.i("reuse react instance manager");
@@ -61,6 +63,7 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
         }
 
         mInstance.put(mapping, builder.build());
+        markMappingInUsed(mapping);
         return mInstance.get(mapping);
     }
 
@@ -76,7 +79,7 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
             return;
         }
 
-        String mapping = getMappingString(activity);
+        String mapping = getAvailableMapping(activity);
 
         if (!mInstance.containsKey(mapping)) {
             return;
@@ -87,6 +90,7 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
         }
 
         instance.onHostDestroy();
+        markMappingAvailable(mapping);
 
         if (forceRemove) {
             instance.destroy();
@@ -105,7 +109,7 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
             return;
         }
 
-        String mapping = getMappingString(activity);
+        String mapping = getAvailableMapping(activity);
 
         if (!mInstance.containsKey(mapping)) {
             return;
@@ -122,15 +126,53 @@ public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceMa
 //
 //        i.onHostDestroy();
         mInstance.remove(mapping);
+        markMappingAvailable(mapping);
     }
 
     @NonNull
-    private String getMappingString(ReactBasedActivity activity) {
+    private String createMapping(ReactBasedActivity activity) {
         String mapping = activity.getJSBundleFile();
         if (mapping == null) {
             mapping = "NULL";
         }
+
+        String alternateMapping = mapping + activity.toString();
+        if (mNameMapping.containsKey(alternateMapping)) {
+            Timber.d("Alternate mapping: %s", alternateMapping);
+            return alternateMapping;
+        }
+
+        if (mNameMapping.containsKey(mapping)) {
+            Timber.d("Default mapping is in used: %s", alternateMapping);
+            return alternateMapping;
+        }
+
+        Timber.d("Default mapping: %s", mapping);
         return mapping;
+    }
+
+    private String getAvailableMapping(ReactBasedActivity activity) {
+        String mapping = activity.getJSBundleFile();
+        if (mapping == null) {
+            mapping = "NULL";
+        }
+
+        String alternateMapping = mapping + activity.toString();
+        if (mNameMapping.containsKey(alternateMapping)) {
+            Timber.d("Alternate mapping: %s", alternateMapping);
+            return alternateMapping;
+        }
+
+        Timber.d("Default mapping: %s", mapping);
+        return mapping;
+    }
+
+    private void markMappingInUsed(String mapping) {
+        mNameMapping.put(mapping, Boolean.TRUE);
+    }
+
+    private void markMappingAvailable(String mapping) {
+        mNameMapping.remove(mapping);
     }
 
     @Override
