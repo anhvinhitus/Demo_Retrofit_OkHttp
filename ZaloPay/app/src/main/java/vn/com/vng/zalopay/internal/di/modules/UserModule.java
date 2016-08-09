@@ -10,8 +10,8 @@ import vn.com.vng.zalopay.data.transfer.TransferLocalStorage;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.mdl.ReactNativeHostable;
-import vn.com.vng.zalopay.mdl.ReactNativeHostLongLife;
+import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.ReactNativeHostLongLife;
 
 @Module
 public class UserModule {

@@ -18,13 +18,13 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
-import vn.com.vng.zalopay.mdl.BundleReactConfig;
-import vn.com.vng.zalopay.mdl.BundleService;
+import com.zalopay.apploader.BundleReactConfig;
+import com.zalopay.apploader.BundleService;
 import vn.com.vng.zalopay.navigation.INavigator;
-import vn.com.vng.zalopay.mdl.impl.BundleReactConfigExternalDev;
-import vn.com.vng.zalopay.mdl.impl.BundleReactConfigInternalDev;
-import vn.com.vng.zalopay.mdl.impl.BundleReactConfigRelease;
-import vn.com.vng.zalopay.mdl.impl.BundleServiceImpl;
+import com.zalopay.apploader.impl.BundleReactConfigExternalDev;
+import com.zalopay.apploader.impl.BundleReactConfigInternalDev;
+import com.zalopay.apploader.impl.BundleReactConfigRelease;
+import com.zalopay.apploader.impl.BundleServiceImpl;
 import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
