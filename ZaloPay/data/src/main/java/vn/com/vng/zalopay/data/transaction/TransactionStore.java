@@ -18,11 +18,11 @@ public interface TransactionStore {
     interface LocalStorage {
         void put(List<TransHistoryEntity> val);
 
-        Observable<List<TransHistoryEntity>> get(int pageIndex, int limit, int statusType);
+        List<TransHistoryEntity> get(int pageIndex, int limit, int statusType);
 
         boolean isHaveTransactionInDb();
 
-        Observable<TransHistoryEntity> getTransaction(long id);
+        TransHistoryEntity getTransaction(long id);
 
         void updateStatusType(long transId, int statusType);
 

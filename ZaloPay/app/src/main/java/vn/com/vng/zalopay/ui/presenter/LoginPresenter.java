@@ -15,6 +15,7 @@ import javax.inject.Singleton;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -39,9 +40,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private ILoginView mView;
 
-    private Subscription subscriptionLogin;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private LoginListener mLoginListener;
+    private LoginListener mLoginListener = new LoginListener(this);
 
     @Inject
     public LoginPresenter() {
@@ -50,14 +51,12 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     @Override
     public void setView(ILoginView view) {
         this.mView = view;
-        mLoginListener = new LoginListener(this);
         Timber.d("setView: mview %s", mView);
     }
 
     @Override
     public void destroyView() {
         hideLoadingView();
-        this.mLoginListener = null;
         this.mView = null;
         Timber.d("destroyView:");
     }
@@ -77,7 +76,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionLogin);
+        unsubscribeIfNotNull(compositeSubscription);
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -90,7 +89,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     public void loginZalo(Activity activity) {
         if (NetworkHelper.isNetworkAvailable(applicationContext)) {
-         //   showLoadingView();
+            //   showLoadingView();
             ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
         } else {
             showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
@@ -149,10 +148,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private void loginPayment(long zuid, String zalooauthcode) {
         showLoadingView();
-        subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
+        Subscription subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
+        compositeSubscription.add(subscriptionLogin);
     }
 
     private void showErrorView(String message) {
@@ -224,5 +224,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             LoginPresenter.this.onLoginError(e);
         }
     }
+
 
 }

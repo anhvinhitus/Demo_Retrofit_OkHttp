@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
@@ -27,18 +25,6 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         super(daoSession);
     }
 
-//    String transactionToString(TransactionLog v) {
-//        return String.format("\"userid\":\"%s\",\"transid\":%d,\"appid\":%d,\"appuser\":\"%s\",\"platform\":\"%s\",\"description\":\"%s\",\"pmcid\":%d,\"reqdate\":%d,\"userchargeamt\":%d,\"amount\":%d,\"userfeeamt\":%d,\"type\":%d,\"sign\":%d,\"username\":\"%s\",\"appusername\":\"%s\"",
-//                v.getUserid(), v.getTransid(), v.getAppid(), v.getAppuser(), v.getPlatform(), v.getDescription(), v.getPmcid(), v.getReqdate(), v.getUserchargeamt(), v.getAmount(), v.getUserfeeamt(), v.getType(), v.getSign(), v.getUsername(), v.getAppusername());
-//    }
-//    List<String> logsString(Collection<TransactionLog> logs) {
-//        List<String> result = new ArrayList<>();
-//        for (TransactionLog v : logs) {
-//            result.add(transactionToString(v));
-//        }
-//        return result;
-//    }
-
     @Override
     public void put(List<TransHistoryEntity> val) {
         try {
@@ -51,10 +37,10 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
-    public Observable<List<TransHistoryEntity>> get(int pageIndex, int limit, int status) {
-        return ObservableHelper.makeObservable(() -> queryList(pageIndex, limit, status))
-                .doOnNext(transHistoryEntities -> Timber.d("get %s", transHistoryEntities.size()))
-                ;
+    public List<TransHistoryEntity> get(int pageIndex, int limit, int status) {
+        List<TransHistoryEntity> ret = queryList(pageIndex, limit, status);
+        Timber.d("get list transaction size %s", ret.size());
+        return ret;
     }
 
     @Override
@@ -172,8 +158,8 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     @Override
-    public Observable<TransHistoryEntity> getTransaction(long id) {
-        return Observable.just(getTransactionById(id));
+    public TransHistoryEntity getTransaction(long id) {
+        return getTransactionById(id);
     }
 
 
@@ -183,12 +169,8 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     private TransactionLog queryTransactionById(long id) {
-        List<TransactionLog> list = getDaoSession().getTransactionLogDao().queryBuilder()
-                .where(TransactionLogDao.Properties.Transid.eq(id)).list();
-        if (Lists.isEmptyOrNull(list)) {
-            return null;
-        }
-        return list.get(0);
+        TransactionLog ret = getDaoSession().getTransactionLogDao().load(id);
+        return ret;
     }
 
     @Override

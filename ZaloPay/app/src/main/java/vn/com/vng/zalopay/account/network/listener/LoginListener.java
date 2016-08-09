@@ -75,8 +75,6 @@ public class LoginListener extends OAuthCompleteListener {
         if (mListener != null) {
             mListener.onGetOAuthComplete(userId, oauthCode, channel);
         }
-
-        mListener = null;
     }
 
     @Override

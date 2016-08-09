@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.transaction;
 
+import android.text.TextUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -10,11 +12,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
-import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
@@ -33,7 +33,11 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private static final int TRANSACTION_STATUS_SUCCESS = 1;
     private static final int TRANSACTION_STATUS_FAIL = 2;
-    private static final int TRANSACTION_LENGTH = 30;
+
+    private static final int TRANSACTION_ORDER_LATEST = 1;
+    private static final int TRANSACTION_ORDER_OLDEST = -1;
+
+    private static final int TRANSACTION_LENGTH = 20;
 
     public TransactionRepository(
             ZaloPayEntityDataMapper zaloPayEntityDataMapper,
@@ -53,13 +57,13 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        return mTransactionLocalStorage.get(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
+        return ObservableHelper.makeObservable(() -> mTransactionLocalStorage.get(pageIndex, count, TRANSACTION_STATUS_SUCCESS))
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
     }
 
     @Override
     public Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count) {
-        return mTransactionLocalStorage.get(pageIndex, count, TRANSACTION_STATUS_FAIL)
+        return ObservableHelper.makeObservable(() -> mTransactionLocalStorage.get(pageIndex, count, TRANSACTION_STATUS_FAIL))
                 .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
     }
 
@@ -87,29 +91,43 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     public void reloadListTransactionSync(int count, int statusType) {
         long lastUpdated;
-        if (statusType == TRANSACTION_STATUS_FAIL) {
-            lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION_FAIL, 0);
-        } else {
+        if (statusType == TRANSACTION_STATUS_SUCCESS) {
             lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);
+        } else {
+            lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION_FAIL, 0);
         }
-        transactionHistoryServer(lastUpdated, count, 1, statusType, 0);
+
+        int sortOrder = lastUpdated == 0 ? TRANSACTION_ORDER_OLDEST : TRANSACTION_ORDER_LATEST;
+
+        transactionHistoryServer(lastUpdated, count, sortOrder, statusType, 0);
     }
 
     private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, int statusType, int deep) {
-        Timber.d("get transaction from server %s ", timestamp);
+        Timber.d("get transaction from server [%s] statusType [%s] ", timestamp, statusType);
         mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, sortOrder, statusType)
-                .doOnNext(response -> writeTransactionResp(response, statusType))
-                .doOnNext(response -> {
-                    int size = response.data.size();
-                    if (size >= count) {
-                        transactionHistoryServer(response.data.get(0).reqdate, count, sortOrder, statusType, deep + 1);
-                    } else {
+                .map(response -> response.data)
+                .doOnNext(data -> {
 
+                    this.writeTransactionEntity(data, statusType, sortOrder, deep);
+                    int size = data.size();
+
+                    if (size >= count) {
+
+                        long nextTimestamp;
+                        if (sortOrder == TRANSACTION_ORDER_OLDEST) {
+                            nextTimestamp = data.get(size - 1).reqdate;
+                        } else {
+                            nextTimestamp = data.get(0).reqdate;
+                        }
+
+                        this.transactionHistoryServer(nextTimestamp, count, sortOrder, statusType, deep + 1);
+                    } else {
                         boolean hasData = (size == 0 && timestamp == 0) // Update Ui cho lần đâu tiên.
                                 || size > 0 || deep > 0;
 
                         onLoadedTransactionComplete(statusType, hasData);
                     }
+
                 })
                 .subscribe(new DefaultSubscriber<>());
     }
@@ -128,18 +146,29 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
     }
 
-    private void writeTransactionResp(TransactionHistoryResponse response, int statusType) {
-        List<TransHistoryEntity> list = response.data;
-        int size = list.size();
+    private void writeTransactionEntity(List<TransHistoryEntity> data, int statusType, int sortOder, int deep) {
+        int size = data.size();
         if (size > 0) {
-            for (TransHistoryEntity transHistoryEntity : list) {
+
+            for (TransHistoryEntity transHistoryEntity : data) {
                 transHistoryEntity.statustype = statusType;
             }
-            mTransactionLocalStorage.put(response.data);
+
+            mTransactionLocalStorage.put(data);
+
+            String lastTime = null;
+            if (sortOder == TRANSACTION_ORDER_LATEST || deep == 0) {
+                lastTime = String.valueOf(data.get(0).reqdate);
+            }
+
+            if (TextUtils.isEmpty(lastTime)) {
+                return;
+            }
+
             if (statusType == TRANSACTION_STATUS_SUCCESS) {
-                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, String.valueOf(list.get(0).reqdate));
+                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, lastTime);
             } else {
-                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION_FAIL, String.valueOf(list.get(0).reqdate));
+                mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION_FAIL, lastTime);
             }
         }
 
@@ -147,8 +176,8 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<TransHistory> getTransaction(long id) {
-        return mTransactionLocalStorage.getTransaction(id)
-                .map(transHistoryEntity -> zaloPayEntityDataMapper.transform(transHistoryEntity)); //Todo: Test lại trường hợp result = null
+        return ObservableHelper.makeObservable(() -> mTransactionLocalStorage.getTransaction(id))
+                .map(entity -> zaloPayEntityDataMapper.transform(entity));
     }
 
     @Override
