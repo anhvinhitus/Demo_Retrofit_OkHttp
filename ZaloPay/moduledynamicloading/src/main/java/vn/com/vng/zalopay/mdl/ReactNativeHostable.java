@@ -8,7 +8,7 @@ import com.facebook.react.ReactInstanceManager;
  * Created by huuhoa on 7/15/16.
  * Manage instance of ReactInstanceManager
  */
-public interface ReactNativeInstanceManager {
+public interface ReactNativeHostable {
     /**
      * Acquire a new instance of ReactInstanceManager
      * @return new instance of ReactInstanceManager

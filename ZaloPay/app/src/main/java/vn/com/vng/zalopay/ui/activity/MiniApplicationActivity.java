@@ -34,11 +34,11 @@ import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.mdl.MiniApplicationBaseActivity;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.mdl.internal.ModuleName;
 import vn.com.vng.zalopay.react.ReactInternalPackage;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
@@ -84,7 +84,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     INavigator navigator;
 
     @Inject
-    ReactNativeInstanceManager mReactNativeInstanceManager;
+    ReactNativeHostable mReactNativeHostable;
 
     @Inject
     UserConfig mUserConfig;
@@ -153,7 +153,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeInstanceManager, mUserConfig);
+                mReactNativeHostable, mUserConfig);
     }
 
     private void createUserComponent() {
@@ -185,8 +185,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    protected ReactNativeInstanceManager nativeInstanceManager() {
-        return mReactNativeInstanceManager;
+    protected ReactNativeHostable nativeInstanceManager() {
+        return mReactNativeHostable;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

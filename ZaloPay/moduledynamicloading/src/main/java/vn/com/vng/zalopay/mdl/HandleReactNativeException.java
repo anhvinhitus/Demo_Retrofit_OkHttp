@@ -9,10 +9,10 @@ import java.lang.ref.WeakReference;
  * Handle NativeModuleCallExceptionHandler
  */
 class HandleReactNativeException implements NativeModuleCallExceptionHandler {
-    WeakReference<ReactNativeInstanceManager> mInstanceReference;
+    WeakReference<ReactNativeHostable> mInstanceReference;
     WeakReference<ReactBasedActivity> mActivityReference;
 
-    public HandleReactNativeException(ReactNativeInstanceManager instanceManager, ReactBasedActivity activity) {
+    public HandleReactNativeException(ReactNativeHostable instanceManager, ReactBasedActivity activity) {
         mInstanceReference = new WeakReference<>(instanceManager);
         mActivityReference = new WeakReference<>(activity);
     }
@@ -20,7 +20,7 @@ class HandleReactNativeException implements NativeModuleCallExceptionHandler {
     @Override
     public void handleException(Exception e) {
         ReactBasedActivity basedActivity = mActivityReference.get();
-        ReactNativeInstanceManager manager = mInstanceReference.get();
+        ReactNativeHostable manager = mInstanceReference.get();
         if (basedActivity != null && manager != null) {
            manager.handleJSException(basedActivity, e);
         }

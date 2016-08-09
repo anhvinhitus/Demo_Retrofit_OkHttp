@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
@@ -42,7 +42,7 @@ public class ReactInternalPackage implements ReactPackage {
     private INavigator navigator;
 
     private EventBus mEventBus;
-    private ReactNativeInstanceManager mReactNativeInstanceManager;
+    private ReactNativeHostable mReactNativeHostable;
 
     private UserConfig mUserConfig;
 
@@ -54,7 +54,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 AlertDialogProvider sweetAlertDialog,
                                 INavigator navigator,
                                 EventBus eventBus,
-                                ReactNativeInstanceManager reactNativeInstanceManager,
+                                ReactNativeHostable reactNativeHostable,
                                 UserConfig userConfig) {
         this.mTransactionRepository = repository;
         this.mNotificationRepository = notificationRepository;
@@ -65,7 +65,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.sweetAlertDialog = sweetAlertDialog;
         this.navigator = navigator;
         this.mEventBus = eventBus;
-        this.mReactNativeInstanceManager = reactNativeInstanceManager;
+        this.mReactNativeHostable = reactNativeHostable;
         this.mUserConfig = userConfig;
     }
 
@@ -89,7 +89,7 @@ public class ReactInternalPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
-        viewManagers.add(new ReactModalHostManager(reactContext, mReactNativeInstanceManager));
+        viewManagers.add(new ReactModalHostManager(reactContext, mReactNativeHostable));
         return viewManagers;
     }
 }

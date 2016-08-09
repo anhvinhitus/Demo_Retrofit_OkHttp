@@ -37,7 +37,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.mdl.BundleReactConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.mdl.ReactBasedActivity;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
 import vn.com.vng.zalopay.mdl.internal.ModuleName;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -69,7 +69,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     EventBus eventBus;
 
     @Inject
-    ReactNativeInstanceManager mReactNativeInstanceManager;
+    ReactNativeHostable mReactNativeHostable;
 
     private AppResource appResource;
 
@@ -139,8 +139,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     @Override
-    protected ReactNativeInstanceManager nativeInstanceManager() {
-        return mReactNativeInstanceManager;
+    protected ReactNativeHostable nativeInstanceManager() {
+        return mReactNativeHostable;
     }
 
     /**

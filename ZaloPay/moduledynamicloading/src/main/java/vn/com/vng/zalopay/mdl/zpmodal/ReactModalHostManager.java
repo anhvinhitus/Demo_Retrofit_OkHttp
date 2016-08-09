@@ -26,7 +26,7 @@ import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.EventDispatcher;
 
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
 
 /**
  * View manager for {@link ReactModalHostView} components.
@@ -36,11 +36,11 @@ public class ReactModalHostManager extends ViewGroupManager<ReactModalHostView> 
   private static final String REACT_CLASS = "ZPModalHostView";
 
   private final ReactApplicationContext mContext;
-  private final ReactNativeInstanceManager mReactNativeInstanceManager;
+  private final ReactNativeHostable mReactNativeHostable;
 
-  public ReactModalHostManager(ReactApplicationContext context, ReactNativeInstanceManager nativeInstanceManager) {
+  public ReactModalHostManager(ReactApplicationContext context, ReactNativeHostable nativeInstanceManager) {
     mContext = context;
-    mReactNativeInstanceManager = nativeInstanceManager;
+    mReactNativeHostable = nativeInstanceManager;
   }
 
   @Override
@@ -50,7 +50,7 @@ public class ReactModalHostManager extends ViewGroupManager<ReactModalHostView> 
 
   @Override
   protected ReactModalHostView createViewInstance(ThemedReactContext reactContext) {
-    return new ReactModalHostView(reactContext, mReactNativeInstanceManager);
+    return new ReactModalHostView(reactContext, mReactNativeHostable);
   }
 
   @Override

@@ -10,8 +10,8 @@ import vn.com.vng.zalopay.data.transfer.TransferLocalStorage;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManagerLongLife;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
+import vn.com.vng.zalopay.mdl.ReactNativeHostLongLife;
 
 @Module
 public class UserModule {
@@ -38,8 +38,8 @@ public class UserModule {
 
     @Provides
     @UserScope
-    ReactNativeInstanceManager provideReactNativeInstanceManager() {
+    ReactNativeHostable provideReactNativeInstanceManager() {
         Timber.d("Create new instance of ReactNativeInstanceManagerLongLife");
-        return new ReactNativeInstanceManagerLongLife();
+        return new ReactNativeHostLongLife();
     }
 }

@@ -15,11 +15,11 @@ import timber.log.Timber;
  * Created by huuhoa on 7/15/16.
  * Manage cached version of created ReactInstanceManager
  */
-public class ReactNativeInstanceManagerLongLife implements ReactNativeInstanceManager {
+public class ReactNativeHostLongLife implements ReactNativeHostable {
     private Map<String, ReactInstanceManager> mInstance = new HashMap<>();
     private Map<String, Boolean> mNameMapping = new HashMap<>();
 
-    public ReactNativeInstanceManagerLongLife() {
+    public ReactNativeHostLongLife() {
     }
 
     @Override

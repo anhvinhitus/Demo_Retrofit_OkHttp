@@ -37,8 +37,8 @@ import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -100,7 +100,7 @@ public interface UserComponent {
 
     TransferStore.LocalStorage transferLocalStorage();
 
-    ReactNativeInstanceManager reactNativeInstanceManager();
+    ReactNativeHostable reactNativeInstanceManager();
  /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */

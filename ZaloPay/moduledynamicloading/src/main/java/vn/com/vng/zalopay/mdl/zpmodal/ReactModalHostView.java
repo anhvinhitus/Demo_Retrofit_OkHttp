@@ -35,7 +35,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.views.view.ReactViewGroup;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.mdl.ReactNativeInstanceManager;
+import vn.com.vng.zalopay.mdl.ReactNativeHostable;
 
 /**
  * ReactModalHostView is a view that sits in the view hierarchy representing a Modal view.
@@ -68,14 +68,15 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
   private boolean mPropertyRequiresNewDialog;
   private @Nullable DialogInterface.OnShowListener mOnShowListener;
   private @Nullable OnRequestCloseListener mOnRequestCloseListener;
-  private @Nullable ReactNativeInstanceManager mReactNativeInstanceManager;
+  private @Nullable
+  ReactNativeHostable mReactNativeHostable;
 
-  public ReactModalHostView(Context context, ReactNativeInstanceManager nativeInstanceManager) {
+  public ReactModalHostView(Context context, ReactNativeHostable nativeInstanceManager) {
     super(context);
     ((ReactContext) context).addLifecycleEventListener(this);
 
     mHostView = new DialogRootViewGroup(context);
-    mReactNativeInstanceManager = nativeInstanceManager;
+    mReactNativeHostable = nativeInstanceManager;
   }
 
   @Override
@@ -192,7 +193,7 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
       theme = R.style.Theme_FullScreenDialogAnimatedSlide;
     }
     Timber.d("Create new Dialog for modal in ReactNative");
-    mDialog = new Dialog(mReactNativeInstanceManager.getActivityContext(), theme);
+    mDialog = new Dialog(mReactNativeHostable.getActivityContext(), theme);
     mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     mDialog.setContentView(mHostView);
     updateProperties();

@@ -42,7 +42,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     protected void handleException(Throwable e) {
         finish();
     }
-    protected abstract ReactNativeInstanceManager nativeInstanceManager();
+    protected abstract ReactNativeHostable nativeInstanceManager();
 
     private static final String REDBOX_PERMISSION_MESSAGE =
             "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
