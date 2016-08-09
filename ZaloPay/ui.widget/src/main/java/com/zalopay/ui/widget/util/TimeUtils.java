@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.util;
+package com.zalopay.ui.widget.util;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -12,7 +12,7 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 /**
  * Created by AnhHieu on 9/24/15.

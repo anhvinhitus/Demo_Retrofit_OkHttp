@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.listview;
+package com.zalopay.ui.widget.listview;
 
 /**
  * Created by trung on 27/01/2016.

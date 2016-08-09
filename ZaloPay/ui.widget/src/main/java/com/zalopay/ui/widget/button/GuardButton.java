@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.button;
+package com.zalopay.ui.widget.button;
 
 import android.annotation.TargetApi;
 import android.content.Context;

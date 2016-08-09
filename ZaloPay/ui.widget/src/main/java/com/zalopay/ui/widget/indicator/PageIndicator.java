@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.indicator;
+package com.zalopay.ui.widget.indicator;
 
 /**
  * Created by AnhHieu on 3/2/16.

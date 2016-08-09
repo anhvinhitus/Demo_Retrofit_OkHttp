@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.textview;
+package com.zalopay.ui.widget.textview;
 
 import android.content.Context;
 import android.util.AttributeSet;

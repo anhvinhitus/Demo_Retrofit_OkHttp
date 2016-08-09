@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.anim;
+package com.zalopay.ui.widget.anim;
 
 import android.graphics.Color;
 

@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.viewpager;
+package com.zalopay.ui.widget.viewpager;
 
 import android.database.DataSetObserver;
 import android.os.Parcelable;

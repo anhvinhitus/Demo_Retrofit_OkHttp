@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget;
+package com.zalopay.ui.widget;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

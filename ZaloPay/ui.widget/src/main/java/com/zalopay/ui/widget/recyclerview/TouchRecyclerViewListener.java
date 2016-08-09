@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.recyclerview;
+package com.zalopay.ui.widget.recyclerview;
 
 /**
  * Created by trung on 10/03/2016.

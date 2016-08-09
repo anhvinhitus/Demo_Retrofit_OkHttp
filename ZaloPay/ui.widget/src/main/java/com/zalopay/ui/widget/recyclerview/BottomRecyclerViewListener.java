@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.recyclerview;
+package com.zalopay.ui.widget.recyclerview;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

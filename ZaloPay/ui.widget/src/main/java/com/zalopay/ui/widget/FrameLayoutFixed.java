@@ -6,7 +6,7 @@
  * Copyright Nikolai Kudashov, 2013-2015.
  */
 
-package vn.vng.uicomponent.widget;
+package com.zalopay.ui.widget;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

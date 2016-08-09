@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.errorview;
+package com.zalopay.ui.widget.errorview;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import java.util.Map;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 /**
  * Created by AnhHieu on 1/27/16.

@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.image;
+package com.zalopay.ui.widget.image;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 
 public class TintableImageView extends ImageView {

@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.textview;
+package com.zalopay.ui.widget.textview;
 
 /**
  * Created by AnhHieu on 1/11/16.
@@ -17,7 +17,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 public class RoundViewDelegate {
     private View view;

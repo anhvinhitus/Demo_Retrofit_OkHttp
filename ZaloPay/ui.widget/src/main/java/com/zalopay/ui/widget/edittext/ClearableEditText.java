@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.edittext;
+package com.zalopay.ui.widget.edittext;
 
 
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 /**
  * <p/>

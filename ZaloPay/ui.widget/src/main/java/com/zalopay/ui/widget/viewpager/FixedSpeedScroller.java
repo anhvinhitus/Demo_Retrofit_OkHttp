@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.viewpager;
+package com.zalopay.ui.widget.viewpager;
 
 import android.content.Context;
 import android.view.animation.Interpolator;

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="vn.vng.uicomponent.widget">
+    package="com.zalopay.ui.widget">
 
     <application android:allowBackup="true">
 

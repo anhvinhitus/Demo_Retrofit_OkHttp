@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.errorview;
+package com.zalopay.ui.widget.errorview;
 
 import java.util.HashMap;
 import java.util.Map;

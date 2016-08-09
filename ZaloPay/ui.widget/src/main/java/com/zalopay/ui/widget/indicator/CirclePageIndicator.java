@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.indicator;
+package com.zalopay.ui.widget.indicator;
 
 /**
  * Created by AnhHieu on 3/2/16.
@@ -21,7 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.widget.LinearLayout.HORIZONTAL;

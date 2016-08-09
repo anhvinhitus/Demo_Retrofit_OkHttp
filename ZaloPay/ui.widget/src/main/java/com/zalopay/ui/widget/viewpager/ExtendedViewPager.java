@@ -1,11 +1,11 @@
-package vn.vng.uicomponent.widget.viewpager;
+package com.zalopay.ui.widget.viewpager;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
-import vn.vng.uicomponent.widget.image.TouchImageView;
+import com.zalopay.ui.widget.image.TouchImageView;
 
 /**
  * Created by trung on 15/02/2016.

@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.util;
+package com.zalopay.ui.widget.util;
 
 /**
  * Created by AnhHieu on 10/4/15.

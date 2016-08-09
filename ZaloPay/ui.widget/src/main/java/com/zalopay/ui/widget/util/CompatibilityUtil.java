@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.util;
+package com.zalopay.ui.widget.util;
 
 import android.content.Context;
 import android.content.res.Configuration;

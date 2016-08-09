@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vn.vng.uicomponent.widget.image;
+package com.zalopay.ui.widget.image;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -32,7 +32,7 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import vn.vng.uicomponent.widget.R;
+import com.zalopay.ui.widget.R;
 
 /**
  * An {@link ImageView} that draws its contents inside a mask and draws a border

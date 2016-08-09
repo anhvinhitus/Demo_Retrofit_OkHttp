@@ -1,4 +1,4 @@
-package vn.vng.uicomponent.widget.button;
+package com.zalopay.ui.widget.button;
 
 import android.os.Build;
 import android.os.Handler;

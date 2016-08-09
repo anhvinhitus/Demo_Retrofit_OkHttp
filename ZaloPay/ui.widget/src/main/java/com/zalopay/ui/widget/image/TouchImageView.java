@@ -10,7 +10,7 @@
  * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
  */
 
-package vn.vng.uicomponent.widget.image;
+package com.zalopay.ui.widget.image;
 
 /**
  * Created by trung on 15/02/2016.
