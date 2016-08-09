@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.ws.SocketConnection;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -49,7 +50,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
     final Gson mGson = AndroidApplication.instance().getAppComponent().gson();
 
-    WsConnection mWsConnection;
+    SocketConnection mWsConnection;
 
     @Inject
     NotificationHelper notificationHelper;
@@ -74,7 +75,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         if (NetworkHelper.isNetworkAvailable(this)) {
 
             if (mWsConnection == null) {
-                mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
+                mWsConnection = new SocketConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
                         new MessageParser(userConfig, mGson), userConfig);
                 mWsConnection.addReceiverListener(this);
             }

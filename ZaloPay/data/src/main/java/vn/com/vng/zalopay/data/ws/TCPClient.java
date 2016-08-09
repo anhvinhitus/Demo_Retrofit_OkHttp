@@ -3,9 +3,9 @@ package vn.com.vng.zalopay.data.ws;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -31,6 +31,8 @@ public class TCPClient {
 
     private String incomingMessage;
 
+    private BufferedOutputStream mBufferedOutputStream;
+
     private String mHost;
     private int mPort;
 
@@ -54,24 +56,27 @@ public class TCPClient {
             try {
                 mRun = true;
 
-
                 mSocket = new Socket();
                 mSocket.setKeepAlive(true);
                 mSocket.setTcpNoDelay(true);
-                mSocket.setSoTimeout(5000);
+                // mSocket.setSoTimeout(5000);
                 mSocket.connect(new InetSocketAddress(mHost, mPort));
 
-                byte[] buffer = new byte[1024 * 2];
+                mBufferedOutputStream = new BufferedOutputStream(mSocket.getOutputStream());
+                mListener.onConnect();
+
+                byte[] buffer = new byte[1024];
 
                 int bytesRead;
 
                 DataInputStream input = new DataInputStream(mSocket.getInputStream());
                 while (mRun) {
-                    input.read(buffer);
-                    mListener.onMessage(buffer);
+                    bytesRead = input.read(buffer, 4, 512);
+                    if (bytesRead != -1) {
+                        mListener.onMessage(buffer);
+                    }
                 }
 
-                mListener.onConnect();
             } catch (SocketException e) {
                 Timber.e(e, "SocketException");
                 mListener.onError(e);
@@ -82,6 +87,7 @@ public class TCPClient {
                 Timber.e(e, "Exception");
                 mListener.onError(e);
             } finally {
+                mRun = false;
                 try {
                     if (mSocket != null) {
                         mSocket.close();
@@ -99,8 +105,17 @@ public class TCPClient {
 
     public void disconnect() {
         mRun = false;
-        if (mSocket != null) {
-            mHandler.post(() -> {
+
+        mHandler.post(() -> {
+            if (mBufferedOutputStream != null) {
+                try {
+                    mBufferedOutputStream.close();
+                    mBufferedOutputStream = null;
+                } catch (IOException e) {
+                }
+            }
+
+            if (mSocket != null) {
                 try {
                     mSocket.close();
                     mSocket = null;
@@ -108,8 +123,10 @@ public class TCPClient {
                     Timber.d("Error while disconnecting", ex);
                     mListener.onError(ex);
                 }
-            });
-        }
+            }
+
+        });
+
     }
 
     public void send(byte[] data) {
@@ -123,13 +140,13 @@ public class TCPClient {
                     if (mSocket == null) {
                         throw new IllegalStateException("Socket not connected");
                     }
-                    OutputStream outputStream = mSocket.getOutputStream();
-                    outputStream.write(frame);
-                    outputStream.flush();
+
+                    Timber.d("send message");
+                    mBufferedOutputStream.write(frame);
+                    mBufferedOutputStream.flush();
                 }
             } catch (IOException e) {
                 Timber.e(e, "IOException");
-
                 //Send fail
             } catch (Exception ex) {
                 Timber.e(ex, "Exception");

@@ -74,6 +74,7 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
                 return true;
             } catch (Exception ex) {
                 //send fail
+                Timber.e(ex, "send message to server exception");
             }
         } else {
             //send fail
@@ -154,7 +155,7 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
         return false;
     }
 
-    public void setGCMToken(String token){
+    public void setGCMToken(String token) {
         gcmToken = token;
     }
 }

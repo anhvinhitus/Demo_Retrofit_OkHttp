@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.google.protobuf.AbstractMessage;
 
