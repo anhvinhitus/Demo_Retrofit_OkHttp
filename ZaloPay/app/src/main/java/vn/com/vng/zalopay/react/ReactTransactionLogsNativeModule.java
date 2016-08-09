@@ -37,14 +37,15 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 5/8/16.
+ *
  */
-public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private TransactionStore.Repository mRepository;
     private final EventBus mEventBus;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository, EventBus eventBus) {
+    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository, EventBus eventBus) {
         super(reactContext);
         this.mRepository = repository;
         getReactApplicationContext().addLifecycleEventListener(this);
@@ -138,7 +139,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         WeakReference<Promise> promiseWeakReference;
 
 
-        public TransactionLogSubscriber(Promise promise) {
+        TransactionLogSubscriber(Promise promise) {
             promiseWeakReference = new WeakReference<>(promise);
         }
 
@@ -238,7 +239,7 @@ public class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule
         return result;
     }
 
-    public void sendEvent(String eventName, Object param) {
+    private void sendEvent(String eventName, Object param) {
         ReactApplicationContext reactContext = getReactApplicationContext();
         if (reactContext == null) {
             return;
