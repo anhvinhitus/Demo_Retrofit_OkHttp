@@ -20,8 +20,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
-import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
-import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
+import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 /**
  * Created by AnhHieu on 5/10/16.

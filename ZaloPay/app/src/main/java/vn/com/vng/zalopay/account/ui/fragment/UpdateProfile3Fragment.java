@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.vng.uicomponent.widget.KeyboardLinearLayout;
+import com.zalopay.ui.widget.KeyboardLinearLayout;
 
 /**
  * Created by AnhHieu on 6/30/16.

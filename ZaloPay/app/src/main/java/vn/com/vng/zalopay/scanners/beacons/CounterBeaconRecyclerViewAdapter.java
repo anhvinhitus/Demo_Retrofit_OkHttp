@@ -13,8 +13,8 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
-import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
+import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 
 public class CounterBeaconRecyclerViewAdapter extends AbsRecyclerAdapter<BeaconDevice, CounterBeaconRecyclerViewAdapter.ViewHolder> {

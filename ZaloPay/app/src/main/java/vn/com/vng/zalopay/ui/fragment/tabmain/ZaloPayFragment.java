@@ -43,7 +43,7 @@ import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
-import vn.vng.uicomponent.widget.textview.RoundTextView;
+import com.zalopay.ui.widget.textview.RoundTextView;
 
 /**
  * Created by AnhHieu on 4/11/16.

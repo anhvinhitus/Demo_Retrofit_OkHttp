@@ -24,7 +24,7 @@
 
             <include layout="@layout/header_update_profile_layout"/>
 
-            <vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager
+            <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

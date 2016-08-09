@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager;
+import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 public class ChangePinActivity extends BaseToolBarActivity implements
         ChangePinFragment.OnPinProfileFragmentListener,

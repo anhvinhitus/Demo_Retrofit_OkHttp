@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <vn.vng.uicomponent.widget.image.TintableImageView
+        <com.zalopay.ui.widget.image.TintableImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/ic_pay_tab_bluetooth"
             app:tint="@color/tint_menu_item" />
 
-        <vn.vng.uicomponent.widget.image.TintableImageView
+        <com.zalopay.ui.widget.image.TintableImageView
             android:id="@+id/radar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

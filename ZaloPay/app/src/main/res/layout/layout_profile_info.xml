@@ -37,7 +37,7 @@
                     android:background="@drawable/circle_border_dark"
                     android:padding="1dp">
 
-                    <vn.vng.uicomponent.widget.image.BezelImageView
+                    <com.zalopay.ui.widget.image.BezelImageView
                         android:id="@+id/imgAvatar"
                         android:layout_width="@dimen/leftmenu.avatar"
                         android:layout_height="@dimen/leftmenu.avatar"

@@ -18,8 +18,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
-import vn.vng.uicomponent.widget.recyclerview.OnItemClickListener;
+import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 /**
  * Created by AnhHieu on 5/25/16.

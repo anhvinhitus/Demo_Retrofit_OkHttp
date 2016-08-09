@@ -35,8 +35,8 @@ import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
-import vn.vng.uicomponent.widget.KeyboardFrameLayout;
-import vn.vng.uicomponent.widget.button.GuardButton;
+import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.button.GuardButton;
 
 /**
  * Created by AnhHieu on 6/27/16.

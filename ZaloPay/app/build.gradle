@@ -358,7 +358,7 @@ dependencies {
 
     debugCompile project(':zalopay.debug')
     compile project(':data')
-    compile project(':uicomponent')
+    compile project(':ui.widget')
     compile (project(':moduledynamicloading')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }

@@ -1,7 +1,7 @@
 include ':app'
 include ':domain'
 include ':data'
-include ':uicomponent'
+include ':ui.widget'
 include ':greendaogenerator'
 include ':moduledynamicloading'
 include ':zalopay.debug'
