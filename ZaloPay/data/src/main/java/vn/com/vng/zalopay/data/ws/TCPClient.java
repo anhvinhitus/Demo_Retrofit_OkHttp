@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.MemoryUtils;
 
 /**
  * Created by AnhHieu on 7/24/16.
@@ -66,13 +67,19 @@ public class TCPClient {
                 mListener.onConnect();
 
                 byte[] buffer = new byte[1024];
+                byte[] header = new byte[4];
 
                 int bytesRead;
 
                 DataInputStream input = new DataInputStream(mSocket.getInputStream());
                 while (mRun) {
-                    bytesRead = input.read(buffer, 4, 512);
+                    bytesRead = input.read(header);
+                    Timber.d("Read %d byte header", bytesRead);
                     if (bytesRead != -1) {
+                        long messageLength = extractLong(header, 0);
+                        Timber.d("Message length: %d", messageLength);
+                        buffer = new byte[(int)messageLength];
+                        bytesRead = input.read(buffer);
                         mListener.onMessage(buffer);
                     }
                 }
@@ -101,6 +108,14 @@ public class TCPClient {
         });
 
         mThread.start();
+    }
+
+    public static long extractLong(byte[] scanRecord, int start) {
+        long longValue = scanRecord[start + 3] & 0xFF;
+        longValue += (scanRecord[start + 2] & 0xFF) << 8;
+        longValue += (scanRecord[start + 1] & 0xFF) << 16;
+        longValue += (scanRecord[start] & 0xFF) << 24;
+        return longValue;
     }
 
     public void disconnect() {

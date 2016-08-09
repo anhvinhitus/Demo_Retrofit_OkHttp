@@ -5,7 +5,7 @@ import android.util.Base64;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.Crc16;
 import vn.com.vng.zalopay.utils.DebugUtils;
-import vn.com.vng.zalopay.utils.MemoryUtils;
+import vn.com.vng.zalopay.data.util.MemoryUtils;
 
 /**
  * Created by huuhoa on 6/4/16.

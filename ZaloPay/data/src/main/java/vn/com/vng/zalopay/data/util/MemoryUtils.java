@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.utils;
+package vn.com.vng.zalopay.data.util;
 
 /**
  * Created by huuhoa on 6/5/16.

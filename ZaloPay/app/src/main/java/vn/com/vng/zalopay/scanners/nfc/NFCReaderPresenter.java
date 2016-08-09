@@ -17,7 +17,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.vng.zalopay.utils.MemoryUtils;
+import vn.com.vng.zalopay.data.util.MemoryUtils;
 
 /**
  * Created by huuhoa on 6/1/16.
