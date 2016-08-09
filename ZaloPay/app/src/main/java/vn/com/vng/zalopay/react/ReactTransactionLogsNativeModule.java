@@ -37,7 +37,6 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 5/8/16.
- *
  */
 class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
@@ -138,19 +137,21 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         WeakReference<Promise> promiseWeakReference;
 
-
         TransactionLogSubscriber(Promise promise) {
             promiseWeakReference = new WeakReference<>(promise);
         }
 
         @Override
         public void onCompleted() {
-
         }
 
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting transaction logs");
+            Promise promise = promiseWeakReference.get();
+            if (promise != null) {
+                Helpers.promiseResolveError(promise, -1, "get transaction error");
+            }
         }
 
         @Override
