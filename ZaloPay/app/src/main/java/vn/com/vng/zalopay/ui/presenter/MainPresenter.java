@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import okhttp3.OkHttpClient;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -36,11 +37,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     IHomeView homeView;
 
     FriendStore.Repository mFriendRepository;
+    OkHttpClient mOkHttpClient;
 
     private boolean isLoadedGateWayInfo;
 
-    public MainPresenter(FriendStore.Repository friendRepository) {
+    public MainPresenter(FriendStore.Repository friendRepository, OkHttpClient okHttpClient) {
         this.mFriendRepository = friendRepository;
+        this.mOkHttpClient = okHttpClient;
     }
 
     public void getZaloFriend() {
@@ -89,6 +92,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     public void initialize() {
+        ZingMobilePayApplication.setHttpClient(mOkHttpClient.newBuilder());
         this.loadGatewayInfoPaymentSDK();
         this.initializeAppConfig();
     }

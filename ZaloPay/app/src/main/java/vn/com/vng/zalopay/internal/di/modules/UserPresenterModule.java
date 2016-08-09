@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.OTPRecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
@@ -62,8 +63,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter(FriendStore.Repository repository) {
-        return new MainPresenter(repository);
+    MainPresenter providerMainPresenter(FriendStore.Repository repository, OkHttpClient okHttpClient) {
+        return new MainPresenter(repository, okHttpClient);
     }
 
     @UserScope
