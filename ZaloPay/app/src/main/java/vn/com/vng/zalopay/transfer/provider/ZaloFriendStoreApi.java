@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.transfer.provider;
 
 import android.content.Context;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -22,11 +23,16 @@ public class ZaloFriendStoreApi implements FriendStore.SDKApi {
 
     @Override
     public void getFriendList(int pageIndex, int totalCount, final FriendStore.APICallback callback) {
-        ZaloSDK.Instance.getFriendList(mContext, pageIndex, totalCount, new ZaloOpenAPICallback() {
-            @Override
-            public void onResult(JSONObject jsonObject) {
-                callback.onResult(jsonObject);
-            }
-        });
+        try {
+            ZaloSDK.Instance.getFriendList(mContext, pageIndex, totalCount, new ZaloOpenAPICallback() {
+                @Override
+                public void onResult(JSONObject jsonObject) {
+                    callback.onResult(jsonObject);
+                }
+            });
+        } catch (Throwable t) {
+            Timber.w(t, "Caught error while calling ZaloSDK");
+            callback.onResult(null);
+        }
     }
 }

@@ -66,6 +66,13 @@ public class FriendRequestService implements FriendStore.RequestService {
 
     private void handleApiCallback(int pageIndex, Subscriber<? super List<ZaloFriend>> subscriber, JSONObject arg0) {
         JSONArray data;
+        if (arg0 == null) {
+            if (!subscriber.isUnsubscribed()) {
+                subscriber.onError(new GetZaloFriendException(pageIndex, new NullPointerException()));
+            }
+            return;
+        }
+
         try {
             data = arg0.getJSONArray("result");
             Timber.d("fetchFriendList, result: %s friends", data.length());
