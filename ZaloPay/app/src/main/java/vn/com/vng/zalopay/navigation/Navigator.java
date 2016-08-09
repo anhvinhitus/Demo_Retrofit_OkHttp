@@ -14,19 +14,20 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
-import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.mdl.internal.ModuleName;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
@@ -172,6 +173,14 @@ public class Navigator implements INavigator {
     }
 
     public void startMiniAppActivity(Activity activity, String moduleName) {
+        if (ModuleName.RED_PACKET.equals(moduleName)) {
+            if (userConfig == null ||
+                    userConfig.getCurrentUser() == null ||
+                    userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+                showUpdateProfileInfoDialog(activity);
+                return;
+            }
+        }
         Intent intent = getIntentMiniAppActivity(activity, moduleName);
         activity.startActivity(intent);
     }
