@@ -53,7 +53,7 @@ public class NotificationRepository implements NotificationStore.Repository {
 
             long rowId = localStorage.putSync(notify);
 
-            Timber.d("put notification rowId  [%s]", rowId);
+            Timber.d("put notification rowId [%s] read [%s]", rowId, notify.read);
 
             if (rowId >= 0) {
                 if (!notify.read) {

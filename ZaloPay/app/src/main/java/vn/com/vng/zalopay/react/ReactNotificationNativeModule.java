@@ -83,6 +83,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
     private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;
+
         public NotificationSubscriber(Promise promise) {
             promiseWeakReference = new WeakReference<>(promise);
         }
@@ -207,6 +208,8 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
     @Subscribe
     public void onNotificationUpdated(NotificationChangeEvent event) {
+        Timber.d("on receive notification event");
+
         sendEvent("zalopayNotificationsAdded");
     }
 
