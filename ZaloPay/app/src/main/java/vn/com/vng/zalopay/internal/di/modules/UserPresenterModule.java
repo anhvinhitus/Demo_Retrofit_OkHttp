@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.SharedPreferences;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -63,8 +65,9 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter(FriendStore.Repository repository, OkHttpClient okHttpClient) {
-        return new MainPresenter(repository, okHttpClient);
+    MainPresenter providerMainPresenter(FriendStore.Repository repository, OkHttpClient okHttpClient,
+                                        @Named("OkHttpClientTimeoutLonger") OkHttpClient okHttpClientTimeoutLonger) {
+        return new MainPresenter(repository, okHttpClient, okHttpClientTimeoutLonger);
     }
 
     @UserScope

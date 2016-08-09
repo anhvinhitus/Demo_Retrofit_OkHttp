@@ -81,6 +81,28 @@ public class NetworkModule {
         return builder.build();
     }
 
+    @Provides
+    @Singleton
+    @Named("OkHttpClientTimeoutLonger")
+    OkHttpClient provideOkHttpClientTimeoutLonger(Cache cache) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(String message) {
+                    Timber.i(message);
+                }
+            });
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(interceptor);
+        }
+        builder.cache(cache);
+        builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_DOWNLOAD_COUNT,
+                Constants.CONNECTION_KEEP_ALIVE_DOWNLOAD_DURATION, TimeUnit.MINUTES));
+        builder.connectTimeout(30, TimeUnit.SECONDS);
+        builder.readTimeout(30, TimeUnit.SECONDS);
+        return builder.build();
+    }
 
     @Provides
     @Singleton

@@ -6,6 +6,8 @@ package vn.com.vng.zalopay;
  */
 public class Constants {
     public static final int PROFILE_LEVEL_MIN = 2;
+    public static final int CONNECTION_POOL_DOWNLOAD_COUNT = 1;
+    public static final int CONNECTION_KEEP_ALIVE_DOWNLOAD_DURATION = 5;
     public static final int CONNECTION_POOL_COUNT = 5;
     public static final long CONNECTION_KEEP_ALIVE_DURATION = 5;
     public static final long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
