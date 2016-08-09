@@ -34,11 +34,11 @@ import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.mdl.BundleReactConfig;
+import com.zalopay.apploader.BundleReactConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
-import vn.com.vng.zalopay.mdl.ReactBasedActivity;
-import vn.com.vng.zalopay.mdl.ReactNativeHostable;
-import vn.com.vng.zalopay.mdl.internal.ModuleName;
+import com.zalopay.apploader.ReactBasedActivity;
+import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.internal.ModuleName;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 

@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-import vn.com.vng.zalopay.mdl.internal.ModuleName;
+import com.zalopay.apploader.internal.ModuleName;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;

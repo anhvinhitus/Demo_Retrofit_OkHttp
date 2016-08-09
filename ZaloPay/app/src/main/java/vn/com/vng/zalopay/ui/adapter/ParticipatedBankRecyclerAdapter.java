@@ -13,7 +13,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
-import vn.vng.uicomponent.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 /**
  * Created by AnhHieu on 5/25/16.

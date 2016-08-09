@@ -27,7 +27,7 @@
                 android:paddingBottom="@dimen/spacing.medium.t"
                 android:paddingTop="@dimen/spacing.medium.t">
 
-                <vn.vng.uicomponent.widget.image.BezelImageView
+                <com.zalopay.ui.widget.image.BezelImageView
                     android:id="@+id/imgAvatar"
                     android:layout_width="@dimen/transfer.avatar"
                     android:layout_height="@dimen/transfer.avatar"

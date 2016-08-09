@@ -11,7 +11,7 @@
     android:padding="@dimen/activity_horizontal_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <vn.vng.uicomponent.widget.image.BezelImageView
+    <com.zalopay.ui.widget.image.BezelImageView
         android:id="@+id/im_avatar"
         android:layout_width="@dimen/leftmenu.avatar"
         android:layout_height="@dimen/leftmenu.avatar"

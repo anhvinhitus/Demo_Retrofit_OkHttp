@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
-import vn.com.vng.zalopay.mdl.BundleService;
+import com.zalopay.apploader.BundleService;
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;

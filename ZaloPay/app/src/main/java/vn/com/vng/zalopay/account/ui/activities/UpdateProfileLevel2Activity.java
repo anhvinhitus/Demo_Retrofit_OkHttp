@@ -36,7 +36,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-import vn.vng.uicomponent.widget.viewpager.NonSwipeableViewPager;
+import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 public class UpdateProfileLevel2Activity extends BaseActivity implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,

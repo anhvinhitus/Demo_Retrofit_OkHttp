@@ -18,7 +18,7 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-import vn.vng.uicomponent.widget.errorview.HttpStatusCodes;
+import com.zalopay.ui.widget.errorview.HttpStatusCodes;
 
 public class ErrorMessageFactory {
 

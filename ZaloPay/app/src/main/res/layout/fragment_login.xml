@@ -36,7 +36,7 @@
 
     </LinearLayout>
 
-    <vn.vng.uicomponent.widget.button.GuardButton
+    <com.zalopay.ui.widget.button.GuardButton
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

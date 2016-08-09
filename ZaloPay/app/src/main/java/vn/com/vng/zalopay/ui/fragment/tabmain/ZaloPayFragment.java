@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.mdl.internal.ModuleName;
+import com.zalopay.apploader.internal.ModuleName;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
@@ -44,7 +44,9 @@ import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.vng.uicomponent.widget.textview.RoundTextView;
+
+import com.zalopay.ui.widget.textview.RoundTextView;
+
 
 /**
  * Created by AnhHieu on 4/11/16.

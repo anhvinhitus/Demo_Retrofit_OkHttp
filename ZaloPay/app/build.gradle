@@ -35,8 +35,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 12
-        versionName "2.0.2"
+        versionCode 13
+        versionName "2.0.3"
 
         multiDexEnabled true
 
@@ -358,8 +358,8 @@ dependencies {
 
     debugCompile project(':zalopay.debug')
     compile project(':data')
-    compile project(':uicomponent')
-    compile (project(':moduledynamicloading')) {
+    compile project(':ui.widget')
+    compile (project(':app-loader')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
 }
