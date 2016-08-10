@@ -5,7 +5,6 @@ import android.util.LruCache;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
-import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.domain.model.User;
 
