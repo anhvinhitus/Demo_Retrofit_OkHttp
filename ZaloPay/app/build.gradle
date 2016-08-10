@@ -276,9 +276,13 @@ android {
         def clientBuildDate = new Date().format('yyyyMMddHHmm')
         // def newName = defaultConfig.versionName.replace(".", "_") + "-" + clientBuildDate
         def newName = "v" + defaultConfig.versionName
+        def releaseDir = new File(getProjectDir(), "../../releases");
+        println("release dir: " + releaseDir.absolutePath);
+        releaseDir.mkdirs();
+
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                output.outputFile = new File("../../releases", output.outputFile.name.replace(".apk", "-" + newName + ".apk").replace("app-", "ZaloPay-"));
+                output.outputFile = new File(releaseDir.absolutePath, output.outputFile.name.replace(".apk", "-" + newName + ".apk").replace("app-", "ZaloPay-"));
             }
         }
     }
