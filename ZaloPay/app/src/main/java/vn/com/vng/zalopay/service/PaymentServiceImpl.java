@@ -11,12 +11,10 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.Helpers;
@@ -99,9 +97,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private void logout() {
         Timber.d("logout");
-        ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-        applicationSession.setMessageAtLogin(AndroidApplication.instance().getString(R.string.exception_token_expired_message));
-        applicationSession.clearUserSession();
+        AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
