@@ -193,7 +193,9 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         if (readerPresenter != null) {
             readerPresenter.destroyView();
         }
-        mHandView.clearAnimation();
+
+        ViewCompat.animate(mHandView).cancel();
+
         stopAnimation();
         super.onDestroyView();
     }

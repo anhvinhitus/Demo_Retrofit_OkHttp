@@ -202,6 +202,7 @@ public class WaveView extends FrameLayout {
         }*/
 
         Timber.d("startRippleAnimation");
+
         if (!animatorSet.isRunning()) {
             animatorSet.addListener(new AnimatorRepeat());
             animatorSet.start();
@@ -211,19 +212,21 @@ public class WaveView extends FrameLayout {
     }
 
     public void stopRippleAnimation() {
-      /*  if (isRippleAnimationRunning()) {
-
-        }*/
-
         for (RippleView rippleView : rippleViewList) {
             rippleView.clearAnimation();
         }
+
+        animatorSet.removeAllListeners();
 
         if (animatorSet.isRunning()) {
             animatorSet.end();
         }
 
-        animatorSet.removeAllListeners();
+        ArrayList<Animator> mAnimators = animatorSet.getChildAnimations();
+        for (Animator mAnimator : mAnimators) {
+            mAnimator.cancel();
+            mAnimator.removeAllListeners();
+        }
 
         animationRunning = false;
     }
