@@ -11,15 +11,17 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
-import vn.com.vng.zalopay.react.Helpers;
-import vn.com.vng.zalopay.react.iap.IPaymentService;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
@@ -73,8 +75,10 @@ public class PaymentServiceImpl implements IPaymentService {
 
             @Override
             public void onResponseTokenInvalid() {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
-                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));
+                Timber.d("onResponseTokenInvalid errorCode");
+                /*Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
+                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));*/
+                logout();
             }
 
             @Override
@@ -91,6 +95,13 @@ public class PaymentServiceImpl implements IPaymentService {
         });
 
         this.mPaymentWrapper.payWithOrder(order);
+    }
+
+    private void logout() {
+        Timber.d("logout");
+        ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
+        applicationSession.setMessageAtLogin(AndroidApplication.instance().getString(R.string.exception_token_expired_message));
+        applicationSession.clearUserSession();
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
