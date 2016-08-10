@@ -96,7 +96,7 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:label="@string/app_name"
+            android:label="@string/loremipsum"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
