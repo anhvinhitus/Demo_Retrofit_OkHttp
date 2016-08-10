@@ -1,23 +1,18 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.ws.Listener;
 
 /**
  * Created by AnhHieu on 6/14/16.
  */
 public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
 
-    private final Context ctx;
-    private final ConnectionListener listener;
+    private final Listener listener;
 
-    public ConnectionHandler(Context context, ConnectionListener handler) {
-        this.ctx = context;
+    public ConnectionHandler(Listener handler) {
         this.listener = handler;
     }
 
@@ -29,7 +24,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
 
         try {
             if (listener != null) {
-                listener.onReceived(msg);
+                listener.onMessage(msg);
             }
         } catch (Exception ex) {
             Timber.e(ex, "Exception while parsing notification message");
@@ -40,8 +35,9 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Timber.d("channelActive");
         super.channelActive(ctx);
-        if (listener != null)
+        if (listener != null) {
             listener.onConnected();
+        }
     }
 
     @Override

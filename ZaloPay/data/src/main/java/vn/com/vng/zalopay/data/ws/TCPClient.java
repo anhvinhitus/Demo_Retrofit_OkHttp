@@ -11,12 +11,11 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.util.MemoryUtils;
 
 /**
  * Created by AnhHieu on 7/24/16.
  */
-public class TCPClient {
+public class TCPClient implements SocketClient {
 
     private Socket mSocket;
     private Listener mListener;
@@ -64,7 +63,7 @@ public class TCPClient {
                 mSocket.connect(new InetSocketAddress(mHost, mPort));
 
                 mBufferedOutputStream = new BufferedOutputStream(mSocket.getOutputStream());
-                mListener.onConnect();
+                mListener.onConnected();
 
                 byte[] buffer = new byte[1024];
                 byte[] header = new byte[4];
@@ -78,7 +77,7 @@ public class TCPClient {
                     if (bytesRead != -1) {
                         long messageLength = extractLong(header, 0);
                         Timber.d("Message length: %d", messageLength);
-                        buffer = new byte[(int)messageLength];
+                        buffer = new byte[(int) messageLength];
                         bytesRead = input.read(buffer);
                         mListener.onMessage(buffer);
                     }
@@ -145,7 +144,9 @@ public class TCPClient {
     }
 
     public void send(byte[] data) {
-        sendFrame(data);
+        if (isConnected()) {
+            sendFrame(data);
+        }
     }
 
     void sendFrame(final byte[] frame) {
@@ -174,15 +175,14 @@ public class TCPClient {
         return mRun;
     }
 
-    public interface Listener {
-        void onConnect();
 
-        void onMessage(String message);
+    @Override
+    public boolean isConnected() {
+        return mSocket.isConnected();
+    }
 
-        void onMessage(byte[] data);
-
-        void onDisconnect(int code, String reason);
-
-        void onError(Exception error);
+    @Override
+    public boolean isConnecting() {
+        return false;
     }
 }

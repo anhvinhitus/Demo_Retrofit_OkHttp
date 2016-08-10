@@ -6,23 +6,19 @@ import android.text.TextUtils;
 import com.google.protobuf.AbstractMessage;
 
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.ConnectTimeoutException;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.ws.Listener;
+import vn.com.vng.zalopay.data.ws.NettyClient;
+import vn.com.vng.zalopay.data.ws.SocketClient;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
@@ -33,19 +29,13 @@ import vn.com.vng.zalopay.domain.model.User;
 /**
  * Created by AnhHieu on 6/14/16.
  */
-public class WsConnection extends Connection implements ConnectionListener {
-
-
-    private NioEventLoopGroup group;
-    private Channel mChannel;
-    private ChannelFuture channelFuture;
+public class WsConnection extends Connection implements Listener {
 
     private String gcmToken;
 
     private final Context context;
 
     private int numRetry;
-
 
     private final Parser parser;
     private final UserConfig userConfig;
@@ -54,11 +44,14 @@ public class WsConnection extends Connection implements ConnectionListener {
     private Timer mTimer;
     private TimerTask timerTask;
 
+    SocketClient socketClient;
+
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
+        socketClient = new NettyClient(host, port, this);
     }
 
     public void setGCMToken(String token) {
@@ -67,38 +60,7 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     @Override
     public void connect() {
-        if (mChannel != null && mChannel.isActive()) {
-            return;
-        }
-
-        Timber.i("Begin connecting");
-        new Thread() {
-            @Override
-            public void run() {
-                group = new NioEventLoopGroup();
-                try {
-                    Bootstrap bootstrap = new Bootstrap();
-                    bootstrap.group(group);
-                    bootstrap.channel(NioSocketChannel.class);
-                    bootstrap.handler(new ChannelFactory(context, WsConnection.this));
-                    bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-                    bootstrap.option(ChannelOption.TCP_NODELAY, true);
-                    bootstrap.option(ChannelOption.SO_TIMEOUT, 10000);
-                    channelFuture = bootstrap.connect(new InetSocketAddress(mHost, mPort));
-                    mChannel = channelFuture.sync().channel();
-                    mState = Connection.State.Connecting;
-                } catch (InterruptedException e) {
-                    Timber.e(e, "Connect socket error with InterruptedException");
-                    mState = Connection.State.Disconnected;
-                    WsConnection.this.onError(e);
-                } catch (Exception e) {
-                    Timber.e(e, "Connect socket exception");
-                    mState = Connection.State.Disconnected;
-                    WsConnection.this.onError(e);
-                }
-            }
-        }.start();
-
+        socketClient.connect();
     }
 
     @Override
@@ -109,27 +71,17 @@ public class WsConnection extends Connection implements ConnectionListener {
     @Override
     public void disconnect() {
         Timber.d("disconnect");
-
-        if (mChannel != null && mChannel.isOpen()) {
-            mChannel.close();
-        }
-
-        if (group != null) {
-            group.shutdownGracefully();
-        }
-        mState = State.Disconnected;
-
-        stopTimerCheckConnect();
+        socketClient.disconnect();
     }
 
     @Override
     public boolean isConnected() {
-        return mChannel != null && mChannel.isActive();
+        return socketClient.isConnected();
     }
 
     @Override
     public boolean isConnecting() {
-        return mChannel != null && mChannel.isOpen();
+        return socketClient.isConnecting();
     }
 
     @Override
@@ -144,22 +96,14 @@ public class WsConnection extends Connection implements ConnectionListener {
 
     @Override
     public boolean send(int msgType, byte[] data) {
+        ByteBuffer bufTemp = ByteBuffer.allocate(HEADER_LENGTH + data.length);
+        bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
+        bufTemp.put((byte) msgType);
+        bufTemp.put(data);
 
-        if (isConnected()) {
-            try {
-                Timber.d("send message to server: type = " + msgType);
-                ByteBuffer bufTemp = ByteBuffer.allocate(HEADER_LENGTH + data.length);
-                bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
-                bufTemp.put((byte) msgType);
-                bufTemp.put(data);
-                mChannel.writeAndFlush(bufTemp.array());
-                return true;
-            } catch (Exception ex) {
-                Timber.e(ex, "send message to server socket error");
-            }
-        }
+        socketClient.send(bufTemp.array());
 
-        return false;
+        return true;
     }
 
 
@@ -174,7 +118,7 @@ public class WsConnection extends Connection implements ConnectionListener {
     }
 
     @Override
-    public void onReceived(byte[] data) {
+    public void onMessage(byte[] data) {
         Timber.d("onReceived");
         Event message = parser.parserMessage(data);
         if (message != null) {
@@ -212,13 +156,7 @@ public class WsConnection extends Connection implements ConnectionListener {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
 
-        if (mChannel != null) {
-            mChannel.disconnect();
-        }
-
-        if (group != null) {
-            group.shutdownGracefully();
-        }
+        //socketClient.disconnect();
 
         if (NetworkHelper.isNetworkAvailable(context)
                 && userConfig.hasCurrentUser()

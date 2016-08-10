@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.ws;
 
 import android.content.Context;
@@ -19,9 +20,11 @@ import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
+*/
 /**
  * Created by AnhHieu on 7/24/16.
- */
+ *//*
+
 public class SocketConnection extends Connection implements TCPClient.Listener {
 
     final TCPClient client;
@@ -159,3 +162,4 @@ public class SocketConnection extends Connection implements TCPClient.Listener {
         gcmToken = token;
     }
 }
+*/
