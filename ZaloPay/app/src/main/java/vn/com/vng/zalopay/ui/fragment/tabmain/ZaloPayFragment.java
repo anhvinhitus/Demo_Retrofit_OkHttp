@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,8 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +19,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.textview.RoundTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,6 @@ import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import com.zalopay.apploader.internal.ModuleName;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
@@ -44,8 +45,6 @@ import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-
-import com.zalopay.ui.widget.textview.RoundTextView;
 
 
 /**
@@ -135,7 +134,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setAdapter(mAdapter);
 
         showBannerAds();
-//        showTextAds("Mobi khuyến mại <b>50%. Nạp ngay hôm nay!</b>");
         hideTextAds();
     }
 
@@ -168,32 +166,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         super.onDestroyView();
     }
 
-    /* Show|Hide Banner START */
     public void showBannerAds() {
-        //Glide.with(this).load(url).asBitmap().into(mImgAdsBanner);
         List<Integer> bannerResource = new ArrayList<>();
         bannerResource.add(R.drawable.bn_1);
         bannerResource.add(R.drawable.bn_2);
-        // bannerResource.add(R.drawable.bn_4);
         mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource, this);
         mBannerViewpager.setAdapter(mBannerPagerAdapter);
         mBannerIndicator.setViewPager(mBannerViewpager);
         if (mLayoutBannerFullScreen != null) {
             mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void hideBannerAds() {
-        if (mLayoutBannerFullScreen != null) {
-            mLayoutBannerFullScreen.setVisibility(View.GONE);
-        }
-    }
-
-    public void showTextAds(String content) {
-        if (TextUtils.isEmpty(content)) {
-            hideTextAds();
-        } else {
-            mTvAdsSubContent.setText(Html.fromHtml(content));
         }
     }
 
@@ -235,18 +216,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
     }
 
- /*   @OnClick(R.id.btn_balance)
-    public void onBtnQrCodeClick() {
-        startQRCodeActivity();
-        ZPAnalytics.trackEvent(ZPEvents.TAPSCANQR);
-    }
-       private void startQRCodeActivity() {
-        if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
-            getAppComponent().monitorTiming().startEvent(MonitorEvents.QR_SCANNING);
-            navigator.startQrCodeActivity(getActivity());
-        }
-    }*/
-
     @OnClick(R.id.btn_scan_to_pay)
     public void onScanToPayClick(View view) {
         getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
@@ -255,7 +224,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         navigator.startScanToPayActivity(getActivity());
     }
 
-    //Test
     List<AppResource> mListApps = null;
 
     private List<AppResource> getListData() {
@@ -287,7 +255,14 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void setBalance(long balance) {
-        mBalanceView.setText(CurrencyUtil.formatCurrency(balance));
+        String _temp = CurrencyUtil.formatCurrency(balance);
+
+      //  if(TextUtils)
+
+   /*     SpannableString span = new SpannableString(_temp);
+        span.setSpan(new RelativeSizeSpan(2f), _temp.length() - String.valueOf(balance).length(), _temp.length(), 0);*/
+
+        mBalanceView.setText(_temp);
     }
 
     @Override

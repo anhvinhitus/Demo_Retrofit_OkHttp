@@ -44,7 +44,7 @@ public interface AppResource {
                                                           @QueryMap HashMap<String, String> params,
                                                           @Query("appversion") String appVersion);
 
-        @GET("tpe/insideappresource")
+        @GET("tpe/getinsideappresource")
         Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                           @Query(value = "checksumlist", encoded = true) String checksumlist,
                                                           @QueryMap HashMap<String, String> params,
