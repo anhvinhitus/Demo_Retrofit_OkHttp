@@ -178,6 +178,10 @@ public class TCPClient implements SocketClient {
 
     @Override
     public boolean isConnected() {
+        if (mSocket == null) {
+            return false;
+        }
+
         return mSocket.isConnected();
     }
 
