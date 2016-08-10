@@ -156,7 +156,7 @@ public class WsConnection extends Connection implements Listener {
         Timber.d("onDisconnected %s", code);
         mState = Connection.State.Disconnected;
 
-        //socketClient.disconnect();
+        socketClient.disconnect();
 
         if (NetworkHelper.isNetworkAvailable(context)
                 && userConfig.hasCurrentUser()
