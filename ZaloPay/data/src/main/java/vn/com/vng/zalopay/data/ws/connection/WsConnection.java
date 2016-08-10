@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.Listener;
 import vn.com.vng.zalopay.data.ws.NettyClient;
 import vn.com.vng.zalopay.data.ws.SocketClient;
+import vn.com.vng.zalopay.data.ws.TCPClient;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
@@ -51,7 +52,8 @@ public class WsConnection extends Connection implements Listener {
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-        socketClient = new NettyClient(host, port, this);
+        //socketClient = new NettyClient(host, port, this);
+        socketClient = new TCPClient(host, port, this);
     }
 
     public void setGCMToken(String token) {
