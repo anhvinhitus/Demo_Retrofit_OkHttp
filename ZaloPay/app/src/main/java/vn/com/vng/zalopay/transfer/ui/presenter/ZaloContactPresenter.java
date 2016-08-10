@@ -83,7 +83,7 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
 
 
     public ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD) {
-        return friendRepository.convertZaloFriendGD(zaloFriendGD);
+        return mRepository.convertZaloFriendGD(zaloFriendGD);
     }
 
     public void retrieveZaloFriendsAsNeeded() {

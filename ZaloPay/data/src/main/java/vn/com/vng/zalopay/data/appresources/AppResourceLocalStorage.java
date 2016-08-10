@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.data.util.Lists;
  * Created by huuhoa on 6/17/16.
  * Implementation for AppResource.LocalStorage
  */
-public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppResource.LocalStorage {
+public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppResourceStore.LocalStorage {
     private PlatformDaoMapper platformDaoMapper;
 
     public AppResourceLocalStorage(DaoSession daoSession, PlatformDaoMapper mapper) {

@@ -24,12 +24,12 @@ public class DownloadAppResourceTask {
 
     private final OkHttpClient httpClient;
     private final DownloadInfo downloadInfo;
-    private final AppResource.LocalStorage mLocalStorage;
+    private final AppResourceStore.LocalStorage mLocalStorage;
     private final String mBundleRootFolder;
 
     public DownloadAppResourceTask(DownloadInfo appResourceEntity,
                                    OkHttpClient mOkHttpClient,
-                                   AppResource.LocalStorage localStorage,
+                                   AppResourceStore.LocalStorage localStorage,
                                    String rootBundle) {
 
         this.downloadInfo = appResourceEntity;

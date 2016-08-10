@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.components;
 
+import com.zalopay.apploader.ReactNativeHostable;
+
 import dagger.Subcomponent;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
@@ -15,7 +17,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
-import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -25,23 +27,22 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
-import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
-import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
-import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
-import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
+import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
+import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
 import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
-import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
+import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
+import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
+import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import com.zalopay.apploader.ReactNativeHostable;
-import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
@@ -78,7 +79,7 @@ public interface UserComponent {
 
     User currentUser();
 
-    AppResource.Repository appResourceRepository();
+    AppResourceStore.Repository appResourceRepository();
 
     AccountStore.Repository accountRepository();
 

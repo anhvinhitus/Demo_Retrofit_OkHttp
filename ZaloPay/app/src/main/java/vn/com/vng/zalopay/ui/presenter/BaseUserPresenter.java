@@ -1,7 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.appresources.AppResource;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
  */
 public abstract class BaseUserPresenter extends BaseAppPresenter {
 
-    protected AppResource.Repository mAppResourceRepository = AndroidApplication.instance().getUserComponent().appResourceRepository();
+    protected AppResourceStore.Repository mAppResourceRepository = AndroidApplication.instance().getUserComponent().appResourceRepository();
 
     protected ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
 
@@ -26,5 +26,4 @@ public abstract class BaseUserPresenter extends BaseAppPresenter {
 
     protected NotificationStore.Repository notificationRepository = AndroidApplication.instance().getUserComponent().notificationRepository();
 
-    protected FriendStore.Repository friendRepository = AndroidApplication.instance().getUserComponent().friendRepository();
 }

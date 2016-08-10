@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
  * Created by huuhoa on 6/17/16.
  * Implementation for AppResource.Repository
  */
-public class AppResourceRepository implements AppResource.Repository {
+public class AppResourceRepository implements AppResourceStore.Repository {
     private AppConfigEntityDataMapper mAppConfigEntityDataMapper;
     private HashMap<String, String> mRequestParameters;
     private DownloadAppResourceTaskQueue taskQueue;
@@ -29,13 +29,13 @@ public class AppResourceRepository implements AppResource.Repository {
 
     private final boolean mDownloadAppResource;
     private final String mRootBundle;
-    private final AppResource.RequestService mRequestService;
-    private final AppResource.LocalStorage mLocalStorage;
+    private final AppResourceStore.RequestService mRequestService;
+    private final AppResourceStore.LocalStorage mLocalStorage;
     private String appVersion;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
-                                 AppResource.RequestService requestService,
-                                 AppResource.LocalStorage localStorage,
+                                 AppResourceStore.RequestService requestService,
+                                 AppResourceStore.LocalStorage localStorage,
                                  HashMap<String, String> requestParameters,
                                  DownloadAppResourceTaskQueue taskQueue,
                                  OkHttpClient okHttpClient,
