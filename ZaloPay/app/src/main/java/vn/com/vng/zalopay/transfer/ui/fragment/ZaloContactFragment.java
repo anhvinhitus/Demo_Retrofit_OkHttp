@@ -23,9 +23,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.adapter.ZaloContactRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ZaloContactPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
@@ -42,20 +40,12 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         ZaloContactRecyclerViewAdapter.OnItemInteractionListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
     private ZaloContactRecyclerViewAdapter mAdapter;
     private Bundle mTransferState;
     private CountDownTimer mSearchTimer;
 
     @Inject
-    Navigator navigator;
-
-    @Inject
     ZaloContactPresenter presenter;
-
-    @Inject
-    FriendStore.Repository mFriendRepository;
 
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout mSwipeRefresh;
@@ -85,10 +75,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
     @SuppressWarnings("unused")
-    public static ZaloContactFragment newInstance(int columnCount) {
+    public static ZaloContactFragment newInstance() {
         ZaloContactFragment fragment = new ZaloContactFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,10 +95,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), null, this);
     }
 
     @Override
@@ -117,17 +103,19 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         // Set the adapter
-        if (mColumnCount <= 1) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        } else {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
-        }
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new ZaloContactRecyclerViewAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
         mSwipeRefresh.setOnRefreshListener(this);
-
         initSearchTimer();
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         presenter.retrieveZaloFriendsAsNeeded();
         presenter.getZFriedListFromDB();
     }
@@ -241,7 +229,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         if (mTransferState == null) {
             mTransferState = new Bundle();
         }
-        ZaloFriend zaloFriend = mFriendRepository.convertZaloFriendGD(zaloFriendGD);
+        ZaloFriend zaloFriend = presenter.convertZaloFriendGD(zaloFriendGD);
         mTransferState.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
         navigator.startTransferActivity(this, mTransferState);
     }

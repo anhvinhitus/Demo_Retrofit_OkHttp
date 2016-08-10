@@ -17,7 +17,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.Listener;
-import vn.com.vng.zalopay.data.ws.NettyClient;
 import vn.com.vng.zalopay.data.ws.SocketClient;
 import vn.com.vng.zalopay.data.ws.TCPClient;
 import vn.com.vng.zalopay.data.ws.message.MessageType;

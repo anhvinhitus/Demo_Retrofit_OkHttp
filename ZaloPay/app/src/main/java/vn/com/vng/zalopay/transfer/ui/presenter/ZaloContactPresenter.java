@@ -81,6 +81,11 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         unsubscribeIfNotNull(compositeSubscription);
     }
 
+
+    public ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD) {
+        return friendRepository.convertZaloFriendGD(zaloFriendGD);
+    }
+
     public void retrieveZaloFriendsAsNeeded() {
         if (mRepository == null) {
             onGetZFriendError();
