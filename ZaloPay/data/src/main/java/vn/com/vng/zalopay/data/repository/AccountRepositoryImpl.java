@@ -39,8 +39,8 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber) {
-        return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber)
+    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber, String zalopayName) {
+        return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber, zalopayName)
                 .map(baseResponse -> Boolean.TRUE);
     }
 

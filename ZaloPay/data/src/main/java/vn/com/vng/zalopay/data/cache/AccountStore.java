@@ -28,7 +28,7 @@ public interface AccountStore {
 
         @FormUrlEncoded
         @POST("um/updateprofile")
-        Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
+        Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber, @Field("zalopayname") String zalopayname);
 
         @FormUrlEncoded
         @POST("um/verifyotpprofile")
@@ -61,7 +61,7 @@ public interface AccountStore {
 
     interface Repository {
 
-        Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber);
+        Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber, String zalopayName);
 
         Observable<Boolean> verifyOTPProfile(String otp);
 

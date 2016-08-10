@@ -79,11 +79,11 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         }
     }
 
-    public void updateProfile(String pin, String phone) {
+    public void updateProfile(String pin, String phone, String zalopayName) {
         showLoading();
         String pinSha256 = sha256(pin);
 
-        subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone)
+        subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone, zalopayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new updateProfileSubscriber(phone));

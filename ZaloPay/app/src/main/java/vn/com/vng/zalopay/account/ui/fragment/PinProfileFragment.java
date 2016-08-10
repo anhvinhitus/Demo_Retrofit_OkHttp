@@ -63,6 +63,11 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @BindView(R.id.edtPhone)
     ClearableEditText edtPhone;
 
+    @BindView(R.id.textInputZaloPayName)
+    TextInputLayout textInputZaloPayName;
+    @BindView(R.id.edtZaloPayName)
+    ClearableEditText edtZaloPayName;
+
     @OnTextChanged(R.id.edtPhone)
     public void onTextChangedPhone() {
         if (isValidPhone()) {
@@ -89,6 +94,31 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         return !TextUtils.isEmpty(phone) && ValidateUtil.isMobileNumber(phone);
     }
 
+    @OnTextChanged(R.id.edtZaloPayName)
+    public void onTextChangedZPName() {
+        if (isValidZPName()) {
+            hideZPNameError();
+        }
+    }
+
+    private boolean isValidZPName() {
+        String zaloPayName = edtZaloPayName.getString();
+        return ValidateUtil.isValidZaloPayName(zaloPayName);
+    }
+
+    private void showZPNameError(String error) {
+        if (!TextUtils.isEmpty(error)) {
+            textInputZaloPayName.setErrorEnabled(true);
+            textInputZaloPayName.setError(error);
+        } else {
+            hideZPNameError();
+        }
+    }
+
+    private void hideZPNameError() {
+        textInputZaloPayName.setErrorEnabled(false);
+        textInputZaloPayName.setError(null);
+    }
 
     @OnClick(R.id.tvShowPass)
     public void onClickShowPass() {
@@ -169,7 +199,14 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         } else {
             hidePhoneError();
         }
-        presenter.updateProfile(passCode.getText(), edtPhone.getString());
+
+        if (!isValidZPName()) {
+            showZPNameError(getString(R.string.invalid__zalopay_name));
+            return;
+        } else {
+            hideZPNameError();
+        }
+        presenter.updateProfile(passCode.getText(), edtPhone.getString(), edtZaloPayName.getString());
     }
 
     @Override
