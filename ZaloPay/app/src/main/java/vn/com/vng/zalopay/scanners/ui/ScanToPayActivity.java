@@ -156,7 +156,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
                 mTabLayout.getTabAt(TAB_SOUND).setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
             }
 
-            mTabLayout.getTabAt(TAB_NFC).getCustomView().setSelected(true);
+            mTabLayout.getTabAt(TAB_QR).getCustomView().setSelected(true);
         } catch (NullPointerException e) {
             Timber.w(e, "Should not happened in ScanToPayActivity");
         }

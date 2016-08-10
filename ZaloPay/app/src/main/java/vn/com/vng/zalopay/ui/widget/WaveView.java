@@ -214,6 +214,11 @@ public class WaveView extends FrameLayout {
       /*  if (isRippleAnimationRunning()) {
 
         }*/
+
+        for (RippleView rippleView : rippleViewList) {
+            rippleView.clearAnimation();
+        }
+
         if (animatorSet.isRunning()) {
             animatorSet.end();
         }
