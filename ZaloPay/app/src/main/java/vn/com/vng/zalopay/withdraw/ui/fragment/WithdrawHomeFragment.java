@@ -150,7 +150,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
         if (tvAccountName == null) {
             return;
         }
-        
+
         if (TextUtils.isEmpty(zaloPayName)) {
             tvAccountName.setText("");
         } else {

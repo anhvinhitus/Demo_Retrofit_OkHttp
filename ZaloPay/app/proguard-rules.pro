@@ -276,6 +276,12 @@
 -keep class com.facebook.imagepipeline.gif.** { *; }
 -keep class com.facebook.imagepipeline.webp.** { *; }
 
+# Works around a bug in the animated GIF module which will be fixed in 0.12.0
+-keep class com.facebook.imagepipeline.animated.factory.AnimatedFactoryImpl {
+    public AnimatedFactoryImpl(com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory,com.facebook.imagepipeline.core.ExecutorSupplier);
+}
+
+
 #-dontwarn android.support.v7.**
 #-keep class android.support.v7.** { *; }
 #-keep interface android.support.v7.** { *; }

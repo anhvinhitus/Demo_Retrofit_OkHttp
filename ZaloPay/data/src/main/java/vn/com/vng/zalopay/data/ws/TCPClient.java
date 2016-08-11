@@ -7,8 +7,10 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteOrder;
 
 import timber.log.Timber;
 
@@ -44,11 +46,9 @@ public class TCPClient implements SocketClient {
     }
 
     public void connect() {
-
-        Timber.i("Begin connecting");
-
+        Timber.d("Request to make connection");
         if (mThread != null && mThread.isAlive()) {
-            Timber.d("thread connect socket is Alive");
+            Timber.d("Thread running the connection is still alive. Skip create new connection");
             return;
         }
 
@@ -70,18 +70,24 @@ public class TCPClient implements SocketClient {
                 byte[] buffer = new byte[1024];
                 byte[] header = new byte[4];
 
-                int bytesRead;
+
 
                 DataInputStream input = new DataInputStream(mSocket.getInputStream());
                 while (mRun) {
-                    bytesRead = input.read(header);
-                    Timber.d("Read %d byte header", bytesRead);
-                    if (bytesRead != -1) {
-                        long messageLength = extractLong(header, 0);
-                        Timber.d("Message length: %d", messageLength);
-                        buffer = new byte[(int) messageLength];
-                        bytesRead = input.read(buffer);
-                        mListener.onMessage(buffer);
+                    int messageLength = input.readInt();
+                    Timber.d("Message length: %d", messageLength);
+                    if (messageLength > 0) {
+                        buffer = new byte[messageLength];
+                        int bytesRead = input.read(buffer);
+                        Timber.d("Read %s bytes as message body", bytesRead);
+                        if (bytesRead != -1) {
+                            mListener.onMessage(buffer);
+                        } else {
+                            Timber.d("Failed to read message body. Disconnect!");
+                            break;
+                        }
+                    } else {
+                        Timber.d("messageLength is negative!");
                     }
                 }
 
@@ -95,6 +101,7 @@ public class TCPClient implements SocketClient {
                 Timber.e(e, "Exception");
                 mListener.onError(e);
             } finally {
+                Timber.d("Stopping the connection.");
                 mRun = false;
                 try {
                     if (mSocket != null) {
@@ -109,10 +116,11 @@ public class TCPClient implements SocketClient {
 
         });
 
+        Timber.d("Starting new connection");
         mThread.start();
     }
 
-    public static long extractLong(byte[] scanRecord, int start) {
+    private static long extractLong(byte[] scanRecord, int start) {
         long longValue = scanRecord[start + 3] & 0xFF;
         longValue += (scanRecord[start + 2] & 0xFF) << 8;
         longValue += (scanRecord[start + 1] & 0xFF) << 16;
