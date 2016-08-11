@@ -147,7 +147,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         String embeddata = notificationGD.getEmbeddata();
 
-        Timber.d("embeddata [%s]", embeddata);
+    //    Timber.d("embeddata [%s]", embeddata);
         if (TextUtils.isEmpty(embeddata)) {
             _notification.setEmbeddata(new JsonObject());
         } else {

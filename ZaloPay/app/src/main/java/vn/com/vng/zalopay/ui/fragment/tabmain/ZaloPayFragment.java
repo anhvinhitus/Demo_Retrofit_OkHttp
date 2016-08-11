@@ -7,6 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -257,14 +261,13 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void setBalance(long balance) {
-        String _temp = CurrencyUtil.formatCurrency(balance);
+        String _temp = CurrencyUtil.formatCurrency(balance, true);
 
-      //  if(TextUtils)
+        SpannableString span = new SpannableString(_temp);
+        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-   /*     SpannableString span = new SpannableString(_temp);
-        span.setSpan(new RelativeSizeSpan(2f), _temp.length() - String.valueOf(balance).length(), _temp.length(), 0);*/
-
-        mBalanceView.setText(_temp);
+        mBalanceView.setText(span);
     }
 
     @Override
