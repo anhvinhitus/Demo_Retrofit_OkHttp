@@ -2,8 +2,13 @@ package vn.com.vng.zalopay.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -195,7 +200,18 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     }
 
     public void setBalance(long balance) {
-        tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
+        String _temp = CurrencyUtil.formatCurrency(balance, true);
+        SpannableString span = new SpannableString(_temp);
+
+        int indexSuffix = _temp.indexOf(CurrencyUtil.CURRENCY_UNIT);
+
+        span.setSpan(new RelativeSizeSpan(0.8f), indexSuffix, _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        span.setSpan(new StyleSpan(Typeface.BOLD), 0, indexSuffix,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvBalance.setText(span);
     }
 
     @Override
