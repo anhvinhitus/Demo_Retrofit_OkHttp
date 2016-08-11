@@ -142,6 +142,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     private void initLimitAmount() {
         try {
+//          ################## longlv: need update (getMinDepositValue/getMaxDepositValue)##################
             minWithdrawAmount = CShareData.getInstance(getActivity()).getMinDepositValue();
             maxWithdrawAmount = CShareData.getInstance(getActivity()).getMaxDepositValue();
         } catch (Exception e) {
