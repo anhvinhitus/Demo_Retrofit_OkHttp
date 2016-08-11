@@ -23,11 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        // Android studio 2.1
-        // classpath 'com.android.tools.build:gradle:2.1.2'
-
-        // Android studio 2.2 preview 7
-        classpath 'com.android.tools.build:gradle:2.2.0-alpha7'
+        classpath 'com.android.tools.build:gradle:2.1.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
