@@ -154,7 +154,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
 
         mLifecycleState = LifecycleState.BEFORE_RESUME;
@@ -165,7 +165,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         mLifecycleState = LifecycleState.RESUMED;
@@ -176,7 +176,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if (mReactRootView != null) {
             mReactRootView.unmountReactApplication();
             ViewParent view = mReactRootView.getParent();
