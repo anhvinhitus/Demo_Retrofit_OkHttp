@@ -48,7 +48,7 @@ public class MessageParser implements Parser {
         ZPMsgProtos.DataResponseUser respMsg = ZPMsgProtos.DataResponseUser.parseFrom(msg);
 
         if (!respMsg.hasMtaid() && !respMsg.hasMtuid()) {
-            Timber.e("Notification mtaid and mtuid not have");
+            Timber.e("Notification mtaid and mtuid not have with msgType: [%s]", respMsg.getMsgtype());
             return null;
         }
 

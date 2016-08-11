@@ -44,7 +44,11 @@ public class TCPClient implements SocketClient {
     }
 
     public void connect() {
+
+        Timber.i("Begin connecting");
+
         if (mThread != null && mThread.isAlive()) {
+            Timber.d("thread connect socket is Alive");
             return;
         }
 
@@ -95,6 +99,7 @@ public class TCPClient implements SocketClient {
                 try {
                     if (mSocket != null) {
                         mSocket.close();
+                        mSocket = null;
                     }
                 } catch (IOException ex) {
                     Timber.e(ex, "IOException");
