@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawHomeActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -319,6 +320,11 @@ public class Navigator implements INavigator {
 
     public void startWithdrawHomeActivity(Context context) {
         Intent intent = new Intent(context, WithdrawHomeActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startWithdrawActivity(Context context) {
+        Intent intent = new Intent(context, WithdrawActivity.class);
         context.startActivity(intent);
     }
 }

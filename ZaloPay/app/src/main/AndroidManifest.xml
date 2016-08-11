@@ -247,6 +247,8 @@
         </activity>
         <activity android:name=".withdraw.ui.activities.WithdrawHomeActivity"
                   android:label="@string/title.activity.withdraw.home" />
+        <activity android:name=".withdraw.ui.activities.WithdrawActivity"
+                  android:label="@string/title.activity.withdraw" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

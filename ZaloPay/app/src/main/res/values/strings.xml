@@ -258,4 +258,7 @@
     <string name="my_balance">Số dư của tôi <font size='12'>(VND)</font></string>
     <string name="account_name">Tên tài khoản</string>
     <string name="more_info_acc_zalopay">Tìm hiểu thêm về tài khoản Zalo Pay</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

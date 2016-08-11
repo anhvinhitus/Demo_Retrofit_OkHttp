@@ -13,6 +13,8 @@ public class Constants {
     public static final long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
     public static final int MIN_DEPOSIT_MONEY = 20000;
     public static final int MAX_DEPOSIT_MONEY = 10000000;
+    public static final int MIN_WITHDRAW_MONEY = 20000;
+    public static final int MAX_WITHDRAW_MONEY = 10000000;
     public static final int MIN_TRANSFER_MONEY = 10000;
     public static final int MAX_TRANSFER_MONEY = 10000000;
 
