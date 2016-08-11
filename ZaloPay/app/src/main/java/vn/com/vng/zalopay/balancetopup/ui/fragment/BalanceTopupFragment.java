@@ -13,6 +13,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -20,7 +21,6 @@ import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
@@ -34,6 +34,8 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView {
     // TODO: Rename parameter arguments, choose names that match
     private long mAmount = 0;
+    private long minDepositAmount;
+    private long maxDepositAmount;
     private String mValidMinAmount = "";
     private String mValidMaxAmount = "";
 
@@ -78,7 +80,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     public boolean isValidMinAmount() {
-        if (mAmount < Constants.MIN_DEPOSIT_MONEY) {
+        if (mAmount < minDepositAmount) {
             showAmountError(mValidMinAmount);
             return false;
         }
@@ -86,7 +88,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     public boolean isValidMaxAmount() {
-        if (mAmount > Constants.MAX_DEPOSIT_MONEY ) {
+        if (mAmount > maxDepositAmount ) {
             showAmountError(mValidMaxAmount);
             return false;
         }
@@ -141,10 +143,26 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initLimitAmount();
+    }
+
+    private void initLimitAmount() {
+        try {
+            minDepositAmount = CShareData.getInstance(getActivity()).getMinDepositValue();
+            maxDepositAmount = CShareData.getInstance(getActivity()).getMaxDepositValue();
+        } catch (Exception e) {
+            Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
+        }
+        if (minDepositAmount <= 0) {
+            minDepositAmount = Constants.MIN_DEPOSIT_MONEY;
+        }
+        if (maxDepositAmount <= 0) {
+            maxDepositAmount = Constants.MAX_DEPOSIT_MONEY;
+        }
         mValidMinAmount = String.format(getResources().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(Constants.MIN_DEPOSIT_MONEY, true));
+                CurrencyUtil.formatCurrency(minDepositAmount, true));
         mValidMaxAmount = String.format(getResources().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(Constants.MAX_DEPOSIT_MONEY, true));
+                CurrencyUtil.formatCurrency(maxDepositAmount, true));
     }
 
     @Override
@@ -167,7 +185,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
             }
         });
         tvResourceMoney.setText(String.format(getResources().getString(R.string.title_min_money),
-                CurrencyUtil.formatCurrency(Constants.MIN_DEPOSIT_MONEY, false)));
+                CurrencyUtil.formatCurrency(minDepositAmount, false)));
     }
 
     private void checkShowBtnContinue() {
@@ -220,7 +238,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @Override
     public void showError(String message) {
-        ToastUtil.showToast(getActivity(), message);
+        showToast(message);
     }
 
     @Override
