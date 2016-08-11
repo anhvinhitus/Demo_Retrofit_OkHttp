@@ -69,6 +69,9 @@
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
 
+    <string name="txt_deposit">Nạp tiền</string>
+    <string name="txt_withdraw">Rút tiền</string>
+
     <string name="txt_close">Đóng</string>
     <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
@@ -85,6 +88,8 @@
     <string name="title.activity.zalopay.contact">Danh bạ Zalo</string>
     <string name="title.activity.change.pin">Tạo lại mã PIN</string>
     <string name="title.activity.invitation.code">Invitation Code</string>
+    <string name="title.activity.withdraw.home">Số dư</string>
+    <string name="title.activity.withdraw">Rút tiền</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -213,8 +218,6 @@
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="deposit">Nạp tiền vào tài khoản</string>
 
     <string name="notify.from.zalopay">Bạn nhận được tin nhắn từ Zalo Pay</string>
@@ -251,4 +254,8 @@
     <string name="intro.title.step3">CHẤP NHẬN THẺ</string>
     <string name="intro.content.step3">Zalo Pay hỗ trợ các thẻ ATM nội địa và\n thẻ tín dụng.</string>
     <!-- Link CARDS END-->
+
+    <string name="my_balance">Số dư của tôi <font size='12'>(VND)</font></string>
+    <string name="account_name">Tên tài khoản</string>
+    <string name="more_info_acc_zalopay">Tìm hiểu thêm về tài khoản Zalo Pay</string>
 </resources>

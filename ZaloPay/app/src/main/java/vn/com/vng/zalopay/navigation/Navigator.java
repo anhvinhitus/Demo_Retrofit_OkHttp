@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.zalopay.apploader.internal.ModuleName;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,6 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import com.zalopay.apploader.internal.ModuleName;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -41,6 +42,7 @@ import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawHomeActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
@@ -313,5 +315,10 @@ public class Navigator implements INavigator {
     public void startIntroActivityForResult(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), IntroActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
+    }
+
+    public void startWithdrawHomeActivity(Context context) {
+        Intent intent = new Intent(context, WithdrawHomeActivity.class);
+        context.startActivity(intent);
     }
 }

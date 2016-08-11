@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
+import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawHomePresenter;
 
 @Module
 public class UserPresenterModule {
@@ -135,5 +136,11 @@ public class UserPresenterModule {
     @Provides
     UpdateProfile3Presenter providesUpdateProfile3Presenter() {
         return new UpdateProfile3Presenter();
+    }
+
+    @UserScope
+    @Provides
+    WithdrawHomePresenter providesWithdrawPresenter(User user) {
+        return new WithdrawHomePresenter(user);
     }
 }

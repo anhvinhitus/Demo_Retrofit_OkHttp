@@ -7,9 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -222,6 +219,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
         getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
         navigator.startScanToPayActivity(getActivity());
+    }
+
+    @OnClick(R.id.btn_balance)
+    public void onClickBalance() {
+        navigator.startWithdrawHomeActivity(getContext());
     }
 
     List<AppResource> mListApps = null;

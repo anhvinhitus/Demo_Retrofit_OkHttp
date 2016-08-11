@@ -58,6 +58,7 @@ import vn.com.vng.zalopay.ui.fragment.IntroFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawHomeFragment;
 
 @UserScope
 @Subcomponent(
@@ -168,4 +169,6 @@ public interface UserComponent {
     void inject(UpdateProfile3Fragment f);
 
     void inject(IntroFragment f);
+
+    void inject(WithdrawHomeFragment f);
 }

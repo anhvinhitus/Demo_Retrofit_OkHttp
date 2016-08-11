@@ -245,6 +245,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".withdraw.ui.activities.WithdrawHomeActivity"
+                  android:label="@string/title.activity.withdraw.home" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

@@ -144,7 +144,6 @@
         <item name="android:textSize">@dimen/font_size_medium</item>
     </style>
 
-
     <style name="TextView.Title.Grey">
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/c.text.title.grey</item>
