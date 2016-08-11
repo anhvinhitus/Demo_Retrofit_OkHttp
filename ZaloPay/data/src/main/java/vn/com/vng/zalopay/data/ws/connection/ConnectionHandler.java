@@ -16,7 +16,6 @@ public class ConnectionHandler extends SimpleChannelInboundHandler<byte[]> {
         this.listener = handler;
     }
 
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) throws Exception {
 

@@ -9,6 +9,7 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.domain.model.AppResource;
 
 /**
  * Created by AnhHieu on 8/10/16.
@@ -45,7 +46,7 @@ public interface AppResourceStore {
     interface Repository {
         Observable<Boolean> initialize();
 
-        Observable<List<vn.com.vng.zalopay.domain.model.AppResource>> listAppResource();
+        Observable<List<AppResource>> listAppResource();
     }
 
 }

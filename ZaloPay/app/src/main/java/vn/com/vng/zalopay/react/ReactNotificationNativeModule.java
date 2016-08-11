@@ -15,6 +15,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -171,24 +172,23 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
 
     @Override
     public void onHostResume() {
-        Timber.d(" Activity `onResume`");
+        Timber.d("Activity onResume");
         mEventBus.register(this);
     }
 
     @Override
     public void onHostPause() {
-        Timber.d(" Activity `onPause`");
+        Timber.d("Activity onPause");
         mEventBus.unregister(this);
     }
 
     @Override
     public void onHostDestroy() {
-
+        Timber.d("Activity onDestroy");
         unsubscribeIfNotNull(compositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
         getReactApplicationContext().removeLifecycleEventListener(this);
-        Timber.d("Actvity `onDestroy");
     }
 
     public void unsubscribeIfNotNull(CompositeSubscription subscription) {

@@ -29,8 +29,6 @@ public class TCPClient implements SocketClient {
 
     private final Object mSendLock = new Object();
 
-    private String incomingMessage;
-
     private BufferedOutputStream mBufferedOutputStream;
 
     private String mHost;
@@ -174,7 +172,6 @@ public class TCPClient implements SocketClient {
     public boolean isRunning() {
         return mRun;
     }
-
 
     @Override
     public boolean isConnected() {
