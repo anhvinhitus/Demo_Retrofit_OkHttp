@@ -48,7 +48,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
 
     @OnClick(R.id.layoutWithdraw)
     public void onClickWithdraw() {
-        navigator.startWithdrawHomeActivity(getContext());
+        showToast("Chức năng sẽ sớm được ra mắt.");
     }
 
     @OnClick(R.id.tvQuestion)
@@ -91,7 +91,6 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
-        mPresenter.getBalance();
     }
 
     @Override
@@ -122,20 +121,38 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
     }
 
     @Override
+    public void onDestroyView() {
+        mPresenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void updateBalance(long balance) {
         Timber.d("updateBalance balance [%s]", balance);
+        if (tvBalance == null) {
+            return;
+        }
         tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
     @Override
     public void updateUserInfo(User user) {
+        if (tvAccountName == null) {
+            return;
+        }
         String zaloPayName = "";
         if (tvAccountName == null) {
             return;
         }
         
         if (TextUtils.isEmpty(zaloPayName)) {
-            tvAccountName.setText(null);
+            tvAccountName.setText("");
         } else {
             tvAccountName.setText(zaloPayName);
         }

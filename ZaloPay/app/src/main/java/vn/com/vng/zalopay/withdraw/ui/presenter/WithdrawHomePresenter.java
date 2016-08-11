@@ -27,10 +27,6 @@ public class WithdrawHomePresenter extends BaseZaloPayPresenter implements IPres
         mView.updateUserInfo(mUser);
     }
 
-    public void getBalance() {
-        updateBalance();
-    }
-
     @Override
     public void setView(IWithdrawHomeView iWithdrawView) {
         mView = iWithdrawView;
@@ -44,6 +40,8 @@ public class WithdrawHomePresenter extends BaseZaloPayPresenter implements IPres
     @Override
     public void resume() {
         eventBus.register(this);
+        mView.updateBalance(balanceRepository.currentBalance());
+        updateBalance();
         updateUserInfo();
     }
 
@@ -54,7 +52,7 @@ public class WithdrawHomePresenter extends BaseZaloPayPresenter implements IPres
 
     @Override
     public void destroy() {
-
+        mView = null;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -68,7 +66,7 @@ public class WithdrawHomePresenter extends BaseZaloPayPresenter implements IPres
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
         if (event.isOnline) {
-            this.getBalance();
+            updateBalance();
         }
     }
 }
