@@ -130,6 +130,10 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
     @Override
     public void updateUserInfo(User user) {
         String zaloPayName = "";
+        if (tvAccountName == null) {
+            return;
+        }
+        
         if (TextUtils.isEmpty(zaloPayName)) {
             tvAccountName.setText(null);
         } else {
