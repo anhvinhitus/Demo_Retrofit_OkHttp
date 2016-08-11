@@ -28,8 +28,9 @@ import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by AnhHieu on 6/14/16.
+ * Network handlers for Socket connection
  */
-public class WsConnection extends Connection implements Listener {
+public class WsConnection extends Connection {
 
     private String gcmToken;
 
@@ -44,15 +45,15 @@ public class WsConnection extends Connection implements Listener {
     private Timer mTimer;
     private TimerTask timerTask;
 
-    SocketClient socketClient;
+    private SocketClient mSocketClient;
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-        //socketClient = new NettyClient(host, port, this);
-        socketClient = new TCPClient(host, port, this);
+        //mSocketClient = new NettyClient(host, port, this);
+        mSocketClient = new TCPClient(host, port, new ConnectionListener());
     }
 
     public void setGCMToken(String token) {
@@ -61,7 +62,7 @@ public class WsConnection extends Connection implements Listener {
 
     @Override
     public void connect() {
-        socketClient.connect();
+        mSocketClient.connect();
     }
 
     @Override
@@ -72,17 +73,17 @@ public class WsConnection extends Connection implements Listener {
     @Override
     public void disconnect() {
         Timber.d("disconnect");
-        socketClient.disconnect();
+        mSocketClient.disconnect();
     }
 
     @Override
     public boolean isConnected() {
-        return socketClient.isConnected();
+        return mSocketClient.isConnected();
     }
 
     @Override
     public boolean isConnecting() {
-        return socketClient.isConnecting();
+        return mSocketClient.isConnecting();
     }
 
     @Override
@@ -102,69 +103,9 @@ public class WsConnection extends Connection implements Listener {
         bufTemp.put((byte) msgType);
         bufTemp.put(data);
 
-        socketClient.send(bufTemp.array());
+        mSocketClient.send(bufTemp.array());
 
         return true;
-    }
-
-
-    @Override
-    public void onConnected() {
-        Timber.d("onConnected");
-        mState = State.Connected;
-        //    numRetry = 0;
-        sendAuthentication();
-
-        stopTimerCheckConnect();
-    }
-
-    @Override
-    public void onMessage(byte[] data) {
-        Timber.d("onReceived");
-        Event message = parser.parserMessage(data);
-        if (message != null) {
-            Timber.d("onReceived message.msgType %s", message.getMsgType());
-
-            if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
-                numRetry = 0;
-            } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
-                disconnect();
-            } else {
-                postResult(message);
-            }
-
-            sendFeedbackStatus(message);
-        }
-    }
-
-
-    @Override
-    public void onError(Throwable e) {
-        Timber.d("onError %s", e);
-        mState = Connection.State.Disconnected;
-
-        if (e instanceof SocketTimeoutException) {
-        } else if (e instanceof ConnectTimeoutException) {
-        } else if (e instanceof ConnectException) {
-        } else if (e instanceof UnknownHostException) {
-        }
-
-        startTimerCheckConnect();
-    }
-
-    @Override
-    public void onDisconnected(int code, String message) {
-        Timber.d("onDisconnected %s", code);
-        mState = Connection.State.Disconnected;
-
-        socketClient.disconnect();
-
-        if (NetworkHelper.isNetworkAvailable(context)
-                && userConfig.hasCurrentUser()
-                && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
-            connect();
-            numRetry++;
-        }
     }
 
 
@@ -184,7 +125,7 @@ public class WsConnection extends Connection implements Listener {
         return send(ZPMsgProtos.MessageType.AUTHEN_LOGIN.getNumber(), loginMsg.build());
     }
 
-    public boolean sendAuthentication() {
+    private boolean sendAuthentication() {
         if (userConfig.hasCurrentUser()) {
             User user = userConfig.getCurrentUser();
             return sendAuthentication(user.accesstoken, Long.parseLong(user.uid));
@@ -192,7 +133,7 @@ public class WsConnection extends Connection implements Listener {
         return false;
     }
 
-    public boolean sendFeedbackStatus(Event event) {
+    private boolean sendFeedbackStatus(Event event) {
         long mtaid = event.getMtaid();
         long mtuid = event.getMtuid();
         long uid = -1;
@@ -256,6 +197,67 @@ public class WsConnection extends Connection implements Listener {
             if (NetworkHelper.isNetworkAvailable(context)) {
                 connect();
             }
+        }
+    }
+
+    private class ConnectionListener implements Listener {
+
+        @Override
+        public void onConnected() {
+            Timber.d("onConnected");
+            mState = State.Connected;
+            //    numRetry = 0;
+            sendAuthentication();
+
+            stopTimerCheckConnect();
+        }
+
+        @Override
+        public void onMessage(byte[] data) {
+            Timber.d("onReceived");
+            Event message = parser.parserMessage(data);
+            if (message != null) {
+                Timber.d("onReceived message.msgType %s", message.getMsgType());
+
+                if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
+                    numRetry = 0;
+                } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
+                    disconnect();
+                } else {
+                    postResult(message);
+                }
+
+                sendFeedbackStatus(message);
+            }
+        }
+
+        @Override
+        public void onDisconnected(int code, String reason) {
+            Timber.d("onDisconnected %s", code);
+            mState = Connection.State.Disconnected;
+
+            mSocketClient.disconnect();
+
+            if (NetworkHelper.isNetworkAvailable(context)
+                    && userConfig.hasCurrentUser()
+                    && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
+                connect();
+                numRetry++;
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d("onError %s", e);
+            mState = Connection.State.Disconnected;
+
+            if (e instanceof SocketTimeoutException) {
+            } else if (e instanceof ConnectTimeoutException) {
+            } else if (e instanceof ConnectException) {
+            } else if (e instanceof UnknownHostException) {
+            }
+
+            startTimerCheckConnect();
         }
     }
 }
