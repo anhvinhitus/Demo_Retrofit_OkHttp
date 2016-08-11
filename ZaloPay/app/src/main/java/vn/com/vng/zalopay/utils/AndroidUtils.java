@@ -50,6 +50,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -253,8 +255,6 @@ public class AndroidUtils {
         context.startActivity(intent);
 //        ModuleCommon.instance().getGoogleAnalytics().sendGoogleAnalyticsHitEvents(AndroidUtils.class.getSimpleName(), "ContactSupport", "Dial", numberPhone);
     }
-
-
 
 
 //    @Deprecated
@@ -828,7 +828,7 @@ public class AndroidUtils {
         v.startAnimation(scal);
     }
 
-    public static void setDefaultFont(Context context, String staticTypefaceFieldName, String fontAssetName) {
+  /*  public static void setDefaultFont(Context context, String staticTypefaceFieldName, String fontAssetName) {
         final Typeface regular = Typeface.createFromAsset(context.getAssets(),
                 fontAssetName);
 
@@ -842,7 +842,7 @@ public class AndroidUtils {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static void deleteFile(String path) {
         try {
@@ -1028,5 +1028,38 @@ public class AndroidUtils {
             }
         }
         return returnString.toString();
+    }
+
+    public static void setDefaultFont(Context context,
+                                      String staticTypefaceFieldName, String fontAssetName) {
+        final Typeface regular = Typeface.createFromAsset(context.getAssets(),
+                fontAssetName);
+        replaceFont(staticTypefaceFieldName, regular);
+    }
+
+    private static void replaceFont(String staticTypefaceFieldName, final Typeface newTypeface) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Map<String, Typeface> newMap = new HashMap<>();
+            newMap.put("sans-serif", newTypeface);
+            try {
+                final Field staticField = Typeface.class.getDeclaredField("sSystemFontMap");
+                staticField.setAccessible(true);
+                staticField.set(null, newMap);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                final Field staticField = Typeface.class.getDeclaredField(staticTypefaceFieldName);
+                staticField.setAccessible(true);
+                staticField.set(null, newTypeface);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

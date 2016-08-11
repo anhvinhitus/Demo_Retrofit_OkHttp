@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay;
 
-import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
@@ -12,8 +11,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
-
-import java.io.File;
 
 import io.fabric.sdk.android.Fabric;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -35,18 +32,14 @@ import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.
- *
  */
 public class AndroidApplication extends MultiDexApplication {
-
-    public static File extStorageAppBasePath;
-    public static File extStorageAppCachePath;
-
 
     private ApplicationComponent appComponent;
     private UserComponent userComponent;
@@ -88,7 +81,6 @@ public class AndroidApplication extends MultiDexApplication {
         initializeZaloPayAnalytics();
 
         initAppComponent();
-        initializeFileFolder();
 
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
@@ -126,6 +118,14 @@ public class AndroidApplication extends MultiDexApplication {
         });
     }
 
+    private void initializeFontFamily() {
+        AndroidUtils.setDefaultFont(this, "DEFAULT", "font/Roboto-Regular.ttf");
+        AndroidUtils.setDefaultFont(this, "DEFAULT_BOLD", "font/Roboto-Medium.ttf");
+        // AndroidUtils.setDefaultFont(this, "MONOSPACE", "MyFontAsset2.ttf");
+        // AndroidUtils.setDefaultFont(this, "SERIF", "MyFontAsset3.ttf");
+        AndroidUtils.setDefaultFont(this, "SANS_SERIF", "font/Roboto-Regular.ttf");
+    }
+
     public UserComponent createUserComponent(User user) {
         Timber.d("Create new instance of UserComponent");
         userComponent = appComponent.plus(new UserModule(user));
@@ -146,37 +146,6 @@ public class AndroidApplication extends MultiDexApplication {
 
     public UserComponent getUserComponent() {
         return userComponent;
-    }
-
-    private void initializeFileFolder() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment
-                .getExternalStorageState())) {
-            File externalStorageDir = Environment.getExternalStorageDirectory();
-
-            if (externalStorageDir != null) {
-                extStorageAppBasePath = new File(
-                        externalStorageDir.getAbsolutePath() + File.separator
-                                + "Android" + File.separator + "data"
-                                + File.separator + getPackageName());
-            }
-
-            if (extStorageAppBasePath != null) {
-                extStorageAppCachePath = new File(
-                        extStorageAppBasePath.getAbsolutePath()
-                                + File.separator + "cache");
-
-                boolean isCachePathAvailable = true;
-
-                if (!extStorageAppCachePath.exists()) {
-                    isCachePathAvailable = extStorageAppCachePath.mkdirs();
-                }
-
-                if (!isCachePathAvailable) {
-                    extStorageAppCachePath = null;
-                }
-            }
-
-        }
     }
 
     public class CrashlyticsTree extends Timber.Tree {
