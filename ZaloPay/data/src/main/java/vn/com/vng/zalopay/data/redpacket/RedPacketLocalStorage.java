@@ -5,7 +5,6 @@ import java.util.List;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
-import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
@@ -25,6 +24,7 @@ import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleStatusEnum;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
@@ -70,12 +70,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 .doOnNext(sentBundleSummary -> Timber.d("getSentBundleSummary %s", sentBundleSummary));
     }
 
-    @Override
-    public Boolean isHaveSentBundleSunmmaryInDb() {
-        return getDaoSession().getSentBundleSummaryDBDao().queryBuilder()
-                .count() > 0;
-    }
-
     private GetSentBundle querySentBundleSummary() {
         return mDataMapper.transformToSentBundleSummary(
                 getDaoSession()
@@ -111,12 +105,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 .doOnNext(receivePacketSummary -> Timber.d("getReceivePacketSummary %s", receivePacketSummary));
     }
 
-    @Override
-    public Boolean isHaveRevPacketSunmmaryInDb() {
-        return getDaoSession().getReceivePacketSummaryDBDao().queryBuilder()
-                .count() > 0;
-    }
-
     private GetReceivePacket queryReceivePacketSummary() {
         return mDataMapper.transformToReceivePacketSummary(
                 getDaoSession()
@@ -125,22 +113,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                         .orderDesc(ReceivePacketSummaryDBDao.Properties.TimeCreate)
                         .limit(1)
                         .list());
-    }
-
-    @Override
-    public void putSentBundle(SentBundleGD sentBundleGD) {
-        if (sentBundleGD == null || sentBundleGD.getId() <= 0) {
-            return;
-        }
-        try {
-            //save SentBundle to DB
-            getDaoSession().getSentBundleGDDao().insertOrReplaceInTx(sentBundleGD);
-            //save PackageInBundle of SentBundle to DB
-            putPackageInBundle(sentBundleGD.getSentPackages());
-            Timber.d("putSentBundle sentBundleGD %s", sentBundleGD);
-        } catch (Exception e) {
-            Timber.w("Exception while trying to put SentBundle to local storage: %s", e.getMessage());
-        }
     }
 
     @Override
@@ -172,22 +144,10 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<SentBundle>> getAllSentBundle() {
-        return ObservableHelper.makeObservable(this::querySentBundleList)
-                .doOnNext(redPackageList -> Timber.d("getAllSentBundle size [%s]", redPackageList.size()));
-    }
-
-    @Override
     public Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit) {
         return ObservableHelper.makeObservable(() -> querySentBundleList(timeCreate, limit))
                 .doOnNext(redPackageList -> Timber.d("getSentBundle timeCreate [%s] limit [%s] size [%s]",
                         timeCreate, limit, redPackageList.size()));
-    }
-
-    @Override
-    public Observable<SentBundle> getSentBundle(long bundleID) {
-        return ObservableHelper.makeObservable(() -> querySentBundle(bundleID))
-                .doOnNext(sentBundle -> Timber.d("getSentBundle bundleID [%s] sentBundle [%s]", bundleID, sentBundle));
     }
 
     @Override
@@ -203,7 +163,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         SentBundle sentBundle = querySentBundle(bundleId);
         if (sentBundle == null) {
             Timber.d("SentBundle not found");
-            return BundleStatusResponse.BundleStatusEnum.UNKNOWN.getValue();
+            return BundleStatusEnum.UNKNOWN.getValue();
         }
 
         Timber.d("query status for sentBundle: %s, status: %s", bundleId, sentBundle.status);
@@ -226,23 +186,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit) {
-        return ObservableHelper.makeObservable(() -> querySentPackageList(bundleID, pageIndex, limit))
-                .doOnNext(sentPackageList -> Timber.d("getPackageInBundle bundleID [%s] pageIndex [%s] limit [%s] size [%s]",
-                        bundleID, pageIndex, limit, sentPackageList.size()));
-    }
-
-    @Override
     public Observable<List<PackageInBundle>> getPackageInBundle(long bundleID) {
         return ObservableHelper.makeObservable(() -> querySentPackage(bundleID))
                 .doOnNext(sentPackage -> Timber.d("getPackageInBundle bundleID [%s] sentPackage [%s]", bundleID, sentPackage));
-    }
-
-    @Override
-    public Boolean isHavePackagesInDb(long bundleID) {
-        return getDaoSession().getPackageInBundleGDDao().queryBuilder()
-                .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
-                .count() > 0;
     }
 
     private RedPacketAppInfoGD queryRedPacketAppInfo() {
@@ -364,12 +310,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<List<ReceivePackage>> getAllReceiveBundle() {
-        return ObservableHelper.makeObservable(this::queryReceivePackageList)
-                .doOnNext(receivePackageList -> Timber.d("getAllReceiveBundle size [%s]", receivePackageList.size()));
-    }
-
-    @Override
     public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
         return ObservableHelper.makeObservable(() -> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
@@ -377,26 +317,10 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Observable<ReceivePackage> getReceiveBundle(long bundleID) {
-        return ObservableHelper.makeObservable(() -> queryReceivePackage(bundleID))
-                .doOnNext(receivePackage -> Timber.d("getReceiveBundle bundleID [%s] receivePackage [%s]",
-                        bundleID, receivePackage));
-    }
-
-    @Override
     public Boolean isHaveReceivePacketInDb(long createTime, int count) {
         return getDaoSession().getReceivePackageGDDao().queryBuilder()
                 .where(ReceivePackageGDDao.Properties.CreateTime.lt(createTime))
                 .count() >= count;
-    }
-
-    private List<SentBundle> querySentBundleList() {
-        return mDataMapper.transformDBToSentBundles(
-                getDaoSession()
-                        .getSentBundleGDDao()
-                        .queryBuilder()
-                        .orderDesc(SentBundleGDDao.Properties.CreateTime)
-                        .list());
     }
 
     private List<SentBundle> querySentBundleList(int limit) {
@@ -424,6 +348,10 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         }
     }
 
+    private SentBundle querySentBundle(long bundleID) {
+        return mDataMapper.transform(querySentBundleGD(bundleID));
+    }
+
     private SentBundleGD querySentBundleGD(long bundleID) {
         List<SentBundleGD> sentBundleGDs = getDaoSession()
                 .getSentBundleGDDao()
@@ -438,36 +366,12 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         }
     }
 
-    private SentBundle querySentBundle(long bundleID) {
-        return mDataMapper.transform(querySentBundleGD(bundleID));
-    }
-
-    private List<PackageInBundle> querySentPackageList(long bundleID, int pageIndex, int limit) {
-        return mDataMapper.transformToPackageInBundle(
-                getDaoSession()
-                        .getPackageInBundleGDDao()
-                        .queryBuilder()
-                        .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
-                        .offset(pageIndex * limit)
-                        .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
-                        .list());
-    }
-
     private List<PackageInBundle> querySentPackage(long bundleID) {
         return mDataMapper.transformToPackageInBundle(
                 getDaoSession()
                         .getPackageInBundleGDDao()
                         .queryBuilder()
                         .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
-                        .list());
-    }
-
-    private List<ReceivePackage> queryReceivePackageList() {
-        return mDataMapper.transformDBToRevPackets(
-                getDaoSession()
-                        .getReceivePackageGDDao()
-                        .queryBuilder()
-                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
                         .list());
     }
 

@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
@@ -24,6 +23,7 @@ import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleStatusEnum;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
@@ -191,7 +191,7 @@ public class RedPacketDataMapper {
                     bundleResponse.type, bundleResponse.createtime,
                     bundleResponse.lastopentime, bundleResponse.totalluck,
                     bundleResponse.numofopenedpakages, bundleResponse.numofpackages,
-                    bundleResponse.sendmessage, BundleStatusResponse.BundleStatusEnum.AVAILABLE.getValue()));
+                    bundleResponse.sendmessage, BundleStatusEnum.AVAILABLE.getValue()));
         }
         return sentBundleList;
     }

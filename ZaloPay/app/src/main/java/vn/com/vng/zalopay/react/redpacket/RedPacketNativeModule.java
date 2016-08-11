@@ -26,7 +26,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
@@ -38,7 +37,6 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.domain.model.redpacket.BundleStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
@@ -178,53 +176,6 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         });
     }
 
-    private void startTaskGetBundleStatus(final long bundleId, final Promise promise) {
-        Timber.d("startTaskGetBundleStatus bundleId [%s]", bundleId);
-        stopTaskGetStatus();
-        mTimerGetStatus = new CountDownTimer(30000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                Timber.d("TaskGetBundleStatus onTick");
-                getBundleStatus(bundleId, promise);
-            }
-
-            @Override
-            public void onFinish() {
-                Timber.d("TaskGetBundleStatus onFinish");
-                showDialogRetryGetBundleStatus(bundleId, promise);
-            }
-        }.start();
-    }
-
-    private void showDialogRetryGetBundleStatus(final long bundleId, final Promise promise) {
-        Timber.d("showDialogRetryGetBundleStatus bundleId [%s]", bundleId);
-        if (getCurrentActivity() == null) {
-            return;
-        }
-
-        DialogInterface.OnCancelListener onCancelListener = new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(),
-                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
-                dialog.dismiss();
-            }
-        };
-
-        DialogInterface.OnClickListener onConfirmListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startTaskGetBundleStatus(bundleId, promise);
-                dialog.dismiss();
-            }
-        };
-
-        mDialogProvider.showWarningAlertDialog(getCurrentActivity(),
-                "Giao dịch vẫn còn đang xử lý. Bạn có muốn tiếp tục?",
-                "Đóng", "Thử lại",
-                onCancelListener, onConfirmListener);
-    }
-
     private void stopTaskGetStatus() {
         if (mTimerGetStatus != null) {
             mTimerGetStatus.cancel();
@@ -244,36 +195,6 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         stopTaskGetStatus();
         Timber.d("onGetBundleStatusFinish, set status: [%s] for bundle: [%s] result [%s]", status, bundleId, result);
         mRedPackageRepository.setBundleStatus(bundleId, status).subscribe(new DefaultSubscriber<Void>());
-    }
-
-    private void getBundleStatus(final long bundleId, final Promise promise) {
-        Timber.d("getBundleStatus bundleId [%s] isRunning [%s]", bundleId, isRunningGetStatus);
-        if (isRunningGetStatus) {
-            return;
-        }
-        isRunningGetStatus = true;
-        mRedPackageRepository.getBundleStatus(bundleId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<BundleStatus>() {
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("getBundleStatus onError");
-                        onGetBundleStatusFinish(promise, bundleId, false,
-                                BundleStatusResponse.BundleStatusEnum.UNKNOWN.getValue());
-                    }
-
-                    @Override
-                    public void onNext(BundleStatus bundleStatus) {
-                        Timber.d("getBundleStatus onNext, status [%s]", bundleStatus.bundleStatus);
-                        if (bundleStatus.bundleStatus == BundleStatusResponse.BundleStatusEnum.AVAILABLE.getValue()) {
-                            onGetBundleStatusFinish(promise, bundleId, true, bundleStatus.bundleStatus);
-                        } else {
-                            isRunningGetStatus = false;
-                        }
-                    }
-                });
     }
 
     @ReactMethod
@@ -311,7 +232,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                     public void onNext(Boolean result) {
                         Timber.d("SubmitToSendSubscriber onNext result [%s]", result);
                         mBalanceRepository.updateBalance();
-                        startTaskGetBundleStatus(bundleID, promise);
+                        onGetBundleStatusFinish(promise, bundleID, true, 1);
                     }
                 });
         compositeSubscription.add(subscription);

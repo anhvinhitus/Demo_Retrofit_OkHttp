@@ -10,7 +10,6 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
@@ -24,7 +23,6 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.domain.model.redpacket.BundleStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
@@ -42,31 +40,22 @@ public interface RedPacketStore {
     interface LocalStorage {
         void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB);
         Observable<GetSentBundle> getSentBundleSummary();
-        Boolean isHaveSentBundleSunmmaryInDb();
 
         void putReceivePacketSummary(ReceivePacketSummaryDB receivePacketSummaryDB);
         Observable<GetReceivePacket> getReceivePacketSummary();
-        Boolean isHaveRevPacketSunmmaryInDb();
 
-        void putSentBundle(SentBundleGD sentBundle);
         void putSentBundle(List<SentBundleGD> sentBundle);
-        Observable<List<SentBundle>> getAllSentBundle();
         Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit);
-        Observable<SentBundle> getSentBundle(long bundleID);
         Boolean isHaveSentBundleInDb(long createTime, int count);
         Integer getBundleStatus(long bundleId);
         Void setBundleStatus(long bundleId, int status);
 
         void putReceivePackages(List<ReceivePackageGD> receiveBundleGDs);
-        Observable<List<ReceivePackage>> getAllReceiveBundle();
         Observable<List<ReceivePackage>> getReceiveBundle(long timeCreate, int limit);
-        Observable<ReceivePackage> getReceiveBundle(long bundleID);
         Boolean isHaveReceivePacketInDb(long createTime, int count);
 
         void putPackageInBundle(List<PackageInBundleGD> packageInBundleGDs);
-        Observable<List<PackageInBundle>> getPackageInBundle(long bundleID, int pageIndex, int limit);
         Observable<List<PackageInBundle>> getPackageInBundle(long bundleID);
-        Boolean isHavePackagesInDb(long bundleID);
 
         void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo);
         RedPacketAppInfo getRedPacketAppInfo();
@@ -97,9 +86,6 @@ public interface RedPacketStore {
         @GET("redpackage/getpackagestatus")
         Observable<PackageStatusResponse> getPackageStatus(@Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
 
-        @GET("redpackage/getbundlestatus")
-        Observable<BundleStatusResponse> getBundleStatus(@Query("bundleid") long bundleID, @Query("userid") String userid, @Query("accesstoken") String accessToken);
-
         @GET("redpackage/getsentbundlelist")
         Observable<SentBundleListResponse> getSentBundleList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
@@ -125,23 +111,19 @@ public interface RedPacketStore {
 
         Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId);
 
-        Observable<BundleStatus> getBundleStatus(long bundleID);
+        Observable<Integer> getBundleStatus(long bundleID);
+
+        Observable<Void> setBundleStatus(long bundleId, int status);
 
         Observable<GetSentBundle> getSentBundleListServer(long timestamp, int count, int order);
 
         Observable<GetSentBundle> getSentBundleList(long timeStamp, int count);
-
-/*        Observable<Boolean> getAllSentBundlesServer();*/
 
         Observable<GetReceivePacket> getReceivedPackagesServer(long timestamp, int count, int order);
 
         Observable<GetReceivePacket> getReceivePacketList(long timeStamp, int count);
 
         Observable<ReceivePackage> getReceivedPacket(long packetId);
-
-     /*   Observable<Boolean> getAllReceivePacketServer();
-
-        Observable<List<PackageInBundle>> getPackageInBundleList(long bundleID, long timestamp, int count, int order);*/
 
         Observable<Boolean> getAllPacketInBundleServer(long bundleId);
 
@@ -156,11 +138,5 @@ public interface RedPacketStore {
         Observable<RedPacketAppInfo> getAppInfoServer(String checksum);
 
         Observable<RedPacketAppInfo> getRedPacketAppInfo();
-
-        Observable<Void> setBundleStatus(long bundleId, int status);
-
-   /*     Observable<GetSentBundle> getSendBundleSummary();
-
-        Observable<GetReceivePacket> getReceiveBundleSummary();*/
     }
 }

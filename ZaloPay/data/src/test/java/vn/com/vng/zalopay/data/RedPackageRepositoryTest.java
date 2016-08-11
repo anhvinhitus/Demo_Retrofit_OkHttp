@@ -22,7 +22,6 @@ import rx.Observer;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.BundleStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
@@ -117,11 +116,6 @@ public class RedPackageRepositoryTest {
 
         @Override
         public Observable<PackageStatusResponse> getPackageStatus(@Field("packageid") long packageID, @Field("zptransid") long zpTransID, @Field("userid") String userid, @Field("accesstoken") String accessToken, @Field("deviceid") String deviceid) {
-            return null;
-        }
-
-        @Override
-        public Observable<BundleStatusResponse> getBundleStatus(@Query("bundleid") long bundleID, @Query("userid") String userid, @Query("accesstoken") String accessToken) {
             return null;
         }
 
