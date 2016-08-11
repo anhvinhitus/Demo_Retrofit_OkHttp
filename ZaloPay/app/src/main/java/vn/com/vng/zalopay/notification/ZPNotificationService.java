@@ -131,8 +131,11 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         }
 
         if (!mWsConnection.isConnected()) {
+            Timber.d("Socket is not connected. About to create connection.");
             mWsConnection.setGCMToken(token);
             mWsConnection.connect();
+        } else {
+            Timber.d("Socket is already connected. Do nothing.");
         }
     }
 
