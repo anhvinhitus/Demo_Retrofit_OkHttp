@@ -24,10 +24,12 @@ import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
+import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
-import static android.text.Html.*;
+import static android.text.Html.fromHtml;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,10 +65,8 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @BindView(R.id.edtPhone)
     ClearableEditText edtPhone;
 
-    @BindView(R.id.textInputZaloPayName)
-    TextInputLayout textInputZaloPayName;
-    @BindView(R.id.edtZaloPayName)
-    ClearableEditText edtZaloPayName;
+    @BindView(R.id.inputZaloPayName)
+    InputZaloPayNameView inputZaloPayName;
 
     @OnTextChanged(R.id.edtPhone)
     public void onTextChangedPhone() {
@@ -92,32 +92,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     public boolean isValidPhone() {
         String phone = edtPhone.getString();
         return !TextUtils.isEmpty(phone) && ValidateUtil.isMobileNumber(phone);
-    }
-
-    @OnTextChanged(R.id.edtZaloPayName)
-    public void onTextChangedZPName() {
-        if (isValidZPName()) {
-            hideZPNameError();
-        }
-    }
-
-    private boolean isValidZPName() {
-        String zaloPayName = edtZaloPayName.getString();
-        return ValidateUtil.isValidZaloPayName(zaloPayName);
-    }
-
-    private void showZPNameError(String error) {
-        if (!TextUtils.isEmpty(error)) {
-            textInputZaloPayName.setErrorEnabled(true);
-            textInputZaloPayName.setError(error);
-        } else {
-            hideZPNameError();
-        }
-    }
-
-    private void hideZPNameError() {
-        textInputZaloPayName.setErrorEnabled(false);
-        textInputZaloPayName.setError(null);
     }
 
     @OnClick(R.id.tvShowPass)
@@ -200,13 +174,30 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             hidePhoneError();
         }
 
-        if (!isValidZPName()) {
-            showZPNameError(getString(R.string.invalid__zalopay_name));
+        if (inputZaloPayName.getCurrentState() == InputZaloPayNameView.ZPNameStateEnum.UNVALID ||
+                !inputZaloPayName.validZPName()) {
             return;
-        } else {
-            hideZPNameError();
         }
-        presenter.updateProfile(passCode.getText(), edtPhone.getString(), edtZaloPayName.getString());
+        showConfirmUpdateZaloPayName();
+    }
+
+    private void showConfirmUpdateZaloPayName() {
+        showRetryDialog(getString(R.string.warning_update_zalopay_name),
+                getString(R.string.txt_close),
+                new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                },
+                getString(R.string.txt_close),
+                new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        presenter.updateProfile(passCode.getText(), edtPhone.getString(), inputZaloPayName.getString());
+                        sweetAlertDialog.dismiss();
+                    }
+                });
     }
 
     @Override
@@ -245,7 +236,16 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         passCode.requestFocus();
         passCode.setPassCodeMaxLength(passCodeMaxLength);
         passCode.setPasscodeChanged(passcodeChanged);
+
+        inputZaloPayName.setOnClickBtnCheck(mOnClickCheckZaloPayName);
     }
+
+    private View.OnClickListener mOnClickCheckZaloPayName = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            presenter.checkZaloPayName(inputZaloPayName.getString());
+        }
+    };
 
     @Override
     public void onAttach(Context context) {
@@ -309,6 +309,19 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         if (mListener != null) {
             mListener.onUpdatePinSuccess(phone);
         }
+    }
+
+    @Override
+    public void onCheckSuccess() {
+        if (inputZaloPayName == null) {
+            return;
+        }
+        inputZaloPayName.showCheckSuccess();
+    }
+
+    @Override
+    public void onCheckFail() {
+        inputZaloPayName.showCheckFail();
     }
 
     /**

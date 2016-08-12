@@ -22,7 +22,7 @@
             android:layout_weight="1.0"
             android:orientation="vertical">
 
-            <include layout="@layout/header_update_profile_layout"/>
+            <include layout="@layout/header_update_profile_layout" />
 
             <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
                 android:id="@+id/viewPager"

@@ -149,6 +149,8 @@
     <string name="invalid_email">Email không hợp lệ.</string>
     <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
     <string name="hint_zalopay_name">Tài khoản Zalo Pay</string>
+    <string name="valid_zalopay_name">Tài khoản hợp lệ</string>
+    <string name="invalid_zalopay_name">Tài khoản đã được sử dụng</string>
     <string name="note_zalopay_name">Tài khoản Zalo Pay là chuỗi ký tự bao gồm các ký tự từ a->z, các số 0-9, không phân biệt chữ hoa, chữ thường.</string>
     <string name="invalid__zalopay_name">Tài khoản Zalo Pay không hợp lệ</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
@@ -259,6 +261,6 @@
     <string name="account_name">Tên tài khoản</string>
     <string name="more_info_acc_zalopay">Tìm hiểu thêm về tài khoản Zalo Pay</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_check">Kiểm tra</string>
+    <string name="warning_update_zalopay_name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\nBạn có chắc muốn dùng tên này không?</string>
 </resources>

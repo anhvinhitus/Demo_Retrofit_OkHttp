@@ -13,11 +13,17 @@ public class ValidateUtil {
     public static final int VALIDATE_PASSWORD_ERROR_EMPTY = 3;
     public static final int VALIDATE_PASSWORD_ERROR_NOT_MATCH = 4;
 
+    public static boolean isValidLengthZPName(String zaloPayName) {
+        if (zaloPayName.length() > 24 || zaloPayName.length() < 4) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public static boolean isValidZaloPayName(String zaloPayName) {
         if (TextUtils.isEmpty(zaloPayName)) {
             return true;
-        } else if (zaloPayName.length() > 24 || zaloPayName.length() < 4) {
-            return false;
         } else {
             return zaloPayName.matches("^[a-zA-Z_0-9]*");
         }

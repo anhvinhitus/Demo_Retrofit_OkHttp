@@ -7,25 +7,25 @@ import java.security.MessageDigest;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 25/05/2016.
+ *
  */
 public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
 
     IPinProfileView mView;
-    private Subscription subscriptionLogin;
-    private UserConfig mUserConfig;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    public PinProfilePresenter(UserConfig userConfig) {
-        mUserConfig = userConfig;
+    public PinProfilePresenter() {
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     }
 
     private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionLogin);
+        unsubscribeIfNotNull(mCompositeSubscription);
     }
 
     @Override
@@ -83,10 +83,24 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         showLoading();
         String pinSha256 = sha256(pin);
 
-        subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone, zalopayName)
+        Subscription subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone, zalopayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new updateProfileSubscriber(phone));
+        mCompositeSubscription.add(subscriptionLogin);
+    }
+
+    public void checkZaloPayName(String zaloPayName) {
+        if (TextUtils.isEmpty(zaloPayName)) {
+            return;
+        }
+        //######### longlv: note for
+        // update to "checkZaloPayNameExist" #########
+        Subscription subscription = accountRepository.getUserInfoByZaloPayName(zaloPayName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GetUserInfoByZPNameSubcriber());
+        mCompositeSubscription.add(subscription);
     }
 
     private final class updateProfileSubscriber extends DefaultSubscriber<Boolean> {
@@ -112,12 +126,12 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
                 return;
             }
 
-            Timber.e(e, "onError " + e);
-            PinProfilePresenter.this.onUpdateProfileError(e);
+            Timber.e(e, "update Profile Subscriber onError [%s]", e.getMessage());
+            PinProfilePresenter.this.onUpdateProfileError();
         }
     }
 
-    private void onUpdateProfileError(Throwable e) {
+    private void onUpdateProfileError() {
         hideLoading();
         mView.showError("Cập nhật thông tin người dùng thất bại.");
     }
@@ -141,5 +155,27 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     public void hideRetry() {
         mView.hideRetry();
+    }
+
+    private class GetUserInfoByZPNameSubcriber extends DefaultSubscriber<Boolean> {
+
+        @Override
+        public void onError(Throwable e) {
+            super.onError(e);
+            if (e instanceof BodyException) {
+                mView.onCheckFail();
+            } else {
+                mView.showError("Lỗi xảy ra trong quá trình kiểm tra tên tài khoản Zalo Pay.\nVui lòng thử lại.");
+            }
+        }
+
+        @Override
+        public void onNext(Boolean existed) {
+            if (existed) {
+                mView.onCheckFail();
+            } else {
+                mView.onCheckSuccess();
+            }
+        }
     }
 }

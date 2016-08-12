@@ -62,6 +62,18 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
+    public Observable<Boolean> getUserInfoByZaloPayName(String zaloPayName) {
+        return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
+                .map(BaseResponse::isSuccessfulResponse);
+    }
+
+    @Override
+    public Observable<Boolean> checkZaloPayNameExist(String zaloPayName) {
+        return mRequestService.checkZaloPayNameExist(zaloPayName, mUser.uid, mUser.accesstoken)
+                .map(BaseResponse::isSuccessfulResponse);
+    }
+
+    @Override
     public Observable<BaseResponse> recoveryPin(String pin, String otp) {
         return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, otp);
     }
