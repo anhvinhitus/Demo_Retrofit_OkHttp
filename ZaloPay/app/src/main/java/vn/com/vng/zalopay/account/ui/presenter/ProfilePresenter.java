@@ -21,6 +21,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public ProfilePresenter() {
+
     }
 
     @Override
@@ -37,6 +38,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     @Override
     public void resume() {
         getProfile();
+        checkShowOrHideChangePinView();
     }
 
     @Override
@@ -45,7 +47,6 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void destroy() {
-
     }
 
     public void getProfile() {
@@ -55,6 +56,17 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
             if (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber)) { // Chua get profile level 3
                 getUserProfile();
             }
+        }
+    }
+
+    private void checkShowOrHideChangePinView() {
+        try {
+            if (userConfig.getCurrentUser().profilelevel < 2) {
+                mView.showHideChangePinView(false);
+            } else {
+                mView.showHideChangePinView(true);
+            }
+        } catch (Exception e) {
         }
     }
 

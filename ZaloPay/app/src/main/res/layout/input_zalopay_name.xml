@@ -19,6 +19,7 @@
             android:ellipsize="end"
             android:hint="@string/hint_zalopay_name"
             android:inputType="text"
+            android:maxLength="24"
             android:maxLines="1"
             android:paddingTop="@dimen/spacing.small"
             android:singleLine="true"

@@ -1,11 +1,16 @@
-/*
 package vn.com.vng.zalopay.account.ui.activities;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,15 +23,15 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.ToastUtil;
 
-public class ProfileInfoActivity extends BaseActivity implements IProfileInfoView {
+public class ProfileActivity extends BaseActivity implements IProfileInfoView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -52,48 +57,7 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     @BindView(R.id.tv_balance)
     TextView tvBalance;
 
-    @BindView(R.id.imgAdsBanner)
-    ImageView imgAdsBanner;
-
-//    @OnClick(R.id.layoutUser)
-//    public void onClickLayoutUser(View view) {
-//        navigator.startUpdateProfileLevel2Activity(this);
-//    }
-
-    @OnClick(R.id.layoutResetPassCode)
-    public void onClickResetPassCode(View view) {
-        navigator.startChangePinActivity(this);
-    }
-
-    @OnClick(R.id.layoutSigOutAndDelDB)
-    public void onClickSignOutAndDelDB(View view) {
-        presenter.signOutAndCleanData();
-    }
-
-    @OnClick(R.id.layoutTransactionHistory)
-    public void onClickTransactionHistory(View view) {
-        navigator.startMiniAppActivity(this, "TransactionLogs");
-    }
-
-    @OnClick(R.id.layoutDeposit)
-    public void onClickDeposit(View view) {
-        navigator.startDepositActivity(this);
-    }
-
-    @OnClick(R.id.layoutTransfer)
-    public void onClickTransfer(View view) {
-        ToastUtil.showToast(this, "Transfer");
-    }
-
-    @OnClick(R.id.layoutManagerCard)
-    public void onClickManagerCard(View view) {
-        ToastUtil.showToast(this, "Manager Card");
-    }
-
-    @OnClick(R.id.layoutMyQRCode)
-    public void onClickMyQRCode(View view) {
-        ToastUtil.showToast(this, "My QRCode");
-    }
+    private EditProfileFragment mEditProfileFragment;
 
     public void updateUserInfo(User user) {
         if (user == null) {
@@ -104,29 +68,14 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
-    }
-
-    @OnClick(R.id.layoutUserInfo)
-    public void onClickUserInfo(View view) {
-        navigator.startEditProfileActivity(this);
-    }
-
-    public void updateBalance(long balance) {
-        tvBalance.setText(CurrencyUtil.formatCurrency(balance, false));
-    }
-
-    @Override
-    public void showHideChangePinView(boolean isShow) {
-
-    }
-
-    public void updateBannerView(String bannerUrl) {
-        Glide.with(this).load(bannerUrl).placeholder(R.color.separate).centerCrop().into(imgAdsBanner);
+        if (mEditProfileFragment != null) {
+            mEditProfileFragment.updateUserInfo(user);
+        }
     }
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.activity_profile_info;
+        return R.layout.activity_profile_info2;
     }
 
     @Override
@@ -139,21 +88,28 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
         super.onCreate(savedInstanceState);
         getUserComponent().inject(this);
         initView();
+        initFragment(savedInstanceState);
+    }
+
+    private void initFragment(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            mEditProfileFragment = EditProfileFragment.newInstance();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, mEditProfileFragment, mEditProfileFragment.TAG);
+            ft.commit();
+        } else {
+            mEditProfileFragment = (EditProfileFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        }
     }
 
     private void initView() {
         presenter.setView(this);
+        presenter.getZaloProfileInfo();
         mToolbar.setTitle("");
-        if (getActivity() != null && getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).setSupportActionBar(mToolbar);
-            ((BaseActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
-//        final Toolbar tool = (Toolbar)findViewById(R.id.toolbar);
-//        CollapsingToolbarLayout c = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
-//        AppBarLayout appbar = (AppBarLayout)findViewById(R.id.app_bar_layout);
-//        tool.setTitle("");
-//        setSupportActionBar(tool);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mCollapsingToolbarLayout.setTitleEnabled(false);
 
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -162,9 +118,8 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                Timber.tag(TAG).d("onOffsetChanged.........verticalOffset:" + verticalOffset);
-                float alpha = 1 + ((float)verticalOffset/160);
-                Timber.tag(TAG).d("onOffsetChanged.........alpha:" + alpha);
+                float alpha = 1 + ((float) verticalOffset / 160);
+                Timber.d("onOffsetChanged verticalOffset %s alpha %s", verticalOffset, alpha);
                 layoutUser.setAlpha(alpha);
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
@@ -188,6 +143,7 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
 
     @Override
     public void onDestroy() {
+        presenter.destroy();
         super.onDestroy();
     }
 
@@ -218,5 +174,10 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
     public Context getContext() {
         return this;
     }
+
+    @Override
+    public void setBalance(long balance) {
+        tvBalance.setText(CurrencyUtil.spanFormatCurrency(balance));
+    }
 }
-*/
+

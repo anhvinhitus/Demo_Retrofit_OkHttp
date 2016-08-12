@@ -81,8 +81,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    ProfileInfoPresenter provideProfileInfoPresenter(UserConfig userConfig) {
-        return new ProfileInfoPresenter(userConfig);
+    ProfileInfoPresenter provideProfileInfoPresenter() {
+        return new ProfileInfoPresenter();
 
     }
 

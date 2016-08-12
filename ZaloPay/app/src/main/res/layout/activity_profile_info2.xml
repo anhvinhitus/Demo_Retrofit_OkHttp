@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,141 +33,23 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-            <LinearLayout
-                android:id="@+id/layoutUser"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing.medium.l"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                app:layout_collapseMode="parallax">
+            <include layout="@layout/header_profile_layout" />
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/circle_border_white"
-                    android:padding="4dp">
-
-                    <com.zalopay.ui.widget.image.BezelImageView
-                        android:id="@+id/imgAvatar"
-                        android:layout_width="@dimen/leftmenu.avatar"
-                        android:layout_height="@dimen/leftmenu.avatar"
-                        android:scaleType="centerCrop"
-                        app:borderDrawable="@color/transparent"
-                        app:maskDrawable="@drawable/circle_mask" />
-                </FrameLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/app_padding"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_name"
-                        style="@style/TextView.Default"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/textsize.normal.s"
-                        app:layout_collapseMode="pin"
-                        tools:text="@string/app_name" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_balance"
-                            style="@style/TextView.Default"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/textsize.normal.l"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            style="@style/TextView.Default"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="4dp"
-                            android:text="@string/vnd"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/textsize.small" />
-
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:orientation="vertical">
+            android:layout_height="wrap_content" />
 
-            <LinearLayout
-                android:id="@+id/layoutChangePin"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/spacing.medium.l"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_doimapin" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/spacing.medium.l"
-                    android:layout_weight="1.0"
-                    android:text="@string/reset_pin"
-                    android:textColor="@color/black" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing.medium"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_arrow_right" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate" />
-
-            <FrameLayout
-                android:id="@+id/fragment_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing.medium.s"
-                android:fitsSystemWindows="true" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate" />
-        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
 </android.support.design.widget.CoordinatorLayout>

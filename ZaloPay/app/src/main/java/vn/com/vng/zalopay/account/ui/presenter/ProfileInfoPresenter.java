@@ -8,11 +8,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -24,11 +21,9 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 public class ProfileInfoPresenter extends BaseUserPresenter implements IPresenter<IProfileInfoView> {
 
     IProfileInfoView mView;
-    private UserConfig mUserConfig;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ProfileInfoPresenter(UserConfig userConfig) {
-        mUserConfig = userConfig;
+    public ProfileInfoPresenter() {
     }
 
     @Override
@@ -48,23 +43,11 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     public void resume() {
         mView.updateUserInfo(userConfig.getCurrentUser());
         getBalance();
-        checkShowOrHideChangePinView();
     }
 
-    private void checkShowOrHideChangePinView() {
-        if (mUserConfig == null || mUserConfig.getCurrentUser() == null) {
-            mView.showHideChangePinView(false);
-        }
-        if (mUserConfig.getCurrentUser().profilelevel < 2) {
-            mView.showHideChangePinView(false);
-        } else {
-            mView.showHideChangePinView(true);
-        }
-    }
 
     @Override
     public void pause() {
-
     }
 
     @Override
@@ -98,7 +81,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     private void onGetBalanceSuccess(Long aLong) {
-        mView.updateBalance(aLong);
+        mView.setBalance(aLong);
     }
 
     private class BalanceSubscriber extends DefaultSubscriber<Long> {
@@ -115,18 +98,12 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-
-            Timber.e(e, " exception ");
         }
 
         @Override
         public void onNext(Long aLong) {
             ProfileInfoPresenter.this.onGetBalanceSuccess(aLong);
         }
-    }
-
-    public void signOutAndCleanData() {
-        AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

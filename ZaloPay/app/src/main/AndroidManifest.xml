@@ -231,7 +231,7 @@
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
             android:label="@string/title.activity.change.pin"/>
-        <activity android:name=".account.ui.activities.ProfileInfo2Activity">
+        <activity android:name=".account.ui.activities.ProfileActivity">
             <intent-filter>
                 <data
                     android:host="goToProfileInfo"

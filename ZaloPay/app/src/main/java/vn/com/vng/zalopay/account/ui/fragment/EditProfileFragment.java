@@ -64,6 +64,12 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.tvZaloId)
     TextView tvZaloId;
 
+    @BindView(R.id.tvAccountName)
+    TextView mAccountNameView;
+
+    @BindView(R.id.layoutChangePin)
+    View layoutChangePin;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -111,13 +117,8 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
         this.setEmail(user.email);
         this.setGender(user.getGender());
 
-        if (user.profilelevel == 2) {
-            mLayoutCmnd.setClickable(true);
-            mLayoutEmail.setClickable(true);
-        } else {
-            mLayoutCmnd.setClickable(false);
-            mLayoutEmail.setClickable(false);
-        }
+        mLayoutCmnd.setClickable(user.profilelevel == 2);
+        mLayoutEmail.setClickable(user.profilelevel == 2);
 
         tvZaloPayId.setText(user.uid);
         tvZaloId.setText(String.valueOf(user.zaloId));
@@ -220,6 +221,23 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutAccountName)
     public void onClickEditAccountName(View v) {
-        navigator.startEditAccountActivity(getContext());
+        if (TextUtils.isEmpty(mAccountNameView.getText())) {
+            navigator.startEditAccountActivity(getContext());
+        }
     }
+
+    @OnClick(R.id.layoutChangePin)
+    public void onClickChangePin(View view) {
+        navigator.startChangePinActivity(getActivity());
+    }
+
+    @Override
+    public void showHideChangePinView(boolean isShow) {
+        if (isShow) {
+            layoutChangePin.setVisibility(View.VISIBLE);
+        } else {
+            layoutChangePin.setVisibility(View.GONE);
+        }
+    }
+
 }

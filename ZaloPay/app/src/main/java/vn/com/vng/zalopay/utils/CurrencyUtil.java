@@ -1,5 +1,11 @@
 package vn.com.vng.zalopay.utils;
 
+import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -55,5 +61,20 @@ public class CurrencyUtil {
 
     public static String formatCurrency(String strCurrency) {
         return formatCurrency(strCurrency, true);
+    }
+
+    public static SpannableString spanFormatCurrency(double money) {
+        String _temp = CurrencyUtil.formatCurrency(money, true);
+        SpannableString span = new SpannableString(_temp);
+
+        int indexSuffix = _temp.indexOf(CurrencyUtil.CURRENCY_UNIT);
+
+        span.setSpan(new RelativeSizeSpan(0.8f), indexSuffix, _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        span.setSpan(new StyleSpan(Typeface.BOLD), 0, indexSuffix,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return span;
     }
 }

@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
-import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
+import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
@@ -282,7 +282,7 @@ public class Navigator implements INavigator {
 
     @Override
     public Intent intentProfile(Context context) {
-        Intent intent = new Intent(context, ProfileInfo2Activity.class);
+        Intent intent = new Intent(context, ProfileActivity.class);
         return intent;
     }
 

@@ -4,6 +4,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/layoutChangePin"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/spacing.medium.l"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_doimapin" />
+
+        <TextView
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/spacing.medium.l"
+            android:layout_weight="1.0"
+            android:text="@string/reset_pin"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing.medium"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_right" />
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
@@ -268,3 +302,4 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate" />
 </LinearLayout>
+

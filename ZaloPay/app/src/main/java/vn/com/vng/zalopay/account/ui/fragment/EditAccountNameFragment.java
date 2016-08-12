@@ -55,6 +55,24 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     }
 
     @Override
+    public void onDestroyView() {
+        presenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.pause();
+    }
+
+    @Override
     protected int getResLayoutId() {
         return R.layout.fragment_edit_account_name_layout;
     }

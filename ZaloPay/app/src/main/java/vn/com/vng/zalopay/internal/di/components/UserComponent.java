@@ -4,7 +4,7 @@ import com.zalopay.apploader.ReactNativeHostable;
 
 import dagger.Subcomponent;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
-import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
+import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.EditAccountNameFragment;
@@ -151,7 +151,7 @@ public interface UserComponent {
 
     void inject(CounterBeaconFragment fragment);
 
-    void inject(ProfileInfo2Activity a);
+    void inject(ProfileActivity a);
 
     void inject(UpdateProfileLevel2Activity a);
 
