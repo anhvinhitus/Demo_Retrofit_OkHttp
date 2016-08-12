@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.account.ui.activities;
 
 import android.content.Context;
@@ -218,3 +219,4 @@ public class ProfileInfoActivity extends BaseActivity implements IProfileInfoVie
         return this;
     }
 }
+*/

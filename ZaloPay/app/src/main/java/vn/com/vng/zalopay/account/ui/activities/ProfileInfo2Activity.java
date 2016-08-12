@@ -140,9 +140,9 @@ public class ProfileInfo2Activity extends BaseActivity implements IProfileInfoVi
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                Timber.tag(TAG).d("onOffsetChanged.........verticalOffset:" + verticalOffset);
+                Timber.d("onOffsetChanged.........verticalOffset:" + verticalOffset);
                 float alpha = 1 + ((float)verticalOffset/160);
-                Timber.tag(TAG).d("onOffsetChanged.........alpha:" + alpha);
+                Timber.d("onOffsetChanged.........alpha:" + alpha);
                 layoutUser.setAlpha(alpha);
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();

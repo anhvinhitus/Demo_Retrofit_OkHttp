@@ -19,7 +19,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
-import vn.com.vng.zalopay.account.ui.activities.EditProfileActivity;
+import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileInfo2Activity;
@@ -232,10 +232,10 @@ public class Navigator implements INavigator {
         activity.startActivity(intentProfile(activity));
     }
 
-    public void startEditProfileActivity(Activity activity) {
+  /*  public void startEditProfileActivity(Activity activity) {
         Intent intent = new Intent(activity, EditProfileActivity.class);
         activity.startActivity(intent);
-    }
+    }*/
 
     public void startChangePinActivity(Activity activity) {
         Intent intent = new Intent(activity, ChangePinActivity.class);
@@ -325,6 +325,11 @@ public class Navigator implements INavigator {
 
     public void startWithdrawActivity(Context context) {
         Intent intent = new Intent(context, WithdrawActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startEditAccountActivity(Context context) {
+        Intent intent = new Intent(context, EditAccountNameActivity.class);
         context.startActivity(intent);
     }
 }

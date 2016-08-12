@@ -68,12 +68,44 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate" />
 
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
         android:background="@color/separate" />
 
+    <LinearLayout
+        android:id="@+id/layoutAccountName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium">
+
+        <TextView
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_name" />
+
+        <TextView
+            android:id="@+id/tvAccountName"
+            style="@style/TextView.Profile.Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing.small"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="right|center_vertical"
+            android:hint="@string/not_update" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
 
     <LinearLayout
         android:id="@+id/layoutPhone"
@@ -192,7 +224,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zalopay_id"/>
+            android:text="@string/zalopay_id" />
 
         <TextView
             android:id="@+id/tvZaloPayId"
@@ -200,13 +232,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update"/>
+            android:hint="@string/not_update" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -219,7 +251,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zalo_id"/>
+            android:text="@string/zalo_id" />
 
         <TextView
             android:id="@+id/tvZaloId"
@@ -228,11 +260,11 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:hint="@string/not_update"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 </LinearLayout>

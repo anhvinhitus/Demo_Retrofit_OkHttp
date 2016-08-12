@@ -217,4 +217,9 @@ public class EditProfileFragment extends BaseFragment implements IProfileView {
             navigator.startUpdateProfile3Activity(getContext());
         }
     }
+
+    @OnClick(R.id.layoutAccountName)
+    public void onClickEditAccountName(View v) {
+        navigator.startEditAccountActivity(getContext());
+    }
 }
