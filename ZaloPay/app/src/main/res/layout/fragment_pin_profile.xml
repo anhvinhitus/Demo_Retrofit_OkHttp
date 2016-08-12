@@ -38,9 +38,9 @@
                 android:id="@+id/passcodeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
+                android:maxLength="6"
                 zalopay:hint="@string/hint_pin"
-                zalopay:length="4" />
+                zalopay:length="6" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputPhone"
