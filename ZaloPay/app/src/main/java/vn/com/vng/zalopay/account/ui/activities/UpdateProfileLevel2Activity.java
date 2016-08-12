@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -31,14 +32,13 @@ import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.ui.activity.BaseActivity;
+import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
-public class UpdateProfileLevel2Activity extends BaseActivity implements IPreProfileView,
+public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
@@ -51,6 +51,9 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
 
     @Inject
     PreProfilePresenter presenter;
+
+    @BindView(R.id.headerView)
+    View headerView;
 
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
@@ -105,6 +108,7 @@ public class UpdateProfileLevel2Activity extends BaseActivity implements IPrePro
         initData();
         initContent();
         initPaymentWrapper();
+        headerView.setVisibility(View.GONE);
     }
 
     private void initPaymentWrapper() {

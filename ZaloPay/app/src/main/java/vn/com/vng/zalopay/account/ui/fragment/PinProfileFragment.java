@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
@@ -173,24 +174,34 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         } else {
             hidePhoneError();
         }
-
-        if (inputZaloPayName.getCurrentState() == InputZaloPayNameView.ZPNameStateEnum.UNVALID ||
-                !inputZaloPayName.validZPName()) {
+        Timber.d("onClickContinue inputZaloPayName.getCurrentState() [%s]", inputZaloPayName.getCurrentState());
+        if (!validZaloPayName()) {
             return;
         }
         showConfirmUpdateZaloPayName();
     }
 
+    private boolean validZaloPayName() {
+        if (TextUtils.isEmpty(inputZaloPayName.getString())) {
+            return true;
+        } else if (inputZaloPayName.getCurrentState() != InputZaloPayNameView.ZPNameStateEnum.UNVALID &&
+                inputZaloPayName.validZPName()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void showConfirmUpdateZaloPayName() {
         showRetryDialog(getString(R.string.warning_update_zalopay_name),
-                getString(R.string.txt_close),
+                getString(R.string.cancel),
                 new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
                     }
                 },
-                getString(R.string.txt_close),
+                getString(R.string.accept),
                 new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {

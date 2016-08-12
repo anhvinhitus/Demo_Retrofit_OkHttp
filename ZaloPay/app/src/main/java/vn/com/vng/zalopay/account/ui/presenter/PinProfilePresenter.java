@@ -163,7 +163,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         public void onError(Throwable e) {
             super.onError(e);
             if (e instanceof BodyException) {
-                mView.onCheckFail();
+                mView.onCheckSuccess();
             } else {
                 mView.showError("Lỗi xảy ra trong quá trình kiểm tra tên tài khoản Zalo Pay.\nVui lòng thử lại.");
             }

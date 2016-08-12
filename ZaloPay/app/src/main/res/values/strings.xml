@@ -81,6 +81,7 @@
     <string name="title_activity_balance_topup">Nạp tiền</string>
     <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
 
+    <string name="title.activity.profile">Thông tin cá nhân</string>
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
     <string name="title.activity.link.card">Quản lý thẻ</string>
     <string name="title.activity.add.card">Thêm thẻ</string>

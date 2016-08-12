@@ -182,6 +182,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
+            android:label="@string/title.activity.profile"
             android:theme="@style/AppTheme.NoActionBar.AppColor"
             android:windowSoftInputMode="adjustPan"/>
 

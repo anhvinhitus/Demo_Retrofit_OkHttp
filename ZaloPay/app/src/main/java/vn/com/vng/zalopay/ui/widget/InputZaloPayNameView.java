@@ -74,6 +74,8 @@ public class InputZaloPayNameView extends FrameLayout {
                     showImgInfo();
                 } else if (validZPName()) {
                     showBtnCheck();
+                } else {
+                    showImgInfo();
                 }
             }
 
@@ -145,7 +147,11 @@ public class InputZaloPayNameView extends FrameLayout {
 
     public boolean validZPName() {
         String zaloPayName = mEdtZaloPayName.getText().toString();
-        if (!ValidateUtil.isValidLengthZPName(zaloPayName)) {
+        if (TextUtils.isEmpty(zaloPayName)) {
+            hideZPNameError();
+            showBtnCheck();
+            return true;
+        } else if (!ValidateUtil.isValidLengthZPName(zaloPayName)) {
             showZPNameError("Tên tài khoản phải từ 4-24 ký tự");
             return false;
         } else if (!ValidateUtil.isValidZaloPayName(zaloPayName)) {
