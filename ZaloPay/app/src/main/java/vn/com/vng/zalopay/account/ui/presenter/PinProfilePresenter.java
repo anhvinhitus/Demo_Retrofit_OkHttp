@@ -10,6 +10,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -94,9 +95,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         if (TextUtils.isEmpty(zaloPayName)) {
             return;
         }
-        //######### longlv: note for
-        // update to "checkZaloPayNameExist" #########
-        Subscription subscription = accountRepository.getUserInfoByZaloPayName(zaloPayName)
+        Subscription subscription = accountRepository.checkZaloPayNameExist(zaloPayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetUserInfoByZPNameSubcriber());
@@ -127,13 +126,21 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
             }
 
             Timber.e(e, "update Profile Subscriber onError [%s]", e.getMessage());
-            PinProfilePresenter.this.onUpdateProfileError();
+            if (e instanceof BodyException) {
+                if (((BodyException)e).errorCode == NetworkError.USE_EXISTED) {
+                    mView.onCheckFail();
+                } else {
+                    PinProfilePresenter.this.onUpdateProfileError(e.getMessage());
+                }
+            } else {
+                PinProfilePresenter.this.onUpdateProfileError("Cập nhật thông tin người dùng thất bại.");
+            }
         }
     }
 
-    private void onUpdateProfileError() {
+    private void onUpdateProfileError(String error) {
         hideLoading();
-        mView.showError("Cập nhật thông tin người dùng thất bại.");
+        mView.showError(error);
     }
 
     private void onUpdateProfileSuccess(String phone) {
@@ -163,18 +170,18 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         public void onError(Throwable e) {
             super.onError(e);
             if (e instanceof BodyException) {
-                mView.onCheckSuccess();
+                mView.onCheckFail();
             } else {
                 mView.showError("Lỗi xảy ra trong quá trình kiểm tra tên tài khoản Zalo Pay.\nVui lòng thử lại.");
             }
         }
 
         @Override
-        public void onNext(Boolean existed) {
-            if (existed) {
-                mView.onCheckFail();
-            } else {
+        public void onNext(Boolean isValid) {
+            if (isValid) {
                 mView.onCheckSuccess();
+            } else {
+                mView.onCheckFail();
             }
         }
     }

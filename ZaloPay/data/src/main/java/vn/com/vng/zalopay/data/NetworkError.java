@@ -105,6 +105,7 @@ public class NetworkError {
     public static final int SERVER_MAINTAIN = -999;
     public static final int INVITATION_CODE_ERROR = 24;
     public static final int INVITATION_CODE_INVALID = -142;
+    public static final int USE_EXISTED = -150;
 
 
     public static String create(Context context, int errorCode) {
