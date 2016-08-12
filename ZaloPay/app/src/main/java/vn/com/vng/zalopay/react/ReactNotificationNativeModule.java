@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 6/10/16.
@@ -97,17 +98,13 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting notification logs");
+            Helpers.promiseResolveError(promiseWeakReference.get(), PaymentError.ERR_CODE_FAIL.value(), "get notification error");
         }
 
         @Override
         public void onNext(WritableArray writableArray) {
-
             Timber.d("notification array %s", writableArray);
-
-            Promise promise = promiseWeakReference.get();
-            if (promise != null) {
-                promise.resolve(writableArray);
-            }
+            Helpers.promiseResolveSuccess(promiseWeakReference.get(), writableArray);
         }
     }
 

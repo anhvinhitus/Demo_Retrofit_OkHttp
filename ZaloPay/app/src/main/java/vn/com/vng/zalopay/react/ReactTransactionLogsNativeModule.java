@@ -148,21 +148,15 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting transaction logs");
-            Promise promise = promiseWeakReference.get();
-            if (promise != null) {
-                Helpers.promiseResolveError(promise, -1, "get transaction error");
-            }
+            Helpers.promiseResolveError(promiseWeakReference.get(), PaymentError.ERR_CODE_FAIL.value(), "get transaction error");
         }
 
         @Override
         public void onNext(Pair<Integer, WritableArray> resp) {
-            Promise promise = promiseWeakReference.get();
-            if (promise != null) {
-                if (resp.first == PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
-                    Helpers.promiseResolveError(promise, resp.first, "transaction has not been loaded");
-                } else {
-                    Helpers.promiseResolveSuccess(promise, resp.second);
-                }
+            if (resp.first == PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
+                Helpers.promiseResolveError(promiseWeakReference.get(), resp.first, "transaction has not been loaded");
+            } else {
+                Helpers.promiseResolveSuccess(promiseWeakReference.get(), resp.second);
             }
         }
     }
