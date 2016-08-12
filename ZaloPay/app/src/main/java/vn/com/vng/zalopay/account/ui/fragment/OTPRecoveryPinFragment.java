@@ -44,6 +44,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
 
     @BindView(R.id.textInputOTP)
     TextInputLayout textInputOTP;
+
     @BindView(R.id.edtOTP)
     ClearableEditText edtOTP;
 
@@ -153,7 +154,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
     @Override
     public void confirmOTPSuccess() {
         if (mListener != null) {
-            mListener.onConfirmOTPSucess();
+            mListener.onConfirmOTPSuccess();
         }
         navigator.startHomeActivity(getContext(), true);
     }
@@ -224,7 +225,7 @@ public class OTPRecoveryPinFragment extends AbsProfileFragment implements IOTPRe
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnOTPFragmentListener {
-        void onConfirmOTPSucess();
+        void onConfirmOTPSuccess();
 
         void onConfirmOTPFail();
     }

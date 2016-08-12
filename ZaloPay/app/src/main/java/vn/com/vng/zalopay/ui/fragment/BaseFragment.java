@@ -20,8 +20,6 @@ import butterknife.Unbinder;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.ToastUtil;

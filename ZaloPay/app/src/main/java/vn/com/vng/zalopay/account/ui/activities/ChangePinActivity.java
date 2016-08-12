@@ -64,7 +64,6 @@ public class ChangePinActivity extends BaseToolBarActivity implements
         adapter = new ChangePinSlidePagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
     }
 
     public void nextPager() {
@@ -89,7 +88,7 @@ public class ChangePinActivity extends BaseToolBarActivity implements
     }
 
     @Override
-    public void onConfirmOTPSucess() {
+    public void onConfirmOTPSuccess() {
         showToast(R.string.reset_pin_success);
         if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().finish();

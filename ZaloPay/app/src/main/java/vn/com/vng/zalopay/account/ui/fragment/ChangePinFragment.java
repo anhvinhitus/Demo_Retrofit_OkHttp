@@ -34,7 +34,7 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
 
-    IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
+    IPasscodeChanged passCodeChanged = new IPasscodeChanged() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -103,7 +103,7 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        passCode.setPasscodeChanged(passcodeChanged);
+        passCode.setPasscodeChanged(passCodeChanged);
     }
 
     @Override
