@@ -22,7 +22,8 @@
             android:inputType="text"
             android:maxLines="1"
             android:paddingTop="@dimen/spacing.small"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:textColorHint="@color/hint"/>
     </android.support.design.widget.TextInputLayout>
 
     <ImageView
