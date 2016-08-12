@@ -180,7 +180,7 @@ public class InputZaloPayNameView extends FrameLayout {
 
     private void showDialogZaloPayName() {
         new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setContentText("Là chuỗi ký tự gồm các chữ từ a-z, các số 0-9, độ dài 4-24 ký tự, và chỉ được đăng ký 1 lần duy nhất.")
+                .setContentText(getContext().getString(R.string.hint_edit_account))
                 .setConfirmText("Đóng")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override

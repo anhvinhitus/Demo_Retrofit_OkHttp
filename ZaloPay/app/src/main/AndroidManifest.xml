@@ -196,6 +196,8 @@
 
         <activity
             android:name=".account.ui.activities.EditAccountNameActivity"
+            android:label="@string/title.activity.profile"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/AppTheme.NoActionBar"/>
 
   <!--   <activity

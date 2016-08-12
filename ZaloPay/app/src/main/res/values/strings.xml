@@ -264,4 +264,6 @@
 
     <string name="text_check">Kiểm tra</string>
     <string name="warning_update_zalopay_name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\nBạn có chắc muốn dùng tên này không?</string>
+    <string name="lbl.edit.account.name">Tên tài khoản Zalo Pay để nhận/chuyển khoản cho bạn bè nhanh nhất</string>
+    <string name="hint.edit.account">Là chuỗi ký tự gồm các chữ từ a-z, các số 0-9, độ dài 4-24 ký tự, và chỉ được đăng ký một lần duy nhất</string>
 </resources>

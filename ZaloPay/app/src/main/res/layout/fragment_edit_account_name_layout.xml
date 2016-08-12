@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lbl_edit_account"
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:singleLine="false"
+            android:text="@string/lbl.edit.account.name" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/separate"
+            android:layout_below="@+id/lbl_edit_account"
+            android:background="@color/separate" />
+
+        <vn.com.vng.zalopay.ui.widget.InputZaloPayNameView
+            android:id="@+id/inputZaloPayName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnCheck"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:background="@color/bg_btn_blue"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Button.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/text_check" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/app_padding"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/white" />
+    </LinearLayout>
+</FrameLayout>
