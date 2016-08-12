@@ -7,6 +7,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import vn.com.vng.zalopay.account.ui.presenter.EditAccountNamePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.OTPRecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
@@ -149,5 +150,11 @@ public class UserPresenterModule {
     @Provides
     WithdrawPresenter providesWithdrawPresenter() {
         return new WithdrawPresenter();
+    }
+
+    @UserScope
+    @Provides
+    EditAccountNamePresenter providesEditAccountNamePresenter() {
+        return new EditAccountNamePresenter();
     }
 }
