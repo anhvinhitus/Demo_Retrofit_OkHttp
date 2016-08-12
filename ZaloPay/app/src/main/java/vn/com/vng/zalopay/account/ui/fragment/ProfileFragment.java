@@ -22,14 +22,14 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 
 
-public class EditProfileFragment extends BaseFragment implements IProfileView {
+public class ProfileFragment extends BaseFragment implements IProfileView {
 
 
-    public static EditProfileFragment newInstance() {
+    public static ProfileFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        EditProfileFragment fragment = new EditProfileFragment();
+        ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(args);
         return fragment;
     }

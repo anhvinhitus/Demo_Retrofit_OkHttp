@@ -1,16 +1,10 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,10 +14,9 @@ import com.bumptech.glide.Glide;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
+import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.domain.model.User;
@@ -57,7 +50,7 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     @BindView(R.id.tv_balance)
     TextView tvBalance;
 
-    private EditProfileFragment mEditProfileFragment;
+    private ProfileFragment mEditProfileFragment;
 
     public void updateUserInfo(User user) {
         if (user == null) {
@@ -86,7 +79,7 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     @Override
     public BaseFragment getFragmentToHost() {
         if (mEditProfileFragment == null) {
-            mEditProfileFragment = EditProfileFragment.newInstance();
+            mEditProfileFragment = ProfileFragment.newInstance();
         }
         return mEditProfileFragment;
     }

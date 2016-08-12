@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment">
+    tools:context=".account.ui.fragment.ProfileFragment">
 
     <include layout="@layout/layout_profile_info" />
 
