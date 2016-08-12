@@ -182,9 +182,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     private boolean validZaloPayName() {
-        if (TextUtils.isEmpty(inputZaloPayName.getString())) {
+        if (TextUtils.isEmpty(inputZaloPayName.getText())) {
             return true;
-        } else if (inputZaloPayName.getCurrentState() != InputZaloPayNameView.ZPNameStateEnum.UNVALID &&
+        } else if (inputZaloPayName.getCurrentState() != InputZaloPayNameView.ZPNameStateEnum.INVALID &&
                 inputZaloPayName.validZPName()) {
             return true;
         } else {
@@ -205,7 +205,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                 new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        presenter.updateProfile(passCode.getText(), edtPhone.getString(), inputZaloPayName.getString());
+                        presenter.updateProfile(passCode.getText(), edtPhone.getString(), inputZaloPayName.getText());
                         sweetAlertDialog.dismiss();
                     }
                 });
@@ -254,7 +254,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     private View.OnClickListener mOnClickCheckZaloPayName = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            presenter.checkZaloPayName(inputZaloPayName.getString());
+            presenter.checkZaloPayName(inputZaloPayName.getText());
         }
     };
 
