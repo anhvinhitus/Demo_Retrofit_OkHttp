@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     private SweetAlertDialog mErrorDialog;
-    protected SweetAlertDialog mProgressDialog;
+    private SweetAlertDialog mProgressDialog;
 
     @Override
     protected void setupActivityComponent() {
@@ -41,7 +41,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public BaseFragment getFragmentToHost() {
         return null;
     }
-
 
     @Inject
     LoginPresenter loginPresenter;

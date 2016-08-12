@@ -24,9 +24,6 @@ public class ChangePinActivity extends BaseToolBarActivity implements
     private int profileType = 0;
     private ChangePinSlidePagerAdapter adapter;
 
-    @Inject
-    Navigator navigator;
-
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
 

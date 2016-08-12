@@ -12,8 +12,6 @@ import vn.com.vng.zalopay.account.ui.fragment.EditProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
-import vn.com.vng.zalopay.account.ui.fragment.PreProfileFragment;
-import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
@@ -114,10 +112,6 @@ public interface UserComponent {
     void inject(BalanceTopupFragment f);
 
     void inject(LeftMenuFragment f);
-
-    void inject(ProfileFragment f);
-
-    void inject(PreProfileFragment f);
 
     void inject(PinProfileFragment f);
 

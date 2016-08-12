@@ -189,10 +189,12 @@
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
             android:theme="@style/AppTheme.NoActionBar"/>
+<!--
 
         <activity
             android:name=".account.ui.activities.PinProfileActivity"
             android:theme="@style/AppTheme.NoActionBar.AppColor"/>
+-->
 
         <activity
             android:name=".account.ui.activities.EditAccountNameActivity"

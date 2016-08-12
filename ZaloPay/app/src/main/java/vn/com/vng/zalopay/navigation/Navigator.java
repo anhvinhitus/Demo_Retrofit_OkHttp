@@ -21,7 +21,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
-import vn.com.vng.zalopay.account.ui.activities.PinProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
@@ -91,13 +90,6 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startHomeActivity(Context context, long appId, String zptranstoken) {
-        Intent intent = intentHomeActivity(context, true);
-        intent.putExtra(Constants.ARG_APPID, appId);
-        intent.putExtra(Constants.ARG_ZPTRANSTOKEN, zptranstoken);
-        context.startActivity(intent);
-    }
-
     public Intent intentHomeActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, MainActivity.class);
 
@@ -163,18 +155,6 @@ public class Navigator implements INavigator {
         sweetAlertDialog.show();
     }
 
-    public void startActivity(Fragment fragment, Intent intent) {
-        fragment.startActivity(intent);
-    }
-
-    public void startActivityForResult(Fragment fragment, Intent intent, int requestCode) {
-        fragment.startActivityForResult(intent, requestCode);
-    }
-
-    public void startActivityForResult(Activity act, Intent intent, int requestCode) {
-        act.startActivityForResult(intent, requestCode);
-    }
-
     public void startMiniAppActivity(Activity activity, String moduleName) {
         if (ModuleName.RED_PACKET.equals(moduleName)) {
             if (userConfig == null ||
@@ -223,19 +203,9 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startPinProfileActivity(Activity activity) {
-        Intent intent = new Intent(activity, PinProfileActivity.class);
-        activity.startActivity(intent);
-    }
-
     public void startProfileInfoActivity(Activity activity) {
         activity.startActivity(intentProfile(activity));
     }
-
-  /*  public void startEditProfileActivity(Activity activity) {
-        Intent intent = new Intent(activity, EditProfileActivity.class);
-        activity.startActivity(intent);
-    }*/
 
     public void startChangePinActivity(Activity activity) {
         Intent intent = new Intent(activity, ChangePinActivity.class);
