@@ -20,10 +20,11 @@ import timber.log.Timber;
  * Non-blocking socket communication
  */
 class SocketChannelConnection {
-    private final int REASON_FINALIZE = 1;
-    private final int REASON_TRIGGER_DISCONNECT = 2;
-    private final int REASON_READ_ERROR = 3;
-    private final int REASON_WRITE_ERROR = 4;
+    private static final int REASON_FINALIZE = 1;
+    private static final int REASON_TRIGGER_DISCONNECT = 2;
+    private static final int REASON_READ_ERROR = 3;
+    private static final int REASON_WRITE_ERROR = 4;
+    private static final int REASON_CONNECTION_ERROR = 5;
 
     private final InetSocketAddress mListenAddress;
     private final ConnectionListenable mListenable;
@@ -172,21 +173,37 @@ class SocketChannelConnection {
         }
     }
 
-    private void handleConnect(SelectionKey key) throws IOException {
-        SocketChannel channel = (SocketChannel) key.channel();
-        if (channel.finishConnect()) {
-            Timber.d("connection made");
-            mConnectionState = ConnectionState.CONNECTED;
-            mListenable.onConnected();
-            channel.register(mSelector, SelectionKey.OP_READ);
-        } else {
-            Timber.d("connection is not ready");
+    private void handleConnect(SelectionKey key) {
+        try {
+            SocketChannel channel = (SocketChannel) key.channel();
+
+            // Finish the connection. If the connection operation failed
+            // this will raise an IOException.
+            if (channel.finishConnect()) {
+                Timber.d("connection made");
+                mConnectionState = ConnectionState.CONNECTED;
+                mListenable.onConnected();
+                key.interestOps(SelectionKey.OP_READ);
+            } else {
+                Timber.d("connection is not ready");
+            }
+        } catch (IOException e) {
+            Timber.d(e, "exception while handling connection");
+            mConnectionState = ConnectionState.NOT_CONNECTED;
+
+            // Cancel the channel's registration with our selector
+            key.cancel();
+
+            mListenable.onDisconnected(REASON_CONNECTION_ERROR);
         }
     }
 
     private boolean read(SelectionKey key) throws IOException {
+        // READ: get the channel
         SocketChannel channel = (SocketChannel) key.channel();
-        mReadBuffer.rewind();
+
+        // clear buffer for reading
+        mReadBuffer.clear();
         int numRead = -1;
         numRead = channel.read(mReadBuffer);
 
