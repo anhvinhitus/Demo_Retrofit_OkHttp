@@ -30,8 +30,7 @@
             style="@style/RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            tools:listitem="@layout/item_app_info" />
+            android:clipToPadding="false" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

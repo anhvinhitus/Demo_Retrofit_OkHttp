@@ -74,32 +74,28 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     }
 
     @Override
+    protected void setupActivityComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
     protected int getResLayoutId() {
         return R.layout.activity_profile_info2;
     }
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return null;
+        if (mEditProfileFragment == null) {
+            mEditProfileFragment = EditProfileFragment.newInstance();
+        }
+        return mEditProfileFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUserComponent().inject(this);
-        initView();
-        initFragment(savedInstanceState);
-    }
 
-    private void initFragment(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mEditProfileFragment = EditProfileFragment.newInstance();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, mEditProfileFragment, mEditProfileFragment.TAG);
-            ft.commit();
-        } else {
-            mEditProfileFragment = (EditProfileFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        }
+        initView();
     }
 
     private void initView() {

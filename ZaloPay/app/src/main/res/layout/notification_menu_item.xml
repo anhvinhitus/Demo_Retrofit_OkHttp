@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:padding="@dimen/spacing.small"--><!--android:orientation="horizontal">--><!--<FrameLayout--><!--android:id="@+id/layoutTransactions"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content">--><!--<ImageView--><!--android:id="@+id/imgTransaction"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:src="@drawable/ic_history"--><!--android:adjustViewBounds="true"--><!--android:padding="@dimen/spacing.tiny"--><!--android:layout_margin="@dimen/spacing.tiny"--><!--android:scaleType="centerInside"--><!--/>--><!--</FrameLayout>-->
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="48dp"
     android:layout_height="48dp"
@@ -13,32 +13,19 @@
         android:scaleType="centerInside"
         android:src="@drawable/ic_notify" />
 
-    <!--  <TextView
-          android:id="@+id/tvNotificationCount"
-          style="@style/Notification.CountText"
-          android:layout_width="18dp"
-          android:layout_height="18dp"
-          android:layout_gravity="right|top"
-          android:background="@drawable/bg_circle_notification"
-          android:gravity="center"
-          android:text="@string/loremipsum"
-          android:visibility="gone"
-          tools:text="1" />
-  -->
-
     <com.zalopay.ui.widget.textview.RoundTextView xmlns:rv="http://schemas.android.com/apk/res-auto"
-                                                  android:id="@+id/tvNotificationCount"
-                                                  style="@style/TextView.Default"
-                                                  android:layout_width="wrap_content"
-                                                  android:layout_height="wrap_content"
-                                                  android:layout_gravity="right|top"
-                                                  android:gravity="center"
-                                                  android:textColor="#ffffff"
-                                                  android:textSize="@dimen/font_size_normal"
-                                                  android:visibility="gone"
-                                                  rv:rv_backgroundColor="@color/red"
-                                                  rv:rv_isRadiusHalfHeight="true"
-                                                  rv:rv_strokeColor="@color/red"
-                                                  rv:rv_strokeWidth="0dp" />
+        android:id="@+id/tvNotificationCount"
+        style="@style/TextView.Default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/font_size_normal"
+        android:visibility="gone"
+        rv:rv_backgroundColor="@color/red"
+        rv:rv_isRadiusHalfHeight="true"
+        rv:rv_strokeColor="@color/red"
+        rv:rv_strokeWidth="0dp" />
 
 </FrameLayout>
