@@ -99,7 +99,6 @@ class SocketChannelConnection {
             while (!Thread.interrupted()) {
                 processChangeRequests();
 
-
                 // wait for events, timeout after 30 seconds
 //                Timber.d("Begin select");
                 int select = mSelector.select();
@@ -108,38 +107,9 @@ class SocketChannelConnection {
 //                if (select == 0) {
 //                    Timber.d("Timeout after 30s - connection may be lost");
 //                }
-
-                // work on selected keys
-                Iterator keys = mSelector.selectedKeys().iterator();
-                while (keys.hasNext()) {
-                    SelectionKey key = (SelectionKey) keys.next();
-
-                    // this is necessary to prevent the same key from coming up
-                    // again the next time around.
-                    keys.remove();
-
-                    Timber.d("selector is fired");
-                    if (!key.isValid()) {
-                        continue;
-                    }
-
-                    if (key.isConnectable()) {
-                        Timber.d("OP_CONNECT is fired");
-                        this.handleConnect(key);
-                        continue;
-                    }
-
-                    if (key.isReadable()) {
-                        Timber.d("OP_READ is fired");
-                        if (!this.read(key)) {
-                            break;
-                        }
-                    }
-
-                    if (key.isWritable()) {
-                        Timber.d("OP_WRITE is fired");
-                        this.handleWrite(key);
-                        continue;
+                if (select > 0) {
+                    if (!processSelectedKeys()) {
+                        break;
                     }
                 }
             }
@@ -147,7 +117,47 @@ class SocketChannelConnection {
             // selector has been closed
         } catch (IOException e) {
             handleDisconnected(REASON_TRIGGER_DISCONNECT);
+        } finally {
+            handleDisconnected(REASON_FINALIZE);
         }
+    }
+
+    private boolean processSelectedKeys() throws IOException {
+        // work on selected keys
+        Iterator keys = mSelector.selectedKeys().iterator();
+        while (keys.hasNext()) {
+            SelectionKey key = (SelectionKey) keys.next();
+
+            // this is necessary to prevent the same key from coming up
+            // again the next time around.
+            keys.remove();
+
+            Timber.d("selector is fired");
+            if (!key.isValid()) {
+                continue;
+            }
+
+            if (key.isConnectable()) {
+                Timber.d("OP_CONNECT is fired");
+                this.handleConnect(key);
+                continue;
+            }
+
+            if (key.isReadable()) {
+                Timber.d("OP_READ is fired");
+                if (!this.read(key)) {
+                    return false;
+                }
+            }
+
+            if (key.isWritable()) {
+                Timber.d("OP_WRITE is fired");
+                this.handleWrite(key);
+                continue;
+            }
+        }
+
+        return true;
     }
 
     private void processChangeRequests() {
