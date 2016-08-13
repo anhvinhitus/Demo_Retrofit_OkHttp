@@ -147,10 +147,10 @@ public class InputZaloPayNameView extends FrameLayout {
             showBtnCheck();
             return true;
         } else if (!ValidateUtil.isValidLengthZPName(zaloPayName)) {
-            showZPNameError("Tên tài khoản phải từ 4-24 ký tự");
+            showZPNameError(getContext().getString(R.string.exception_account_name_length));
             return false;
         } else if (!ValidateUtil.isValidZaloPayName(zaloPayName)) {
-            showZPNameError("Tên tài khoản chỉ chứa các ký tự từ A-Z, a-z, 0-9");
+            showZPNameError(getContext().getString(R.string.exception_account_name_special_char));
             return false;
         } else {
             hideZPNameError();

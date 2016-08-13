@@ -26,4 +26,6 @@
     <string name="exception.server.maintain">Hệ thống đang bảo trì. Vui lòng thử lại sau.</string>
     <string name="exception.code.invalid">Mã không phù hợp</string>
     <string name="exception.data.invalid">Dữ liệu không hợp lệ.</string>
+    <string name="exception.account.name.length">Tên tài khoản phải từ 4-24 ký tự</string>
+    <string name="exception.account.name.special.char">Tên tài khoản chỉ chứa các ký tự từ A-Z, a-z, 0-9</string>
 </resources>

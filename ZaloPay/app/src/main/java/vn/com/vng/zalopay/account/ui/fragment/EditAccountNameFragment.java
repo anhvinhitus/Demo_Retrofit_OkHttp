@@ -71,9 +71,9 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     @OnTextChanged(R.id.edtZaloPayName)
     public void onTextChangeAccountName(CharSequence s) {
         if (!ValidateUtil.isValidLengthZPName(s.toString())) {
-            mInputAccountNameView.setError("Tên tài khoản phải từ 4-24 ký tự");
+            mInputAccountNameView.setError(getString(R.string.exception_account_name_length));
         } else if (!ValidateUtil.isValidZaloPayName(s.toString())) {
-            mInputAccountNameView.setError("Tên tài khoản chỉ chứa các ký tự từ A-Z, a-z, 0-9");
+            mInputAccountNameView.setError(getString(R.string.exception_account_name_special_char));
         } else {
             mInputAccountNameView.setError("");
             mInputAccountNameView.setStateWithoutIcon(ZPTextInputLayout.ViewState.UNKNOWN);
