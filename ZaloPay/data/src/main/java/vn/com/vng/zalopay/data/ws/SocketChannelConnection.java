@@ -1,11 +1,14 @@
 package vn.com.vng.zalopay.data.ws;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AlreadyConnectedException;
+import java.nio.channels.ClosedSelectorException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -29,7 +32,7 @@ class SocketChannelConnection {
     private final InetSocketAddress mListenAddress;
     private final ConnectionListenable mListenable;
     private final List<ByteBuffer> mWriteQueue = new LinkedList<>();
-    private final ByteBuffer mReadBuffer = ByteBuffer.allocate(4096);
+    private final ByteBuffer mReadBuffer = ByteBuffer.allocate(128);
     // A list of ChangeRequest instances
     private final List<ChangeRequest> mChangeRequests = new LinkedList<>();
 
@@ -81,6 +84,9 @@ class SocketChannelConnection {
         mSelector = Selector.open();
         mChannel = SocketChannel.open();
         mChannel.configureBlocking(false);
+        mChannel.socket().setKeepAlive(true);
+        mChannel.socket().setSoTimeout(10000);
+        mChannel.socket().setTcpNoDelay(true);
         mChannel.register(mSelector, SelectionKey.OP_CONNECT);
         mChannel.connect(mListenAddress);
         mConnectionState = ConnectionState.CONNECTING;
@@ -90,12 +96,18 @@ class SocketChannelConnection {
     void run() {
         Timber.d("Waiting for data");
         try {
-            while (true) {
+            while (!Thread.interrupted()) {
                 processChangeRequests();
 
 
-                // wait for events
-                mSelector.select();
+                // wait for events, timeout after 30 seconds
+//                Timber.d("Begin select");
+                int select = mSelector.select();
+//                int select = mSelector.select(30000);
+//                Timber.d("After select: %s", select);
+//                if (select == 0) {
+//                    Timber.d("Timeout after 30s - connection may be lost");
+//                }
 
                 // work on selected keys
                 Iterator keys = mSelector.selectedKeys().iterator();
@@ -131,6 +143,8 @@ class SocketChannelConnection {
                     }
                 }
             }
+        } catch (ClosedSelectorException e) {
+            // selector has been closed
         } catch (IOException e) {
             handleDisconnected(REASON_TRIGGER_DISCONNECT);
         }
@@ -156,9 +170,11 @@ class SocketChannelConnection {
             // Write until there's not more data ...
             while (!mWriteQueue.isEmpty()) {
                 ByteBuffer buf = mWriteQueue.get(0);
-                channel.write(buf);
+                int byteWritten = channel.write(buf);
+                Timber.d("Byte written: %s", byteWritten);
                 if (buf.remaining() > 0) {
                     // ... or the socket's buffer fills up
+                    Timber.d("Remaining %s byte to be written again", buf.remaining());
                     break;
                 }
                 mWriteQueue.remove(0);
@@ -202,25 +218,44 @@ class SocketChannelConnection {
         // READ: get the channel
         SocketChannel channel = (SocketChannel) key.channel();
 
-        // clear buffer for reading
-        mReadBuffer.clear();
-        int numRead = -1;
-        numRead = channel.read(mReadBuffer);
+        ByteArrayOutputStream outputData = new ByteArrayOutputStream();
+        BufferedOutputStream outputStream = new BufferedOutputStream(outputData);
+        byte[] buffer = new byte[mReadBuffer.capacity()];
+        while (true) {
+            // clear buffer for reading
+            mReadBuffer.clear();
+            int numRead = -1;
+            numRead = channel.read(mReadBuffer);
 
-        if (numRead < 0) {
-            Socket socket = channel.socket();
-            SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-            Timber.d("Connection closed by client: %s", remoteAddr);
+            if (numRead < 0) {
+                Socket socket = channel.socket();
+                SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+                Timber.d("Connection closed by client: %s", remoteAddr);
 
-            key.cancel();
-            handleDisconnected(REASON_READ_ERROR);
-            return false;
+                key.cancel();
+                handleDisconnected(REASON_READ_ERROR);
+                return false;
+            }
+
+            mReadBuffer.flip();
+
+            int remaining = mReadBuffer.remaining();
+            mReadBuffer.get(buffer, 0, remaining);
+            outputStream.write(buffer, 0, remaining);
+
+            Timber.d("Read %s byte of data. Read buffer: %s %s", numRead, mReadBuffer.position(), mReadBuffer.limit());
+            if (numRead < mReadBuffer.capacity()) {
+                Timber.d("Finish reading data");
+                break;
+            }
         }
 
-        byte[] data = new byte[numRead];
-        System.arraycopy(mReadBuffer.array(), 0, data, 0, numRead);
+        outputStream.flush();
+        byte[] data = outputData.toByteArray();
         Timber.d("Got %s bytes", data.length);
 
+        outputStream.close();
+        outputData.close();
         mListenable.onReceived(data);
         return true;
     }
@@ -233,8 +268,9 @@ class SocketChannelConnection {
             }
 
             mConnectionState = ConnectionState.DISCONNECTED;
-            mChannel.close();
             mSelector.close();
+            mChannel.socket().close();
+            mChannel.close();
         } catch (IOException e) {
             Timber.d(e, "Exception while disconnect connection");
         } finally {

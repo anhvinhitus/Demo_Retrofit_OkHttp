@@ -149,7 +149,7 @@ public class TCPClient implements SocketClient {
 
         @Override
         public void onDisconnected(int reason) {
-            mListener.onDisconnected(reason, "");
+            mHandler.post(() -> mListener.onDisconnected(reason, ""));
         }
     }
 }
