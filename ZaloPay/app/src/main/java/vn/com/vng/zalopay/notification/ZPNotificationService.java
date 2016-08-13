@@ -139,6 +139,15 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         }
     }
 
+    private void disconnectServer() {
+        Timber.d("Request to disconnect connection with notification server");
+        if (mWsConnection == null) {
+            return;
+        }
+
+        mWsConnection.disconnect();
+    }
+
     @Override
     public void onReceiverEvent(Event event) {
         if (event instanceof NotificationData) {
@@ -158,6 +167,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         Timber.d("onNetworkChange %s", event.isOnline);
         if (event.isOnline) {
             this.connectToServer();
+        } else {
+            this.disconnectServer();
         }
     }
 
