@@ -102,7 +102,7 @@
     <string name="txt_leftmenu_scan_qrcode">Quét Mã QR</string>
     <string name="txt_leftmenu_deposit">Nạp Tiền</string>
     <string name="txt_leftmenu_transfer">Chuyển Tiền</string>
-    <string name="txt_leftmenu_transaction_history">Lịch Sử Giao Dịch</string>
+    <string name="txt_leftmenu_transaction_history">Lịch Sử Thanh Toán</string>
     <string name="txt_leftmenu_faq">FAQ</string>
     <string name="txt_leftmenu_contact">Liên Hệ Hỗ Trợ</string>
     <string name="txt_leftmenu_app_info">Thông Tin Ứng Dụng</string>
