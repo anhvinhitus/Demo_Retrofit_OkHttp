@@ -137,5 +137,6 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     @Override
     public void editAccountNameSuccess() {
         showToast(R.string.update_account_name_success);
+        getActivity().finish();
     }
 }

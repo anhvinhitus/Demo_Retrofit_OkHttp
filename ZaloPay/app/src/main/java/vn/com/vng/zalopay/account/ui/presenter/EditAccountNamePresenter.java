@@ -95,10 +95,15 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
 
         @Override
         public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+            mView.showError(ErrorMessageFactory.create(applicationContext, e));
         }
 
         @Override
         public void onNext(Boolean resp) {
+            mView.editAccountNameSuccess();
         }
     }
 }
