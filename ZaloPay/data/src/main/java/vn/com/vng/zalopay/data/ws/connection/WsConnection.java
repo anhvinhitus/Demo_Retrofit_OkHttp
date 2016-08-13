@@ -46,13 +46,14 @@ public class WsConnection extends Connection {
     private TimerTask timerTask;
 
     private SocketClient mSocketClient;
+    private HeartBeatKeeper mHeartBeatKeeper = new HeartBeatKeeper();
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
         this.context = context;
         this.parser = parser;
         this.userConfig = config;
-        //mSocketClient = new NettyClient(host, port, this);
+//        mSocketClient = new NettyClient(host, port, new ConnectionListener());
         mSocketClient = new TCPClient(host, port, new ConnectionListener());
     }
 
@@ -67,13 +68,17 @@ public class WsConnection extends Connection {
 
     @Override
     public void ping() {
+        byte[] pingData = new byte[1];
+        pingData[0] = 1;
 
+        send(ZPMsgProtos.MessageType.FEEDBACK_VALUE, pingData);
     }
 
     @Override
     public void disconnect() {
         Timber.d("disconnect");
         mSocketClient.disconnect();
+        mHeartBeatKeeper.stop();
     }
 
     @Override
@@ -189,6 +194,42 @@ public class WsConnection extends Connection {
         }
     }
 
+    private class HeartBeatKeeper {
+        private Timer mHeartBeatTimer;
+        private TimerTask mSendDataTask;
+
+        void start() {
+            stop();
+
+            mHeartBeatTimer = new Timer();
+            mSendDataTask = new SendHeartBeatTask();
+
+            // Schedule for sending heart beat every 20s
+            mHeartBeatTimer.schedule(mSendDataTask, 20000, 20000);
+        }
+
+        void stop() {
+            if (mSendDataTask != null) {
+                mSendDataTask.cancel();
+                mSendDataTask = null;
+            }
+
+            if (mHeartBeatTimer != null) {
+                mHeartBeatTimer.cancel();
+                mHeartBeatTimer.purge();
+                mHeartBeatTimer = null;
+            }
+        }
+    }
+
+    private class SendHeartBeatTask extends TimerTask {
+        @Override
+        public void run() {
+            Timber.d("Begin send heart beat");
+            ping();
+        }
+    }
+
     private class CheckConnectionTask extends TimerTask {
 
         @Override
@@ -210,6 +251,8 @@ public class WsConnection extends Connection {
             sendAuthentication();
 
             stopTimerCheckConnect();
+
+            mHeartBeatKeeper.start();
         }
 
         @Override
@@ -234,6 +277,7 @@ public class WsConnection extends Connection {
         @Override
         public void onDisconnected(int code, String reason) {
             Timber.d("onDisconnected %s", code);
+            mHeartBeatKeeper.stop();
             mState = Connection.State.Disconnected;
 
             mSocketClient.disconnect();
