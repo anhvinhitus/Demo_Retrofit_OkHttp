@@ -87,7 +87,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         Subscription subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone, zalopayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new updateProfileSubscriber(phone));
+                .subscribe(new UpdateProfileSubscriber(phone));
         mCompositeSubscription.add(subscriptionLogin);
     }
 
@@ -98,14 +98,14 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         Subscription subscription = accountRepository.checkZaloPayNameExist(zaloPayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserInfoByZPNameSubcriber());
+                .subscribe(new GetUserInfoByZPNameSubscriber());
         mCompositeSubscription.add(subscription);
     }
 
-    private final class updateProfileSubscriber extends DefaultSubscriber<Boolean> {
+    private final class UpdateProfileSubscriber extends DefaultSubscriber<Boolean> {
         private String phone;
 
-        public updateProfileSubscriber(String phone) {
+        public UpdateProfileSubscriber(String phone) {
             this.phone = phone;
         }
 
@@ -164,7 +164,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         mView.hideRetry();
     }
 
-    private class GetUserInfoByZPNameSubcriber extends DefaultSubscriber<Boolean> {
+    private class GetUserInfoByZPNameSubscriber extends DefaultSubscriber<Boolean> {
 
         @Override
         public void onError(Throwable e) {

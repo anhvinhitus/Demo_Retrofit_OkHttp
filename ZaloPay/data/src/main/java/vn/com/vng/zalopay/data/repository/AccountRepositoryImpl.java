@@ -159,4 +159,10 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         mUser.identityNumber = identityNumber;
         mUserConfig.save(email, identityNumber);
     }
+
+    @Override
+    public Observable<Boolean> updateZaloPayName(String zaloPayName) {
+        return mRequestService.updateZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
+                .map(BaseResponse::isSuccessfulResponse);
+    }
 }

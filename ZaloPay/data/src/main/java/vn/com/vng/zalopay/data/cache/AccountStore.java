@@ -39,18 +39,22 @@ public interface AccountStore {
         @POST("um/recoverypin")
         Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("otp") String otp);
 
-        @FormUrlEncoded
-        @POST("um/getuserinfo")
-        Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("loginuid") long zaloId, @Field("systemlogin") int systemlogin);
+        @GET("um/getuserinfo")
+        Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("loginuid") long zaloId, @Query("systemlogin") int systemlogin);
 
         @GET("um/getuserprofilelevel")
         Observable<UserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @GET("/um/getuserinfobyzalopayname")
+        @GET("um/getuserinfobyzalopayname")
         Observable<GetUserInfoByZPNameResponse> getUserInfoByZaloPayName(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @GET("/um/checkzalopaynameexist")
+        @GET("um/checkzalopaynameexist")
         Observable<BaseResponse> checkZaloPayNameExist(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
+
+        @FormUrlEncoded
+        @POST("um/updatezalopayname")
+        Observable<BaseResponse> updateZaloPayName(@Field("zalopayname") String zalopayname, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
+
     }
 
     interface UploadPhotoService {
@@ -93,5 +97,8 @@ public interface AccountStore {
         Observable<Boolean> getUserInfoByZaloPayName(String zaloPayName);
 
         Observable<Boolean> checkZaloPayNameExist(String zaloPayName);
+
+        Observable<Boolean> updateZaloPayName(String zaloPayName);
+
     }
 }

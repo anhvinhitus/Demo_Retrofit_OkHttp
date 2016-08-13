@@ -293,8 +293,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update"
-            android:textColor="@color/black" />
+            android:hint="@string/not_update" />
+
     </LinearLayout>
 
     <View

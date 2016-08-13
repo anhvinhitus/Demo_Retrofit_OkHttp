@@ -9,7 +9,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
@@ -42,8 +44,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     private boolean isLoadedGateWayInfo;
 
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     public MainPresenter(FriendStore.Repository friendRepository, OkHttpClient okHttpClient,
-                        OkHttpClient okHttpClientTimeoutLonger) {
+                         OkHttpClient okHttpClientTimeoutLonger) {
         this.mFriendRepository = friendRepository;
         this.mOkHttpClient = okHttpClient;
         this.mOkHttpClientTimeoutLonger = okHttpClientTimeoutLonger;
@@ -77,6 +81,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void destroyView() {
         this.mFriendRepository = null;
         this.homeView = null;
+        unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
@@ -102,9 +107,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void initializeAppConfig() {
-        mAppResourceRepository.initialize()
+        Subscription subscription = mAppResourceRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
+        compositeSubscription.add(subscription);
     }
 
     private void loadGatewayInfoPaymentSDK() {
@@ -138,7 +144,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onUpVersion(String s, String s1) {
-                
+
             }
         });
     }
@@ -152,9 +158,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
 
     public void logout() {
-        passportRepository.logout()
+        Subscription subscription = passportRepository.logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscription);
+
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         applicationComponent.applicationSession().clearUserSession();
     }
@@ -258,18 +266,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
 
         paymentWrapper.payWithToken(appId, zptranstoken);
-    }
-
-    protected void updateTransaction() {
-        transactionRepository.updateTransaction()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-    }
-
-    protected void updateBalance() {
-        balanceRepository.updateBalance()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
     }
 
     private void showLoadingView() {

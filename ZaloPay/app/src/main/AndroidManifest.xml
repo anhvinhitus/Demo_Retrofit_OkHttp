@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="vn.com.vng.zalopay">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="vn.com.vng.zalopay">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.NFC"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- Android 6.0 BLE permission -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
     <uses-feature
         android:name="android.hardware.nfc"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false"/>
+        android:required="false" />
 
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.hardware.camera.autofocus"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="com.zing.zalo.permission.ACCESS_THIRD_PARTY_APP_AUTHORIZATION"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.zing.zalo.permission.ACCESS_THIRD_PARTY_APP_AUTHORIZATION" />
 
     <!-- VERY IMPORTANT! Don't forget this permission, or in-app billing won't work. -->
-    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
 
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <permission
         android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
+        android:protectionLevel="signature" />
 
-    <uses-permission android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE"/>
+    <uses-permission android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE" />
 
     <application
         android:name=".AndroidApplication"
@@ -72,26 +72,26 @@
             android:theme="@style/AppTheme.NoActionBar.FullScreen"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="post"
-                    android:scheme="zalopay-1"/>
+                    android:scheme="zalopay-1" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".account.ui.activities.LoginZaloActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar.FullScreen"/>
+            android:theme="@style/AppTheme.NoActionBar.FullScreen" />
 
         <activity
             android:name=".ui.activity.MainActivity"
@@ -99,14 +99,14 @@
             android:label="@string/loremipsum"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activity.QRCodeScannerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title_activity_qr_code"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".scanners.ui.ScanToPayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
@@ -115,21 +115,21 @@
             android:theme="@style/AppTheme.NoActionBar.Primary"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
 
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter"/>
+                android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".paymentapps.ui.PaymentApplicationActivity"/>
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".paymentapps.ui.PaymentApplicationActivity" />
 
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
-            android:value="GlideModule"/>
+            android:value="GlideModule" />
 
         <!-- ##########################Tich hop ZaloSDK START ########################## -->
         <activity
@@ -138,87 +138,73 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="oauthcode"
-                    android:scheme="@string/zalo_appid"/>
+                    android:scheme="@string/zalo_appid" />
             </intent-filter>
         </activity>
 
         <!-- Tích hợp Crashlytics -->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff"/>
+            android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff" />
 
         <!-- Bắt buộc -->
         <!-- App ID của app đã đăng ký với bên server ZaloPayment -->
         <meta-data
             android:name="appID"
-            android:value="@string/appid"/>
+            android:value="@string/appid" />
         <!-- ##########################Tich hop ZaloSDK END ########################## -->
 
         <activity
             android:name=".balancetopup.ui.activity.BalanceTopupActivity"
             android:label="@string/title_activity_balance_topup"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateVisible"/>
+            android:windowSoftInputMode="adjustResize|stateVisible" />
 
         <activity
             android:name=".ui.activity.InvitationCodeActivity"
             android:label="@string/title.activity.invitation.code"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode=""/>
+            android:windowSoftInputMode="" />
         <activity
             android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
             android:label="@string/title_activity_confirm_transaction"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activity.LinkCardActivity"
             android:label="@string/title.activity.link.card"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:label="@string/title.activity.profile"
             android:theme="@style/AppTheme.NoActionBar.AppColor"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-<!--
-
-        <activity
-            android:name=".account.ui.activities.PinProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.AppColor"/>
--->
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".account.ui.activities.EditAccountNameActivity"
             android:label="@string/title.activity.profile"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
-  <!--   <activity
-            android:name=".account.ui.activities.ProfileInfoActivity"
-            android:theme="@style/AppTheme.NoActionBar.FullScreen"/>
-        <activity
-            android:name=".account.ui.activities.EditProfileActivity"
-            android:label="@string/title_activity_edit_profile"
-            android:theme="@style/AppTheme.NoActionBar"/>
--->
         <activity
             android:name=".ui.activity.NotificationActivity"
-            android:label="@string/notification"/>
+            android:label="@string/notification" />
 
         <receiver
             android:name=".receiver.NetworkReceiver"
             android:label="NetworkReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <!--<action android:name="android.net.wifi.WIFI_STATE_CHANGED" />-->
             </intent-filter>
         </receiver>
@@ -226,52 +212,52 @@
         <!-- SMS -->
         <receiver android:name=".receiver.SmsReceiver">
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
-            android:label="@string/title.activity.change.pin"/>
+            android:label="@string/title.activity.change.pin" />
         <activity android:name=".account.ui.activities.ProfileActivity">
             <intent-filter>
                 <data
                     android:host="goToProfileInfo"
-                    android:scheme="internal-activity"/>
-                <action android:name="android.intent.action.VIEW"/>
+                    android:scheme="internal-activity" />
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
             android:name=".transfer.ui.activities.TransferHomeActivity"
-            android:label="@string/title.activity.transfer"/>
+            android:label="@string/title.activity.transfer" />
         <activity
             android:name=".transfer.ui.activities.ZaloContactActivity"
-            android:label="@string/title.activity.zalopay.contact"/>
+            android:label="@string/title.activity.zalopay.contact" />
         <activity
             android:name=".transfer.ui.activities.TransferActivity"
-            android:label="@string/title.activity.transfer"/>
+            android:label="@string/title.activity.transfer" />
         <activity
             android:name=".ui.activity.IntroActivity"
             android:exported="false">
             <intent-filter>
-                <action android:name="zalopay.intro.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="zalopay.intro.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".withdraw.ui.activities.WithdrawHomeActivity"
-            android:label="@string/title.activity.withdraw.home"/>
+            android:label="@string/title.activity.withdraw.home" />
         <activity
             android:name=".withdraw.ui.activities.WithdrawActivity"
-            android:label="@string/title.activity.withdraw"/>
+            android:label="@string/title.activity.withdraw" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="vn.com.vng.zalopay"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="vn.com.vng.zalopay" />
             </intent-filter>
         </receiver>
         <!-- [END gcm_receiver] -->
@@ -281,7 +267,7 @@
             android:name=".notification.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
@@ -290,7 +276,7 @@
             android:name=".notification.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->
@@ -298,7 +284,7 @@
         <service
             android:name=".notification.ZPNotificationService"
             android:exported="false"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name" />
 
         <!--  <receiver android:name=".receiver.BootCompletedReceiver">
               <intent-filter>
@@ -310,7 +296,7 @@
         <service
             android:name=".service.DownloadService"
             android:exported="false"
-            android:label="DownloadService"/>
+            android:label="DownloadService" />
 
     </application>
 

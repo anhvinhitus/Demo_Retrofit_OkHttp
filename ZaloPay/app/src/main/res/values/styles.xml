@@ -112,4 +112,16 @@
         <item name="android:layout_marginTop">@dimen/spacing.small</item>
         <item name="android:lineSpacingExtra">6dp</item>
     </style>
+
+    <style name="TextLabelHintDefault.Error">
+        <item name="android:textColor">@color/design_textinput_error_color_light</item>
+    </style>
+
+
+    <style name="TextLabelHintDefault" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
 </resources>
