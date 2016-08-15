@@ -25,7 +25,7 @@ public class ValidateUtil {
         if (TextUtils.isEmpty(zaloPayName)) {
             return true;
         } else {
-            return zaloPayName.matches("^[a-zA-Z_0-9]*");
+            return zaloPayName.matches("^[a-zA-Z0-9]*");
         }
     }
 

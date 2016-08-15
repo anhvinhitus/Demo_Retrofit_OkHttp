@@ -90,7 +90,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         }
 
         mBtnCheckView.setEnabled(isValid);
-
+        mInputAccountNameView.setStateWithoutIcon(ZPTextInputLayout.ViewState.UNKNOWN);
         mBtnCheckView.setText(R.string.check);
     }
 
