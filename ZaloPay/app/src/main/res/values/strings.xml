@@ -270,5 +270,5 @@
     <string name="register">Đăng Ký</string>
     <string name="check">Kiểm Tra</string>
     <string name="update.account.name.success">Cập nhật tên tài khoản thành công.</string>
-    <string name="confirm.update.account.name">Tên tại khoản được tạo một lần duy nhất và không được thay đổi.\n Bạn có muốn dụng tên này không?</string>
+    <string name="confirm.update.account.name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\n Bạn có muốn dùng tên này không?</string>
 </resources>
