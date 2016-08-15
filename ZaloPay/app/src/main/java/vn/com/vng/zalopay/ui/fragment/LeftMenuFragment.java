@@ -1,14 +1,8 @@
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +17,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.menu.listener.MenuItemClickListener;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;

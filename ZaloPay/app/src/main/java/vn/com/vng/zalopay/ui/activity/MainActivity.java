@@ -28,7 +28,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+
 import com.zalopay.apploader.internal.ModuleName;
+
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -210,7 +212,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
-                startQRCodeActivity();
+                // startQRCodeActivity();
+                navigator.startScanToPayActivity(getActivity());
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
