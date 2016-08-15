@@ -72,6 +72,8 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     public void onTextChangeAccountName(CharSequence s) {
         if (!ValidateUtil.isValidLengthZPName(s.toString())) {
             mInputAccountNameView.setError(getString(R.string.exception_account_name_length));
+        } else if (s.toString().indexOf(" ") > 0) {
+            mInputAccountNameView.setError(getString(R.string.exception_account_name_with_space));
         } else if (!ValidateUtil.isValidZaloPayName(s.toString())) {
             mInputAccountNameView.setError(getString(R.string.exception_account_name_special_char));
         } else {
