@@ -13,6 +13,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
@@ -54,17 +55,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @BindView(R.id.btnDeposit)
     View btnDeposit;
 
-    View.OnClickListener onClickDeposit = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!isValidAmount()) {
-                return;
-            }
-            showProgressDialog();
-            balanceTopupPresenter.deposit(mAmount);
-        }
-    };
-
     private void showAmountError(String error) {
         if (!TextUtils.isEmpty(error)) {
             textInputAmount.setErrorEnabled(true);
@@ -72,6 +62,15 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         } else {
             hideAmountError();
         }
+    }
+
+    @OnClick(R.id.btnDeposit)
+    public void onClickBtnDeposit(View v) {
+        if (!isValidAmount()) {
+            return;
+        }
+        showProgressDialog();
+        balanceTopupPresenter.deposit(mAmount);
     }
 
     private void hideAmountError() {
@@ -88,7 +87,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     public boolean isValidMaxAmount() {
-        if (mAmount > maxDepositAmount ) {
+        if (mAmount > maxDepositAmount) {
             showAmountError(mValidMaxAmount);
             return false;
         }
@@ -186,16 +185,12 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         });
         tvResourceMoney.setText(String.format(getResources().getString(R.string.title_min_money),
                 CurrencyUtil.formatCurrency(minDepositAmount, false)));
+
+        checkShowBtnContinue();
     }
 
     private void checkShowBtnContinue() {
-        if (mAmount <= 0) {
-            btnDeposit.setBackgroundResource(R.color.bg_btn_gray);
-            btnDeposit.setOnClickListener(null);
-        } else {
-            btnDeposit.setBackgroundResource(R.drawable.bg_btn_blue);
-            btnDeposit.setOnClickListener(onClickDeposit);
-        }
+        btnDeposit.setEnabled(mAmount > 0);
     }
 
     @Override
