@@ -203,6 +203,10 @@ public final class ZPMsgProtos {
      * <code>FEEDBACK = 2;</code>
      */
     FEEDBACK(1, 2),
+    /**
+     * <code>PING_SERVER = 3;</code>
+     */
+    PING_SERVER(2, 3),
     ;
 
     /**
@@ -213,6 +217,10 @@ public final class ZPMsgProtos {
      * <code>FEEDBACK = 2;</code>
      */
     public static final int FEEDBACK_VALUE = 2;
+    /**
+     * <code>PING_SERVER = 3;</code>
+     */
+    public static final int PING_SERVER_VALUE = 3;
 
 
     public final int getNumber() { return value; }
@@ -221,6 +229,7 @@ public final class ZPMsgProtos {
       switch (value) {
         case 1: return AUTHEN_LOGIN;
         case 2: return FEEDBACK;
+        case 3: return PING_SERVER;
         default: return null;
       }
     }
@@ -270,6 +279,106 @@ public final class ZPMsgProtos {
     }
 
     // @@protoc_insertion_point(enum_scope:protobuf.MessageType)
+  }
+
+  /**
+   * Protobuf enum {@code protobuf.ServerMessageType}
+   */
+  public enum ServerMessageType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>AUTHEN_LOGIN_RESULT = 1;</code>
+     */
+    AUTHEN_LOGIN_RESULT(0, 1),
+    /**
+     * <code>PONG_CLIENT = 2;</code>
+     */
+    PONG_CLIENT(1, 2),
+    /**
+     * <code>KICK_OUT_USER = 51;</code>
+     */
+    KICK_OUT_USER(2, 51),
+    /**
+     * <code>PUSH_NOTIFICATION = 101;</code>
+     */
+    PUSH_NOTIFICATION(3, 101),
+    ;
+
+    /**
+     * <code>AUTHEN_LOGIN_RESULT = 1;</code>
+     */
+    public static final int AUTHEN_LOGIN_RESULT_VALUE = 1;
+    /**
+     * <code>PONG_CLIENT = 2;</code>
+     */
+    public static final int PONG_CLIENT_VALUE = 2;
+    /**
+     * <code>KICK_OUT_USER = 51;</code>
+     */
+    public static final int KICK_OUT_USER_VALUE = 51;
+    /**
+     * <code>PUSH_NOTIFICATION = 101;</code>
+     */
+    public static final int PUSH_NOTIFICATION_VALUE = 101;
+
+
+    public final int getNumber() { return value; }
+
+    public static ServerMessageType valueOf(int value) {
+      switch (value) {
+        case 1: return AUTHEN_LOGIN_RESULT;
+        case 2: return PONG_CLIENT;
+        case 51: return KICK_OUT_USER;
+        case 101: return PUSH_NOTIFICATION;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ServerMessageType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<ServerMessageType>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ServerMessageType>() {
+            public ServerMessageType findValueByNumber(int number) {
+              return ServerMessageType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.getDescriptor().getEnumTypes().get(3);
+    }
+
+    private static final ServerMessageType[] VALUES = values();
+
+    public static ServerMessageType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private ServerMessageType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:protobuf.ServerMessageType)
   }
 
   public interface MessageSendUserOrBuilder extends
@@ -5896,6 +6005,489 @@ public final class ZPMsgProtos {
     // @@protoc_insertion_point(class_scope:protobuf.StatusMessageClient)
   }
 
+  public interface MessageConnectionInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:protobuf.MessageConnectionInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required uint64 userid = 1;</code>
+     */
+    boolean hasUserid();
+    /**
+     * <code>required uint64 userid = 1;</code>
+     */
+    long getUserid();
+
+    /**
+     * <code>optional uint64 embeddata = 2;</code>
+     */
+    boolean hasEmbeddata();
+    /**
+     * <code>optional uint64 embeddata = 2;</code>
+     */
+    long getEmbeddata();
+  }
+  /**
+   * Protobuf type {@code protobuf.MessageConnectionInfo}
+   */
+  public static final class MessageConnectionInfo extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:protobuf.MessageConnectionInfo)
+      MessageConnectionInfoOrBuilder {
+    // Use MessageConnectionInfo.newBuilder() to construct.
+    private MessageConnectionInfo(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private MessageConnectionInfo(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final MessageConnectionInfo defaultInstance;
+    public static MessageConnectionInfo getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public MessageConnectionInfo getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private MessageConnectionInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              userid_ = input.readUInt64();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              embeddata_ = input.readUInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageConnectionInfo_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageConnectionInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<MessageConnectionInfo> PARSER =
+        new com.google.protobuf.AbstractParser<MessageConnectionInfo>() {
+      public MessageConnectionInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MessageConnectionInfo(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MessageConnectionInfo> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int USERID_FIELD_NUMBER = 1;
+    private long userid_;
+    /**
+     * <code>required uint64 userid = 1;</code>
+     */
+    public boolean hasUserid() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required uint64 userid = 1;</code>
+     */
+    public long getUserid() {
+      return userid_;
+    }
+
+    public static final int EMBEDDATA_FIELD_NUMBER = 2;
+    private long embeddata_;
+    /**
+     * <code>optional uint64 embeddata = 2;</code>
+     */
+    public boolean hasEmbeddata() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional uint64 embeddata = 2;</code>
+     */
+    public long getEmbeddata() {
+      return embeddata_;
+    }
+
+    private void initFields() {
+      userid_ = 0L;
+      embeddata_ = 0L;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasUserid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeUInt64(1, userid_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt64(2, embeddata_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, userid_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, embeddata_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code protobuf.MessageConnectionInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protobuf.MessageConnectionInfo)
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageConnectionInfo_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageConnectionInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.class, vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.Builder.class);
+      }
+
+      // Construct using vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        userid_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        embeddata_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.internal_static_protobuf_MessageConnectionInfo_descriptor;
+      }
+
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo getDefaultInstanceForType() {
+        return vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.getDefaultInstance();
+      }
+
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo build() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo buildPartial() {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo result = new vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.userid_ = userid_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.embeddata_ = embeddata_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo) {
+          return mergeFrom((vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo other) {
+        if (other == vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo.getDefaultInstance()) return this;
+        if (other.hasUserid()) {
+          setUserid(other.getUserid());
+        }
+        if (other.hasEmbeddata()) {
+          setEmbeddata(other.getEmbeddata());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasUserid()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos.MessageConnectionInfo) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private long userid_ ;
+      /**
+       * <code>required uint64 userid = 1;</code>
+       */
+      public boolean hasUserid() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required uint64 userid = 1;</code>
+       */
+      public long getUserid() {
+        return userid_;
+      }
+      /**
+       * <code>required uint64 userid = 1;</code>
+       */
+      public Builder setUserid(long value) {
+        bitField0_ |= 0x00000001;
+        userid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint64 userid = 1;</code>
+       */
+      public Builder clearUserid() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        userid_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long embeddata_ ;
+      /**
+       * <code>optional uint64 embeddata = 2;</code>
+       */
+      public boolean hasEmbeddata() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional uint64 embeddata = 2;</code>
+       */
+      public long getEmbeddata() {
+        return embeddata_;
+      }
+      /**
+       * <code>optional uint64 embeddata = 2;</code>
+       */
+      public Builder setEmbeddata(long value) {
+        bitField0_ |= 0x00000002;
+        embeddata_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 embeddata = 2;</code>
+       */
+      public Builder clearEmbeddata() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        embeddata_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:protobuf.MessageConnectionInfo)
+    }
+
+    static {
+      defaultInstance = new MessageConnectionInfo(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:protobuf.MessageConnectionInfo)
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_protobuf_MessageSendUser_descriptor;
   private static
@@ -5926,6 +6518,11 @@ public final class ZPMsgProtos {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_protobuf_StatusMessageClient_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_protobuf_MessageConnectionInfo_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_protobuf_MessageConnectionInfo_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5952,12 +6549,17 @@ public final class ZPMsgProtos {
       "shembeddata\030\007 \001(\t\022\021\n\tserviceid\030\010 \001(\t\022\r\n\005" +
       "msgid\030\t \001(\t\"e\n\023StatusMessageClient\022\016\n\006us" +
       "erid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022\r\n\005mtaid\030\003 \001(" +
-      "\004\022\r\n\005mtuid\030\004 \001(\004\022\020\n\010sourceid\030\005 \001(\r*6\n\rMe" +
-      "ssageStatus\022\014\n\010RECEIVED\020\001\022\n\n\006READED\020\002\022\013\n" +
-      "\007DELETED\020\003*0\n\006OSType\022\007\n\003IOS\020\001\022\013\n\007ANDROID",
-      "\020\002\022\020\n\014WINDOW_PHONE\020\003*-\n\013MessageType\022\020\n\014A" +
-      "UTHEN_LOGIN\020\001\022\014\n\010FEEDBACK\020\002B2\n#vn.com.vn" +
-      "g.zalopay.data.ws.protobufB\013ZPMsgProtos"
+      "\004\022\r\n\005mtuid\030\004 \001(\004\022\020\n\010sourceid\030\005 \001(\r\":\n\025Me" +
+      "ssageConnectionInfo\022\016\n\006userid\030\001 \002(\004\022\021\n\te" +
+      "mbeddata\030\002 \001(\004*6\n\rMessageStatus\022\014\n\010RECEI",
+      "VED\020\001\022\n\n\006READED\020\002\022\013\n\007DELETED\020\003*0\n\006OSType" +
+      "\022\007\n\003IOS\020\001\022\013\n\007ANDROID\020\002\022\020\n\014WINDOW_PHONE\020\003" +
+      "*>\n\013MessageType\022\020\n\014AUTHEN_LOGIN\020\001\022\014\n\010FEE" +
+      "DBACK\020\002\022\017\n\013PING_SERVER\020\003*g\n\021ServerMessag" +
+      "eType\022\027\n\023AUTHEN_LOGIN_RESULT\020\001\022\017\n\013PONG_C" +
+      "LIENT\020\002\022\021\n\rKICK_OUT_USER\0203\022\025\n\021PUSH_NOTIF" +
+      "ICATION\020eB2\n#vn.com.vng.zalopay.data.ws." +
+      "protobufB\013ZPMsgProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6007,6 +6609,12 @@ public final class ZPMsgProtos {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_StatusMessageClient_descriptor,
         new java.lang.String[] { "Userid", "Status", "Mtaid", "Mtuid", "Sourceid", });
+    internal_static_protobuf_MessageConnectionInfo_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_protobuf_MessageConnectionInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_protobuf_MessageConnectionInfo_descriptor,
+        new java.lang.String[] { "Userid", "Embeddata", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
