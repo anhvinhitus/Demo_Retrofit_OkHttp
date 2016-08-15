@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ZPTextInputLayout;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 8/12/16.
@@ -66,10 +67,13 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        mBtnCheckView.setEnabled(false);
     }
 
     @OnTextChanged(R.id.edtZaloPayName)
     public void onTextChangeAccountName(CharSequence s) {
+
+        boolean isValid = false;
         if (!ValidateUtil.isValidLengthZPName(s.toString())) {
             mInputAccountNameView.setError(getString(R.string.exception_account_name_length));
         } else if (s.toString().indexOf(" ") > 0) {
@@ -79,7 +83,13 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         } else {
             mInputAccountNameView.setError("");
             mInputAccountNameView.setStateWithoutIcon(ZPTextInputLayout.ViewState.UNKNOWN);
+
+            if (!TextUtils.isEmpty(s)) {
+                isValid = true;
+            }
         }
+
+        mBtnCheckView.setEnabled(isValid);
 
         mBtnCheckView.setText(R.string.check);
     }
@@ -108,13 +118,22 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
         Timber.d("onClickCheck");
 
-        String accountName = mInputAccountNameView.getText();
+        final String accountName = mInputAccountNameView.getText();
         if (TextUtils.isEmpty(accountName)) {
             return;
         }
 
         if (mInputAccountNameView.isValid()) {
-            presenter.updateAccountName(accountName);
+            showDialog(getString(R.string.notification), getString(R.string.confirm_update_account_name),
+                    getString(R.string.cancel),
+                    getString(R.string.accept), new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            presenter.updateAccountName(accountName);
+                            sweetAlertDialog.dismiss();
+                        }
+                    }, SweetAlertDialog.NORMAL_TYPE);
+
         } else if (mInputAccountNameView.isUnknown()) {
             presenter.existAccountName(accountName);
         }
