@@ -100,6 +100,8 @@ public class PaymentWrapper {
                         responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
                     } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET.getNum()) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD.getNum()) {
+                        responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINKCARD);
                     } else {
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     }
@@ -168,6 +170,13 @@ public class PaymentWrapper {
             mUserInfo.userProfile = getUserPermission();
         }
         return mUserInfo;
+    }
+
+    public void withdraw(Order order, String displayName, String avatar, String phoneNumber) {
+        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
+        ZPWPaymentInfo paymentInfo = transform(order);
+        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber);
+        callPayAPI(paymentInfo, forcedPaymentChannel);
     }
 
     public void transfer(Order order, String displayName, String avatar, String phoneNumber) {

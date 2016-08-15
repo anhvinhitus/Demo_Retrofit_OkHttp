@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.withdraw.ui.view;
 
+import android.app.Activity;
+
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -7,5 +9,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  *
  */
 public interface IWithdrawView extends ILoadDataView {
-
+    Activity getActivity();
+    void onTokenInvalid();
 }

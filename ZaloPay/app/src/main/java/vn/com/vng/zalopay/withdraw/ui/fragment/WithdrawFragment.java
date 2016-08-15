@@ -241,4 +241,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     public void showError(String message) {
         showToast(message);
     }
+
+    @Override
+    public void onTokenInvalid() {
+
+    }
 }
