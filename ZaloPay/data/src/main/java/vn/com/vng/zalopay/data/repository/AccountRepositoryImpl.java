@@ -76,8 +76,13 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<BaseResponse> recoveryPin(String pin, String otp) {
-        return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, otp);
+    public Observable<BaseResponse> recoveryPin(String pin, String oldPin) {
+        return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, oldPin, null);
+    }
+
+    @Override
+    public Observable<BaseResponse> verifyRecoveryPin(String otp) {
+        return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, null, null, otp);
     }
 
     @Override

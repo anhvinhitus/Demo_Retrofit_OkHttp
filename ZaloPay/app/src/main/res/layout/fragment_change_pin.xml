@@ -21,7 +21,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="6"
+            zalopay:hint="Mã số PIN mới"
+            zalopay:length="6" />
+
+        <vn.com.vng.zalopay.ui.widget.PassCodeView
+            android:id="@+id/oldPassCodeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="6"
             zalopay:hint="@string/hint_pin"
             zalopay:length="6" />
+
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

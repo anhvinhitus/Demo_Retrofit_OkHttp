@@ -12,9 +12,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -34,6 +33,7 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void destroyView() {
         hideLoading();
+        unsubscribe();
         this.mView = null;
     }
 
@@ -52,7 +52,6 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
-        this.unsubscribe();
     }
 
     public String sha256(String base) {
@@ -72,15 +71,17 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
 
             return hexString.toString();
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            Timber.e(ex, "sha256 exception");
+            return "";
         }
     }
 
-    public void updateProfile(String pin, String phone) {
+    public void changePin(String pin, String oldPin) {
         showLoading();
         String pinSha256 = sha256(pin);
+        String odlPinSha256 = sha256(oldPin);
 
-        Subscription subscription = accountRepository.recoveryPin(pinSha256, null)
+        Subscription subscription = accountRepository.recoveryPin(pinSha256, odlPinSha256)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RecoveryPassCodeSubscriber());
@@ -105,25 +106,14 @@ public class RecoveryPinPresenter extends BaseUserPresenter implements IPresente
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-            if (e instanceof BodyException) {
-                BodyException bodyException = (BodyException) e;
-                RecoveryPinPresenter.this.onRecoveryPinError(bodyException.getMessage());
-                return;
-            }
-
-            Timber.e(e, "onError " + e);
-            RecoveryPinPresenter.this.onRecoveryPinError();
+            RecoveryPinPresenter.this.onRecoveryPinError(e);
         }
     }
 
-    private void onRecoveryPinError() {
+    private void onRecoveryPinError(Throwable e) {
         hideLoading();
-        mView.showError("Thiết lập lại mã PIN thất bại.");
-    }
-
-    private void onRecoveryPinError(String msg) {
-        hideLoading();
-        mView.showError(msg);
+        String message = ErrorMessageFactory.create(applicationContext, e);
+        mView.showError(message);
     }
 
     private void onRecoveryPinSuccess() {

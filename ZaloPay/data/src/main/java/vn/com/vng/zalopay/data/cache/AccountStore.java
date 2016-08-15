@@ -37,7 +37,7 @@ public interface AccountStore {
 
         @FormUrlEncoded
         @POST("um/recoverypin")
-        Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("otp") String otp);
+        Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("oldpin") String oldpin, @Field("otp") String otp);
 
         @GET("um/getuserinfo")
         Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("loginuid") long zaloId, @Query("systemlogin") int systemlogin);
@@ -76,7 +76,10 @@ public interface AccountStore {
 
         Observable<Boolean> verifyOTPProfile(String otp);
 
-        Observable<BaseResponse> recoveryPin(String pin, String otp);
+        Observable<BaseResponse> recoveryPin(String pin, String oldPin);
+
+        Observable<BaseResponse> verifyRecoveryPin(String otp);
+
 
         Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin);
 

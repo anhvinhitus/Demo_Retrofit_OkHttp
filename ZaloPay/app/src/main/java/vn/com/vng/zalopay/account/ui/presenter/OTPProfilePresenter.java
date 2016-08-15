@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.presenter;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -16,7 +17,8 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter<IOTPProfileView> {
 
     IOTPProfileView mView;
-    private Subscription subscriptionLogin;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     public void setView(IOTPProfileView iProfileView) {
@@ -26,11 +28,12 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     @Override
     public void destroyView() {
         hideLoading();
+        unsubscribe();
         this.mView = null;
     }
 
     private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionLogin);
+        unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
@@ -39,7 +42,6 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void pause() {
-
     }
 
     @Override
@@ -52,17 +54,19 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
         mView.confirmOTPError();
     }
 
-    private void onVerifyOTPSucess() {
+    private void onVerifyOTPSuccess() {
         hideLoading();
         mView.confirmOTPSuccess();
     }
 
     public void verifyOtp(String otp) {
         showLoading();
-        subscriptionLogin = accountRepository.verifyOTPProfile(otp)
+        Subscription subscription = accountRepository.verifyOTPProfile(otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifyOTPProfileSubscriber());
+
+        compositeSubscription.add(subscription);
     }
 
     private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<Boolean> {
@@ -71,7 +75,7 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
 
         @Override
         public void onNext(Boolean permissions) {
-            OTPProfilePresenter.this.onVerifyOTPSucess();
+            OTPProfilePresenter.this.onVerifyOTPSuccess();
         }
 
         @Override

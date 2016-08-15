@@ -34,6 +34,9 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
 
+    @BindView(R.id.oldPassCodeInput)
+    PassCodeView mRePassCodeView;
+
     IPasscodeChanged passCodeChanged = new IPasscodeChanged() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -42,7 +45,7 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (isValidPin()) {
+            if (isValidPinView(passCode)) {
                 passCode.hideError();
             }
         }
@@ -53,7 +56,7 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         }
     };
 
-    private boolean isValidPin() {
+    private boolean isValidPinView(PassCodeView passCode) {
         String pin = passCode.getText();
         return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
@@ -74,14 +77,21 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     @Override
     public void onClickContinue() {
-        if (!isValidPin()) {
+        if (!isValidPinView(passCode)) {
             passCode.showError(getString(R.string.invalid_pin));
             return;
         } else {
             passCode.hideError();
         }
 
-        presenter.updateProfile(passCode.getText(), null);
+        if (!isValidPinView(mRePassCodeView)) {
+            mRePassCodeView.showError(getString(R.string.invalid_pin));
+            return;
+        } else {
+            mRePassCodeView.hideError();
+        }
+
+        presenter.changePin(passCode.getText(), mRePassCodeView.getText());
     }
 
     @Override

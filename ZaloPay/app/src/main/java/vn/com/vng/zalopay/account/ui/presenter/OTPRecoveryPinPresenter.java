@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -29,6 +30,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
     @Override
     public void destroyView() {
         hideLoading();
+        unsubscribe();
         this.mView = null;
     }
 
@@ -47,29 +49,24 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
     @Override
     public void destroy() {
-        this.unsubscribe();
     }
 
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
-        if (e != null) {
-            mView.confirmOTPError(e.getMessage());
-        }
+        String message = ErrorMessageFactory.create(applicationContext, e);
+        mView.confirmOTPError(message);
+
     }
 
-    private void onConfirmOTPError(String msg) {
-        hideLoading();
-        mView.confirmOTPError(msg);
-    }
 
-    private void onVerifyOTPSucess() {
+    private void onVerifyOTPSuccess() {
         hideLoading();
         mView.confirmOTPSuccess();
     }
 
     public void verifyOtp(String otp) {
         showLoading();
-        Subscription subscription = accountRepository.recoveryPin(null, otp)
+        Subscription subscription = accountRepository.verifyRecoveryPin(otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifyOTPRecoveryPinSubscriber());
@@ -82,7 +79,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
 
         @Override
         public void onNext(BaseResponse baseResponse) {
-            OTPRecoveryPinPresenter.this.onVerifyOTPSucess();
+            OTPRecoveryPinPresenter.this.onVerifyOTPSuccess();
         }
 
         @Override
@@ -94,12 +91,7 @@ public class OTPRecoveryPinPresenter extends BaseUserPresenter implements IPrese
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-            if (e instanceof BodyException) {
-                BodyException bodyException = (BodyException) e;
-                OTPRecoveryPinPresenter.this.onConfirmOTPError(bodyException.getMessage());
-                return;
-            }
-            Timber.e(e, "onError " + e);
+
             OTPRecoveryPinPresenter.this.onConfirmOTPError(e);
         }
     }

@@ -33,8 +33,10 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
  * create an instance of this fragment.
  */
 public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfileView {
+
     private OnOTPFragmentListener mListener;
     private int mRetryOtp = 0;
+
     @Inject
     OTPProfilePresenter presenter;
 
@@ -43,6 +45,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     @BindView(R.id.textInputOTP)
     TextInputLayout textInputOTP;
+
     @BindView(R.id.edtOTP)
     ClearableEditText edtOTP;
 
@@ -176,14 +179,10 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     }
 
     @Override
-    public void showRetry() {
-
-    }
+    public void showRetry() {}
 
     @Override
-    public void hideRetry() {
-
-    }
+    public void hideRetry() {}
 
     @Override
     public void showError(String message) {

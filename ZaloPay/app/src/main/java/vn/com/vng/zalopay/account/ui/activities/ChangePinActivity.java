@@ -21,7 +21,6 @@ public class ChangePinActivity extends BaseToolBarActivity implements
         ChangePinFragment.OnPinProfileFragmentListener,
         OTPRecoveryPinFragment.OnOTPFragmentListener {
 
-    private int profileType = 0;
     private ChangePinSlidePagerAdapter adapter;
 
     @BindView(R.id.viewPager)
