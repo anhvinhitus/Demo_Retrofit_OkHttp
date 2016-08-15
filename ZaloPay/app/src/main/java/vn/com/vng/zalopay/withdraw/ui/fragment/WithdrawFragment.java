@@ -142,9 +142,8 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     private void initLimitAmount() {
         try {
-//          ################## longlv: need update (getMinDepositValue/getMaxDepositValue)##################
-            minWithdrawAmount = CShareData.getInstance(getActivity()).getMinDepositValue();
-            maxWithdrawAmount = CShareData.getInstance(getActivity()).getMaxDepositValue();
+            minWithdrawAmount = CShareData.getInstance(getActivity()).getMinWithDrawValue();
+            maxWithdrawAmount = CShareData.getInstance(getActivity()).getMaxWithDrawValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max withdraw from paymentSDK exception: [%s]", e.getMessage());
         }
