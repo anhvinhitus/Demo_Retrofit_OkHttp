@@ -9,8 +9,6 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.netty.channel.ConnectTimeoutException;
 import timber.log.Timber;
@@ -31,7 +29,8 @@ import vn.com.vng.zalopay.domain.model.User;
  * Network handlers for Socket connection
  */
 public class WsConnection extends Connection {
-
+    private static final int TIMER_HEARTBEAT = 60 * 60 * 1000;
+    private static final int TIMER_CONNECTION_CHECK = 5 * 60 * 1000;
     private String gcmToken;
 
     private final Context context;
@@ -41,12 +40,9 @@ public class WsConnection extends Connection {
     private final Parser parser;
     private final UserConfig userConfig;
 
-
-    private Timer mTimer;
-    private TimerTask timerTask;
-
     private SocketClient mSocketClient;
-    private HeartBeatKeeper mHeartBeatKeeper = new HeartBeatKeeper();
+    private TimerWrapper mHeartBeatKeeper = new TimerWrapper(new SendHeartBeatTask());
+    private TimerWrapper mConnectionChecker = new TimerWrapper(new CheckConnectionTask());
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
@@ -68,10 +64,11 @@ public class WsConnection extends Connection {
 
     @Override
     public void ping() {
-        byte[] pingData = new byte[1];
-        pingData[0] = 1;
+        ZPMsgProtos.MessageConnectionInfo.Builder pingMessage = ZPMsgProtos.MessageConnectionInfo.newBuilder()
+                .setUserid(getCurrentUserId())
+                .setEmbeddata(System.currentTimeMillis());
 
-        send(ZPMsgProtos.MessageType.FEEDBACK_VALUE, pingData);
+        send(ZPMsgProtos.MessageType.PING_SERVER.getNumber(), pingMessage.build());
     }
 
     @Override
@@ -138,9 +135,7 @@ public class WsConnection extends Connection {
         return false;
     }
 
-    private boolean sendFeedbackStatus(Event event) {
-        long mtaid = event.getMtaid();
-        long mtuid = event.getMtuid();
+    private long getCurrentUserId() {
         long uid = -1;
 
         try {
@@ -148,6 +143,14 @@ public class WsConnection extends Connection {
         } catch (Exception ex) {
             Timber.d("parse uid exception %s");
         }
+
+        return uid;
+    }
+
+    private boolean sendFeedbackStatus(Event event) {
+        long mtaid = event.getMtaid();
+        long mtuid = event.getMtuid();
+        long uid = getCurrentUserId();
 
         if (mtaid <= 0 && mtuid <= 0) {
             return true;
@@ -171,69 +174,58 @@ public class WsConnection extends Connection {
         return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
     }
 
-
-    private void startTimerCheckConnect() {
-        stopTimerCheckConnect();
-
-        mTimer = new Timer();
-        timerTask = new CheckConnectionTask();
-
-        mTimer.schedule(timerTask, 0, 5 * 60 * 1000);
-    }
-
-    private void stopTimerCheckConnect() {
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTask = null;
-        }
-
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.purge();
-            mTimer = null;
-        }
-    }
-
-    private class HeartBeatKeeper {
-        private Timer mHeartBeatTimer;
-        private TimerTask mSendDataTask;
-
-        void start() {
-            stop();
-
-            mHeartBeatTimer = new Timer();
-            mSendDataTask = new SendHeartBeatTask();
-
-            // Schedule for sending heart beat every 20s
-            mHeartBeatTimer.schedule(mSendDataTask, 20000, 20000);
-        }
-
-        void stop() {
-            if (mSendDataTask != null) {
-                mSendDataTask.cancel();
-                mSendDataTask = null;
-            }
-
-            if (mHeartBeatTimer != null) {
-                mHeartBeatTimer.cancel();
-                mHeartBeatTimer.purge();
-                mHeartBeatTimer = null;
-            }
-        }
-    }
-
-    private class SendHeartBeatTask extends TimerTask {
+    private class SendHeartBeatTask implements TimerListener {
         @Override
-        public void run() {
+        public int period() {
+            return TIMER_HEARTBEAT;
+        }
+
+        /**
+         * Get amount of time in milliseconds before first execution.
+         *
+         * @return amount of time in milliseconds before first execution.
+         */
+        @Override
+        public int delay() {
+            return TIMER_HEARTBEAT;
+        }
+
+        /**
+         * called when timer ticked
+         */
+        @Override
+        public void onEvent() {
             Timber.d("Begin send heart beat");
             ping();
         }
     }
 
-    private class CheckConnectionTask extends TimerTask {
-
+    private class CheckConnectionTask implements TimerListener {
+        /**
+         * Get amount of time in milliseconds between subsequent executions.
+         *
+         * @return amount of time in milliseconds between subsequent executions.
+         */
         @Override
-        public void run() {
+        public int period() {
+            return TIMER_CONNECTION_CHECK;
+        }
+
+        /**
+         * Get amount of time in milliseconds before first execution.
+         *
+         * @return amount of time in milliseconds before first execution.
+         */
+        @Override
+        public int delay() {
+            return 0;
+        }
+
+        /**
+         * called when timer ticked
+         */
+        @Override
+        public void onEvent() {
             Timber.d("Begin check connection");
             if (NetworkHelper.isNetworkAvailable(context)) {
                 connect();
@@ -250,8 +242,7 @@ public class WsConnection extends Connection {
             //    numRetry = 0;
             sendAuthentication();
 
-            stopTimerCheckConnect();
-
+            mConnectionChecker.stop();
             mHeartBeatKeeper.start();
         }
 
@@ -301,7 +292,7 @@ public class WsConnection extends Connection {
             } else if (e instanceof UnknownHostException) {
             }
 
-            startTimerCheckConnect();
+            mConnectionChecker.start();
         }
     }
 }
