@@ -20,7 +20,6 @@
             android:layout_marginRight="16dp"
             android:text="@string/lbl.edit.account.name"
             android:textSize="@dimen/font_size_medium">
-
         </TextView>
 
         <View

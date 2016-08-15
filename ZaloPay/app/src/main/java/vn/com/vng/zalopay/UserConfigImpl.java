@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.utils.JsonUtil;
 
@@ -281,5 +282,7 @@ public class UserConfigImpl implements UserConfig {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_ZALOPAY_NAME, accountName);
         editor.apply();
+        Timber.d("save EventBus post ");
+        eventBus.postSticky(new ZaloPayNameEvent(accountName));
     }
 }

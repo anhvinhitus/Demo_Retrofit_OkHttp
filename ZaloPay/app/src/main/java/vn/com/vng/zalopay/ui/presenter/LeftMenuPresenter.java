@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
@@ -153,5 +154,13 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
+        if (menuView != null) {
+            menuView.setZaloPayName(event.zaloPayName);
+        }
+
+        eventBus.removeStickyEvent(ZaloPayNameEvent.class);
+    }
 
 }

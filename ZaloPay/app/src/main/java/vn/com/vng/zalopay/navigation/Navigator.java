@@ -9,6 +9,8 @@ import android.text.TextUtils;
 
 import com.zalopay.apploader.internal.ModuleName;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +27,9 @@ import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -51,6 +55,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 @Singleton
 public class Navigator implements INavigator {
     private final int MIN_PROFILE_LEVEL = 2;
+    private final int MIN_PROFILE_LEVEL_3 = 3;
 
     UserConfig userConfig;
 
@@ -150,6 +155,30 @@ public class Navigator implements INavigator {
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
                         startUpdateProfileLevel2Activity(context, false);
+                    }
+                });
+        sweetAlertDialog.show();
+    }
+
+    private void showUpdateProfileLevel3Dialog(final Context context) {
+        if (context == null) {
+            return;
+        }
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
+                .setContentText(context.getString(R.string.txt_need_input_userinfo))
+                .setCancelText(context.getString(R.string.txt_close))
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmText(context.getString(R.string.txt_input_userinfo))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        startUpdateProfile3Activity(context);
                     }
                 });
         sweetAlertDialog.show();
@@ -294,6 +323,16 @@ public class Navigator implements INavigator {
     }
 
     public void startWithdrawActivity(Context context) {
+        if (userConfig == null || userConfig.getCurrentUser() == null) {
+            EventBus.getDefault().post(new TokenExpiredEvent(NetworkError.TOKEN_INVALID));
+            return;
+        } else if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showUpdateProfileInfoDialog(context);
+            return;
+        } else if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL_3) {
+            showUpdateProfileLevel3Dialog(context);
+            return;
+        }
         Intent intent = new Intent(context, WithdrawActivity.class);
         context.startActivity(intent);
     }

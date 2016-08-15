@@ -14,4 +14,6 @@ public interface ILeftMenuView {
     void setAvatar(String avatar);
 
     void setDisplayName(String displayName);
+
+    void setZaloPayName(String zaloPayName);
 }

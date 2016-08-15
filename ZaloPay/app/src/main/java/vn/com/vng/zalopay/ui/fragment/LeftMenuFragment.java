@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -64,6 +65,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     public TextView tvName;
 
     public TextView tvBalance;
+
+    public TextView tvZaloPayName;
 
     private MenuClickListener mMenuListener;
 
@@ -132,6 +135,8 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         imageAvatar = (ImageView) viewProfile.findViewById(R.id.im_avatar);
         tvName = (TextView) viewProfile.findViewById(R.id.tv_name);
         tvBalance = (TextView) viewProfile.findViewById(R.id.tv_balance);
+        tvZaloPayName = (TextView) viewProfile.findViewById(R.id.tvZaloPayName);
+
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,6 +187,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
         setAvatar(user.avatar);
         setDisplayName(user.dname);
+        setZaloPayName(user.zalopayname);
     }
 
     private void loadImage(final ImageView imageView, String url) {
@@ -207,5 +213,12 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         tvName.setText(displayName);
     }
 
-
+    @Override
+    public void setZaloPayName(String zaloPayName) {
+        if (TextUtils.isEmpty(zaloPayName)) {
+            tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
+        } else {
+            tvZaloPayName.setText(zaloPayName);
+        }
+    }
 }

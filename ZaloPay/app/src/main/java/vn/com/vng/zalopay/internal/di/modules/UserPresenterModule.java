@@ -148,8 +148,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    WithdrawPresenter providesWithdrawPresenter() {
-        return new WithdrawPresenter();
+    WithdrawPresenter providesWithdrawPresenter(User user) {
+        return new WithdrawPresenter(user);
     }
 
     @UserScope
