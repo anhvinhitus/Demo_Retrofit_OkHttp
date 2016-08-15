@@ -253,16 +253,16 @@ class SocketChannelConnection {
             mReadBuffer.get(buffer, 0, remaining);
             outputStream.write(buffer, 0, remaining);
 
-            Timber.d("Read %s byte of data. Read buffer: %s %s", numRead, mReadBuffer.position(), mReadBuffer.limit());
+            Timber.v("Read %s byte of data. Read buffer: %s %s", numRead, mReadBuffer.position(), mReadBuffer.limit());
             if (numRead < mReadBuffer.capacity()) {
-                Timber.d("Finish reading data");
+                Timber.v("Finish reading data");
                 break;
             }
         }
 
         outputStream.flush();
         byte[] data = outputData.toByteArray();
-        Timber.d("Got %s bytes", data.length);
+        Timber.d("Read %s bytes", data.length);
 
         outputStream.close();
         outputData.close();
@@ -282,7 +282,7 @@ class SocketChannelConnection {
             mChannel.socket().close();
             mChannel.close();
         } catch (IOException e) {
-            Timber.d(e, "Exception while disconnect connection");
+            Timber.w(e, "Exception while disconnect connection");
         } finally {
             mListenable.onDisconnected(reason);
         }

@@ -71,21 +71,14 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("onStartCommand: flags %s startId %s", flags, startId);
-        if (NetworkHelper.isNetworkAvailable(this)) {
+        ensureInitializeNetworkConnection();
 
-            if (mWsConnection == null) {
-                mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
-                        new MessageParser(userConfig, mGson), userConfig);
-                mWsConnection.addReceiverListener(this);
+        getAppComponent().threadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                connectToServer();
             }
-
-            getAppComponent().threadExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    connectToServer();
-                }
-            });
-        }
+        });
 
         return START_NOT_STICKY;
     }
@@ -102,22 +95,19 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         super.onDestroy();
     }
 
-
     private void connectToServer() {
         String token = null;
 
         try {
             InstanceID instanceID = InstanceID.getInstance(this);
-
-            Timber.d("onHandleIntent: senderId %s", getString(R.string.gcm_defaultSenderId));
-
+//            Timber.d("onHandleIntent: senderId %s", getString(R.string.gcm_defaultSenderId));
             token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
             subscribeTopics(token);
             // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
-            Timber.e(ex, "exception");
+            Timber.w(ex, "exception in working with GCM");
             //  sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
         }
 
@@ -126,9 +116,12 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private void connect(String token) {
         Timber.d("connect with token %s", token);
-        if (mWsConnection == null) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Timber.d("Skip create connection, since OS reports no network connection");
             return;
         }
+
+        ensureInitializeNetworkConnection();
 
         if (!mWsConnection.isConnected()) {
             Timber.d("Socket is not connected. About to create connection.");
@@ -209,6 +202,14 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         if (userConfig.isSignIn()) {
             userConfig.loadConfig();
             AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+        }
+    }
+
+    private void ensureInitializeNetworkConnection() {
+        if (mWsConnection == null) {
+            mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
+                    new MessageParser(userConfig, mGson), userConfig);
+            mWsConnection.addReceiverListener(this);
         }
     }
 
