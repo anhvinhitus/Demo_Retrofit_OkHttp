@@ -92,4 +92,20 @@ public class NotificationRepository implements NotificationStore.Repository {
             return Boolean.TRUE;
         });
     }
+
+    @Override
+    public Observable<Boolean> removeNotification(long id) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.delete(id);
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<Boolean> removeAllNotification() {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.deleteAll();
+            return Boolean.TRUE;
+        });
+    }
 }

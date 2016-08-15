@@ -31,6 +31,9 @@ public interface NotificationStore {
 
         NotificationData get(long notifyId);
 
+        void delete(long id);
+
+        void deleteAll();
     }
 
     interface RequestService {
@@ -50,6 +53,10 @@ public interface NotificationStore {
         Observable<Boolean> markReadAllNotify();
 
         Observable<Boolean> increaseTotalNotify();
+
+        Observable<Boolean> removeNotification(long id);
+
+        Observable<Boolean> removeAllNotification();
 
     }
 }

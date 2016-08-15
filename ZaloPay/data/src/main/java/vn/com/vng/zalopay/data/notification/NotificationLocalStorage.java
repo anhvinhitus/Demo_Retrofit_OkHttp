@@ -147,7 +147,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         String embeddata = notificationGD.getEmbeddata();
 
-    //    Timber.d("embeddata [%s]", embeddata);
+        //    Timber.d("embeddata [%s]", embeddata);
         if (TextUtils.isEmpty(embeddata)) {
             _notification.setEmbeddata(new JsonObject());
         } else {
@@ -273,4 +273,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return getDataManifest(Constants.MANIFEST_TOTAL_NOTIFICATION, 0);
     }
 
+    @Override
+    public void delete(long id) {
+        getDaoSession().getNotificationGDDao().deleteByKey(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        getDaoSession().getNotificationGDDao().deleteAll();
+    }
 }

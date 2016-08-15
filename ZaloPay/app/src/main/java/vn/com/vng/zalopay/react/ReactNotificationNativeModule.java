@@ -82,6 +82,32 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
     }
 
+
+    @ReactMethod
+    public void removeNotification(String notificationId, Promise promise) {
+
+        long notifyId = -1;
+        try {
+            notifyId = Long.parseLong(notificationId);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "exception");
+            Helpers.promiseResolveError(promise, -1, "Notification parse error");
+            return;
+        }
+
+        Subscription subscription = repository.removeNotification(notifyId)
+                .subscribe(new RemoveNotifySubscriber(promise));
+        compositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
+    public void removeAllNotification(Promise promise) {
+        Subscription subscription = repository.removeAllNotification()
+                .subscribe(new RemoveNotifySubscriber(promise));
+
+        compositeSubscription.add(subscription);
+    }
+
     private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
 
         WeakReference<Promise> promiseWeakReference;
@@ -208,6 +234,24 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         Timber.d("on receive notification event");
 
         sendEvent("zalopayNotificationsAdded");
+    }
+
+    private class RemoveNotifySubscriber extends DefaultSubscriber<Boolean> {
+        private Promise promise;
+
+        public RemoveNotifySubscriber(Promise promise) {
+            this.promise = promise;
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Helpers.promiseResolveError(promise, -1, "Remove notification error");
+        }
+
+        @Override
+        public void onCompleted() {
+            Helpers.promiseResolveSuccess(promise, null);
+        }
     }
 
 }
