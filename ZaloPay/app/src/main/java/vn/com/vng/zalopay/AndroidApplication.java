@@ -119,11 +119,11 @@ public class AndroidApplication extends MultiDexApplication {
     }
 
     private void initializeFontFamily() {
-        AndroidUtils.setDefaultFont(this, "DEFAULT", "font/Roboto-Regular.ttf");
-        AndroidUtils.setDefaultFont(this, "DEFAULT_BOLD", "font/Roboto-Medium.ttf");
+        AndroidUtils.setDefaultFont(this, "DEFAULT", "fonts/Roboto-Regular.ttf");
+        AndroidUtils.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Roboto-Medium.ttf");
         // AndroidUtils.setDefaultFont(this, "MONOSPACE", "MyFontAsset2.ttf");
         // AndroidUtils.setDefaultFont(this, "SERIF", "MyFontAsset3.ttf");
-        AndroidUtils.setDefaultFont(this, "SANS_SERIF", "font/Roboto-Regular.ttf");
+        AndroidUtils.setDefaultFont(this, "SANS_SERIF", "fonts/Roboto-Regular.ttf");
     }
 
     public UserComponent createUserComponent(User user) {

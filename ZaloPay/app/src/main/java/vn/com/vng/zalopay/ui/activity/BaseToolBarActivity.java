@@ -36,7 +36,7 @@ public abstract class BaseToolBarActivity extends BaseActivity {
         if (mToolbarTitle == null) {
             return;
         }
-        Typeface myCustomFont = TypefaceHelper.get(this, "font/Roboto-Medium.ttf");
+        Typeface myCustomFont = TypefaceHelper.get(this, "fonts/Roboto-Medium.ttf");
         if (myCustomFont != null) {
             mToolbarTitle.setTypeface(myCustomFont);
         }
