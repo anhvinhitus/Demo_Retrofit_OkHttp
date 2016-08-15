@@ -8,7 +8,7 @@ import java.util.TimerTask;
  * heart beat keeper
  */
 class TimerWrapper {
-    private TimerListener mListener;
+    private final TimerListener mListener;
     private Timer mTimer;
     private TimerTask mTask;
 
@@ -19,27 +19,31 @@ class TimerWrapper {
     void start() {
         stop();
 
-        mTimer = new Timer();
-        mTask = new TimerTask() {
-            @Override
-            public void run() {
-                mListener.onEvent();
-            }
-        };
+        synchronized (this) {
+            mTimer = new Timer();
+            mTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mListener.onEvent();
+                }
+            };
 
-        mTimer.schedule(mTask, mListener.delay(), mListener.period());
+            mTimer.schedule(mTask, mListener.delay(), mListener.period());
+        }
     }
 
     void stop() {
-        if (mTask != null) {
-            mTask.cancel();
-            mTask = null;
-        }
+        synchronized (this) {
+            if (mTask != null) {
+                mTask.cancel();
+                mTask = null;
+            }
 
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.purge();
-            mTimer = null;
+            if (mTimer != null) {
+                mTimer.cancel();
+                mTimer.purge();
+                mTimer = null;
+            }
         }
     }
 }
