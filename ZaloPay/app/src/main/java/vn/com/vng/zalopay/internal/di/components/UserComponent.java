@@ -99,7 +99,7 @@ public interface UserComponent {
 
     FriendStore.Repository friendRepository();
 
-    TransferStore.LocalStorage transferLocalStorage();
+    TransferStore.Repository transferRepository();
 
     ReactNativeHostable reactNativeInstanceManager();
  /*   ApplicationRepository applicationRepository();*/

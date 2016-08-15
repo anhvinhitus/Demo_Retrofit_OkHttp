@@ -14,7 +14,8 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.transfer.models.RecentTransaction;
+
+import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 
 public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<TransferRecentRecyclerViewAdapter.ViewHolder> {

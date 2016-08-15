@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.transfer.ui.presenter.TransferHomePresenter;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
@@ -156,5 +157,11 @@ public class UserPresenterModule {
     @Provides
     EditAccountNamePresenter providesEditAccountNamePresenter() {
         return new EditAccountNamePresenter();
+    }
+
+    @UserScope
+    @Provides
+    TransferHomePresenter providesTransferHomePresenter() {
+        return new TransferHomePresenter();
     }
 }

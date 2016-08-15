@@ -4,6 +4,7 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
+import vn.com.vng.zalopay.domain.model.RecentTransaction;
 
 /**
  * Created by huuhoa on 7/5/16.
@@ -14,12 +15,19 @@ public interface TransferStore {
         /**
          * @return Rx Observable for list of recent transfer transactions
          */
-        Observable<List<TransferRecent>> get();
+        List<TransferRecent> get();
 
         /**
          * Append new transaction
+         *
          * @param recentTransfer new transaction
          */
         void append(TransferRecent recentTransfer);
+    }
+
+    interface Repository {
+        Observable<List<RecentTransaction>> getRecent();
+
+        Observable<Boolean> append(TransferRecent recentTransfer);
     }
 }

@@ -1,10 +1,8 @@
-package vn.com.vng.zalopay.transfer.models;
+package vn.com.vng.zalopay.domain.model;
 
 import android.database.Cursor;
 
 import org.parceler.Parcel;
-
-import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
 
 /**
  * Created by longlv on 11/06/2016.
@@ -60,23 +58,6 @@ public class RecentTransaction {
         this.transferType = transferType;
         this.amount = amount;
         this.message = message;
-    }
-
-    public RecentTransaction(Cursor cursor) {
-        super();
-        if (cursor == null) return;
-        userId = cursor.getLong(cursor.getColumnIndex(TransferRecentDao.Properties.Id.columnName));
-        zaloPayId = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.ZaloPayId.columnName));
-        userName = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.UserName.columnName));
-        displayName = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.DisplayName.columnName));
-        avatar = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.Avatar.columnName));
-        userGender = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.UserGender.columnName));
-        birthday = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.Birthday.columnName));
-        usingApp = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.UsingApp.columnName)) == 1;
-        phoneNumber = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.PhoneNumber.columnName));
-        transferType = cursor.getInt(cursor.getColumnIndex(TransferRecentDao.Properties.TransferType.columnName));
-        amount = cursor.getLong(cursor.getColumnIndex(TransferRecentDao.Properties.Amount.columnName));
-        message = cursor.getString(cursor.getColumnIndex(TransferRecentDao.Properties.Message.columnName));
     }
 
     public long getUserId() {

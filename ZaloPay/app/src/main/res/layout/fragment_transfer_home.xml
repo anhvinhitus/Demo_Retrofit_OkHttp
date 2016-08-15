@@ -13,6 +13,46 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/layoutTransferViaAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing.medium.t"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_tkzalopay" />
+
+            <TextView
+                style="@style/TextView.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_weight="1.0"
+                android:text="@string/account.zalo.pay"
+                android:textColor="@color/txt_item_main" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing.medium.t"
+                android:src="@drawable/ic_arrow_right" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:layout_marginLeft="60dp"
+            android:background="@color/separate" />
+
+        <LinearLayout
             android:id="@+id/layoutTransferAccZaloPay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

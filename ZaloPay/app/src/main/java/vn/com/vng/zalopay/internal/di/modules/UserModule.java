@@ -7,9 +7,11 @@ import dagger.Provides;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.transfer.TransferLocalStorage;
+import vn.com.vng.zalopay.data.transfer.TransferRepository;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.ReactNativeHostLongLife;
 
@@ -35,6 +37,13 @@ public class UserModule {
     TransferStore.LocalStorage provideTransferLocalStorage(@Named("daosession") DaoSession session) {
         return new TransferLocalStorage(session);
     }
+
+    @Provides
+    @UserScope
+    TransferStore.Repository provideTransferRepository(TransferStore.LocalStorage localStorage) {
+        return new TransferRepository(localStorage);
+    }
+
 
     @Provides
     @UserScope

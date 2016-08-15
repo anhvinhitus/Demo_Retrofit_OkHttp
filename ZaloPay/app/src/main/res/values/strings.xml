@@ -216,7 +216,7 @@
     <string name="btn_stop_scan_sound">Stop scan</string>
     <string name="test_jni">Test JNI</string>
 
-    <string name="transfer_acc_zalopay">Đến tài khoản Zalo</string>
+    <string name="transfer_acc_zalopay">Bàn bè Zalo</string>
     <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
@@ -271,5 +271,9 @@
     <string name="check">Kiểm Tra</string>
     <string name="update.account.name.success">Cập nhật tên tài khoản thành công.</string>
     <string name="confirm.update.account.name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\n Bạn có muốn dùng tên này không?</string>
+
     <string name="zalopay_name_not_update">Tên tài khoản: Chưa cập nhật</string>
+
+    <string name="account.zalo.pay">Tài khoản Zalo Pay</string>
+
 </resources>

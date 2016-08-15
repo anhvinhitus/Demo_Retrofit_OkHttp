@@ -8,6 +8,6 @@ public class TransferHomeActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return TransferHomeFragment.newInstance(1);
+        return TransferHomeFragment.newInstance();
     }
 }

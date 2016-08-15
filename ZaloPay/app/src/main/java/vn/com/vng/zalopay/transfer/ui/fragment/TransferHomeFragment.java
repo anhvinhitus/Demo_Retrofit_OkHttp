@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,33 +20,25 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.transfer.TransferStore;
-import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.transfer.models.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.transfer.ui.adapter.TransferRecentRecyclerViewAdapter;
+import vn.com.vng.zalopay.transfer.ui.presenter.TransferHomePresenter;
+import vn.com.vng.zalopay.transfer.ui.view.ITransferHomeView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A fragment representing a list of Items.
  * <p>
-  */
+ */
 public class TransferHomeFragment extends BaseFragment implements
-        TransferRecentRecyclerViewAdapter.OnTransferRecentItemListener {
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
+        TransferRecentRecyclerViewAdapter.OnTransferRecentItemListener, ITransferHomeView {
+
+
+    @Inject
+    TransferHomePresenter presenter;
+
     private TransferRecentRecyclerViewAdapter mAdapter;
-
-    @Inject
-    Navigator navigator;
-
-    @Inject
-    TransferStore.LocalStorage mTransferLocalStorage;
-
-    Subscription mSubscription;
 
     @BindView(R.id.tvTileTransactionRecent)
     View mTvTileTransactionRecent;
@@ -69,6 +60,11 @@ public class TransferHomeFragment extends BaseFragment implements
         navigator.startZaloContactActivity(this);
     }
 
+    @OnClick(R.id.layoutTransferViaAccount)
+    public void onClickTransferViaAccountName() {
+
+    }
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -77,10 +73,9 @@ public class TransferHomeFragment extends BaseFragment implements
     }
 
     @SuppressWarnings("unused")
-    public static TransferHomeFragment newInstance(int columnCount) {
+    public static TransferHomeFragment newInstance() {
         TransferHomeFragment fragment = new TransferHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,40 +93,40 @@ public class TransferHomeFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+        mAdapter = new TransferRecentRecyclerViewAdapter(getContext(), new ArrayList<RecentTransaction>(), this);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Set the adapter
-        if (mColumnCount <= 1) {
-            mList.setLayoutManager(new LinearLayoutManager(getContext()));
-        } else {
-            mList.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
-        }
-        mAdapter = new TransferRecentRecyclerViewAdapter(getContext(), new ArrayList<RecentTransaction>(), this);
+        presenter.setView(this);
+
+        mList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mList.setHasFixedSize(true);
         mList.setAdapter(mAdapter);
-        if (mAdapter != null && mAdapter.getItemCount() > 0) {
-            mTvTileTransactionRecent.setVisibility(View.VISIBLE);
-            mList.setVisibility(View.VISIBLE);
-            layoutIntroduction.setVisibility(View.GONE);
-        } else {
-            mTvTileTransactionRecent.setVisibility(View.GONE);
-            mList.setVisibility(View.GONE);
-            layoutIntroduction.setVisibility(View.VISIBLE);
-            imgIntroduction.setBackgroundResource(R.drawable.anim_transfer);
-            AnimationDrawable animationDrawable = (AnimationDrawable)imgIntroduction.getBackground();
-            animationDrawable.start();
-        }
+
+
+        mTvTileTransactionRecent.setVisibility(View.GONE);
+        mList.setVisibility(View.GONE);
+        layoutIntroduction.setVisibility(View.VISIBLE);
+
+
+        imgIntroduction.setBackgroundResource(R.drawable.anim_transfer);
+        AnimationDrawable animationDrawable = (AnimationDrawable) imgIntroduction.getBackground();
+        animationDrawable.start();
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        presenter.getRecent();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+        presenter.resume();
     }
 
     @Override
@@ -140,63 +135,14 @@ public class TransferHomeFragment extends BaseFragment implements
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroyView() {
+        presenter.destroyView();
+        super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (mSubscription != null) {
-            mSubscription.unsubscribe();
-        }
-    }
-
-    private void loadData() {
-        if (mTransferLocalStorage == null) {
-            mTransferLocalStorage = getUserComponent().transferLocalStorage();
-        }
-        mSubscription = mTransferLocalStorage.get()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<vn.com.vng.zalopay.data.cache.model.TransferRecent>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(List<vn.com.vng.zalopay.data.cache.model.TransferRecent> transferRecent) {
-                        if (transferRecent.isEmpty()) {
-                            onGetDataDBEmpty();
-                        } else {
-                            List<RecentTransaction> items = new ArrayList<>();
-                            for (vn.com.vng.zalopay.data.cache.model.TransferRecent item : transferRecent) {
-                                RecentTransaction newItem = new RecentTransaction(
-                                        item.getId(),
-                                        item.getZaloPayId(),
-                                        item.getUserName(),
-                                        item.getDisplayName(),
-                                        item.getAvatar(),
-                                        item.getUserGender(),
-                                        item.getBirthday(),
-                                        item.getUsingApp(),
-                                        item.getPhoneNumber(),
-                                        item.getTransferType(),
-                                        item.getAmount(),
-                                        item.getMessage());
-                                items.add(newItem);
-                            }
-
-                            onGetDataDBSuccess(items);
-                        }
-                    }
-                });
     }
 
     @Override
@@ -210,29 +156,6 @@ public class TransferHomeFragment extends BaseFragment implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void onGetDataDBSuccess(List<RecentTransaction> transferRecents) {
-        if (mAdapter == null) {
-            return;
-        }
-        
-        mAdapter.setData(transferRecents);
-        if (transferRecents != null && transferRecents.size() > 0) {
-            mTvTileTransactionRecent.setVisibility(View.VISIBLE);
-            mList.setVisibility(View.VISIBLE);
-            viewSeparate.setVisibility(View.VISIBLE);
-            layoutIntroduction.setVisibility(View.GONE);
-        } else {
-            mTvTileTransactionRecent.setVisibility(View.GONE);
-            mList.setVisibility(View.GONE);
-            viewSeparate.setVisibility(View.GONE);
-            layoutIntroduction.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void onGetDataDBEmpty() {
-
-    }
-
     @Override
     public void onItemClick(RecentTransaction item) {
         if (item == null) {
@@ -241,5 +164,49 @@ public class TransferHomeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
         navigator.startTransferActivity(this, bundle);
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+    }
+
+    @Override
+    public void hideRetry() {
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void setData(List<RecentTransaction> list) {
+        mAdapter.setData(list);
+        checkIfEmpty();
+    }
+
+    private void checkIfEmpty() {
+        if (mAdapter.getItemCount() > 0) {
+            mTvTileTransactionRecent.setVisibility(View.VISIBLE);
+            mList.setVisibility(View.VISIBLE);
+            viewSeparate.setVisibility(View.VISIBLE);
+            layoutIntroduction.setVisibility(View.GONE);
+            imgIntroduction.clearAnimation();
+        } else {
+            mTvTileTransactionRecent.setVisibility(View.GONE);
+            mList.setVisibility(View.GONE);
+            viewSeparate.setVisibility(View.GONE);
+            layoutIntroduction.setVisibility(View.VISIBLE);
+        }
     }
 }
