@@ -34,6 +34,7 @@ public class Constants {
     public static final String PREF_USER_LAST_USER_ID = "pref_last_uid";
     public static final String PREF_INVITATION_USERID = "pref_userid_invitation";
     public static final String PREF_INVITATION_SESSION = "pref_session_invitation";
+    public static final String PREF_USER_ZALOPAY_NAME = "pref_zalopay_name";
 
     public static final String ARG_AMOUNT = "AMOUNT";
     public static final String ARG_PAYEE = "Payee";

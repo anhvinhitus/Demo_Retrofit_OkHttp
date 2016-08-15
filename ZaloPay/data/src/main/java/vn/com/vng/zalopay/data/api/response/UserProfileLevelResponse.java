@@ -31,4 +31,6 @@ public class UserProfileLevelResponse extends BaseResponse {
     @SerializedName("profilelevelpermisssion")
     public List<PermissionEntity> permisstion;
 
+    @SerializedName("zalopayname")
+    public String zalopayname;
 }

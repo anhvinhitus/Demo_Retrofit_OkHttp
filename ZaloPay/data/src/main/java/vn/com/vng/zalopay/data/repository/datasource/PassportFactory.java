@@ -45,8 +45,6 @@ public class PassportFactory {
     }
 
     public Observable<LoginResponse> login(long zuid, String zAuthCode) {
-//        EventBus.getDefault().post(new ServerMaintainEvent());
-//        return Observable.error(new ServerMaintainException());
         return passportService.login(payAppId, zuid, zAuthCode)
                 .doOnNext(response -> checkIfOldAccount(response.userid))
                 .doOnError(throwable -> {

@@ -47,8 +47,9 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Boolean> verifyOTPProfile(String otp) {
         return mRequestService.verifyOTPProfile(mUser.uid, mUser.accesstoken, otp)
-                .doOnNext(response -> savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion))
-                ).map(response -> Boolean.TRUE);
+                .doOnNext(response -> savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion)))
+                .map(response -> Boolean.TRUE)
+                ;
     }
 
     @Override
@@ -57,6 +58,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .doOnNext(response -> {
                     savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion));
                     saveUserInfo(response.email, response.identityNumber);
+                    saveZalopayName(response.zalopayname);
                 }).map(response -> Boolean.TRUE)
                 ;
     }
@@ -113,6 +115,13 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
+    public Observable<Boolean> updateZaloPayName(String zaloPayName) {
+        return mRequestService.updateZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
+                .doOnNext(response -> saveZalopayName(zaloPayName))
+                .map(BaseResponse::isSuccessfulResponse);
+    }
+
+    @Override
     public Observable<Boolean> updateUserProfileLevel3(String identityNumber,
                                                        final String email,
                                                        byte[] frontImage,
@@ -160,9 +169,9 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         mUserConfig.save(email, identityNumber);
     }
 
-    @Override
-    public Observable<Boolean> updateZaloPayName(String zaloPayName) {
-        return mRequestService.updateZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
-                .map(BaseResponse::isSuccessfulResponse);
+    private void saveZalopayName(String accountName) {
+        mUser.zalopayname = accountName;
+        mUserConfig.saveZaloPayName(accountName);
     }
+
 }

@@ -116,8 +116,6 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     @OnClick(R.id.btnCheck)
     public void onClickCheck(View v) {
 
-        Timber.d("onClickCheck");
-
         final String accountName = mInputAccountNameView.getText();
         if (TextUtils.isEmpty(accountName)) {
             return;

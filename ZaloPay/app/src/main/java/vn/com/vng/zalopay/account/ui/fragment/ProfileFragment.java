@@ -122,6 +122,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
         tvZaloPayId.setText(user.uid);
         tvZaloId.setText(String.valueOf(user.zaloId));
+        mAccountNameView.setText(user.zalopayname);
     }
 
     private void setBirthDay(long time) {

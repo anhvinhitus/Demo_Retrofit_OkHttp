@@ -147,6 +147,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0L);
             currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
             currentUser.identityNumber = preferences.getString(Constants.PREF_USER_IDENTITY_NUMBER, "");
+            currentUser.zalopayname = preferences.getString(Constants.PREF_USER_ZALOPAY_NAME, "");
         }
     }
 
@@ -166,6 +167,7 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_INVITATION_SESSION);
         editor.remove(Constants.PREF_INVITATION_USERID);
         editor.remove(Constants.PREF_USER_IDENTITY_NUMBER);
+        editor.remove(Constants.PREF_USER_ZALOPAY_NAME);
         editor.apply();
     }
 
@@ -271,6 +273,13 @@ public class UserConfigImpl implements UserConfig {
     public void setLastUid(String uid) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_LAST_USER_ID, uid);
+        editor.apply();
+    }
+
+    @Override
+    public void saveZaloPayName(String accountName) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_ZALOPAY_NAME, accountName);
         editor.apply();
     }
 }

@@ -26,6 +26,8 @@ public interface UserConfig {
 
     void updateUserPhone(String phone);
 
+    void saveZaloPayName(String accountName);
+
     void loadConfig();
 
     void clearConfig();

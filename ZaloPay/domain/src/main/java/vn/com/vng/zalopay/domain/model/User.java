@@ -25,6 +25,8 @@ public final class User extends Person {
 
     public long phonenumber;
 
+    public String zalopayname;
+
     public List<Permission> profilePermissions;
 
     public User() {
