@@ -116,13 +116,13 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         this.setCMND(user.identityNumber);
         this.setEmail(user.email);
         this.setGender(user.getGender());
+        this.setZaloPayName(user.zalopayname);
 
         mLayoutCmnd.setClickable(user.profilelevel == 2);
         mLayoutEmail.setClickable(user.profilelevel == 2);
 
         tvZaloPayId.setText(user.uid);
         tvZaloId.setText(String.valueOf(user.zaloId));
-        mAccountNameView.setText(user.zalopayname);
     }
 
     private void setBirthDay(long time) {
@@ -142,6 +142,15 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             tvPhone.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
         }
         tvPhone.setText(strPhoneNumber);
+    }
+
+    private void setZaloPayName(String zaloPayName) {
+        if (!TextUtils.isEmpty(zaloPayName)) {
+            mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        } else {
+            mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+        }
+        mAccountNameView.setText(zaloPayName);
     }
 
     private void setCMND(String cmnd) {
