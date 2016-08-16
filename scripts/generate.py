@@ -30,7 +30,7 @@ def print_zpevents(data, f1, f2):
     lines = []
     for ev in data:
         lines.append('    public static final int %s = %s;' % (ev['Action_UPPER'], ev['EventId']))
-    buffer = '''package vn.com.vng.zalopay.analytics;
+    buffer = '''package vn.com.zalopay.analytics;
 
 /**
  * Auto-generated
@@ -94,6 +94,6 @@ cat = print_convert_category(data)
 
 en = print_zpevents(data, ac, cat)
 print(en)
-write_file('../maven_src/zalopayanalytics/src/main/java/vn/com/vng/zalopay/analytics/ZPEvents.java', en)
+write_file('../maven_src/zalopayanalytics/src/main/java/vn/com/zalopay/analytics/ZPEvents.java', en)
 
 print("Done!")
