@@ -156,7 +156,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
 
         staging {
@@ -166,7 +166,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
         }
 
         internalProduction {
@@ -176,7 +176,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
         }
 
         internalSandbox {
@@ -186,7 +186,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
 
         internalStaging {
@@ -196,7 +196,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
         }
 
         iapSandbox {
@@ -207,7 +207,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
         }
 
         iapProduction {
@@ -218,7 +218,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
         }
 
         iapStaging {
@@ -229,7 +229,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"stg.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
         }
     }
 
