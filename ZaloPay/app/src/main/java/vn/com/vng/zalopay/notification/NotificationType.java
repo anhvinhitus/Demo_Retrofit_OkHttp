@@ -13,6 +13,7 @@ class NotificationType {
     public static final int MONEY_WITHDRAW = 5;
     public static final int RECEIVE_RED_PACKET = 6;
     public static final int REFUND_RED_PACKET = 7;
+    public static final int DONATE_MONEY = 9;
     public static final int UPDATE_PROFILE_LEVEL_OK = 100;
     public static final int PAYMENT_APP_PROMOTION = 101;
     public static final int UPDATE_PROFILE_LEVEL_FAILED = 102;
@@ -32,7 +33,8 @@ class NotificationType {
                 notificationType == REFUND_RED_PACKET ||
                 notificationType == REFUND_TRANSACTION ||
                 notificationType == RETRY_TRANSACTION ||
-                notificationType == REFUND_TRANSACTION_BANK
+                notificationType == REFUND_TRANSACTION_BANK ||
+                notificationType == DONATE_MONEY
                 ;
     }
 
@@ -47,7 +49,7 @@ class NotificationType {
     }
 
     static boolean shouldMarkRead(int notificationType) {
-        return notificationType == ORDER_PAYMENT;
+        return notificationType == ORDER_PAYMENT || notificationType == DONATE_MONEY;
     }
 
 

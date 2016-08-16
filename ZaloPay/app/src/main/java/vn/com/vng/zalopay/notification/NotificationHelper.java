@@ -33,7 +33,9 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -116,6 +118,8 @@ public class NotificationHelper {
             extractRedPacketFromNotification(notify);
         } else if (notificationType == NotificationType.RETRY_TRANSACTION) {
             updateTransactionStatus(notify);
+        } else if (notificationType == NotificationType.DONATE_MONEY) {
+            showAlertDonateMoney(notify);
         }
 
         this.putNotification(notify);
@@ -148,6 +152,25 @@ public class NotificationHelper {
             this.updateTransaction();
             this.updateBalance();
         }
+    }
+
+    private void showAlertDonateMoney(NotificationData notify) {
+        Timber.d("Show alert DonateMoney ");
+        SweetAlertDialog dialog = new SweetAlertDialog(context);
+
+        dialog.setTitleText("Tặng tiền");
+        dialog.setCancelText(context.getString(R.string.txt_close));
+        dialog.setConfirmText(notify.message);
+        dialog.setConfirmText("Xem chi tiết");
+        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+
+                sweetAlertDialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 
@@ -253,5 +276,6 @@ public class NotificationHelper {
     protected UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
     }
+
 
 }
