@@ -178,7 +178,11 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         if (!validZaloPayName()) {
             return;
         }
-        showConfirmUpdateZaloPayName();
+        if (TextUtils.isEmpty(inputZaloPayName.getText())) {
+            presenter.updateProfile(passCode.getText(), edtPhone.getString(), null);
+        } else {
+            showConfirmUpdateZaloPayName();
+        }
     }
 
     private boolean validZaloPayName() {
