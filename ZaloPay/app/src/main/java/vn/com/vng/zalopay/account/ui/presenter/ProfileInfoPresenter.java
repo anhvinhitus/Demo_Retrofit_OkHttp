@@ -120,8 +120,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
-        ZaloPayNameEvent stickyEvent = eventBus.removeStickyEvent(ZaloPayNameEvent.class);
-        if (stickyEvent != null && mView != null) {
+        if (mView != null) {
             mView.setZaloPayName(event.zaloPayName);
         }
     }

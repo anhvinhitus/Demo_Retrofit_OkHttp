@@ -154,13 +154,11 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
         if (menuView != null) {
             menuView.setZaloPayName(event.zaloPayName);
         }
-
-        eventBus.removeStickyEvent(ZaloPayNameEvent.class);
     }
 
 }
