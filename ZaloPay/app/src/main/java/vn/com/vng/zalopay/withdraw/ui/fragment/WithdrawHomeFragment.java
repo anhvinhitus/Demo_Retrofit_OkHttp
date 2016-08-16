@@ -146,15 +146,13 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
         if (tvAccountName == null) {
             return;
         }
-        String zaloPayName = "";
-        if (tvAccountName == null) {
-            return;
-        }
+        String zaloPayName = user.zalopayname;
 
         if (TextUtils.isEmpty(zaloPayName)) {
-            tvAccountName.setText("");
+            tvAccountName.setText(getString(R.string.zalopay_name_not_update));
         } else {
             tvAccountName.setText(zaloPayName);
+            tvAccountName.setCompoundDrawables(null, null, null, null);
         }
     }
 
