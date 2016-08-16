@@ -73,9 +73,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @OnTextChanged(R.id.edtPhone)
     public void onTextChangedPhone() {
-        if (isValidPhone()) {
-            hidePhoneError();
-        }
+        hidePhoneError();
         checkShowHideBtnContinue();
     }
 
@@ -123,6 +121,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     IPasscodeFocusChanged passcodeFocusChanged = new IPasscodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
+            if (isFocus) {
+                return;
+            }
             if (!isValidPin()) {
                 passCode.showError(getString(R.string.invalid_pin));
             } else {
@@ -168,6 +169,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         @Override
         public void onFocusChange(boolean isFocus) {
+            if (isFocus) {
+                return;
+            }
             checkShowHideBtnContinue();
         }
     };
@@ -292,6 +296,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    return;
+                }
                 if (!isValidPhone()) {
                     showPhoneError();
                 } else {
