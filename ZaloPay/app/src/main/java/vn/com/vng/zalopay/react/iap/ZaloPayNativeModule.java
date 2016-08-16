@@ -16,7 +16,7 @@ import java.util.Locale;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;

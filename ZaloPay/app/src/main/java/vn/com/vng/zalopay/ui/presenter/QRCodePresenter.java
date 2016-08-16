@@ -8,8 +8,8 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.react.error.PaymentError;

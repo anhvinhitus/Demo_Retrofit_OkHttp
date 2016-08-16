@@ -64,7 +64,7 @@ ext {
 
     parcelerVersion = "1.1.5"
 
-    zalopayanalyticsVersion = "1.1"
+    zalopayanalyticsVersion = "1.2"
     debugviewerVersion = "1.0"
 
     libraries = [
@@ -111,7 +111,7 @@ ext {
             parceler               : "org.parceler:parceler-api:${parcelerVersion}",
             parceler_apt           : "org.parceler:parceler:${parcelerVersion}",
 
-            zalopay_analytics      : "vn.com.vng.zalopay:analytics:${zalopayanalyticsVersion}",
+            zalopay_analytics      : "vn.com.zalopay:analytics:${zalopayanalyticsVersion}",
             debugViewer            : "vn.com.vng:debugviewer:${debugviewerVersion}",
             debugViewer_noops      : "vn.com.vng:debugviewer-noops:${debugviewerVersion}"
 

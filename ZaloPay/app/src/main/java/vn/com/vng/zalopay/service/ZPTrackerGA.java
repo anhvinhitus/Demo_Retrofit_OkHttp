@@ -6,8 +6,8 @@ import android.content.pm.PackageInfo;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import vn.com.vng.zalopay.analytics.ZPEvents;
-import vn.com.vng.zalopay.analytics.ZPTracker;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by huuhoa on 6/27/16.

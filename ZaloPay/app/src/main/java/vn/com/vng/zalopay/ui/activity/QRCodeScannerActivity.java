@@ -4,8 +4,8 @@ package vn.com.vng.zalopay.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 

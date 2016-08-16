@@ -5,8 +5,8 @@ import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
 import com.google.android.gms.analytics.HitBuilders;
 
-import vn.com.vng.zalopay.analytics.ZPEvents;
-import vn.com.vng.zalopay.analytics.ZPTracker;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by huuhoa on 7/17/16.

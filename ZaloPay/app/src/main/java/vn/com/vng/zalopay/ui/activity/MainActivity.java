@@ -25,8 +25,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.analytics.ZPAnalytics;
-import vn.com.vng.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 
 import com.zalopay.apploader.internal.ModuleName;
