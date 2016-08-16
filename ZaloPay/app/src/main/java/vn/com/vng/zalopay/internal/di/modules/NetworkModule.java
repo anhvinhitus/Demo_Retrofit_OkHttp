@@ -35,11 +35,19 @@ import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 public class NetworkModule {
 
     private static final HttpUrl API_HTTP_URL = HttpUrl.parse(BuildConfig.HOST);
+    private static final HttpUrl RED_PACKET_API_HTTP_URL = HttpUrl.parse(BuildConfig.REDPACKET_HOST);
 
     @Provides
     @Singleton
     HttpUrl provideBaseUrl() {
         return API_HTTP_URL;
+    }
+
+    @Provides
+    @Singleton
+    @Named("RedPacketHttpUrl")
+    HttpUrl provideRedPacketUrl() {
+        return RED_PACKET_API_HTTP_URL;
     }
 
     public NetworkModule() {
@@ -126,7 +134,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitRedPacketApi")
-    Retrofit provideRetrofitRedPacketApi(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+    Retrofit provideRetrofitRedPacketApi(@Named("RedPacketHttpUrl") HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
