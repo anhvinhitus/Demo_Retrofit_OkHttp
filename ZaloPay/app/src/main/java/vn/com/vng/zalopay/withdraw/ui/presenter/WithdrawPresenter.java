@@ -8,7 +8,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -28,6 +27,7 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
  *
  */
 public class WithdrawPresenter extends BaseZaloPayPresenter implements IPresenter<IWithdrawView> {
+    private final int WITHDRAW_APPID = 2;
 
     IWithdrawView mView;
     private User mUser;
@@ -124,7 +124,7 @@ public class WithdrawPresenter extends BaseZaloPayPresenter implements IPresente
         }
         mView.showLoading();
         String description = mView.getContext().getString(R.string.txt_withdraw);
-        Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), mUser.uid, description)
+        Subscription subscription = zaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WALLET_TRANSFER.toString(), mUser.uid, description)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
