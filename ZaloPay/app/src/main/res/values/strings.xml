@@ -91,6 +91,7 @@
     <string name="title.activity.invitation.code">Invitation Code</string>
     <string name="title.activity.withdraw.home">Số dư</string>
     <string name="title.activity.withdraw">Rút tiền</string>
+    <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -217,7 +218,7 @@
     <string name="btn_stop_scan_sound">Stop scan</string>
     <string name="test_jni">Test JNI</string>
 
-    <string name="transfer_acc_zalopay">Bàn bè Zalo</string>
+    <string name="transfer_acc_zalopay">Bạn bè Zalo</string>
     <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
@@ -243,6 +244,7 @@
 
     <string name="accept">Đồng ý</string>
     <string name="cancel">Huỷ</string>
+    <string name="confirm">Xác nhận</string>
     <string name="accept.card">Chấp nhận thẻ</string>
     <string name="slogan">Thanh toán trong <font size='18'>2</font> giây</string>
 
