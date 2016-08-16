@@ -63,6 +63,7 @@ public class PassportRepositoryImpl implements PassportRepository {
         User user = transformWithZaloInfo(response);
         userConfig.setCurrentUser(user);
         userConfig.saveConfig(user);
+        userConfig.saveZaloPayName(user.zalopayname);
         return user;
     }
 

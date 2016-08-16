@@ -20,6 +20,9 @@ public class LoginResponse extends BaseResponse {
     @SerializedName("userid")
     public String userid;
 
+    @SerializedName("zalopayname")
+    public String zalopayname;
+
     @SerializedName("profilelevel")
     public int profilelevel;
 
