@@ -7,6 +7,7 @@ import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import com.zalopay.zcontacts.ZContactsPackage;
 
@@ -218,6 +219,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNSendIntentPackage(),
                 new ReactNativeContacts(),
                 new ZContactsPackage(),
+                new RNDeviceInfo(),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
         );
     }
