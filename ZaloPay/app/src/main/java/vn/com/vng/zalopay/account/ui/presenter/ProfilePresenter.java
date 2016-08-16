@@ -53,7 +53,10 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         User user = userConfig.getCurrentUser();
         if (user != null) {
             mView.updateUserInfo(user);
-            if (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber)) { // Chua get profile level 3
+
+            // Neu chua co ZaloPayName hoac Chua get profile level 3
+            if (TextUtils.isEmpty(user.zalopayname) ||
+                    (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber))) {
                 getUserProfile();
             }
         }

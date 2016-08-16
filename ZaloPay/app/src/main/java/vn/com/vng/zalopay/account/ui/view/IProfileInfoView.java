@@ -9,6 +9,8 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IProfileInfoView extends ILoadDataView {
     void updateUserInfo(User user);
 
+    void setZaloPayName(String zaloPayName);
+
     void setBalance(long balance);
 }
 

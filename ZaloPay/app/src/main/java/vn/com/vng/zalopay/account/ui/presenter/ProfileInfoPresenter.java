@@ -11,6 +11,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -115,5 +116,13 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
         }
 
         eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
+        ZaloPayNameEvent stickyEvent = eventBus.removeStickyEvent(ZaloPayNameEvent.class);
+        if (stickyEvent != null && mView != null) {
+            mView.setZaloPayName(event.zaloPayName);
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,6 +51,9 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     @BindView(R.id.tv_balance)
     TextView tvBalance;
 
+    @BindView(R.id.tvZaloPayName)
+    TextView tvZaloPayName;
+
     private ProfileFragment mEditProfileFragment;
 
     public void updateUserInfo(User user) {
@@ -63,6 +67,16 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
                 .into(imgAvatar);
         if (mEditProfileFragment != null) {
             mEditProfileFragment.updateUserInfo(user);
+        }
+        setZaloPayName(user.zalopayname);
+    }
+
+    @Override
+    public void setZaloPayName(String zaloPayName) {
+        if (TextUtils.isEmpty(zaloPayName)) {
+            tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
+        } else {
+            tvZaloPayName.setText(zaloPayName);
         }
     }
 

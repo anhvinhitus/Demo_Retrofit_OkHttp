@@ -9,7 +9,8 @@
               android:gravity="center"
               android:orientation="vertical"
               android:padding="@dimen/activity_horizontal_margin"
-              android:theme="@style/ThemeOverlay.AppCompat.Dark">
+              android:theme="@style/ThemeOverlay.AppCompat.Dark"
+              tools:background="@color/colorPrimary">
 
     <com.zalopay.ui.widget.image.BezelImageView
         android:id="@+id/im_avatar"
@@ -38,6 +39,16 @@
             tools:text="@string/app_name"/>
 
         <TextView
+            android:id="@+id/tvZaloPayName"
+            style="@style/TextView.Item.Sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing.tiny"
+            android:textColor="@color/txt_item_sub_2"
+            android:textSize="@dimen/font_size_medium"
+            tools:text="@string/app_name"/>
+
+        <TextView
             android:id="@+id/tv_balance"
             style="@style/TextView.Default"
             android:layout_width="wrap_content"
@@ -48,15 +59,5 @@
             android:textSize="@dimen/font_size_xlarge"
             android:visibility="gone"
             />
-
-        <TextView
-            android:id="@+id/tvZaloPayName"
-            style="@style/TextView.Item.Sub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.small"
-            android:textColor="#9cdaff"
-            android:textSize="@dimen/font_size_large"
-            tools:text="@string/app_name"/>
     </LinearLayout>
 </LinearLayout>

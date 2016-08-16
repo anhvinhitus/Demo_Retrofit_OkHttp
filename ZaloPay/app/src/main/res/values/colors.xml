@@ -61,6 +61,7 @@
     <color name="rippelColor">#0099CC</color>
     <color name="txt_item_main">#24272b</color>
     <color name="txt_item_sub">#727f8c</color>
+    <color name="txt_item_sub_2">#9cdaff</color>
     <color name="txt_group_title">#727f8c</color>
 
     <color name="bg_master_card">#ef9825</color>
