@@ -117,7 +117,8 @@
                 android:padding="@dimen/spacing.medium"
                 android:text="@string/txt_cancel"
                 android:textColor="@color/txt_cancel"
-                android:textSize="@dimen/textsize.small"/>
+                android:textSize="@dimen/textsize.small"
+                android:visibility="invisible"/>
 
         </LinearLayout>
 

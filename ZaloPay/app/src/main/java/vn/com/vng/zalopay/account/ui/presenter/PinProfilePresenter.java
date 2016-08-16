@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -26,7 +27,10 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     IPinProfileView mView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    public PinProfilePresenter() {
+    User mUser;
+
+    public PinProfilePresenter(User user) {
+        this.mUser = user;
     }
 
     @Override
@@ -46,6 +50,9 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void resume() {
+        if (mUser != null && !TextUtils.isEmpty(mUser.zalopayname)) {
+            mView.hideInputZaloPayName();
+        }
     }
 
     @Override

@@ -197,14 +197,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     private void showConfirmUpdateZaloPayName() {
-        showRetryDialog(getString(R.string.warning_update_zalopay_name),
+        showDialog(getString(R.string.notification),
+                getString(R.string.warning_update_zalopay_name),
                 getString(R.string.cancel),
-                new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                    }
-                },
                 getString(R.string.accept),
                 new SweetAlertDialog.OnSweetClickListener() {
                     @Override
@@ -212,7 +207,8 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                         presenter.updateProfile(passCode.getText(), edtPhone.getString(), inputZaloPayName.getText());
                         sweetAlertDialog.dismiss();
                     }
-                });
+                },
+                SweetAlertDialog.NORMAL_TYPE);
     }
 
     @Override
@@ -337,6 +333,11 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @Override
     public void onCheckFail() {
         inputZaloPayName.showCheckFail();
+    }
+
+    @Override
+    public void hideInputZaloPayName() {
+        inputZaloPayName.setVisibility(View.GONE);
     }
 
     /**

@@ -21,6 +21,8 @@
     <color name="divider">#B6B6B6</color>
     <color name="darker_transparent">#19000000</color>
     <color name="bg_chip">#cfd8dc</color>
+    <color name="txt_check_disable">#a3ccf2</color>
+    <color name="txt_check_enable">#018fe5</color>
 
     <color name="number_color">#222222</color>
     <color name="accent">#FF4081</color>

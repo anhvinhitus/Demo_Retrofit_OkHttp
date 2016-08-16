@@ -2,9 +2,7 @@ package vn.com.vng.zalopay.ui.widget;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -25,6 +24,8 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Control support for input, valid and show state (success/fail) of Zalo Pay name.
  */
 public class InputZaloPayNameView extends FrameLayout {
+
+    private OnClickListener mOnClickBtnCheck;
 
     @BindView(R.id.textInputZaloPayName)
     TextInputLayout mTextInputZaloPayName;
@@ -64,7 +65,8 @@ public class InputZaloPayNameView extends FrameLayout {
     public void onClickIconInfo(View v) {
         if (mCurrentState == ZPNameStateEnum.INVALID) {
             mEdtZaloPayName.getText().clear();
-            showImgInfo();
+            //showImgInfo();
+            disableBtnCheck();
         } else if (mCurrentState == ZPNameStateEnum.UNKNOWN) {
             showDialogZaloPayName();
         }
@@ -74,11 +76,11 @@ public class InputZaloPayNameView extends FrameLayout {
     public void onTextChangeAccountName(CharSequence s) {
         mCurrentState = ZPNameStateEnum.UNKNOWN;
         if (TextUtils.isEmpty(s)) {
-            showImgInfo();
+            //showImgInfo();
+            hideZPNameError();
+            disableBtnCheck();
         } else if (validZPName()) {
-            showBtnCheck();
-        } else {
-            showImgInfo();
+            enableBtnCheck();
         }
     }
 
@@ -96,10 +98,8 @@ public class InputZaloPayNameView extends FrameLayout {
     }
 
     public void setOnClickBtnCheck(OnClickListener onClickBtnCheck) {
-        if (mTvCheck == null) {
-            return;
-        }
-        mTvCheck.setOnClickListener(onClickBtnCheck);
+        mOnClickBtnCheck = onClickBtnCheck;
+        mTvCheck.setOnClickListener(mOnClickBtnCheck);
     }
 
     private void showImgInfo() {
@@ -112,12 +112,18 @@ public class InputZaloPayNameView extends FrameLayout {
         showIconState(mCurrentState);
     }
 
-    public void showBtnCheck() {
-        hideZPNameError();
-        mTextInputZaloPayName.setHint(getContext().getString(R.string.hint_zalopay_name));
-
+    private void enableBtnCheck() {
         mImgInfo.setVisibility(GONE);
+        mTvCheck.setTextColor(AndroidUtils.getColor(getContext(), R.color.txt_check_enable));
         mTvCheck.setVisibility(VISIBLE);
+        mTvCheck.setEnabled(true);
+    }
+
+    private void disableBtnCheck() {
+        mImgInfo.setVisibility(GONE);
+        mTvCheck.setTextColor(AndroidUtils.getColor(getContext(), R.color.txt_check_disable));
+        mTvCheck.setVisibility(VISIBLE);
+        mTvCheck.setEnabled(false);
     }
 
     public void showCheckFail() {
@@ -144,17 +150,19 @@ public class InputZaloPayNameView extends FrameLayout {
         String zaloPayName = mEdtZaloPayName.getText().toString();
         if (TextUtils.isEmpty(zaloPayName)) {
             hideZPNameError();
-            showBtnCheck();
+            enableBtnCheck();
             return true;
         } else if (!ValidateUtil.isValidLengthZPName(zaloPayName)) {
             showZPNameError(getContext().getString(R.string.exception_account_name_length));
+            disableBtnCheck();
             return false;
         } else if (!ValidateUtil.isValidZaloPayName(zaloPayName)) {
             showZPNameError(getContext().getString(R.string.exception_account_name_special_char));
+            disableBtnCheck();
             return false;
         } else {
             hideZPNameError();
-            showBtnCheck();
+            enableBtnCheck();
             return true;
         }
     }

@@ -95,8 +95,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    PinProfilePresenter providePinProfilePresenter() {
-        return new PinProfilePresenter();
+    PinProfilePresenter providePinProfilePresenter(User user) {
+        return new PinProfilePresenter(user);
     }
 
     @UserScope

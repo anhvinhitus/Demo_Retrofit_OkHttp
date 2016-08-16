@@ -12,5 +12,6 @@ public interface IPinProfileView extends ILoadDataView {
     void updateProfileSuccess(String phone);
     void onCheckSuccess();
     void onCheckFail();
+    void hideInputZaloPayName();
 }
 

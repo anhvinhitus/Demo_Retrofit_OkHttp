@@ -155,6 +155,7 @@
     <string name="invalid_zalopay_name">Tên tài khoản đã được sử dụng</string>
     <string name="note_zalopay_name">Tên tài khoản Zalo Pay là chuỗi ký tự bao gồm các ký tự từ a->z, các số 0-9, không phân biệt chữ hoa, chữ thường.</string>
     <string name="invalid__zalopay_name">Tên tài khoản Zalo Pay không hợp lệ</string>
+    <string name="phone_support">1900545436</string>
     <string name="terms_of_use">Tôi đã đọc và đồng ý với <a href="http://google.com.vn/">điều khoản sử dụng</a> của các dịch vụ mà ứng dụng cung cấp.</string>
     <string name="terms_of_use_1"><p align='justify'>Để đảm bảo quyền lợi tốt nhất cho khách hàng, Quý khách vui lòng cung cấp đầy đủ thông tin tại mục <a href='internal-activity://goToProfileInfo'>thông tin cá nhân</a></p></string>
     <string name="terms_of_use_2">Trường hợp mất SIM, Quý khách báo ngay số 1900545436 để khóa tài khoản Zalo Pay</string>

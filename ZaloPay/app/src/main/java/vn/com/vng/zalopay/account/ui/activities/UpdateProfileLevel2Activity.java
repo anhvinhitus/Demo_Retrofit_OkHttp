@@ -2,10 +2,11 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +35,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -210,16 +210,28 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
                 navigator.startProfileInfoActivity(UpdateProfileLevel2Activity.this);
             }
         });
-        tvTermsOfUser2.setClickable(true);
-        tvTermsOfUser2.setMovementMethod (LinkMovementMethod.getInstance());
-//        tvTermsOfUser3.setClickable(true);
-//        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
-        tvTermsOfUser3.setOnClickListener(new View.OnClickListener() {
+        tvTermsOfUser2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(UpdateProfileLevel2Activity.this, "Chức năng sẽ sớm được ra mắt.");
+                startDialSupport();
             }
         });
+
+//        tvTermsOfUser3.setClickable(true);
+//        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
+//        tvTermsOfUser3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(UpdateProfileLevel2Activity.this, "Chức năng sẽ sớm được ra mắt.");
+//            }
+//        });
+    }
+
+    private void startDialSupport() {
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + getString(R.string.phone_support)));
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(callIntent);
     }
 
     @Override
