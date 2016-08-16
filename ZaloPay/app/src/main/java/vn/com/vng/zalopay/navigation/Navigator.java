@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
+import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawHomeActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -55,7 +56,6 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 @Singleton
 public class Navigator implements INavigator {
     private final int MIN_PROFILE_LEVEL = 2;
-    private final int MIN_PROFILE_LEVEL_3 = 3;
 
     UserConfig userConfig;
 
@@ -318,21 +318,23 @@ public class Navigator implements INavigator {
     }
 
     public void startWithdrawHomeActivity(Context context) {
-        Intent intent = new Intent(context, WithdrawHomeActivity.class);
-        context.startActivity(intent);
-    }
-
-    public void startWithdrawActivity(Context context) {
         if (userConfig == null || userConfig.getCurrentUser() == null) {
             EventBus.getDefault().post(new TokenExpiredEvent(NetworkError.TOKEN_INVALID));
             return;
         } else if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             showUpdateProfileInfoDialog(context);
             return;
-        } else if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL_3) {
-            showUpdateProfileLevel3Dialog(context);
-            return;
         }
+        Intent intent = new Intent(context, WithdrawHomeActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startWithdrawConditionActivity(Context context) {
+        Intent intent = new Intent(context, WithdrawConditionActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startWithdrawActivity(Context context) {
         Intent intent = new Intent(context, WithdrawActivity.class);
         context.startActivity(intent);
     }

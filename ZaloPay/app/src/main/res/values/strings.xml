@@ -72,6 +72,7 @@
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>
+    <string name="txt_update">Cập nhật</string>
 
     <string name="txt_close">Đóng</string>
     <string name="txt_retry">Thử lại</string>
@@ -93,6 +94,7 @@
     <string name="title.activity.withdraw.home">Số dư</string>
     <string name="title.activity.withdraw">Rút tiền</string>
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
+    <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -284,4 +286,11 @@
     <string name="number.contact">1900545436</string>
 
     <string name="input.account.zalo.pay">Nhập tên tài khoản Zalo Pay</string>
+
+    <string name="update_info">Cập nhật thông tin</string>
+    <string name="withdraw_miss_condition">Bạn chưa đủ điều kiện để rút tiền.</string>
+    <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
+
+    <string name="vietin_bank">Vietinbank</string>
+    <string name="sacombank_bank">Sacombank</string>
 </resources>

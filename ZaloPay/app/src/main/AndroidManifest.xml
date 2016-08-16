@@ -250,6 +250,8 @@
         <activity
             android:name=".withdraw.ui.activities.WithdrawActivity"
             android:label="@string/title.activity.withdraw" />
+        <activity android:name=".withdraw.ui.activities.WithdrawConditionActivity"
+                  android:label="@string/title.activity.withdraw.condition" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

@@ -48,7 +48,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
 
     @OnClick(R.id.layoutWithdraw)
     public void onClickWithdraw() {
-        navigator.startWithdrawActivity(getContext());
+        navigator.startWithdrawConditionActivity(getContext());
     }
 
     @OnClick(R.id.tvQuestion)

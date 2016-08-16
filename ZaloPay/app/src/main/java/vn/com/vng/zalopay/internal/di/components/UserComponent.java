@@ -56,6 +56,7 @@ import vn.com.vng.zalopay.ui.fragment.IntroFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawHomeFragment;
 
@@ -168,4 +169,6 @@ public interface UserComponent {
     void inject(WithdrawFragment f);
 
     void inject(EditAccountNameFragment f);
+
+    void inject(WithdrawConditionFragment f);
 }
