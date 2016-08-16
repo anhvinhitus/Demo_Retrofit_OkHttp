@@ -32,6 +32,7 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         public final static Property MaxCountHist = new Property(6, Integer.class, "maxCountHist", false, "MAX_COUNT_HIST");
         public final static Property MaxMessageLength = new Property(7, Integer.class, "maxMessageLength", false, "MAX_MESSAGE_LENGTH");
         public final static Property BundleExpiredTime = new Property(8, Long.class, "bundleExpiredTime", false, "BUNDLE_EXPIRED_TIME");
+        public final static Property MinDivideAmount = new Property(9, Long.class, "minDivideAmount", false, "MIN_DIVIDE_AMOUNT");
     };
 
 
@@ -55,7 +56,8 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
                 "\"MAX_PACKAGE_QUANTITY\" INTEGER," + // 5: maxPackageQuantity
                 "\"MAX_COUNT_HIST\" INTEGER," + // 6: maxCountHist
                 "\"MAX_MESSAGE_LENGTH\" INTEGER," + // 7: maxMessageLength
-                "\"BUNDLE_EXPIRED_TIME\" INTEGER);"); // 8: bundleExpiredTime
+                "\"BUNDLE_EXPIRED_TIME\" INTEGER," + // 8: bundleExpiredTime
+                "\"MIN_DIVIDE_AMOUNT\" INTEGER);"); // 9: minDivideAmount
     }
 
     /** Drops the underlying database table. */
@@ -113,6 +115,11 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         if (bundleExpiredTime != null) {
             stmt.bindLong(9, bundleExpiredTime);
         }
+ 
+        Long minDivideAmount = entity.getMinDivideAmount();
+        if (minDivideAmount != null) {
+            stmt.bindLong(10, minDivideAmount);
+        }
     }
 
     /** @inheritdoc */
@@ -133,7 +140,8 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // maxPackageQuantity
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // maxCountHist
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // maxMessageLength
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8) // bundleExpiredTime
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // bundleExpiredTime
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // minDivideAmount
         );
         return entity;
     }
@@ -150,6 +158,7 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         entity.setMaxCountHist(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setMaxMessageLength(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setBundleExpiredTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setMinDivideAmount(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
      }
     
     /** @inheritdoc */

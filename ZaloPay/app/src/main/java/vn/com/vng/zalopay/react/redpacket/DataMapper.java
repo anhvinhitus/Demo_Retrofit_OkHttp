@@ -179,7 +179,8 @@ class DataMapper {
         map.putDouble("maxpackagequantity", redPacketAppInfo.appConfigEntity.maxPackageQuantity);
         map.putDouble("maxcounthist", redPacketAppInfo.appConfigEntity.maxCountHist);
         map.putDouble("maxmessagelength", redPacketAppInfo.appConfigEntity.maxMessageLength);
-        map.putDouble("bundleExpiredTime", redPacketAppInfo.appConfigEntity.bundleExpiredTime);
+        map.putDouble("bundleexpiredtime", redPacketAppInfo.appConfigEntity.bundleExpiredTime);
+        map.putDouble("mindivideamount", redPacketAppInfo.appConfigEntity.minDivideAmount);
         return map;
     }
 }

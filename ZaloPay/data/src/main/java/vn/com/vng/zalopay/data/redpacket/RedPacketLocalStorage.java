@@ -213,7 +213,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         RedPacketAppInfoGD redPacketAppInfoGD = new RedPacketAppInfoGD(null, redPacketAppInfo.checksum, redPacketAppInfo.expiredTime,
                 redPacketAppInfo.appConfigEntity.minAmounTeach, redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle,
                 redPacketAppInfo.appConfigEntity.maxPackageQuantity, redPacketAppInfo.appConfigEntity.maxCountHist,
-                redPacketAppInfo.appConfigEntity.maxMessageLength, redPacketAppInfo.appConfigEntity.bundleExpiredTime);
+                redPacketAppInfo.appConfigEntity.maxMessageLength, redPacketAppInfo.appConfigEntity.bundleExpiredTime,
+                redPacketAppInfo.appConfigEntity.minDivideAmount);
         getDaoSession().getRedPacketAppInfoGDDao().insertOrReplaceInTx(redPacketAppInfoGD);
     }
 
@@ -224,7 +225,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         return new RedPacketAppInfo(false, redPacketAppInfoGD.getChecksum(), redPacketAppInfoGD.getExpiredTime(),
                 new AppConfigEntity(redPacketAppInfoGD.getBundleExpiredTime(), redPacketAppInfoGD.getMaxCountHist(),
                         redPacketAppInfoGD.getMaxMessageLength(), redPacketAppInfoGD.getMaxPackageQuantity(),
-                        redPacketAppInfoGD.getMaxTotalAmountPerBundle(), redPacketAppInfoGD.getMinAmounTeach()));
+                        redPacketAppInfoGD.getMaxTotalAmountPerBundle(), redPacketAppInfoGD.getMinAmounTeach(),
+                        redPacketAppInfoGD.getMinDivideAmount()));
     }
 
     @Override

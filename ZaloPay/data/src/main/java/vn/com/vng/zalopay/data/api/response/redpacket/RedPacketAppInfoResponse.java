@@ -38,5 +38,8 @@ public class RedPacketAppInfoResponse {
 
         @SerializedName("bundleExpiredTime")
         public long bundleExpiredTime;
+
+        @SerializedName("minDivideAmount")
+        public long minDivideAmount;
     }
 }
