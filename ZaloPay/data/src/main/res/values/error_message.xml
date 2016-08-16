@@ -101,6 +101,7 @@
     <string name="exception.server.maintain">Hệ thống đang bảo trì</string>
     <string name="exception.invitation.code.error"> Cần nhập mã mới dùng được ứng dụng!</string>
     <string name="exception.invitation.code.invalid">Mã code không hợp lệ.</string>
+    <string name="exception.user.not.existed">Tài khoản không tồn tại</string>
 
     <string name="exception.no.connection.try.again">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
 </resources>

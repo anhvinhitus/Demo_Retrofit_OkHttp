@@ -29,22 +29,23 @@ public class RecentTransaction {
         }
     }
 
-    long userId;
-    String zaloPayId;
-    String userName;
-    String displayName;
-    String avatar;
-    int userGender;
-    String birthday;
-    boolean usingApp;
-    String phoneNumber;
+    public long userId;
+    public String zaloPayId;
+    public String userName;
+    public String displayName;
+    public String avatar;
+    public int userGender;
+    public String birthday;
+    public boolean usingApp;
+    public String phoneNumber;
     int transferType;
-    long amount;
-    String message;
+    public long amount;
+    public String message;
 
     public RecentTransaction() {
 
     }
+
     public RecentTransaction(long userId, String zaloPayId, String userName, String displayName, String avatar, int userGender, String birthday, boolean usingApp, String phoneNumber, int transferType, long amount, String message) {
         this.userId = userId;
         this.zaloPayId = zaloPayId;

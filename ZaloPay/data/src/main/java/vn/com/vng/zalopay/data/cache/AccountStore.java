@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
+import vn.com.vng.zalopay.domain.model.Person;
 
 /**
  * Created by AnhHieu on 7/3/16.
@@ -97,7 +98,7 @@ public interface AccountStore {
 
         Observable<Boolean> getUserProfileLevelCloud();
 
-        Observable<Boolean> getUserInfoByZaloPayName(String zaloPayName);
+        Observable<Person> getUserInfoByZaloPayName(String zaloPayName);
 
         Observable<Boolean> checkZaloPayNameExist(String zaloPayName);
 

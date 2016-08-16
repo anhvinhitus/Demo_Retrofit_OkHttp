@@ -77,7 +77,7 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
                 return;
             }
 
-            if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.USE_EXISTED) {
+            if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
                 mView.accountNameValid(false);
             } else {
                 mView.showError(ErrorMessageFactory.create(applicationContext, e));

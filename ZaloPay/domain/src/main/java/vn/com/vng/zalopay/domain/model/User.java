@@ -23,8 +23,6 @@ public final class User extends Person {
 
     public int need_invitation;
 
-    public long phonenumber;
-
     public String zalopayname;
 
     public List<Permission> profilePermissions;

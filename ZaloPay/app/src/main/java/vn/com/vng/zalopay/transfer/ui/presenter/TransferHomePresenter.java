@@ -7,8 +7,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferHomeView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -54,6 +58,13 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
         compositeSubscription.add(subscription);
     }
 
+    public void getUserInfo(String zpName) {
+        Subscription subscription = accountRepository.getUserInfoByZaloPayName(zpName)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UserInfoSubscriber());
+        compositeSubscription.add(subscription);
+    }
+
     private class RecentSubscriber extends DefaultSubscriber<List<RecentTransaction>> {
 
         @Override
@@ -67,4 +78,24 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
             mView.setData(recentTransactions);
         }
     }
+
+    private class UserInfoSubscriber extends DefaultSubscriber<Person> {
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "onError");
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            String message = ErrorMessageFactory.create(applicationContext, e);
+            mView.showError(message);
+        }
+
+        @Override
+        public void onNext(Person person) {
+            mView.onGetProfileSuccess(person);
+        }
+    }
+
 }

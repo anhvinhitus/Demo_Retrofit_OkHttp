@@ -21,6 +21,8 @@ public class Person {
 
     public int userGender = 1;
 
+    public long phonenumber;
+
     public Person() {
     }
 

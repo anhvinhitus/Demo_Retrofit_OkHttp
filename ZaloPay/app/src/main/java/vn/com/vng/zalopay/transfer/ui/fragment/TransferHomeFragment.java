@@ -2,14 +2,22 @@ package vn.com.vng.zalopay.transfer.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.parceler.Parcels;
 
@@ -20,12 +28,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.transfer.ui.adapter.TransferRecentRecyclerViewAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferHomePresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferHomeView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.ValidateUtil;
 
 /**
  * A fragment representing a list of Items.
@@ -63,6 +74,67 @@ public class TransferHomeFragment extends BaseFragment implements
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Chuyển tiền");
+
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_transfer, null);
+
+        final TextView mInputAccountNameView = (TextView) view.findViewById(R.id.tvMessage);
+        final EditText editText = (EditText) view.findViewById(R.id.tvAccountName);
+
+        builder.setView(view);
+
+        builder.setPositiveButton(R.string.btn_continue,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Timber.d("name %s", editText.getText().toString());
+
+                String s = editText.getText().toString();
+                boolean isValid = false;
+
+                if (!ValidateUtil.isValidLengthZPName(s.toString())) {
+                    mInputAccountNameView.setText(getString(R.string.exception_account_name_length));
+                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                } else if (s.toString().indexOf(" ") > 0) {
+                    mInputAccountNameView.setText(getString(R.string.exception_account_name_with_space));
+                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                } else if (!ValidateUtil.isValidZaloPayName(s.toString())) {
+                    mInputAccountNameView.setText(getString(R.string.exception_account_name_special_char));
+                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                } else {
+                    mInputAccountNameView.setError(getString(R.string.input_account_zalo_pay));
+                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+
+                    if (!TextUtils.isEmpty(s)) {
+                        isValid = true;
+                    }
+                }
+
+                if (isValid) {
+                    presenter.getUserInfo(s);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     /**
@@ -208,5 +280,15 @@ public class TransferHomeFragment extends BaseFragment implements
             viewSeparate.setVisibility(View.GONE);
             layoutIntroduction.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void onGetProfileSuccess(Person person) {
+        RecentTransaction item = new RecentTransaction();
+        item.avatar = person.avatar;
+        item.zaloPayId = person.uid;
+        item.displayName = person.dname;
+        item.phoneNumber = String.valueOf(person.phonenumber);
+
+        onItemClick(item);
     }
 }

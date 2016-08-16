@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke android:width="0dp" android:color="@color/transparent" />
+                    <solid android:color="@color/transparent" />
+
+                </shape>
+            </item>
+            <item android:bottom="0dp" android:left="-3dp" android:right="-3dp" android:top="-3dp">
+                <shape android:shape="rectangle">
+                    <stroke android:width="1.5dp" android:color="@color/colorAccent" />
+                    <solid android:color="@color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke android:width="0dp" android:color="@color/transparent" />
+                    <solid android:color="@color/transparent" />
+
+                </shape>
+            </item>
+
+            <item android:bottom="0dp" android:left="-3dp" android:right="-3dp" android:top="-3dp">
+                <shape android:shape="rectangle">
+                    <stroke android:width="1.5dp" android:color="@color/colorAccent" />
+                    <solid android:color="@color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke android:width="0dp" android:color="@color/transparent" />
+                    <solid android:color="@color/transparent" />
+
+                </shape>
+            </item>
+
+            <item android:bottom="0dp" android:left="-3dp" android:right="-3dp" android:top="-3dp">
+                <shape android:shape="rectangle">
+                    <stroke android:width="0.7dp" android:color="#b2b2b2" />
+                    <solid android:color="@color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

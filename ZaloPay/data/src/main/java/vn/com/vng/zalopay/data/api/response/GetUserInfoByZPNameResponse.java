@@ -12,8 +12,11 @@ public class GetUserInfoByZPNameResponse extends BaseResponse {
     public String userid;
 
     @SerializedName("phonenumber")
-    public String phoneNumber;
+    public long phoneNumber;
 
     @SerializedName("displayname")
     public String displayName;
+
+    @SerializedName("avatar")
+    public String avatar;
 }

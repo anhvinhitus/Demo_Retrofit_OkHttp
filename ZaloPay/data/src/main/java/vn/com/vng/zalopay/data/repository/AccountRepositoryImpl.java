@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Permission;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -64,9 +65,17 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> getUserInfoByZaloPayName(String zaloPayName) {
+    public Observable<Person> getUserInfoByZaloPayName(String zaloPayName) {
         return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
-                .map(BaseResponse::isSuccessfulResponse);
+                .map(response -> {
+                    Person person = new Person();
+                    person.uid = response.userid;
+                    person.avatar = response.avatar;
+                    person.dname = response.displayName;
+                    person.phonenumber = response.phoneNumber;
+                    return person;
+
+                });
     }
 
     @Override

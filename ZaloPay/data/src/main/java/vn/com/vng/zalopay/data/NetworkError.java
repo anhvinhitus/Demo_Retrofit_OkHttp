@@ -105,8 +105,8 @@ public class NetworkError {
     public static final int SERVER_MAINTAIN = -999;
     public static final int INVITATION_CODE_ERROR = 24;
     public static final int INVITATION_CODE_INVALID = -142;
-    public static final int USE_EXISTED = -150;
-
+    public static final int USER_EXISTED = -150;
+    public static final int USER_NOT_EXISTED = -149;
 
     public static String create(Context context, int errorCode) {
         switch (errorCode) {
@@ -312,6 +312,8 @@ public class NetworkError {
                 return context.getString(R.string.exception_invitation_code_error);
             case INVITATION_CODE_INVALID:
                 return context.getString(R.string.exception_invitation_code_invalid);
+            case USER_NOT_EXISTED:
+                return context.getString(R.string.exception_user_not_existed);
 
         }
         return null;
