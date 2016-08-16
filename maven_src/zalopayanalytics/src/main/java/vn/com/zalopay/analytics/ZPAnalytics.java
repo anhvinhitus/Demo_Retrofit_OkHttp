@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.analytics;
+package vn.com.zalopay.analytics;
 
 import java.util.ArrayList;
 import java.util.List;

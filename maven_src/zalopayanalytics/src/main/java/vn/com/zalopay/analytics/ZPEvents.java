@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.analytics;
+package vn.com.zalopay.analytics;
 
 /**
  * Auto-generated

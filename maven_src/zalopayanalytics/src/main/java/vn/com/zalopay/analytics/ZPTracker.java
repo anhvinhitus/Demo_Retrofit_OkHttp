@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.analytics;
+package vn.com.zalopay.analytics;
 
 /**
  * Created by huuhoa on 6/27/16.
