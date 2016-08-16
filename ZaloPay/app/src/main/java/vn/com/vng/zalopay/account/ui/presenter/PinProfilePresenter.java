@@ -134,7 +134,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
             Timber.e(e, "update Profile Subscriber onError [%s]", e.getMessage());
             if (e instanceof BodyException) {
-                if (((BodyException)e).errorCode == NetworkError.USE_EXISTED) {
+                if (((BodyException)e).errorCode == NetworkError.USER_EXISTED) {
                     mView.onCheckFail();
                 } else {
                     PinProfilePresenter.this.onUpdateProfileError(e.getMessage());

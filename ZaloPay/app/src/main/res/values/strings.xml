@@ -280,5 +280,8 @@
     <string name="zalopay_name_not_update">Tên tài khoản: Chưa cập nhật</string>
 
     <string name="account.zalo.pay">Tài khoản Zalo Pay</string>
+    <string name="lbl.note.forget.pin">Lưu ý: Quên mã PIN vui lòng liên hệ %s</string>
+    <string name="number.contact">1900545436</string>
 
+    <string name="input.account.zalo.pay">Nhập tên tài khoản Zalo Pay</string>
 </resources>

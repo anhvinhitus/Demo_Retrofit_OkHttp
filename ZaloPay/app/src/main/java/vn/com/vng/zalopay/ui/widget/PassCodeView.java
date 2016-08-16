@@ -291,5 +291,14 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
     public void setBackgroundEdittext(int res) {
         mEditText.setBackgroundResource(res);
+
+    }
+
+    public boolean requestFocusView() {
+        return mEditText.requestFocus();
+    }
+
+    public boolean isRequestFocus(){
+        return mEditText.isFocused();
     }
 }

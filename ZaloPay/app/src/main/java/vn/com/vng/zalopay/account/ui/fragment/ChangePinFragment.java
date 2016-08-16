@@ -1,12 +1,17 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -16,6 +21,7 @@ import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +41,10 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
     PassCodeView passCode;
 
     @BindView(R.id.oldPassCodeInput)
-    PassCodeView mRePassCodeView;
+    PassCodeView mOldPassCodeView;
+
+    @BindView(R.id.tvContact)
+    TextView mContactView;
 
     IPasscodeChanged passCodeChanged = new IPasscodeChanged() {
         @Override
@@ -47,6 +56,25 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (isValidPinView(passCode)) {
                 passCode.hideError();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    IPasscodeChanged oldPassCodeChanged = new IPasscodeChanged() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (isValidPinView(mOldPassCodeView)) {
+                mOldPassCodeView.hideError();
             }
         }
 
@@ -77,21 +105,26 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     @Override
     public void onClickContinue() {
+
+        if (!isValidPinView(mOldPassCodeView)) {
+            mOldPassCodeView.showError(getString(R.string.invalid_pin));
+            mOldPassCodeView.requestFocusView();
+            return;
+        } else {
+            mOldPassCodeView.hideError();
+        }
+
         if (!isValidPinView(passCode)) {
             passCode.showError(getString(R.string.invalid_pin));
+            passCode.requestFocusView();
             return;
         } else {
             passCode.hideError();
         }
 
-        if (!isValidPinView(mRePassCodeView)) {
-            mRePassCodeView.showError(getString(R.string.invalid_pin));
-            return;
-        } else {
-            mRePassCodeView.hideError();
-        }
 
-        presenter.changePin(passCode.getText(), mRePassCodeView.getText());
+        presenter.changePin(passCode.getText(), mOldPassCodeView.getText());
+
     }
 
     @Override
@@ -114,6 +147,29 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         passCode.setPasscodeChanged(passCodeChanged);
+        mOldPassCodeView.setPasscodeChanged(oldPassCodeChanged);
+
+        passCode.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
+        mOldPassCodeView.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
+
+        mOldPassCodeView.requestFocusView();
+
+        AndroidUtils.setSpannedMessageToView(mContactView,
+                getString(R.string.lbl_note_forget_pin),
+                getString(R.string.number_contact), false, false,
+                ContextCompat.getColor(getContext(), R.color.colorPrimary), new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        try {
+                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                            callIntent.setData(Uri.parse("tel:" + Uri.encode(getString(R.string.number_contact))));
+                            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(callIntent);
+                        } catch (Exception ex) {
+                        }
+
+                    }
+                });
     }
 
     @Override

@@ -22,7 +22,14 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.util.StateSet;
 import android.util.TypedValue;
@@ -1060,6 +1067,37 @@ public class AndroidUtils {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void setSpannedMessageToView(TextView tv,
+                                               String message,
+                                               String spannedMessage,
+                                               boolean isUnderline,
+                                               boolean isMessageBold,
+                                               int linkColorResId,
+                                               ClickableSpan clickableSpan) {
+        if (tv != null) {
+            // set spannable for text view
+            int startIndex = message.indexOf("%s");
+            int endIndex = startIndex + spannedMessage.length();
+            message = String.format(message, spannedMessage);
+            Spannable span = Spannable.Factory.getInstance().newSpannable(message);
+            // set span color
+            span.setSpan(new ForegroundColorSpan(linkColorResId), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            // set span underline
+            if (isUnderline) {
+                span.setSpan(new UnderlineSpan(), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            // set bold message
+            if (isMessageBold) {
+                span.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            span.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            tv.setText(span);
+            tv.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 }
