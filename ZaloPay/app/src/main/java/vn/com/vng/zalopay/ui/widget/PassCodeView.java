@@ -132,7 +132,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         params.setMargins(0, 0, (int) (AndroidUtils.density * 8), 0);
         for (int i = 0; i < length; i++) {
             TextView textview = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.passcode_textview, null);
-            textview.setBackgroundResource(R.drawable.pin_code_round_empty);
+            textview.setSelected(false);
             mTextViews.add(textview);
             mRootView.addView(textview, params);
         }
@@ -185,7 +185,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             }
             for (int i = 0; i < mTextViews.size(); i++) {
                 TextView textView = mTextViews.get(i);
-                textView.setBackgroundResource(R.drawable.pin_code_round_empty);
+                textView.setSelected(false);
                 if (charArray != null && i < charArray.length) {
                     textView.setText(String.valueOf(charArray[i]));
                 } else {
@@ -199,14 +199,9 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
                 inputLength = strInput.length();
             }
             for (int i = 0; i < mTextViews.size(); i++) {
-//                TextView textView = (TextView) mRootView.getChildAt(i);
                 TextView textView = mTextViews.get(i);
                 textView.setText("");
-                if (i < inputLength) {
-                    textView.setBackgroundResource(R.drawable.pin_code_round_full);
-                } else {
-                    textView.setBackgroundResource(R.drawable.pin_code_round_empty);
-                }
+                textView.setSelected(i < inputLength);
             }
         }
     }
@@ -298,7 +293,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         return mEditText.requestFocus();
     }
 
-    public boolean isRequestFocus(){
+    public boolean isRequestFocus() {
         return mEditText.isFocused();
     }
 }
