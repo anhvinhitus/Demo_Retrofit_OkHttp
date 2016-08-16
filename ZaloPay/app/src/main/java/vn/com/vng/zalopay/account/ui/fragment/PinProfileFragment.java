@@ -25,6 +25,8 @@ import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
+import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
+import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
@@ -74,6 +76,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         if (isValidPhone()) {
             hidePhoneError();
         }
+        checkShowHideBtnContinue();
     }
 
     private void showPhoneError() {
@@ -117,6 +120,17 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
 
+    IPasscodeFocusChanged passcodeFocusChanged = new IPasscodeFocusChanged() {
+        @Override
+        public void onFocusChangedPin(boolean isFocus) {
+            if (!isValidPin()) {
+                passCode.showError(getString(R.string.invalid_pin));
+            } else {
+                passCode.hideError();
+            }
+        }
+    };
+
     IPassCodeMaxLength passCodeMaxLength = new IPassCodeMaxLength() {
         @Override
         public void hasMaxLength() {
@@ -137,11 +151,24 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             if (isValidPin()) {
                 passCode.hideError();
             }
+            checkShowHideBtnContinue();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+    };
+
+    private InputZaloPayNameListener mInputZaloPayNameListener = new InputZaloPayNameListener() {
+        @Override
+        public void onTextChanged(CharSequence s) {
+            checkShowHideBtnContinue();
+        }
+
+        @Override
+        public void onFocusChange(boolean isFocus) {
+            checkShowHideBtnContinue();
         }
     };
 
@@ -159,25 +186,35 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         return new PinProfileFragment();
     }
 
-    @Override
-    public void onClickContinue() {
+    private void checkShowHideBtnContinue() {
+        if (mListener != null) {
+            mListener.onChangeBtnConfirmState(isShowBtnContinue());
+        }
+    }
+
+    private boolean isShowBtnContinue() {
         if (!isValidPin()) {
-            passCode.showError(getString(R.string.invalid_pin));
-            return;
+            //passCode.showError(getString(R.string.invalid_pin));
+            return false;
         } else {
             passCode.hideError();
         }
 
         if (!isValidPhone()) {
-            showPhoneError();
-            return;
+            //showPhoneError();
+            return false;
         } else {
             hidePhoneError();
         }
         Timber.d("onClickContinue inputZaloPayName.getCurrentState() [%s]", inputZaloPayName.getCurrentState());
         if (!validZaloPayName()) {
-            return;
+            return false;
         }
+        return true;
+    }
+
+    @Override
+    public void onClickContinue() {
         if (TextUtils.isEmpty(inputZaloPayName.getText())) {
             presenter.updateProfile(passCode.getText(), edtPhone.getString(), null);
         } else {
@@ -247,8 +284,21 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         passCode.requestFocus();
         passCode.setPassCodeMaxLength(passCodeMaxLength);
         passCode.setPasscodeChanged(passcodeChanged);
+        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
 
         inputZaloPayName.setOnClickBtnCheck(mOnClickCheckZaloPayName);
+        inputZaloPayName.setOntextChangeListener(mInputZaloPayNameListener);
+
+        edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!isValidPhone()) {
+                    showPhoneError();
+                } else {
+                    hidePhoneError();
+                }
+            }
+        });
     }
 
     private View.OnClickListener mOnClickCheckZaloPayName = new View.OnClickListener() {
@@ -354,5 +404,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         void onUpdatePinSuccess(String phone);
 
         void onUpdatePinFail();
+
+        void onChangeBtnConfirmState(boolean isEnable);
     }
 }

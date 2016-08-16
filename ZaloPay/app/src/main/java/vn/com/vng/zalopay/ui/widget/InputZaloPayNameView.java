@@ -25,6 +25,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class InputZaloPayNameView extends FrameLayout {
 
+    private InputZaloPayNameListener mListener;
     private OnClickListener mOnClickBtnCheck;
 
     @BindView(R.id.textInputZaloPayName)
@@ -59,6 +60,14 @@ public class InputZaloPayNameView extends FrameLayout {
     private void initAttrs(Context context) {
         inflate(context, R.layout.input_zalopay_name, this);
         ButterKnife.bind(this, this);
+        mEdtZaloPayName.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (mListener != null) {
+                    mListener.onFocusChange(hasFocus);
+                }
+            }
+        });
     }
 
     @OnClick(R.id.imgInfo)
@@ -82,8 +91,14 @@ public class InputZaloPayNameView extends FrameLayout {
         } else if (validZPName()) {
             enableBtnCheck();
         }
+        if (mListener != null) {
+            mListener.onTextChanged(s);
+        }
     }
 
+    public void setOntextChangeListener(InputZaloPayNameListener listener) {
+        mListener = listener;
+    }
 
     public ZPNameStateEnum getCurrentState() {
         return mCurrentState;

@@ -68,6 +68,7 @@
     <string name="btn_continue">Tiếp Tục</string>
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
+    <string name="btn_confirm">Xác Nhận</string>
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>

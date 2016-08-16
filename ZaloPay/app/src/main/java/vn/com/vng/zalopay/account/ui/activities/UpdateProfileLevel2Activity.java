@@ -21,7 +21,6 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -77,8 +76,17 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
 
-    @OnClick(R.id.btnContinue)
-    public void onClickContinue(View view) {
+    @BindView(R.id.btnContinue)
+    View btnContinue;
+
+    View.OnClickListener onClickBtnContinue = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onClickContinue();
+        }
+    };
+
+    public void onClickContinue() {
         if (adapter == null) {
             return;
         }
@@ -109,6 +117,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         initContent();
         initPaymentWrapper();
         headerView.setVisibility(View.GONE);
+        onChangeBtnConfirmState(false);
     }
 
     private void initPaymentWrapper() {
@@ -279,6 +288,17 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     @Override
     public void onUpdatePinFail() {
 
+    }
+
+    @Override
+    public void onChangeBtnConfirmState(boolean isEnable) {
+        if (isEnable) {
+            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
+            btnContinue.setOnClickListener(onClickBtnContinue);
+        } else {
+            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
+            btnContinue.setOnClickListener(null);
+        }
     }
 
     @Override
