@@ -89,3 +89,23 @@ EventId,Category,Action
 1904,Notifications,Notifications_TapPromotionItem
 2000,Timing Get Order,Timing_GetOrder
 2001,Timing Scan QR,Timing_ScanQR
+2100,UpdateProfile2,UpdateProfile2_Launch
+2101,UpdateProfile3,UpdateProfile2_NavigateBack
+2102,UpdateProfile4,UpdateProfile2_PressCheck
+2103,UpdateProfile5,UpdateProfile2_ZPN_Edit_Invalid
+2104,UpdateProfile6,UpdateProfile2_ZPN_Empty
+2105,UpdateProfile7,UpdateProfile2_ZPN_Valid
+2106,UpdateProfile8,UpdateProfile2_ZPN_InUsed
+2107,UpdateProfile9,UpdateProfile2_ZPN_InUsed2
+2108,UpdateProfile10,UpdateProfile2_ZPN_Edit_Delete
+2200,UpdateZPN,UpdateZPN_Launch
+2201,UpdateZPN,UpdateZPN_Back
+2202,UpdateZPN,UpdateZPN_Launch_FromHeader
+2203,UpdateZPN,UpdateZPN_Launch_FromProfile
+2204,UpdateZPN,UpdateZPN_PressCheck
+2205,UpdateZPN,UpdateZPN_Edit_Invalid
+2206,UpdateZPN,UpdateZPN_Valid
+2207,UpdateZPN,UpdateZPN_InUsed
+2208,UpdateZPN,UpdateZPN_InUsed2
+2209,UpdateZPN,UpdateZPN_Edit_Delete
+2210,UpdateZPN,UpdateZPN_Edit_AfterCheck

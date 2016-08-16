@@ -94,6 +94,26 @@ public class ZPEvents {
     public static final int NOTIFICATIONS_TAPPROMOTIONITEM = 1904;
     public static final int TIMING_GETORDER = 2000;
     public static final int TIMING_SCANQR = 2001;
+    public static final int UPDATEPROFILE2_LAUNCH = 2100;
+    public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
+    public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
+    public static final int UPDATEPROFILE2_ZPN_EDIT_INVALID = 2103;
+    public static final int UPDATEPROFILE2_ZPN_EMPTY = 2104;
+    public static final int UPDATEPROFILE2_ZPN_VALID = 2105;
+    public static final int UPDATEPROFILE2_ZPN_INUSED = 2106;
+    public static final int UPDATEPROFILE2_ZPN_INUSED2 = 2107;
+    public static final int UPDATEPROFILE2_ZPN_EDIT_DELETE = 2108;
+    public static final int UPDATEZPN_LAUNCH = 2200;
+    public static final int UPDATEZPN_BACK = 2201;
+    public static final int UPDATEZPN_LAUNCH_FROMHEADER = 2202;
+    public static final int UPDATEZPN_LAUNCH_FROMPROFILE = 2203;
+    public static final int UPDATEZPN_PRESSCHECK = 2204;
+    public static final int UPDATEZPN_EDIT_INVALID = 2205;
+    public static final int UPDATEZPN_VALID = 2206;
+    public static final int UPDATEZPN_INUSED = 2207;
+    public static final int UPDATEZPN_INUSED2 = 2208;
+    public static final int UPDATEZPN_EDIT_DELETE = 2209;
+    public static final int UPDATEZPN_EDIT_AFTERCHECK = 2210;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -277,6 +297,46 @@ public class ZPEvents {
                 return "Timing_GetOrder";
             case TIMING_SCANQR:
                 return "Timing_ScanQR";
+            case UPDATEPROFILE2_LAUNCH:
+                return "UpdateProfile2_Launch";
+            case UPDATEPROFILE2_NAVIGATEBACK:
+                return "UpdateProfile2_NavigateBack";
+            case UPDATEPROFILE2_PRESSCHECK:
+                return "UpdateProfile2_PressCheck";
+            case UPDATEPROFILE2_ZPN_EDIT_INVALID:
+                return "UpdateProfile2_ZPN_Edit_Invalid";
+            case UPDATEPROFILE2_ZPN_EMPTY:
+                return "UpdateProfile2_ZPN_Empty";
+            case UPDATEPROFILE2_ZPN_VALID:
+                return "UpdateProfile2_ZPN_Valid";
+            case UPDATEPROFILE2_ZPN_INUSED:
+                return "UpdateProfile2_ZPN_InUsed";
+            case UPDATEPROFILE2_ZPN_INUSED2:
+                return "UpdateProfile2_ZPN_InUsed2";
+            case UPDATEPROFILE2_ZPN_EDIT_DELETE:
+                return "UpdateProfile2_ZPN_Edit_Delete";
+            case UPDATEZPN_LAUNCH:
+                return "UpdateZPN_Launch";
+            case UPDATEZPN_BACK:
+                return "UpdateZPN_Back";
+            case UPDATEZPN_LAUNCH_FROMHEADER:
+                return "UpdateZPN_Launch_FromHeader";
+            case UPDATEZPN_LAUNCH_FROMPROFILE:
+                return "UpdateZPN_Launch_FromProfile";
+            case UPDATEZPN_PRESSCHECK:
+                return "UpdateZPN_PressCheck";
+            case UPDATEZPN_EDIT_INVALID:
+                return "UpdateZPN_Edit_Invalid";
+            case UPDATEZPN_VALID:
+                return "UpdateZPN_Valid";
+            case UPDATEZPN_INUSED:
+                return "UpdateZPN_InUsed";
+            case UPDATEZPN_INUSED2:
+                return "UpdateZPN_InUsed2";
+            case UPDATEZPN_EDIT_DELETE:
+                return "UpdateZPN_Edit_Delete";
+            case UPDATEZPN_EDIT_AFTERCHECK:
+                return "UpdateZPN_Edit_AfterCheck";
             default:
                 return "DefaultAction";
         }
@@ -464,6 +524,46 @@ public class ZPEvents {
                 return "Timing Get Order";
             case TIMING_SCANQR:
                 return "Timing Scan QR";
+            case UPDATEPROFILE2_LAUNCH:
+                return "UpdateProfile2";
+            case UPDATEPROFILE2_NAVIGATEBACK:
+                return "UpdateProfile3";
+            case UPDATEPROFILE2_PRESSCHECK:
+                return "UpdateProfile4";
+            case UPDATEPROFILE2_ZPN_EDIT_INVALID:
+                return "UpdateProfile5";
+            case UPDATEPROFILE2_ZPN_EMPTY:
+                return "UpdateProfile6";
+            case UPDATEPROFILE2_ZPN_VALID:
+                return "UpdateProfile7";
+            case UPDATEPROFILE2_ZPN_INUSED:
+                return "UpdateProfile8";
+            case UPDATEPROFILE2_ZPN_INUSED2:
+                return "UpdateProfile9";
+            case UPDATEPROFILE2_ZPN_EDIT_DELETE:
+                return "UpdateProfile10";
+            case UPDATEZPN_LAUNCH:
+                return "UpdateZPN";
+            case UPDATEZPN_BACK:
+                return "UpdateZPN";
+            case UPDATEZPN_LAUNCH_FROMHEADER:
+                return "UpdateZPN";
+            case UPDATEZPN_LAUNCH_FROMPROFILE:
+                return "UpdateZPN";
+            case UPDATEZPN_PRESSCHECK:
+                return "UpdateZPN";
+            case UPDATEZPN_EDIT_INVALID:
+                return "UpdateZPN";
+            case UPDATEZPN_VALID:
+                return "UpdateZPN";
+            case UPDATEZPN_INUSED:
+                return "UpdateZPN";
+            case UPDATEZPN_INUSED2:
+                return "UpdateZPN";
+            case UPDATEZPN_EDIT_DELETE:
+                return "UpdateZPN";
+            case UPDATEZPN_EDIT_AFTERCHECK:
+                return "UpdateZPN";
             default:
                 return "DefaultCategory";
         }
