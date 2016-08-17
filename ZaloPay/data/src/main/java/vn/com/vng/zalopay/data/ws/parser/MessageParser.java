@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -11,6 +12,7 @@ import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -47,20 +49,15 @@ public class MessageParser implements Parser {
     private Event processMessage(byte[] msg) throws Exception {
         ZPMsgProtos.DataResponseUser respMsg = ZPMsgProtos.DataResponseUser.parseFrom(msg);
 
-        if (!respMsg.hasMtaid() && !respMsg.hasMtuid()) {
-            Timber.e("Notification mtaid and mtuid not have with msgType: [%s]", respMsg.getMsgtype());
-            return null;
-        }
-
-        if (respMsg.hasMtaid() && respMsg.hasMtuid()) {
-            Timber.e("Notification mtaid and mtuid both have");
-            return null;
-        }
-
-        if (!respMsg.hasData()) {
-            //  Timber.e("Notification no data");
-            //  return null;
-        }
+//        if (!respMsg.hasMtaid() && !respMsg.hasMtuid()) {
+//            Timber.e("Notification mtaid and mtuid not have with msgType: [%s]", respMsg.getMsgtype());
+//            return null;
+//        }
+//
+//        if (respMsg.hasMtaid() && respMsg.hasMtuid()) {
+//            Timber.e("Notification mtaid and mtuid both have");
+//            return null;
+//        }
 
         Event event = null;
 
@@ -69,15 +66,17 @@ public class MessageParser implements Parser {
             byte[] data = respMsg.getData().toByteArray();
 
             switch (respMsg.getMsgtype()) {
-                case MessageType.Response.KICK_OUT:
+                case ZPMsgProtos.ServerMessageType.KICK_OUT_USER_VALUE:
                     event = processKickOutUser(data);
                     break;
-                case MessageType.Response.PUSH_NOTIFICATION:
+                case ZPMsgProtos.ServerMessageType.PUSH_NOTIFICATION_VALUE:
                     event = processPushMessage(data);
                     break;
-                case MessageType.Response.AUTHEN_LOGIN_RESULT:
+                case ZPMsgProtos.ServerMessageType.AUTHEN_LOGIN_RESULT_VALUE:
                     event = processAuthenticationLoginSuccess(data);
                     break;
+                case ZPMsgProtos.ServerMessageType.PONG_CLIENT_VALUE:
+                    event = parsePongMessage(data);
                 default:
                     break;
             }
@@ -119,6 +118,22 @@ public class MessageParser implements Parser {
         }
 
         return null;
+    }
+
+    Event parsePongMessage(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+
+        try {
+            ServerPongData pongData = new ServerPongData();
+            ZPMsgProtos.MessageConnectionInfo res = ZPMsgProtos.MessageConnectionInfo.parseFrom(data);
+            pongData.clientData = res.getEmbeddata();
+            return pongData;
+        } catch (InvalidProtocolBufferException e) {
+            Timber.w(e, "Invalid server pong data");
+            return null;
+        }
     }
 
     public Event processKickOutUser(byte[] data) {
