@@ -45,6 +45,9 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
     @BindView(R.id.layoutDeposit)
     View layoutDeposit;
 
+    @BindView(R.id.viewSeparate)
+    View viewSeparate;
+
     @OnClick(R.id.layoutDeposit)
     public void onClickDeposit() {
         navigator.startDepositActivity(getContext());
@@ -103,8 +106,10 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
             boolean isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
             if (isEnableDeposit) {
                 layoutDeposit.setVisibility(View.VISIBLE);
+                viewSeparate.setVisibility(View.VISIBLE);
             } else {
                 layoutDeposit.setVisibility(View.GONE);
+                viewSeparate.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             Timber.w(e, "check show/hide deposit exception: [%s]", e.getMessage());

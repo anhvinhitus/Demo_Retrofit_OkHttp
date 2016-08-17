@@ -77,6 +77,7 @@
 
 
     <View
+        android:id="@+id/viewSeparate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
