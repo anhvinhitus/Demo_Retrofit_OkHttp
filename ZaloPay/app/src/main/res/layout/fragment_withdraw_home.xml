@@ -75,9 +75,7 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate"/>
 
-
     <View
-        android:id="@+id/viewSeparate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
@@ -113,6 +111,7 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/viewSeparate"
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
             android:layout_marginLeft="48dp"
