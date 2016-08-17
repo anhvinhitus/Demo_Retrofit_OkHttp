@@ -243,7 +243,7 @@
 
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
-    <string name="update.profile.success">Cập nhật thông tin thành công!</string>
+    <string name="update.profile.success">Thông tin của bạn đã được gửi đi và đang chờ phê duyệt.</string>
 
 
     <string name="accept">Đồng ý</string>
