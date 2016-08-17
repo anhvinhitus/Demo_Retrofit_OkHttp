@@ -5,17 +5,12 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.EditAccountNamePresenter;
 import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
@@ -148,8 +143,8 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
             mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.VALID);
             mBtnCheckView.setText(R.string.register);
         } else {
-            mInputAccountNameView.setError(getContext().getString(R.string.account_existed));
             mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.INVALID);
+            mInputAccountNameView.setError(getContext().getString(R.string.account_existed));
             mBtnCheckView.setText(R.string.check);
         }
     }

@@ -6,6 +6,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * Created by AnhHieu on 8/12/16.
+ *
  */
 public class EditAccountNameActivity extends BaseToolBarActivity {
     @Override
