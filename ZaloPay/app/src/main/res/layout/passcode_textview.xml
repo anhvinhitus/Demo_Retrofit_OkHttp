@@ -6,4 +6,4 @@
     android:background="@drawable/pin_code_round_selector"
     android:gravity="center"
     android:textColor="@color/black"
-    android:textSize="@dimen/font_size_medium" />
+    android:textSize="@dimen/font_size_xlarge" />

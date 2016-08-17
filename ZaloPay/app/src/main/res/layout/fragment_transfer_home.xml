@@ -16,7 +16,7 @@
             android:id="@+id/layoutTransferViaAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/default_white_selector"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -28,7 +28,7 @@
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_tkzalopay" />
+                android:src="@drawable/ic_transfer_acc_zp" />
 
             <TextView
                 style="@style/TextView.Title"
@@ -56,7 +56,7 @@
             android:id="@+id/layoutTransferAccZaloPay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/default_white_selector"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -68,7 +68,7 @@
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_tkzalopay" />
+                android:src="@drawable/ic_transfer_fr_zalo" />
 
             <TextView
                 android:layout_width="match_parent"

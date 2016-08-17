@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/default_white_selector"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
@@ -23,7 +23,6 @@
             android:layout_marginTop="@dimen/spacing.medium.t"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_avatar_default"
             app:borderDrawable="@color/transparent"
             app:maskDrawable="@drawable/circle_mask" />
 
@@ -42,8 +41,6 @@
                 style="@style/TextView.Item.Main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
-                android:textAppearance="?attr/textAppearanceListItem"
                 tools:text="A.Hoanh" />
 
             <TextView
@@ -51,19 +48,17 @@
                 style="@style/TextView.Item.Sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
-                android:text="0988888888"
-                android:textAppearance="?attr/textAppearanceListItem" />
+                tools:text="0988888888" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/imgTransferType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
             android:adjustViewBounds="true"
-            android:padding="@dimen/spacing.medium.t"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_tkzalopay_small" />
+            android:src="@drawable/ic_transfer_fr_zalo_small" />
     </LinearLayout>
 
     <View

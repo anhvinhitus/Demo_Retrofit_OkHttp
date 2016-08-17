@@ -56,7 +56,7 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
         holder.mTvDisplayName.setText(holder.mItem.getDisplayName());
         String phone = "";
         if (!TextUtils.isEmpty(holder.mItem.getPhoneNumber())) {
-            phone= PhoneUtil.formatPhoneNumber(holder.mItem.getPhoneNumber());
+            phone = PhoneUtil.formatPhoneNumber(holder.mItem.getPhoneNumber());
             holder.mTvPhone.setText(phone);
             holder.mTvPhone.setVisibility(View.VISIBLE);
         } else {
@@ -64,7 +64,7 @@ public class TransferRecentRecyclerViewAdapter extends RecyclerView.Adapter<Tran
         }
         loadImage(holder.mImgAvatar, holder.mItem.getAvatar());
 
-        if (position != getItemCount()-1) {
+        if (position != getItemCount() - 1) {
             holder.mViewSeparate.setVisibility(View.VISIBLE);
         } else {
             holder.mViewSeparate.setVisibility(View.GONE);
