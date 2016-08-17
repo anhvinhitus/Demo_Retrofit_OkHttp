@@ -149,7 +149,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
         String zaloPayName = user.zalopayname;
 
         if (TextUtils.isEmpty(zaloPayName)) {
-            tvAccountName.setText(getString(R.string.zalopay_name_not_update));
+            tvAccountName.setText(getString(R.string.not_update));
         } else {
             tvAccountName.setText(zaloPayName);
             tvAccountName.setCompoundDrawables(null, null, null, null);
