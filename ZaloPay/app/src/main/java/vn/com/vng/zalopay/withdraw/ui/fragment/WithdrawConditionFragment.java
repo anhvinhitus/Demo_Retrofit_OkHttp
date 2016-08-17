@@ -79,17 +79,24 @@ public class WithdrawConditionFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        checkValidCondition();
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean isValidCondition = checkValidCondition();
+    }
+
+    public void checkValidCondition() {
+        boolean isValidProfile = checkValidProfileLevel();
+        boolean isValidLinkCard = checkValidLinkCard();
+        boolean isValidCondition = isValidProfile && isValidLinkCard;
         if (isValidCondition) {
             navigator.startWithdrawActivity(getContext());
             getActivity().finish();
         }
-    }
-
-    private boolean checkValidCondition() {
-        return checkValidProfileLevel() && checkValidLinkCard();
     }
 
     private boolean checkValidProfileLevel() {
@@ -97,17 +104,18 @@ public class WithdrawConditionFragment extends BaseFragment {
         if (user == null) {
             return false;
         }
-        if (TextUtils.isEmpty(user.email)) {
-            return false;
-        } else {
+        boolean isValid = true;
+        if (!TextUtils.isEmpty(user.email)) {
             chkEmail.setChecked(true);
-        }
-        if (TextUtils.isEmpty(user.identityNumber)) {
-            return false;
         } else {
-            chkIdentityNumber.setChecked(true);
+            isValid = false;
         }
-        return true;
+        if (!TextUtils.isEmpty(user.identityNumber)) {
+            chkIdentityNumber.setChecked(true);
+        } else {
+            isValid = false;
+        }
+        return isValid;
     }
 
     private boolean checkValidLinkCard() {
