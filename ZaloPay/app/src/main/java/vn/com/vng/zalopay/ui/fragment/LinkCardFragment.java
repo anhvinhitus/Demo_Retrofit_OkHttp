@@ -29,15 +29,16 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
 import vn.com.vng.zalopay.utils.BankCardUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -314,12 +315,27 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         } else if (itemId == R.id.layoutDetail) {
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
-            presenter.removeLinkCard(mCurrentBankCard);
-            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
-            mBottomSheetDialog.dismiss();
+            showConfirmRemoveSaveCard();
         } else if (itemId == R.id.root) {
             mBottomSheetDialog.dismiss();
         }
+    }
+
+    private void showConfirmRemoveSaveCard() {
+        showDialog(getString(R.string.txt_link_card_remove_link),
+                getString(R.string.txt_confirm_remove_card),
+                getString(R.string.btn_cancel),
+                getString(R.string.btn_confirm),
+                new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        presenter.removeLinkCard(mCurrentBankCard);
+                        ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+                        mBottomSheetDialog.dismiss();
+                    }
+                },
+                SweetAlertDialog.WARNING_TYPE);
     }
 
     private void showBottomSheetDialog() {

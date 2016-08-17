@@ -117,7 +117,7 @@
     <string name="txt_link_card_view_detail">Xem chi tiết</string>
     <string name="txt_link_card_remove_link">Xóa thẻ</string>
     <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
-
+    <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã lưu này không?</string>
     <string name="txt_home_qrcode">Quét Mã QR</string>
     <string name="txt_home_deposit">Nạp Tiền</string>
     <string name="txt_home_link_card">Lưu Thẻ</string>
