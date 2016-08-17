@@ -148,6 +148,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
             mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.VALID);
             mBtnCheckView.setText(R.string.register);
         } else {
+            mInputAccountNameView.setError(getContext().getString(R.string.account_existed));
             mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.INVALID);
             mBtnCheckView.setText(R.string.check);
         }

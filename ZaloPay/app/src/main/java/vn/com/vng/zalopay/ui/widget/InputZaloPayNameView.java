@@ -142,7 +142,7 @@ public class InputZaloPayNameView extends FrameLayout {
     }
 
     public void showCheckFail() {
-        showZPNameError("Tên tài khoản đã được sử dụng");
+        showZPNameError(getContext().getString(R.string.account_existed));
 
         mCurrentState = ZPNameStateEnum.INVALID;
         mImgInfo.setVisibility(VISIBLE);
