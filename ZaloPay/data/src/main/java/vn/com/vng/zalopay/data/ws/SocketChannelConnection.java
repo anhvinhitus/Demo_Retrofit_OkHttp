@@ -141,22 +141,15 @@ class SocketChannelConnection {
                 Timber.d("OP_CONNECT is fired");
                 if (!this.handleConnect(key)) {
                     return false;
-                } else {
-                    continue;
                 }
-            }
-
-            if (key.isReadable()) {
+            } else if (key.isReadable()) {
                 Timber.d("OP_READ is fired");
                 if (!this.read(key)) {
                     return false;
                 }
-            }
-
-            if (key.isWritable()) {
+            } else if (key.isWritable()) {
                 Timber.d("OP_WRITE is fired");
                 this.handleWrite(key);
-                continue;
             }
         }
 
