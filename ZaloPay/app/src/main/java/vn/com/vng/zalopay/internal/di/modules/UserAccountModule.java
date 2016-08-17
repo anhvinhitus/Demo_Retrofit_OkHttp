@@ -6,9 +6,9 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
+import vn.com.vng.zalopay.data.cache.AccountLocalStorage;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -32,16 +32,12 @@ public class UserAccountModule {
         return retrofit.create(AccountStore.UploadPhotoService.class);
     }
 
-
     @UserScope
     @Provides
-    AccountStore.Repository providesAccountRepository(AccountStore.RequestService service, AccountStore.UploadPhotoService photoService, UserConfig userConfig, User user, UserEntityDataMapper mapper) {
-        return new AccountRepositoryImpl(service, photoService, userConfig, user, mapper);
-    }
-
-    @UserScope
-    @Provides
-    AccountStore.LocalStorage providesAccountLocalStorage(@Named("daosession") DaoSession session) {
-        return null;
+    AccountStore.Repository providesAccountRepository(AccountStore.RequestService service,
+                                                      AccountStore.UploadPhotoService photoService,
+                                                      UserConfig userConfig, User user,
+                                                      UserEntityDataMapper mapper) {
+        return new AccountRepositoryImpl(new AccountLocalStorage(), service, photoService, userConfig, user, mapper);
     }
 }

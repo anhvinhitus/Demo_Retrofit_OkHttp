@@ -13,5 +13,5 @@ public interface ITransferHomeView extends ILoadDataView {
 
     void setData(List<RecentTransaction> list);
 
-    void onGetProfileSuccess(Person person);
+    void onGetProfileSuccess(Person person, String zaloPayName);
 }

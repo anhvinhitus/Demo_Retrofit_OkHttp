@@ -61,7 +61,7 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
     public void getUserInfo(String zpName) {
         Subscription subscription = accountRepository.getUserInfoByZaloPayName(zpName)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UserInfoSubscriber());
+                .subscribe(new UserInfoSubscriber(zpName));
         compositeSubscription.add(subscription);
     }
 
@@ -81,6 +81,12 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
 
+        String zaloPayName;
+
+        public UserInfoSubscriber(String zaloPayName) {
+            this.zaloPayName = zaloPayName;
+        }
+
         @Override
         public void onError(Throwable e) {
             Timber.d(e, "onError");
@@ -94,7 +100,7 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
 
         @Override
         public void onNext(Person person) {
-            mView.onGetProfileSuccess(person);
+            mView.onGetProfileSuccess(person, zaloPayName);
         }
     }
 

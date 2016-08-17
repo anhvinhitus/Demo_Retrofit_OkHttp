@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.domain.model;
 
-import android.database.Cursor;
-
 import org.parceler.Parcel;
 
 /**
@@ -31,7 +29,7 @@ public class RecentTransaction {
 
     public long userId;
     public String zaloPayId;
-    public String userName;
+    public String zaloPayName;
     public String displayName;
     public String avatar;
     public int userGender;
@@ -43,13 +41,12 @@ public class RecentTransaction {
     public String message;
 
     public RecentTransaction() {
-
     }
 
     public RecentTransaction(long userId, String zaloPayId, String userName, String displayName, String avatar, int userGender, String birthday, boolean usingApp, String phoneNumber, int transferType, long amount, String message) {
         this.userId = userId;
         this.zaloPayId = zaloPayId;
-        this.userName = userName;
+        this.zaloPayName = userName;
         this.displayName = displayName;
         this.avatar = avatar;
         this.userGender = userGender;
@@ -69,8 +66,8 @@ public class RecentTransaction {
         return zaloPayId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getZaloPayName() {
+        return zaloPayName;
     }
 
     public String getDisplayName() {

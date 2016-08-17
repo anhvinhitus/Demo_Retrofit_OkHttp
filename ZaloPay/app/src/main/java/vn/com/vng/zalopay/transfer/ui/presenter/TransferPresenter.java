@@ -39,7 +39,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     private PaymentWrapper paymentWrapper;
     private User user;
 
-    private Order mCurrentOrder;
     private ZaloFriend mCurrentZaloFriend;
     private MappingZaloAndZaloPay mCurrentMappingZaloAndZaloPay;
     private long mCurrentAmount;
@@ -50,7 +49,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     TransferStore.LocalStorage mTransferLocalStorage;
 
     private void clearCurrentData() {
-        mCurrentOrder = null;
         mCurrentZaloFriend = null;
         mCurrentMappingZaloAndZaloPay = null;
     }
@@ -59,7 +57,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         this.user = user;
         this.mTransferLocalStorage = localStorage;
 
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -76,7 +74,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                     mView.showError(mView.getContext().getString(R.string.user_invalid));
                 } else if ("token".equalsIgnoreCase(param)) {
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
-                } else if (!TextUtils.isEmpty(param)){
+                } else if (!TextUtils.isEmpty(param)) {
                     mView.showError(param);
                 }
                 mView.hideLoading();
@@ -214,7 +212,9 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 return;
             }
             mView.showLoading();
-            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.WALLET_TRANSFER.toString(), userMapZaloAndZaloPay.getZaloPayId(), message)
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount,
+                    ETransactionType.WALLET_TRANSFER.toString(),
+                    userMapZaloAndZaloPay.getZaloPayId(), message)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber(amount, message, zaloFriend, userMapZaloAndZaloPay));
@@ -246,7 +246,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             }
             mCurrentAmount = amount;
             mCurrentMessage = message;
-            mCurrentOrder = order;
             mCurrentZaloFriend = zaloFriend;
             mCurrentMappingZaloAndZaloPay = mappingZaloAndZaloPay;
             TransferPresenter.this.onCreateWalletOrderSuccess(order, zaloFriend.getDisplayName(), zaloFriend.getAvatar(), mappingZaloAndZaloPay.getPhonenumber());

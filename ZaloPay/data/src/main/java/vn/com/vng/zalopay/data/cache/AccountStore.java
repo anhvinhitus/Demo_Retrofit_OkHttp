@@ -24,6 +24,9 @@ import vn.com.vng.zalopay.domain.model.Person;
 public interface AccountStore {
 
     interface LocalStorage {
+        Person get(String zpName);
+
+        void put(String zpName, Person person);
     }
 
     interface RequestService {

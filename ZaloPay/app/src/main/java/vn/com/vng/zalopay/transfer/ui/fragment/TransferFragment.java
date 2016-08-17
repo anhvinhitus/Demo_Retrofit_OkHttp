@@ -172,7 +172,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 zaloFriend = new ZaloFriend();
                 zaloFriend.setUserId(transferRecent.getUserId());
                 zaloFriend.setDisplayName(transferRecent.getDisplayName());
-                zaloFriend.setUserName(transferRecent.getUserName());
+                zaloFriend.setUserName(transferRecent.getZaloPayName());
                 zaloFriend.setAvatar(transferRecent.getAvatar());
                 zaloFriend.setUserGender(transferRecent.getUserGender());
                 zaloFriend.setUsingApp(transferRecent.isUsingApp());

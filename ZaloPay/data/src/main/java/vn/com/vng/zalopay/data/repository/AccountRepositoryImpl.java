@@ -22,16 +22,18 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     final AccountStore.RequestService mRequestService;
     final AccountStore.UploadPhotoService mUploadPhotoService;
-
+    final AccountStore.LocalStorage localStorage;
     final User mUser;
     final UserConfig mUserConfig;
 
     UserEntityDataMapper userEntityDataMapper;
 
-    public AccountRepositoryImpl(AccountStore.RequestService accountService,
+    public AccountRepositoryImpl(AccountStore.LocalStorage localStorage,
+                                 AccountStore.RequestService accountService,
                                  AccountStore.UploadPhotoService photoService,
                                  UserConfig userConfig,
                                  User user, UserEntityDataMapper userEntityDataMapper) {
+        this.localStorage = localStorage;
         this.mRequestService = accountService;
         this.mUploadPhotoService = photoService;
         this.mUser = user;
@@ -41,6 +43,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber, String zalopayName) {
+        zalopayName = zalopayName.toLowerCase();
         return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber, zalopayName)
                 .map(baseResponse -> Boolean.TRUE);
     }
@@ -66,20 +69,27 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Person> getUserInfoByZaloPayName(String zaloPayName) {
-        return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
-                .map(response -> {
-                    Person person = new Person();
-                    person.uid = response.userid;
-                    person.avatar = response.avatar;
-                    person.dname = response.displayName;
-                    person.phonenumber = response.phoneNumber;
-                    return person;
+        zaloPayName = zaloPayName.toLowerCase();
+        Person _person = localStorage.get(zaloPayName);
+        if (_person != null) {
+            return Observable.just(_person);
+        } else {
+            return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
+                    .map(response -> {
+                        Person person = new Person();
+                        person.uid = response.userid;
+                        person.avatar = response.avatar;
+                        person.dname = response.displayName;
+                        person.phonenumber = response.phoneNumber;
+                        return person;
 
-                });
+                    });
+        }
     }
 
     @Override
     public Observable<Boolean> checkZaloPayNameExist(String zaloPayName) {
+        zaloPayName = zaloPayName.toLowerCase();
         return mRequestService.checkZaloPayNameExist(zaloPayName, mUser.uid, mUser.accesstoken)
                 .map(BaseResponse::isSuccessfulResponse);
     }

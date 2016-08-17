@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,10 +28,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.transfer.ui.adapter.TransferRecentRecyclerViewAdapter;
+import vn.com.vng.zalopay.transfer.ui.adapter.TransferRecentAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferHomePresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferHomeView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -43,13 +43,13 @@ import vn.com.vng.zalopay.utils.ValidateUtil;
  * <p>
  */
 public class TransferHomeFragment extends BaseFragment implements
-        TransferRecentRecyclerViewAdapter.OnTransferRecentItemListener, ITransferHomeView {
+        TransferRecentAdapter.OnClickTransferRecentListener, ITransferHomeView {
 
 
     @Inject
     TransferHomePresenter presenter;
 
-    private TransferRecentRecyclerViewAdapter mAdapter;
+    private TransferRecentAdapter mAdapter;
 
     @BindView(R.id.tvTileTransactionRecent)
     View mTvTileTransactionRecent;
@@ -134,7 +134,7 @@ public class TransferHomeFragment extends BaseFragment implements
             }
         });
 
-        dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     /**
@@ -165,7 +165,7 @@ public class TransferHomeFragment extends BaseFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new TransferRecentRecyclerViewAdapter(getContext(), new ArrayList<RecentTransaction>(), this);
+        mAdapter = new TransferRecentAdapter(getContext(), this);
     }
 
     @Override
@@ -221,21 +221,10 @@ public class TransferHomeFragment extends BaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == vn.com.vng.zalopay.Constants.REQUEST_CODE_TRANSFER) {
             if (resultCode == Activity.RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK, null);
                 getActivity().finish();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onItemClick(RecentTransaction item) {
-        if (item == null) {
-            return;
-        }
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
-        navigator.startTransferActivity(this, bundle);
     }
 
     @Override
@@ -282,13 +271,21 @@ public class TransferHomeFragment extends BaseFragment implements
         }
     }
 
-    public void onGetProfileSuccess(Person person) {
+    @Override
+    public void onGetProfileSuccess(Person person, String zaloPayName) {
         RecentTransaction item = new RecentTransaction();
         item.avatar = person.avatar;
         item.zaloPayId = person.uid;
         item.displayName = person.dname;
         item.phoneNumber = String.valueOf(person.phonenumber);
+        item.zaloPayName = zaloPayName;
+        onItemRecentClick(item);
+    }
 
-        onItemClick(item);
+    @Override
+    public void onItemRecentClick(RecentTransaction item) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        navigator.startTransferActivity(this, bundle);
     }
 }
