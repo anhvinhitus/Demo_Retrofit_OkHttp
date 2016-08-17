@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -24,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing.medium.t"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
@@ -42,7 +41,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.t"
+                android:layout_marginRight="16dp"
                 android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
@@ -64,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing.medium.t"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
@@ -81,7 +80,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.t"
+                android:layout_marginRight="16dp"
                 android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
@@ -157,14 +156,12 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
-        android:name="vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:clipToPadding="false"
         android:visibility="gone"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".transfer.ui.fragment.TransferHomeFragment"
-        tools:listitem="@layout/fragment_trasfer_recent_item" />
+        app:layoutManager="LinearLayoutManager" />
 
     <View
         android:id="@+id/viewSeparate"

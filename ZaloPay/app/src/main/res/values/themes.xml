@@ -16,6 +16,8 @@
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
         <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
+
+        <item name="alertDialogTheme">@style/AlertDialogStyle</item>
     </style>
 
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
@@ -88,16 +90,14 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
-    <!--<style name="AppTheme.NoActionBar.FullScreen">-->
-    <!--</style>-->
 
-    <!--<style name="AppTheme.Translucent.NoTitle" parent="AppTheme">-->
-    <!--<item name="android:windowBackground">@android:color/transparent</item>-->
-    <!--<item name="android:colorBackgroundCacheHint">@null</item>-->
-    <!--<item name="android:windowIsTranslucent">true</item>-->
-    <!--<item name="windowNoTitle">true</item>-->
-    <!--<item name="windowActionBar">false</item>-->
-    <!--<item name="android:windowContentOverlay">@null</item>-->
-    <!--</style>-->
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/colorPrimary</item>
+        <!--        &lt;!&ndash; Used for the title and text &ndash;&gt;
+                <item name="android:textColorPrimary">#FFFFFF</item>
+                &lt;!&ndash; Used for the background &ndash;&gt;
+                <item name="android:background">#4CAF50</item>-->
+    </style>
 
 </resources>

@@ -112,27 +112,16 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             }
         });
 
-        initTextView();
+        initTextView(context);
 
         addView(view);
     }
 
-    private void initTextView() {
-        if (length <= 0) {
-            return;
-        }
-        if (mRootView == null) {
-            return;
-        }
-
-        if (getContext() == null) {
-            return;
-        }
-
+    private void initTextView(Context context) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mTextViewSize, mTextViewSize);
         params.setMargins(0, 0, AndroidUtils.dp(8f), 0);
         for (int i = 0; i < length; i++) {
-            TextView textview = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.passcode_textview, mRootView, false);
+            TextView textview = (TextView) LayoutInflater.from(context).inflate(R.layout.passcode_textview, mRootView, false);
             textview.setSelected(false);
             mTextViews.add(textview);
             mRootView.addView(textview, params);

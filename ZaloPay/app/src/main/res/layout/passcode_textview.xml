@@ -4,6 +4,7 @@
     android:layout_height="32dp"
     android:layout_marginRight="8dp"
     android:background="@drawable/pin_code_round_selector"
+    android:clickable="false"
     android:gravity="center"
     android:textColor="@color/black"
     android:textSize="@dimen/font_size_medium" />
