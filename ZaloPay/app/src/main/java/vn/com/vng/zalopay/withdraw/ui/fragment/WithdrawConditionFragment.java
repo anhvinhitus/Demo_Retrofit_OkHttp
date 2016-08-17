@@ -112,8 +112,7 @@ public class WithdrawConditionFragment extends BaseFragment {
 
     private boolean checkValidLinkCard() {
         User user = getUserComponent().currentUser();
-        boolean isMapVietinBank = false;
-        boolean isMapSacomBank = false;
+        boolean isMapped = false;
         try {
             List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.uid);
             for (int i = 0; i < mapCardLis.size(); i++) {
@@ -123,16 +122,16 @@ public class WithdrawConditionFragment extends BaseFragment {
                 }
                 if (ECardType.PVTB.toString().equals(card.bankcode)) {
                     chkVietinBank.setChecked(true);
-                    isMapVietinBank = true;
+                    isMapped = true;
                 } else if (ECardType.PSCB.toString().equals(card.bankcode)) {
                     chkSacomBank.setChecked(true);
-                    isMapSacomBank = true;
+                    isMapped = true;
                 }
             }
-            return (isMapSacomBank && isMapVietinBank);
+            return isMapped;
         } catch (Exception e) {
             Timber.w(e, "Get mapped card exception: %s", e.getMessage());
         }
-        return false;
+        return isMapped;
     }
 }
