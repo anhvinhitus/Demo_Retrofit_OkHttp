@@ -17,6 +17,10 @@ public class MenuItem extends AbstractData {
     private Integer subIconResource;
     private boolean showDivider;
 
+    public MenuItem(int id) {
+        this.id = id;
+    }
+
     public MenuItem(int id, MenuItemType itemType, Integer iconResource, Integer subIconResource, String title, boolean showDivider) {
         this.id = id;
         this.itemType = itemType;
@@ -44,7 +48,7 @@ public class MenuItem extends AbstractData {
         this.showDivider = showDivider;
     }
 
-    public MenuItem(int id, MenuItemType itemType, Integer iconResource,String title) {
+    public MenuItem(int id, MenuItemType itemType, Integer iconResource, String title) {
         this.id = id;
         this.itemType = itemType;
         this.title = title;
@@ -59,7 +63,7 @@ public class MenuItem extends AbstractData {
         title = source.readString();
         iconResource = source.readInt();
         subIconResource = source.readInt();
-        showDivider = source.readInt()==1?true:false;
+        showDivider = source.readInt() == 1 ? true : false;
     }
 
     @Override
@@ -69,7 +73,7 @@ public class MenuItem extends AbstractData {
         dest.writeString(title);
         dest.writeInt(iconResource);
         dest.writeInt(subIconResource);
-        dest.writeInt(showDivider?1:0);
+        dest.writeInt(showDivider ? 1 : 0);
     }
 
     public static final Parcelable.Creator<MenuItem> CREATOR = new Parcelable.Creator<MenuItem>() {

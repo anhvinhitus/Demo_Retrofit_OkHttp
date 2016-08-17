@@ -13,19 +13,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -89,7 +94,20 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new MenuItemAdapter(getContext(), MenuItemUtil.getMenuItems());
+
+        boolean isEnableDeposit = false;
+        List<MenuItem> listItem = MenuItemUtil.getMenuItems();
+        try {
+            isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
+        } catch (Exception e) {
+            Timber.d(e, "Get info deposit exception");
+        }
+
+        if (!isEnableDeposit) {
+            listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
+        }
+
+        mAdapter = new MenuItemAdapter(getContext(), listItem);
     }
 
     @Override
@@ -136,7 +154,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         tvName = (TextView) viewProfile.findViewById(R.id.tv_name);
         tvBalance = (TextView) viewProfile.findViewById(R.id.tv_balance);
         tvZaloPayName = (TextView) viewProfile.findViewById(R.id.tvZaloPayName);
-
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
