@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-import io.netty.channel.ConnectTimeoutException;
+//import io.netty.channel.ConnectTimeoutException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
@@ -287,7 +287,7 @@ public class WsConnection extends Connection {
             mState = Connection.State.Disconnected;
 
             if (e instanceof SocketTimeoutException) {
-            } else if (e instanceof ConnectTimeoutException) {
+//            } else if (e instanceof ConnectTimeoutException) {
             } else if (e instanceof ConnectException) {
             } else if (e instanceof UnknownHostException) {
             }

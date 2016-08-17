@@ -34,7 +34,7 @@
 
 -keep class vn.com.vng.zalopay.react.** { *; }
 -keep class vn.com.vng.zalopay.domain.** { *; }
--keep class vn.com.vng.zalopay.data.** { *; }
+# -keep class vn.com.vng.zalopay.data.** { *; }
 -keep class vn.com.vng.zalopay.event.** { *; }
 
 # React Native

@@ -13,7 +13,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+//import io.netty.util.internal.logging.InternalLoggerFactory;
 import timber.log.Timber;
 import vn.com.vng.debugviewer.DebugViewer;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
+//import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
@@ -72,7 +72,7 @@ public class AndroidApplication extends MultiDexApplication {
             });
         } else {
             Timber.plant(new CrashlyticsTree());
-            InternalLoggerFactory.setDefaultFactory(new NonLoggerFactory());
+//            InternalLoggerFactory.setDefaultFactory(new NonLoggerFactory());
         }
 
         Fabric.with(this, new Crashlytics());

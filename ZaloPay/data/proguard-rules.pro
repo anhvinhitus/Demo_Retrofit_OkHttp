@@ -20,6 +20,6 @@
 -keepclasseswithmembers class vn.com.vng.zalopay.data.** {
     *;
 }
--keepnames class vn.com.vng.zalopay.data.** {
-    *;
-}
+# -keepnames class vn.com.vng.zalopay.data.** {
+#    *;
+# }

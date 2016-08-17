@@ -81,7 +81,7 @@ dependencies {
     compile project(':domain')
 
     // compile 'io.netty:netty-all:4.1.0.CR4'
-    compile libs.netty_codec
-    compile libs.netty_transport
+//    compile libs.netty_codec
+//    compile libs.netty_transport
     compile libs.protobuf
 }
