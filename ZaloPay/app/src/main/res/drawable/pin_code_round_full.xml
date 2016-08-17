@@ -3,21 +3,23 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@android:color/transparent" />
+
             <padding
-                android:bottom="11dp"
-                android:left="11dp"
-                android:right="11dp"
-                android:top="11dp" />
+                android:bottom="8dp"
+                android:left="8dp"
+                android:right="8dp"
+                android:top="8dp" />
 
             <size
-                android:width="12dp"
-                android:height="12dp" />
+                android:width="16dp"
+                android:height="16dp" />
 
             <stroke
                 android:width="@dimen/separate"
                 android:color="@color/hint" />
         </shape>
     </item>
+
     <item>
         <shape android:shape="oval">
             <solid android:color="@android:color/black" />
@@ -26,4 +28,5 @@
                 android:height="0.6dp" />
         </shape>
     </item>
+
 </layer-list>

@@ -4,7 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -67,40 +69,38 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
+
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PassCodeView, 0, 0);
         try {
-            length = typedArray.getInt(R.styleable.PassCodeView_length, DEFAULT_LENGTH);
+            length = typedArray.getInt(R.styleable.PassCodeView_length, getResources().getInteger(R.integer.pin_length));
             mHint = typedArray.getString(R.styleable.PassCodeView_hint);
             mNote = typedArray.getString(R.styleable.PassCodeView_note);
         } finally {
             typedArray.recycle();
         }
+
         mTextViews = new ArrayList<>();
-        mTextViewSize = (int) (AndroidUtils.density * 36);
-        inflate(context, R.layout.passcodeview, this);
-        mRootView = (LinearLayout) this.findViewById(R.id.root);
-        mTextInputLayout = (TextInputLayout) this.findViewById(R.id.textInputLayout);
-        mTvHint = (TextView) this.findViewById(R.id.tvHint);
+        mTextViewSize = AndroidUtils.dp(36f);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.passcodeview, this, false);
+        mRootView = (LinearLayout) view.findViewById(R.id.root);
+        mTextInputLayout = (TextInputLayout) view.findViewById(R.id.textInputLayout);
+        mTvHint = (TextView) view.findViewById(R.id.tvHint);
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
         }
-        mTvNote = (TextView) this.findViewById(R.id.tvNote);
+        mTvNote = (TextView) view.findViewById(R.id.tvNote);
         if (TextUtils.isEmpty(mNote)) {
-            mTvNote.setVisibility(GONE);
+            mTvNote.setVisibility(INVISIBLE);
         } else {
             mTvNote.setText(mNote);
             mTvNote.setVisibility(VISIBLE);
         }
-        mEditText = (EditText) this.findViewById(R.id.editText);
-        mEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(length)});
+        mEditText = (EditText) view.findViewById(R.id.editText);
         mEditText.addTextChangedListener(this);
         mEditText.setOnFocusChangeListener(this);
-        initTextView();
-        initShowHidePassCode();
-    }
 
-    private void initShowHidePassCode() {
-        mTvShowHide = (TextView) findViewById(R.id.tvShowHide);
+        mTvShowHide = (TextView) view.findViewById(R.id.tvShowHide);
 
         mTvShowHide.setOnClickListener(new OnClickListener() {
             @Override
@@ -114,6 +114,10 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
                 }
             }
         });
+
+        initTextView();
+
+        addView(view);
     }
 
     private void initTextView() {
@@ -129,9 +133,9 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         }
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mTextViewSize, mTextViewSize);
-        params.setMargins(0, 0, (int) (AndroidUtils.density * 8), 0);
+        params.setMargins(0, 0, AndroidUtils.dp(8f), 0);
         for (int i = 0; i < length; i++) {
-            TextView textview = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.passcode_textview, null);
+            TextView textview = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.passcode_textview, mRootView, false);
             textview.setSelected(false);
             mTextViews.add(textview);
             mRootView.addView(textview, params);
@@ -214,8 +218,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public void hideError() {
-        mTextInputLayout.setErrorEnabled(false);
-        mTextInputLayout.setError(null);
+        mTvNote.setVisibility(INVISIBLE);
     }
 
     public void showError(String error) {
@@ -223,9 +226,8 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             hideError();
             return;
         }
-        mTvNote.setVisibility(GONE);
-        mTextInputLayout.setErrorEnabled(true);
-        mTextInputLayout.setError(error);
+        mTvNote.setVisibility(VISIBLE);
+        mTvNote.setText(error);
     }
 
     @Override
@@ -285,8 +287,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public void setBackgroundEdittext(int res) {
-        mEditText.setBackgroundResource(res);
-
+        //  mEditText.setBackgroundResource(res);
     }
 
     public boolean requestFocusView() {

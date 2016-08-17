@@ -34,11 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:maxLength="6"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             zalopay:hint="Nhập mã số PIN cũ"
-            zalopay:length="6" />
+            zalopay:length="@integer/pin_length" />
 
 
         <TextView
@@ -61,11 +60,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:maxLength="6"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             zalopay:hint="Nhập mã số PIN mới"
-            zalopay:length="6" />
+            zalopay:length="@integer/pin_length"/>
 
         <TextView
             android:id="@+id/tvContact"

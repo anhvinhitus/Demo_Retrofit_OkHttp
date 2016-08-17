@@ -7,11 +7,10 @@
 
     <TextView
         android:id="@+id/tvHint"
+        style="@style/TextView.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:textSize="@dimen/textsize.tiny"
-        android:visibility="visible" />
+        android:textSize="@dimen/textsize.tiny" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -21,7 +20,8 @@
             android:id="@+id/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/spacing.small"
+            android:layout_gravity="bottom"
+            android:paddingTop="10dp"
             app:errorEnabled="false">
 
             <EditText
@@ -29,14 +29,15 @@
                 style="@style/Passcode.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_passcode"
-                android:clickable="@null"
+                android:background="@drawable/txt_bottom_default_style"
+                android:clickable="true"
                 android:cursorVisible="false"
                 android:ellipsize="end"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:inputType="number"
-                android:longClickable="@null"
+                android:longClickable="false"
+                android:maxLength="@integer/pin_length"
                 android:maxLines="1"
                 android:singleLine="true">
 
@@ -44,40 +45,46 @@
             </EditText>
         </android.support.design.widget.TextInputLayout>
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/root"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="left|top"
-                android:layout_marginBottom="@dimen/spacing.medium"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1.0"
-                android:orientation="horizontal" />
+                android:layout_height="wrap_content"
+                android:layout_marginRight="68dp"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp" />
 
-            <TextView
+            <Button
                 android:id="@+id/tvShowHide"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0.0"
-                android:gravity="center_vertical|right"
+                style="@style/Button.Default"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="4dp"
+                android:background="@null"
+                android:gravity="center"
+                android:minHeight="0px"
+                android:minWidth="0px"
                 android:padding="@dimen/app_padding"
                 android:text="@string/show"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/textsize.normal.s" />
-        </LinearLayout>
+        </FrameLayout>
     </FrameLayout>
 
     <TextView
         android:id="@+id/tvNote"
+        style="@style/TextView.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing.tiny"
+        android:textColor="@color/red"
         android:textSize="@dimen/textsize.tiny"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 </LinearLayout>
