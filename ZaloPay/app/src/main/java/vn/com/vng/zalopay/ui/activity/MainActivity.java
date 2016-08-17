@@ -15,6 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 
+import com.zalopay.apploader.internal.ModuleName;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -25,12 +27,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-
-import com.zalopay.apploader.internal.ModuleName;
-
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -40,6 +37,8 @@ import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -217,8 +216,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
             case MenuItemUtil.SIGOUT_ID:
-                presenter.logout();
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
+                showConfirmSigout();
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, ModuleName.TRANSACTION_LOGS);
@@ -234,6 +232,22 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 break;
 
         }
+    }
+
+    private void showConfirmSigout() {
+        new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
+                .setContentText(getString(R.string.txt_confirm_sigout))
+                .setCancelText(getString(R.string.cancel))
+                .setConfirmText(getString(R.string.accept))
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        presenter.logout();
+                        ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
+                    }
+                })
+                .show();
     }
 
     private void startQRCodeActivity() {
