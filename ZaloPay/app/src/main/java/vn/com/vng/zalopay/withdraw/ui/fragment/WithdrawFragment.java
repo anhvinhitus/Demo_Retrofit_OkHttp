@@ -12,6 +12,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -52,16 +53,14 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     @BindView(R.id.btnContinue)
     View btnContinue;
 
-    View.OnClickListener onClickContinue = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!isValidAmount()) {
-                return;
-            }
-            showProgressDialog();
-            mPresenter.continueWithdraw(mAmount);
+    @OnClick(R.id.btnContinue)
+    public void setOnClickContinue(){
+        if (!isValidAmount()) {
+            return;
         }
-    };
+        showProgressDialog();
+        mPresenter.continueWithdraw(mAmount);
+    }
 
     private void showAmountError(String error) {
         if (!TextUtils.isEmpty(error)) {
@@ -183,13 +182,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     }
 
     private void checkShowBtnContinue() {
-        if (mAmount <= 0) {
-            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
-            btnContinue.setOnClickListener(null);
-        } else {
-            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
-            btnContinue.setOnClickListener(onClickContinue);
-        }
+        btnContinue.setEnabled(mAmount > 0);
     }
 
     @Override

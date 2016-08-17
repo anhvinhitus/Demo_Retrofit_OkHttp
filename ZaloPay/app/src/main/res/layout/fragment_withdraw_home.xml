@@ -20,7 +20,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/loremipsum"
             android:scaleType="center"
-            android:src="@drawable/ic_tien"/>
+            android:src="@drawable/ic_wallet_money"/>
 
         <TextView
             style="@style/TextView.Title"
