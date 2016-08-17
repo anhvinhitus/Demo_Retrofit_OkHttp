@@ -9,6 +9,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 //import io.netty.channel.ConnectTimeoutException;
 import timber.log.Timber;
@@ -19,6 +21,7 @@ import vn.com.vng.zalopay.data.ws.SocketClient;
 import vn.com.vng.zalopay.data.ws.TCPClient;
 import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.Enums;
@@ -30,6 +33,7 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public class WsConnection extends Connection {
     private static final int TIMER_HEARTBEAT = 60 * 1000;
+    private static final int SERVER_TIMEOUT = 2 * 60 * 1000;
     private static final int TIMER_CONNECTION_CHECK = 10 * 1000;
     private String gcmToken;
 
@@ -43,6 +47,19 @@ public class WsConnection extends Connection {
     private SocketClient mSocketClient;
     private TimerWrapper mHeartBeatKeeper = new TimerWrapper(new SendHeartBeatTask());
     private TimerWrapper mConnectionChecker = new TimerWrapper(new CheckConnectionTask());
+    private long mServerResponse;
+
+    // state machine for keeping track of network connection
+    private int mConnectionState;
+
+    /**
+     * Next connection state.
+     * If request to disconnect: set mNextConnectionState = DISCONNECT
+     * If network connection is lost due to error: set mNextConnectionState = RETRY_CONNECT
+     */
+    private int mNextConnectionState;
+    private static final int NEXTSTATE_RETRY_CONNECT = 1;
+    private static final int NEXTSTATE_DISCONNECT = 2;
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
@@ -64,6 +81,12 @@ public class WsConnection extends Connection {
 
     @Override
     public void ping() {
+        if (System.currentTimeMillis() - mServerResponse > SERVER_TIMEOUT) {
+            Timber.d("Server is not responding. Try to reconnect");
+            reconnect();
+            return;
+        }
+
         ZPMsgProtos.MessageConnectionInfo.Builder pingMessage = ZPMsgProtos.MessageConnectionInfo.newBuilder()
                 .setUserid(getCurrentUserId())
                 .setEmbeddata(System.currentTimeMillis());
@@ -71,9 +94,24 @@ public class WsConnection extends Connection {
         send(ZPMsgProtos.MessageType.PING_SERVER.getNumber(), pingMessage.build());
     }
 
+    private void reconnect() {
+        disconnect();
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // this code will be executed after 1 seconds
+                Timber.d("Begin to reconnect");
+                mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
+                connect();
+            }
+        }, 1000);
+    }
+
     @Override
     public void disconnect() {
         Timber.d("disconnect");
+        mNextConnectionState = NEXTSTATE_DISCONNECT;
         mSocketClient.disconnect();
         mHeartBeatKeeper.stop();
     }
@@ -109,7 +147,6 @@ public class WsConnection extends Connection {
 
         return true;
     }
-
 
     private boolean sendAuthentication(String token, long uid) {
 
@@ -233,34 +270,74 @@ public class WsConnection extends Connection {
         }
     }
 
+    private class ServerTimeoutTask implements TimerListener {
+        @Override
+        public int period() {
+            return SERVER_TIMEOUT;
+        }
+
+        /**
+         * Get amount of time in milliseconds before first execution.
+         *
+         * @return amount of time in milliseconds before first execution.
+         */
+        @Override
+        public int delay() {
+            return SERVER_TIMEOUT;
+        }
+
+        /**
+         * called when timer ticked
+         */
+        @Override
+        public void onEvent() {
+            Timber.d("Server is not response within agreed time. Should disconnect server and reconnect");
+            mServerResponse = System.currentTimeMillis();
+        }
+    }
+
+
     private class ConnectionListener implements Listener {
 
         @Override
         public void onConnected() {
             Timber.d("onConnected");
             mState = State.Connected;
+            mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
             //    numRetry = 0;
             sendAuthentication();
 
             mConnectionChecker.stop();
             mHeartBeatKeeper.start();
+            mServerResponse = System.currentTimeMillis();
         }
 
         @Override
         public void onMessage(byte[] data) {
-            Timber.d("onReceived");
+            Timber.v("onReceived: %s bytes", data.length);
             Event message = parser.parserMessage(data);
-            if (message != null) {
-                Timber.d("onReceived message.msgType %s", message.getMsgType());
+            if (message == null) {
+                return;
+            }
 
-                if (message.getMsgType() == MessageType.Response.AUTHEN_LOGIN_RESULT) {
-                    numRetry = 0;
-                } else if (message.getMsgType() == MessageType.Response.KICK_OUT) {
-                    disconnect();
-                } else {
-                    postResult(message);
-                }
+            Timber.v("message.msgType %s", message.getMsgType());
+            boolean needFeedback = true;
 
+            if (message.getMsgType() == ZPMsgProtos.ServerMessageType.AUTHEN_LOGIN_RESULT.getNumber()) {
+                numRetry = 0;
+            } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.KICK_OUT_USER.getNumber()) {
+                needFeedback = false;
+                mNextConnectionState = NEXTSTATE_DISCONNECT;
+                disconnect();
+            } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.PONG_CLIENT.getNumber()) {
+                needFeedback = false;
+                mServerResponse = System.currentTimeMillis();
+                Timber.v("Got pong from server. Time elapsed: %s", mServerResponse - ((ServerPongData)message).clientData);
+            } else {
+                postResult(message);
+            }
+
+            if (needFeedback) {
                 sendFeedbackStatus(message);
             }
         }
@@ -273,11 +350,8 @@ public class WsConnection extends Connection {
 
             mSocketClient.disconnect();
 
-            if (NetworkHelper.isNetworkAvailable(context)
-                    && userConfig.hasCurrentUser()
-                    && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
-                connect();
-                numRetry++;
+            if (mNextConnectionState == NEXTSTATE_RETRY_CONNECT) {
+                scheduleReconnect();
             }
         }
 
@@ -293,6 +367,15 @@ public class WsConnection extends Connection {
             }
 
             mConnectionChecker.start();
+        }
+    }
+
+    private void scheduleReconnect() {
+        if (NetworkHelper.isNetworkAvailable(context)
+                && userConfig.hasCurrentUser()
+                && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
+            connect();
+            numRetry++;
         }
     }
 }

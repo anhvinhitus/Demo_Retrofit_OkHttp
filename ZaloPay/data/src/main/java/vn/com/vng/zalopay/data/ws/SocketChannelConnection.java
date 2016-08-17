@@ -139,8 +139,11 @@ class SocketChannelConnection {
 
             if (key.isConnectable()) {
                 Timber.d("OP_CONNECT is fired");
-                this.handleConnect(key);
-                continue;
+                if (!this.handleConnect(key)) {
+                    return false;
+                } else {
+                    continue;
+                }
             }
 
             if (key.isReadable()) {
@@ -199,7 +202,7 @@ class SocketChannelConnection {
         }
     }
 
-    private void handleConnect(SelectionKey key) {
+    private boolean handleConnect(SelectionKey key) {
         try {
             SocketChannel channel = (SocketChannel) key.channel();
 
@@ -213,6 +216,8 @@ class SocketChannelConnection {
             } else {
                 Timber.d("connection is not ready");
             }
+
+            return true;
         } catch (IOException e) {
             Timber.d(e, "exception while handling connection");
             mConnectionState = ConnectionState.NOT_CONNECTED;
@@ -221,6 +226,7 @@ class SocketChannelConnection {
             key.cancel();
 
             mListenable.onDisconnected(REASON_CONNECTION_ERROR);
+            return false;
         }
     }
 
