@@ -8,7 +8,10 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import com.zalopay.apploader.BundleReactConfig;
+import com.zalopay.apploader.ReactBasedActivity;
+import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,11 +38,7 @@ import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import com.zalopay.apploader.BundleReactConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
-import com.zalopay.apploader.ReactBasedActivity;
-import com.zalopay.apploader.ReactNativeHostable;
-import com.zalopay.apploader.internal.ModuleName;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
@@ -217,7 +216,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         return Arrays.asList(
                 new MainReactPackage(),
                 new RNSendIntentPackage(),
-                new ReactNativeContacts(),
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
