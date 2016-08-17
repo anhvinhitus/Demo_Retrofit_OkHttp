@@ -113,6 +113,8 @@
     <string name="txt_leftmenu_sigout">Đăng Xuất</string>
     <!--Left Menu lable END-->
 
+    <string name="txt_confirm_sigout">Bạn có muốn đăng xuất khỏi tài khoản Zalo Pay không?</string>
+
     <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
     <string name="txt_link_card_view_detail">Xem chi tiết</string>
     <string name="txt_link_card_remove_link">Xóa thẻ</string>
