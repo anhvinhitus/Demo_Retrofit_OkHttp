@@ -108,6 +108,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        edtOTP.requestFocus();
         mRetryOtp = 0;
     }
 
