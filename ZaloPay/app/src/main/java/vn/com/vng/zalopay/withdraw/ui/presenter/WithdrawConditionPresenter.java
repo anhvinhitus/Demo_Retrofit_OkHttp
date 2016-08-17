@@ -19,12 +19,8 @@ import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 public class WithdrawConditionPresenter extends BaseZaloPayPresenter implements IPresenter<IWithdrawConditionView> {
 
     private IWithdrawConditionView mView;
-    private User mUser;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public WithdrawConditionPresenter(User user) {
-        mUser = user;
-    }
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public void getProfile() {
         User user = userConfig.getCurrentUser();

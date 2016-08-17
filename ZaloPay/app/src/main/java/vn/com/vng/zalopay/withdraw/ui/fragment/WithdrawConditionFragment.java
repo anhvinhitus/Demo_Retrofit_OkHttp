@@ -8,6 +8,8 @@ import android.widget.CheckBox;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -28,6 +30,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class WithdrawConditionFragment extends BaseFragment implements IWithdrawConditionView {
 
+    @Inject
     WithdrawConditionPresenter mPresenter;
 
     @BindView(R.id.chkEmail)

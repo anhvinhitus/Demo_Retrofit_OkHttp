@@ -168,7 +168,7 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    WithdrawConditionPresenter providesWithdrawConditionPresenter(User user) {
-        return new WithdrawConditionPresenter(user);
+    WithdrawConditionPresenter providesWithdrawConditionPresenter() {
+        return new WithdrawConditionPresenter();
     }
 }
