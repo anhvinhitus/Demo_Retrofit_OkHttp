@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawHomePresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawHomeView;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -40,6 +41,9 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
 
     @BindView(R.id.tvAccountName)
     TextView tvAccountName;
+
+    @BindView(R.id.layoutDeposit)
+    View layoutDeposit;
 
     @OnClick(R.id.layoutDeposit)
     public void onClickDeposit() {
@@ -91,6 +95,20 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
+        checkShowHideDeposit();
+    }
+
+    private void checkShowHideDeposit() {
+        try {
+            boolean isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
+            if (isEnableDeposit) {
+                layoutDeposit.setVisibility(View.VISIBLE);
+            } else {
+                layoutDeposit.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            Timber.w(e, "check show/hide deposit exception: [%s]", e.getMessage());
+        }
     }
 
     @Override
@@ -129,6 +147,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
     @Override
     public void onDestroy() {
         mPresenter.destroy();
+        CShareData.dispose();
         super.onDestroy();
     }
 
