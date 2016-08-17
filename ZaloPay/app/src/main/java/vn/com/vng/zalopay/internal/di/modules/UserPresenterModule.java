@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
+import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawHomePresenter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 
@@ -163,5 +164,11 @@ public class UserPresenterModule {
     @Provides
     TransferHomePresenter providesTransferHomePresenter() {
         return new TransferHomePresenter();
+    }
+
+    @UserScope
+    @Provides
+    WithdrawConditionPresenter providesWithdrawConditionPresenter(User user) {
+        return new WithdrawConditionPresenter(user);
     }
 }

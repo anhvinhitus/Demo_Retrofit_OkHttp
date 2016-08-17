@@ -14,6 +14,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
+import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -24,7 +26,9 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * Use the {@link WithdrawConditionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WithdrawConditionFragment extends BaseFragment {
+public class WithdrawConditionFragment extends BaseFragment implements IWithdrawConditionView {
+
+    WithdrawConditionPresenter mPresenter;
 
     @BindView(R.id.chkEmail)
     CheckBox chkEmail;
@@ -87,6 +91,7 @@ public class WithdrawConditionFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter.setView(this);
     }
 
     public void checkValidCondition() {
@@ -141,5 +146,35 @@ public class WithdrawConditionFragment extends BaseFragment {
             Timber.w(e, "Get mapped card exception: %s", e.getMessage());
         }
         return isMapped;
+    }
+
+    @Override
+    public void showLoading() {
+        super.showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
+    public void updateUserInfo(User user) {
+        checkValidCondition();
     }
 }
