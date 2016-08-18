@@ -101,10 +101,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
             return false;
         }
 
-        if (mAmount % 10000 != 0) {
-            showAmountError(getString(R.string.valid_money));
-            return false;
-        }
         return true;
     }
 
