@@ -65,7 +65,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.tag(TAG);
+        Timber.d("onCreate [%s]", TAG);
         createUserComponent();
         setupActivityComponent();
         setContentView(getResLayoutId());
@@ -148,7 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        Timber.d("%s onDestroy", TAG);
+        Timber.d("onDestroy [%s]", TAG);
     }
 
 

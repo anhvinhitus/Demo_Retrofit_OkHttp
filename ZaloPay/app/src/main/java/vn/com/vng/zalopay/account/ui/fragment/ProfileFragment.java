@@ -98,8 +98,14 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @Override
     public void onResume() {
-        super.onResume();
         mPresenter.resume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
     }
 
     @Override

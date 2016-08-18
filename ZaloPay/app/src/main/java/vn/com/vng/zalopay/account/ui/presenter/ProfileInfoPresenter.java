@@ -30,12 +30,12 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void setView(IProfileInfoView iProfileInfoView) {
         mView = iProfileInfoView;
-        eventBus.register(this);
+
     }
 
     @Override
     public void destroyView() {
-        eventBus.unregister(this);
+
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }
@@ -43,12 +43,14 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void resume() {
         mView.updateUserInfo(userConfig.getCurrentUser());
+        eventBus.register(this);
         getBalance();
     }
 
 
     @Override
     public void pause() {
+        eventBus.unregister(this);
     }
 
     @Override

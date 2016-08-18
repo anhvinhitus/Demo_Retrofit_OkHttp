@@ -145,6 +145,12 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        presenter.pause();
+    }
+
+    @Override
     public void onDestroy() {
         presenter.destroy();
         super.onDestroy();
