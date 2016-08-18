@@ -88,7 +88,14 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Override
     public void onResume() {
         super.onResume();
+        mPresenter.resume();
         checkValidCondition();
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
     }
 
     @Override
@@ -149,6 +156,18 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
             Timber.w(e, "Get mapped card exception: %s", e.getMessage());
         }
         return isMapped;
+    }
+
+    @Override
+    public void onDestroyView() {
+        mPresenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
     }
 
     @Override

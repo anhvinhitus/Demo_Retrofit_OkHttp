@@ -73,13 +73,11 @@ public class WithdrawConditionPresenter extends BaseZaloPayPresenter implements 
 
     @Override
     public void resume() {
-        eventBus.register(this);
         getProfile();
     }
 
     @Override
     public void pause() {
-        eventBus.unregister(this);
     }
 
     @Override
