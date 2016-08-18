@@ -13,17 +13,13 @@ import com.squareup.leakcanary.LeakCanary;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
-//import io.netty.util.internal.logging.InternalLoggerFactory;
 import timber.log.Timber;
 import vn.com.vng.debugviewer.DebugViewer;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-//import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
@@ -33,8 +29,13 @@ import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
+
+//import io.netty.util.internal.logging.InternalLoggerFactory;
+//import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -80,6 +81,8 @@ public class AndroidApplication extends MultiDexApplication {
         // Initialize ZPAnalytics
         initializeZaloPayAnalytics();
 
+        initializeFontFamily();
+
         initAppComponent();
 
         Timber.d(" onCreate " + appComponent);
@@ -91,6 +94,7 @@ public class AndroidApplication extends MultiDexApplication {
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
         ZPAnalytics.trackEvent(ZPEvents.APP_LAUNCH);
+
     }
 
     private void initializeZaloPayAnalytics() {
@@ -121,8 +125,8 @@ public class AndroidApplication extends MultiDexApplication {
     private void initializeFontFamily() {
         AndroidUtils.setDefaultFont(this, "DEFAULT", "fonts/Roboto-Regular.ttf");
         AndroidUtils.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Roboto-Medium.ttf");
-        // AndroidUtils.setDefaultFont(this, "MONOSPACE", "MyFontAsset2.ttf");
-        // AndroidUtils.setDefaultFont(this, "SERIF", "MyFontAsset3.ttf");
+         AndroidUtils.setDefaultFont(this, "MONOSPACE", "fonts/Roboto-Medium.ttf");
+        AndroidUtils.setDefaultFont(this, "SERIF", "fonts/Roboto-Regular.ttf");
         AndroidUtils.setDefaultFont(this, "SANS_SERIF", "fonts/Roboto-Regular.ttf");
     }
 

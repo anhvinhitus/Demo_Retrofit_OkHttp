@@ -8,7 +8,9 @@
     </style>
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/textsize.large</item>
+        <item name="android:textSize">@dimen/textsize.normal.l</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="HomePage.Title" parent="android:Widget.TextView">
@@ -28,12 +30,6 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="Notification.CountText" parent="@android:style/TextAppearance.Widget.TextView">
-        <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/textsize.tiny.s</item>
-    </style>
-
     <style name="Deposit.CardInfo.Title" parent="android:Widget.TextView">
         <item name="android:textSize">@dimen/textsize.normal.l</item>
         <item name="android:textColor">@color/leftmenu.title</item>
@@ -45,6 +41,14 @@
         <item name="android:textColor">@color/leftmenu.title</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
+    <style name="TextView.Title.Bold">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/c_text_black</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
 
     <style name="TextView.Title.Default">
         <item name="android:singleLine">true</item>
@@ -122,6 +126,5 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
-
 
 </resources>

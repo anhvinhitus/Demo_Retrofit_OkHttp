@@ -8,21 +8,7 @@
     android:theme="@style/Toolbar"
     app:contentInsetLeft="16dp"
     app:contentInsetStart="16dp"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
-
-    <TextView
-        android:id="@+id/toolbar_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|left"
-        android:singleLine="true"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textColor="@color/white"
-        android:textSize="@dimen/textsize.normal" />
-
-</android.support.v7.widget.Toolbar>
-
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
 
