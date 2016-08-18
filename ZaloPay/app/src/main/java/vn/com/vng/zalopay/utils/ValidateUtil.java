@@ -14,11 +14,7 @@ public class ValidateUtil {
     public static final int VALIDATE_PASSWORD_ERROR_NOT_MATCH = 4;
 
     public static boolean isValidLengthZPName(String zaloPayName) {
-        if (zaloPayName.length() > 24 || zaloPayName.length() < 4) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(zaloPayName.length() > 24 || zaloPayName.length() < 4);
     }
 
     public static boolean isValidZaloPayName(String zaloPayName) {
@@ -42,11 +38,8 @@ public class ValidateUtil {
     }
 
     public static boolean isCMND(String str) {
-        if (!isNumeric(str)) {
-            return false;
-        }
+        return isNumeric(str);
 
-        return true;
     }
 
     public static String checkInputPhoneNumber(String str) {
@@ -90,11 +83,7 @@ public class ValidateUtil {
             if (acceptSpacingBetweenNumbers) {
                 refinedInput = removeSpacingMobileNumber(input);
             }
-            if (refinedInput.matches(getPhoneRegex())) {
-                return true;
-            } else {
-                return false;
-            }
+            return refinedInput.matches(getPhoneRegex());
         }
     }
 
@@ -184,11 +173,7 @@ public class ValidateUtil {
     public static boolean isEmailAddress(String input) {
         if (TextUtils.isEmpty(input)) return false;
         else {
-            if (input.matches("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")) {
-                return true;
-            } else {
-                return false;
-            }
+            return input.matches("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
         }
     }
 }

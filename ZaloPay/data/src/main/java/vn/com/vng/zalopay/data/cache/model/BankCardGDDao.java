@@ -28,7 +28,7 @@ public class BankCardGDDao extends AbstractDao<BankCardGD, String> {
         public final static Property First6cardno = new Property(2, String.class, "first6cardno", false, "FIRST6CARDNO");
         public final static Property Last4cardno = new Property(3, String.class, "last4cardno", false, "LAST4CARDNO");
         public final static Property Bankcode = new Property(4, String.class, "bankcode", false, "BANKCODE");
-    };
+    }
 
 
     public BankCardGDDao(DaoConfig config) {

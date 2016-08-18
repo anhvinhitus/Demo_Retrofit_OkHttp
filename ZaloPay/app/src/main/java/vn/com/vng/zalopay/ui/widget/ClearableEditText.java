@@ -115,8 +115,8 @@ public class ClearableEditText extends EditText {
     }
 
     public ClearableEditText(Context context) {
-        super(context, (AttributeSet) null);
-        this.init((AttributeSet) null, 0);
+        super(context, null);
+        this.init(null, 0);
     }
 
     public ClearableEditText(Context context, AttributeSet attrs) {
@@ -157,9 +157,9 @@ public class ClearableEditText extends EditText {
 
     public boolean isValid() {
         if (this.mIsPattern && this.mAdapter != null) {
-            this.mPattern = ResourceManager.getInstance((String) null).getPattern(this.mEditTextConfig.id, this.mAdapter.getChannelID());
+            this.mPattern = ResourceManager.getInstance(null).getPattern(this.mEditTextConfig.id, this.mAdapter.getChannelID());
             if (this.mPattern == null) {
-                this.mPattern = ResourceManager.getInstance((String) null).getPattern(this.mEditTextConfig.id, "all");
+                this.mPattern = ResourceManager.getInstance(null).getPattern(this.mEditTextConfig.id, "all");
             }
 
             if (this.getText().length() == 0) {
@@ -252,7 +252,7 @@ public class ClearableEditText extends EditText {
 
             if (this.drawableRightDelete != null) {
                 this.bounds = this.drawableRightDelete.getBounds();
-                this.setCompoundDrawablesWithIntrinsicBounds((Drawable) null, (Drawable) null, this.drawableRightDelete, (Drawable) null);
+                this.setCompoundDrawablesWithIntrinsicBounds(null, null, this.drawableRightDelete, null);
             }
         } else {
             this.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);

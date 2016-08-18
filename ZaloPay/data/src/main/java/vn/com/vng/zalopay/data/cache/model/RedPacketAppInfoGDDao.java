@@ -33,7 +33,7 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         public final static Property MaxMessageLength = new Property(7, Integer.class, "maxMessageLength", false, "MAX_MESSAGE_LENGTH");
         public final static Property BundleExpiredTime = new Property(8, Long.class, "bundleExpiredTime", false, "BUNDLE_EXPIRED_TIME");
         public final static Property MinDivideAmount = new Property(9, Long.class, "minDivideAmount", false, "MIN_DIVIDE_AMOUNT");
-    };
+    }
 
 
     public RedPacketAppInfoGDDao(DaoConfig config) {

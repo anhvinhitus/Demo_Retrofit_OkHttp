@@ -7,7 +7,7 @@ public enum MenuItemType {
     HEADER(0), ITEM(1), OTHERS(-1);
     private final int value;
 
-    private MenuItemType(int value) {
+    MenuItemType(int value) {
         this.value = value;
     }
 

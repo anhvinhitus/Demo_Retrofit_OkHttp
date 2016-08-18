@@ -33,7 +33,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         public final static Property StateDownload = new Property(7, Integer.class, "stateDownload", false, "STATE_DOWNLOAD");
         public final static Property TimeDownload = new Property(8, Long.class, "timeDownload", false, "TIME_DOWNLOAD");
         public final static Property NumRetry = new Property(9, Integer.class, "numRetry", false, "NUM_RETRY");
-    };
+    }
 
 
     public AppResourceGDDao(DaoConfig config) {

@@ -114,11 +114,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             return false;
         }
 
-        if (!isValidMaxAmount()) {
-            return false;
-        }
+        return isValidMaxAmount();
 
-        return true;
     }
 
     private void showAmountError(String error) {

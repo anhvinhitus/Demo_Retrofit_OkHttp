@@ -31,9 +31,6 @@ public class PhoneUtil {
         if (TextUtils.isEmpty(phoneNumber)) {
             return false;
         }
-        if (phoneNumber.length() < 9 || phoneNumber.length() > 13) {
-            return false;
-        }
-        return true;
+        return !(phoneNumber.length() < 9 || phoneNumber.length() > 13);
     }
 }

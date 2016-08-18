@@ -211,10 +211,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             hidePhoneError();
         }
         Timber.d("onClickContinue inputZaloPayName.getCurrentState() [%s]", inputZaloPayName.getCurrentState());
-        if (!validZaloPayName()) {
-            return false;
-        }
-        return true;
+        return validZaloPayName();
     }
 
     @Override
@@ -229,12 +226,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     private boolean validZaloPayName() {
         if (TextUtils.isEmpty(inputZaloPayName.getText())) {
             return true;
-        } else if (inputZaloPayName.getCurrentState() != InputZaloPayNameView.ZPNameStateEnum.INVALID &&
-                inputZaloPayName.validZPName()) {
-            return true;
-        } else {
-            return false;
-        }
+        } else
+            return inputZaloPayName.getCurrentState() != InputZaloPayNameView.ZPNameStateEnum.INVALID &&
+                    inputZaloPayName.validZPName();
     }
 
     private void showConfirmUpdateZaloPayName() {

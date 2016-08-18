@@ -25,7 +25,7 @@ public class DataManifestDao extends AbstractDao<DataManifest, String> {
     public static class Properties {
         public final static Property Key = new Property(0, String.class, "key", true, "KEY");
         public final static Property Value = new Property(1, String.class, "value", false, "VALUE");
-    };
+    }
 
 
     public DataManifestDao(DaoConfig config) {

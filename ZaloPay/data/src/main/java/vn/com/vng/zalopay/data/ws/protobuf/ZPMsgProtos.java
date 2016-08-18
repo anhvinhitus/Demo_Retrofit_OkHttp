@@ -91,7 +91,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private MessageStatus(int index, int value) {
+    MessageStatus(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -182,7 +182,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private OSType(int index, int value) {
+    OSType(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -273,7 +273,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private MessageType(int index, int value) {
+    MessageType(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -373,7 +373,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private ServerMessageType(int index, int value) {
+    ServerMessageType(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -1106,11 +1106,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasSignature()) {
-          
-          return false;
-        }
-        return true;
+        return hasSignature();
       }
 
       public Builder mergeFrom(
@@ -2054,11 +2050,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasToken()) {
-          
-          return false;
-        }
-        return true;
+        return hasToken();
       }
 
       public Builder mergeFrom(
@@ -2743,11 +2735,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasResult()) {
-          
-          return false;
-        }
-        return true;
+        return hasResult();
       }
 
       public Builder mergeFrom(
@@ -3450,11 +3438,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasData()) {
-          
-          return false;
-        }
-        return true;
+        return hasData();
       }
 
       public Builder mergeFrom(
@@ -4647,11 +4631,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasAlert()) {
-          
-          return false;
-        }
-        return true;
+        return hasAlert();
       }
 
       public Builder mergeFrom(
@@ -5808,11 +5788,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasStatus()) {
-          
-          return false;
-        }
-        return true;
+        return hasStatus();
       }
 
       public Builder mergeFrom(
@@ -6387,11 +6363,7 @@ public final class ZPMsgProtos {
       }
 
       public final boolean isInitialized() {
-        if (!hasUserid()) {
-          
-          return false;
-        }
-        return true;
+        return hasUserid();
       }
 
       public Builder mergeFrom(

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,8 +27,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  */
 public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFocusChangeListener {
 
-    private final int DEFAULT_LENGTH = 6;
-    private int length = DEFAULT_LENGTH;
+    private int length;
     private boolean mShowPasscode = false;
     private String mHint = "";
     private String mNote = "";
@@ -243,25 +243,13 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (hasFocus) {
-            hideError();
-            mTvNote.setVisibility(View.VISIBLE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mTvHint.setTextColor(getContext().getColor(R.color.colorPrimary));
-            } else {
-                mTvHint.setTextColor(getResources().getColor(R.color.colorPrimary));
-            }
-        } else {
-            mTvNote.setVisibility(View.INVISIBLE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mTvHint.setTextColor(getContext().getColor(R.color.hint));
-            } else {
-                mTvHint.setTextColor(getResources().getColor(R.color.hint));
-            }
+        if(hasFocus) {
+            mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        }else{
+            mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.hint));
         }
-        if (mIPasscodeFocusChanged != null) {
-            mIPasscodeFocusChanged.onFocusChangedPin(hasFocus);
-        }
+
+        hideError();
     }
 
     public void setHintVisibility(int visibility) {

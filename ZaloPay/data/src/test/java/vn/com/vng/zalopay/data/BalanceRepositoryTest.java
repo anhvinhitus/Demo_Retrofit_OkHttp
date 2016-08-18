@@ -65,8 +65,6 @@ public class BalanceRepositoryTest {
         }
     }
 
-    ;
-
     @Before
     public void setUp() throws Exception {
         mRequestService = new RequestService(returnBalance);

@@ -9,10 +9,7 @@ import vn.com.vng.zalopay.data.exception.TokenException;
  */
 public class ResponseHelper {
     public static boolean shouldIgnoreError(Throwable e) {
-        if (e instanceof TokenException || e instanceof ServerMaintainException || e instanceof AccountSuspendedException) {
-            return true;
-        }
+        return e instanceof TokenException || e instanceof ServerMaintainException || e instanceof AccountSuspendedException;
 
-        return false;
     }
 }

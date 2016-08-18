@@ -283,12 +283,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
         // response code, the response is malformed. For best compatibility, we
         // honor the headers.
         long contentLength = stringToLong(response.headers().get("Content-Length"));
-        if (contentLength != -1
-                || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
-            return true;
-        }
+        return contentLength != -1
+                || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"));
 
-        return false;
     }
 
     private boolean bodyEncoded(Headers headers) {
