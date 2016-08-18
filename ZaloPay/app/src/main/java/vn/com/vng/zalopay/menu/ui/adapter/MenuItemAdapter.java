@@ -40,7 +40,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         int viewType = getItemViewType(position);
         if (viewType == MenuItemType.HEADER.getValue()) {
-            ViewHolder viewHolder = null;
+            ViewHolder viewHolder;
             if (convertView == null || convertView.getTag() instanceof ItemViewHolder) {
                 convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer_header, parent, false);
                 viewHolder = new ViewHolder(convertView);
@@ -50,7 +50,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
             }
             bindHeaderView(viewHolder, getItem(position));
         } else if (viewType == MenuItemType.ITEM.getValue()) {
-            ItemViewHolder viewHolder = null;
+            ItemViewHolder viewHolder;
             if (convertView == null || !(convertView.getTag() instanceof ItemViewHolder)) {
                 convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer, parent, false);
                 viewHolder = new ItemViewHolder(convertView);
@@ -82,14 +82,12 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     }
 
     private void bindHeaderView(ViewHolder holder, final MenuItem menuItem) {
-        ViewHolder viewHolder = holder;
-        viewHolder.mTvTitle.setText(menuItem.getTitle());
+        holder.mTvTitle.setText(menuItem.getTitle());
     }
 
     public class ViewHolder {
         public final View mView;
         public final TextView mTvTitle;
-        public MenuItem mItem;
 
         public ViewHolder(View view) {
             mView = view;

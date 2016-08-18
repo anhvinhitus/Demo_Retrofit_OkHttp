@@ -175,6 +175,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onDestroyView() {
         presenter.destroyView();
+        CShareData.dispose();
         super.onDestroyView();
     }
 
