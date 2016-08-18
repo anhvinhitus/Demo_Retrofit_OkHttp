@@ -150,7 +150,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         tvPhone.setText(strPhoneNumber);
     }
 
-    private void setZaloPayName(String zaloPayName) {
+    @Override
+    public void setZaloPayName(String zaloPayName) {
         if (!TextUtils.isEmpty(zaloPayName)) {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {

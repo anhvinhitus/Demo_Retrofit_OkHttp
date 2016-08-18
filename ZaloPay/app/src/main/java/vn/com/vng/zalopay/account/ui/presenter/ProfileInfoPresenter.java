@@ -30,48 +30,30 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void setView(IProfileInfoView iProfileInfoView) {
         mView = iProfileInfoView;
-
+        eventBus.register(this);
     }
 
     @Override
     public void destroyView() {
-
         unsubscribeIfNotNull(compositeSubscription);
+        eventBus.unregister(this);
         mView = null;
     }
 
     @Override
     public void resume() {
         mView.updateUserInfo(userConfig.getCurrentUser());
-        eventBus.register(this);
         getBalance();
     }
 
 
     @Override
     public void pause() {
-        eventBus.unregister(this);
     }
 
     @Override
     public void destroy() {
         destroyView();
-    }
-
-    public void showLoading() {
-        mView.showLoading();
-    }
-
-    public void hideLoading() {
-        mView.hideLoading();
-    }
-
-    public void showRetry() {
-        mView.showRetry();
-    }
-
-    public void hideRetry() {
-        mView.hideRetry();
     }
 
     private void getBalance() {

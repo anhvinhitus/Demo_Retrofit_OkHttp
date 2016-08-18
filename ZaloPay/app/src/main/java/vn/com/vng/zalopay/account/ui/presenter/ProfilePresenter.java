@@ -2,13 +2,19 @@ package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
+import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -21,18 +27,19 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public ProfilePresenter() {
-
     }
 
     @Override
     public void setView(IProfileView iProfileView) {
         mView = iProfileView;
+        eventBus.register(this);
     }
 
     @Override
     public void destroyView() {
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
+        eventBus.unregister(this);
     }
 
     @Override
@@ -64,12 +71,10 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     private void checkShowOrHideChangePinView() {
         try {
-            if (userConfig.getCurrentUser().profilelevel < 2) {
-                mView.showHideChangePinView(false);
-            } else {
-                mView.showHideChangePinView(true);
-            }
+            boolean isShow = userConfig.getCurrentUser().profilelevel < 2;
+            mView.showHideChangePinView(isShow);
         } catch (Exception e) {
+            Timber.d(e, "checkShowOrHideChangePinView");
         }
     }
 
@@ -122,9 +127,21 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         public void onCompleted() {
             ProfilePresenter.this.getProfileSuccess();
         }
+    }
 
-        @Override
-        public void onError(Throwable e) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
+        if (mView != null) {
+            mView.setZaloPayName(event.zaloPayName);
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true, priority = 1)
+    public void onEventMainThread(ZaloProfileInfoEvent event) {
+        Timber.d("onEventMainThread event %s", event);
+        if (mView != null) {
+            mView.updateUserInfo(userConfig.getCurrentUser());
+        }
+    }
+
 }

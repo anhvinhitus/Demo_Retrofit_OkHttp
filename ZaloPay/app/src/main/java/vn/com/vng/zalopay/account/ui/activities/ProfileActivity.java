@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -22,13 +21,11 @@ import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
+import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 
-public class ProfileActivity extends BaseActivity implements IProfileInfoView {
-
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView {
 
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -54,8 +51,6 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     @BindView(R.id.tvZaloPayName)
     TextView tvZaloPayName;
 
-    private ProfileFragment mEditProfileFragment;
-
     public void updateUserInfo(User user) {
         if (user == null) {
             return;
@@ -65,9 +60,6 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
-        if (mEditProfileFragment != null) {
-            mEditProfileFragment.updateUserInfo(user);
-        }
         setZaloPayName(user.zalopayname);
     }
 
@@ -92,26 +84,19 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        if (mEditProfileFragment == null) {
-            mEditProfileFragment = ProfileFragment.newInstance();
-        }
-        return mEditProfileFragment;
+        return ProfileFragment.newInstance();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initView();
     }
 
     private void initView() {
         presenter.setView(this);
         presenter.getZaloProfileInfo();
-        mToolbar.setTitle("");
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("");
 
         mCollapsingToolbarLayout.setTitleEnabled(false);
 
@@ -128,10 +113,10 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    mToolbar.setTitle(getString(R.string.personal));
+                    setTitle(R.string.personal);
                     isVisible = true;
                 } else if (isVisible) {
-                    mToolbar.setTitle("");
+                    setTitle("");
                     isVisible = false;
                 }
             }
@@ -157,31 +142,8 @@ public class ProfileActivity extends BaseActivity implements IProfileInfoView {
     }
 
     @Override
-    public void showLoading() {
-    }
-
-    @Override
-    public void hideLoading() {
-    }
-
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
     public void showError(String message) {
         super.showToast(message);
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override
