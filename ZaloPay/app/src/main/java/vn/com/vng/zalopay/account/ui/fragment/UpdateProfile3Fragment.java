@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +28,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 
 /**
@@ -103,6 +107,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     private Uri mUriFgCmnd;
     private Uri mUriAvatar;
 
+    @BindView(R.id.tvTerm)
+    TextView tvTerm;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -134,6 +141,16 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 headerView.setVisibility(View.VISIBLE);
             }
         });
+
+        AndroidUtils.setSpannedMessageToView(tvTerm,
+                R.string.agree_term_of_use, R.string.term_of_use,
+                false, false, R.color.colorPrimary,
+                new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startTermActivity(getContext());
+                    }
+                });
     }
 
     @Override

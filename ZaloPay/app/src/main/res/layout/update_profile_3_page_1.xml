@@ -90,11 +90,11 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tvTerm"
             style="@style/TextView.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:singleLine="false"
-            android:text="@string/terms_of_use_4" />
+            android:singleLine="false" />
     </LinearLayout>
 </ScrollView>

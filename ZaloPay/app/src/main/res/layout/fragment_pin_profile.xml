@@ -135,7 +135,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing.medium.t"
-                android:text="@string/terms_of_use"
                 android:textColor="@color/deposit.title"
                 android:textColorLink="@color/colorPrimary"
                 android:textSize="13sp" />

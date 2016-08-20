@@ -21,6 +21,8 @@ import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -1075,7 +1077,7 @@ public class AndroidUtils {
                                                String spannedMessage,
                                                boolean isUnderline,
                                                boolean isMessageBold,
-                                               int linkColorResId,
+                                               int linkColor,
                                                ClickableSpan clickableSpan) {
         if (tv != null) {
             // set spannable for text view
@@ -1084,7 +1086,7 @@ public class AndroidUtils {
             message = String.format(message, spannedMessage);
             Spannable span = Spannable.Factory.getInstance().newSpannable(message);
             // set span color
-            span.setSpan(new ForegroundColorSpan(linkColorResId), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(new ForegroundColorSpan(linkColor), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             // set span underline
             if (isUnderline) {
                 span.setSpan(new UnderlineSpan(), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1099,5 +1101,19 @@ public class AndroidUtils {
             tv.setText(span);
             tv.setMovementMethod(LinkMovementMethod.getInstance());
         }
+    }
+
+    public static void setSpannedMessageToView(TextView tv,
+                                               int message,
+                                               int spannedMessage,
+                                               boolean isUnderline,
+                                               boolean isMessageBold,
+                                               @ColorRes int linkColorResId,
+                                               ClickableSpan clickableSpan) {
+        Context context = AndroidApplication.instance();
+
+        setSpannedMessageToView(tv, context.getString(message),
+                context.getString(spannedMessage),
+                isUnderline, isMessageBold, ContextCompat.getColor(context, linkColorResId), clickableSpan);
     }
 }

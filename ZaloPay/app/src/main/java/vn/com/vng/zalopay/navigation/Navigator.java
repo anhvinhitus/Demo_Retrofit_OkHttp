@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.navigation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -342,5 +343,19 @@ public class Navigator implements INavigator {
     public void startEditAccountActivity(Context context) {
         Intent intent = new Intent(context, EditAccountNameActivity.class);
         context.startActivity(intent);
+    }
+
+    public void startTermActivity(Context context) {
+        Timber.d("start term activity");
+    }
+
+    public void startDialSupport(Context context) {
+        try {
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(Uri.parse("tel:" + context.getString(R.string.phone_support)));
+            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(callIntent);
+        } catch (Exception e) {
+        }
     }
 }
