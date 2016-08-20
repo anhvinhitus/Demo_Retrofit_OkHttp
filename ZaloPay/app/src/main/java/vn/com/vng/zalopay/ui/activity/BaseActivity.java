@@ -111,7 +111,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
 

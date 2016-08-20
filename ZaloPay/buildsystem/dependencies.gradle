@@ -14,9 +14,8 @@ ext {
     supportVersion = '23.2.1'
     playServiceVersion = "9.0.0"
     //Libraries Version
-    daggerVersion = '2.2'
-    butterKnifeVersion = '8.0.1'
-    recyclerViewVersion = '21.0.3'
+    daggerVersion = '2.6'
+    butterKnifeVersion = '8.2.1'
     rxJavaVersion = '1.1.4'
     rxAndroidVersion = '1.2.0'
 
@@ -69,8 +68,8 @@ ext {
 
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
-            javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
+            javaxAnnotation        : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
             butterKnife            : "com.jakewharton:butterknife:${butterKnifeVersion}",
             butterKnifeCompiler    : "com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
             retrofit               : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
