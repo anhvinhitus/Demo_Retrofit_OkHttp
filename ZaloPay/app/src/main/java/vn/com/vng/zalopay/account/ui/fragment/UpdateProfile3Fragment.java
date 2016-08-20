@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.EditText;
@@ -16,9 +15,11 @@ import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.zalopay.ui.widget.KeyboardLinearLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -30,8 +31,6 @@ import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
-
-import com.zalopay.ui.widget.KeyboardLinearLayout;
 
 /**
  * Created by AnhHieu on 6/30/16.
@@ -169,14 +168,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         viewFlipper.showNext();
     }
 
-    public void previousPage() {
-        viewFlipper.setInAnimation(getContext(), R.anim.in_from_right);
-        viewFlipper.setOutAnimation(getContext(), R.anim.out_to_left);
-        viewFlipper.showPrevious();
-    }
-
     @OnClick(R.id.btnContinue)
-    public void onClickContinue(View v) {
+    public void onClickContinue() {
         if (getCurrentPage() == 0) {
 
             if (isValidatePageOne()) {
@@ -253,7 +246,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void setProfile(User user) {
-        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy")
+        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 .format(new Date(user.birthDate * 1000)));
         tvName.setText(user.dname);
         tvSex.setText(user.getGender());
@@ -266,17 +259,17 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     @OnClick(R.id.layoutFgCmnd)
-    public void onClickFgCmnd(View v) {
+    public void onClickFgIdentity() {
         showBottomSheetDialog(FOREGROUND_IMAGE_REQUEST_CODE);
     }
 
     @OnClick(R.id.layoutBgCmnd)
-    public void onClickBgCmnd(View v) {
+    public void onClickBgIdentity() {
         showBottomSheetDialog(BACKGROUND_IMAGE_REQUEST_CODE);
     }
 
     @OnClick(R.id.layoutAvatar)
-    public void onClickAvatar(View v) {
+    public void onClickAvatar() {
         showBottomSheetDialog(AVATAR_REQUEST_CODE);
     }
 

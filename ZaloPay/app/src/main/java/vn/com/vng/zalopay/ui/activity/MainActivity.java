@@ -215,8 +215,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 navigator.startScanToPayActivity(getActivity());
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
-            case MenuItemUtil.SIGOUT_ID:
-                showConfirmSigout();
+            case MenuItemUtil.SIGN_OUT_ID:
+                showConfirmSignOut();
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
                 navigator.startMiniAppActivity(this, ModuleName.TRANSACTION_LOGS);
@@ -234,7 +234,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-    private void showConfirmSigout() {
+    private void showConfirmSignOut() {
         new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
                 .setContentText(getString(R.string.txt_confirm_sigout))
                 .setCancelText(getString(R.string.cancel))

@@ -25,7 +25,7 @@ public class MenuItemUtil {
     public static final int CONTACT_SUPPORT_ID = 9;
     public static final int APPLICATION_INFO_ID = 10;
     public static final int ACCOUNT_ID = 11;
-    public static final int SIGOUT_ID = 12;
+    public static final int SIGN_OUT_ID = 12;
 
     private static List<MenuItem> mMenuItems;
 
@@ -52,6 +52,6 @@ public class MenuItemUtil {
         mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, R.drawable.ic_thongtin_menu, "Thông Tin Ứng Dụng"));
 
 //        mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
-        mMenuItems.add(new MenuItem(SIGOUT_ID, MenuItemType.ITEM, R.drawable.ic_recycle, "Đăng Xuất", false));
+        mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, R.drawable.ic_recycle, "Đăng Xuất", false));
     }
 }
