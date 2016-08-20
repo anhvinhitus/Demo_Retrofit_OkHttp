@@ -79,7 +79,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     View btnContinue;
 
     @OnClick(R.id.btnContinue)
-    public void onClickContinute() {
+    public void onClickContinue() {
         if (edtTransferMsg == null) {
             return;
         }
@@ -205,9 +205,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 checkShowBtnContinue();
             }
         });
-        Timber.tag(TAG).d("onViewCreated zaloFriend: %s", zaloFriend);
+        Timber.d("onViewCreated zaloFriend: %s", zaloFriend);
         if (zaloFriend != null) {
-            Timber.tag(TAG).d("onViewCreated zaloFriend.uid:%s", zaloFriend.getUserId());
+            Timber.d("onViewCreated zaloFriend.uid:%s", zaloFriend.getUserId());
             updateUserInfo(zaloFriend);
             if (userMapZaloAndZaloPay == null ||
                     TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
@@ -328,8 +328,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
-                getActivity().finish();
                 sweetAlertDialog.cancel();
+                getActivity().finish();
             }
         });
     }
@@ -351,7 +351,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override
