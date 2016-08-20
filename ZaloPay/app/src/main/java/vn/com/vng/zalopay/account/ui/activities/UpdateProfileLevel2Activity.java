@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -219,28 +217,13 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
                 navigator.startProfileInfoActivity(UpdateProfileLevel2Activity.this);
             }
         });
+
         tvTermsOfUser2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startDialSupport();
+                navigator.startDialSupport(getContext());
             }
         });
-
-//        tvTermsOfUser3.setClickable(true);
-//        tvTermsOfUser3.setMovementMethod (LinkMovementMethod.getInstance());
-//        tvTermsOfUser3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ToastUtil.showToast(UpdateProfileLevel2Activity.this, "Chức năng sẽ sớm được ra mắt.");
-//            }
-//        });
-    }
-
-    private void startDialSupport() {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + getString(R.string.phone_support)));
-        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(callIntent);
     }
 
     @Override

@@ -156,18 +156,11 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
         AndroidUtils.setSpannedMessageToView(mContactView,
                 getString(R.string.lbl_note_forget_pin),
-                getString(R.string.number_contact), false, false,
+                getString(R.string.phone_support), false, false,
                 ContextCompat.getColor(getContext(), R.color.colorPrimary), new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        try {
-                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                            callIntent.setData(Uri.parse("tel:" + Uri.encode(getString(R.string.number_contact))));
-                            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(callIntent);
-                        } catch (Exception ex) {
-                        }
-
+                        navigator.startDialSupport(getContext());
                     }
                 });
     }
