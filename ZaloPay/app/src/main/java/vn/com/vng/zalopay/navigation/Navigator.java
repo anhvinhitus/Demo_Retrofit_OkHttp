@@ -271,8 +271,10 @@ public class Navigator implements INavigator {
     }
 
     public void startUpdateProfile3Activity(Context context) {
-        Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
-        context.startActivity(intent);
+        if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel == 2) {
+            Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
+            context.startActivity(intent);
+        }
     }
 
     public void startInvitationCodeActivity(Context context) {

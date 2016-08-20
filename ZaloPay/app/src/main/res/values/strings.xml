@@ -299,4 +299,5 @@
 
     <string name="vietin_bank">Vietinbank</string>
     <string name="sacombank_bank">Sacombank</string>
+    <string name="alert.need.update.level.2">Vui lòng cập nhật số điện thoại trước.</string>
 </resources>

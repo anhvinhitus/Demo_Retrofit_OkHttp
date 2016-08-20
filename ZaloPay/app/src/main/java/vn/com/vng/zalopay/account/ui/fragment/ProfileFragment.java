@@ -124,8 +124,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         this.setGender(user.getGender());
         this.setZaloPayName(user.zalopayname);
 
-        mLayoutCmnd.setClickable(user.profilelevel == 2);
-        mLayoutEmail.setClickable(user.profilelevel == 2);
+        //    mLayoutCmnd.setClickable(user.profilelevel == 2);
+        //    mLayoutEmail.setClickable(user.profilelevel == 2);
 
         tvZaloPayId.setText(user.uid);
         tvZaloId.setText(String.valueOf(user.zaloId));
@@ -208,43 +208,47 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @OnClick(R.id.layoutPhone)
-    public void onClickPhone(View v) {
+    public void onClickPhone() {
         if (tvPhone.length() == 0) {
             navigator.startUpdateProfileLevel2Activity(getContext(), false);
         }
     }
 
     @OnClick(R.id.layoutCmnd)
-    public void onClickCmnd(View v) {
+    public void onClickIdentity() {
+
         if (mPresenter.getProfileLevel() < 2) {
-            showToast("Vui lòng cập nhật số điện thoại trước.");
+            showToast(R.string.alert_need_update_level_2);
             return;
         }
-        if (tvCMND.length() == 0) {
-            navigator.startUpdateProfile3Activity(getContext());
-        }
+
+        navigator.startUpdateProfile3Activity(getContext());
     }
 
     @OnClick(R.id.layoutEmail)
-    public void onClickEmail(View v) {
+    public void onClickEmail() {
+
         if (mPresenter.getProfileLevel() < 2) {
-            showToast("Vui lòng cập nhật số điện thoại trước.");
+            showToast(R.string.alert_need_update_level_2);
             return;
         }
-        if (tvEmail.length() == 0) {
-            navigator.startUpdateProfile3Activity(getContext());
-        }
+
+        navigator.startUpdateProfile3Activity(getContext());
     }
 
     @OnClick(R.id.layoutAccountName)
-    public void onClickEditAccountName(View v) {
+    public void onClickEditAccountName() {
         if (TextUtils.isEmpty(mAccountNameView.getText())) {
+            if (mPresenter.getProfileLevel() < 2) {
+                showToast(R.string.alert_need_update_level_2);
+                return;
+            }
             navigator.startEditAccountActivity(getContext());
         }
     }
 
     @OnClick(R.id.layoutChangePin)
-    public void onClickChangePin(View view) {
+    public void onClickChangePin() {
         navigator.startChangePinActivity(getActivity());
     }
 

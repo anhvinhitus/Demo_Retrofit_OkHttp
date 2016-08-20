@@ -32,7 +32,11 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     @Override
     public void setView(IProfileView iProfileView) {
         mView = iProfileView;
-        eventBus.register(this);
+        try {
+            eventBus.register(this);
+        } catch (Exception e) {
+            Timber.d(e, "exception");
+        }
     }
 
     @Override

@@ -30,7 +30,11 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void setView(IProfileInfoView iProfileInfoView) {
         mView = iProfileInfoView;
-        eventBus.register(this);
+        try {
+            eventBus.register(this);
+        } catch (Exception ex) {
+            Timber.d(ex, "exception");
+        }
     }
 
     @Override
