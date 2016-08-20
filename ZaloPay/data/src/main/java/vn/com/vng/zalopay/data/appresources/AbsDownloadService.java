@@ -23,7 +23,6 @@ public abstract class AbsDownloadService extends IntentService implements Downlo
 
     public AbsDownloadService() {
         super(TAG);
-        Timber.tag(TAG);
     }
 
     @Override

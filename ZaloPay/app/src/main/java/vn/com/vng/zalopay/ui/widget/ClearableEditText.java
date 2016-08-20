@@ -168,11 +168,11 @@ public class ClearableEditText extends EditText {
                 if (this.mPattern != null) {
                     String text = this.getString();
                     if (text.matches(this.mPattern)) {
-                        Timber.tag(TAG).d("**** " + this.mEditTextConfig.id + " MATCH ****");
+                        Timber.d("**** " + this.mEditTextConfig.id + " MATCH ****");
                         return true;
                     }
 
-                    Timber.tag(TAG).d("**** " + this.mEditTextConfig.id + " NOT MATCH ****");
+                    Timber.d("**** " + this.mEditTextConfig.id + " NOT MATCH ****");
                 }
 
                 return false;
