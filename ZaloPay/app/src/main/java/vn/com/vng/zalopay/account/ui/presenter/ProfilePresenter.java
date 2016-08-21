@@ -75,7 +75,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     private void checkShowOrHideChangePinView() {
         try {
-            boolean isShow = userConfig.getCurrentUser().profilelevel < 2;
+            boolean isShow = userConfig.getCurrentUser().profilelevel >= 2;
             mView.showHideChangePinView(isShow);
         } catch (Exception e) {
             Timber.d(e, "checkShowOrHideChangePinView");

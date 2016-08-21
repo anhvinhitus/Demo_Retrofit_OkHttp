@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/pin_code_round_full" android:state_selected="true" />
-    <item android:drawable="@drawable/pin_code_round_empty" />
+    <item android:state_selected="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke android:width="@dimen/separate" android:color="@color/hint" />
+                </shape>
+            </item>
+
+            <item android:bottom="13dp" android:left="13dp" android:right="13dp" android:top="13dp">
+                <shape android:shape="oval">
+                    <solid android:color="@android:color/black" />
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+
+            <stroke android:width="@dimen/separate" android:color="@color/hint" />
+
+        </shape>
+    </item>
 </selector>

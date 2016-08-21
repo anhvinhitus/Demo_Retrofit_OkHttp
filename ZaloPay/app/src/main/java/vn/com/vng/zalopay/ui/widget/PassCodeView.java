@@ -121,7 +121,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mTextViewSize, mTextViewSize);
         params.setMargins(0, 0, AndroidUtils.dp(8f), 0);
         for (int i = 0; i < length; i++) {
-            TextView textview = (TextView) LayoutInflater.from(context).inflate(R.layout.passcode_textview, mRootView, false);
+            TextView textview = (TextView) LayoutInflater.from(context).inflate(R.layout.passcode_textview, null);
             textview.setSelected(false);
             mTextViews.add(textview);
             mRootView.addView(textview, params);
@@ -243,9 +243,9 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if(hasFocus) {
+        if (hasFocus) {
             mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        }else{
+        } else {
             mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.hint));
         }
 
