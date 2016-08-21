@@ -275,7 +275,7 @@ android {
         jumboMode = true
 
         preDexLibraries = false
-        javaMaxHeapSize "2g"
+        javaMaxHeapSize "3g"
     }
 
     if (isCIBuild()) {
