@@ -18,6 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
@@ -64,12 +65,9 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @BindView(android.R.id.list)
     ListView listView;
 
-    public View viewProfile;
     public ImageView imageAvatar;
 
     public TextView tvName;
-
-    public TextView tvBalance;
 
     public TextView tvZaloPayName;
 
@@ -149,20 +147,18 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
 
     private void addHeader(ListView listView) {
-        viewProfile = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
-        imageAvatar = (ImageView) viewProfile.findViewById(R.id.im_avatar);
-        tvName = (TextView) viewProfile.findViewById(R.id.tv_name);
-        tvBalance = (TextView) viewProfile.findViewById(R.id.tv_balance);
-        tvZaloPayName = (TextView) viewProfile.findViewById(R.id.tvZaloPayName);
-        viewProfile.setOnClickListener(new View.OnClickListener() {
+        View header = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
+        imageAvatar = (ImageView) header.findViewById(R.id.im_avatar);
+        tvName = (TextView) header.findViewById(R.id.tv_name);
+        tvZaloPayName = (TextView) header.findViewById(R.id.tvZaloPayName);
+        header.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (mMenuListener != null) {
-                    mMenuListener.onClickProfile();
-                }
+            public void doClick(View v) {
+                mMenuListener.onClickProfile();
             }
         });
-        listView.addHeaderView(viewProfile);
+
+        listView.addHeaderView(header);
     }
 
     @Override
@@ -214,11 +210,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
                 .error(R.drawable.ic_avatar_default)
                 .centerCrop()
                 .into(imageView);
-    }
-
-    @Override
-    public void setBalance(long balance) {
-        tvBalance.setText(CurrencyUtil.spanFormatCurrency(balance));
     }
 
     @Override

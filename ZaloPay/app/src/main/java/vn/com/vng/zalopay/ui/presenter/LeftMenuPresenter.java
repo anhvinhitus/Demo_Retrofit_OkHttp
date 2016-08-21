@@ -9,13 +9,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
@@ -52,14 +48,18 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void initialize() {
         menuView.setUserInfo(user);
-        this.getBalance();
         this.initializeZaloPay();
     }
 
     private void initializeZaloPay() {
         Subscription subscription = transactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        isInitiated = true;
+                    }
+                });
         compositeSubscription.add(subscription);
     }
 
@@ -79,50 +79,9 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         Subscription subscription = balanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BalanceSubscriber());
+                .subscribe(new DefaultSubscriber<Long>());
 
         compositeSubscription.add(subscription);
-    }
-
-    private void onGetBalanceError(Throwable e) {
-        Timber.w("onGetBalanceError %s", e);
-        String message = ErrorMessageFactory.create(applicationContext, e);
-        showErrorView(message);
-    }
-
-    protected void showErrorView(String message) {
-    }
-
-
-    private void onGetBalanceSuccess(Long balance) {
-        Timber.d("onGetBalanceSuccess %s", balance);
-        menuView.setBalance(balance);
-    }
-
-    private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        public BalanceSubscriber() {
-        }
-
-        @Override
-        public void onCompleted() {
-            isInitiated = true;
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            LeftMenuPresenter.this.onGetBalanceError(e);
-        }
-
-        @Override
-        public void onNext(Long aLong) {
-            LeftMenuPresenter.this.onGetBalanceSuccess(aLong);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -137,13 +96,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
 
         eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ChangeBalanceEvent event) {
-        if (menuView != null) {
-            menuView.setBalance(event.balance);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

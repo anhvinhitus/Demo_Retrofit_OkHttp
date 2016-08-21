@@ -7,8 +7,6 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public interface ILeftMenuView {
 
-    void setBalance(long balance);
-
     void setUserInfo(User user);
 
     void setAvatar(String avatar);
