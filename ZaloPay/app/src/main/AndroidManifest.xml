@@ -191,7 +191,7 @@
             android:name=".account.ui.activities.EditAccountNameActivity"
             android:label="@string/title.activity.update.account.name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
 
         <activity
             android:name=".ui.activity.NotificationActivity"
