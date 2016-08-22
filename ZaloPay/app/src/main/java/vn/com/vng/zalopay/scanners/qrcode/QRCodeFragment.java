@@ -136,6 +136,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
+            hideLoading();
             start();
         }
     }
