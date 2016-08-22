@@ -219,7 +219,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNSendIntentPackage(),
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
-                new GoogleAnalyticsBridgePackage(getString(R.string.ga_trackingId)),
+                new GoogleAnalyticsBridgePackage(),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
         );
     }

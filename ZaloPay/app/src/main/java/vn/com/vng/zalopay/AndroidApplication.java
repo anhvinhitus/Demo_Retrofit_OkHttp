@@ -81,7 +81,7 @@ public class AndroidApplication extends MultiDexApplication {
         // Initialize ZPAnalytics
         initializeZaloPayAnalytics();
 
-        initializeFontFamily();
+       // initializeFontFamily();
 
         initAppComponent();
 
