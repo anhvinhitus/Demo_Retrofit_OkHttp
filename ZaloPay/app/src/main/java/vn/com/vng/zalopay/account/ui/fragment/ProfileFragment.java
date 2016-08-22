@@ -20,6 +20,8 @@ import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
@@ -242,6 +244,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             return;
         }
         navigator.startEditAccountActivity(getContext());
+        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
     }
 
     @OnClick(R.id.layoutChangePin)

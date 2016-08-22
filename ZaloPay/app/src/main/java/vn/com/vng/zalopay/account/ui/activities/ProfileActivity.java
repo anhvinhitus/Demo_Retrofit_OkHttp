@@ -23,6 +23,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView {
 
@@ -56,6 +58,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             return;
         }
         navigator.startEditAccountActivity(this);
+        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
     }
 
     public void updateUserInfo(User user) {

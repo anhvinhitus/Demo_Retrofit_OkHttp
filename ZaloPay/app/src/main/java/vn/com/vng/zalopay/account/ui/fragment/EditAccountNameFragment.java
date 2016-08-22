@@ -17,6 +17,8 @@ import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ZPTextInputLayout;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -68,6 +70,10 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     @OnTextChanged(R.id.edtZaloPayName)
     public void onTextChangeAccountName(CharSequence s) {
 
+        if (!mInputAccountNameView.isUnknown()) {
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_EDIT_AFTERCHECK);
+        }
+
         boolean isValid = false;
         if (!ValidateUtil.isValidLengthZPName(s.toString())) {
             mInputAccountNameView.setError(getString(R.string.exception_account_name_length));
@@ -111,6 +117,8 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     @OnClick(R.id.btnCheck)
     public void onClickCheck(View v) {
 
+        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_PRESSCHECK);
+
         final String accountName = mInputAccountNameView.getText();
         if (TextUtils.isEmpty(accountName)) {
             return;
@@ -142,10 +150,12 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         if (isValid) {
             mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.VALID);
             mBtnCheckView.setText(R.string.register);
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_VALID);
         } else {
             mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.INVALID);
             mInputAccountNameView.setError(getContext().getString(R.string.account_existed));
             mBtnCheckView.setText(R.string.check);
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_EDIT_INVALID);
         }
     }
 

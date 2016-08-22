@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  *
  */
 public class EditAccountNameActivity extends BaseToolBarActivity {
+
     @Override
     public BaseFragment getFragmentToHost() {
         return EditAccountNameFragment.newInstance();

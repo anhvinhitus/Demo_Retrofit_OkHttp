@@ -13,6 +13,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 8/12/16.
@@ -56,7 +58,7 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
         Subscription subscription = accountRepository.checkZaloPayNameExist(accountName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ExistAccountNameSubscriber());
+                .subscribe(new CheckAccountNameSubscriber());
         mCompositeSubscription.add(subscription);
     }
 
@@ -69,7 +71,7 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
         mCompositeSubscription.add(subscription);
     }
 
-    private class ExistAccountNameSubscriber extends DefaultSubscriber<Boolean> {
+    private class CheckAccountNameSubscriber extends DefaultSubscriber<Boolean> {
 
         @Override
         public void onError(Throwable e) {
@@ -78,6 +80,7 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
             }
 
             if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
+                ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED);
                 mView.accountNameValid(false);
             } else {
                 mView.showError(ErrorMessageFactory.create(applicationContext, e));
@@ -98,7 +101,15 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-            mView.showError(ErrorMessageFactory.create(applicationContext, e));
+
+            if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
+                ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED2);
+                mView.accountNameValid(false);
+            } else {
+                mView.showError(ErrorMessageFactory.create(applicationContext, e));
+            }
+
+
         }
 
         @Override
