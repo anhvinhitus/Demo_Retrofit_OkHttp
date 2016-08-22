@@ -32,6 +32,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -70,6 +72,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     TextView tvTermsOfUser2;
     @BindView(R.id.tvTermsOfUser3)
     TextView tvTermsOfUser3;
+
 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
@@ -176,6 +179,25 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
 
             }
         });
+
+        AndroidUtils.setSpannedMessageToView(tvTermsOfUser2, R.string.terms_of_use_2, R.string.phone_support,
+                false, false, R.color.colorPrimary,
+                new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startDialSupport(getContext());
+                    }
+                });
+
+        AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
+                false, false, R.color.colorPrimary,
+                new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startTermActivity(getContext());
+                    }
+                });
+
     }
 
     public void nextPager() {
@@ -211,19 +233,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
                 .placeholder(R.color.silver)
                 .centerCrop()
                 .into(imgAvatar);
-        tvTermsOfUser1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigator.startProfileInfoActivity(UpdateProfileLevel2Activity.this);
-            }
-        });
-
-        tvTermsOfUser2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigator.startDialSupport(getContext());
-            }
-        });
     }
 
     @Override
