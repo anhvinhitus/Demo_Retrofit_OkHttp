@@ -19,6 +19,7 @@ import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
+import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -157,7 +158,7 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         AndroidUtils.setSpannedMessageToView(mContactView,
                 getString(R.string.lbl_note_forget_pin),
                 getString(R.string.phone_support), false, false,
-                ContextCompat.getColor(getContext(), R.color.colorPrimary), new ClickableSpan() {
+                ContextCompat.getColor(getContext(), R.color.colorPrimary), new ClickableSpanNoUnderline() {
                     @Override
                     public void onClick(View widget) {
                         navigator.startDialSupport(getContext());

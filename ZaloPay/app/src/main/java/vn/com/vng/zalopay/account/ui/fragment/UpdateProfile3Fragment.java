@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 
@@ -144,7 +145,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         AndroidUtils.setSpannedMessageToView(tvTerm,
                 R.string.agree_term_of_use, R.string.term_of_use,
                 false, false, R.color.colorPrimary,
-                new ClickableSpan() {
+                new ClickableSpanNoUnderline() {
                     @Override
                     public void onClick(View widget) {
                         navigator.startTermActivity(getContext());

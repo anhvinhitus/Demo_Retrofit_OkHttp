@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -144,9 +145,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
         View view = menuItem.getActionView();
         mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
-        view.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void doClick(View v) {
                 navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
                 ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
             }

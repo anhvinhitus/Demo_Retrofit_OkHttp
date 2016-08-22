@@ -172,10 +172,7 @@
             android:label="@string/title.activity.invitation.code"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="" />
-        <activity
-            android:name=".balancetopup.ui.activity.ConfirmTransactionActivity"
-            android:label="@string/title_activity_confirm_transaction"
-            android:theme="@style/AppTheme.NoActionBar" />
+ 
         <activity
             android:name=".ui.activity.LinkCardActivity"
             android:label="@string/title.activity.link.card"
