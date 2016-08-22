@@ -115,4 +115,7 @@
     <color name="bg_bidv_end">#1b2f7b</color>
     <color name="bg_agribank_start">#9f303a</color>
     <color name="bg_agribank_end">#b3343f</color>
+
+    <color name="bg_checkbox_uncheck">#c7c7cc</color>
+    <color name="bg_checkbox_checked">#06be04</color>
 </resources>

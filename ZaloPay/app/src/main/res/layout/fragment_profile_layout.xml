@@ -1,48 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/layoutChangePin"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/spacing.medium.l"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_doimapin" />
-
-        <TextView
-            style="@style/TextView.Profile.Edit"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/spacing.medium.l"
-            android:layout_weight="1.0"
-            android:text="@string/reset_pin"
-            android:textColor="@color/black" />
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing.medium"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_arrow_right" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing.medium.l"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_doimapin"/>
+
+            <TextView
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing.medium.l"
+                android:layout_weight="1.0"
+                android:text="@string/reset_pin"
+                android:textColor="@color/black"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing.medium"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_arrow_right"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +69,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/birthday" />
+            android:text="@string/birthday"/>
 
         <TextView
             android:id="@+id/tvBirthday"
@@ -65,13 +77,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -86,7 +98,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/gender" />
+            android:text="@string/gender"/>
 
         <TextView
             android:id="@+id/tvGender"
@@ -94,20 +106,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:id="@+id/layoutAccountName"
@@ -123,7 +135,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/account_name" />
+            android:text="@string/account_name"/>
 
         <TextView
             android:id="@+id/tvAccountName"
@@ -133,13 +145,13 @@
             android:drawablePadding="@dimen/spacing.small"
             android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="right|center_vertical"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:id="@+id/layoutPhone"
@@ -155,7 +167,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hint_phone" />
+            android:text="@string/hint_phone"/>
 
         <TextView
             android:id="@+id/tvPhone"
@@ -165,19 +177,19 @@
             android:drawablePadding="@dimen/spacing.small"
             android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="right|center_vertical"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
 
     <LinearLayout
@@ -194,7 +206,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hint_email" />
+            android:text="@string/hint_email"/>
 
         <TextView
             android:id="@+id/tvEmail"
@@ -205,13 +217,13 @@
             android:drawableRight="@drawable/ic_arrow_right"
 
             android:gravity="right|center_vertical"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:id="@+id/layoutCmnd"
@@ -227,7 +239,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cmnd_passpost" />
+            android:text="@string/cmnd_passpost"/>
 
         <TextView
             android:id="@+id/tvCMND"
@@ -237,19 +249,24 @@
             android:drawablePadding="@dimen/spacing.small"
             android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="right|center_vertical"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:layout_marginTop="@dimen/spacing.medium"
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing.medium"
         android:background="@color/white"
         android:orientation="horizontal"
         android:padding="@dimen/spacing.medium">
@@ -258,7 +275,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zalopay_id" />
+            android:text="@string/zalopay_id"/>
 
         <TextView
             android:id="@+id/tvZaloPayId"
@@ -266,13 +283,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -285,7 +302,7 @@
             style="@style/TextView.Profile.Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zalo_id" />
+            android:text="@string/zalo_id"/>
 
         <TextView
             android:id="@+id/tvZaloId"
@@ -293,13 +310,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update" />
+            android:hint="@string/not_update"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 </LinearLayout>
 

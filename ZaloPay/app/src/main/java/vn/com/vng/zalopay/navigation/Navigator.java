@@ -142,6 +142,7 @@ public class Navigator implements INavigator {
             return;
         }
         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
+                .setTitleText(context.getString(R.string.notification))
                 .setContentText(context.getString(R.string.txt_need_input_userinfo))
                 .setCancelText(context.getString(R.string.txt_close))
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {

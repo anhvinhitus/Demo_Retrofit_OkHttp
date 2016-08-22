@@ -45,6 +45,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @BindView(R.id.chkSacomBank)
     CheckBox chkSacomBank;
 
+    @BindView(R.id.tvUpdateProfile)
+    View tvUpdateProfile;
+
     @OnClick(R.id.tvUpdateProfile)
     public void onClickUpdateProfile() {
         navigator.startUpdateProfile3Activity(getActivity());
@@ -108,6 +111,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         boolean isValidProfile = checkValidProfileLevel();
         boolean isValidLinkCard = checkValidLinkCard();
         boolean isValidCondition = isValidProfile && isValidLinkCard;
+        if (isValidProfile) {
+            tvUpdateProfile.setVisibility(View.INVISIBLE);
+        }
         if (isValidCondition) {
             navigator.startWithdrawActivity(getContext());
             getActivity().finish();

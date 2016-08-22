@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,13 +13,13 @@ import com.bumptech.glide.Glide;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -50,6 +49,14 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @BindView(R.id.tvZaloPayName)
     TextView tvZaloPayName;
+
+    @OnClick(R.id.layoutProfileInfo)
+    public void onClickHeaderProfile() {
+        if (!TextUtils.isEmpty(getUserComponent().currentUser().zalopayname)) {
+            return;
+        }
+        navigator.startEditAccountActivity(this);
+    }
 
     public void updateUserInfo(User user) {
         if (user == null) {

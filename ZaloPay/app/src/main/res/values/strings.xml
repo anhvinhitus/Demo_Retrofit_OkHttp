@@ -237,8 +237,8 @@
 
     <string name="txt_no_data">Không có dữ liệu</string>
 
-    <string name="txt_input_userinfo">Nhập thông tin</string>
-    <string name="txt_need_input_userinfo">Bạn cần cập nhật thông tin để sử dụng tính năng này. Bạn có muốn cập nhật thông tin không?</string>
+    <string name="txt_input_userinfo">Cập nhật</string>
+    <string name="txt_need_input_userinfo">Hãy cập nhật thông tin để sử dụng tính năng này</string>
 
     <string name="reset_pin_error">Tạo lại mã PIN thất bại.</string>
     <string name="reset_pin_success">Tạo lại mã PIN thành công.</string>
@@ -282,7 +282,7 @@
     <string name="register">Đăng Ký</string>
     <string name="check">Kiểm Tra</string>
     <string name="update.account.name.success">Cập nhật tên tài khoản thành công.</string>
-    <string name="confirm.update.account.name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\n Bạn có muốn dùng tên này không?</string>
+    <string name="confirm.update.account.name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\nBạn có muốn dùng tên này không?</string>
 
     <string name="zalopay_name_not_update">Tên tài khoản: Chưa cập nhật</string>
 

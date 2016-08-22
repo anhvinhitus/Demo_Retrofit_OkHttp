@@ -17,6 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/withdraw_miss_condition"
+            android:textColor="@color/txt_item_sub"
+            android:textSize="@dimen/textsize.text.main"
             android:textStyle="bold"/>
 
         <TextView
@@ -24,7 +26,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing.tiny"
             android:text="@string/withdraw_condition_note"
-            android:textSize="@dimen/textsize.small"/>
+            android:textColor="@color/txt_item_sub"
+            android:textSize="@dimen/textsize.tiny"/>
     </LinearLayout>
 
     <FrameLayout
@@ -72,13 +75,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium"
+                android:button="@drawable/checkbox"
                 android:checked="false"
-                android:clickable="false"/>
+                android:clickable="false"
+                android:gravity="center"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.tiny"
+                android:layout_marginLeft="@dimen/spacing.small"
+                android:lines="1"
                 android:text="@string/email"/>
         </LinearLayout>
 
@@ -94,12 +100,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium"
-                android:clickable="false"/>
+                android:button="@drawable/checkbox"
+                android:clickable="false"
+                android:gravity="center"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.tiny"
+                android:layout_marginLeft="@dimen/spacing.small"
+                android:lines="1"
                 android:text="@string/cmnd_passpost"/>
         </LinearLayout>
     </LinearLayout>
@@ -149,12 +158,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium"
-                android:clickable="false"/>
+                android:button="@drawable/checkbox"
+                android:clickable="false"
+                android:gravity="center"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.tiny"
+                android:layout_marginLeft="@dimen/spacing.small"
+                android:lines="1"
                 android:text="@string/vietin_bank"/>
         </LinearLayout>
 
@@ -170,12 +182,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium"
-                android:clickable="false"/>
+                android:button="@drawable/checkbox"
+                android:clickable="false"
+                android:gravity="center"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.tiny"
+                android:layout_marginLeft="@dimen/spacing.small"
+                android:lines="1"
                 android:text="@string/sacombank_bank"/>
         </LinearLayout>
     </LinearLayout>
