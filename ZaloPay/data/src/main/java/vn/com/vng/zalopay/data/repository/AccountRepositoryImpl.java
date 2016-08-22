@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.repository;
 
+import android.text.TextUtils;
+
 import java.io.File;
 import java.util.List;
 
@@ -43,7 +45,9 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber, String zalopayName) {
-        zalopayName = zalopayName.toLowerCase();
+        if (!TextUtils.isEmpty(zalopayName)) {
+            zalopayName = zalopayName.toLowerCase();
+        }
         return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber, zalopayName)
                 .map(baseResponse -> Boolean.TRUE);
     }
