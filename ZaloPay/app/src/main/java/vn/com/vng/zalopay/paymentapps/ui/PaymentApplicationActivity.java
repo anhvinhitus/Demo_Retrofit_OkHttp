@@ -7,6 +7,7 @@ import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
@@ -218,6 +219,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNSendIntentPackage(),
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
+                new GoogleAnalyticsBridgePackage(getString(R.string.ga_trackingId)),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
         );
     }
