@@ -261,7 +261,11 @@ public class ClearableEditText extends EditText {
     }
 
     public String getString() {
-        return this.mIsTextGroup ? this.getText().toString().replace(String.valueOf(this.SPACE_SEPERATOR), "") : this.getText().toString();
+        if (!this.mIsTextGroup || TextUtils.isEmpty(this.getText().toString())) {
+            return this.getText().toString();
+        } else {
+            return this.getText().toString().replace(String.valueOf(this.SPACE_SEPERATOR), "");
+        }
     }
 
     public void setOnSelectionChangeListener(ZPOnSelectionChangeListener pListener) {
