@@ -144,6 +144,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         boolean isMapped = false;
         try {
             List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.uid);
+            if (mapCardLis == null) {
+                return isMapped;
+            }
             for (int i = 0; i < mapCardLis.size(); i++) {
                 DMappedCard card = mapCardLis.get(i);
                 if (card == null || TextUtils.isEmpty(card.bankcode)) {
