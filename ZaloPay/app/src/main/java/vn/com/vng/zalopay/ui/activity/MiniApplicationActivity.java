@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -9,6 +11,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,12 +37,18 @@ import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+
 import com.zalopay.apploader.ReactNativeHostable;
+
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
+
 import com.zalopay.apploader.BundleReactConfig;
+
 import vn.com.vng.zalopay.navigation.INavigator;
+
 import com.zalopay.apploader.MiniApplicationBaseActivity;
 import com.zalopay.apploader.internal.ModuleName;
+
 import vn.com.vng.zalopay.react.ReactInternalPackage;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -89,11 +98,24 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     UserConfig mUserConfig;
 
+    Bundle mLaunchOptions = new Bundle();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         this.shouldMarkAllNotify();
+    }
+
+    @Override
+    protected void initArgs(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            mLaunchOptions = intent.getBundleExtra("launchOptions");
+        } else {
+            mLaunchOptions = savedInstanceState.getBundle("launchOptions");
+        }
+
     }
 
     @Override
@@ -114,6 +136,11 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle("launchOptions", mLaunchOptions);
+    }
 
     @Override
     protected void doInjection() {
@@ -135,9 +162,11 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected
     @Nullable
     Bundle getLaunchOptions() {
-        Bundle bundle = new Bundle();
-        bundle.putString("zalopay_userid", getUserComponent().currentUser().uid);
-        return bundle;
+        mLaunchOptions.putString("zalopay_userid", getUserComponent().currentUser().uid);
+
+        Timber.d("getLaunchOptions: mLaunchOptions %s", mLaunchOptions);
+
+        return mLaunchOptions;
     }
 
     @Override

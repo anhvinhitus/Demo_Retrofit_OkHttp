@@ -195,14 +195,8 @@ public class Navigator implements INavigator {
                 return;
             }
         }
-        Intent intent = getIntentMiniAppActivity(activity, moduleName);
+        Intent intent = getIntentMiniAppActivity(activity, moduleName, new HashMap<String, String>());
         activity.startActivity(intent);
-    }
-
-    public Intent getIntentMiniAppActivity(Context context, String moduleName) {
-        Intent intent = new Intent(context, MiniApplicationActivity.class);
-        intent.putExtra("moduleName", moduleName);
-        return intent;
     }
 
     public void startLinkCardActivity(Activity activity) {
@@ -349,7 +343,21 @@ public class Navigator implements INavigator {
     }
 
     public void startTermActivity(Context context) {
-        Timber.d("start term activity");
+        Map<String, String> option = new HashMap<>();
+        option.put("view", "TermOfUse");
+        Intent intent = getIntentMiniAppActivity(context, ModuleName.ABOUT, option);
+        context.startActivity(intent);
+    }
+
+    public Intent getIntentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
+        Intent intent = new Intent(context, MiniApplicationActivity.class);
+        intent.putExtra("moduleName", moduleName);
+        Bundle options = new Bundle();
+        for (Map.Entry<String, String> e : launchOptions.entrySet()) {
+            options.putString(e.getKey(), e.getValue());
+        }
+        intent.putExtra("launchOptions", options);
+        return intent;
     }
 
     public void startDialSupport(Context context) {
