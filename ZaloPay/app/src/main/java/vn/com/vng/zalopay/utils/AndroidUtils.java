@@ -1143,6 +1143,7 @@ public class AndroidUtils {
                                 R.string.miss_playstore), Toast.LENGTH_SHORT);
             }
         } catch (Exception ex) {
+            Timber.w(ex, "openPlayStoreForUpdate exception [%s]", ex.getMessage());
             ToastUtil.showToast(context,
                     context.getResources().getString(R.string.miss_playstore),
                     Toast.LENGTH_SHORT);
