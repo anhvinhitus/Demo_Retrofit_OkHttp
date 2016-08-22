@@ -339,6 +339,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Override
     public void onPause() {
         Timber.i("MainActivity is pausing");
+        presenter.pause();
         super.onPause();
     }
 
@@ -346,7 +347,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public void onResume() {
         Timber.i("MainActivity is resuming");
         super.onResume();
-
+        presenter.resume();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
         if (message == null) {
             return;

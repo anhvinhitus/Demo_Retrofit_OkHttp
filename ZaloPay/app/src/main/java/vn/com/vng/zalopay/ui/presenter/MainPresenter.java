@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
@@ -143,8 +144,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             }
 
             @Override
-            public void onUpVersion(String s, String s1) {
-
+            public void onUpVersion(String latestVersion, String msg) {
+                boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion);
+                if (!upgradeApp || homeView == null) {
+                    return;
+                }
+                AppVersionUtils.showUpgradeAppDialog(homeView.getContext());
             }
         });
     }

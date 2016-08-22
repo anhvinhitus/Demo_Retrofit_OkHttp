@@ -20,8 +20,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
@@ -30,6 +28,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILoginView;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 3/26/16.
@@ -145,7 +145,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         }
     }
 
-
     private void loginPayment(long zuid, String zalooauthcode) {
         showLoadingView();
         Subscription subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
@@ -224,6 +223,4 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             LoginPresenter.this.onLoginError(e);
         }
     }
-
-
 }

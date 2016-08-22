@@ -44,6 +44,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -68,6 +69,7 @@ import java.util.zip.ZipInputStream;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 
 /**
  * Created by AnhHieu on 9/14/15.
@@ -1115,5 +1117,35 @@ public class AndroidUtils {
         setSpannedMessageToView(tv, context.getString(message),
                 context.getString(spannedMessage),
                 isUnderline, isMessageBold, ContextCompat.getColor(context, linkColorResId), clickableSpan);
+    }
+
+    public static void openPlayStoreForUpdate(Context context) {
+        if (context == null)
+            return;
+        try {
+            String appName = context.getResources().getString(R.string.app_name);
+            String packageName = BuildConfig.APPLICATION_ID;
+            Uri uriUrl = Uri.parse("market://details?id="
+                            + packageName
+                            + "&referrer=utm_source%3D"
+                            + appName
+                            + "%26utm_medium%3Dandroid-app"
+                            + "%26utm_content%3Dhome-page"
+                            + "%26utm_campaign%3Dforce-app-update");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                ToastUtil.showToast(context,
+                        context.getResources().getString(
+                                R.string.miss_playstore), Toast.LENGTH_SHORT);
+            }
+        } catch (Exception ex) {
+            ToastUtil.showToast(context,
+                    context.getResources().getString(R.string.miss_playstore),
+                    Toast.LENGTH_SHORT);
+        }
     }
 }
