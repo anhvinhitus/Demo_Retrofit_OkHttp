@@ -3,20 +3,9 @@ package vn.com.vng.zalopay.data.ws;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -42,6 +31,7 @@ public class TCPClient implements SocketClient {
         mHost = hostname;
         mPort = port;
         mListener = listener;
+
         mHandlerThread = new HandlerThread("socket-thread");
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
@@ -64,20 +54,17 @@ public class TCPClient implements SocketClient {
                 mConnection.run();
             } catch (SocketException e) {
                 Timber.e(e, "SocketException");
-                mListener.onError(e);
+                postErrorEvent(e);
             } catch (IOException e) {
                 Timber.e(e, "IOException");
-                mListener.onError(e);
+                postErrorEvent(e);
             } catch (Exception e) {
                 Timber.e(e, "Exception");
-                mListener.onError(e);
+                postErrorEvent(e);
             } finally {
                 Timber.d("Stopping the connection.");
                 mRun = false;
-                if (mConnection != null) {
-                    mConnection.close();
-                    mConnection = null;
-                }
+                disposeConnection();
             }
         });
 
@@ -87,6 +74,10 @@ public class TCPClient implements SocketClient {
 
     public void disconnect() {
         mRun = false;
+        disposeConnection();
+    }
+
+    private void disposeConnection() {
         if (mConnection != null) {
             mConnection.close();
             mConnection = null;
@@ -105,7 +96,7 @@ public class TCPClient implements SocketClient {
         }
 
         Timber.d("QUEUE: send message");
-        mConnection.write(frame);
+        postWriteData(frame);
     }
 
     public boolean isRunning() {
@@ -129,7 +120,7 @@ public class TCPClient implements SocketClient {
     private class ConnectionListener implements SocketChannelConnection.ConnectionListenable {
         @Override
         public void onConnected() {
-            mListener.onConnected();
+            postConnectedEvent();
         }
 
         @Override
@@ -141,7 +132,8 @@ public class TCPClient implements SocketClient {
                 byte[] dataBuffer = new byte[messageLength];
                 buffer.get(dataBuffer);
                 Timber.d("Read %s bytes as message body", messageLength);
-                mListener.onMessage(dataBuffer);
+                postReceivedDataEvent(dataBuffer);
+//                mListener.onMessage(dataBuffer);
             } else {
                 Timber.d("messageLength is negative!");
             }
@@ -149,7 +141,47 @@ public class TCPClient implements SocketClient {
 
         @Override
         public void onDisconnected(int reason) {
-            mHandler.post(() -> mListener.onDisconnected(reason, ""));
+            postDisconnectedEvent(reason);
         }
+    }
+
+    private void postDisconnectedEvent(int reason) {
+        if (mHandler == null || mListener == null) {
+            return;
+        }
+
+        mHandler.post(() -> mListener.onDisconnected(reason, ""));
+    }
+
+    private void postWriteData(byte[] data) {
+        if (mHandler == null || mConnection == null) {
+            return;
+        }
+
+        mHandler.post(() -> mConnection.write(data));
+    }
+
+    private void postReceivedDataEvent(byte[] data) {
+        if (mHandler == null || mListener == null) {
+            return;
+        }
+
+        mHandler.post(() -> mListener.onMessage(data));
+    }
+
+    private void postConnectedEvent() {
+        if (mHandler == null || mListener == null) {
+            return;
+        }
+
+        mHandler.post(() -> mListener.onConnected());
+    }
+
+    private void postErrorEvent(Exception e) {
+        if (mHandler == null || mListener == null) {
+            return;
+        }
+
+        mHandler.post(() -> mListener.onError(e));
     }
 }
