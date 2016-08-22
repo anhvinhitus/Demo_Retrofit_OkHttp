@@ -238,13 +238,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutAccountName)
     public void onClickEditAccountName() {
-        if (TextUtils.isEmpty(mAccountNameView.getText())) {
-            if (mPresenter.getProfileLevel() < 2) {
-                showToast(R.string.alert_need_update_level_2);
-                return;
-            }
-            navigator.startEditAccountActivity(getContext());
+        if (!TextUtils.isEmpty(mAccountNameView.getText())) {
+            return;
         }
+        navigator.startEditAccountActivity(getContext());
     }
 
     @OnClick(R.id.layoutChangePin)
