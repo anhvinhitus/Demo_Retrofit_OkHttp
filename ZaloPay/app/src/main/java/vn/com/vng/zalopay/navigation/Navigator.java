@@ -342,6 +342,14 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startTransactionDetail(Context context, String transid) {
+        Map<String, String> launchOptions = new HashMap<>();
+        launchOptions.put("view", "history");
+        launchOptions.put("transid", transid);
+        Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, launchOptions);
+        context.startActivity(intent);
+    }
+
     public void startTermActivity(Context context) {
         Map<String, String> option = new HashMap<>();
         option.put("view", "TermOfUse");

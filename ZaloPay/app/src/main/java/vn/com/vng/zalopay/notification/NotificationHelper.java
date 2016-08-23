@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -44,6 +45,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class NotificationHelper {
 
     final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+    Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     final NotificationStore.Repository notifyRepository;
     final AccountStore.Repository accountRepository;
@@ -154,23 +156,30 @@ public class NotificationHelper {
         }
     }
 
-    private void showAlertDonateMoney(NotificationData notify) {
-        Timber.d("Show alert DonateMoney ");
-        SweetAlertDialog dialog = new SweetAlertDialog(context);
+    private void showAlertDonateMoney(final NotificationData notify) {
 
-        dialog.setTitleText("Tặng tiền");
-        dialog.setCancelText(context.getString(R.string.txt_close));
-        dialog.setConfirmText(notify.message);
-        dialog.setConfirmText("Xem chi tiết");
-        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
+        /*if(AppLifeCycle.isBackGround()){
 
+        }*/
 
-                sweetAlertDialog.dismiss();
-            }
-        });
-        dialog.show();
+        Timber.d("Show alert DonateMoney %s", notify.transid);
+
+        if (notify.transid > 0) {
+            SweetAlertDialog dialog = new SweetAlertDialog(context);
+
+            dialog.setTitleText("Tặng tiền");
+            dialog.setCancelText(context.getString(R.string.txt_close));
+            dialog.setConfirmText(notify.message);
+            dialog.setConfirmText("Xem chi tiết");
+            dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog dialog) {
+                    navigator.startTransactionDetail(context, String.valueOf(notify.transid));
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
     }
 
 
