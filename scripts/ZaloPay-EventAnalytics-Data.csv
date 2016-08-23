@@ -42,6 +42,7 @@ EventId,Category,Action
 1326,Home,TapAppIcon_5_2
 1327,Home,TapAppIcon_5_3
 1328,Home,TapAppIcon_5_4
+1329,Home,TapBannerPosition4
 1400,Left Menu,OpenLeftMenu
 1401,Left Menu,TapLeftMenuUserProfile
 1402,Left Menu,TapLeftMenuHome
