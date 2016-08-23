@@ -57,6 +57,11 @@
             android:textColor="@color/colorPrimary"/>
     </FrameLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -113,6 +118,11 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -139,6 +149,11 @@
             android:text="@string/link_card_other"
             android:textColor="@color/colorPrimary"/>
     </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -194,4 +209,10 @@
                 android:text="@string/sacombank_bank"/>
         </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate"/>
+
 </LinearLayout>
