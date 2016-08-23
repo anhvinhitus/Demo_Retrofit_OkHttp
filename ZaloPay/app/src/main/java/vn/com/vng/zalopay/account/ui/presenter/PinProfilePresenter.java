@@ -17,6 +17,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by longlv on 25/05/2016.
@@ -135,6 +137,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
             Timber.e(e, "update Profile Subscriber onError [%s]", e.getMessage());
             if (e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.USER_EXISTED) {
+                    ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_INUSED);
                     mView.onCheckFail();
                 } else {
                     PinProfilePresenter.this.onUpdateProfileError(e.getMessage());
@@ -177,6 +180,10 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         public void onError(Throwable e) {
             super.onError(e);
             if (e instanceof BodyException) {
+                if(((BodyException) e).errorCode == NetworkError.USER_EXISTED){
+                    ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_INUSED2);
+                }
+
                 mView.onCheckFail();
             } else {
                 mView.showError("Lỗi xảy ra trong quá trình kiểm tra tên tài khoản Zalo Pay.\nVui lòng thử lại.");

@@ -30,6 +30,8 @@ import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 import static android.text.Html.fromHtml;
@@ -218,6 +220,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     public void onClickContinue() {
         if (TextUtils.isEmpty(inputZaloPayName.getText())) {
             presenter.updateProfile(passCode.getText(), edtPhone.getString(), null);
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_EMPTY);
         } else {
             showConfirmUpdateZaloPayName();
         }
@@ -226,9 +229,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     private boolean validZaloPayName() {
         if (TextUtils.isEmpty(inputZaloPayName.getText())) {
             return true;
-        } else
+        } else {
             return inputZaloPayName.getCurrentState() != InputZaloPayNameView.ZPNameStateEnum.INVALID &&
                     inputZaloPayName.validZPName();
+        }
     }
 
     private void showConfirmUpdateZaloPayName() {
@@ -240,6 +244,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         presenter.updateProfile(passCode.getText(), edtPhone.getString(), inputZaloPayName.getText());
+                        ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_VALID);
                         sweetAlertDialog.dismiss();
                     }
                 },
@@ -306,6 +311,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         @Override
         public void onClick(View v) {
             presenter.checkZaloPayName(inputZaloPayName.getText());
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_PRESSCHECK);
         }
     };
 
@@ -378,11 +384,13 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         if (inputZaloPayName == null) {
             return;
         }
+
         inputZaloPayName.showCheckSuccess();
     }
 
     @Override
     public void onCheckFail() {
+
         inputZaloPayName.showCheckFail();
     }
 

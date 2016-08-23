@@ -20,11 +20,9 @@ public abstract class BaseToolBarActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            Timber.d("setDisplayShowTitleEnabled");
         }
-        mToolbar.setTitleTextAppearance(this, R.style.Toolbar_TitleText);
+       // mToolbar.setTitleTextAppearance(this, R.style.Toolbar_TitleText);
     }
 
 
