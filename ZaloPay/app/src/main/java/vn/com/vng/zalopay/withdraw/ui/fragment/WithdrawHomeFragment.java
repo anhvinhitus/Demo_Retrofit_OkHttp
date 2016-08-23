@@ -60,7 +60,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
 
     @OnClick(R.id.tvQuestion)
     public void onClickQuestion() {
-        showToast("Chức năng sẽ sớm được ra mắt.");
+        navigator.startMiniAppActivity(getActivity(), ModuleName.FAQ);
     }
 
     public WithdrawHomeFragment() {
