@@ -9,7 +9,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,8 +34,6 @@ import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
@@ -47,6 +44,8 @@ import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 
 /**
@@ -172,6 +171,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         List<Integer> bannerResource = new ArrayList<>();
         bannerResource.add(R.drawable.bn_1);
         bannerResource.add(R.drawable.bn_2);
+        bannerResource.add(R.drawable.bn_3);
+        bannerResource.add(R.drawable.bn_4);
         mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource, this);
         mBannerViewpager.setAdapter(mBannerPagerAdapter);
         mBannerIndicator.setViewPager(mBannerViewpager);
@@ -272,16 +273,18 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void onItemClick(int position) {
-
+    public void onBannerItemClick(int position) {
         if (position == 0) {
-            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
+            navigator.startLinkCardActivity(getActivity());
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
-            navigator.startLinkCardActivity(getActivity());
+            navigator.startTransferMoneyActivity(getActivity());
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.BUY_PHONE_CARD);
+            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
+            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
+        } else if (position == 3) {
+            navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
         }
     }

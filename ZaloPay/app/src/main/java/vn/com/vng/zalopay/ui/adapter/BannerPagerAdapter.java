@@ -24,7 +24,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     private IBannerClick mListener;
 
     public interface IBannerClick {
-        void onItemClick(int position);
+        void onBannerItemClick(int position);
     }
 
     public BannerPagerAdapter(Context context, List<Integer> resources, IBannerClick iBannerClick) {
@@ -54,7 +54,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onItemClick(position);
+                    mListener.onBannerItemClick(position);
                 }
             }
         });
