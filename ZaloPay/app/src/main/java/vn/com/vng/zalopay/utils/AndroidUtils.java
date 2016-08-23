@@ -1119,19 +1119,30 @@ public class AndroidUtils {
                 isUnderline, isMessageBold, ContextCompat.getColor(context, linkColorResId), clickableSpan);
     }
 
+    /**
+     * Zalo Pay url in google play store.
+     * @param campaign title use to analytic
+     * @param trackingContent detail use to analytic
+     */
+    public static String getPlayStoreUrl(String campaign, String trackingContent) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("market://details?id=");
+        stringBuilder.append(BuildConfig.APPLICATION_ID);
+        stringBuilder.append("&referrer=utm_source%3D");
+        stringBuilder.append(AndroidApplication.instance().getResources().getString(R.string.app_name));
+        stringBuilder.append("%26utm_medium%3Dandroid-app");
+        stringBuilder.append("%26utm_content%3D");
+        stringBuilder.append(trackingContent);
+        stringBuilder.append("%26utm_campaign%3D");
+        stringBuilder.append(campaign);
+        return stringBuilder.toString();
+    }
+
     public static void openPlayStoreForUpdate(Context context) {
         if (context == null)
             return;
         try {
-            String appName = context.getResources().getString(R.string.app_name);
-            String packageName = BuildConfig.APPLICATION_ID;
-            Uri uriUrl = Uri.parse("market://details?id="
-                            + packageName
-                            + "&referrer=utm_source%3D"
-                            + appName
-                            + "%26utm_medium%3Dandroid-app"
-                            + "%26utm_content%3Dhome-page"
-                            + "%26utm_campaign%3Dforce-app-update");
+            Uri uriUrl = Uri.parse(getPlayStoreUrl("force-app-update", "home-page"));
             Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
@@ -120,6 +121,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         Map<String, Object> map = new HashMap<>();
         map.put("termsOfUseUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.pay.zing.vn/terms" : "https://zalopay.com.vn/terms");
         map.put("faqUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.pay.zing.vn/faq" : "https://zalopay.com.vn/faq");
+        map.put("storeUrl", AndroidUtils.getPlayStoreUrl("React Native", "Internal"));
         return map;
     }
 }
