@@ -170,7 +170,7 @@ public class NotificationHelper {
             dialog.setTitleText("Tặng tiền");
             dialog.setCancelText(context.getString(R.string.txt_close));
             dialog.setConfirmText(notify.message);
-            dialog.setConfirmText("Xem chi tiết");
+            dialog.setConfirmText(context.getString(R.string.view_detail));
             dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog dialog) {

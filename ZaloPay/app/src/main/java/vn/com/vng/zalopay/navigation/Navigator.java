@@ -352,7 +352,7 @@ public class Navigator implements INavigator {
 
     public void startTermActivity(Context context) {
         Map<String, String> option = new HashMap<>();
-        option.put("view", "TermOfUse");
+        option.put("view", "termsOfUse");
         Intent intent = getIntentMiniAppActivity(context, ModuleName.ABOUT, option);
         context.startActivity(intent);
     }
