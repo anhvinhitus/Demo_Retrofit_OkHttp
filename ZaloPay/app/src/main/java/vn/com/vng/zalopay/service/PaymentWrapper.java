@@ -77,6 +77,7 @@ public class PaymentWrapper {
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
                     //Hien update profile level 2
                     startUpdateProfileLevel(null);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD.getNum()) {
                     String walletTransId = null;
                     if (pPaymentResult.paymentInfo != null) {
@@ -84,6 +85,7 @@ public class PaymentWrapper {
                     }
                     //Hien update profile level 2
                     startUpdateProfileLevel(walletTransId);
+                    responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
                     responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
                     responseListener.onNotEnoughMoney();

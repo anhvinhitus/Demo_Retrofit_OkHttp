@@ -17,6 +17,7 @@ public enum PaymentError {
     ERR_CODE_PROCESSING(5),
     ERR_CODE_SERVICE_MAINTENANCE(6),
     ERR_CODE_MONEY_NOT_ENOUGH(7),
+    ERR_CODE_UPGRADE_PROFILE_LEVEL(8),
     ZPC_TRANXSTATUS_NEED_LINKCARD(11),
     ERR_CODE_SYSTEM(5000),
     ERR_CODE_USER_INFO(5001),
@@ -51,6 +52,9 @@ public enum PaymentError {
                 break;
             case ERR_CODE_MONEY_NOT_ENOUGH:
                 errorMessage = "Tài khoản không đủ để thực hiện giao dịch.";
+                break;
+            case ERR_CODE_UPGRADE_PROFILE_LEVEL:
+                errorMessage = "Hãy cập nhật thông tin để sử dụng tính năng này.";
                 break;
             case ERR_CODE_INPUT:
                 errorMessage = "Thông tin đầu vào thiếu hoặc không hợp lệ.";
