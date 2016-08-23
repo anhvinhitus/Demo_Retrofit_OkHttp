@@ -32,7 +32,7 @@ class SocketChannelConnection {
 
     private final ConnectionListenable mListenable;
     private final List<ByteBuffer> mWriteQueue = new LinkedList<>();
-    private final ByteBuffer mReadBuffer = ByteBuffer.allocate(128);
+    private final ByteBuffer mReadBuffer = ByteBuffer.allocate(4096);
     // A list of ChangeRequest instances
     private final List<ChangeRequest> mChangeRequests = new LinkedList<>();
 
