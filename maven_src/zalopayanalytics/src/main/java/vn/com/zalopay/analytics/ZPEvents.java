@@ -47,6 +47,7 @@ public class ZPEvents {
     public static final int TAPAPPICON_5_2 = 1326;
     public static final int TAPAPPICON_5_3 = 1327;
     public static final int TAPAPPICON_5_4 = 1328;
+    public static final int TAPBANNERPOSITION4 = 1329;
     public static final int OPENLEFTMENU = 1400;
     public static final int TAPLEFTMENUUSERPROFILE = 1401;
     public static final int TAPLEFTMENUHOME = 1402;
@@ -203,6 +204,8 @@ public class ZPEvents {
                 return "TapAppIcon_5_3";
             case TAPAPPICON_5_4:
                 return "TapAppIcon_5_4";
+            case TAPBANNERPOSITION4:
+                return "TapBannerPosition4";
             case OPENLEFTMENU:
                 return "OpenLeftMenu";
             case TAPLEFTMENUUSERPROFILE:
@@ -429,6 +432,8 @@ public class ZPEvents {
             case TAPAPPICON_5_3:
                 return "Home";
             case TAPAPPICON_5_4:
+                return "Home";
+            case TAPBANNERPOSITION4:
                 return "Home";
             case OPENLEFTMENU:
                 return "Left Menu";
