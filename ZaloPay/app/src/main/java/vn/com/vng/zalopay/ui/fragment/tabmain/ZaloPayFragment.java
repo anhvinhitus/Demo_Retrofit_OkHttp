@@ -285,7 +285,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
         } else if (position == 3) {
             navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
+            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
         }
     }
 
