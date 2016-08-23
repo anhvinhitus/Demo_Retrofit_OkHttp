@@ -15,41 +15,46 @@ import timber.log.Timber;
 public class TCPClient implements SocketClient {
     private Listener mListener;
 
-    private Thread mThread;
+    /**
+     * Thread for handling network connection
+     * Modification to mConnection will only be happened in this thread
+     */
+    private HandlerThread mConnectionThread;
+    private Handler mConnectionHandler;
 
+    /**
+     * Thread for handling commands, network events, read/write queue to network connection
+     */
     private HandlerThread mHandlerThread;
     private Handler mHandler;
 
     private boolean mRun = false;
 
-    private String mHost;
-    private int mPort;
-
-    SocketChannelConnection mConnection;
+    private final SocketChannelConnection mConnection;
 
     public TCPClient(String hostname, int port, Listener listener) {
-        mHost = hostname;
-        mPort = port;
         mListener = listener;
 
         mHandlerThread = new HandlerThread("socket-thread");
+        mConnectionThread = new HandlerThread("connection-thread");
         mHandlerThread.start();
+        mConnectionThread.start();
+
         mHandler = new Handler(mHandlerThread.getLooper());
+        mConnectionHandler = new Handler(mConnectionThread.getLooper());
+
+        mConnection = new SocketChannelConnection(hostname, port, new ConnectionListener());
     }
 
     public void connect() {
         Timber.d("Request to make connection");
-        if (mThread != null && mThread.isAlive()) {
-            Timber.d("Thread running the connection is still alive. Skip create new connection");
-            return;
-        }
-
-        mRun = true;
-
-        mThread = new Thread(() -> {
+        mConnectionHandler.post(() -> {
+            if (mConnection.isConnected() || mConnection.isConnecting()) {
+                Timber.d("[CONNECTION] Skip create new connection");
+                return;
+            }
+            Timber.d("Starting new connection");
             try {
-                mRun = true;
-                mConnection = new SocketChannelConnection(mHost, mPort, new ConnectionListener());
                 mConnection.startConnect();
                 mConnection.run();
             } catch (SocketException e) {
@@ -63,13 +68,9 @@ public class TCPClient implements SocketClient {
                 postErrorEvent(e);
             } finally {
                 Timber.d("Stopping the connection.");
-                mRun = false;
                 disposeConnection();
             }
         });
-
-        Timber.d("Starting new connection");
-        mThread.start();
     }
 
     public void disconnect() {
@@ -78,10 +79,7 @@ public class TCPClient implements SocketClient {
     }
 
     private void disposeConnection() {
-        if (mConnection != null) {
-            mConnection.close();
-            mConnection = null;
-        }
+        mHandler.post(mConnection::close);
     }
 
     public void send(byte[] data) {
@@ -91,16 +89,12 @@ public class TCPClient implements SocketClient {
     }
 
     private void sendFrame(final byte[] frame) {
-        if (frame == null || mConnection == null) {
+        if (frame == null) {
             return;
         }
 
         Timber.d("QUEUE: send message");
         postWriteData(frame);
-    }
-
-    public boolean isRunning() {
-        return mRun;
     }
 
     @Override
@@ -154,10 +148,6 @@ public class TCPClient implements SocketClient {
     }
 
     private void postWriteData(byte[] data) {
-        if (mHandler == null || mConnection == null) {
-            return;
-        }
-
         mHandler.post(() -> mConnection.write(data));
     }
 

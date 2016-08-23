@@ -9,6 +9,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.channels.ClosedSelectorException;
+import java.nio.channels.ConnectionPendingException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -29,7 +30,6 @@ class SocketChannelConnection {
     private static final int REASON_WRITE_ERROR = 4;
     private static final int REASON_CONNECTION_ERROR = 5;
 
-    private final InetSocketAddress mListenAddress;
     private final ConnectionListenable mListenable;
     private final List<ByteBuffer> mWriteQueue = new LinkedList<>();
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(128);
@@ -59,6 +59,8 @@ class SocketChannelConnection {
     private ConnectionState mConnectionState;
     private Selector mSelector;
     private SocketChannel mChannel;
+    private String mAddress;
+    private int mPort;
 
     interface ConnectionListenable {
         void onConnected();
@@ -69,28 +71,38 @@ class SocketChannelConnection {
     SocketChannelConnection(String address, int port, ConnectionListenable listenable) {
         mListenable = listenable;
 
-        mListenAddress = new InetSocketAddress(address, port);
+        mAddress = address;
+        mPort = port;
+
         mConnectionState = ConnectionState.NOT_CONNECTED;
     }
 
 
     boolean startConnect() throws IOException {
         Timber.d("Start connecting");
-        if (mConnectionState == ConnectionState.CONNECTED) {
-            Timber.d("Connection is already made.");
-            throw new AlreadyConnectedException();
-        }
+        synchronized (this) {
+            if (mConnectionState == ConnectionState.CONNECTED) {
+                Timber.d("Connection is already made.");
+                throw new AlreadyConnectedException();
+            }
 
-        mSelector = Selector.open();
-        mChannel = SocketChannel.open();
-        mChannel.configureBlocking(false);
-        mChannel.socket().setKeepAlive(true);
-        mChannel.socket().setSoTimeout(10000);
-        mChannel.socket().setTcpNoDelay(true);
-        mChannel.register(mSelector, SelectionKey.OP_CONNECT);
-        mChannel.connect(mListenAddress);
-        mConnectionState = ConnectionState.CONNECTING;
-        return true;
+            if (mConnectionState == ConnectionState.CONNECTING) {
+                Timber.d("Connection is initializing");
+                throw new ConnectionPendingException();
+            }
+
+            mConnectionState = ConnectionState.CONNECTING;
+
+            mSelector = Selector.open();
+            mChannel = SocketChannel.open();
+            mChannel.configureBlocking(false);
+            mChannel.socket().setKeepAlive(true);
+            mChannel.socket().setSoTimeout(10000);
+            mChannel.socket().setTcpNoDelay(true);
+            mChannel.register(mSelector, SelectionKey.OP_CONNECT);
+            mChannel.connect(new InetSocketAddress(mAddress, mPort));
+            return true;
+        }
     }
 
     void run() {
@@ -270,12 +282,12 @@ class SocketChannelConnection {
     }
 
     private void handleDisconnected(int reason) {
-        try {
-            if (mConnectionState != ConnectionState.CONNECTED &&
-                    mConnectionState != ConnectionState.CONNECTING) {
-                return;
-            }
+        if (mConnectionState != ConnectionState.CONNECTED &&
+                mConnectionState != ConnectionState.CONNECTING) {
+            return;
+        }
 
+        try {
             mConnectionState = ConnectionState.DISCONNECTED;
             mSelector.close();
             mChannel.socket().close();

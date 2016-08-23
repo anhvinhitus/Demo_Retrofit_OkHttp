@@ -1,6 +1,9 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.google.protobuf.AbstractMessage;
@@ -44,13 +47,14 @@ public class WsConnection extends Connection {
     private final Parser parser;
     private final UserConfig userConfig;
 
-    private SocketClient mSocketClient;
+    private final SocketClient mSocketClient;
     private TimerWrapper mHeartBeatKeeper = new TimerWrapper(new SendHeartBeatTask());
     private TimerWrapper mConnectionChecker = new TimerWrapper(new CheckConnectionTask());
     private long mServerResponse;
 
     // state machine for keeping track of network connection
     private int mConnectionState;
+    private final Handler mConnectionHandler;
 
     /**
      * Next connection state.
@@ -68,6 +72,9 @@ public class WsConnection extends Connection {
         this.userConfig = config;
 //        mSocketClient = new NettyClient(host, port, new ConnectionListener());
         mSocketClient = new TCPClient(host, port, new ConnectionListener());
+        HandlerThread thread = new HandlerThread("wsconnection");
+        thread.start();
+        mConnectionHandler = new Handler(thread.getLooper());
     }
 
     public void setGCMToken(String token) {
@@ -76,7 +83,15 @@ public class WsConnection extends Connection {
 
     @Override
     public void connect() {
-        mSocketClient.connect();
+        if (mConnectionHandler.getLooper() != Looper.myLooper()) {
+            mConnectionHandler.post(() -> {
+                Timber.d("Trigger new connection");
+                mSocketClient.connect();
+            });
+        } else {
+            Timber.d("Trigger new connection inside looper");
+            mSocketClient.connect();
+        }
     }
 
     @Override
@@ -97,14 +112,11 @@ public class WsConnection extends Connection {
     private void reconnect() {
         disconnect();
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // this code will be executed after 1 seconds
-                Timber.d("Begin to reconnect");
-                mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
-                connect();
-            }
+        mConnectionHandler.postDelayed(() -> {
+            // this code will be executed after 1 seconds
+            Timber.d("Begin to reconnect");
+            mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
+            connect();
         }, 1000);
     }
 
@@ -350,6 +362,7 @@ public class WsConnection extends Connection {
 
             mSocketClient.disconnect();
 
+            Timber.d("Next expected network state: %s", mNextConnectionState);
             if (mNextConnectionState == NEXTSTATE_RETRY_CONNECT) {
                 scheduleReconnect();
             }
@@ -371,11 +384,19 @@ public class WsConnection extends Connection {
     }
 
     private void scheduleReconnect() {
-        if (NetworkHelper.isNetworkAvailable(context)
-                && userConfig.hasCurrentUser()
-                && numRetry <= MAX_NUMBER_RETRY_CONNECT) {
-            connect();
-            numRetry++;
+        if (!userConfig.hasCurrentUser()) {
+            Timber.d("Don't have signed in user. Skip reconnect.");
+            return;
         }
+
+        if (!NetworkHelper.isNetworkAvailable(context)) {
+            Timber.d("Don't have network connection. Skip reconnect. When network connection is available, there is a event that will trigger new connection");
+            return;
+        }
+
+        numRetry++;
+        long time = 2000 * (numRetry % 10) + (long)(1000 * Math.random());
+        Timber.d("Try to reconnect after %s (milliseconds) at [%s]-th time", time, numRetry);
+        mConnectionHandler.postDelayed(this::connect, time);
     }
 }
