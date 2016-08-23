@@ -36,10 +36,10 @@ public class RedPacketAppInfoResponse {
         @SerializedName("maxmessagelength")
         public int maxMessageLength;
 
-        @SerializedName("bundleExpiredTime")
+        @SerializedName("bundleexpiredtime")
         public long bundleExpiredTime;
 
-        @SerializedName("minDivideAmount")
+        @SerializedName("mindivideamount")
         public long minDivideAmount;
     }
 }
