@@ -126,10 +126,6 @@ public class PaymentWrapper {
             }
         }
 
-        @Override
-        public void onSMSCallBack(String appTransID) {
-            Timber.d("pay onSMSCallBack");
-        }
     };
 
     public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, TransactionStore.Repository transactionRepository,
