@@ -1,15 +1,12 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -90,6 +87,14 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
 
+    private boolean isDifferencePin() {
+        String newPin = passCode.getText();
+        if (TextUtils.isEmpty(newPin)) {
+            return false;
+        }
+        return !newPin.equals(mOldPassCodeView.getText());
+    }
+
     public ChangePinFragment() {
         // Required empty public constructor
     }
@@ -123,6 +128,13 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
             passCode.hideError();
         }
 
+        if (!isDifferencePin()) {
+            passCode.showError(getString(R.string.pin_not_change));
+            passCode.requestFocusView();
+            return;
+        } else {
+            passCode.hideError();
+        }
 
         presenter.changePin(passCode.getText(), mOldPassCodeView.getText());
 
