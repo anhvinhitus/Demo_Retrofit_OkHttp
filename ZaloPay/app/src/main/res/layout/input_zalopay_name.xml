@@ -18,7 +18,7 @@
             android:background="@color/transparent"
             android:ellipsize="end"
             android:hint="@string/hint_zalopay_name"
-            android:inputType="text"
+            android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
             android:maxLength="24"
             android:maxLines="1"
             android:paddingTop="@dimen/spacing.small"
