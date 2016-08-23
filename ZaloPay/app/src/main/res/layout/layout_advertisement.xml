@@ -5,7 +5,7 @@
     <FrameLayout
         android:id="@+id/layoutBannerFullScreen"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="101dp"
         android:background="@color/white">
 
         <android.support.v4.view.ViewPager
@@ -24,10 +24,10 @@
             app:stl_dividerColor="@color/transparent"
             app:stl_dividerThickness="0dp"
             app:stl_indicatorColor="@color/colorPrimary"
-            app:stl_indicatorCornerRadius="4dp"
+            app:stl_indicatorCornerRadius="3dp"
             app:stl_indicatorGravity="center"
             app:stl_indicatorInterpolation="linear"
-            app:stl_indicatorThickness="8dp"
+            app:stl_indicatorThickness="6dp"
             app:stl_underlineColor="@color/transparent"
             app:stl_underlineThickness="0dp" />
     </FrameLayout>
