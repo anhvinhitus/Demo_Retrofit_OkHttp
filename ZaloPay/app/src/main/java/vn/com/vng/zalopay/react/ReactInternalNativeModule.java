@@ -15,9 +15,12 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import timber.log.Timber;
-import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -109,6 +112,15 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         if (intent != null) {
             activity.startActivity(intent);
         }
+    }
+
+    @Nullable
+    @Override
+    public Map<String, Object> getConstants() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("termsOfUseUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.pay.zing.vn/terms" : "https://zalopay.com.vn/terms");
+        map.put("faqUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.pay.zing.vn/faq" : "https://zalopay.com.vn/faq");
+        return map;
     }
 }
 
