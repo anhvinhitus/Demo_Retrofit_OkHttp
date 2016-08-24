@@ -288,7 +288,11 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         if (zaloFriend == null) {
             return;
         }
-        tvDisplayName.setText(zaloFriend.getDisplayName());
+        String userName = zaloFriend.getUserName();
+        if (TextUtils.isEmpty(userName)) {
+            userName = zaloFriend.getDisplayName();
+        }
+        tvDisplayName.setText(userName);
         Glide.with(this).load(zaloFriend.getAvatar())
                 .placeholder(R.color.silver)
                 .centerCrop()
