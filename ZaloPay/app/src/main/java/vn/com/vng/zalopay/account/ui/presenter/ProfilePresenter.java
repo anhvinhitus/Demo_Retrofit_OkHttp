@@ -48,8 +48,6 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void resume() {
-        getProfile();
-        checkShowOrHideChangePinView();
     }
 
     @Override
@@ -63,8 +61,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     public void getProfile() {
         User user = userConfig.getCurrentUser();
         if (user != null) {
-            mView.updateUserInfo(user);
-
+            updateUserInfo(user);
             // Neu chua co ZaloPayName hoac Chua get profile level 3
             if (TextUtils.isEmpty(user.zalopayname) ||
                     (user.profilelevel >= 3 && TextUtils.isEmpty(user.identityNumber))) {
@@ -73,7 +70,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
     }
 
-    private void checkShowOrHideChangePinView() {
+    public void checkShowOrHideChangePinView() {
         try {
             boolean isShow = userConfig.getCurrentUser().profilelevel >= 2;
             mView.showHideChangePinView(isShow);
@@ -121,7 +118,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     private void getProfileSuccess() {
         User user = userConfig.getCurrentUser();
         if (user != null) {
-            mView.updateUserInfo(user);
+            updateUserInfo(user);
         }
     }
 
@@ -143,8 +140,12 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true, priority = 1)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         Timber.d("onEventMainThread event %s", event);
+        updateUserInfo(userConfig.getCurrentUser());
+    }
+
+    private void updateUserInfo(User user) {
         if (mView != null) {
-            mView.updateUserInfo(userConfig.getCurrentUser());
+            mView.updateUserInfo(user);
         }
     }
 

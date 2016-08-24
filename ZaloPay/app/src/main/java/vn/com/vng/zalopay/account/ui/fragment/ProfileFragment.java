@@ -96,6 +96,9 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mPresenter.getProfile();
+        mPresenter.checkShowOrHideChangePinView();
     }
 
     @Override
