@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
+import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
@@ -43,6 +46,9 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     @BindView(R.id.tvContact)
     TextView mContactView;
+
+    @BindView(R.id.scrollView)
+    ScrollView mScrollView;
 
     IPasscodeChanged passCodeChanged = new IPasscodeChanged() {
         @Override
@@ -160,6 +166,14 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         passCode.setPasscodeChanged(passCodeChanged);
+        passCode.setPasscodeFocusChanged(new IPasscodeFocusChanged() {
+            @Override
+            public void onFocusChangedPin(boolean isFocus) {
+                if (isFocus) {
+                    mScrollView.smoothScrollTo(0, mScrollView.getBottom());
+                }
+            }
+        });
         mOldPassCodeView.setPasscodeChanged(oldPassCodeChanged);
 
         passCode.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
@@ -256,5 +270,6 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
         void onUpdatePinSuccess();
 
         void onUpdatePinFail();
+
     }
 }

@@ -37,7 +37,6 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     private EditText mEditText;
     private TextView mTvNote;
     private TextView mTvShowHide;
-    private TextInputLayout mTextInputLayout;
     private ArrayList<TextView> mTextViews;
     private int mTextViewSize = 0;
 
@@ -81,7 +80,6 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
         View view = LayoutInflater.from(context).inflate(R.layout.passcodeview, this, false);
         mRootView = (LinearLayout) view.findViewById(R.id.root);
-        mTextInputLayout = (TextInputLayout) view.findViewById(R.id.textInputLayout);
         mTvHint = (TextView) view.findViewById(R.id.tvHint);
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
@@ -250,6 +248,10 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         }
 
         hideError();
+
+        if (mIPasscodeFocusChanged != null) {
+            mIPasscodeFocusChanged.onFocusChangedPin(hasFocus);
+        }
     }
 
     public void setHintVisibility(int visibility) {

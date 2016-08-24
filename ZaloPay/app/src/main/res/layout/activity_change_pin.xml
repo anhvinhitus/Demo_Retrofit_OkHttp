@@ -1,42 +1,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:orientation="vertical"
-    tools:context="vn.com.vng.zalopay.account.ui.activities.ChangePinActivity">
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
+        layout="@layout/toolbar" />
 
-    <ScrollView
-        android:id="@+id/ScrollView"
+
+    <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
-        </LinearLayout>
-    </ScrollView>
+        android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="48dp" />
 
     <LinearLayout
         android:id="@+id/btnContinue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_btn_blue"
         android:gravity="center"
@@ -45,14 +28,14 @@
         <TextView
             style="@style/Button.Default"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/btn_continue" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/app_padding"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/ic_arrow_right"
             android:tint="@color/white" />
     </LinearLayout>

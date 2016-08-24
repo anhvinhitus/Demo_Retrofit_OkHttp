@@ -172,7 +172,7 @@
             android:label="@string/title.activity.invitation.code"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="" />
- 
+
         <activity
             android:name=".ui.activity.LinkCardActivity"
             android:label="@string/title.activity.link.card"
@@ -215,7 +215,9 @@
 
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
-            android:label="@string/title.activity.change.pin" />
+            android:label="@string/title.activity.change.pin"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity android:name=".account.ui.activities.ProfileActivity">
             <intent-filter>
                 <data
@@ -247,8 +249,9 @@
         <activity
             android:name=".withdraw.ui.activities.WithdrawActivity"
             android:label="@string/title.activity.withdraw" />
-        <activity android:name=".withdraw.ui.activities.WithdrawConditionActivity"
-                  android:label="@string/title.activity.withdraw.condition" />
+        <activity
+            android:name=".withdraw.ui.activities.WithdrawConditionActivity"
+            android:label="@string/title.activity.withdraw.condition" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
