@@ -60,12 +60,12 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.layoutEmail)
     View mLayoutEmail;
 
-    @BindView(R.id.tvZaloPayId)
+  /*  @BindView(R.id.tvZaloPayId)
     TextView tvZaloPayId;
 
     @BindView(R.id.tvZaloId)
     TextView tvZaloId;
-
+*/
     @BindView(R.id.tvAccountName)
     TextView mAccountNameView;
 
@@ -132,8 +132,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         //    mLayoutCmnd.setClickable(user.profilelevel == 2);
         //    mLayoutEmail.setClickable(user.profilelevel == 2);
 
-        tvZaloPayId.setText(user.uid);
-        tvZaloId.setText(String.valueOf(user.zaloId));
+    /*    tvZaloPayId.setText(user.uid);
+        tvZaloId.setText(String.valueOf(user.zaloId));*/
     }
 
     private void setBirthDay(long time) {
