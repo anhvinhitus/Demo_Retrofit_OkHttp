@@ -60,8 +60,9 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @OnClick(R.id.layoutLoginZalo)
     public void onClickLogin(View v) {
-        boolean showUpdateApp = AppVersionUtils.needUpgradeApp();
-        if (showUpdateApp) {
+        boolean needUpgradeApp = AppVersionUtils.needUpgradeApp();
+
+        if (needUpgradeApp) {
             AppVersionUtils.showUpgradeAppDialog(this);
             return;
         }

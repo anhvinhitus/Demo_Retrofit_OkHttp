@@ -44,14 +44,19 @@ public class AppVersionUtils {
         Timber.d("check version, newVersion [%s]", newVersion);
         setLatestVersionInServer(newVersion);
         setUpdateMessageInServer(message);
-        return  !needUpgradeApp();
+        return needUpgradeApp();
     }
 
     public static boolean needUpgradeApp() {
-        return  !isLastVersion();
+        try {
+            return !isLastVersion();
+        } catch (NumberFormatException ex) {
+            Timber.w("check app version exception [%s]", ex.getMessage());
+            return false;
+        }
     }
 
-    private static boolean isLastVersion() {
+    private static boolean isLastVersion() throws NumberFormatException {
         String appVersion = BuildConfig.VERSION_NAME;
         String lassVersion = getLatestVersionInServer();
         Timber.d("isLastVersion appVersion [%s]", appVersion);
@@ -60,7 +65,24 @@ public class AppVersionUtils {
             setLatestVersionInServer(appVersion);
             return true;
         }
-        return appVersion.equals(lassVersion);
+
+        String[] appVersionArr = appVersion.split("\\.");
+        String[] lastVersionArr = lassVersion.split("\\.");
+        int lastVersionLength = lastVersionArr.length;
+
+        for (int i = 0; i < appVersionArr.length; i++) {
+            int appVersionItem = Integer.valueOf(appVersionArr[i]);
+            int lastVersionItem = 0;
+            if (i < lastVersionLength) {
+                lastVersionItem = Integer.valueOf(lastVersionArr[i]);
+            }
+            if (appVersionItem - lastVersionItem < 0) {
+                return false;
+            } else if (appVersionItem - lastVersionItem > 0) {
+                return true;
+            }
+        }
+        return true;
     }
 
     public static void showUpgradeAppDialog(final Context context) {
@@ -81,14 +103,6 @@ public class AppVersionUtils {
                         sweetAlertDialog.dismiss();
                         checkClearSession();
                         AndroidUtils.openPlayStoreForUpdate(context);
-                    }
-                })
-                .setCancelText(context.getString(R.string.btn_cancel))
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        checkClearSession();
                     }
                 })
                 .show();

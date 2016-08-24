@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.JsonUtil;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.application.ZingMobilePayService;
@@ -124,6 +125,17 @@ public class PaymentWrapper {
             } else {
                 responseListener.onAppError(cError.messError);
             }
+        }
+
+        @Override
+        public void onUpVersion(String latestVersion, String msg) {
+            Timber.d("onUpVersion latestVersion [%s]", latestVersion);
+            Timber.d("onUpVersion msg [%s]", msg);
+            boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
+            if (!upgradeApp) {
+                return;
+            }
+            AppVersionUtils.showUpgradeAppDialog(viewListener.getActivity());
         }
 
     };
