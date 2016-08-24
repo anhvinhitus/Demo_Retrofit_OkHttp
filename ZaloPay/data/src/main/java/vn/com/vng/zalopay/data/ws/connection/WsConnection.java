@@ -78,7 +78,7 @@ public class WsConnection extends Connection {
 
         mServerPongBus = new RxBus();
         mServerPongBus.toObserverable()
-                .filter((obj) -> mSocketClient.isConnected())
+                .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
                 .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
                 .subscribe((obj) -> {
                     Timber.d("Server is not responding ...");
@@ -105,6 +105,22 @@ public class WsConnection extends Connection {
                     Timber.d("Check for reconnect");
                     connect();
                 });
+    }
+
+    private boolean isUserLoggedIn() {
+        if (userConfig == null) {
+            return false;
+        }
+
+        if (!userConfig.hasCurrentUser()) {
+            return false;
+        }
+
+        if (TextUtils.isEmpty(userConfig.getCurrentUser().uid)) {
+            return false;
+        }
+
+        return true;
     }
 
     public void setGCMToken(String token) {
@@ -223,7 +239,7 @@ public class WsConnection extends Connection {
         try {
             uid = Long.parseLong(userConfig.getCurrentUser().uid);
         } catch (Exception ex) {
-            Timber.d("parse uid exception %s");
+            Timber.d(ex, "parse uid exception %s", userConfig.getCurrentUser().uid);
         }
 
         return uid;

@@ -60,7 +60,7 @@ public class AppVersionUtils {
         String appVersion = BuildConfig.VERSION_NAME;
         String lassVersion = getLatestVersionInServer();
         Timber.d("isLastVersion appVersion [%s]", appVersion);
-        Timber.d("isLastVersion lassVersion [%s]", lassVersion);
+        Timber.d("isLastVersion lastVersion [%s]", lassVersion);
         if (TextUtils.isEmpty(lassVersion)) {
             setLatestVersionInServer(appVersion);
             return true;
