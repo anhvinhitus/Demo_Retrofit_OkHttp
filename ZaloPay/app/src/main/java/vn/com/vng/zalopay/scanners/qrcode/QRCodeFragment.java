@@ -1,7 +1,12 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +94,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
     }
 
     @Override
@@ -142,6 +148,13 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     }
 
     @Override
+    public void start() {
+        if (checkAndRequestPermission(Manifest.permission.CAMERA, PERMISSIONS_REQUEST_CAMERA)) {
+            super.start();
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         pause();
@@ -165,5 +178,32 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         return mIsVisibleToUser;
     }
 
+    public boolean checkAndRequestPermission(String permission, int requestCode) {
+        boolean hasPermission = true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getActivity(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                hasPermission = false;
+                requestPermissions(new String[]{permission}, requestCode);
+            }
+        }
+        return hasPermission;
+    }
 
+    private final int PERMISSIONS_REQUEST_CAMERA = 100;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CAMERA: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    super.start();
+                } else {
+                }
+
+                return;
+            }
+        }
+    }
 }

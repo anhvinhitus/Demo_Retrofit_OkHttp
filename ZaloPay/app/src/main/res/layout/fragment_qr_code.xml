@@ -17,8 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/height_tab_pay_with_margin"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="100dp"
         android:text="@string/label_qr_to_pay"
         android:textColor="@color/white" />
 
