@@ -101,6 +101,11 @@ public class ApplicationSessionImpl implements ApplicationSession {
         mLoginMessage = message;
     }
 
+    @Override
+    public void setMessageAtLogin(int message) {
+        mLoginMessage = applicationContext.getString(message);
+    }
+
     /**
      * New user session and move to main state
      */

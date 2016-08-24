@@ -12,23 +12,21 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.Timer;
-import java.util.TimerTask;
 
-//import io.netty.channel.ConnectTimeoutException;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.Listener;
 import vn.com.vng.zalopay.data.ws.SocketClient;
 import vn.com.vng.zalopay.data.ws.TCPClient;
-import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
+
+//import io.netty.channel.ConnectTimeoutException;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -337,6 +335,7 @@ public class WsConnection extends Connection {
 
             if (message.getMsgType() == ZPMsgProtos.ServerMessageType.AUTHEN_LOGIN_RESULT.getNumber()) {
                 numRetry = 0;
+                postResult(message);
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.KICK_OUT_USER.getNumber()) {
                 needFeedback = false;
                 mNextConnectionState = NEXTSTATE_DISCONNECT;

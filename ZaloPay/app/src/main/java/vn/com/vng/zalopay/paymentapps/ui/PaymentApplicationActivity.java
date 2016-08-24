@@ -249,7 +249,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTokenExpiredMain(TokenExpiredEvent event) {
         Timber.d("Receive token expired");
-        showToast(R.string.exception_token_expired_message);
+        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
         getAppComponent().applicationSession().clearUserSession();
     }
 
@@ -262,7 +262,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
+        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
         getAppComponent().applicationSession().clearUserSession();
 
     }
@@ -270,7 +270,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountSuspended(AccountSuspendedException event) {
         Timber.i("Receive Suspended event");
-        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_zpw_account_suspended));
+        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_zpw_account_suspended);
         getAppComponent().applicationSession().clearUserSession();
     }
 

@@ -11,4 +11,5 @@ public interface ApplicationSession {
     void newUserSession();
 
     void setMessageAtLogin(String message);
+    void setMessageAtLogin(int message);
 }

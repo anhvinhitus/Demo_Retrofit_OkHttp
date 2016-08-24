@@ -8,7 +8,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.ws.message.MessageType;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -23,8 +22,8 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public class MessageParser implements Parser {
 
-    final Gson mGson;
-    final User user;
+    private final Gson mGson;
+    private final User user;
 
     public MessageParser(UserConfig userConfig, Gson gson) {
         this.mGson = gson;
@@ -103,7 +102,7 @@ public class MessageParser implements Parser {
         return event;
     }
 
-    public Event processAuthenticationLoginSuccess(byte[] data) {
+    private Event processAuthenticationLoginSuccess(byte[] data) {
 
         try {
             AuthenticationData event = new AuthenticationData();
@@ -120,7 +119,7 @@ public class MessageParser implements Parser {
         return null;
     }
 
-    Event parsePongMessage(byte[] data) {
+    private Event parsePongMessage(byte[] data) {
         if (data == null) {
             return null;
         }

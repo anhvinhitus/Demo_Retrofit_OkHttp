@@ -231,7 +231,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (this instanceof LoginZaloActivity) {
             showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         } else {
-            getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_server_maintain));
+            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
             getAppComponent().applicationSession().clearUserSession();
         }
     }
@@ -240,7 +240,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onAccountSuspended(AccountSuspendedException event) {
         Timber.i("Receive server maintain event");
         if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
-            getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_zpw_account_suspended));
+            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_zpw_account_suspended);
             getAppComponent().applicationSession().clearUserSession();
         } else {
             showDialog(getString(R.string.exception_zpw_account_suspended), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));

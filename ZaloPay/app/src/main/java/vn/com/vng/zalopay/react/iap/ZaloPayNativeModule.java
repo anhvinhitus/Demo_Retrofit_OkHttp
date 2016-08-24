@@ -134,7 +134,7 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void logout() {
         Timber.d("Payment app %s request to logout", mAppId);
         ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-        applicationSession.setMessageAtLogin(AndroidApplication.instance().getString(R.string.exception_token_expired_message));
+        applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
         applicationSession.clearUserSession();
     }
 

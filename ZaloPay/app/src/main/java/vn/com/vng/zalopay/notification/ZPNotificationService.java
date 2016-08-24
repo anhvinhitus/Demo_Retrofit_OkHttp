@@ -22,12 +22,14 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
+import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
@@ -143,7 +145,23 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     @Override
     public void onReceiverEvent(Event event) {
-        if (event instanceof NotificationData) {
+        if (event instanceof AuthenticationData) {
+            AuthenticationData authenticationData = (AuthenticationData)event;
+            if (authenticationData.code != NetworkError.SUCCESSFUL) {
+                if (authenticationData.code == NetworkError.UM_TOKEN_NOT_FOUND ||
+                        authenticationData.code == NetworkError.UM_TOKEN_EXPIRE ||
+                        authenticationData.code == NetworkError.TOKEN_INVALID) {
+                    // session expired
+                    Timber.d("Session is expired");
+                    // clear user session and logout
+
+                    getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
+                    getAppComponent().applicationSession().clearUserSession();
+                }
+            } else {
+                Timber.d("Socket authentication succeeded");
+            }
+        } else if (event instanceof NotificationData) {
             notificationHelper.processNotification((NotificationData) event);
         }
     }
