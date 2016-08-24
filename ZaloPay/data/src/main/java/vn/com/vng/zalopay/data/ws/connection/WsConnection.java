@@ -80,6 +80,7 @@ public class WsConnection extends Connection {
         mServerPongBus.toObserverable()
                 .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
                 .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
+                .filter((obj) -> this.isUserLoggedIn() && mNextConnectionState == NEXTSTATE_RETRY_CONNECT)
                 .subscribe((obj) -> {
                     Timber.d("Server is not responding ...");
                     reconnect();
