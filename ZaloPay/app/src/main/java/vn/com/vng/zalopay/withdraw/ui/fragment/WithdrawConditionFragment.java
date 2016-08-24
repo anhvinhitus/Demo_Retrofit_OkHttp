@@ -176,6 +176,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Override
     public void onDestroy() {
         mPresenter.destroy();
+        CShareData.dispose();
         super.onDestroy();
     }
 
