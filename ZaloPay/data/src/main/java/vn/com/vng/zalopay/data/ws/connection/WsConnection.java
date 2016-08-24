@@ -38,7 +38,7 @@ import vn.com.vng.zalopay.domain.model.User;
 public class WsConnection extends Connection {
     private static final int TIMER_HEARTBEAT = 60;
     private static final int SERVER_TIMEOUT = 2 * 60;
-    private static final int TIMER_CONNECTION_CHECK = 10 * 1000;
+    private static final int TIMER_CONNECTION_CHECK = 10;
     private String gcmToken;
 
     private final Context context;
@@ -49,20 +49,19 @@ public class WsConnection extends Connection {
     private final UserConfig userConfig;
 
     private final SocketClient mSocketClient;
-    private TimerWrapper mConnectionChecker = new TimerWrapper(new CheckConnectionTask());
-    private rx.Observable mHeartBeatObservable;
     private RxBus mServerPongBus;
 
     // state machine for keeping track of network connection
     private int mConnectionState;
     private final Handler mConnectionHandler;
+    private Long mCheckCountDown = 100L;
 
     /**
      * Next connection state.
      * If request to disconnect: set mNextConnectionState = DISCONNECT
      * If network connection is lost due to error: set mNextConnectionState = RETRY_CONNECT
      */
-    private int mNextConnectionState;
+    private int mNextConnectionState = NEXTSTATE_DISCONNECT;
     private static final int NEXTSTATE_RETRY_CONNECT = 1;
     private static final int NEXTSTATE_DISCONNECT = 2;
 
@@ -86,12 +85,26 @@ public class WsConnection extends Connection {
                     reconnect();
                 });
 
-        mHeartBeatObservable = Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
-                .filter((value) -> mSocketClient.isConnected());
-        mHeartBeatObservable.subscribe((value) -> {
+        Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
+                .filter((value) -> mSocketClient.isConnected())
+                .subscribe((value) -> {
             Timber.d("Begin send heart beat [%s]", value);
             ping();
         });
+
+        Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
+                .map((value) -> mCheckCountDown --)
+                .filter((value) ->
+                    !mSocketClient.isConnected() &&
+                    !mSocketClient.isConnecting() &&
+                    mNextConnectionState == NEXTSTATE_RETRY_CONNECT &&
+                    NetworkHelper.isNetworkAvailable(context) &&
+                    mCheckCountDown <= 0
+                )
+                .subscribe((value) -> {
+                    Timber.d("Check for reconnect");
+                    connect();
+                });
     }
 
     public void setGCMToken(String token) {
@@ -107,6 +120,11 @@ public class WsConnection extends Connection {
             });
         } else {
             Timber.d("Trigger new connection inside looper");
+            if (mSocketClient.isConnected() || mSocketClient.isConnecting()) {
+                Timber.d("Skip because connection is on the go");
+                return;
+            }
+
             mSocketClient.connect();
         }
     }
@@ -125,6 +143,11 @@ public class WsConnection extends Connection {
 
         mConnectionHandler.postDelayed(() -> {
             // this code will be executed after 1 seconds
+            if (!NetworkHelper.isNetworkAvailable(context)) {
+                Timber.d("Skip trigger new connection.");
+                return;
+            }
+
             Timber.d("Begin to reconnect");
             mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
             connect();
@@ -276,7 +299,6 @@ public class WsConnection extends Connection {
             //    numRetry = 0;
             sendAuthentication();
 
-            mConnectionChecker.stop();
             mServerPongBus.send(1L);
         }
 
@@ -338,7 +360,9 @@ public class WsConnection extends Connection {
             } else if (e instanceof UnknownHostException) {
             }
 
-            mConnectionChecker.start();
+            if (mNextConnectionState == NEXTSTATE_RETRY_CONNECT) {
+                scheduleReconnect();
+            }
         }
     }
 
@@ -354,8 +378,7 @@ public class WsConnection extends Connection {
         }
 
         numRetry++;
-        long time = 2000 * (numRetry % 10) + (long)(1000 * Math.random());
-        Timber.d("Try to reconnect after %s (milliseconds) at [%s]-th time", time, numRetry);
-        mConnectionHandler.postDelayed(this::connect, time);
+        mCheckCountDown = numRetry % 10L;
+        Timber.d("Try to reconnect after %s (milliseconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK * 1000, numRetry);
     }
 }
