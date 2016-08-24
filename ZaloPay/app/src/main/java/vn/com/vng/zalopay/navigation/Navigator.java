@@ -253,16 +253,10 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
     }
 
-    public void startTransferActivity(ZaloContactFragment fragment, Bundle bundle) {
+    public void startTransferActivity(Fragment fragment, Bundle bundle) {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtras(bundle);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
-    }
-
-    public void startTransferActivity(TransferHomeFragment fragment, Bundle bundle) {
-        Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
-        intent.putExtras(bundle);
-        fragment.startActivity(intent);
     }
 
     public void startUpdateProfile3Activity(Context context) {

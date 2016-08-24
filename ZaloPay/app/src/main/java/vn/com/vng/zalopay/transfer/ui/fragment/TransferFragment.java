@@ -300,7 +300,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     @Override
-    public void onGetMappingUserSucess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
+    public void onGetMappingUserSuccess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
         if (userMapZaloAndZaloPay == null) {
             return;
         }

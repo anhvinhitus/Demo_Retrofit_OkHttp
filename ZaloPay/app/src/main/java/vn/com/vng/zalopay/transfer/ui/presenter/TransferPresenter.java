@@ -46,17 +46,13 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    TransferStore.LocalStorage mTransferLocalStorage;
-
     private void clearCurrentData() {
         mCurrentZaloFriend = null;
         mCurrentMappingZaloAndZaloPay = null;
     }
 
-    public TransferPresenter(User user, TransferStore.LocalStorage localStorage) {
+    public TransferPresenter(User user) {
         this.user = user;
-        this.mTransferLocalStorage = localStorage;
-
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -95,7 +91,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 }
 
                 if (mView.getActivity() != null) {
-                    mView.getActivity().setResult(Activity.RESULT_OK, null);
+                    mView.getActivity().setResult(Activity.RESULT_OK);
                     mView.getActivity().finish();
                 }
                 if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null || mCurrentMappingZaloAndZaloPay == null) {
@@ -176,7 +172,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
     }
 
     private void onGetMappingUserSuccess(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
-        mView.onGetMappingUserSucess(mappingZaloAndZaloPay);
+        mView.onGetMappingUserSuccess(mappingZaloAndZaloPay);
     }
 
     public void getUserMapping(long zaloId) {
@@ -208,9 +204,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             if (amount <= 0) {
                 return;
             }
-            if (user == null) {
-                return;
-            }
+
             mView.showLoading();
             Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
@@ -289,7 +283,10 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             }
             int transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
             TransferRecent transferRecent = new TransferRecent(userMapZaloAndZaloPay.getZaloId(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transactionType, mCurrentAmount, mCurrentMessage, System.currentTimeMillis());
-            mTransferLocalStorage.append(transferRecent);
+            transferRepository.append(transferRecent)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<Boolean>());
+
         } catch (NumberFormatException e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();

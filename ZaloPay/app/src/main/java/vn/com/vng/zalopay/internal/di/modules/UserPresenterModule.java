@@ -126,8 +126,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    TransferPresenter provideTransferPresenter(User user, TransferStore.LocalStorage localStorage) {
-        return new TransferPresenter(user, localStorage);
+    TransferPresenter provideTransferPresenter(User user) {
+        return new TransferPresenter(user);
     }
 
     @UserScope
