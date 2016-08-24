@@ -256,39 +256,6 @@ public class WsConnection extends Connection {
         return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
     }
 
-    private class CheckConnectionTask implements TimerListener {
-        /**
-         * Get amount of time in milliseconds between subsequent executions.
-         *
-         * @return amount of time in milliseconds between subsequent executions.
-         */
-        @Override
-        public int period() {
-            return TIMER_CONNECTION_CHECK;
-        }
-
-        /**
-         * Get amount of time in milliseconds before first execution.
-         *
-         * @return amount of time in milliseconds before first execution.
-         */
-        @Override
-        public int delay() {
-            return 0;
-        }
-
-        /**
-         * called when timer ticked
-         */
-        @Override
-        public void onEvent() {
-            Timber.d("Begin check connection");
-            if (NetworkHelper.isNetworkAvailable(context)) {
-                connect();
-            }
-        }
-    }
-
     private class ConnectionListener implements Listener {
 
         @Override

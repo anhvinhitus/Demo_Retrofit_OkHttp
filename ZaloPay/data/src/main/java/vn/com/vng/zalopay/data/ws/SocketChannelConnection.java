@@ -237,7 +237,7 @@ class SocketChannelConnection {
             } catch (IOException ee) {
                 Timber.d(ee, "reoccurs exception");
             }
-            
+
             mListenable.onDisconnected(REASON_CONNECTION_ERROR);
             return false;
         }
