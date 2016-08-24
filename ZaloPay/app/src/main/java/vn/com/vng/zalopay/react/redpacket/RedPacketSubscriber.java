@@ -44,7 +44,8 @@ public class RedPacketSubscriber<T> extends DefaultSubscriber<T> {
             Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_INTERNET.value(),
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
         } else {
-            Helpers.promiseReject(mPromise, "EXCEPTION", e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+            Timber.w("EXCEPTION [%s] stackTrace [%s]", e.getMessage(), Arrays.toString(e.getStackTrace()));
+            Helpers.promiseReject(mPromise, "EXCEPTION", "Có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại sau.");
         }
     }
 }

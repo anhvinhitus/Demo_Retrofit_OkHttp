@@ -146,7 +146,7 @@ android {
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/redpackage/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
         }
 
         sandbox {
