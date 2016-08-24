@@ -12,9 +12,12 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.Listener;
 import vn.com.vng.zalopay.data.ws.SocketClient;
@@ -33,8 +36,8 @@ import vn.com.vng.zalopay.domain.model.User;
  * Network handlers for Socket connection
  */
 public class WsConnection extends Connection {
-    private static final int TIMER_HEARTBEAT = 60 * 1000;
-    private static final int SERVER_TIMEOUT = 2 * 60 * 1000;
+    private static final int TIMER_HEARTBEAT = 60;
+    private static final int SERVER_TIMEOUT = 2 * 60;
     private static final int TIMER_CONNECTION_CHECK = 10 * 1000;
     private String gcmToken;
 
@@ -46,9 +49,9 @@ public class WsConnection extends Connection {
     private final UserConfig userConfig;
 
     private final SocketClient mSocketClient;
-    private TimerWrapper mHeartBeatKeeper = new TimerWrapper(new SendHeartBeatTask());
     private TimerWrapper mConnectionChecker = new TimerWrapper(new CheckConnectionTask());
-    private long mServerResponse;
+    private rx.Observable mHeartBeatObservable;
+    private RxBus mServerPongBus;
 
     // state machine for keeping track of network connection
     private int mConnectionState;
@@ -73,6 +76,22 @@ public class WsConnection extends Connection {
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
+
+        mServerPongBus = new RxBus();
+        mServerPongBus.toObserverable()
+                .filter((obj) -> mSocketClient.isConnected())
+                .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
+                .subscribe((obj) -> {
+                    Timber.d("Server is not responding ...");
+                    reconnect();
+                });
+
+        mHeartBeatObservable = Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
+                .filter((value) -> mSocketClient.isConnected());
+        mHeartBeatObservable.subscribe((value) -> {
+            Timber.d("Begin send heart beat [%s]", value);
+            ping();
+        });
     }
 
     public void setGCMToken(String token) {
@@ -94,12 +113,6 @@ public class WsConnection extends Connection {
 
     @Override
     public void ping() {
-        if (System.currentTimeMillis() - mServerResponse > SERVER_TIMEOUT) {
-            Timber.d("Server is not responding. Try to reconnect");
-            reconnect();
-            return;
-        }
-
         ZPMsgProtos.MessageConnectionInfo.Builder pingMessage = ZPMsgProtos.MessageConnectionInfo.newBuilder()
                 .setUserid(getCurrentUserId())
                 .setEmbeddata(System.currentTimeMillis());
@@ -123,7 +136,6 @@ public class WsConnection extends Connection {
         Timber.d("disconnect");
         mNextConnectionState = NEXTSTATE_DISCONNECT;
         mSocketClient.disconnect();
-        mHeartBeatKeeper.stop();
     }
 
     @Override
@@ -221,32 +233,6 @@ public class WsConnection extends Connection {
         return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
     }
 
-    private class SendHeartBeatTask implements TimerListener {
-        @Override
-        public int period() {
-            return TIMER_HEARTBEAT;
-        }
-
-        /**
-         * Get amount of time in milliseconds before first execution.
-         *
-         * @return amount of time in milliseconds before first execution.
-         */
-        @Override
-        public int delay() {
-            return TIMER_HEARTBEAT;
-        }
-
-        /**
-         * called when timer ticked
-         */
-        @Override
-        public void onEvent() {
-            Timber.d("Begin send heart beat");
-            ping();
-        }
-    }
-
     private class CheckConnectionTask implements TimerListener {
         /**
          * Get amount of time in milliseconds between subsequent executions.
@@ -280,33 +266,6 @@ public class WsConnection extends Connection {
         }
     }
 
-    private class ServerTimeoutTask implements TimerListener {
-        @Override
-        public int period() {
-            return SERVER_TIMEOUT;
-        }
-
-        /**
-         * Get amount of time in milliseconds before first execution.
-         *
-         * @return amount of time in milliseconds before first execution.
-         */
-        @Override
-        public int delay() {
-            return SERVER_TIMEOUT;
-        }
-
-        /**
-         * called when timer ticked
-         */
-        @Override
-        public void onEvent() {
-            Timber.d("Server is not response within agreed time. Should disconnect server and reconnect");
-            mServerResponse = System.currentTimeMillis();
-        }
-    }
-
-
     private class ConnectionListener implements Listener {
 
         @Override
@@ -318,8 +277,7 @@ public class WsConnection extends Connection {
             sendAuthentication();
 
             mConnectionChecker.stop();
-            mHeartBeatKeeper.start();
-            mServerResponse = System.currentTimeMillis();
+            mServerPongBus.send(1L);
         }
 
         @Override
@@ -336,16 +294,19 @@ public class WsConnection extends Connection {
             if (message.getMsgType() == ZPMsgProtos.ServerMessageType.AUTHEN_LOGIN_RESULT.getNumber()) {
                 numRetry = 0;
                 postResult(message);
+                mServerPongBus.send(0L);
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.KICK_OUT_USER.getNumber()) {
                 needFeedback = false;
                 mNextConnectionState = NEXTSTATE_DISCONNECT;
                 disconnect();
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.PONG_CLIENT.getNumber()) {
                 needFeedback = false;
-                mServerResponse = System.currentTimeMillis();
-                Timber.v("Got pong from server. Time elapsed: %s", mServerResponse - ((ServerPongData)message).clientData);
+                long currentTime = System.currentTimeMillis();
+                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData)message).clientData);
+                mServerPongBus.send(currentTime - ((ServerPongData)message).clientData);
             } else {
                 postResult(message);
+                mServerPongBus.send(2L);
             }
 
             if (needFeedback) {
@@ -356,7 +317,6 @@ public class WsConnection extends Connection {
         @Override
         public void onDisconnected(int code, String reason) {
             Timber.d("onDisconnected %s", code);
-            mHeartBeatKeeper.stop();
             mState = Connection.State.Disconnected;
 
             mSocketClient.disconnect();
