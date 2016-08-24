@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 public class ChangePinActivity extends BaseToolBarActivity implements
@@ -25,6 +26,10 @@ public class ChangePinActivity extends BaseToolBarActivity implements
 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
+
+    @BindView(R.id.btnContinue)
+    View mBtnContinueView;
+
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue(View view) {
@@ -94,5 +99,10 @@ public class ChangePinActivity extends BaseToolBarActivity implements
     @Override
     public void onConfirmOTPFail() {
 
+    }
+
+    @Override
+    public void onPinValid(boolean valid) {
+        mBtnContinueView.setEnabled(valid);
     }
 }

@@ -58,33 +58,18 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (isValidPinView(passCode)) {
+            if (passCode.isRequestFocus() && isValidPinView(passCode)) {
                 passCode.hideError();
             }
-        }
 
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    IPasscodeChanged oldPassCodeChanged = new IPasscodeChanged() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (isValidPinView(mOldPassCodeView)) {
+            if (mOldPassCodeView.isRequestFocus() && isValidPinView(mOldPassCodeView)) {
                 mOldPassCodeView.hideError();
             }
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            checkPinValid();
         }
     };
 
@@ -174,7 +159,8 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
                 }
             }
         });
-        mOldPassCodeView.setPasscodeChanged(oldPassCodeChanged);
+
+        mOldPassCodeView.setPasscodeChanged(passCodeChanged);
 
         passCode.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
         mOldPassCodeView.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
@@ -190,6 +176,13 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
                         navigator.startDialSupport(getContext());
                     }
                 });
+
+        checkPinValid();
+    }
+
+    private void checkPinValid() {
+        boolean valid = isValidPinView(passCode) && isValidPinView(mOldPassCodeView);
+        mListener.onPinValid(valid);
     }
 
     @Override
@@ -271,5 +264,6 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
         void onUpdatePinFail();
 
+        void onPinValid(boolean valid);
     }
 }
