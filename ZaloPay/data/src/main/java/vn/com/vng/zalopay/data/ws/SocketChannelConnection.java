@@ -230,6 +230,14 @@ class SocketChannelConnection {
             // Cancel the channel's registration with our selector
             key.cancel();
 
+            try {
+                mSelector.close();
+                mChannel.socket().close();
+                mChannel.close();
+            } catch (IOException ee) {
+                Timber.d(ee, "reoccurs exception");
+            }
+            
             mListenable.onDisconnected(REASON_CONNECTION_ERROR);
             return false;
         }
