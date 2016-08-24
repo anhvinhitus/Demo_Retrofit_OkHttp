@@ -21,6 +21,7 @@ public class AppVersionUtils {
             PreferenceManager.getDefaultSharedPreferences(AndroidApplication.instance().getApplicationContext());
 
     private static final String LATEST_VERSION_IN_SERVER = "latest_version_in_server";
+    private static final String UPDATE_MESSAGE_IN_SERVER = "update_message_in_server";
 
     private static void setLatestVersionInServer(String latestVersion) {
         mPreferences.edit().putString(LATEST_VERSION_IN_SERVER, latestVersion).apply();
@@ -30,9 +31,19 @@ public class AppVersionUtils {
         return mPreferences.getString(LATEST_VERSION_IN_SERVER, "");
     }
 
-    public static boolean needUpgradeApp(String newVersion) {
+    private static void setUpdateMessageInServer(String message) {
+        mPreferences.edit().putString(UPDATE_MESSAGE_IN_SERVER, message).apply();
+    }
+
+    private static String getUpdateMessageInServer() {
+        return mPreferences.getString(UPDATE_MESSAGE_IN_SERVER, "");
+    }
+
+
+    public static boolean needUpgradeApp(String newVersion, String message) {
         Timber.d("check version, newVersion [%s]", newVersion);
         setLatestVersionInServer(newVersion);
+        setUpdateMessageInServer(message);
         return  !needUpgradeApp();
     }
 
@@ -57,8 +68,12 @@ public class AppVersionUtils {
         if (context == null) {
             return;
         }
+        String contentText = getUpdateMessageInServer();
+        if (TextUtils.isEmpty(contentText)) {
+            contentText = context.getString(R.string.need_update_to_use);
+        }
         new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setContentText(context.getString(R.string.need_update_to_use))
+                .setContentText(contentText)
                 .setConfirmText(context.getString(R.string.btn_update))
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override

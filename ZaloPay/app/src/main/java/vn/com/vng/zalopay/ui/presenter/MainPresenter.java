@@ -145,7 +145,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onUpVersion(String latestVersion, String msg) {
-                boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion);
+                boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
                 if (!upgradeApp || homeView == null) {
                     return;
                 }
