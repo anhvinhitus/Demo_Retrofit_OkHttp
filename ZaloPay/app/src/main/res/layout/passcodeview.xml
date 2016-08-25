@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -10,40 +9,31 @@
         style="@style/TextView.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:textSize="@dimen/textsize.tiny" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayout"
+        <EditText
+            android:id="@+id/editText"
+            style="@style/Passcode.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:paddingTop="10dp"
-            app:errorEnabled="false">
-
-            <EditText
-                android:id="@+id/editText"
-                style="@style/Passcode.EditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/txt_bottom_default_style"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:ellipsize="end"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:inputType="number"
-                android:longClickable="false"
-                android:maxLength="@integer/pin_length"
-                android:maxLines="1"
-                android:singleLine="true">
-
-                <requestFocus />
-            </EditText>
-        </android.support.design.widget.TextInputLayout>
+            android:background="@drawable/txt_bottom_default_style"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:inputType="number"
+            android:longClickable="false"
+            android:maxLength="@integer/pin_length"
+            android:maxLines="1"
+            android:singleLine="true" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -55,9 +45,12 @@
                 android:id="@+id/root"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
                 android:layout_marginRight="68dp"
                 android:orientation="horizontal"
                 android:paddingBottom="2dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:paddingTop="2dp" />
 
             <Button
@@ -67,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginBottom="4dp"
-                android:layout_marginRight="4dp"
                 android:background="@null"
                 android:gravity="center"
                 android:minHeight="0px"
@@ -78,13 +70,4 @@
                 android:textSize="@dimen/textsize.normal.s" />
         </FrameLayout>
     </FrameLayout>
-
-    <TextView
-        android:id="@+id/tvNote"
-        style="@style/TextView.SubTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/red"
-        android:textSize="@dimen/textsize.tiny"
-        android:visibility="invisible" />
 </LinearLayout>

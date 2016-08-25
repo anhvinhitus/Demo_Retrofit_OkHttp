@@ -3,8 +3,8 @@ package vn.com.vng.zalopay.ui.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -28,19 +28,17 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFocusChangeListener {
 
     private int length;
-    private boolean mShowPasscode = false;
+    private boolean mShowPassCode = false;
     private String mHint = "";
-    private String mNote = "";
 
     private LinearLayout mRootView;
     private TextView mTvHint;
     private EditText mEditText;
-    private TextView mTvNote;
     private TextView mTvShowHide;
     private ArrayList<TextView> mTextViews;
     private int mTextViewSize = 0;
 
-    private IPasscodeFocusChanged mIPasscodeFocusChanged;
+    private IPasscodeFocusChanged mIPassCodeFocusChanged;
 
     private IPassCodeMaxLength mIPassCodeMaxLength;
 
@@ -70,7 +68,6 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         try {
             length = typedArray.getInt(R.styleable.PassCodeView_length, getResources().getInteger(R.integer.pin_length));
             mHint = typedArray.getString(R.styleable.PassCodeView_hint);
-            mNote = typedArray.getString(R.styleable.PassCodeView_note);
         } finally {
             typedArray.recycle();
         }
@@ -84,13 +81,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
         }
-        mTvNote = (TextView) view.findViewById(R.id.tvNote);
-        if (TextUtils.isEmpty(mNote)) {
-            mTvNote.setVisibility(INVISIBLE);
-        } else {
-            mTvNote.setText(mNote);
-            mTvNote.setVisibility(VISIBLE);
-        }
+
         mEditText = (EditText) view.findViewById(R.id.editText);
         mEditText.addTextChangedListener(this);
         mEditText.setOnFocusChangeListener(this);
@@ -100,7 +91,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         mTvShowHide.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mShowPasscode) {
+                if (mShowPassCode) {
                     hidePasscode();
                     mTvShowHide.setText(getContext().getResources().getString(R.string.show));
                 } else {
@@ -139,17 +130,17 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public void showPasscode() {
-        mShowPasscode = true;
+        mShowPassCode = true;
         showOrHidePasscode();
     }
 
     public void hidePasscode() {
-        mShowPasscode = false;
+        mShowPassCode = false;
         showOrHidePasscode();
     }
 
     private void showOrHidePasscode() {
-        if (mShowPasscode) {
+        if (mShowPassCode) {
             String strInput = mEditText.getText().toString();
             char[] charArray = null;
             if (!TextUtils.isEmpty(strInput)) {
@@ -186,7 +177,8 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public void hideError() {
-        mTvNote.setVisibility(INVISIBLE);
+        mTvHint.setText(mHint);
+        mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
     }
 
     public void showError(String error) {
@@ -194,8 +186,8 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
             hideError();
             return;
         }
-        mTvNote.setVisibility(VISIBLE);
-        mTvNote.setText(error);
+        mTvHint.setText(error);
+        mTvHint.setTextColor(Color.RED);
     }
 
     @Override
@@ -224,17 +216,9 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
         hideError();
 
-        if (mIPasscodeFocusChanged != null) {
-            mIPasscodeFocusChanged.onFocusChangedPin(hasFocus);
+        if (mIPassCodeFocusChanged != null) {
+            mIPassCodeFocusChanged.onFocusChangedPin(hasFocus);
         }
-    }
-
-    public void setHintVisibility(int visibility) {
-        mTvHint.setVisibility(visibility);
-    }
-
-    public void setButtonHideVisibility(int visibility) {
-        mTvShowHide.setVisibility(visibility);
     }
 
     public boolean requestFocusView() {
@@ -242,7 +226,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public boolean isRequestFocus() {
-        return mEditText.isFocused();
+        return mEditText.hasFocus();
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {
@@ -250,11 +234,11 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     }
 
     public void setPasscodeFocusChanged(IPasscodeFocusChanged listener) {
-        mIPasscodeFocusChanged = listener;
+        mIPassCodeFocusChanged = listener;
     }
 
     public void removePasscodeFocusChanged() {
-        mIPasscodeFocusChanged = null;
+        mIPassCodeFocusChanged = null;
     }
 
 }

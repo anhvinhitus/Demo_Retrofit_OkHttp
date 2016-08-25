@@ -130,4 +130,6 @@
 
     <color name="circle_background">#35a7eb</color>
     <color name="bg_circle_notification">#ff3823</color>
+
+    <color name="hint">#acb3ba</color>
 </resources>

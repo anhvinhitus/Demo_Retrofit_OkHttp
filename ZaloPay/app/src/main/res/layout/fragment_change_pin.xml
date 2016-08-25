@@ -1,22 +1,22 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:zalopay="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
             style="@style/TextView.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="9dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="Mã số pin cũ"
             android:textAllCaps="true" />
 
@@ -25,51 +25,60 @@
             android:layout_height="@dimen/separate"
             android:background="@color/separate" />
 
-
-        <vn.com.vng.zalopay.ui.widget.PassCodeView
-            android:id="@+id/oldPassCodeInput"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            zalopay:hint="Nhập mã số PIN cũ"
-            zalopay:length="@integer/pin_length" />
+            android:background="@color/white"
+            android:paddingTop="20dp">
+
+            <vn.com.vng.zalopay.ui.widget.PassCodeView
+                android:id="@+id/oldPassCodeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                zalopay:hint="Nhập mã số PIN cũ"
+                zalopay:length="@integer/pin_length" />
+        </FrameLayout>
 
 
         <TextView
             style="@style/TextView.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="9dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="Mã số pin mới"
             android:textAllCaps="true" />
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
             android:background="@color/separate" />
 
-        <vn.com.vng.zalopay.ui.widget.PassCodeView
-            android:id="@+id/passcodeInput"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            zalopay:hint="Nhập mã số PIN mới"
-            zalopay:length="@integer/pin_length" />
+            android:background="@color/white"
+            android:paddingTop="20dp">
+
+
+            <vn.com.vng.zalopay.ui.widget.PassCodeView
+                android:id="@+id/passcodeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                zalopay:hint="Nhập mã số PIN mới"
+                zalopay:length="@integer/pin_length" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvContact"
             style="@style/TextView.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="20dp"
+            tools:text="Lưu ý:" />
 
     </LinearLayout>
 </ScrollView>

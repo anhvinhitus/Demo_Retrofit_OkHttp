@@ -48,7 +48,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     }
 
     @BindView(R.id.passcodeInput)
-    PassCodeView passCode;
+    PassCodeView mNewPassCodeView;
 
     @BindView(R.id.oldPassCodeInput)
     PassCodeView mOldPassCodeView;
@@ -69,13 +69,14 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (passCode.isRequestFocus() && isValidPinView(passCode)) {
-                passCode.hideError();
+            if (isValidPinView(mNewPassCodeView)) {
+                mNewPassCodeView.hideError();
             }
 
-            if (mOldPassCodeView.isRequestFocus() && isValidPinView(mOldPassCodeView)) {
+        /*    if (isValidPinView(mOldPassCodeView)) {
                 mOldPassCodeView.hideError();
-            }
+                Timber.d("mOldPassCodeView isRequestFocus");
+            }*/
         }
 
         @Override
@@ -90,7 +91,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     }
 
     private boolean isDifferencePin() {
-        String newPin = passCode.getText();
+        String newPin = mNewPassCodeView.getText();
         return !TextUtils.isEmpty(newPin) && !newPin.equals(mOldPassCodeView.getText());
     }
 
@@ -104,8 +105,8 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         super.onViewCreated(view, savedInstanceState);
 
         presenter.setChangePassView(this);
-        passCode.addTextChangedListener(passCodeChanged);
-        passCode.setPasscodeFocusChanged(new IPasscodeFocusChanged() {
+        mNewPassCodeView.addTextChangedListener(passCodeChanged);
+        mNewPassCodeView.setPasscodeFocusChanged(new IPasscodeFocusChanged() {
             @Override
             public void onFocusChangedPin(boolean isFocus) {
                 if (isFocus) {
@@ -132,7 +133,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     }
 
     private void checkPinValid() {
-        boolean valid = isValidPinView(passCode) && isValidPinView(mOldPassCodeView);
+        boolean valid = isValidPinView(mNewPassCodeView) && isValidPinView(mOldPassCodeView);
         Timber.d("checkPinValid: valid %s", valid);
         presenter.pinValid(valid);
     }
@@ -146,11 +147,11 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     @Override
     public void checkPinValidAndSubmit() {
         if (isDifferencePin()) {
-            passCode.hideError();
-            presenter.changePin(mOldPassCodeView.getText(), passCode.getText());
+            mNewPassCodeView.hideError();
+            presenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
         } else {
-            passCode.showError(getString(R.string.pin_not_change));
-            passCode.requestFocusView();
+            mNewPassCodeView.showError(getString(R.string.pin_not_change));
+            mNewPassCodeView.requestFocusView();
         }
     }
 
