@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,7 +19,6 @@ import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
-import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -62,10 +62,9 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     @Inject
     IChangePinPresenter presenter;
 
-    IPasscodeChanged passCodeChanged = new IPasscodeChanged() {
+    TextWatcher passCodeChanged = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
@@ -92,7 +91,6 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
     private boolean isDifferencePin() {
         String newPin = passCode.getText();
-
         return !TextUtils.isEmpty(newPin) && !newPin.equals(mOldPassCodeView.getText());
     }
 
@@ -106,7 +104,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         super.onViewCreated(view, savedInstanceState);
 
         presenter.setChangePassView(this);
-        passCode.setPasscodeChanged(passCodeChanged);
+        passCode.addTextChangedListener(passCodeChanged);
         passCode.setPasscodeFocusChanged(new IPasscodeFocusChanged() {
             @Override
             public void onFocusChangedPin(boolean isFocus) {
@@ -116,10 +114,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
             }
         });
 
-        mOldPassCodeView.setPasscodeChanged(passCodeChanged);
-
-        passCode.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
-        mOldPassCodeView.setBackgroundEdittext(R.drawable.bg_pass_code_bottom_style);
+        mOldPassCodeView.addTextChangedListener(passCodeChanged);
 
         mOldPassCodeView.requestFocusView();
 

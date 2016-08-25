@@ -41,7 +41,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     private int mTextViewSize = 0;
 
     private IPasscodeFocusChanged mIPasscodeFocusChanged;
-    private IPasscodeChanged mIPasscodeChanged;
+
     private IPassCodeMaxLength mIPassCodeMaxLength;
 
     public PassCodeView(Context context) {
@@ -130,22 +130,6 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         return length;
     }
 
-    public void setPasscodeFocusChanged(IPasscodeFocusChanged listener) {
-        mIPasscodeFocusChanged = listener;
-    }
-
-    public void removePasscodeFocusChanged() {
-        mIPasscodeFocusChanged = null;
-    }
-
-    public void setPasscodeChanged(IPasscodeChanged listener) {
-        mIPasscodeChanged = listener;
-    }
-
-    public void removePasscodeChanged() {
-        mIPasscodeChanged = null;
-    }
-
     public void setPassCodeMaxLength(IPassCodeMaxLength passCodeMaxLength) {
         this.mIPassCodeMaxLength = passCodeMaxLength;
     }
@@ -216,24 +200,15 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        if (mIPasscodeChanged != null) {
-            mIPasscodeChanged.beforeTextChanged(s, start, count, after);
-        }
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         showOrHidePasscode();
-        if (mIPasscodeChanged != null) {
-            mIPasscodeChanged.onTextChanged(s, start, before, count);
-        }
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (mIPasscodeChanged != null) {
-            mIPasscodeChanged.afterTextChanged(s);
-        }
         if (mIPassCodeMaxLength != null && s.length() == length && length > 0) {
             mIPassCodeMaxLength.hasMaxLength();
         }
@@ -262,10 +237,6 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         mTvShowHide.setVisibility(visibility);
     }
 
-    public void setBackgroundEdittext(int res) {
-        //  mEditText.setBackgroundResource(res);
-    }
-
     public boolean requestFocusView() {
         return mEditText.requestFocus();
     }
@@ -273,4 +244,17 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
     public boolean isRequestFocus() {
         return mEditText.isFocused();
     }
+
+    public void addTextChangedListener(TextWatcher textWatcher) {
+        mEditText.addTextChangedListener(textWatcher);
+    }
+
+    public void setPasscodeFocusChanged(IPasscodeFocusChanged listener) {
+        mIPasscodeFocusChanged = listener;
+    }
+
+    public void removePasscodeFocusChanged() {
+        mIPasscodeFocusChanged = null;
+    }
+
 }

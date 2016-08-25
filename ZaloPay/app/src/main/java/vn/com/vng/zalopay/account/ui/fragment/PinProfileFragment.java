@@ -8,6 +8,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,7 +25,6 @@ import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
-import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
@@ -143,7 +143,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         }
     };
 
-    IPasscodeChanged passcodeChanged = new IPasscodeChanged() {
+    TextWatcher passcodeChanged = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -286,7 +286,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         passCode.requestFocus();
         passCode.setPassCodeMaxLength(passCodeMaxLength);
-        passCode.setPasscodeChanged(passcodeChanged);
+        passCode.addTextChangedListener(passcodeChanged);
         passCode.setPasscodeFocusChanged(passcodeFocusChanged);
 
         inputZaloPayName.setOnClickBtnCheck(mOnClickCheckZaloPayName);
