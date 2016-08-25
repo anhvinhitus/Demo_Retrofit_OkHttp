@@ -106,16 +106,16 @@ public class TransferHomeFragment extends BaseFragment implements
             public void onClick(View v) {
                 Timber.d("name %s", editText.getText().toString());
 
-                String s = editText.getText().toString();
+                String s = editText.getText().toString().trim();
                 boolean isValid = false;
 
-                if (!ValidateUtil.isValidLengthZPName(s.toString())) {
+                if (!ValidateUtil.isValidLengthZPName(s)) {
                     mInputAccountNameView.setText(getString(R.string.exception_account_name_length));
                     mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-                } else if (s.toString().indexOf(" ") > 0) {
+                } else if (s.indexOf(" ") > 0) {
                     mInputAccountNameView.setText(getString(R.string.exception_account_name_with_space));
                     mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-                } else if (!ValidateUtil.isValidZaloPayName(s.toString())) {
+                } else if (!ValidateUtil.isValidZaloPayName(s)) {
                     mInputAccountNameView.setText(getString(R.string.exception_account_name_special_char));
                     mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                 } else {

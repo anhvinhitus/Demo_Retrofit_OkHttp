@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -22,7 +23,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
 
@@ -60,12 +60,12 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.layoutEmail)
     View mLayoutEmail;
 
-  /*  @BindView(R.id.tvZaloPayId)
-    TextView tvZaloPayId;
+    /*  @BindView(R.id.tvZaloPayId)
+      TextView tvZaloPayId;
 
-    @BindView(R.id.tvZaloId)
-    TextView tvZaloId;
-*/
+      @BindView(R.id.tvZaloId)
+      TextView tvZaloId;
+  */
     @BindView(R.id.tvAccountName)
     TextView mAccountNameView;
 
@@ -137,11 +137,9 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     private void setBirthDay(long time) {
-
         Timber.d("setBirthDay: time %s", time);
-        Date date = new Date(time * 1000);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String birthday = simpleDateFormat.format(date);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String birthday = simpleDateFormat.format(new Date(time * 1000));
         tvBirthday.setText(birthday);
     }
 
