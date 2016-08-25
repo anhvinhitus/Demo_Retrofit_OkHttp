@@ -44,6 +44,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * create an instance of this fragment.
  */
 public class TransferFragment extends BaseFragment implements ITransferView {
+
     private MappingZaloAndZaloPay userMapZaloAndZaloPay;
     private ZaloFriend zaloFriend;
     private long mAmount = 0;
@@ -210,8 +211,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             Timber.d("onViewCreated zaloFriend.uid:%s", zaloFriend.getUserId());
             updateUserInfo(zaloFriend);
             if (userMapZaloAndZaloPay == null ||
-                    TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
-                    userMapZaloAndZaloPay.getZaloId() != zaloFriend.getUserId()) {
+                    TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId())) {
                 mPresenter.getUserMapping(zaloFriend.getUserId());
             }
         }
@@ -225,8 +225,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             btnContinue.setEnabled(false);
         } else {
             if (userMapZaloAndZaloPay == null ||
-                    TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId()) ||
-                    userMapZaloAndZaloPay.getZaloId() != zaloFriend.getUserId()) {
+                    TextUtils.isEmpty(userMapZaloAndZaloPay.getZaloPayId())) {
                 return;
             }
             btnContinue.setEnabled(true);
@@ -350,7 +349,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void showRetry() {
-
     }
 
     @Override

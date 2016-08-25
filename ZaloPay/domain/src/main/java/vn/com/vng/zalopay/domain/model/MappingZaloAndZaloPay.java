@@ -26,9 +26,11 @@ public final class MappingZaloAndZaloPay {
         this.phonenumber = phonenumber;
     }
 
+/*
     public long getZaloId() {
         return zaloId;
     }
+*/
 
     public String getZaloPayId() {
         return zaloPayId;

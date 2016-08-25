@@ -282,7 +282,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                 return;
             }
             int transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
-            TransferRecent transferRecent = new TransferRecent(userMapZaloAndZaloPay.getZaloId(), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transactionType, mCurrentAmount, mCurrentMessage, System.currentTimeMillis());
+            TransferRecent transferRecent = new TransferRecent(Long.valueOf(userMapZaloAndZaloPay.getZaloPayId()), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transactionType, mCurrentAmount, mCurrentMessage, System.currentTimeMillis());
             transferRepository.append(transferRecent)
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());
