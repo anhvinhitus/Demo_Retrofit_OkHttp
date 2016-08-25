@@ -119,8 +119,8 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         Map<String, Object> map = new HashMap<>();
-        map.put("termsOfUseUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.pay.zing.vn/terms" : "https://zalopay.com.vn/terms");
-        map.put("faqUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.pay.zing.vn/faq" : "https://zalopay.com.vn/faq");
+        map.put("termsOfUseUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.com.vn/terms" : "https://zalopay.com.vn/terms");
+        map.put("faqUrl", BuildConfig.DEBUG ? "https://sandbox.zalopay.com.vn/faq" : "https://zalopay.com.vn/faq");
         map.put("storeUrl", AndroidUtils.getPlayStoreUrl("React Native", "Internal"));
         return map;
     }
