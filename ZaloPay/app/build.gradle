@@ -151,12 +151,12 @@ android {
 
         sandbox {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
         }
 
         staging {
@@ -181,12 +181,12 @@ android {
 
         internalSandbox {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_INTERNAL'
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
         }
 
         internalStaging {
@@ -202,12 +202,12 @@ android {
         iapSandbox {
             // IAP dev with sandbox environment
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.data.Constants.HostType.SANDBOX'
             buildConfigField 'String', 'WS_HOST', '"sandbox.notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8404'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.pay.zing.vn/"'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
         }
 
         iapProduction {
