@@ -91,37 +91,37 @@
             android:background="@color/separate"
             android:visibility="gone" />
 
+
         <LinearLayout
-            android:id="@+id/layoutTransferATMVisa"
+            android:id="@+id/myQrCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/default_white_selector"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing.medium.t"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_the_atm" />
+                android:src="@drawable/ic_transfer_fr_zalo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium.t"
                 android:layout_weight="1.0"
-                android:text="@string/transfer_atm_visa"
+                android:text="@string/transfer_acc_zalopay"
                 android:textColor="@color/txt_item_main" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing.medium.t"
+                android:layout_marginRight="16dp"
                 android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
@@ -129,6 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate_stroke"
             android:background="@color/separate" />
+
     </LinearLayout>
 
     <LinearLayout

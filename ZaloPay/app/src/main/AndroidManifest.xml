@@ -218,6 +218,12 @@
             android:label="@string/title.activity.change.pin"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".transfer.ui.activities.MyQRCodeActivity"
+            android:label="@string/title.activity.my.qr"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+
         <activity android:name=".account.ui.activities.ProfileActivity">
             <intent-filter>
                 <data

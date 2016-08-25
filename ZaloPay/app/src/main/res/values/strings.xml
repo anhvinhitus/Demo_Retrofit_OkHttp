@@ -95,6 +95,7 @@
     <string name="title.activity.withdraw">Rút tiền</string>
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
+    <string name="title.activity.my.qr">My QRCode</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
