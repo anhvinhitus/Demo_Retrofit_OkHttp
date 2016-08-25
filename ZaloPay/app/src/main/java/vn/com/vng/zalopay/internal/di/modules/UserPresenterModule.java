@@ -7,7 +7,9 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.EditAccountNamePresenter;
+import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.OTPRecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
@@ -171,4 +173,12 @@ public class UserPresenterModule {
     WithdrawConditionPresenter providesWithdrawConditionPresenter() {
         return new WithdrawConditionPresenter();
     }
+
+    @UserScope
+    @Provides
+    IChangePinPresenter providesChangePinPresenter() {
+        return new ChangePinPresenter();
+    }
+
+
 }

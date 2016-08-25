@@ -6,7 +6,9 @@ import dagger.Subcomponent;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
+import vn.com.vng.zalopay.account.ui.fragment.ChangePinContainerFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
+import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
 import vn.com.vng.zalopay.account.ui.fragment.EditAccountNameFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
@@ -168,4 +170,8 @@ public interface UserComponent {
     void inject(EditAccountNameFragment f);
 
     void inject(WithdrawConditionFragment f);
+
+    void inject(ChangePinContainerFragment f);
+
+    void inject(ChangePinVerifyFragment f);
 }

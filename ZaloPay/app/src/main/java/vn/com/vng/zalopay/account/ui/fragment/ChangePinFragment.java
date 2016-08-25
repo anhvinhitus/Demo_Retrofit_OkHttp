@@ -1,11 +1,8 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,9 +12,11 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
-import vn.com.vng.zalopay.account.ui.view.IRecoveryPinView;
+import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
+import vn.com.vng.zalopay.account.ui.view.IChangePinView;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPasscodeChanged;
 import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
@@ -25,18 +24,28 @@ import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChangePinFragment.OnPinProfileFragmentListener} interface
- * to handle interaction events.
- * Use the {@link ChangePinFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by AnhHieu on 8/25/16.
  */
-public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPinView {
-    private OnPinProfileFragmentListener mListener;
+public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
-    @Inject
-    RecoveryPinPresenter presenter;
+    public static ChangePinFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        ChangePinFragment fragment = new ChangePinFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return R.layout.fragment_change_pin;
+    }
 
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
@@ -49,6 +58,9 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     @BindView(R.id.scrollView)
     ScrollView mScrollView;
+
+    @Inject
+    IChangePinPresenter presenter;
 
     IPasscodeChanged passCodeChanged = new IPasscodeChanged() {
         @Override
@@ -80,76 +92,20 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     private boolean isDifferencePin() {
         String newPin = passCode.getText();
-        if (TextUtils.isEmpty(newPin)) {
-            return false;
-        }
-        return !newPin.equals(mOldPassCodeView.getText());
-    }
 
-    public ChangePinFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment PinProfileFragment.
-     */
-    public static ChangePinFragment newInstance() {
-        return new ChangePinFragment();
+        return !TextUtils.isEmpty(newPin) && !newPin.equals(mOldPassCodeView.getText());
     }
 
     @Override
-    public void onClickContinue() {
-
-        if (!isValidPinView(mOldPassCodeView)) {
-            mOldPassCodeView.showError(getString(R.string.invalid_pin));
-            mOldPassCodeView.requestFocusView();
-            return;
-        } else {
-            mOldPassCodeView.hideError();
-        }
-
-        if (!isValidPinView(passCode)) {
-            passCode.showError(getString(R.string.invalid_pin));
-            passCode.requestFocusView();
-            return;
-        } else {
-            passCode.hideError();
-        }
-
-        if (!isDifferencePin()) {
-            passCode.showError(getString(R.string.pin_not_change));
-            passCode.requestFocusView();
-            return;
-        } else {
-            passCode.hideError();
-        }
-
-        presenter.changePin(passCode.getText(), mOldPassCodeView.getText());
-
-    }
-
-    @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
-    }
-
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.fragment_change_pin;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+
+        presenter.setChangePassView(this);
         passCode.setPasscodeChanged(passCodeChanged);
         passCode.setPasscodeFocusChanged(new IPasscodeFocusChanged() {
             @Override
@@ -182,88 +138,40 @@ public class ChangePinFragment extends AbsProfileFragment implements IRecoveryPi
 
     private void checkPinValid() {
         boolean valid = isValidPinView(passCode) && isValidPinView(mOldPassCodeView);
-        mListener.onPinValid(valid);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnPinProfileFragmentListener) {
-            mListener = (OnPinProfileFragmentListener) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        presenter.resume();
+        Timber.d("checkPinValid: valid %s", valid);
+        presenter.pinValid(valid);
     }
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.destroyChangePassView();
         super.onDestroyView();
     }
 
     @Override
-    public void onDestroy() {
-        presenter.destroy();
-        super.onDestroy();
+    public void checkPinValidAndSubmit() {
+        if (isDifferencePin()) {
+            passCode.hideError();
+            presenter.changePin(mOldPassCodeView.getText(), passCode.getText());
+        } else {
+            passCode.showError(getString(R.string.pin_not_change));
+            passCode.requestFocusView();
+        }
     }
 
     @Override
     public void showLoading() {
-        super.showProgressDialog();
+        showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
-        super.hideProgressDialog();
-    }
-
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
+        hideProgressDialog();
     }
 
     @Override
     public void showError(String message) {
         showToast(message);
     }
-
-    @Override
-    public void onRecoveryPinSuccess() {
-        if (mListener != null) {
-            mListener.onUpdatePinSuccess();
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnPinProfileFragmentListener {
-        void onUpdatePinSuccess();
-
-        void onUpdatePinFail();
-
-        void onPinValid(boolean valid);
-    }
 }
+

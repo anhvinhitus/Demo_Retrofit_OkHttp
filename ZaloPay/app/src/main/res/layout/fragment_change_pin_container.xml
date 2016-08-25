@@ -4,11 +4,6 @@
     android:background="@color/background"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-
-
     <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
