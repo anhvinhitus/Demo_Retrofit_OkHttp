@@ -26,7 +26,7 @@ public class MyQRCodeActivity extends BaseToolBarActivity {
             lp.screenBrightness = screenBrightness;
             getWindow().setAttributes(lp);
         } catch (Exception e) {
-            Timber.d("change screen brightness");
+            Timber.d(e, "change screen brightness");
         }
     }
 

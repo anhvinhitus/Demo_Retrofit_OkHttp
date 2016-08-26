@@ -12,10 +12,13 @@ import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
+
+import static vn.com.vng.zalopay.data.util.Utils.*;
 
 /**
  * Created by longlv on 03/06/2016.
@@ -48,6 +51,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         if (!TextUtils.isEmpty(zalopayName)) {
             zalopayName = zalopayName.toLowerCase();
         }
+        pin = sha256Base(pin);
         return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber, zalopayName)
                 .map(baseResponse -> Boolean.TRUE);
     }
@@ -100,6 +104,9 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<BaseResponse> recoveryPin(String pin, String oldPin) {
+        pin = sha256Base(pin);
+        oldPin = sha256Base(oldPin);
+
         return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, oldPin, null);
     }
 

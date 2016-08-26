@@ -16,10 +16,8 @@ import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
-import vn.com.vng.zalopay.account.ui.presenter.RecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -106,12 +104,6 @@ public class UserPresenterModule {
     @Provides
     OTPProfilePresenter provideOTPProfilePresenter() {
         return new OTPProfilePresenter();
-    }
-
-    @UserScope
-    @Provides
-    RecoveryPinPresenter provideResetPassCodePresenter() {
-        return new RecoveryPinPresenter();
     }
 
     @UserScope

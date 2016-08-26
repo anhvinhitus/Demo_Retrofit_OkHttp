@@ -67,33 +67,9 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         this.unsubscribe();
     }
 
-    public String sha256(String base) {
-        if (TextUtils.isEmpty(base)) {
-            return "";
-        }
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
-
-            for (byte aHash : hash) {
-                String hex = Integer.toHexString(0xff & aHash);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch (Exception ex) {
-            Timber.e(ex, "exception sha256");
-            return "";
-        }
-    }
-
     public void updateProfile(String pin, String phone, String zalopayName) {
         showLoading();
-        String pinSha256 = sha256(pin);
-
-        Subscription subscriptionLogin = accountRepository.updateUserProfileLevel2(pinSha256, phone, zalopayName)
+        Subscription subscriptionLogin = accountRepository.updateUserProfileLevel2(pin, phone, zalopayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateProfileSubscriber(phone));

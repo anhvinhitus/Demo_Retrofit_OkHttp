@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -69,9 +68,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @BindView(R.id.edtAmount)
     EditText edtAmount;
-
-    @BindView(R.id.textInputTransferMsg)
-    TextInputLayout textInputTransferMsg;
 
     @BindView(R.id.edtTransferMsg)
     EditText edtTransferMsg;
@@ -269,7 +265,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        CShareData.dispose();
         super.onDestroy();
     }
 

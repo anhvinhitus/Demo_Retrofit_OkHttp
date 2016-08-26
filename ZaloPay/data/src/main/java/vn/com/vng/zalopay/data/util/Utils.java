@@ -8,6 +8,7 @@ import timber.log.Timber;
  * Created by AnhHieu on 8/26/16.
  */
 public class Utils {
+
     public static String sha256Base(String base) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -32,18 +33,10 @@ public class Utils {
     * join with char |
     * */
     public static String sha256(String... params) {
-        StringBuilder builder = new StringBuilder();
-        if (params != null) {
-            int length = params.length;
-            for (int i = 0; i < length; i++) {
-                String param = params[i];
-                if (i != length - 1) {
-                    param += "|";
-                }
-                builder.append(param);
-            }
-        }
-        Timber.d("pre-sha256 : %s", builder.toString());
-        return sha256Base(builder.toString());
+        String content = Strings.joinWithDelimiter("|", params);
+
+        Timber.d("pre-sha256:  %s", content);
+
+        return sha256Base(content);
     }
 }

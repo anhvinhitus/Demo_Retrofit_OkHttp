@@ -2,11 +2,6 @@ package vn.com.vng.zalopay.domain.model;
 
 import org.parceler.Parcel;
 
-/**
- * Created by AnhHieu on 3/25/16.
- *
- */
-
 @Parcel
 public final class MappingZaloAndZaloPay {
 

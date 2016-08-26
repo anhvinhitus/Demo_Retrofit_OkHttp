@@ -89,10 +89,7 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
             mChangePinView.showLoading();
         }
 
-        String odlPinSha256 = sha256(oldPin);
-        String pinSha256 = sha256(newPin);
-
-        Subscription subscription = accountRepository.recoveryPin(pinSha256, odlPinSha256)
+        Subscription subscription = accountRepository.recoveryPin(oldPin, newPin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ChangePinSubscriber());
@@ -123,29 +120,6 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     public void checkOtpValidAndSubmit() {
         if (mChangePinVerifyView != null) {
             mChangePinVerifyView.checkOtpValidAndSubmit();
-        }
-    }
-
-
-    private String sha256(String base) {
-        if (TextUtils.isEmpty(base)) {
-            return "";
-        }
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
-
-            for (byte aHash : hash) {
-                String hex = Integer.toHexString(0xff & aHash);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch (Exception ex) {
-            Timber.e(ex, "sha256 exception");
-            return "";
         }
     }
 
