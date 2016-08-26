@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
+import org.parceler.Parcels;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -257,6 +259,20 @@ public class Navigator implements INavigator {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtras(bundle);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    public void startTransferActivity(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, TransferActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public void startTransferActivity(Context context, Person person) {
+        Intent intent = new Intent(context, TransferActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("person", Parcels.wrap(person));
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     public void startUpdateProfile3Activity(Context context) {

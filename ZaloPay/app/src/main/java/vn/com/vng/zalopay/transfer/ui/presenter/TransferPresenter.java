@@ -14,21 +14,21 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-//import vn.com.vng.zalopay.transfer.models.TransferRecent;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
+
 
 /**
  * Created by longlv on 13/06/2016.
@@ -190,14 +190,6 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
         if (zaloFriend == null || userMapZaloAndZaloPay == null) {
             return;
         }
-        /*String phoneNumber = "";
-        String appUser = "";
-        String displayName = zaloFriend.getDisplayName();
-        String avatar = zaloFriend.getAvatar();
-        if (userMapZaloAndZaloPay != null) {
-            appUser = userMapZaloAndZaloPay.getZaloPayId();
-            phoneNumber = userMapZaloAndZaloPay.getPhonenumber();
-        }*/
         if (user.profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(mView.getContext(), false);
         } else {
@@ -212,6 +204,26 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber(amount, message, zaloFriend, userMapZaloAndZaloPay));
+
+            compositeSubscription.add(subscription);
+        }
+
+    }
+
+    public void transferMoney(long amount, String message, Person person) {
+        if (user.profilelevel < 2) {
+            navigator.startUpdateProfileLevel2Activity(mView.getContext(), false);
+        } else {
+            if (mView != null) {
+                mView.showLoading();
+            }
+
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount,
+                    ETransactionType.WALLET_TRANSFER.toString(),
+                    person.uid, message)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new CreateOrderSubscriber(person));
 
             compositeSubscription.add(subscription);
         }
@@ -243,6 +255,36 @@ public class TransferPresenter extends BaseZaloPayPresenter implements IPresente
             mCurrentZaloFriend = zaloFriend;
             mCurrentMappingZaloAndZaloPay = mappingZaloAndZaloPay;
             TransferPresenter.this.onCreateWalletOrderSuccess(order, zaloFriend.getDisplayName(), zaloFriend.getAvatar(), mappingZaloAndZaloPay.getPhonenumber());
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            Timber.e(e, "Server responses with error");
+            TransferPresenter.this.onCreateWalletOrderError(e);
+        }
+    }
+
+    private final class CreateOrderSubscriber extends DefaultSubscriber<Order> {
+
+        Person person;
+
+        public CreateOrderSubscriber(Person person) {
+            this.person = person;
+        }
+
+        @Override
+        public void onNext(Order order) {
+            TransferPresenter.this.onCreateWalletOrderSuccess(order, person.dname, person.avatar, String.valueOf(person.phonenumber));
         }
 
         @Override

@@ -13,17 +13,17 @@ import java.util.List;
 @org.parceler.Parcel
 public final class User extends Person {
 
-    public long zaloId;
     public String accesstoken;
+
     public long expirein;
+
     public String email;
+
     public String identityNumber;
 
     public int profilelevel;
 
     public int need_invitation;
-
-    public String zalopayname;
 
     public List<Permission> profilePermissions;
 

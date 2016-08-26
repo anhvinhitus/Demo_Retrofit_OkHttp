@@ -1,13 +1,17 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.Utils;
+import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;
@@ -150,6 +154,10 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         try {
             showLoadingView();
 
+            if (transferMoneyViaQrCode(jsonString)) {
+                return;
+            }
+
             if (zpTransaction(jsonString)) {
                 return;
             }
@@ -158,9 +166,6 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
                 return;
             }
 
-            if(transferMoneyViaQrCode(jsonString)){
-                return;
-            }
 
             hideLoadingView();
 
@@ -181,26 +186,42 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
     private boolean transferMoneyViaQrCode(String jsonData) throws JSONException {
 
+        Timber.d("transferMoneyViaQrCode");
+
         JSONObject data = new JSONObject(jsonData);
         int type = data.optInt("type", -1);
         if (type <= 0) {
             return false;
         }
-        long uid = data.optLong("uid", -1);
-        if (uid <= 0) {
+        long zaloId = data.optLong("uid", -1);
+        if (zaloId <= 0) {
             return false;
         }
-
         String checksum = data.optString("checksum");
         if (TextUtils.isEmpty(checksum)) {
             return false;
         }
 
+
         String avatar = data.optString("avatar");
-        String displayName = data.optString("dname");
+        String dName = data.optString("dname");
+
+/*
+        if (!checksum.equals(Utils.sha256(String.valueOf(type), String.valueOf(zaloId), avatar, dName))) {
+
+            return false;
+        }
+*/
+
+        RecentTransaction item = new RecentTransaction();
+        item.avatar = avatar;
+        item.userId = zaloId;
+        item.displayName = dName;
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        navigator.startTransferActivity(mView.getContext(), bundle);
 
         hideLoadingView();
-
         return true;
     }
 

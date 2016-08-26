@@ -6,12 +6,17 @@ import org.parceler.Parcel;
 
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 @Parcel
 public class Person {
 
+
+    /*
+    * zaloPayId
+    * */
     public String uid;
+
+    public long zaloId;
 
     public String dname;
 
@@ -22,6 +27,8 @@ public class Person {
     public int userGender = 1;
 
     public long phonenumber;
+
+    public String zalopayname;
 
     public Person() {
     }
