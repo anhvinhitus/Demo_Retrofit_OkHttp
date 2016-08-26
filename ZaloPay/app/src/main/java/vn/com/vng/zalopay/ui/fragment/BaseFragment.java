@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -42,6 +43,7 @@ public abstract class BaseFragment extends Fragment {
     private Unbinder unbinder;
 
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+    protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

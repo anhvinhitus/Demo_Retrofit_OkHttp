@@ -231,6 +231,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
                 break;
 
+            case MenuItemUtil.RECEIVE_MONEY:
+                navigator.startMyQrCode(this);
+                break;
+
         }
     }
 

@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/progress" />
 
     <ImageView
         android:id="@+id/ivQrCode"
         android:layout_width="@dimen/rect_scan_size"
         android:layout_height="@dimen/rect_scan_size"
         android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:background="@color/silver" />
+        android:adjustViewBounds="true" />
 
 </FrameLayout>

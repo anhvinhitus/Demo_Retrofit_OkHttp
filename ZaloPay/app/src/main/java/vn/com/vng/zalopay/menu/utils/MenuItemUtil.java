@@ -26,6 +26,7 @@ public class MenuItemUtil {
     public static final int APPLICATION_INFO_ID = 10;
     public static final int ACCOUNT_ID = 11;
     public static final int SIGN_OUT_ID = 12;
+    public static final int RECEIVE_MONEY = 13;
 
     private static List<MenuItem> mMenuItems;
 
@@ -43,6 +44,9 @@ public class MenuItemUtil {
         mMenuItems.add(new MenuItem(DEPOSIT_ID, MenuItemType.ITEM, R.drawable.ic_naptien_menu, "Nạp Tiền"));
 
         mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Chuyển Tiền"));
+
+        mMenuItems.add(new MenuItem(RECEIVE_MONEY, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Nhận Tiền"));
+
         mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, R.drawable.ic_luuthe, "Lưu Thẻ"));
         mMenuItems.add(new MenuItem(TRANSACTION_HISTORY_ID, MenuItemType.ITEM, R.drawable.ic_lichsu_menu, R.drawable.ic_arrow_right, "Lịch Sử Thanh Toán", false));
 

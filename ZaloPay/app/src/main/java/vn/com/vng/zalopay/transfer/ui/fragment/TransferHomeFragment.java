@@ -71,13 +71,6 @@ public class TransferHomeFragment extends BaseFragment implements
         navigator.startZaloContactActivity(this);
     }
 
-
-    @OnClick(R.id.myQrCode)
-    public void onClickMyQrCode() {
-        navigator.startMyQrCode(getContext());
-    }
-
-
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
 

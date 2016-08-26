@@ -149,11 +149,16 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         Timber.d("about to process payment with order: %s", jsonString);
         try {
             showLoadingView();
+
             if (zpTransaction(jsonString)) {
                 return;
             }
 
             if (orderTransaction(jsonString)) {
+                return;
+            }
+
+            if(transferMoneyViaQrCode(jsonString)){
                 return;
             }
 
@@ -172,6 +177,31 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
             mView.resumeScanner();
         }
+    }
+
+    private boolean transferMoneyViaQrCode(String jsonData) throws JSONException {
+
+        JSONObject data = new JSONObject(jsonData);
+        int type = data.optInt("type", -1);
+        if (type <= 0) {
+            return false;
+        }
+        long uid = data.optLong("uid", -1);
+        if (uid <= 0) {
+            return false;
+        }
+
+        String checksum = data.optString("checksum");
+        if (TextUtils.isEmpty(checksum)) {
+            return false;
+        }
+
+        String avatar = data.optString("avatar");
+        String displayName = data.optString("dname");
+
+        hideLoadingView();
+
+        return true;
     }
 
     private boolean zpTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
