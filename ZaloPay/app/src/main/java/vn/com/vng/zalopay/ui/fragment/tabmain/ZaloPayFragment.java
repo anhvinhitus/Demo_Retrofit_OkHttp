@@ -194,6 +194,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             navigator.startTransferMoneyActivity(getActivity());
         } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
             navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
+        } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
+            navigator.startMyQrCode(getContext());
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
         }
