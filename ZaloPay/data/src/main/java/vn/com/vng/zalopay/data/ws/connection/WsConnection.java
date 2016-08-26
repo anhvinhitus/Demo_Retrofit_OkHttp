@@ -148,6 +148,11 @@ public class WsConnection extends Connection {
 
     @Override
     public void ping() {
+        if (!isUserLoggedIn()) {
+            Timber.d("User is not login. Should stop sending ping");
+            return;
+        }
+
         ZPMsgProtos.MessageConnectionInfo.Builder pingMessage = ZPMsgProtos.MessageConnectionInfo.newBuilder()
                 .setUserid(getCurrentUserId())
                 .setEmbeddata(System.currentTimeMillis());
@@ -240,7 +245,7 @@ public class WsConnection extends Connection {
         try {
             uid = Long.parseLong(userConfig.getCurrentUser().uid);
         } catch (Exception ex) {
-            Timber.d(ex, "parse uid exception %s", userConfig.getCurrentUser().uid);
+            Timber.d(ex, "parse uid exception");
         }
 
         return uid;
