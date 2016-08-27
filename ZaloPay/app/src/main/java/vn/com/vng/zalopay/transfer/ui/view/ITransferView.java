@@ -12,6 +12,10 @@ public interface ITransferView extends ILoadDataView {
     Activity getActivity();
     void onTokenInvalid();
     void setEnableBtnContinue(boolean isEnable);
-    void onGetMappingUserSuccess(MappingZaloAndZaloPay userMapZaloAndZaloPay);
-    void onGetMappingUserError();
+    void updateReceiverInfo(String displayName, String avatar, String zalopayName);
+    void toggleAmountError(String error);
+
+    void setInitialValue(long currentAmount, String currentMessage);
+
+    void showErrorDialogThenClose(String content, String title);
 }

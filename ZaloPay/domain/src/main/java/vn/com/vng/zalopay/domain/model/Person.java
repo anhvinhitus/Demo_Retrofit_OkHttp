@@ -6,29 +6,20 @@ import org.parceler.Parcel;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ * Person model
  */
 @Parcel
 public class Person {
 
-
-    /*
-    * zaloPayId
-    * */
     public String zaloPayId;
-
+    public String zalopayname;
     public long zaloId;
 
     public String displayName;
-
     public String avatar;
-
     public long birthDate = 0;
-
     public int userGender = 1;
-
     public long phonenumber;
-
-    public String zalopayname;
 
     public Person() {
     }
