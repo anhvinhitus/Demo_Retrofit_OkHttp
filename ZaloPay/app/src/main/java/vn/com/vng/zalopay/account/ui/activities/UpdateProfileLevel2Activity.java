@@ -227,7 +227,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         Timber.d("updateUserInfo, birthday: %s", user.birthDate);
         Date date = new Date(user.birthDate * 1000);
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
-        tvName.setText(user.dname);
+        tvName.setText(user.displayName);
         tvSex.setText(user.getGender());
         Glide.with(this).load(user.avatar)
                 .placeholder(R.color.silver)

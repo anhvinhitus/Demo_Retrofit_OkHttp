@@ -26,11 +26,9 @@ import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
-import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -200,7 +198,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         if (user == null) return;
 
         setAvatar(user.avatar);
-        setDisplayName(user.dname);
+        setDisplayName(user.displayName);
         setZaloPayName(user.zalopayname);
     }
 

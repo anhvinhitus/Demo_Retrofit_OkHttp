@@ -28,7 +28,7 @@ public class ZaloPayIAPFactory {
         if (responseCache != null) {
             return Observable.just(responseCache);
         } else {
-            return service.getmerchantuserinfo(mAppJSId, user.uid, user.accesstoken)
+            return service.getmerchantuserinfo(mAppJSId, user.zaloPayId, user.accesstoken)
                     .doOnNext(response -> mCacheMerchantUser.put(mAppJSId, response))
                     ;
         }

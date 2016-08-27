@@ -132,7 +132,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         //    mLayoutCmnd.setClickable(user.profilelevel == 2);
         //    mLayoutEmail.setClickable(user.profilelevel == 2);
 
-    /*    tvZaloPayId.setText(user.uid);
+    /*    tvZaloPayId.setText(user.zaloPayId);
         tvZaloId.setText(String.valueOf(user.zaloId));*/
     }
 

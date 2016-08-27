@@ -117,7 +117,7 @@ public class WsConnection extends Connection {
             return false;
         }
 
-        if (TextUtils.isEmpty(userConfig.getCurrentUser().uid)) {
+        if (TextUtils.isEmpty(userConfig.getCurrentUser().zaloPayId)) {
             return false;
         }
 
@@ -217,7 +217,7 @@ public class WsConnection extends Connection {
 
     private boolean sendAuthentication(String token, long uid) {
 
-        Timber.d("send authentication token %s uid %s gcmToken %s", token, uid, gcmToken);
+        Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
 
         ZPMsgProtos.MessageLogin.Builder loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
                 .setToken(token)
@@ -234,7 +234,7 @@ public class WsConnection extends Connection {
     private boolean sendAuthentication() {
         if (userConfig.hasCurrentUser()) {
             User user = userConfig.getCurrentUser();
-            return sendAuthentication(user.accesstoken, Long.parseLong(user.uid));
+            return sendAuthentication(user.accesstoken, Long.parseLong(user.zaloPayId));
         }
         return false;
     }
@@ -243,9 +243,9 @@ public class WsConnection extends Connection {
         long uid = -1;
 
         try {
-            uid = Long.parseLong(userConfig.getCurrentUser().uid);
+            uid = Long.parseLong(userConfig.getCurrentUser().zaloPayId);
         } catch (Exception ex) {
-            Timber.d(ex, "parse uid exception");
+            Timber.d(ex, "parse zaloPayId exception");
         }
 
         return uid;
@@ -260,7 +260,7 @@ public class WsConnection extends Connection {
             return true;
         }
 
-        Timber.d("Send feedback status with mtaid %s mtuid %s uid %s", mtaid, mtuid, uid);
+        Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
 
         ZPMsgProtos.StatusMessageClient.Builder statusMsg = ZPMsgProtos.StatusMessageClient.newBuilder()
                 .setStatus(ZPMsgProtos.MessageStatus.RECEIVED.getNumber());

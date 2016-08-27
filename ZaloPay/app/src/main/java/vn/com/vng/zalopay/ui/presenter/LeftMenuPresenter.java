@@ -88,7 +88,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         //UPDATE USERINFO
         user.avatar = event.avatar;
-        user.dname = event.displayName;
+        user.displayName = event.displayName;
 
         if (menuView != null) {
             menuView.setAvatar(event.avatar);

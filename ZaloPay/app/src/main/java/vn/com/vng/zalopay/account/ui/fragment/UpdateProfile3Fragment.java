@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -249,7 +248,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void setProfile(User user) {
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 .format(new Date(user.birthDate * 1000)));
-        tvName.setText(user.dname);
+        tvName.setText(user.displayName);
         tvSex.setText(user.getGender());
 
         Glide.with(this).load(user.avatar)

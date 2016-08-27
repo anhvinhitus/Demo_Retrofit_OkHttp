@@ -119,7 +119,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloUserId = String.valueOf(user.zaloId);
-        userInfo.zaloPayUserId = user.uid;
+        userInfo.zaloPayUserId = user.zaloPayId;
         userInfo.accessToken = user.accesstoken;
         paymentInfo.userInfo = userInfo;
         ZingMobilePayApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {

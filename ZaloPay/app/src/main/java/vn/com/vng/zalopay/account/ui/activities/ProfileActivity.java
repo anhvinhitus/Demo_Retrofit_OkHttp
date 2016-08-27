@@ -65,7 +65,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         if (user == null) {
             return;
         }
-        tvName.setText(user.dname);
+        tvName.setText(user.displayName);
         Glide.with(this).load(user.avatar)
                 .placeholder(R.color.silver)
                 .centerCrop()

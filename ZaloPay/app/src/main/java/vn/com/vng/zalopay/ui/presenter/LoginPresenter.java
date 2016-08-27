@@ -163,7 +163,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void onLoginSuccess(User user) {
-        Timber.d("session %s uid %s need_invitation %s", user.accesstoken, user.uid, user.need_invitation);
+        Timber.d("session %s zaloPayId %s need_invitation %s", user.accesstoken, user.zaloPayId, user.need_invitation);
         // Khởi tạo user component
         hideLoadingView();
         if (user.need_invitation == 1) {

@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -11,7 +10,6 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
 
 import java.util.Arrays;
 import java.util.List;
@@ -162,7 +160,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected
     @Nullable
     Bundle getLaunchOptions() {
-        mLaunchOptions.putString("zalopay_userid", getUserComponent().currentUser().uid);
+        mLaunchOptions.putString("zalopay_userid", getUserComponent().currentUser().zaloPayId);
 
         Timber.d("getLaunchOptions: mLaunchOptions %s", mLaunchOptions);
 

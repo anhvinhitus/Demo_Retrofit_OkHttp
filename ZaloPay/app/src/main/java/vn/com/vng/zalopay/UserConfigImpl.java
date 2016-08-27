@@ -66,8 +66,8 @@ public class UserConfigImpl implements UserConfig {
 
         editor.putString(Constants.PREF_USER_EMAIL, user.email);
         editor.putString(Constants.PREF_USER_SESSION, user.accesstoken);
-        editor.putString(Constants.PREF_USER_ID, user.uid);
-        editor.putString(Constants.PREF_USER_NAME, user.dname);
+        editor.putString(Constants.PREF_USER_ID, user.zaloPayId);
+        editor.putString(Constants.PREF_USER_NAME, user.displayName);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
         editor.putInt(Constants.PREF_PROFILE_LEVEL, user.profilelevel);
         String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermissions);
@@ -131,17 +131,17 @@ public class UserConfigImpl implements UserConfig {
     public void loadConfig() {
         if (preferences.contains(Constants.PREF_USER_SESSION)) {
             String session = preferences.getString(Constants.PREF_USER_SESSION, "");
-            //   long uid = preferences.getLong(Constants.PREF_USER_ID, 0);
+            //   long zaloPayId = preferences.getLong(Constants.PREF_USER_ID, 0);
             if (TextUtils.isEmpty(session)) return;
 
 
             currentUser = new User();
             currentUser.accesstoken = session;
             currentUser.expirein = preferences.getLong(Constants.PREF_USER_EXPIREIN, -1);
-            currentUser.uid = preferences.getString(Constants.PREF_USER_ID, "");
+            currentUser.zaloPayId = preferences.getString(Constants.PREF_USER_ID, "");
             currentUser.zaloId = preferences.getLong(Constants.PREF_ZALO_ID, -1);
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
-            currentUser.dname = preferences.getString(Constants.PREF_USER_NAME, "");
+            currentUser.displayName = preferences.getString(Constants.PREF_USER_NAME, "");
             currentUser.avatar = preferences.getString(Constants.PREF_USER_AVATAR, "");
             currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDAY, 0);
             currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
@@ -181,14 +181,14 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_AVATAR, avatar);
         editor.putLong(Constants.PREF_USER_BIRTHDAY, birthData);
         editor.putInt(Constants.PREF_USER_GENDER, userGender);
-//        editor.putLong(Constants.PREF_USER_ID, uid);
+//        editor.putLong(Constants.PREF_USER_ID, zaloPayId);
         editor.apply();
 
         Timber.d("save UserInfo hasCurrentUser %s", hasCurrentUser());
 
         if (hasCurrentUser()) {
             currentUser.avatar = avatar;
-            currentUser.dname = displayName;
+            currentUser.displayName = displayName;
             currentUser.birthDate = birthData;
             currentUser.userGender = userGender;
             currentUser.zaloId = zaloId;

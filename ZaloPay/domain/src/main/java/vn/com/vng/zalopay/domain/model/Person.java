@@ -14,11 +14,11 @@ public class Person {
     /*
     * zaloPayId
     * */
-    public String uid;
+    public String zaloPayId;
 
     public long zaloId;
 
-    public String dname;
+    public String displayName;
 
     public String avatar;
 
@@ -33,15 +33,15 @@ public class Person {
     public Person() {
     }
 
-    public Person(String uid, String dname, String avatar) {
-        this.uid = uid;
-        this.dname = dname;
+    public Person(String zaloPayId, String displayName, String avatar) {
+        this.zaloPayId = zaloPayId;
+        this.displayName = displayName;
         this.avatar = avatar;
     }
 
-    public Person(String uid, String dname, String avatar, long birthDate, int userGender) {
-        this.uid = uid;
-        this.dname = dname;
+    public Person(String zaloPayId, String displayName, String avatar, long birthDate, int userGender) {
+        this.zaloPayId = zaloPayId;
+        this.displayName = displayName;
         this.avatar = avatar;
         this.birthDate = birthDate;
         this.userGender = userGender;
@@ -53,9 +53,6 @@ public class Person {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Person) {
-            return uid == ((Person) o).uid && !TextUtils.isEmpty(uid);
-        }
-        return false;
+        return o instanceof Person && zaloPayId.equals(((Person) o).zaloPayId) && !TextUtils.isEmpty(zaloPayId);
     }
 }

@@ -129,7 +129,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         Subscription subscription = makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance(mLinkCardView.getActivity()).getMappedCardList(user.uid);
+                List<DMappedCard> mapCardLis = CShareData.getInstance(mLinkCardView.getActivity()).getMappedCardList(user.zaloPayId);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -209,7 +209,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
         params.accessToken = user.accesstoken;
-        params.userID = String.valueOf(user.uid);
+        params.userID = String.valueOf(user.zaloPayId);
         params.mapCard = mapCard;
 
         ZingMobilePayApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
@@ -283,7 +283,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
             showLoadingView();
             String description = mLinkCardView.getContext().getString(R.string.link_card);
-            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.uid, description)
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.zaloPayId, description)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber());

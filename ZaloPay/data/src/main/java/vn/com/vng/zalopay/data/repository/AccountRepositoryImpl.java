@@ -12,7 +12,6 @@ import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.Person;
@@ -52,13 +51,13 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
             zalopayName = zalopayName.toLowerCase();
         }
         pin = sha256Base(pin);
-        return mRequestService.updateProfile(mUser.uid, mUser.accesstoken, pin, phonenumber, zalopayName)
+        return mRequestService.updateProfile(mUser.zaloPayId, mUser.accesstoken, pin, phonenumber, zalopayName)
                 .map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
     public Observable<Boolean> verifyOTPProfile(String otp) {
-        return mRequestService.verifyOTPProfile(mUser.uid, mUser.accesstoken, otp)
+        return mRequestService.verifyOTPProfile(mUser.zaloPayId, mUser.accesstoken, otp)
                 .doOnNext(response -> savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion)))
                 .map(response -> Boolean.TRUE)
                 ;
@@ -66,7 +65,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Boolean> getUserProfileLevelCloud() {
-        return mRequestService.getUserProfileLevel(mUser.uid, mUser.accesstoken)
+        return mRequestService.getUserProfileLevel(mUser.zaloPayId, mUser.accesstoken)
                 .doOnNext(response -> {
                     savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion));
                     saveUserInfo(response.email, response.identityNumber);
@@ -82,12 +81,12 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         if (_person != null) {
             return Observable.just(_person);
         } else {
-            return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
+            return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.zaloPayId, mUser.accesstoken)
                     .map(response -> {
                         Person person = new Person();
-                        person.uid = response.userid;
+                        person.zaloPayId = response.userid;
                         person.avatar = response.avatar;
-                        person.dname = response.displayName;
+                        person.displayName = response.displayName;
                         person.phonenumber = response.phoneNumber;
                         return person;
 
@@ -98,7 +97,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Boolean> checkZaloPayNameExist(String zaloPayName) {
         zaloPayName = zaloPayName.toLowerCase();
-        return mRequestService.checkZaloPayNameExist(zaloPayName, mUser.uid, mUser.accesstoken)
+        return mRequestService.checkZaloPayNameExist(zaloPayName, mUser.zaloPayId, mUser.accesstoken)
                 .map(BaseResponse::isSuccessfulResponse);
     }
 
@@ -107,17 +106,17 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         pin = sha256Base(pin);
         oldPin = sha256Base(oldPin);
 
-        return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, pin, oldPin, null);
+        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, pin, oldPin, null);
     }
 
     @Override
     public Observable<BaseResponse> verifyRecoveryPin(String otp) {
-        return mRequestService.recoverypin(mUser.uid, mUser.accesstoken, null, null, otp);
+        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, null, null, otp);
     }
 
     @Override
     public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
-        return mRequestService.getuserinfo(mUser.uid, mUser.accesstoken, zaloId, systemLogin)
+        return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
                 .map(mappingZaloAndZaloPayResponse -> {
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
                     mappingZaloAndZaloPay.setZaloId(zaloId);
@@ -139,7 +138,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody avatar = requestBodyFromFile(avatarPath);
 
         return mUploadPhotoService.updateProfile3(
-                requestBodyParam(mUser.uid),
+                requestBodyParam(mUser.zaloPayId),
                 requestBodyParam(mUser.accesstoken),
                 requestBodyParam(identityNumber),
                 requestBodyParam(email),
@@ -151,7 +150,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Boolean> updateZaloPayName(String zaloPayName) {
-        return mRequestService.updateZaloPayName(zaloPayName, mUser.uid, mUser.accesstoken)
+        return mRequestService.updateZaloPayName(zaloPayName, mUser.zaloPayId, mUser.accesstoken)
                 .doOnNext(response -> saveZalopayName(zaloPayName))
                 .map(BaseResponse::isSuccessfulResponse);
     }
@@ -168,7 +167,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         RequestBody avatarBodyRequest = requestBodyFromData(avatar);
 
         return mUploadPhotoService.updateProfile3(
-                requestBodyParam(mUser.uid),
+                requestBodyParam(mUser.zaloPayId),
                 requestBodyParam(mUser.accesstoken),
                 requestBodyParam(identityNumber),
                 requestBodyParam(email),

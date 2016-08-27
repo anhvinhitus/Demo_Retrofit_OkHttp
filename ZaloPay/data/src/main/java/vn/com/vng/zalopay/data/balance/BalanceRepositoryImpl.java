@@ -38,7 +38,7 @@ public class BalanceRepositoryImpl implements BalanceStore.Repository {
 
     @Override
     public Observable<Long> updateBalance() {
-        return mRequestService.balance(mUser.uid, mUser.accesstoken)
+        return mRequestService.balance(mUser.zaloPayId, mUser.accesstoken)
                 .doOnNext(response -> {
                     mCurrentBalance = response.zpwbalance;
                     mLocalStorage.putBalance(response.zpwbalance);

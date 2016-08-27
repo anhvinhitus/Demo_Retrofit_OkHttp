@@ -275,8 +275,8 @@ public class TransferHomeFragment extends BaseFragment implements
     public void onGetProfileSuccess(Person person, String zaloPayName) {
         RecentTransaction item = new RecentTransaction();
         item.avatar = person.avatar;
-        item.zaloPayId = person.uid;
-        item.displayName = person.dname;
+        item.zaloPayId = person.zaloPayId;
+        item.displayName = person.displayName;
         item.phoneNumber = String.valueOf(person.phonenumber);
         item.zaloPayName = zaloPayName;
         onItemRecentClick(item);

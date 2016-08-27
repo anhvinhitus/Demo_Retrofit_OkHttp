@@ -143,7 +143,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         User user = getUserComponent().currentUser();
         boolean isMapped = false;
         try {
-            List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.uid);
+            List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.zaloPayId);
             if (mapCardLis == null) {
                 return isMapped;
             }

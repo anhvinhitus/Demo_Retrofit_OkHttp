@@ -58,7 +58,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                                                      long amountEach,
                                                      int type,
                                                      String sendMessage) {
-        return mRequestService.createBundleOrder(quantity, totalLuck, amountEach, type, user.uid, user.accesstoken, sendMessage)
+        return mRequestService.createBundleOrder(quantity, totalLuck, amountEach, type, user.zaloPayId, user.accesstoken, sendMessage)
                 .map(bundleOrderResponse ->
                         new BundleOrder(bundleOrderResponse.getAppid(),
                                 bundleOrderResponse.getZptranstoken(),
@@ -77,19 +77,19 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<Boolean> sendBundle(long bundleID, List<Long> friendList) {
         String friendListStr = Strings.joinWithDelimiter("|", friendList);
-        return mRequestService.sendBundle(bundleID, friendListStr, user.uid, user.accesstoken)
+        return mRequestService.sendBundle(bundleID, friendListStr, user.zaloPayId, user.accesstoken)
                 .map(BaseResponse::isSuccessfulResponse);
     }
 
     @Override
     public Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID) {
-        return mRequestService.submitOpenPackage(packageID, bundleID, user.uid, user.accesstoken)
+        return mRequestService.submitOpenPackage(packageID, bundleID, user.zaloPayId, user.accesstoken)
                 .map(redPackageResponse -> new SubmitOpenPackage(bundleID, packageID, redPackageResponse.zptransid));
     }
 
     @Override
     public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId) {
-        return mRequestService.getPackageStatus(packageID, zpTransID, user.uid, user.accesstoken, deviceId)
+        return mRequestService.getPackageStatus(packageID, zpTransID, user.zaloPayId, user.accesstoken, deviceId)
                 .map(packageStatusResponse ->
                         new PackageStatus(packageStatusResponse.isprocessing,
                                 packageStatusResponse.zptransid,
@@ -111,7 +111,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<GetReceivePacket> getReceivedPackagesServer(long timeCreate, int count, int order) {
-        return mRequestService.getReceivedPackageList(timeCreate, count, order, user.uid, user.accesstoken)
+        return mRequestService.getReceivedPackageList(timeCreate, count, order, user.zaloPayId, user.accesstoken)
                 .map(mDataMapper::transformToGetRevPacket)
                 .doOnNext(this::insertRevPacketSummary)
                 .doOnNext(this::insertReceivePackages);
@@ -180,7 +180,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                                            final int count, final int sortOrder,
                                            Subscriber<? super Boolean> subscriber) {
         Timber.d("getPackageInBundlesServer %s ", timestamp);
-        mRequestService.getPackageInBundleList(bundleId, timestamp, count, sortOrder, user.uid, user.accesstoken)
+        mRequestService.getPackageInBundleList(bundleId, timestamp, count, sortOrder, user.zaloPayId, user.accesstoken)
                 .map(mDataMapper::transformToPackageInBundle)
                 .doOnNext(this::insertPackageInBundle)
                 .doOnNext(packageInBundles -> {
@@ -257,7 +257,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<RedPacketAppInfo> getAppInfoServer(String checksum) {
-        return mRequestService.getAppInfo(checksum, user.uid, user.accesstoken)
+        return mRequestService.getAppInfo(checksum, user.zaloPayId, user.accesstoken)
                 .map(mDataMapper::transform)
                 .doOnNext(mLocalStorage::putRedPacketAppInfo);
     }
@@ -320,7 +320,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<GetSentBundle> getSentBundleListServer(long timestamp, int count, int order) {
-        return mRequestService.getSentBundleList(timestamp, count, order, user.uid, user.accesstoken)
+        return mRequestService.getSentBundleList(timestamp, count, order, user.zaloPayId, user.accesstoken)
                 .map(mDataMapper::transformToSentBundleSummary)
                 .doOnNext(this::insertSentBundleSummary)
 //                .map(mDataMapper::transformToSentBundles)

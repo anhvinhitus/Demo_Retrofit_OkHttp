@@ -34,7 +34,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -144,7 +143,7 @@ public class NotificationHelper {
         }
 
         if (notify.notificationtype == NotificationType.MONEY_TRANSFER
-                && mUser.uid.equals(notify.userid)) {
+                && mUser.zaloPayId.equals(notify.userid)) {
             notify.setRead(true);
         }
     }

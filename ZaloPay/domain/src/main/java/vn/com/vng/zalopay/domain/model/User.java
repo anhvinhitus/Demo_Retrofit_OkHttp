@@ -35,7 +35,7 @@ public final class User extends Person {
     }
 
     public User(String uid) {
-        this.uid = uid;
+        this.zaloPayId = uid;
     }
 
     public <T> T fromJson(String jsonString, Type type) {
@@ -53,7 +53,7 @@ public final class User extends Person {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("{");
-        result.append("uid: ").append(this.uid);
+        result.append("zaloPayId: ").append(this.zaloPayId);
         result.append(", ");
         result.append("accesstoken: ").append(this.accesstoken);
         result.append("}");

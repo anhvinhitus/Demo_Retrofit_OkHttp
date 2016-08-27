@@ -104,7 +104,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, int statusType, int deep) {
         Timber.d("get transaction from server [%s] statusType [%s] ", timestamp, statusType);
-        mTransactionRequestService.getTransactionHistories(mUser.uid, mUser.accesstoken, timestamp, count, sortOrder, statusType)
+        mTransactionRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, count, sortOrder, statusType)
                 .map(response -> response.data)
                 .doOnNext(data -> {
 

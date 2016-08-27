@@ -52,10 +52,10 @@ public class PassportRepositoryImpl implements PassportRepository {
 
     private User transformWithZaloInfo(LoginResponse response) {
         User user = userEntityDataMapper.transform(response);
-        user.dname = userConfig.getDisPlayName();
+        user.displayName = userConfig.getDisPlayName();
         user.avatar = userConfig.getAvatar();
         user.zaloId = userConfig.getZaloId();
-        Timber.d("dname %s avatar %s zaloid %s", user.dname, user.avatar, user.zaloId);
+        Timber.d("displayName %s avatar %s zaloid %s", user.displayName, user.avatar, user.zaloId);
         return user;
     }
 

@@ -124,7 +124,7 @@ public class WithdrawPresenter extends BaseZaloPayPresenter implements IPresente
         }
         mView.showLoading();
         String description = mView.getContext().getString(R.string.txt_withdraw);
-        Subscription subscription = zaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.uid, description)
+        Subscription subscription = zaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, description)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
@@ -165,7 +165,7 @@ public class WithdrawPresenter extends BaseZaloPayPresenter implements IPresente
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.d("session =========" + order.getItem());
-        paymentWrapper.withdraw(order, mUser.dname, mUser.avatar, String.valueOf(mUser.phonenumber));
+        paymentWrapper.withdraw(order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber));
         mView.hideLoading();
     }
 
