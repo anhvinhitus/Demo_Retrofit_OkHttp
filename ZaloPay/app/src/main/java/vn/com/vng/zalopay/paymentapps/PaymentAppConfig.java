@@ -16,7 +16,7 @@ public class PaymentAppConfig {
 
     public static class Constants {
         public static final int INTERNAL = 1;
-        public static final int RECEIVE_MONEY = 2;
+        public static final int RECEIVE_MONEY = 3;
         public static final int RED_PACKET = 6;
         public static final int RECHARGE_MONEY_PHONE = 11;
         public static final int BUY_PHONE_CARD = 12;

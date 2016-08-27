@@ -44,7 +44,10 @@ public class Order extends AbstractData {
     }
 
     public Order(String jsonString) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonString);
+        this(new JSONObject(jsonString));
+    }
+
+    public Order(JSONObject jsonObject) throws JSONException {
         appid = (long)jsonObject.getDouble(Constants.APPID);
         if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
             zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);

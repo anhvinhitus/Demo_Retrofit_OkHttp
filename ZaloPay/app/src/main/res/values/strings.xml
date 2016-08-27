@@ -43,7 +43,7 @@
     <string name="other">Khác</string>
     <string name="tel_card">Thẻ cào</string>
     <string name="buy.phone.card">Thẻ ĐT</string>
-    <string name="receive.money">Nhận tiền</string>
+    <string name="receive.money">Nhận Tiền</string>
     <string name="buy.game.card">Nạp Game</string>
     <string name="zing.xu">ZingXu</string>
     <string name="transfer.to.mobile">Đến số điện thoại di động</string>
@@ -96,7 +96,7 @@
     <string name="title.activity.withdraw">Rút tiền</string>
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
-    <string name="title.activity.my.qr">My QRCode</string>
+    <string name="title.activity.my.qr">Nhận Tiền</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -236,6 +236,7 @@
     <string name="notify.from.zalopay">Bạn nhận được tin nhắn từ Zalo Pay</string>
     <string name="you.have.unread.messages">Bạn có %s thông báo chưa đọc.</string>
     <string name="not_update_phone">Chưa cập nhật SĐT</string>
+    <string name="not_update_zalopayname">Chưa cập nhật Tên tài khoản</string>
 
     <string name="txt_no_data">Không có dữ liệu</string>
 

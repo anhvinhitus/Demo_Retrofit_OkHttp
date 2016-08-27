@@ -24,6 +24,7 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 09/05/2016.
+ * Controller for QR code scanning
  */
 
 public final class QRCodePresenter extends BaseZaloPayPresenter implements IPresenter<IQRScanView> {
@@ -145,89 +146,102 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         mView.hideLoading();
     }
 
-//    private void showErrorView(String message) {
-//        mView.showError(message);
-//    }
-
     public void pay(String jsonString) {
         Timber.d("about to process payment with order: %s", jsonString);
         try {
             showLoadingView();
 
-            if (transferMoneyViaQrCode(jsonString)) {
+            JSONObject data;
+            try {
+                data = new JSONObject(jsonString);
+            } catch (JSONException e) {
+                Timber.i("Invalid JSON input: %s", e.getMessage());
+                resumeScanningAfterWrongQR();
                 return;
             }
 
-            if (zpTransaction(jsonString)) {
+            int type = data.optInt("type", -1);
+            if (type == vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
+                if (tryTransferMoney(data)) {
+                    return;
+                }
+            }
+
+            if (zpTransaction(data)) {
                 return;
             }
 
-            if (orderTransaction(jsonString)) {
+            if (orderTransaction(data)) {
                 return;
             }
 
-
-            hideLoadingView();
-
-            ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
-            qrDataInvalid();
-
-            mView.resumeScanner();
+            resumeScanningAfterWrongQR();
         } catch (JSONException | IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
-            hideLoadingView();
-
-            ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
-            qrDataInvalid();
-
-            mView.resumeScanner();
+            resumeScanningAfterWrongQR();
         }
     }
 
-    private boolean transferMoneyViaQrCode(String jsonData) throws JSONException {
+    private void resumeScanningAfterWrongQR() {
+        hideLoadingView();
+
+        ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
+        qrDataInvalid();
+
+        mView.resumeScanner();
+    }
+
+    private boolean tryTransferMoney(JSONObject data) {
 
         Timber.d("transferMoneyViaQrCode");
 
-        JSONObject data = new JSONObject(jsonData);
         int type = data.optInt("type", -1);
-        if (type <= 0) {
+        if (type != vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
             return false;
         }
+
         long zaloId = data.optLong("uid", -1);
         if (zaloId <= 0) {
             return false;
         }
+
+        long amount = data.optLong("amount", -1);
         String checksum = data.optString("checksum");
         if (TextUtils.isEmpty(checksum)) {
             return false;
         }
 
+        String computedChecksum;
+        if (amount != -1) {
+            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zaloId), String.valueOf(amount));
+        } else {
+            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zaloId));
+        }
 
-        String avatar = data.optString("avatar");
-        String dName = data.optString("dname");
-
-/*
-        if (!checksum.equals(Utils.sha256(String.valueOf(type), String.valueOf(zaloId), avatar, dName))) {
-
+        if (!checksum.equals(computedChecksum)) {
+            Timber.d("Checksum does not match");
             return false;
         }
-*/
 
-        RecentTransaction item = new RecentTransaction();
-        item.avatar = avatar;
-        item.userId = zaloId;
-        item.displayName = dName;
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
-        navigator.startTransferActivity(mView.getContext(), bundle);
+        // Start money transfer process
+        startMoneyTransfer(zaloId, amount);
 
         hideLoadingView();
         return true;
     }
 
-    private boolean zpTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
-        Timber.d("trying to get transaction token from: %s", jsonOrder);
-        JSONObject jsonObject = new JSONObject(jsonOrder);
+    private void startMoneyTransfer(long zaloId, long amount) {
+        RecentTransaction item = new RecentTransaction();
+        item.userId = zaloId;
+        if (amount != -1) {
+            item.amount = amount;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        navigator.startTransferActivity(mView.getContext(), bundle);
+    }
+
+    private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {
         long appId = jsonObject.optInt(Constants.APPID);
         String transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
         if (appId < 0 || TextUtils.isEmpty(transactionToken)) {
@@ -237,7 +251,7 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         return true;
     }
 
-    private boolean orderTransaction(String jsonOrder) throws JSONException, IllegalArgumentException {
+    private boolean orderTransaction(JSONObject jsonOrder) throws JSONException, IllegalArgumentException {
         Order order = new Order(jsonOrder);
         if (order.getAppid() < 0) {
             return false;
@@ -271,9 +285,4 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
     private void qrDataInvalid() {
         ToastUtil.showToast(mView.getActivity(), "Dữ liệu không hợp lệ.");
     }
-
-//    private void showOrderDetail(Order order) {
-//        mView.showOrderDetail(order);
-//    }
-
 }

@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.transfer.ui.presenter.TransferPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -52,8 +51,8 @@ public class TransferFragment2 extends BaseFragment implements ITransferView {
     @BindView(R.id.tvDisplayName)
     TextView tvDisplayName;
 
-    @BindView(R.id.tvPhone)
-    TextView tvPhone;
+    @BindView(R.id.tvZaloPayName)
+    TextView mTextViewZaloPayName;
 
     @BindView(R.id.textInputTransferMsg)
     TextInputLayout textInputTransferMsg;
@@ -124,13 +123,9 @@ public class TransferFragment2 extends BaseFragment implements ITransferView {
     }
 
     public void setUserInfo(Person person) {
-        String name = person.zalopayname;
-        if (TextUtils.isEmpty(name)) {
-            name = person.dname;
-        }
-        tvDisplayName.setText(name);
+        tvDisplayName.setText(person.dname);
         setAvatar(person.avatar);
-        setPhone(String.valueOf(person.phonenumber));
+        setZaloPayName(person.zalopayname);
     }
 
     public void setAvatar(String url) {
@@ -141,12 +136,11 @@ public class TransferFragment2 extends BaseFragment implements ITransferView {
                 .into(imgAvatar);
     }
 
-    public void setPhone(String phone) {
-        String phoneNumber = PhoneUtil.formatPhoneNumber(phone);
-        if (TextUtils.isEmpty(phoneNumber)) {
-            phoneNumber = getString(R.string.not_update_phone);
+    public void setZaloPayName(String zaloPayName) {
+        if (TextUtils.isEmpty(zaloPayName)) {
+            zaloPayName = getString(R.string.not_update_zalopayname);
         }
-        tvPhone.setText(phoneNumber);
+        mTextViewZaloPayName.setText(zaloPayName);
     }
 
     @Override
