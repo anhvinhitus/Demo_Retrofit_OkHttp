@@ -94,6 +94,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     public boolean isValidPhone() {
+        if (edtPhone == null) {
+            return false;
+        }
+
         String phone = edtPhone.getString();
         return !TextUtils.isEmpty(phone) && ValidateUtil.isMobileNumber(phone);
     }
@@ -116,6 +120,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     private boolean isValidPin() {
+        if (passCode == null) {
+            return false;
+        }
+
         String pin = passCode.getText();
         return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
