@@ -83,8 +83,9 @@ public class MyQRCodeFragment extends BaseFragment {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", Constants.QRCode.RECEIVE_MONEY);
-            jsonObject.put("uid", user.zaloId);
-            jsonObject.put("checksum", Utils.sha256(String.valueOf(Constants.QRCode.RECEIVE_MONEY), String.valueOf(user.zaloId)));
+            jsonObject.put("uid", Long.parseLong(user.zaloPayId));
+            jsonObject.put("checksum",
+                    Utils.sha256(String.valueOf(Constants.QRCode.RECEIVE_MONEY), user.zaloPayId));
             return jsonObject.toString();
         } catch (Exception ex) {
             Timber.d(ex, "generate content");

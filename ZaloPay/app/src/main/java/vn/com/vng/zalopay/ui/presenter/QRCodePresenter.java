@@ -200,8 +200,8 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
             return false;
         }
 
-        long zaloId = data.optLong("uid", -1);
-        if (zaloId <= 0) {
+        long zalopayId = data.optLong("uid", -1);
+        if (zalopayId <= 0) {
             return false;
         }
 
@@ -213,9 +213,9 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
         String computedChecksum;
         if (amount != -1) {
-            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zaloId), String.valueOf(amount));
+            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zalopayId), String.valueOf(amount));
         } else {
-            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zaloId));
+            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zalopayId));
         }
 
         if (!checksum.equals(computedChecksum)) {
@@ -224,15 +224,15 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         }
 
         // Start money transfer process
-        startMoneyTransfer(zaloId, amount);
+        startMoneyTransfer(zalopayId, amount);
 
         hideLoadingView();
         return true;
     }
 
-    private void startMoneyTransfer(long zaloId, long amount) {
+    private void startMoneyTransfer(long zalopayId, long amount) {
         RecentTransaction item = new RecentTransaction();
-        item.userId = zaloId;
+        item.zaloPayId = String.valueOf(zalopayId);
         if (amount != -1) {
             item.amount = amount;
         }
