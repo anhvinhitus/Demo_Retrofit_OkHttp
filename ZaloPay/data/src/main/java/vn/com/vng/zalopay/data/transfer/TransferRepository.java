@@ -27,9 +27,24 @@ public class TransferRepository implements TransferStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> append(TransferRecent recentTransfer) {
+    public Observable<Boolean> append(RecentTransaction item, int transactionType) {
+        TransferRecent transferRecent = new TransferRecent(
+                Long.valueOf(item.getZaloPayId()),
+                item.getZaloPayId(),
+                item.getZaloPayName(),
+                item.getDisplayName(),
+                item.getAvatar(),
+                0,
+                "",
+                true,
+                item.getPhoneNumber(),
+                transactionType,
+                item.amount,
+                item.message,
+                System.currentTimeMillis());
+
         return ObservableHelper.makeObservable(() -> {
-            mLocalStorage.append(recentTransfer);
+            mLocalStorage.append(transferRecent);
             return Boolean.TRUE;
         });
     }

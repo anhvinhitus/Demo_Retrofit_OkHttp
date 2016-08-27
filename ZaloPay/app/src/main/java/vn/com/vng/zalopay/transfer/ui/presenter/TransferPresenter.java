@@ -14,12 +14,10 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -43,18 +41,19 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
     private PaymentWrapper paymentWrapper;
     private User user;
 
-    private ZaloFriend mCurrentZaloFriend;
-    private MappingZaloAndZaloPay mCurrentMappingZaloAndZaloPay;
-    private long mCurrentAmount;
-    private String mCurrentMessage;
+//    private ZaloFriend mCurrentZaloFriend;
+//    private MappingZaloAndZaloPay mCurrentMappingZaloAndZaloPay;
+//    private long mCurrentAmount;
+//    private String mCurrentMessage;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private String mValidMinAmount;
     private String mValidMaxAmount;
+    private RecentTransaction mTransaction;
 
     private void clearCurrentData() {
-        mCurrentZaloFriend = null;
-        mCurrentMappingZaloAndZaloPay = null;
+//        mCurrentZaloFriend = null;
+//        mCurrentMappingZaloAndZaloPay = null;
     }
 
     public TransferPresenter(User user) {
@@ -100,14 +99,12 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
                     mView.getActivity().setResult(Activity.RESULT_OK);
                     mView.getActivity().finish();
                 }
-                if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null || mCurrentMappingZaloAndZaloPay == null) {
+                if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null) {
                     return;
                 }
-                if (!TextUtils.isEmpty(zpPaymentResult.paymentInfo.appUser) &&
-                        zpPaymentResult.paymentInfo.appUser.equals(mCurrentMappingZaloAndZaloPay.getZaloPayId())) {
-                    saveTransferRecentToDB(mCurrentZaloFriend, mCurrentMappingZaloAndZaloPay);
-                    clearCurrentData();
-                }
+
+                saveTransferRecentToDB();
+                clearCurrentData();
             }
 
             @Override
@@ -183,10 +180,11 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
                 mView.getContext().getString(R.string.txt_close));
     }
 
-    public void getUserMapping(long zaloId) {
+    private void getUserMapping(long zaloId) {
         if (zaloId <= 0) {
             return;
         }
+
         Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -194,107 +192,38 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
         compositeSubscription.add(subscription);
     }
 
-    @Override
-    public void transferMoney(long amount, String message, ZaloFriend zaloFriend, MappingZaloAndZaloPay userMapZaloAndZaloPay) {
-        if (zaloFriend == null || userMapZaloAndZaloPay == null) {
-            return;
-        }
+    private void transferMoney() {
         if (user.profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(mView.getContext(), false);
         } else {
-            if (amount <= 0) {
+            if (mTransaction.amount <= 0) {
                 return;
             }
 
             mView.showLoading();
-            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount,
+
+            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
+                    mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
-                    userMapZaloAndZaloPay.getZaloPayId(), message)
+                    mTransaction.getZaloPayId(),
+                    mTransaction.message)
+
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new CreateWalletOrderSubscriber(amount, message, zaloFriend, userMapZaloAndZaloPay));
+                    .subscribe(new CreateWalletOrderSubscriber());
 
             compositeSubscription.add(subscription);
         }
-
-    }
-
-    @Override
-    public void transferMoney(long amount, String message, Person person) {
-        if (user.profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(mView.getContext(), false);
-        } else {
-            if (mView != null) {
-                mView.showLoading();
-            }
-
-            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount,
-                    ETransactionType.WALLET_TRANSFER.toString(),
-                    person.zaloPayId, message)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new CreateOrderSubscriber(person));
-
-            compositeSubscription.add(subscription);
-        }
-
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        private long amount;
-        private String message;
-        private ZaloFriend zaloFriend;
-        private MappingZaloAndZaloPay mappingZaloAndZaloPay;
-
-        public CreateWalletOrderSubscriber(long amount, String message, ZaloFriend zaloFriend, MappingZaloAndZaloPay userMapZaloAndZaloPay) {
-            this.amount = amount;
-            this.message = message;
-            this.zaloFriend = zaloFriend;
-            this.mappingZaloAndZaloPay = userMapZaloAndZaloPay;
-
+        CreateWalletOrderSubscriber() {
         }
 
         @Override
         public void onNext(Order order) {
-            Timber.d("GetUserInfoSubscriber success " + order);
-            if (zaloFriend == null || mappingZaloAndZaloPay == null) {
-                return;
-            }
-            mCurrentAmount = amount;
-            mCurrentMessage = message;
-            mCurrentZaloFriend = zaloFriend;
-            mCurrentMappingZaloAndZaloPay = mappingZaloAndZaloPay;
-            TransferPresenter.this.onCreateWalletOrderSuccess(order, zaloFriend.getDisplayName(), zaloFriend.getAvatar(), mappingZaloAndZaloPay.getPhonenumber());
-        }
-
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            Timber.e(e, "Server responses with error");
-            TransferPresenter.this.onCreateWalletOrderError(e);
-        }
-    }
-
-    private final class CreateOrderSubscriber extends DefaultSubscriber<Order> {
-
-        Person person;
-
-        public CreateOrderSubscriber(Person person) {
-            this.person = person;
-        }
-
-        @Override
-        public void onNext(Order order) {
-            TransferPresenter.this.onCreateWalletOrderSuccess(order, person.displayName, person.avatar, String.valueOf(person.phonenumber));
+            Timber.d("CreateWalletOrderSubscriber success " + order);
+            TransferPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
         @Override
@@ -321,21 +250,23 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
         mView.setEnableBtnContinue(true);
     }
 
-    private void onCreateWalletOrderSuccess(Order order, String displayName, String avatar, String phoneNumber) {
-        Timber.d("session =========" + order.getItem());
-        paymentWrapper.transfer(order, displayName, avatar, phoneNumber);
+    private void onCreateWalletOrderSuccess(Order order) {
+        Timber.d("money transfer order: " + order.getItem());
+        paymentWrapper.transfer(order, mTransaction.getDisplayName(), mTransaction.getAvatar(), mTransaction.getZaloPayName());
         mView.hideLoading();
         mView.setEnableBtnContinue(true);
     }
 
-    private void saveTransferRecentToDB(ZaloFriend zaloFriend, MappingZaloAndZaloPay userMapZaloAndZaloPay) {
+    private void saveTransferRecentToDB() {
         try {
-            if (zaloFriend == null || userMapZaloAndZaloPay == null) {
+            if (mTransaction == null) {
                 return;
             }
-            int transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
-            TransferRecent transferRecent = new TransferRecent(Long.valueOf(userMapZaloAndZaloPay.getZaloPayId()), userMapZaloAndZaloPay.getZaloPayId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", true, userMapZaloAndZaloPay.getPhonenumber(), transactionType, mCurrentAmount, mCurrentMessage, System.currentTimeMillis());
-            transferRepository.append(transferRecent)
+
+//            int transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
+
+            transferRepository.append(mTransaction,
+                    Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());
 
@@ -378,7 +309,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
      */
     @Override
     public void updateAmount(long amount) {
-        mCurrentAmount = amount;
+        mTransaction.amount = amount;
         if (mView == null) {
             return;
         }
@@ -395,7 +326,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
      */
     @Override
     public void updateMessage(String message) {
-        mCurrentMessage = message;
+        mTransaction.message = message;
     }
 
     /**
@@ -406,13 +337,13 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
      */
     @Override
     public void doTransfer() {
-        if (mCurrentZaloFriend == null) {
+        if (mTransaction == null) {
             return;
         }
         if (!isValidAmount()) {
             return;
         }
-        transferMoney(mCurrentAmount, mCurrentMessage, mCurrentZaloFriend, mCurrentMappingZaloAndZaloPay);
+        transferMoney();
         if (mView != null) {
             mView.setEnableBtnContinue(false);
         }
@@ -420,7 +351,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
 
 
     private boolean isValidMinAmount() {
-        if (mCurrentAmount < Constants.MIN_TRANSFER_MONEY) {
+        if (mTransaction.amount < Constants.MIN_TRANSFER_MONEY) {
             if (mView != null) {
                 mView.toggleAmountError(mValidMinAmount);
             }
@@ -430,7 +361,7 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
     }
 
     private boolean isValidMaxAmount() {
-        if (mCurrentAmount > Constants.MAX_TRANSFER_MONEY) {
+        if (mTransaction.amount > Constants.MAX_TRANSFER_MONEY) {
             if (mView != null) {
                 mView.toggleAmountError(mValidMaxAmount);
             }
@@ -445,22 +376,24 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
 
     @Override
     public void onViewCreated() {
-        if (mCurrentZaloFriend != null) {
-            Timber.d("onViewCreated zaloFriend.zaloPayId:%s", mCurrentZaloFriend.getUserId());
-            String zalopayName = "";
-            mView.updateReceiverInfo(mCurrentZaloFriend.getDisplayName(),
-                    mCurrentZaloFriend.getAvatar(),
-                    zalopayName);
-            if (mCurrentMappingZaloAndZaloPay == null ||
-                    TextUtils.isEmpty(mCurrentMappingZaloAndZaloPay.getZaloPayId())) {
-                getUserMapping(mCurrentZaloFriend.getUserId());
-            }
+        if (mTransaction == null) {
+            Timber.e("Transaction is still NULL");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mTransaction.zaloPayId)) {
+            Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
+            getUserMapping(mTransaction.getZaloId());
         }
 
         mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
                 CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY, true));
         mValidMaxAmount = String.format(mView.getContext().getString(R.string.max_money),
                 CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY, true));
+
+        mView.updateReceiverInfo(mTransaction.getDisplayName(),
+                mTransaction.getAvatar(),
+                mTransaction.getZaloPayName());
 
         initCurrentState();
         checkShowBtnContinue();
@@ -472,16 +405,17 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
             return;
         }
 
-        if (mCurrentAmount <= 0) {
+        if (mTransaction.amount <= 0) {
             mView.setEnableBtnContinue(false);
-        } else {
-            if (mCurrentMappingZaloAndZaloPay == null ||
-                    TextUtils.isEmpty(mCurrentMappingZaloAndZaloPay.getZaloPayId())) {
-                mView.setEnableBtnContinue(false);
-                return;
-            }
-            mView.setEnableBtnContinue(true);
+            return;
         }
+
+        if (TextUtils.isEmpty(mTransaction.zaloPayId)) {
+            mView.setEnableBtnContinue(false);
+            return;
+        }
+
+        mView.setEnableBtnContinue(true);
     }
 
     private void initCurrentState() {
@@ -489,19 +423,19 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
             Timber.w("View should not be null here");
             return;
         }
-        mView.setInitialValue(mCurrentAmount, mCurrentMessage);
+        mView.setInitialValue(mTransaction.amount, mTransaction.message);
     }
 
     private void onGetMappingUserSuccess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
         if (userMapZaloAndZaloPay == null || mView == null) {
             return;
         }
-        this.mCurrentMappingZaloAndZaloPay = userMapZaloAndZaloPay;
-        String zalopayName = this.mCurrentMappingZaloAndZaloPay.getPhonenumber();
 
-        mView.updateReceiverInfo(mCurrentZaloFriend.getDisplayName(),
-                mCurrentZaloFriend.getAvatar(),
-                zalopayName);
+        mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
+        mTransaction.phoneNumber = userMapZaloAndZaloPay.getPhonenumber();
+        mView.updateReceiverInfo(mTransaction.getDisplayName(),
+                mTransaction.getAvatar(),
+                mTransaction.getZaloPayName());
 
         checkShowBtnContinue();
     }
@@ -515,24 +449,19 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
                 TextUtils.isEmpty(message) ? "null" : message
         );
 
-        mCurrentZaloFriend = zaloFriend;
-        mCurrentMessage = message;
-        if (amount != null) {
-            mCurrentAmount = amount;
+        mTransaction = transaction;
+        if (mTransaction == null) {
+            mTransaction = new RecentTransaction();
+            mTransaction.message = message;
+            if (amount != null) {
+                mTransaction.amount = amount;
+            }
         }
-        if (transaction != null && zaloFriend == null) {
-            mCurrentZaloFriend = new ZaloFriend();
-            mCurrentZaloFriend.setUserId(transaction.getUserId());
-            mCurrentZaloFriend.setDisplayName(transaction.getDisplayName());
-            mCurrentZaloFriend.setUserName(transaction.getZaloPayName());
-            mCurrentZaloFriend.setAvatar(transaction.getAvatar());
-            mCurrentZaloFriend.setUserGender(transaction.getUserGender());
-            mCurrentZaloFriend.setUsingApp(transaction.isUsingApp());
 
-            mCurrentMappingZaloAndZaloPay = new MappingZaloAndZaloPay(transaction.getUserId(), transaction.getZaloPayId(), transaction.getPhoneNumber());
-
-            mCurrentAmount = transaction.getAmount();
-            mCurrentMessage = transaction.getMessage();
+        if (zaloFriend != null) {
+            mTransaction.avatar = zaloFriend.getAvatar();
+            mTransaction.zaloId = zaloFriend.getUserId();
+            mTransaction.displayName = zaloFriend.getDisplayName();
         }
     }
 
@@ -543,8 +472,8 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
         }
 
         Intent intent = new Intent();
-        intent.putExtra(Constants.ARG_AMOUNT, mCurrentAmount);
-        intent.putExtra(Constants.ARG_MESSAGE, mCurrentMessage);
+        intent.putExtra(Constants.ARG_AMOUNT, mTransaction.amount);
+        intent.putExtra(Constants.ARG_MESSAGE, mTransaction.message);
         mView.getActivity().setResult(Activity.RESULT_CANCELED, intent);
         mView.getActivity().finish();
     }

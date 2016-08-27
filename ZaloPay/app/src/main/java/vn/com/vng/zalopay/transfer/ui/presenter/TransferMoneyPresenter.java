@@ -12,10 +12,6 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  * Controller for money transfer
  */
 public interface TransferMoneyPresenter extends IPresenter<ITransferView> {
-    void transferMoney(long amount, String message, ZaloFriend zaloFriend, MappingZaloAndZaloPay userMapZaloAndZaloPay);
-
-    void transferMoney(long amount, String message, Person person);
-
     /**
      * Update money amount as user input
      * @param amount Money amount
