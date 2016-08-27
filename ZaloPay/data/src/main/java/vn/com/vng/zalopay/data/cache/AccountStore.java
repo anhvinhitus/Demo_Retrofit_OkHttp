@@ -10,6 +10,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPIDResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPNameResponse;
 import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
@@ -25,8 +26,9 @@ public interface AccountStore {
 
     interface LocalStorage {
         Person get(String zpName);
+        Person getById(String zaloPayId);
 
-        void put(String zpName, Person person);
+        void put(Person person);
     }
 
     interface RequestService {
@@ -51,6 +53,9 @@ public interface AccountStore {
 
         @GET("um/getuserinfobyzalopayname")
         Observable<GetUserInfoByZPNameResponse> getUserInfoByZaloPayName(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
+
+        @GET("um/getuserinfobyzalopayid")
+        Observable<GetUserInfoByZPIDResponse> getUserInfoByZaloPayId(@Query("requestid") String zalopayid, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
         @GET("um/checkzalopaynameexist")
         Observable<BaseResponse> checkZaloPayNameExist(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
@@ -86,6 +91,8 @@ public interface AccountStore {
 
 
         Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin);
+
+        Observable<Person> getUserInfoByZaloPayId(String zaloPayId);
 
         Observable<Boolean> updateUserProfileLevel3(String identityNumber,
                                                     String email,

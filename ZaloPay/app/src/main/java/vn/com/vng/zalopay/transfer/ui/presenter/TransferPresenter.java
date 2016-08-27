@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -137,8 +138,43 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
         });
     }
 
+    private void getReceiverProfile() {
+        Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.getZaloPayId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new PersonInfoSubscriber());
+        compositeSubscription.add(subscription);
+    }
+
+    private final class PersonInfoSubscriber extends DefaultSubscriber<Person> {
+        PersonInfoSubscriber() {
+        }
+
+        @Override
+        public void onNext(Person item) {
+            Timber.d("PersonInfoSubscriber success");
+            onUpdateReceiverInfo(item);
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            Timber.w(e, "PersonInfoSubscriber onError " + e);
+            onGetUserProfileError(e);
+        }
+    }
+
     private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
-        public GetUserInfoSubscriber() {
+        GetUserInfoSubscriber() {
         }
 
         @Override
@@ -177,6 +213,22 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
         }
 
         mView.showErrorDialogThenClose(mView.getContext().getString(R.string.get_mapping_zalo_zalopay_error),
+                mView.getContext().getString(R.string.txt_close));
+    }
+
+    private void onGetUserProfileError(Throwable e) {
+        if (e != null && e instanceof BodyException) {
+            if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
+                clearAndLogout();
+                return;
+            }
+        }
+
+        if (mView == null) {
+            return;
+        }
+
+        mView.showErrorDialogThenClose(mView.getContext().getString(R.string.get_userinfo_zalopayid_error),
                 mView.getContext().getString(R.string.txt_close));
     }
 
@@ -386,6 +438,11 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
             getUserMapping(mTransaction.getZaloId());
         }
 
+        if (TextUtils.isEmpty(mTransaction.getDisplayName())) {
+            Timber.d("Empty display name, try to fetch profile info from server");
+            getReceiverProfile();
+        }
+
         mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
                 CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY, true));
         mValidMaxAmount = String.format(mView.getContext().getString(R.string.max_money),
@@ -438,6 +495,17 @@ public class TransferPresenter extends BaseZaloPayPresenter implements TransferM
                 mTransaction.getZaloPayName());
 
         checkShowBtnContinue();
+    }
+
+    private void onUpdateReceiverInfo(Person person) {
+        if (mView == null || person == null) {
+            return;
+        }
+
+        mTransaction.zaloPayName = person.zalopayname;
+        mTransaction.displayName = person.displayName;
+        mTransaction.avatar = person.avatar;
+//        mTransaction.phoneNumber = person.phonenumber;
     }
 
     @Override

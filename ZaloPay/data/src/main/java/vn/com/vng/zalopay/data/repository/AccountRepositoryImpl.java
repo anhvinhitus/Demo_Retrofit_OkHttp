@@ -21,16 +21,17 @@ import static vn.com.vng.zalopay.data.util.Utils.*;
 
 /**
  * Created by longlv on 03/06/2016.
+ * Implementation for Account Repository
  */
 public class AccountRepositoryImpl implements AccountStore.Repository {
 
-    final AccountStore.RequestService mRequestService;
-    final AccountStore.UploadPhotoService mUploadPhotoService;
-    final AccountStore.LocalStorage localStorage;
-    final User mUser;
-    final UserConfig mUserConfig;
+    private final AccountStore.RequestService mRequestService;
+    private final AccountStore.UploadPhotoService mUploadPhotoService;
+    private final AccountStore.LocalStorage localStorage;
+    private final User mUser;
+    private final UserConfig mUserConfig;
 
-    UserEntityDataMapper userEntityDataMapper;
+    private UserEntityDataMapper userEntityDataMapper;
 
     public AccountRepositoryImpl(AccountStore.LocalStorage localStorage,
                                  AccountStore.RequestService accountService,
@@ -77,19 +78,22 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Person> getUserInfoByZaloPayName(String zaloPayName) {
         zaloPayName = zaloPayName.toLowerCase();
-        Person _person = localStorage.get(zaloPayName);
-        if (_person != null) {
-            return Observable.just(_person);
+        Person cachedItem = localStorage.get(zaloPayName);
+        if (cachedItem != null) {
+            return Observable.just(cachedItem);
         } else {
+            String finalZaloPayName = zaloPayName;
             return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.zaloPayId, mUser.accesstoken)
                     .map(response -> {
-                        Person person = new Person();
-                        person.zaloPayId = response.userid;
-                        person.avatar = response.avatar;
-                        person.displayName = response.displayName;
-                        person.phonenumber = response.phoneNumber;
-                        return person;
+                        Person item = new Person();
+                        item.zaloPayId = response.userid;
+                        item.avatar = response.avatar;
+                        item.displayName = response.displayName;
+                        item.phonenumber = response.phoneNumber;
+                        item.zalopayname = finalZaloPayName;
 
+                        localStorage.put(item);
+                        return item;
                     });
         }
     }
@@ -124,6 +128,27 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                     mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
                     return mappingZaloAndZaloPay;
                 });
+    }
+
+    @Override
+    public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
+        Person cachedItem = localStorage.getById(zaloPayId);
+        if (cachedItem != null) {
+            return Observable.just(cachedItem);
+        } else {
+            return mRequestService.getUserInfoByZaloPayId(zaloPayId, mUser.zaloPayId, mUser.accesstoken)
+                    .map(response -> {
+                        Person item = new Person();
+                        item.zaloPayId = zaloPayId;
+                        item.avatar = response.avatar;
+                        item.displayName = response.displayName;
+                        item.phonenumber = response.phoneNumber;
+                        item.zalopayname = response.zalopayname;
+
+                        localStorage.put(item);
+                        return item;
+                    });
+        }
     }
 
     @Override

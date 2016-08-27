@@ -3,14 +3,10 @@ package vn.com.vng.zalopay.data.api.response;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by longlv on 12/08/2016.
- * Mapping /um/getuseridbyzalopayname
+ * Created by huuhoa on 8/27/16.
+ * Mapping for getuserinfobyzalopayid
  */
-public class GetUserInfoByZPNameResponse extends BaseResponse {
-
-    @SerializedName("userid")
-    public String userid;
-
+public class GetUserInfoByZPIDResponse extends BaseResponse {
     @SerializedName("phonenumber")
     public long phoneNumber;
 
@@ -19,4 +15,7 @@ public class GetUserInfoByZPNameResponse extends BaseResponse {
 
     @SerializedName("avatar")
     public String avatar;
+
+    @SerializedName("zalopayname")
+    public String zalopayname;
 }
