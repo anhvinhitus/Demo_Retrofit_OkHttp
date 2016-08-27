@@ -6,6 +6,7 @@ import timber.log.Timber;
 
 /**
  * Created by AnhHieu on 8/26/16.
+ * SHA Utils
  */
 public class Utils {
 
@@ -17,7 +18,10 @@ public class Utils {
 
             for (int i = 0; i < hash.length; i++) {
                 String hex = Integer.toHexString(0xff & hash[i]);
-                if (hex.length() == 1) hexString.append('0');
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+
                 hexString.append(hex);
             }
 

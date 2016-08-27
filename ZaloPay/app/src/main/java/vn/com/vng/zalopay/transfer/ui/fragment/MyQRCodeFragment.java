@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.gson.JsonObject;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -19,13 +18,13 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.model.User;
@@ -33,6 +32,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * QR Code for receiving money
  */
 public class MyQRCodeFragment extends BaseFragment {
 
@@ -55,7 +55,7 @@ public class MyQRCodeFragment extends BaseFragment {
         return R.layout.fragment_my_qr_code;
     }
 
-    @BindView(R.id.ivQrCode)
+    @BindView(R.id.imageViewQrCode)
     ImageView mMyQrCodeView;
 
     @Override
@@ -67,34 +67,29 @@ public class MyQRCodeFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String content = generateContent();
+        String content = generateQrContent();
         if (!TextUtils.isEmpty(content)) {
             new GenerateQrCodeTask(mMyQrCodeView, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
     }
 
-    private String generateContent() {
+    private String generateQrContent() {
         try {
             User user = userConfig.getCurrentUser();
-            if (user != null) {
-                JSONObject jsonObject = new JSONObject();
-                int type = 1;
-                long zaloId = user.zaloId;
-                String avatar = user.avatar;
-                String dName = user.dname;
-
-                jsonObject.put("type", 1);
-                jsonObject.put("uid", zaloId);
-                jsonObject.put("avatar", avatar);
-                jsonObject.put("dname", dName);
-                jsonObject.put("checksum", Utils.sha256(String.valueOf(type), String.valueOf(zaloId), avatar, dName));
-                return jsonObject.toString();
+            if (user == null) {
+                return "";
             }
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", Constants.QRCode.RECEIVE_MONEY);
+            jsonObject.put("uid", user.zaloId);
+            jsonObject.put("checksum", Utils.sha256(String.valueOf(Constants.QRCode.RECEIVE_MONEY), String.valueOf(user.zaloId)));
+            return jsonObject.toString();
         } catch (Exception ex) {
             Timber.d(ex, "generate content");
+            return "";
         }
-        return "";
     }
 
 
@@ -121,13 +116,15 @@ public class MyQRCodeFragment extends BaseFragment {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             ImageView image = mImageView.get();
-            if (image != null) {
-                if (bitmap != null) {
-                    image.setImageBitmap(bitmap);
-                } else {
-                    image.setImageResource(R.color.silver);
-                    Toast.makeText(image.getContext(), "Sinh mã QR code thất bại!", Toast.LENGTH_SHORT).show();
-                }
+            if (image == null) {
+                return;
+            }
+
+            if (bitmap != null) {
+                image.setImageBitmap(bitmap);
+            } else {
+                image.setImageResource(R.color.silver);
+                Toast.makeText(image.getContext(), "Sinh mã QR thất bại!", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -151,6 +148,4 @@ public class MyQRCodeFragment extends BaseFragment {
             return bitmap;
         }
     }
-
-
 }
