@@ -8,8 +8,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -17,6 +19,9 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
@@ -24,9 +29,11 @@ import java.util.Hashtable;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Utils;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -58,6 +65,23 @@ public class MyQRCodeFragment extends BaseFragment {
     @BindView(R.id.imageViewQrCode)
     ImageView mMyQrCodeView;
 
+    @BindView(R.id.imageAvatar)
+    ImageView mImageAvatarView;
+
+    @BindView(R.id.layoutQrCode)
+    View layoutQrcode;
+
+    @BindView(R.id.layoutSuccess)
+    View layoutSuccess;
+
+    @BindView(R.id.tvName)
+    TextView mNameView;
+
+    @BindView(R.id.imageAvatarLarge)
+    ImageView imageAvatarLarge;
+
+    EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -72,6 +96,49 @@ public class MyQRCodeFragment extends BaseFragment {
             new GenerateQrCodeTask(mMyQrCodeView, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
+        setUserInfo(userConfig.getCurrentUser());
+        layoutSuccess.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        eventBus.unregister(this);
+    }
+
+    private void loadImage(final ImageView imageView, String url) {
+        Glide.with(this).load(url)
+                .placeholder(R.color.silver)
+                .error(R.drawable.ic_avatar_default)
+                .centerCrop()
+                .into(imageView);
+    }
+
+    public void setUserInfo(User user) {
+        if (user == null) {
+            return;
+        }
+
+        loadImage(mImageAvatarView, user.avatar);
+        loadImage(imageAvatarLarge, user.avatar);
+        setDisplayName(user.displayName);
+    }
+
+
+    public void setDisplayName(String displayName) {
+        mNameView.setText(displayName);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiverMoney(NotificationData notify) {
+        layoutQrcode.setVisibility(View.INVISIBLE);
+        layoutSuccess.setVisibility(View.VISIBLE);
     }
 
     private String generateQrContent() {
@@ -133,7 +200,7 @@ public class MyQRCodeFragment extends BaseFragment {
             Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
             hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            int size = 256;
+            int size = 384;
             BitMatrix result = qrCodeWriter.encode(myCodeText, BarcodeFormat.QR_CODE, size, size, hintMap);
             int width = result.getWidth();
             int height = result.getHeight();
@@ -149,4 +216,6 @@ public class MyQRCodeFragment extends BaseFragment {
             return bitmap;
         }
     }
+
+
 }

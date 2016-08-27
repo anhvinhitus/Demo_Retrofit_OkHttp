@@ -121,6 +121,10 @@ public class NotificationHelper {
             updateTransactionStatus(notify);
         } else if (notificationType == NotificationType.DONATE_MONEY) {
             showAlertDonateMoney(notify);
+        } else if (notificationType == NotificationType.MONEY_TRANSFER) {
+            if (!notify.isRead()) {
+                eventBus.post(notify);
+            }
         }
 
         this.putNotification(notify);
