@@ -122,6 +122,10 @@ public class TCPClient implements SocketClient {
             ByteBuffer buffer = ByteBuffer.wrap(data);
             int messageLength = buffer.getInt();
             Timber.d("Message length: %d", messageLength);
+            if (messageLength > 20000) {
+                Timber.e("Wrong message length: %s", messageLength);
+                return;
+            }
             if (messageLength > 0) {
                 byte[] dataBuffer = new byte[messageLength];
                 buffer.get(dataBuffer);
