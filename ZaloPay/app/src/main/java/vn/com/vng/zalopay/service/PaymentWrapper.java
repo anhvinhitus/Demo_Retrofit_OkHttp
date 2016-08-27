@@ -210,7 +210,7 @@ public class PaymentWrapper {
         User user = AndroidApplication.instance().getUserComponent().currentUser();
 
         if (TextUtils.isEmpty(user.zaloPayId)) {
-            Timber.i("payWithOrder: Uid is invalid");
+            Timber.i("payWithOrder: zaloPayId is invalid");
             responseListener.onParameterError("uid");
 //            showErrorView(mView.getContext().getString(R.string.user_invalid));
             return;
@@ -255,7 +255,7 @@ public class PaymentWrapper {
         Timber.d("payWithOrder: Order is valid");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (TextUtils.isEmpty(user.zaloPayId)) {
-            Timber.i("payWithOrder: Uid is invalid");
+            Timber.i("payWithOrder: zaloPayId is invalid");
             responseListener.onParameterError("uid");
 //            showErrorView(mView.getContext().getString(R.string.user_invalid));
             return;
