@@ -9,51 +9,64 @@
 
 
     <FrameLayout
-        android:id="@+id/layoutQrCode"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/white"
-        android:padding="16dp">
-
-        <TextView
-            style="@style/TextView.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:singleLine="false"
-            android:text="Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn" />
+        android:background="@color/white">
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/layoutQrCode"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="48dp"
-            android:layout_marginTop="48dp">
+            android:padding="16dp">
 
-            <include layout="@layout/progress" />
+            <TextView
+                style="@style/TextView.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:singleLine="false"
+                android:text="Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn" />
 
-            <ImageView
-                android:id="@+id/imageViewQrCode"
-                android:layout_width="256dp"
-                android:layout_height="256dp"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="48dp"
+                android:layout_marginTop="48dp">
+
+                <include layout="@layout/progress" />
+
+                <ImageView
+                    android:id="@+id/imageViewQrCode"
+                    android:layout_width="256dp"
+                    android:layout_height="256dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true" />
 
 
-            <com.zalopay.ui.widget.image.BezelImageView
-                android:id="@+id/imageAvatar"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                app:borderDrawable="@drawable/circle_border_white"
-                app:maskDrawable="@drawable/circle_mask" />
+                <com.zalopay.ui.widget.image.BezelImageView
+                    android:id="@+id/imageAvatar"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    app:borderDrawable="@drawable/circle_border_white"
+                    app:maskDrawable="@drawable/circle_mask" />
+
+            </FrameLayout>
+
 
         </FrameLayout>
 
+        <include
+            android:id="@+id/layoutSuccess"
+            layout="@layout/qrcode_receive_success_layout" />
 
-        <!-- <LinearLayout
+    </FrameLayout>
+
+
+    <!-- <LinearLayout
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="bottom"
@@ -75,12 +88,4 @@
                  android:text="%s đang chuyển tiền..." />
 
          </LinearLayout>-->
-
-    </FrameLayout>
-
-    <include
-        android:id="@+id/layoutSuccess"
-        layout="@layout/qrcode_receive_success_layout" />
-
-
 </FrameLayout>
