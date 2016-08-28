@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawHomeView;
+import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -59,6 +60,7 @@ public class WithdrawHomePresenter extends BaseUserPresenter implements IPresent
 
     @Override
     public void destroy() {
+        GlobalData.initApplication(null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

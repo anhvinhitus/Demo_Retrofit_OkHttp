@@ -192,12 +192,10 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
 
     @Override
     public void showRetry() {
-
     }
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override
