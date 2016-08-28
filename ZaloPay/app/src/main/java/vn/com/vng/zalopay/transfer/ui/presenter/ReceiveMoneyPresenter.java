@@ -3,11 +3,15 @@ package vn.com.vng.zalopay.transfer.ui.presenter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -63,11 +67,26 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 return "";
             }
 
+            List<String> fields = new ArrayList<>();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", Constants.QRCode.RECEIVE_MONEY);
+            fields.add(String.valueOf(Constants.QRCode.RECEIVE_MONEY));
+
             jsonObject.put("uid", Long.parseLong(user.zaloPayId));
-            jsonObject.put("checksum",
-                    Utils.sha256(String.valueOf(Constants.QRCode.RECEIVE_MONEY), user.zaloPayId));
+            fields.add(user.zaloPayId);
+
+            String displayName = Base64.encodeToString(user.displayName.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
+            jsonObject.put("displayname", displayName);
+            fields.add(displayName);
+
+            if (!TextUtils.isEmpty(user.avatar)) {
+                String avatar = null;
+                avatar = Base64.encodeToString(user.avatar.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
+                jsonObject.put("avatar", avatar);
+                fields.add(avatar);
+            }
+
+            jsonObject.put("checksum", Utils.sha256(fields.toArray(new String[0])));
             return jsonObject.toString();
         } catch (Exception ex) {
             Timber.d(ex, "generate content");

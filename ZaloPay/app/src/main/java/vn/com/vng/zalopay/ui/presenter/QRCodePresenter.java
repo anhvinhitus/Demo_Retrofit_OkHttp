@@ -3,10 +3,14 @@ package vn.com.vng.zalopay.ui.presenter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -195,28 +199,40 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
 
         Timber.d("transferMoneyViaQrCode");
 
+        List<String> fields = new ArrayList<>();
         int type = data.optInt("type", -1);
         if (type != vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
             return false;
         }
+
+        fields.add(String.valueOf(type));
 
         long zalopayId = data.optLong("uid", -1);
         if (zalopayId <= 0) {
             return false;
         }
 
+        fields.add(String.valueOf(zalopayId));
+
         long amount = data.optLong("amount", -1);
+        if (amount != -1) {
+            fields.add(String.valueOf(amount));
+        }
+
+        String displayName = data.optString("displayname");
+        fields.add(displayName);
+
+        String avatar = data.optString("avatar", null);
+        if (avatar != null) {
+            fields.add(avatar);
+        }
+
         String checksum = data.optString("checksum");
         if (TextUtils.isEmpty(checksum)) {
             return false;
         }
 
-        String computedChecksum;
-        if (amount != -1) {
-            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zalopayId), String.valueOf(amount));
-        } else {
-            computedChecksum = Utils.sha256(String.valueOf(type), String.valueOf(zalopayId));
-        }
+        String computedChecksum = Utils.sha256(fields.toArray(new String[0]));
 
         if (!checksum.equals(computedChecksum)) {
             Timber.d("Checksum does not match");
@@ -224,15 +240,17 @@ public final class QRCodePresenter extends BaseZaloPayPresenter implements IPres
         }
 
         // Start money transfer process
-        startMoneyTransfer(zalopayId, amount);
+        startMoneyTransfer(zalopayId, amount, displayName, avatar);
 
         hideLoadingView();
         return true;
     }
 
-    private void startMoneyTransfer(long zalopayId, long amount) {
+    private void startMoneyTransfer(long zalopayId, long amount, String displayName, String avatar) {
         RecentTransaction item = new RecentTransaction();
         item.zaloPayId = String.valueOf(zalopayId);
+        item.displayName = new String(Base64.decode(displayName, Base64.NO_PADDING | Base64.NO_WRAP));
+        item.avatar = new String(Base64.decode(avatar, Base64.NO_PADDING | Base64.NO_WRAP));
         if (amount != -1) {
             item.amount = amount;
         }
