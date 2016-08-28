@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
  * Controller for QR code scanning
  */
 
-public final class QRCodePresenter extends BaseZaloPayPresenter implements IPresenter<IQRScanView> {
+public final class QRCodePresenter extends BaseUserPresenter implements IPresenter<IQRScanView> {
 
     private IQRScanView mView;
 

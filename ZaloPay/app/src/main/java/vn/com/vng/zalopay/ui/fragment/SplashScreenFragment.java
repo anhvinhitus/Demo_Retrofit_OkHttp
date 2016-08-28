@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 
 /**
  * Created by AnhHieu on 5/13/16.
+ *
  */
 public class SplashScreenFragment extends BaseFragment implements ISplashScreenView {
 

@@ -8,7 +8,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 
@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
  * Created by longlv on 11/08/2016.
  * Presenter of WithdrawConditionFragment
  */
-public class WithdrawConditionPresenter extends BaseZaloPayPresenter implements IPresenter<IWithdrawConditionView> {
+public class WithdrawConditionPresenter extends BaseUserPresenter implements IPresenter<IWithdrawConditionView> {
 
     private IWithdrawConditionView mView;
 

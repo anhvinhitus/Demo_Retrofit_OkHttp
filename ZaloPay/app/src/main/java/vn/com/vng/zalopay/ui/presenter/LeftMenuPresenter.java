@@ -36,7 +36,9 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
         menuView = iLeftMenuView;
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
     @Override

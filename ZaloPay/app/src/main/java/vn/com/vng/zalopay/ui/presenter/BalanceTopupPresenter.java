@@ -21,7 +21,7 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
 /**
  * Created by longlv on 10/05/2016.
  */
-public class BalanceTopupPresenter extends BaseZaloPayPresenter implements IPresenter<IBalanceTopupView> {
+public class BalanceTopupPresenter extends BaseUserPresenter implements IPresenter<IBalanceTopupView> {
 
     private IBalanceTopupView mView;
 

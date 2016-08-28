@@ -10,7 +10,6 @@ import vn.com.vng.zalopay.account.ui.fragment.ChangePinContainerFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
 import vn.com.vng.zalopay.account.ui.fragment.EditAccountNameFragment;
-import vn.com.vng.zalopay.account.ui.fragment.OTPRecoveryPinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
@@ -121,8 +120,6 @@ public interface UserComponent {
     void inject(OtpProfileFragment f);
 
     void inject(ChangePinFragment f);
-
-    void inject(OTPRecoveryPinFragment f);
 
     void inject(ProfileFragment f);
 

@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
-import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
@@ -36,7 +36,7 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
  * Created by longlv on 13/06/2016.
  * Controller for transfer money
  */
-public class TransferPresenter extends BaseZaloPayPresenter implements TransferMoneyPresenter {
+public class TransferPresenter extends BaseUserPresenter implements TransferMoneyPresenter {
 
     private ITransferView mView;
     private PaymentWrapper paymentWrapper;

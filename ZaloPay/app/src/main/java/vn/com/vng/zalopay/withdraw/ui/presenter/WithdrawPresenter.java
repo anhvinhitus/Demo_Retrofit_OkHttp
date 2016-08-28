@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.ui.presenter.BaseZaloPayPresenter;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
  * Created by longlv on 11/08/2016.
  *
  */
-public class WithdrawPresenter extends BaseZaloPayPresenter implements IPresenter<IWithdrawView> {
+public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<IWithdrawView> {
     private final int WITHDRAW_APPID = 2;
 
     IWithdrawView mView;
