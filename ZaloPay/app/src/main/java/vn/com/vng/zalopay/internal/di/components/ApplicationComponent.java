@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -26,7 +27,9 @@ import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
+
 import com.zalopay.apploader.BundleService;
+
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -55,6 +58,9 @@ public interface ApplicationComponent {
 
     OkHttpClient okHttpClient();
 
+    @Named("OkHttpClientTimeoutLonger")
+    OkHttpClient okHttpClientTimeoutLonger();
+
     SharedPreferences sharedPreferences();
 
     Gson gson();
@@ -70,6 +76,7 @@ public interface ApplicationComponent {
     LocalResourceRepository localResourceRepository();
 
     IMonitorTiming monitorTiming();
+
     IMonitorReport monitorReport();
 
     GlobalEventHandlingService globalEventService();

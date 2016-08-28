@@ -6,18 +6,14 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -36,7 +32,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Override
     public void setView(IZaloPayView o) {
         this.mZaloPayView = o;
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
     @Override
@@ -156,7 +154,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         Timber.d("onReadNotify");
         getTotalNotification(0);
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(ChangeBalanceEvent event) {

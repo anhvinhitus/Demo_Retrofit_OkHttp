@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,12 +12,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Gravity;
 
 import com.zalopay.apploader.internal.ModuleName;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 
@@ -27,7 +22,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -39,7 +33,6 @@ import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -47,9 +40,6 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Main Application activity
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
-
-
-    //private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected int getResLayoutId() {
@@ -97,40 +87,40 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
 
         if (savedInstanceState == null) {
-            FragmentTransaction add = getSupportFragmentManager().beginTransaction().add(R.id.menu, LeftMenuFragment.newInstance(), "MenuFragment");
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.menu, LeftMenuFragment.newInstance(), "MenuFragment");
             switch (this.mCurrentMenuId) {
                 case MenuItemUtil.HOME_ID:
-                    add.add(R.id.container, ZaloPayFragment.newInstance(), "ZaloPayFragment");
+                    fragmentTransaction.add(R.id.container, ZaloPayFragment.newInstance(), "ZaloPayFragment");
                     break;
                 case MenuItemUtil.ACCOUNT_ID:
                     break;
             }
-            add.commit();
+            fragmentTransaction.commit();
         }
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         toggle = new ActionBarDrawerToggle(
                 this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
         startZaloPayService();
-        presenter.getZaloFriend();
-
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Timber.d("onNewIntent");
-        if (intent != null) {
+      /*  if (intent != null) {
             int menuId = intent.getIntExtra("menuId", -1);
             if (menuId >= 0) {
                 //Todo:
             }
-        }
+        }*/
     }
 
     @Override
@@ -139,7 +129,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
-        GlobalData.initApplication(null);
         super.onDestroy();
     }
 
@@ -167,12 +156,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     public void onClickProfile() {
-//        navigator.startUpdateProfileLevel2Activity(this, false);
         navigator.startProfileInfoActivity(this);
     }
 
     public void replaceFragmentDelay(final int id) {
-        this.drawer.closeDrawer(Gravity.LEFT);
+        this.drawer.closeDrawer(GravityCompat.START);
         new Handler().postDelayed(new OpenMenuRunnable(this, id), 300);
     }
 
@@ -254,12 +242,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 .show();
     }
 
-    private void startQRCodeActivity() {
-        if (checkAndRequestPermission(Manifest.permission.CAMERA, 100)) {
-            navigator.startQrCodeActivity(this);
-        }
-    }
-
     @Override
     public Context getContext() {
         return this;
@@ -312,34 +294,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     private void startZaloPayService() {
-/*
-        checkPlayServices();*/
         Intent intent = new Intent(this, ZPNotificationService.class);
         startService(intent);
     }
 
- /*   */
-
-    /**
-     * Check the device to make sure it has the Google Play Services APK. If
-     * it doesn't, display a dialog that allows users to download the APK from
-     * the Google Play Store or enable it in the device's system settings.
-     *//*
-    private boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
-                        .show();
-            } else {
-                Timber.d("This device is not supported.");
-            }
-            return false;
-        }
-        return true;
-    }
-*/
     @Override
     public void onPause() {
         Timber.i("MainActivity is pausing");
@@ -378,7 +336,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         hideProgressDialog();
     }
 
-    public void showProgressDialog() {
+    private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
@@ -386,17 +344,11 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         mProgressDialog.show();
     }
 
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing())
+    private void hideProgressDialog() {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onPayWithTransToken(final PaymentDataEvent event) {
-        if (presenter != null) {
-            presenter.pay(event.appId, event.zptranstoken);
-        }
-        eventBus.removeStickyEvent(PaymentDataEvent.class);
-    }
 
 }

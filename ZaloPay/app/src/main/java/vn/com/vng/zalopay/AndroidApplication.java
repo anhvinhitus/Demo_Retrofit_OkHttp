@@ -34,9 +34,6 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.Constants;
 
-//import io.netty.util.internal.logging.InternalLoggerFactory;
-//import vn.com.vng.zalopay.data.ws.logger.NonLoggerFactory;
-
 /**
  * Created by AnhHieu on 3/24/16.
  */
@@ -73,7 +70,6 @@ public class AndroidApplication extends MultiDexApplication {
             });
         } else {
             Timber.plant(new CrashlyticsTree());
-//            InternalLoggerFactory.setDefaultFactory(new NonLoggerFactory());
         }
 
         Fabric.with(this, new Crashlytics());
@@ -81,20 +77,24 @@ public class AndroidApplication extends MultiDexApplication {
         // Initialize ZPAnalytics
         initializeZaloPayAnalytics();
 
-       // initializeFontFamily();
-
         initAppComponent();
 
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
-        ZingMobilePayApplication.wrap(this);
-        Constants.IS_RELEASE = !BuildConfig.DEBUG;
-        // Constants.setUrlPrefix(BuildConfig.HOST_TYPE);
-        Constants.setEnumEnvironment(BuildConfig.HOST_TYPE);
+
+        initPaymentSdk();
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
         ZPAnalytics.trackEvent(ZPEvents.APP_LAUNCH);
 
+    }
+
+    private void initPaymentSdk() {
+        ZingMobilePayApplication.wrap(this);
+        ZingMobilePayApplication.setHttpClient(getAppComponent().okHttpClient());
+        ZingMobilePayApplication.setHttpClientTimeoutLonger(getAppComponent().okHttpClientTimeoutLonger());
+        Constants.IS_RELEASE = !BuildConfig.DEBUG;
+        Constants.setEnumEnvironment(BuildConfig.HOST_TYPE);
     }
 
     private void initializeZaloPayAnalytics() {
@@ -125,7 +125,7 @@ public class AndroidApplication extends MultiDexApplication {
     private void initializeFontFamily() {
         AndroidUtils.setDefaultFont(this, "DEFAULT", "fonts/Roboto-Regular.ttf");
         AndroidUtils.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Roboto-Medium.ttf");
-         AndroidUtils.setDefaultFont(this, "MONOSPACE", "fonts/Roboto-Medium.ttf");
+        AndroidUtils.setDefaultFont(this, "MONOSPACE", "fonts/Roboto-Medium.ttf");
         AndroidUtils.setDefaultFont(this, "SERIF", "fonts/Roboto-Regular.ttf");
         AndroidUtils.setDefaultFont(this, "SANS_SERIF", "fonts/Roboto-Regular.ttf");
     }

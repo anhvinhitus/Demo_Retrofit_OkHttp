@@ -72,9 +72,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    MainPresenter providerMainPresenter(FriendStore.Repository repository, OkHttpClient okHttpClient,
-                                        @Named("OkHttpClientTimeoutLonger") OkHttpClient okHttpClientTimeoutLonger) {
-        return new MainPresenter(repository, okHttpClient, okHttpClientTimeoutLonger);
+    MainPresenter providerMainPresenter() {
+        return new MainPresenter();
     }
 
     @UserScope

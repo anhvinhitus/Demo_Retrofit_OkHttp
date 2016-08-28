@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
+import android.view.WindowManager;
 
 import com.google.gson.JsonObject;
 
@@ -32,6 +33,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.DonateMoneyEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
@@ -160,29 +162,7 @@ public class NotificationHelper {
     }
 
     private void showAlertDonateMoney(final NotificationData notify) {
-
-        /*if(AppLifeCycle.isBackGround()){
-
-        }*/
-
-        Timber.d("Show alert DonateMoney %s", notify.transid);
-
-        if (notify.transid > 0) {
-            SweetAlertDialog dialog = new SweetAlertDialog(context);
-
-            dialog.setTitleText("Tặng tiền");
-            dialog.setCancelText(context.getString(R.string.txt_close));
-            dialog.setConfirmText(notify.message);
-            dialog.setConfirmText(context.getString(R.string.view_detail));
-            dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog dialog) {
-                    navigator.startTransactionDetail(context, String.valueOf(notify.transid));
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
-        }
+        eventBus.postSticky(new DonateMoneyEvent(notify));
     }
 
 
