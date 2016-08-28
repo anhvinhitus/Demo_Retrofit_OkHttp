@@ -4,7 +4,7 @@ package vn.com.vng.zalopay.notification;
  * Created by huuhoa on 7/23/16.
  * Constants for notification type
  */
-class NotificationType {
+public class NotificationType {
 
     public static final int ORDER_PAYMENT = 1;
     public static final int TOPUP_WALLET = 2;

@@ -63,6 +63,7 @@ public interface Constants {
 
     int REQUEST_CODE_TRANSFER = 124;
     int REQUEST_CODE_INTRO = 125;
+    int ZALOPAY_APP_ID = 1;
 
  /*   public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String REGISTRATION_COMPLETE = "registrationComplete";*/

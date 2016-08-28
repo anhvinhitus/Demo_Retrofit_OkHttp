@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -86,11 +87,38 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiverMoney(NotificationData notify) {
-        if (mView == null) {
+        if (mView == null || notify == null) {
             return;
         }
 
-        mView.displayReceivedMoney();
+        // {"transid":160828000000011,"appid":1,"timestamp":1472352416687,
+        // "message":"Nguyễn Hữu Hoà đã chuyển cho bạn 15.000 VND",
+        // "notificationtype":4,
+        // "userid":"160526000000502",
+        // "destuserid":"160601000000002"}
+        if (notify.appid == Constants.ZALOPAY_APP_ID &&
+                isEqualCurrentUser(notify.destuserid) &&
+                notify.notificationtype == NotificationType.MONEY_TRANSFER) {
+            // extract sender, amount
+            // extract transid
+            mView.displayReceivedMoney();
+        }
+    }
+
+    private boolean isEqualCurrentUser(String zalopayId) {
+        if (userConfig.getCurrentUser() == null) {
+            return false;
+        }
+
+        if (TextUtils.isEmpty(zalopayId)) {
+            return false;
+        }
+
+        if (TextUtils.isEmpty(userConfig.getCurrentUser().zaloPayId)) {
+            return false;
+        }
+
+        return userConfig.getCurrentUser().zaloPayId.equals(zalopayId);
     }
 
     @Override
