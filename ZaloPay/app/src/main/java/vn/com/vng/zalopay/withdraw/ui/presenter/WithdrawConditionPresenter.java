@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
+import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -69,6 +70,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
     @Override
     public void destroyView() {
         unsubscribeIfNotNull(compositeSubscription);
+        mView = null;
     }
 
     @Override
@@ -82,6 +84,6 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
 
     @Override
     public void destroy() {
-        mView = null;
+        GlobalData.initApplication(null);
     }
 }
