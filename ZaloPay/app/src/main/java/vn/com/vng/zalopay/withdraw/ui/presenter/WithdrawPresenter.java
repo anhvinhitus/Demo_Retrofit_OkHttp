@@ -24,7 +24,6 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
 
 /**
  * Created by longlv on 11/08/2016.
- *
  */
 public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<IWithdrawView> {
     private final int WITHDRAW_APPID = 2;
@@ -36,7 +35,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
 
     public WithdrawPresenter(User user) {
         this.mUser = user;
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -53,7 +52,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                     mView.showError(mView.getContext().getString(R.string.user_invalid));
                 } else if ("token".equalsIgnoreCase(param)) {
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
-                } else if (!TextUtils.isEmpty(param)){
+                } else if (!TextUtils.isEmpty(param)) {
                     mView.showError(param);
                 }
                 mView.hideLoading();
@@ -165,7 +164,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.d("session =========" + order.getItem());
-        paymentWrapper.withdraw(order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber));
+        paymentWrapper.withdraw(order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber), mUser.zalopayname);
         mView.hideLoading();
     }
 

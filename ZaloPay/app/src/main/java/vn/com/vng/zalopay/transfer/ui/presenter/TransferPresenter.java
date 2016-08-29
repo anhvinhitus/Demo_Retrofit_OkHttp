@@ -304,7 +304,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.d("money transfer order: " + order.getItem());
-        paymentWrapper.transfer(order, mTransaction.getDisplayName(), mTransaction.getAvatar(), mTransaction.getZaloPayName());
+        paymentWrapper.transfer(order, mTransaction.getDisplayName(), mTransaction.getAvatar(), mTransaction.getZaloPayName(), mTransaction.getZaloPayName());
         mView.hideLoading();
         mView.setEnableBtnContinue(true);
     }

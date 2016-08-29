@@ -156,11 +156,11 @@ public class PaymentWrapper {
                 .subscribe(new GetOrderSubscriber());
     }
 
-    private UserInfo getUserInfo(String displayName, String avatar, String phoneNumber) {
+    private UserInfo getUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
         UserInfo mUserInfo = getUserInfo();
         mUserInfo.phoneNumber = phoneNumber;
         mUserInfo.userName = displayName;
-//        mUserInfo.userimage = avatar;
+        mUserInfo.zaloPayName = zaloPayName;
         return mUserInfo;
     }
 
@@ -182,18 +182,18 @@ public class PaymentWrapper {
         return mUserInfo;
     }
 
-    public void withdraw(Order order, String displayName, String avatar, String phoneNumber) {
+    public void withdraw(Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber);
+        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
         callPayAPI(paymentInfo, forcedPaymentChannel);
     }
 
-    public void transfer(Order order, String displayName, String avatar, String phoneNumber) {
+    public void transfer(Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
 
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber);
+        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
         callPayAPI(paymentInfo, forcedPaymentChannel);
     }
 
