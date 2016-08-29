@@ -1,30 +1,43 @@
 package vn.com.vng.zalopay.data.notification;
 
+import android.text.TextUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by AnhHieu on 6/20/16.
+ * Notification repository
  */
 public class NotificationRepository implements NotificationStore.Repository {
 
-    final NotificationStore.LocalStorage localStorage;
-    final EventBus eventBus;
-    final RxBus mRxBus;
+    private final NotificationStore.LocalStorage localStorage;
+    private final EventBus eventBus;
+    private final RxBus mRxBus;
+    private final NotificationStore.RequestService mRequestService;
+    private final User mCurrentUser;
 
-    public NotificationRepository(NotificationStore.LocalStorage localStorage, EventBus eventBus, RxBus rxBus) {
+    public NotificationRepository(NotificationStore.LocalStorage localStorage,
+                                  EventBus eventBus,
+                                  RxBus rxBus,
+                                  NotificationStore.RequestService requestService,
+                                  User currentUser) {
         this.localStorage = localStorage;
         this.eventBus = eventBus;
         this.mRxBus = rxBus;
+        mRequestService = requestService;
+        mCurrentUser = currentUser;
     }
 
     @Override
@@ -34,7 +47,7 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<Integer> totalNotificationUnRead() {
-        return ObservableHelper.makeObservable(() -> localStorage.totalNotificationUnRead());
+        return ObservableHelper.makeObservable(localStorage::totalNotificationUnRead);
     }
 
     @Override
@@ -107,5 +120,18 @@ public class NotificationRepository implements NotificationStore.Repository {
             localStorage.deleteAll();
             return Boolean.TRUE;
         });
+    }
+
+    @Override
+    public Observable<BaseResponse> sendNotification(String receiverid, String embededdata) {
+        if (mCurrentUser == null || TextUtils.isEmpty(mCurrentUser.zaloPayId) || TextUtils.isEmpty(mCurrentUser.getSession())) {
+            return Observable.error(new IllegalArgumentException("Current user is null"));
+        }
+
+        return mRequestService.sendNotification(
+                mCurrentUser.zaloPayId,
+                mCurrentUser.getSession(),
+                receiverid,
+                embededdata);
     }
 }

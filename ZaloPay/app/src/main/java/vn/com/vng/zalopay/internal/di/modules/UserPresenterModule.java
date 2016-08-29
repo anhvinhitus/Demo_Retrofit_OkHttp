@@ -25,7 +25,7 @@ import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
-import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
+import vn.com.vng.zalopay.scanners.qrcode.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;

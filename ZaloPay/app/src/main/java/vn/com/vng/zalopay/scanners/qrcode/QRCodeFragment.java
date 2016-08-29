@@ -21,7 +21,6 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
-import vn.com.vng.zalopay.ui.presenter.QRCodePresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 

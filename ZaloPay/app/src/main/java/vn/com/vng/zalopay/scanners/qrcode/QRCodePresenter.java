@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.presenter;
+package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
+import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.domain.Constants;

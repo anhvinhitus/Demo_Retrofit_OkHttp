@@ -2,7 +2,11 @@ package vn.com.vng.zalopay.data.notification;
 
 import java.util.List;
 
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.vng.zalopay.data.api.response.BalanceResponse;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 
 /**
@@ -37,6 +41,19 @@ public interface NotificationStore {
     }
 
     interface RequestService {
+        /**
+         * Send notification message to another zalopay user
+         * @param uid zalopayid of current user
+         * @param accesstoken access token of current user
+         * @param receiverid zalopayid of received user
+         * @param embededdata stringify of json data sent to another user
+         * @return basic response
+         */
+        @GET("/um/sendnotification")
+        Observable<BaseResponse> sendNotification(@Query("userid") String uid,
+                                                  @Query("accesstoken") String accesstoken,
+                                                  @Query("receiverid") String receiverid,
+                                                  @Query("embededdata") String embededdata);
     }
 
     interface Repository {
@@ -58,5 +75,6 @@ public interface NotificationStore {
 
         Observable<Boolean> removeAllNotification();
 
+        Observable<BaseResponse> sendNotification(String receiverid, String embededdata);
     }
 }
