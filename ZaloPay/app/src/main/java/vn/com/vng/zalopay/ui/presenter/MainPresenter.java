@@ -34,10 +34,12 @@ import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
+import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 5/24/16.
+ *
  */
 public class MainPresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
 
@@ -87,6 +89,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroy() {
+        CShareData.dispose();
     }
 
     public void initialize() {

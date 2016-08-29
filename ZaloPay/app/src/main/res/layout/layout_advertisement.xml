@@ -6,6 +6,7 @@
         android:id="@+id/layoutBannerFullScreen"
         android:layout_width="match_parent"
         android:layout_height="101dp"
+        android:visibility="gone"
         android:background="@color/white">
 
         <android.support.v4.view.ViewPager

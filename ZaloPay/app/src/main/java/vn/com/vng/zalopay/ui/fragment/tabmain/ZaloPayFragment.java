@@ -34,11 +34,13 @@ import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
+import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.ui.adapter.BannerPagerAdapter;
+import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -46,6 +48,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
 
 
 /**
@@ -134,8 +137,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
 
-        showBannerAds();
         hideTextAds();
+
+        presenter.getBanners();
     }
 
     @Override
@@ -167,17 +171,21 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         super.onDestroyView();
     }
 
-    public void showBannerAds() {
-        List<Integer> bannerResource = new ArrayList<>();
-        bannerResource.add(R.drawable.bn_1);
-        bannerResource.add(R.drawable.bn_2);
-        bannerResource.add(R.drawable.bn_3);
-        bannerResource.add(R.drawable.bn_4);
-        mBannerPagerAdapter = new BannerPagerAdapter(getContext(), bannerResource, this);
-        mBannerViewpager.setAdapter(mBannerPagerAdapter);
-        mBannerIndicator.setViewPager(mBannerViewpager);
-        if (mLayoutBannerFullScreen != null) {
-            mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
+    @Override
+    public void showBannerAds(List<DBanner> banners) {
+        Timber.d("showBannerAds banners [%s]", banners);
+        if (banners == null || banners.size() <= 0) {
+            if (mLayoutBannerFullScreen != null) {
+                mLayoutBannerFullScreen.setVisibility(View.GONE);
+            }
+        } else {
+            Timber.d("showBannerAds banners.size [%s]", banners.size());
+            mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
+            mBannerViewpager.setAdapter(mBannerPagerAdapter);
+            mBannerIndicator.setViewPager(mBannerViewpager);
+            if (mLayoutBannerFullScreen != null) {
+                mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -275,18 +283,54 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void onBannerItemClick(int position) {
+    public void onBannerItemClick(DBanner banner, int position) {
+        if (banner == null) {
+            return;
+        }
+        if (banner.bannertype == BannerType.InternalFunction.getValue()) {
+            if (banner.function == BannerInternalFunction.Deposit.getValue()) {
+                navigator.startDepositActivity(getActivity());
+            } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
+                navigator.startWithdrawHomeActivity(getActivity());
+            } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
+                navigator.startLinkCardActivity(getActivity());
+            } else if (banner.function == BannerInternalFunction.Pay.getValue()) {
+                navigator.startScanToPayActivity(getActivity());
+            } else if (banner.function == BannerInternalFunction.TransferMoney.getValue()) {
+                navigator.startTransferMoneyActivity(getActivity());
+            } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
+                navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
+            } else {
+                showToast(getString(R.string.update_to_use));
+            }
+        } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
+            if (banner.appid == PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE) {
+                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
+            } else if (banner.appid == PaymentAppConfig.Constants.ELECTRIC_BILL) {
+                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.ELECTRIC_BILL);
+            } else if (banner.appid == PaymentAppConfig.Constants.ZING_XU) {
+                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.ZING_XU);
+            } else if (banner.appid == PaymentAppConfig.Constants.BUY_GAME_CARD) {
+                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.BUY_GAME_CARD);
+            } else {
+                showToast(getString(R.string.update_to_use));
+            }
+        } else {
+            showToast(getString(R.string.update_to_use));
+        }
+        trackBannerEvent(position);
+    }
+
+    private void trackBannerEvent(int position) {
         if (position == 0) {
-            navigator.startLinkCardActivity(getActivity());
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
         } else if (position == 1) {
-            navigator.startTransferMoneyActivity(getActivity());
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
         } else if (position == 2) {
-            navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
         } else if (position == 3) {
-            navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
+            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
+        } else {
             ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
         }
     }

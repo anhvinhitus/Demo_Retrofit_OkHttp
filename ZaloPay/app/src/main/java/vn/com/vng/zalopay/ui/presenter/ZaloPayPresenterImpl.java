@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -133,6 +134,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         mZaloPayView.setBalance(balance);
     }
 
+    public void getBanners() {
+        try {
+            mZaloPayView.showBannerAds(CShareData.getInstance(mZaloPayView.getActivity()).getBannerList());
+        } catch (Exception e) {
+            Timber.w("Get banners exception: [%s]", e.getMessage());
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChange(NetworkChangeEvent event) {
