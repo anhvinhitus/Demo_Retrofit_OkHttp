@@ -89,6 +89,7 @@
     <string name="title.activity.link.card">Quản lý thẻ</string>
     <string name="title.activity.add.card">Thêm thẻ</string>
     <string name="title.activity.transfer">Chuyển tiền</string>
+    <string name="title.activity.transfer.to">Chuyển tiền đến</string>to
     <string name="title.activity.zalopay.contact">Danh bạ Zalo</string>
     <string name="title.activity.change.pin">Tạo lại mã PIN</string>
     <string name="title.activity.invitation.code">Invitation Code</string>
@@ -97,7 +98,7 @@
     <string name="title.activity.set.amount">Set amount</string>
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
-    <string name="title.activity.my.qr">Nhận Tiền</string>
+    <string name="title.activity.my.qr">Nhận tiền</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
