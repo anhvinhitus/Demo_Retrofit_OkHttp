@@ -255,6 +255,11 @@
         <activity
             android:name=".withdraw.ui.activities.WithdrawActivity"
             android:label="@string/title.activity.withdraw" />
+
+        <activity
+            android:name=".transfer.ui.activities.SetAmountActivity"
+            android:label="@string/title.activity.set.amount" />
+
         <activity
             android:name=".withdraw.ui.activities.WithdrawConditionActivity"
             android:label="@string/title.activity.withdraw.condition" />

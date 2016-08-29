@@ -2,4 +2,5 @@
 <resources>
     <integer name="invitation_code_length">8</integer>
     <integer name="pin_length">6</integer>
+    <integer name="max_length_message">500</integer>
 </resources>

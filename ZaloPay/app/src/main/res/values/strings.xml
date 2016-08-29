@@ -94,6 +94,7 @@
     <string name="title.activity.invitation.code">Invitation Code</string>
     <string name="title.activity.withdraw.home">Số dư</string>
     <string name="title.activity.withdraw">Rút tiền</string>
+    <string name="title.activity.set.amount">Set amount</string>
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
     <string name="title.activity.my.qr">Nhận Tiền</string>
