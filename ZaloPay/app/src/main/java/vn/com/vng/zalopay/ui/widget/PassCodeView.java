@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.edittext.NonSelectionActionModeCallback;
+
 import java.util.ArrayList;
 
 import vn.com.vng.zalopay.R;
@@ -83,6 +85,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         }
 
         mEditText = (EditText) view.findViewById(R.id.editText);
+        mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
         mEditText.addTextChangedListener(this);
         mEditText.setOnFocusChangeListener(this);
 
