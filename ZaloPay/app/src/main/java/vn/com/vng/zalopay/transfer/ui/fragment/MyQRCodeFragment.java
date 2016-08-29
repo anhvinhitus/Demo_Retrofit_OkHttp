@@ -110,6 +110,7 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
                         Timber.d("onActivityResult: message %s amount %s", message, amount);
                         setAmount(amount);
                         setNote(message);
+                        mPresenter.updateQRWithAmount(amount, message);
                     }
 
                     break;
@@ -118,7 +119,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     private void setAmount(long amount) {
-
         tvAmountView.setText(String.valueOf(amount));
         tvAmountView.setVisibility(amount <= 0 ? View.GONE : View.VISIBLE);
     }

@@ -38,12 +38,6 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * create an instance of this fragment.
  */
 public class TransferFragment extends BaseFragment implements ITransferView {
-//    private MappingZaloAndZaloPay userMapZaloAndZaloPay;
-//    private ZaloFriend zaloFriend;
-//    private long mAmount = 0;
-//    private String mMessage = "";
-//    private String mValidMinAmount = "";
-//    private String mValidMaxAmount = "";
 
     @Inject
     TransferMoneyPresenter mPresenter;

@@ -219,6 +219,11 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             fields.add(String.valueOf(amount));
         }
 
+        String message = data.optString("message");
+        if (!TextUtils.isEmpty(message)) {
+            fields.add(message);
+        }
+
         String displayName = data.optString("displayname");
         fields.add(displayName);
 
@@ -240,13 +245,13 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
 
         // Start money transfer process
-        startMoneyTransfer(zalopayId, amount, displayName, avatar);
+        startMoneyTransfer(zalopayId, amount, message, displayName, avatar);
 
         hideLoadingView();
         return true;
     }
 
-    private void startMoneyTransfer(long zalopayId, long amount, String displayName, String avatar) {
+    private void startMoneyTransfer(long zalopayId, long amount, String message, String displayName, String avatar) {
         RecentTransaction item = new RecentTransaction();
         item.zaloPayId = String.valueOf(zalopayId);
         item.displayName = new String(Base64.decode(displayName, Base64.NO_PADDING | Base64.NO_WRAP));
@@ -254,6 +259,8 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         if (amount != -1) {
             item.amount = amount;
         }
+        item.message = message;
+
         Bundle bundle = new Bundle();
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
         navigator.startTransferActivity(mView.getContext(), bundle);

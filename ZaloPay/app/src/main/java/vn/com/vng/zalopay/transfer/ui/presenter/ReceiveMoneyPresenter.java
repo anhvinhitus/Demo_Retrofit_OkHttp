@@ -29,7 +29,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  * Controller for receiving money
  */
 
-public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>,GenerateQrCodeTask.ImageListener {
+public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
 
     private EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
     private IReceiveMoneyView mView;
@@ -61,6 +61,10 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
 
     private String generateQrContent() {
+        return generateQrContent(0, "");
+    }
+
+    public String generateQrContent(long amount, String message) {
         try {
             User user = userConfig.getCurrentUser();
             if (user == null) {
@@ -75,13 +79,22 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             jsonObject.put("uid", Long.parseLong(user.zaloPayId));
             fields.add(user.zaloPayId);
 
+            if (amount > 0) {
+                jsonObject.put("amount", amount);
+                fields.add(String.valueOf(amount));
+            }
+
+            if (!TextUtils.isEmpty(message)) {
+                jsonObject.put("message", message);
+                fields.add(message);
+            }
+
             String displayName = Base64.encodeToString(user.displayName.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
             jsonObject.put("displayname", displayName);
             fields.add(displayName);
 
             if (!TextUtils.isEmpty(user.avatar)) {
-                String avatar = null;
-                avatar = Base64.encodeToString(user.avatar.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
+                String avatar = Base64.encodeToString(user.avatar.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
                 jsonObject.put("avatar", avatar);
                 fields.add(avatar);
             }
@@ -96,12 +109,29 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
     public void onViewCreated() {
         String content = generateQrContent();
+        mPreviousContent = content;
         if (!TextUtils.isEmpty(content)) {
             new GenerateQrCodeTask(this, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getAvatar());
         mView.displayWaitForMoney();
+    }
+
+    String mPreviousContent;
+
+    public void updateQRWithAmount(long amount, String message) {
+        String content = generateQrContent(amount, message);
+        if (content.equals(mPreviousContent)) {
+            return;
+        }
+        mPreviousContent = content;
+
+        Timber.d("pre-encode content %s", content);
+
+        if (!TextUtils.isEmpty(content)) {
+            new GenerateQrCodeTask(this, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
