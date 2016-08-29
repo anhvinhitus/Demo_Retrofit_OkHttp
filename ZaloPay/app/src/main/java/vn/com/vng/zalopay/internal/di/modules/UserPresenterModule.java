@@ -2,23 +2,18 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import android.content.SharedPreferences;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.EditAccountNamePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
-import vn.com.vng.zalopay.account.ui.presenter.OTPRecoveryPinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.transfer.ui.presenter.ReceiveMoneyPresenter;
@@ -106,18 +101,6 @@ public class UserPresenterModule {
     OTPProfilePresenter provideOTPProfilePresenter() {
         return new OTPProfilePresenter();
     }
-
-    @UserScope
-    @Provides
-    OTPRecoveryPinPresenter provideOTPResetPassCodePresenter() {
-        return new OTPRecoveryPinPresenter();
-    }
-
-//    @UserScope
-//    @Provides
-//    ZaloContactPresenter provideZaloContactPresenter() {
-//        return new ZaloContactPresenter();
-//    }
 
     @UserScope
     @Provides
