@@ -138,41 +138,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         });
     }
 
-    private void getReceiverProfile() {
-        Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.getZaloPayId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new PersonInfoSubscriber());
-        compositeSubscription.add(subscription);
-    }
-
-    private final class PersonInfoSubscriber extends DefaultSubscriber<Person> {
-        PersonInfoSubscriber() {
-        }
-
-        @Override
-        public void onNext(Person item) {
-            Timber.d("PersonInfoSubscriber success");
-            onUpdateReceiverInfo(item);
-        }
-
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            Timber.w(e, "PersonInfoSubscriber onError " + e);
-            onGetUserProfileError(e);
-        }
-    }
-
     private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
         GetUserInfoSubscriber() {
         }
@@ -257,7 +222,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
                     mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
-                    mTransaction.getZaloPayId(),
+                    "1;" + mTransaction.getZaloPayId(),
                     mTransaction.message)
 
                     .subscribeOn(Schedulers.io())
@@ -436,11 +401,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         if (TextUtils.isEmpty(mTransaction.zaloPayId)) {
             Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
             getUserMapping(mTransaction.getZaloId());
-        }
-
-        if (TextUtils.isEmpty(mTransaction.getDisplayName())) {
-            Timber.d("Empty display name, try to fetch profile info from server");
-            getReceiverProfile();
         }
 
         mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
