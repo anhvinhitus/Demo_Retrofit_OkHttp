@@ -35,4 +35,5 @@ public interface TransferMoneyPresenter extends IPresenter<ITransferView> {
     void onViewCreated();
     void initView(ZaloFriend zaloFriend, RecentTransaction recentTransaction, Long amount, String message);
     void navigateBack();
+    void setTransferMode(int anInt);
 }

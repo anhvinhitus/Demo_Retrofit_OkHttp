@@ -64,6 +64,16 @@ public interface Constants {
     int REQUEST_CODE_TRANSFER = 124;
     int REQUEST_CODE_INTRO = 125;
     int ZALOPAY_APP_ID = 1;
+    String ARG_MONEY_TRANSFER_MODE = "transferMode";
+
+    interface MoneyTransfer {
+        int MODE_DEFAULT = 0;
+        int MODE_QR = 1;
+        int STAGE_PRETRANSFER = 1;
+        int STAGE_TRANSFER_SUCCEEDED = 2;
+        int STAGE_TRANSFER_FAILED = 3;
+        int STAGE_TRANSFER_CANCEL = 4;
+    }
 
  /*   public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String REGISTRATION_COMPLETE = "registrationComplete";*/

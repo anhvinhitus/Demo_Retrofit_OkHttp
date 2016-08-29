@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.transfer.ui.presenter.ReceiveMoneyPresenter;
@@ -104,8 +105,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    TransferMoneyPresenter provideTransferPresenter(User user) {
-        return new TransferPresenter(user);
+    TransferMoneyPresenter provideTransferPresenter(User user, NotificationStore.Repository notificationRepository) {
+        return new TransferPresenter(user, notificationRepository);
     }
 
     @UserScope

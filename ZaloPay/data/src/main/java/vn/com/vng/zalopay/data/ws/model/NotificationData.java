@@ -24,7 +24,7 @@ public class NotificationData extends Event {
     public String message;
 
     @SerializedName("embeddata")
-    public JsonObject embeddata;
+    public NotificationEmbedData embeddata;
 
     @SerializedName("transtype")
     public int transtype;
@@ -102,11 +102,15 @@ public class NotificationData extends Event {
     }
 
     public JsonObject getEmbeddata() {
-        return embeddata;
+        if (embeddata.object != null) {
+            return embeddata.object;
+        } else {
+            return null;
+        }
     }
 
     public void setEmbeddata(JsonObject embeddata) {
-        this.embeddata = embeddata;
+        this.embeddata = new NotificationEmbedData(embeddata);
     }
 
     public long getNotificationId() {
@@ -132,8 +136,8 @@ public class NotificationData extends Event {
     public long getPackageid() {
         long packetId = -1;
         try {
-            if (embeddata.has("packageid")) {
-                packetId = embeddata.get("packageid").getAsLong();
+            if (embeddata.object.has("packageid")) {
+                packetId = embeddata.object.get("packageid").getAsLong();
             }
         } catch (Exception e) {
             Timber.w(e, "exception : ");
@@ -144,8 +148,8 @@ public class NotificationData extends Event {
     public long getBundleid() {
         long bundleid = -1;
         try {
-            if (embeddata.has("bundleid")) {
-                bundleid = embeddata.get("bundleid").getAsLong();
+            if (embeddata.object.has("bundleid")) {
+                bundleid = embeddata.object.get("bundleid").getAsLong();
             }
         } catch (Exception e) {
             Timber.w(e, "exception : ");
@@ -156,8 +160,8 @@ public class NotificationData extends Event {
     public String getAvatar() {
         String avatar = "";
         try {
-            if (embeddata.has("avatar")) {
-                avatar = embeddata.get("avatar").getAsString();
+            if (embeddata.object.has("avatar")) {
+                avatar = embeddata.object.get("avatar").getAsString();
             }
         } catch (Exception e) {
             Timber.w(e, "exception : ");
@@ -168,8 +172,8 @@ public class NotificationData extends Event {
     public String getName() {
         String name = "";
         try {
-            if (embeddata.has("name")) {
-                name = embeddata.get("name").getAsString();
+            if (embeddata.object.has("name")) {
+                name = embeddata.object.get("name").getAsString();
             }
         } catch (Exception e) {
             Timber.w(e, "exception : ");
@@ -180,8 +184,8 @@ public class NotificationData extends Event {
     public String getLiximessage() {
         String liximessage = "";
         try {
-            if (embeddata.has("liximessage")) {
-                liximessage = embeddata.get("liximessage").getAsString();
+            if (embeddata.object.has("liximessage")) {
+                liximessage = embeddata.object.get("liximessage").getAsString();
             }
         } catch (Exception e) {
             Timber.w(e, "exception : ");

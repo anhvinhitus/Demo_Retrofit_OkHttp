@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.google.gson.JsonObject;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -151,6 +153,52 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             // extract sender, amount
             // extract transid
             mView.displayReceivedMoney();
+        }
+
+        // {"transid":0,"appid":1,"timestamp":1472488434621,
+        // "notificationtype":109,"userid":"160526000000502",
+        // "receiverid":"160526000000502",
+        // "embeddata":"eyJ0eXBlIjoxLCJkaXNwbGF5bmFtZSI6Ik5ndXnhu4VuIEjhu691IEhvw6AiLCJhdmF0YXIiOiJodHRwOi8vczI0MC5hdmF0YXIudGFsay56ZG4udm4vZS9kL2UvMi80LzI0MC9mMTg5OGEwYTBhM2YwNWJiYjExMDg4Y2IyMDJkMWMwMi5qcGciLCJtdF9wcm9ncmVzcyI6MX0"}
+        if (notify.appid == 1 &&
+                notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION) {
+            JsonObject embedData = notify.getEmbeddata();
+            if (embedData == null) {
+                return;
+            }
+
+//            jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
+//            jsonObject.addProperty("displayname", user.displayName);
+//            jsonObject.addProperty("avatar", user.avatar);
+//            jsonObject.addProperty("mt_progress", stage);
+//            if (amount > 0) {
+//                jsonObject.addProperty("amount", mTransaction.amount);
+            int type = embedData.get("type").getAsInt();
+            if (type == Constants.QRCode.RECEIVE_MONEY) {
+                String senderDisplayName = embedData.get("displayname").getAsString();
+                String senderAvatar = embedData.get("avatar").getAsString();
+                int progress = embedData.get("mt_progress").getAsInt();
+                long amount = embedData.get("amount").getAsLong();
+
+                Timber.d("Receiver profile: %s - %s", senderDisplayName, senderAvatar);
+                switch (progress) {
+                    case Constants.MoneyTransfer.STAGE_PRETRANSFER:
+                        Timber.d("Stage: Pre transfer");
+                        mView.displayWaitForMoney();
+                        mView.setReceiverInfo(senderDisplayName, senderAvatar);
+                        break;
+                    case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
+                        Timber.d("Stage: Transfer succeeded");
+                        mView.displayReceivedMoney();
+                        mView.setReceivedMoney(senderDisplayName, senderAvatar, amount);
+                        break;
+                    case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
+                        Timber.d("Stage: Transfer failed");
+                        break;
+                    case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
+                        Timber.d("Stage: Transfer canceled");
+                        break;
+                }
+            }
         }
     }
 

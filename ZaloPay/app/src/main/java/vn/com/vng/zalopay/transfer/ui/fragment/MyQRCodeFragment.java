@@ -203,6 +203,16 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     @Override
+    public void setReceiverInfo(String displayName, String avatar) {
+        //TODO: update info here
+    }
+
+    @Override
+    public void setReceivedMoney(String displayName, String avatar, long amount) {
+        //TODO: update info here
+    }
+
+    @Override
     public void displayReceivedMoney() {
         layoutQrcode.setVisibility(View.INVISIBLE);
         layoutSuccess.setVisibility(View.VISIBLE);

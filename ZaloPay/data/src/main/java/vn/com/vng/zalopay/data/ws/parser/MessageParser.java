@@ -1,8 +1,15 @@
 package vn.com.vng.zalopay.data.ws.parser;
 
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -15,7 +22,7 @@ import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.model.User;
 
-
+import java.lang.reflect.Type;
 /**
  * Created by AnhHieu on 6/14/16.
  * Parser for notification messages
@@ -140,20 +147,23 @@ public class MessageParser implements Parser {
         return null;
     }
 
+
     public Event processPushMessage(byte[] data) {
 
         try {
-            NotificationData event = new NotificationData();
+            NotificationData event;
             String str = new String(data);
             Timber.d("notification message :  %s", str);
-            if (!TextUtils.isEmpty(str)) {
-                try {
-                    event = mGson.fromJson(str, NotificationData.class);
-                    event.setHasData(true);
-                } catch (JsonSyntaxException e) {
-                    Timber.w(e, "parse notification error %s", str);
-                    event = new NotificationData();
-                }
+            if (TextUtils.isEmpty(str)) {
+                return new NotificationData();
+            }
+
+            try {
+                event = mGson.fromJson(str, NotificationData.class);
+                event.setHasData(true);
+            } catch (JsonSyntaxException e) {
+                Timber.w(e, "parse notification error %s", str);
+                event = new NotificationData();
             }
 
             return event;

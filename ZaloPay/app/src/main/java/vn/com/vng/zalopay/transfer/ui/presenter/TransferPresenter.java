@@ -3,6 +3,9 @@ package vn.com.vng.zalopay.transfer.ui.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Base64;
+
+import com.google.gson.JsonObject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -14,7 +17,9 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -51,14 +56,18 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private String mValidMinAmount;
     private String mValidMaxAmount;
     private RecentTransaction mTransaction;
+    private int mMoneyTransferMode;
+    private NotificationStore.Repository mNotificationRepository;
 
     private void clearCurrentData() {
 //        mCurrentZaloFriend = null;
 //        mCurrentMappingZaloAndZaloPay = null;
     }
 
-    public TransferPresenter(User user) {
+    public TransferPresenter(User user, NotificationStore.Repository notificationRepository) {
         this.user = user;
+        this.mNotificationRepository = notificationRepository;
+
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -88,6 +97,13 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     return;
                 }
                 mView.hideLoading();
+                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+                    if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
+                        sendNotificationCancel();
+                    } else if (paymentError != PaymentError.ERR_CODE_SUCCESS) {
+                        sendNotificationFailed();
+                    }
+                }
             }
 
             @Override
@@ -106,6 +122,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
                 saveTransferRecentToDB();
                 clearCurrentData();
+
+                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+                    sendNotificationSuccess();
+                }
             }
 
             @Override
@@ -504,5 +524,47 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         intent.putExtra(Constants.ARG_MESSAGE, mTransaction.message);
         mView.getActivity().setResult(Activity.RESULT_CANCELED, intent);
         mView.getActivity().finish();
+    }
+
+    @Override
+    public void setTransferMode(int mode) {
+        mMoneyTransferMode = mode;
+        if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+            // Send notification to receiver
+            sendNotificationPreTransfer();
+        }
+    }
+
+    private void sendNotificationPreTransfer() {
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_PRETRANSFER, 0);
+    }
+
+    private void sendNotificationSuccess() {
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount);
+    }
+
+    private void sendNotificationFailed() {
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0);
+    }
+
+    private void sendNotificationCancel() {
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0);
+    }
+
+    private void sendNotificationMessage(int stage, long amount) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
+        jsonObject.addProperty("displayname", user.displayName);
+        jsonObject.addProperty("avatar", user.avatar);
+        jsonObject.addProperty("mt_progress", stage);
+        if (amount > 0) {
+            jsonObject.addProperty("amount", mTransaction.amount);
+        }
+
+        String embeddata = jsonObject.toString();
+        Timber.d("Send notification: %s", embeddata);
+        embeddata = Base64.encodeToString(embeddata.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
+        mNotificationRepository.sendNotification(mTransaction.zaloPayId, embeddata)
+            .subscribe(new DefaultSubscriber<BaseResponse>());
     }
 }

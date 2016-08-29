@@ -113,6 +113,8 @@ public class NotificationHelper {
         this.shouldUpdateTransAndBalance(notify);
         this.shouldMarkRead(notify);
 
+        boolean skipStorage = false;
+
         int notificationType = notify.getNotificationType();
 
         if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
@@ -127,9 +129,15 @@ public class NotificationHelper {
             if (!notify.isRead()) {
                 eventBus.post(notify);
             }
+        } else if (notificationType == NotificationType.APP_P2P_NOTIFICATION) {
+            // post notification and skip write to db
+            eventBus.post(notify);
+            skipStorage = true;
         }
 
-        this.putNotification(notify);
+        if (!skipStorage) {
+            this.putNotification(notify);
+        }
     }
 
     private void putNotification(NotificationData notify) {
@@ -168,7 +176,7 @@ public class NotificationHelper {
 
     private void extractRedPacketFromNotification(NotificationData data) {
         try {
-            JsonObject embeddata = data.embeddata;
+            JsonObject embeddata = data.getEmbeddata();
             if (embeddata == null) {
                 return;
             }
@@ -196,7 +204,7 @@ public class NotificationHelper {
 
     private void updateProfilePermission(NotificationData notify) {
         try {
-            JsonObject embeddata = notify.embeddata;
+            JsonObject embeddata = notify.getEmbeddata();
             if (embeddata != null) {
                 int status = embeddata.get("status").getAsInt();
                 int profileLevel = embeddata.get("profilelevel").getAsInt();
