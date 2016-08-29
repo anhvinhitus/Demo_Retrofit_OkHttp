@@ -10,6 +10,7 @@ public interface IHomeView {
     Activity getActivity();
     Context getContext();
 
+    void refreshBanners();
     void showError(String message);
     void showLoading();
     void hideLoading();

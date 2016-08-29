@@ -41,6 +41,8 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
 
+    private ZaloPayFragment mZaloPayFragment;
+
     @Override
     protected int getResLayoutId() {
         return R.layout.activity_home;
@@ -91,7 +93,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             fragmentTransaction.add(R.id.menu, LeftMenuFragment.newInstance(), "MenuFragment");
             switch (this.mCurrentMenuId) {
                 case MenuItemUtil.HOME_ID:
-                    fragmentTransaction.add(R.id.container, ZaloPayFragment.newInstance(), "ZaloPayFragment");
+                    mZaloPayFragment = ZaloPayFragment.newInstance();
+                    fragmentTransaction.add(R.id.container, mZaloPayFragment, "ZaloPayFragment");
                     break;
                 case MenuItemUtil.ACCOUNT_ID:
                     break;
@@ -245,6 +248,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void refreshBanners() {
+        if (mZaloPayFragment == null) {
+            return;
+        }
+        mZaloPayFragment.getBanners();
     }
 
     private final class OpenMenuRunnable implements Runnable {

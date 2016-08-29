@@ -139,6 +139,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
         hideTextAds();
 
+        getBanners();
+    }
+
+    public void getBanners() {
         presenter.getBanners();
     }
 
