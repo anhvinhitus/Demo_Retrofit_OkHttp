@@ -172,12 +172,20 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 //            jsonObject.addProperty("mt_progress", stage);
 //            if (amount > 0) {
 //                jsonObject.addProperty("amount", mTransaction.amount);
-            int type = embedData.get("type").getAsInt();
+
+            int type = 0;
+            if (embedData.has("type")) {
+                type = embedData.get("type").getAsInt();
+            }
+
             if (type == Constants.QRCode.RECEIVE_MONEY) {
                 String senderDisplayName = embedData.get("displayname").getAsString();
                 String senderAvatar = embedData.get("avatar").getAsString();
                 int progress = embedData.get("mt_progress").getAsInt();
-                long amount = embedData.get("amount").getAsLong();
+                long amount = 0;
+                if (embedData.has("amount")) {
+                    amount = embedData.get("amount").getAsLong();
+                }
 
                 Timber.d("Receiver profile: %s - %s", senderDisplayName, senderAvatar);
                 switch (progress) {
@@ -187,7 +195,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                         mView.setReceiverInfo(senderDisplayName, senderAvatar);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
-                        Timber.d("Stage: Transfer succeeded");
+                        Timber.d("Stage: Transfer succeeded with amount %s", amount);
                         mView.displayReceivedMoney();
                         mView.setReceivedMoney(senderDisplayName, senderAvatar, amount);
                         break;
