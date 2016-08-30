@@ -169,4 +169,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
     }
 
+    public boolean isWaitingApproveProfileLevel3() {
+        return userConfig.isWaitingApproveProfileLevel3();
+    }
 }

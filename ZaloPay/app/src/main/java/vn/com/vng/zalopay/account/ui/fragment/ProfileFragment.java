@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
@@ -173,7 +172,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         if (!TextUtils.isEmpty(cmnd)) {
             tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {
-            boolean isWaitingApproveProfileLevel3 = AndroidApplication.instance().getAppComponent().userConfig().isWaitingApproveProfileLevel3();
+            if (mPresenter == null) {
+                return;
+            }
+            boolean isWaitingApproveProfileLevel3 = mPresenter.isWaitingApproveProfileLevel3();
             if (isWaitingApproveProfileLevel3) {
                 tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 tvCMND.setHint(getString(R.string.waiting_approve));
@@ -190,7 +192,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         if (!TextUtils.isEmpty(email)) {
             tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {
-            boolean isWaitingApproveProfileLevel3 = AndroidApplication.instance().getAppComponent().userConfig().isWaitingApproveProfileLevel3();
+            if (mPresenter == null) {
+                return;
+            }
+            boolean isWaitingApproveProfileLevel3 = mPresenter.isWaitingApproveProfileLevel3();
             if (isWaitingApproveProfileLevel3) {
                 tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 tvEmail.setHint(getString(R.string.waiting_approve));
