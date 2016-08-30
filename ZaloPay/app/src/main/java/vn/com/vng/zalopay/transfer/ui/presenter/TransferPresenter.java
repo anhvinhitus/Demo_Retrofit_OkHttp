@@ -168,13 +168,13 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         });
     }
 
-    private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
-        GetUserInfoSubscriber() {
+    private final class MapZaloWithZaloPaySubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
+        MapZaloWithZaloPaySubscriber() {
         }
 
         @Override
         public void onNext(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
-            Timber.d("GetUserInfoSubscriber success " + mappingZaloAndZaloPay);
+            Timber.d("MapZaloWithZaloPaySubscriber success " + mappingZaloAndZaloPay);
             TransferPresenter.this.onGetMappingUserSuccess(mappingZaloAndZaloPay);
         }
 
@@ -190,7 +190,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 return;
             }
 
-            Timber.w(e, "GetUserInfoSubscriber onError " + e);
+            Timber.w(e, "MapZaloWithZaloPaySubscriber onError " + e);
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }
@@ -235,7 +235,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserInfoSubscriber());
+                .subscribe(new MapZaloWithZaloPaySubscriber());
         compositeSubscription.add(subscription);
     }
 
@@ -442,6 +442,17 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 mTransaction.getAvatar(),
                 mTransaction.getZaloPayName());
 
+        if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
+
+
+            Timber.d("begin get user info");
+
+            Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new UserInfoSubscriber());
+            compositeSubscription.add(subscription);
+        }
+
         initCurrentState();
         checkShowBtnContinue();
     }
@@ -582,5 +593,28 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<BaseResponse>());
         compositeSubscription.add(subscription);
+    }
+
+    private class UserInfoSubscriber extends DefaultSubscriber<Person> {
+        @Override
+        public void onNext(Person person) {
+
+            Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
+            mTransaction.avatar = person.avatar;
+            mTransaction.displayName = person.displayName;
+            mTransaction.zaloPayName = person.zalopayname;
+
+            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            String message = ErrorMessageFactory.create(applicationContext, e);
+            mView.showError(message);
+        }
     }
 }

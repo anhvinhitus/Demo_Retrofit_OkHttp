@@ -91,17 +91,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 jsonObject.put("message", messageBase64);
                 fields.add(messageBase64);
             }
-
-            String displayName = Base64.encodeToString(user.displayName.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
-            jsonObject.put("displayname", displayName);
-            fields.add(displayName);
-
-            if (!TextUtils.isEmpty(user.avatar)) {
-                String avatar = Base64.encodeToString(user.avatar.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
-                jsonObject.put("avatar", avatar);
-                fields.add(avatar);
-            }
-
+            
             String checksum = Utils.sha256(fields.toArray(new String[0])).substring(0, 8);
             Timber.d("generateQrContent: checksum %s", checksum);
             jsonObject.put("checksum", checksum);

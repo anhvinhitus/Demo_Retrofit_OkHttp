@@ -40,7 +40,7 @@ public class MenuItemUtil {
         mMenuItems.add(new MenuItem(HOME_ID, MenuItemType.ITEM, R.drawable.ic_trangchu_menu, "Trang Chủ"));
         mMenuItems.add(new MenuItem(NOTIFICATION_ID, MenuItemType.ITEM, R.drawable.ic_thongbao_menu, R.drawable.ic_arrow_right, "Thông Báo", false));
         mMenuItems.add(new MenuItem(TRANSACTION_ID, MenuItemType.HEADER, null, "GIAO DỊCH"));
-        mMenuItems.add(new MenuItem(SCAN_QR_ID, MenuItemType.ITEM, R.drawable.ic_thanhtoan_menu, "Thanh Toán"));
+        mMenuItems.add(new MenuItem(SCAN_QR_ID, MenuItemType.ITEM, R.drawable.ic_thanhtoan_menu, "Trả Tiền"));
         mMenuItems.add(new MenuItem(DEPOSIT_ID, MenuItemType.ITEM, R.drawable.ic_naptien_menu, "Nạp Tiền"));
 
         mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Chuyển Tiền"));

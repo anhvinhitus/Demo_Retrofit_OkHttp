@@ -232,14 +232,6 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             fields.add(messageBase64);
         }
 
-        String displayName = data.optString("displayname");
-        fields.add(displayName);
-
-        String avatar = data.optString("avatar", null);
-        if (avatar != null) {
-            fields.add(avatar);
-        }
-
         String checksum = data.optString("checksum");
         if (TextUtils.isEmpty(checksum)) {
             return false;
@@ -255,17 +247,15 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
 
         // Start money transfer process
-        startMoneyTransfer(zalopayId, amount, messageBase64, displayName, avatar);
+        startMoneyTransfer(zalopayId, amount, messageBase64);
 
         hideLoadingView();
         return true;
     }
 
-    private void startMoneyTransfer(long zalopayId, long amount, String message, String displayName, String avatar) {
+    private void startMoneyTransfer(long zalopayId, long amount, String message) {
         RecentTransaction item = new RecentTransaction();
         item.zaloPayId = String.valueOf(zalopayId);
-        item.displayName = new String(Base64.decode(displayName, Base64.NO_PADDING | Base64.NO_WRAP));
-        item.avatar = new String(Base64.decode(avatar, Base64.NO_PADDING | Base64.NO_WRAP));
         if (amount != -1) {
             item.amount = amount;
         }
