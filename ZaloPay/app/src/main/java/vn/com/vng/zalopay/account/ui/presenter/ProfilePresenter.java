@@ -126,7 +126,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         if (getProfileLevel() < 2) {
             mView.showError(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (userConfig.isWaitingApproveProfileLevel3()) {
-            mView.showError(mView.getContext().getString(R.string.update_profile_waiting_approve));
+            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
         } else {
             navigator.startUpdateProfile3Activity(mView.getContext());
         }
@@ -136,7 +136,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         if (getProfileLevel() < 2) {
             mView.showError(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (userConfig.isWaitingApproveProfileLevel3()) {
-            mView.showError(mView.getContext().getString(R.string.update_profile_waiting_approve));
+            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_email));
         } else {
             navigator.startUpdateProfile3Activity(mView.getContext());
         }

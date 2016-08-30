@@ -24,9 +24,9 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
-
 
     public static ProfileFragment newInstance() {
 
@@ -162,6 +162,16 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
         }
         mAccountNameView.setText(zaloPayName);
+    }
+
+    @Override
+    public void showDialogInfo(String content) {
+        super.showDialog(null, content, getString(R.string.txt_close), null, new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.dismiss();
+            }
+        }, SweetAlertDialog.INFO_TYPE);
     }
 
     private void setCMND(String cmnd) {

@@ -252,7 +252,8 @@
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
     <string name="update.profile.success">Thông tin của bạn đã được gửi đi và đang chờ phê duyệt.</string>
-    <string name="update.profile.waiting.approve">Thông tin của bạn đang chờ phê duyệt.</string>
+    <string name="waiting.approve.email">Email của bạn đang chờ ban quản trị phê duyệt.</string>
+    <string name="waiting.approve.identity">CMND/Hộ chiếu của bạn đang chờ ban quản trị phê duyệt.</string>
 
     <string name="accept">Đồng ý</string>
     <string name="cancel">Huỷ</string>

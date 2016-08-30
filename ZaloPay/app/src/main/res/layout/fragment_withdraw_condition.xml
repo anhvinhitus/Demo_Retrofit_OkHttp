@@ -133,6 +133,8 @@
         android:paddingRight="@dimen/spacing.medium"
         android:paddingTop="@dimen/spacing.small"
         android:text="@string/withdraw_condition_user_note"
+        android:textSize="13sp"
+        android:textStyle="italic"
         android:visibility="gone"/>
 
     <FrameLayout

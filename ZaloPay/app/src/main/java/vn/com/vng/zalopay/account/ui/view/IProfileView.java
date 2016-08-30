@@ -13,5 +13,7 @@ public interface IProfileView extends ILoadDataView {
     void showHideChangePinView(boolean isShow);
 
     void setZaloPayName(String zaloPayName);
+
+    void showDialogInfo(String content);
 }
 
