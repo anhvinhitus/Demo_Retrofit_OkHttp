@@ -564,8 +564,9 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         String embeddata = jsonObject.toString();
         Timber.d("Send notification: %s", embeddata);
         embeddata = Base64.encodeToString(embeddata.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
-        mNotificationRepository.sendNotification(mTransaction.zaloPayId, embeddata)
-            .subscribeOn(Schedulers.io())
-            .subscribe(new DefaultSubscriber<BaseResponse>());
+        Subscription subscription = mNotificationRepository.sendNotification(mTransaction.zaloPayId, embeddata)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<BaseResponse>());
+        compositeSubscription.add(subscription);
     }
 }

@@ -24,12 +24,13 @@
             android:visibility="visible">
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.SubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:singleLine="false"
-                android:text="Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn" />
+                android:text="Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn"
+                android:textSize="14dp" />
 
             <TextView
                 android:id="@+id/tvAmount"
@@ -59,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="48dp"
+                android:layout_marginBottom="72dp"
                 android:layout_marginTop="28dp">
 
                 <include layout="@layout/progress" />
@@ -90,29 +91,38 @@
             android:id="@+id/layoutSuccess"
             layout="@layout/qrcode_receive_success_layout" />
 
+        <LinearLayout
+            android:id="@+id/layoutUserTransfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.zalopay.ui.widget.image.BezelImageView
+                android:id="@+id/imageAvatarSender"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:background="@color/red"
+                android:scaleType="centerCrop"
+                app:maskDrawable="@drawable/circle_border" />
+
+            <TextView
+                android:id="@+id/tvMessageSender"
+                style="@style/TextView.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                tools:text="%s đang chuyển tiền..." />
+
+        </LinearLayout>
+
     </FrameLayout>
 
 
-    <!-- <LinearLayout
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_gravity="bottom"
-             android:gravity="center_vertical"
-             android:orientation="horizontal">
-
-             <com.zalopay.ui.widget.image.BezelImageView
-                 android:id="@+id/imageAvatarSender"
-                 android:layout_width="44dp"
-                 android:layout_height="44dp"
-                 android:layout_gravity="center"
-                 app:maskDrawable="@drawable/circle_border" />
-
-             <TextView
-                 style="@style/TextView.Title"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginLeft="16dp"
-                 android:text="%s đang chuyển tiền..." />
-
-         </LinearLayout>-->
 </FrameLayout>

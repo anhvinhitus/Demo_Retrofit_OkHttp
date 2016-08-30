@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:textSize="@dimen/font_size_large"
         tools:text="@string/app_name" />
 
@@ -33,11 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="24dp"
-        android:drawableLeft="@drawable/ic_transfer_fr_zalo_small"
-        android:drawablePadding="6dp"
+        android:drawableLeft="@drawable/ic_thanhcong_24dp"
+        android:drawablePadding="8dp"
+        android:text="300.000 VND"
         android:textColor="@color/green"
-        android:textSize="22dp"
-        android:text="300.000 VND" />
+        android:textSize="22dp" />
 
 
 </LinearLayout>

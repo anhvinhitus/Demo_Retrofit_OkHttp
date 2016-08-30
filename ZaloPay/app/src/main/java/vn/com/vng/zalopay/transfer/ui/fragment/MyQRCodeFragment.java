@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.zalopay.ui.widget.image.BezelImageView;
 
 import org.w3c.dom.Text;
 
@@ -27,6 +28,7 @@ import vn.com.vng.zalopay.transfer.ui.activities.SetAmountActivity;
 import vn.com.vng.zalopay.transfer.ui.presenter.ReceiveMoneyPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -52,6 +54,18 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @BindView(R.id.tvMessage)
     TextView tvNoteView;
+
+    @BindView(R.id.tvMessageSender)
+    TextView tvMessageSenderView;
+
+    @BindView(R.id.imageAvatarSender)
+    BezelImageView imageAvatarSenderView;
+
+    @BindView(R.id.tvMoney)
+    TextView mMoneyChangeSuccess;
+
+    @BindView(R.id.layoutUserTransfer)
+    View layoutUserTransfer;
 
     @Inject
     ReceiveMoneyPresenter mPresenter;
@@ -119,7 +133,7 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     private void setAmount(long amount) {
-        tvAmountView.setText(String.valueOf(amount));
+        tvAmountView.setText(CurrencyUtil.spanFormatCurrency(amount));
         tvAmountView.setVisibility(amount <= 0 ? View.GONE : View.VISIBLE);
     }
 
@@ -170,10 +184,11 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     private void loadImage(final ImageView imageView, String url) {
-        Glide.with(this).load(url)
+        Glide.with(getActivity()).load(url)
                 .placeholder(R.color.silver)
                 .error(R.drawable.ic_avatar_default)
                 .centerCrop()
+                .dontAnimate()
                 .into(imageView);
     }
 
@@ -203,20 +218,52 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     @Override
+    public void displayReceivedMoney() {
+       /* layoutQrcode.setVisibility(View.INVISIBLE);
+        layoutSuccess.setVisibility(View.VISIBLE);*/
+    }
+
+    @Override
     public void setReceiverInfo(String displayName, String avatar) {
         //TODO: update info here
+        Timber.d("setReceiverInfo: displayName %s avatar %s", displayName, avatar);
+
+        setTransferUserInfo(String.format("%s đang chuyển tiền ...", displayName), avatar);
     }
 
     @Override
     public void setReceivedMoney(String displayName, String avatar, long amount) {
         //TODO: update info here
+        Timber.d("setReceivedMoney: displayName %s avatar %s amount %s", displayName, avatar, amount);
+
+        layoutQrcode.setVisibility(View.INVISIBLE);
+        layoutSuccess.setVisibility(View.VISIBLE);
+
+        setTransferUserInfo(String.format("%s đã chuyển tiền thành công.", displayName), avatar);
+        mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount));
+        mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_thanhcong_24dp, 0, 0, 0);
     }
 
     @Override
-    public void displayReceivedMoney() {
+    public void setReceivedMoneyFail(String displayName, String avatar) {
+
         layoutQrcode.setVisibility(View.INVISIBLE);
         layoutSuccess.setVisibility(View.VISIBLE);
+        mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(0));
+        mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_thatbai_24dp, 0, 0, 0);
+
+        setTransferUserInfo(String.format("%s đã chuyển tiền thất bại.", displayName), avatar);
     }
+
+    @Override
+    public void setReceivedMoneyCancel(String displayName, String avatar) {
+        setTransferUserInfo(String.format("%s đã huỷ chuyển tiền.", displayName), avatar);
+        layoutQrcode.setVisibility(View.INVISIBLE);
+        layoutSuccess.setVisibility(View.VISIBLE);
+        mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(0));
+        mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_thatbai_24dp, 0, 0, 0);
+    }
+
 
     @Override
     public void showLoading() {
@@ -241,5 +288,18 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     @Override
     public void showError(String message) {
         Toast.makeText(getContext(), "Sinh mã QR thất bại!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setTransferUserInfo(String message, String avatar) {
+        if (layoutUserTransfer != null) {
+            layoutUserTransfer.setVisibility(View.VISIBLE);
+        }
+
+        if (imageAvatarSenderView != null) {
+            loadImage(imageAvatarSenderView, avatar);
+        }
+        if (tvMessageSenderView != null) {
+            tvMessageSenderView.setText(message);
+        }
     }
 }

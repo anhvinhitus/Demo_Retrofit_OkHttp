@@ -201,9 +201,11 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                         Timber.d("Stage: Transfer failed");
+                        mView.setReceivedMoneyFail(senderDisplayName, senderAvatar);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
                         Timber.d("Stage: Transfer canceled");
+                        mView.setReceivedMoneyCancel(senderDisplayName, senderAvatar);
                         break;
                 }
             }
