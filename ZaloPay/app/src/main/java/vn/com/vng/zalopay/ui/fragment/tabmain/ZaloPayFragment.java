@@ -203,7 +203,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app, int position) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-        if (app.appid == PaymentAppConfig.Constants.INTERNAL) {
+        if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
             navigator.startTransferMoneyActivity(getActivity());
         } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
             navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
