@@ -35,8 +35,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 22
-        versionName "2.0.12"
+        versionCode 23
+        versionName "2.0.13"
 
         multiDexEnabled true
 
