@@ -257,7 +257,7 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate"/>
 
- <!--   <View
+    <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
@@ -285,7 +285,7 @@
             android:hint="@string/not_update"/>
     </LinearLayout>
 
-    <View
+    <!--<View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:background="@color/separate"/>
@@ -311,11 +311,11 @@
             android:gravity="right"
             android:hint="@string/not_update"/>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>-->
+        android:background="@color/separate"/>
 </LinearLayout>
 
