@@ -136,6 +136,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setNestedScrollingEnabled(false);
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
+        listView.setFocusable(false);
 
         hideTextAds();
 
