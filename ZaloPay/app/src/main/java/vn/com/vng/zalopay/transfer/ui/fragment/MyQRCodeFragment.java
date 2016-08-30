@@ -252,7 +252,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @Override
     public void setReceivedMoneyFail(String displayName, String avatar) {
-        displayName.low
         setResult(false, 0);
         setTransferUserInfo(String.format("%s đã chuyển tiền thất bại.", displayName), avatar);
     }
