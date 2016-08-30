@@ -197,6 +197,7 @@
     <string name="reset_passcode">Thiết lập lại mã PIN.</string>
 
     <string name="not_update">Chưa cập nhật</string>
+    <string name="waiting_approve">Chờ phê duyệt</string>
     <string name="cmnd_passpost">CMND/Hộ chiếu</string>
     <string name="address">Địa chỉ</string>
     <string name="zalo_id">Zalo ID</string>

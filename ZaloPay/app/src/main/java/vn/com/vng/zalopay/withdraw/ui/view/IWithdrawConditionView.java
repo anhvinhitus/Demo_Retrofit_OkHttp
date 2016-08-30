@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.withdraw.ui.view;
 
 import android.app.Activity;
 
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -11,8 +10,14 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface IWithdrawConditionView extends ILoadDataView {
     Activity getActivity();
-    void updateUserInfo(User user);
+
+    void showUpdateProfile();
     void hideUpdateProfile();
     void showUserNote();
     void hideUserNote();
+
+    void setChkEmail(boolean isChecked);
+    void setChkIdentityNumber(boolean isChecked);
+    void setChkVietinBank(boolean isChecked);
+    void setChkSacomBank(boolean isChecked);
 }

@@ -2,16 +2,23 @@ package vn.com.vng.zalopay.withdraw.ui.presenter;
 
 import android.text.TextUtils;
 
+import java.util.List;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.data.GlobalData;
+import vn.com.zalopay.wallet.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -26,7 +33,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
     public void getProfile() {
         User user = userConfig.getCurrentUser();
         if (user != null) {
-            mView.updateUserInfo(user);
+            checkValidCondition();
             if (user.profilelevel >= 3 &&
                     (TextUtils.isEmpty(user.identityNumber) || TextUtils.isEmpty(user.email))) {
                 getUserProfile();
@@ -57,10 +64,77 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
     private void getProfileSuccess() {
         User user = userConfig.getCurrentUser();
         if (user != null) {
-            mView.updateUserInfo(user);
+            checkValidCondition();
         }
     }
 
+    private boolean checkValidProfileLevel() {
+        User user = userConfig.getCurrentUser();
+        if (user == null) {
+            return false;
+        }
+        boolean isValid = true;
+        if (!TextUtils.isEmpty(user.email)) {
+            mView.setChkEmail(true);
+        } else {
+            isValid = false;
+        }
+        if (!TextUtils.isEmpty(user.identityNumber)) {
+            mView.setChkIdentityNumber(true);
+        } else {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private boolean checkValidLinkCard() {
+        User user = userConfig.getCurrentUser();
+        boolean isMapped = false;
+        try {
+            List<DMappedCard> mapCardLis = CShareData.getInstance(mView.getActivity()).getMappedCardList(user.zaloPayId);
+            if (mapCardLis == null || mapCardLis.size() <= 0) {
+                return false;
+            }
+            for (int i = 0; i < mapCardLis.size(); i++) {
+                DMappedCard card = mapCardLis.get(i);
+                if (card == null || TextUtils.isEmpty(card.bankcode)) {
+                    continue;
+                }
+                if (ECardType.PVTB.toString().equals(card.bankcode)) {
+                    mView.setChkVietinBank(true);
+                    isMapped = true;
+                } else if (ECardType.PSCB.toString().equals(card.bankcode)) {
+                    mView.setChkSacomBank(true);
+                    isMapped = true;
+                }
+            }
+            return isMapped;
+        } catch (Exception e) {
+            Timber.w(e, "Get mapped card exception: %s", e.getMessage());
+        }
+        return isMapped;
+    }
+
+    public void checkValidCondition() {
+        boolean isValidProfile = checkValidProfileLevel();
+        boolean isValidLinkCard = checkValidLinkCard();
+        boolean isValidCondition = isValidProfile && isValidLinkCard;
+        if (isValidProfile) {
+            mView.hideUpdateProfile();
+            mView.hideUserNote();
+        } else if (AndroidApplication.instance().getAppComponent().userConfig().isWaitingApproveProfileLevel3()) {
+            mView.hideUpdateProfile();
+            mView.showUserNote();
+        } else {
+            mView.showUpdateProfile();
+            mView.hideUserNote();
+        }
+
+        if (isValidCondition) {
+            navigator.startWithdrawActivity(mView.getContext());
+            mView.getActivity().finish();
+        }
+    }
 
     @Override
     public void setView(IWithdrawConditionView view) {
@@ -75,17 +149,13 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
 
     @Override
     public void resume() {
+        checkValidCondition();
         getProfile();
     }
 
     @Override
     public void pause() {
-        if (userConfig.isWaitingApproveProfileLevel3()) {
-            mView.showUserNote();
-            mView.hideUpdateProfile();
-        } else {
-            mView.hideUserNote();
-        }
+
     }
 
     @Override

@@ -2,24 +2,17 @@ package vn.com.vng.zalopay.withdraw.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
-import vn.com.zalopay.wallet.entity.enumeration.ECardType;
-import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -71,7 +64,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
      *
      * @return A new instance of fragment WithdrawConditionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static WithdrawConditionFragment newInstance() {
         return new WithdrawConditionFragment();
     }
@@ -95,7 +87,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     public void onResume() {
         super.onResume();
         mPresenter.resume();
-        checkValidCondition();
     }
 
     @Override
@@ -110,19 +101,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         mPresenter.setView(this);
     }
 
-    public void checkValidCondition() {
-        boolean isValidProfile = checkValidProfileLevel();
-        boolean isValidLinkCard = checkValidLinkCard();
-        boolean isValidCondition = isValidProfile && isValidLinkCard;
-        if (isValidProfile) {
-            showUpdateProfile();
-        }
-        if (isValidCondition) {
-            navigator.startWithdrawActivity(getContext());
-            getActivity().finish();
-        }
-    }
-
     public void hideUpdateProfile() {
         if (tvUpdateProfile == null) {
             return;
@@ -130,11 +108,11 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         tvUpdateProfile.setVisibility(View.GONE);
     }
 
-    private void showUpdateProfile() {
+    public void showUpdateProfile() {
         if (tvUpdateProfile == null) {
             return;
         }
-        tvUpdateProfile.setVisibility(View.INVISIBLE);
+        tvUpdateProfile.setVisibility(View.VISIBLE);
     }
 
     public void showUserNote() {
@@ -151,51 +129,32 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         tvUserNote.setVisibility(View.GONE);
     }
 
-    private boolean checkValidProfileLevel() {
-        User user = getUserComponent().currentUser();
-        if (user == null) {
-            return false;
+    public void setChkEmail(boolean isChecked) {
+        if (chkEmail == null) {
+            return;
         }
-        boolean isValid = true;
-        if (!TextUtils.isEmpty(user.email)) {
-            chkEmail.setChecked(true);
-        } else {
-            isValid = false;
-        }
-        if (!TextUtils.isEmpty(user.identityNumber)) {
-            chkIdentityNumber.setChecked(true);
-        } else {
-            isValid = false;
-        }
-        return isValid;
+        chkEmail.setChecked(isChecked);
     }
 
-    private boolean checkValidLinkCard() {
-        User user = getUserComponent().currentUser();
-        boolean isMapped = false;
-        try {
-            List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.zaloPayId);
-            if (mapCardLis == null) {
-                return isMapped;
-            }
-            for (int i = 0; i < mapCardLis.size(); i++) {
-                DMappedCard card = mapCardLis.get(i);
-                if (card == null || TextUtils.isEmpty(card.bankcode)) {
-                    continue;
-                }
-                if (ECardType.PVTB.toString().equals(card.bankcode)) {
-                    chkVietinBank.setChecked(true);
-                    isMapped = true;
-                } else if (ECardType.PSCB.toString().equals(card.bankcode)) {
-                    chkSacomBank.setChecked(true);
-                    isMapped = true;
-                }
-            }
-            return isMapped;
-        } catch (Exception e) {
-            Timber.w(e, "Get mapped card exception: %s", e.getMessage());
+    public void setChkIdentityNumber(boolean isChecked) {
+        if (chkIdentityNumber == null) {
+            return;
         }
-        return isMapped;
+        chkIdentityNumber.setChecked(isChecked);
+    }
+
+    public void setChkVietinBank(boolean isChecked) {
+        if (chkVietinBank == null) {
+            return;
+        }
+        chkVietinBank.setChecked(isChecked);
+    }
+
+    public void setChkSacomBank(boolean isChecked) {
+        if (chkSacomBank == null) {
+            return;
+        }
+        chkSacomBank.setChecked(isChecked);
     }
 
     @Override
@@ -234,10 +193,5 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Override
     public void showError(String message) {
         showToast(message);
-    }
-
-    @Override
-    public void updateUserInfo(User user) {
-        checkValidCondition();
     }
 }
