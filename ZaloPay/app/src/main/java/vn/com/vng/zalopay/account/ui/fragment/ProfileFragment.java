@@ -166,12 +166,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @Override
     public void showDialogInfo(String content) {
-        super.showDialog(null, content, getString(R.string.txt_close), null, new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.dismiss();
-            }
-        }, SweetAlertDialog.INFO_TYPE);
+        super.showDialog(null, content, getString(R.string.txt_close), null, null, SweetAlertDialog.INFO_TYPE);
     }
 
     private void setCMND(String cmnd) {
