@@ -168,13 +168,12 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         });
     }
 
-    private final class MapZaloWithZaloPaySubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
-        MapZaloWithZaloPaySubscriber() {
+    private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
+        GetUserInfoSubscriber() {
         }
 
         @Override
         public void onNext(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
-            Timber.d("MapZaloWithZaloPaySubscriber success " + mappingZaloAndZaloPay);
             TransferPresenter.this.onGetMappingUserSuccess(mappingZaloAndZaloPay);
         }
 
@@ -190,7 +189,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 return;
             }
 
-            Timber.w(e, "MapZaloWithZaloPaySubscriber onError " + e);
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }
@@ -235,7 +233,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MapZaloWithZaloPaySubscriber());
+                .subscribe(new GetUserInfoSubscriber());
         compositeSubscription.add(subscription);
     }
 
