@@ -59,14 +59,14 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     @BindView(R.id.tvMessageSender)
     TextView tvMessageSenderView;
 
-    @BindView(R.id.imageAvatarSender)
-    BezelImageView imageAvatarSenderView;
+    @BindView(R.id.avatarSender)
+    ImageView imageAvatarSenderView;
+
+    @BindView(R.id.layoutSender)
+    View layoutUserTransfer;
 
     @BindView(R.id.tvMoney)
     TextView mMoneyChangeSuccess;
-
-    @BindView(R.id.layoutUserTransfer)
-    View layoutUserTransfer;
 
     @Inject
     ReceiveMoneyPresenter mPresenter;
@@ -110,7 +110,7 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        // loadImage(imageAvatarSenderView,"http://media.suckhoe.com.vn/uploads/medias/2016/08/28/550x500/x-bb-baaadEHRKq.jpg");
         Timber.d("onActivityCreated");
     }
 
@@ -174,6 +174,7 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @Override
     public void onDestroyView() {
+        layoutSuccess.removeCallbacks(mRunnable);
         mPresenter.destroyView();
         super.onDestroyView();
     }
@@ -184,7 +185,7 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         super.onDestroy();
     }
 
-    private void loadImage(final ImageView imageView, String url) {
+    private void loadImage(ImageView imageView, String url) {
         Glide.with(getActivity()).load(url)
                 .placeholder(R.color.silver)
                 .error(R.drawable.ic_avatar_default)
@@ -192,7 +193,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
                 .dontAnimate()
                 .into(imageView);
     }
-
 
     @Override
     public void setQrImage(Bitmap image) {
@@ -239,10 +239,20 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
         setTransferUserInfo(String.format("%s đã chuyển tiền thành công.", displayName), avatar);
         setResult(true, amount);
+
+        layoutSuccess.postDelayed(mRunnable, 5000);
     }
+
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            displayWaitForMoney();
+        }
+    };
 
     @Override
     public void setReceivedMoneyFail(String displayName, String avatar) {
+        displayName.low
         setResult(false, 0);
         setTransferUserInfo(String.format("%s đã chuyển tiền thất bại.", displayName), avatar);
     }
@@ -283,8 +293,10 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         }
 
         if (imageAvatarSenderView != null) {
+
             loadImage(imageAvatarSenderView, avatar);
         }
+
         if (tvMessageSenderView != null) {
             tvMessageSenderView.setText(message);
         }
