@@ -95,6 +95,7 @@ public class AppVersionUtils {
             contentText = context.getString(R.string.need_update_to_use);
         }
         new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
+                .setTitleText(context.getString(R.string.new_version))
                 .setContentText(contentText)
                 .setConfirmText(context.getString(R.string.btn_update))
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
