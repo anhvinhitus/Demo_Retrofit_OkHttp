@@ -9,6 +9,8 @@ public interface IChangePinView {
     void hideLoading();
 
     void showError(String message);
-    
+
     void checkPinValidAndSubmit();
+
+    void requestFocusOldPin();
 }

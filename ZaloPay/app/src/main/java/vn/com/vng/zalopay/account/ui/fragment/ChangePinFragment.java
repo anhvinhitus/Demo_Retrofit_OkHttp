@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ *
  */
 public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
@@ -152,6 +153,13 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         } else {
             mNewPassCodeView.showError(getString(R.string.pin_not_change));
             mNewPassCodeView.requestFocusView();
+        }
+    }
+
+    @Override
+    public void requestFocusOldPin() {
+        if (mOldPassCodeView != null) {
+            mOldPassCodeView.requestFocusView();
         }
     }
 

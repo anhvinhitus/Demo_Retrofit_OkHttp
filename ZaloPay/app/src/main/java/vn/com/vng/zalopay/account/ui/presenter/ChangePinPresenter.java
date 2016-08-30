@@ -7,8 +7,10 @@ import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -127,6 +129,12 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
         mChangePinView.hideLoading();
         String message = ErrorMessageFactory.create(applicationContext, e);
         mChangePinView.showError(message);
+        if (e instanceof BodyException) {
+            int code = ((BodyException)e).errorCode;
+            if (code == NetworkError.OLD_PIN_NOT_MATCH) {
+                mChangePinView.requestFocusOldPin();
+            }
+        }
     }
 
     private void onVerifyOTPError(Throwable e) {
