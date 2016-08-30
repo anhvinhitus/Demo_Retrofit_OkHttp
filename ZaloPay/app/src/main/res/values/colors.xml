@@ -118,4 +118,5 @@
 
     <color name="bg_checkbox_uncheck">#c7c7cc</color>
     <color name="bg_checkbox_checked">#06be04</color>
+    <color name="green">#06be04</color>
 </resources>

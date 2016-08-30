@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -236,32 +237,20 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         //TODO: update info here
         Timber.d("setReceivedMoney: displayName %s avatar %s amount %s", displayName, avatar, amount);
 
-        layoutQrcode.setVisibility(View.INVISIBLE);
-        layoutSuccess.setVisibility(View.VISIBLE);
-
         setTransferUserInfo(String.format("%s đã chuyển tiền thành công.", displayName), avatar);
-        mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount));
-        mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_thanhcong_24dp, 0, 0, 0);
+        setResult(true, amount);
     }
 
     @Override
     public void setReceivedMoneyFail(String displayName, String avatar) {
-
-        layoutQrcode.setVisibility(View.INVISIBLE);
-        layoutSuccess.setVisibility(View.VISIBLE);
-        mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(0));
-        mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_thatbai_24dp, 0, 0, 0);
-
+        setResult(false, 0);
         setTransferUserInfo(String.format("%s đã chuyển tiền thất bại.", displayName), avatar);
     }
 
     @Override
     public void setReceivedMoneyCancel(String displayName, String avatar) {
         setTransferUserInfo(String.format("%s đã huỷ chuyển tiền.", displayName), avatar);
-        layoutQrcode.setVisibility(View.INVISIBLE);
-        layoutSuccess.setVisibility(View.VISIBLE);
-        mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(0));
-        mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_thatbai_24dp, 0, 0, 0);
+        setResult(false, 0);
     }
 
 
@@ -277,12 +266,10 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @Override
     public void showRetry() {
-
     }
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override
@@ -300,6 +287,21 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         }
         if (tvMessageSenderView != null) {
             tvMessageSenderView.setText(message);
+        }
+    }
+
+    private void setResult(boolean success, long amount) {
+        if (layoutQrcode != null) {
+            layoutQrcode.setVisibility(View.INVISIBLE);
+        }
+        if (layoutSuccess != null) {
+            layoutSuccess.setVisibility(View.VISIBLE);
+        }
+
+        if (mMoneyChangeSuccess != null) {
+            mMoneyChangeSuccess.setTextColor(ContextCompat.getColor(getContext(), success ? R.color.green : R.color.red));
+            mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount));
+            mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(success ? R.drawable.ic_thanhcong_24dp : R.drawable.ic_thatbai_24dp, 0, 0, 0);
         }
     }
 }
