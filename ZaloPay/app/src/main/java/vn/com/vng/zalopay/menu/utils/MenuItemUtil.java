@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.menu.model.MenuItemType;
 
 /**
  * Created by longlv on 04/05/2016.
+ *
  */
 public class MenuItemUtil {
 
@@ -27,6 +28,7 @@ public class MenuItemUtil {
     public static final int ACCOUNT_ID = 11;
     public static final int SIGN_OUT_ID = 12;
     public static final int RECEIVE_MONEY = 13;
+    public static final int TERM_OF_USE = 15;
 
     private static List<MenuItem> mMenuItems;
 
@@ -45,7 +47,7 @@ public class MenuItemUtil {
 
         mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Chuyển Tiền"));
 
-       /* mMenuItems.add(new MenuItem(RECEIVE_MONEY, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Nhận Tiền"));*/
+        mMenuItems.add(new MenuItem(RECEIVE_MONEY, MenuItemType.ITEM, R.drawable.ic_nhantien_menu, "Nhận Tiền"));
 
         mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, R.drawable.ic_luuthe, "Lưu Thẻ"));
         mMenuItems.add(new MenuItem(TRANSACTION_HISTORY_ID, MenuItemType.ITEM, R.drawable.ic_lichsu_menu, R.drawable.ic_arrow_right, "Lịch Sử Thanh Toán", false));
@@ -54,6 +56,7 @@ public class MenuItemUtil {
         mMenuItems.add(new MenuItem(FAQ_ID, MenuItemType.ITEM, R.drawable.ic_faq_menu, "FAQ"));
         mMenuItems.add(new MenuItem(CONTACT_SUPPORT_ID, MenuItemType.ITEM, R.drawable.ic_lienhe_menu, "Liên Hệ Hỗ Trợ"));
         mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, R.drawable.ic_thongtin_menu, "Thông Tin Ứng Dụng"));
+        mMenuItems.add(new MenuItem(TERM_OF_USE, MenuItemType.ITEM, R.drawable.ic_thoathuan_menu, "Điều khoản sử dụng"));
 
 //        mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
         mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, R.drawable.ic_recycle, "Đăng Xuất", false));
