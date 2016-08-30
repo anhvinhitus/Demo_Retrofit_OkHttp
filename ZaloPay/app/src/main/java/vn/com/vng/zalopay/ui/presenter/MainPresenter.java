@@ -230,6 +230,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 }
 
                 @Override
+                public void onPreComplete(boolean isSuccessful) {
+
+                }
+
+                @Override
                 public void onResponseError(PaymentError paymentError) {
                     Timber.d("onResponseError");
                     if (homeView == null) {

@@ -127,6 +127,11 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                     }
 
                     @Override
+                    public void onPreComplete(boolean isSuccessful) {
+
+                    }
+
+                    @Override
                     public void onNotEnoughMoney() {
                         navigator.startDepositActivity(ScanNFCFragment.this.getContext());
                     }

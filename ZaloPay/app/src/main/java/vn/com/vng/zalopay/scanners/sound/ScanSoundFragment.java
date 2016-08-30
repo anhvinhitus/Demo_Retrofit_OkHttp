@@ -181,6 +181,11 @@ public class ScanSoundFragment extends BaseFragment {
                     }
 
                     @Override
+                    public void onPreComplete(boolean isSuccessful) {
+
+                    }
+
+                    @Override
                     public void onNotEnoughMoney() {
                         navigator.startDepositActivity(ScanSoundFragment.this.getContext());
                     }

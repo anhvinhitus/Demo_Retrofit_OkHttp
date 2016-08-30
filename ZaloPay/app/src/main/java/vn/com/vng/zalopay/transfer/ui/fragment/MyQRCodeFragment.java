@@ -226,17 +226,11 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @Override
     public void setReceiverInfo(String displayName, String avatar) {
-        //TODO: update info here
-        Timber.d("setReceiverInfo: displayName %s avatar %s", displayName, avatar);
-
         setTransferUserInfo(String.format("%s đang chuyển tiền ...", displayName), avatar);
     }
 
     @Override
     public void setReceivedMoney(String displayName, String avatar, long amount) {
-        //TODO: update info here
-        Timber.d("setReceivedMoney: displayName %s avatar %s amount %s", displayName, avatar, amount);
-
         setTransferUserInfo(String.format("%s đã chuyển tiền thành công.", displayName), avatar);
         setResult(true, amount);
 

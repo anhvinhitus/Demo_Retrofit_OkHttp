@@ -97,6 +97,11 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             }
 
             @Override
+            public void onPreComplete(boolean isSuccessful) {
+                
+            }
+
+            @Override
             public void onAppError(String msg) {
                 if (mView == null) {
                     return;

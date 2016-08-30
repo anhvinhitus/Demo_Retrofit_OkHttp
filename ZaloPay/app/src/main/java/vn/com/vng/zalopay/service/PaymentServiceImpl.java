@@ -90,6 +90,11 @@ public class PaymentServiceImpl implements IPaymentService {
             public void onNotEnoughMoney() {
                 navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
             }
+
+            @Override
+            public void onPreComplete(boolean isSuccessful) {
+
+            }
         });
 
         this.mPaymentWrapper.payWithOrder(order);

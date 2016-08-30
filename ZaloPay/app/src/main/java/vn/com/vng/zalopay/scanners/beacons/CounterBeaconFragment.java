@@ -107,6 +107,11 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
 
                     @Override
+                    public void onPreComplete(boolean isSuccessful) {
+
+                    }
+
+                    @Override
                     public void onResponseTokenInvalid() {
                         Timber.d("Invalid token");
                     }

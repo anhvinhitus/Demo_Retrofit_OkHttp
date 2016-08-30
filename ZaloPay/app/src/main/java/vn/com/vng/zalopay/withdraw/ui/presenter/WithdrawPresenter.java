@@ -102,6 +102,11 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
+            public void onPreComplete(boolean isSuccessful) {
+                
+            }
+
+            @Override
             public void onNotEnoughMoney() {
                 if (mView == null) {
                     return;

@@ -100,9 +100,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
                     if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
                         sendNotificationCancel();
-                    } else if (paymentError != PaymentError.ERR_CODE_SUCCESS) {
-                        sendNotificationFailed();
                     }
+                    /*else if (paymentError != PaymentError.ERR_CODE_SUCCESS) {
+                          sendNotificationFailed();
+                    }*/
                 }
             }
 
@@ -125,6 +126,15 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
                 if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
                     sendNotificationSuccess();
+                }
+            }
+
+            @Override
+            public void onPreComplete(boolean isSuccessful) {
+                if (isSuccessful) {
+                    sendNotificationSuccess();
+                } else {
+                    sendNotificationFailed();
                 }
             }
 

@@ -107,6 +107,11 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
+            public void onPreComplete(boolean isSuccessful) {
+
+            }
+
+            @Override
             public void onNotEnoughMoney() {
 
             }

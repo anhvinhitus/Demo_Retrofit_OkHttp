@@ -62,6 +62,11 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             }
 
             @Override
+            public void onPreComplete(boolean isSuccessful) {
+
+            }
+
+            @Override
             public void onResponseTokenInvalid() {
 
             }
