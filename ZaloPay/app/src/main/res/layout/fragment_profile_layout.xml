@@ -215,7 +215,6 @@
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/spacing.small"
             android:drawableRight="@drawable/ic_arrow_right"
-
             android:gravity="right|center_vertical"
             android:hint="@string/not_update"/>
     </LinearLayout>

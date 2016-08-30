@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
@@ -167,7 +168,14 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         if (!TextUtils.isEmpty(cmnd)) {
             tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {
-            tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+            boolean isWaitingApproveProfileLevel3 = AndroidApplication.instance().getAppComponent().userConfig().isWaitingApproveProfileLevel3();
+            if (isWaitingApproveProfileLevel3) {
+                tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                tvCMND.setHint(getString(R.string.waiting_approve));
+            } else {
+                tvCMND.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+                tvCMND.setHint(getString(R.string.not_update));
+            }
         }
 
         tvCMND.setText(cmnd);
@@ -177,7 +185,14 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         if (!TextUtils.isEmpty(email)) {
             tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {
-            tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+            boolean isWaitingApproveProfileLevel3 = AndroidApplication.instance().getAppComponent().userConfig().isWaitingApproveProfileLevel3();
+            if (isWaitingApproveProfileLevel3) {
+                tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                tvEmail.setHint(getString(R.string.waiting_approve));
+            } else {
+                tvEmail.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+                tvEmail.setHint(getString(R.string.not_update));
+            }
         }
 
         tvEmail.setText(email);
