@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ZaloPayGame</string>
+    <string name="appgame_zingxu_channel_id">14</string>
+    <string name="appgame_payforgame_channel_id">15</string>
+
+    <string name="appgame_button_dialog_close">Đóng</string>
+
+    <string name="appgame_alert_network_error">Mạng không ổn định, vui lòng kiểm tra kết nối mạng!</string>
+    <string name="appgame_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>
+    <string name="appgame_alert_no_connection">Không có kết nối internet, vui lòng thử lại sau</string>
+
+    <string name="appgame_alert_error_start_channel">Không thể khởi tạo cổng giao dịch!</string>
+</resources>

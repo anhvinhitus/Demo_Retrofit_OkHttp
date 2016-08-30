@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="vn.com.zalopay.game">
+
+    <application
+        android:allowBackup="true"
+        android:theme="@style/WalletTheme">
+
+        <activity
+            android:name="vn.com.zalopay.game.ui.component.activity.AppGameActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+
+    </application>
+
+</manifest>

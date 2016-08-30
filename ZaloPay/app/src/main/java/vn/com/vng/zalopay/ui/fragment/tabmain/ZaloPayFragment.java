@@ -48,6 +48,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
 
 
@@ -209,6 +210,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
         } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
             navigator.startMyQrCode(getContext());
+        } else if (app.appid == PaymentAppConfig.Constants.ZING_XU) {
+
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
         }

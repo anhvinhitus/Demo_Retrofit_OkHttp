@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <style name="WalletTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/appgame_main_color</item>
+        <item name="colorPrimaryDark">@color/appgame_main_color</item>
+    </style>
+ 	
+</resources>
