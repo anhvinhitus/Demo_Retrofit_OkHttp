@@ -33,7 +33,7 @@ public class PaymentAppConfig {
         APP_RESOURCE_MAP.put(Constants.INTERNAL, new AppResource(Constants.INTERNAL, AndroidApplication.instance().getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)));
         APP_RESOURCE_MAP.put(Constants.RED_PACKET, new AppResource(Constants.RED_PACKET, AndroidApplication.instance().getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)));
         APP_RESOURCE_MAP.put(Constants.RECHARGE_MONEY_PHONE, new AppResource(Constants.RECHARGE_MONEY_PHONE, AndroidApplication.instance().getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)));
-        APP_RESOURCE_MAP.put(Constants.RECEIVE_MONEY, new AppResource(Constants.RECEIVE_MONEY, AndroidApplication.instance().getString(R.string.receive_money), String.valueOf(R.drawable.ic_muathedt)));
+        APP_RESOURCE_MAP.put(Constants.RECEIVE_MONEY, new AppResource(Constants.RECEIVE_MONEY, AndroidApplication.instance().getString(R.string.receive_money), String.valueOf(R.drawable.ic_nhantien)));
         APP_RESOURCE_MAP.put(Constants.ZING_XU, new AppResource(Constants.ZING_XU, AndroidApplication.instance().getString(R.string.zing_xu), String.valueOf(R.drawable.ic_zingxu)));
         APP_RESOURCE_MAP.put(Constants.BUY_GAME_CARD, new AppResource(Constants.BUY_GAME_CARD, AndroidApplication.instance().getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)));
         APP_RESOURCE_MAP.put(Constants.ELECTRIC_BILL, new AppResource(Constants.ELECTRIC_BILL, AndroidApplication.instance().getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)));

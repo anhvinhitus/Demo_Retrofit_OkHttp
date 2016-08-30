@@ -45,7 +45,7 @@ public class MenuItemUtil {
 
         mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Chuyển Tiền"));
 
-        mMenuItems.add(new MenuItem(RECEIVE_MONEY, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Nhận Tiền"));
+       /* mMenuItems.add(new MenuItem(RECEIVE_MONEY, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Nhận Tiền"));*/
 
         mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, R.drawable.ic_luuthe, "Lưu Thẻ"));
         mMenuItems.add(new MenuItem(TRANSACTION_HISTORY_ID, MenuItemType.ITEM, R.drawable.ic_lichsu_menu, R.drawable.ic_arrow_right, "Lịch Sử Thanh Toán", false));
