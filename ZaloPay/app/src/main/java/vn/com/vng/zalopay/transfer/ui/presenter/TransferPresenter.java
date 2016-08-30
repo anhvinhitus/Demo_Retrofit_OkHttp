@@ -524,6 +524,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         intent.putExtra(Constants.ARG_MESSAGE, mTransaction.message);
         mView.getActivity().setResult(Activity.RESULT_CANCELED, intent);
         mView.getActivity().finish();
+
+        if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+            sendNotificationCancel();
+        }
     }
 
     @Override
