@@ -19,14 +19,13 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/lbl.edit.account.name"
-            android:textSize="@dimen/font_size_medium">
-        </TextView>
+            android:textSize="@dimen/font_size_medium"></TextView>
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/separate"
             android:layout_marginTop="16dp"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
 
 
         <FrameLayout
@@ -34,7 +33,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <requestFocus/>
+            <requestFocus />
 
             <vn.com.vng.zalopay.ui.widget.ZPTextInputLayout
                 android:id="@+id/textInputZaloPayName"
@@ -54,12 +53,12 @@
                     android:background="@color/transparent"
                     android:ellipsize="end"
                     android:hint="@string/hint_zalopay_name"
-                    android:inputType="textNoSuggestions|textVisiblePassword|textCapWords"
+                    android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
                     android:maxLength="24"
                     android:maxLines="1"
                     android:paddingTop="@dimen/spacing.small"
                     android:singleLine="true"
-                    android:textColorHint="@color/hint"/>
+                    android:textColorHint="@color/hint" />
 
             </vn.com.vng.zalopay.ui.widget.ZPTextInputLayout>
         </FrameLayout>
@@ -68,7 +67,7 @@
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/separate"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -77,7 +76,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="@dimen/spacing.small"
-            android:text="@string/hint.edit.account"/>
+            android:text="@string/hint.edit.account" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -88,7 +87,7 @@
             android:layout_marginTop="@dimen/spacing.small"
             android:drawableLeft="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account1"/>
+            android:text="@string/hint.edit.account1" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -99,7 +98,7 @@
             android:layout_marginTop="4dp"
             android:drawableLeft="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account2"/>
+            android:text="@string/hint.edit.account2" />
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -110,7 +109,7 @@
             android:layout_marginTop="4dp"
             android:drawableLeft="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account3"/>
+            android:text="@string/hint.edit.account3" />
     </LinearLayout>
 
 
@@ -122,7 +121,7 @@
         android:layout_gravity="bottom"
         android:background="@drawable/bg_btn_blue"
         android:gravity="center"
-        android:text="@string/check"/>
+        android:text="@string/check" />
 
 
 </FrameLayout>
