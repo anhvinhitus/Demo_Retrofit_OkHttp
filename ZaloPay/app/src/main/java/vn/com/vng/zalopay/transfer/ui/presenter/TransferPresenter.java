@@ -7,8 +7,6 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
-import org.w3c.dom.Text;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -21,7 +19,6 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
@@ -171,13 +168,13 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         });
     }
 
-    private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
-        GetUserInfoSubscriber() {
+    private final class MapZaloWithZaloPaySubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
+        MapZaloWithZaloPaySubscriber() {
         }
 
         @Override
         public void onNext(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
-            Timber.d("GetUserInfoSubscriber success " + mappingZaloAndZaloPay);
+            Timber.d("MapZaloWithZaloPaySubscriber success " + mappingZaloAndZaloPay);
             TransferPresenter.this.onGetMappingUserSuccess(mappingZaloAndZaloPay);
         }
 
@@ -193,7 +190,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 return;
             }
 
-            Timber.w(e, "GetUserInfoSubscriber onError " + e);
+            Timber.w(e, "MapZaloWithZaloPaySubscriber onError " + e);
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }
@@ -238,7 +235,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserInfoSubscriber());
+                .subscribe(new MapZaloWithZaloPaySubscriber());
         compositeSubscription.add(subscription);
     }
 

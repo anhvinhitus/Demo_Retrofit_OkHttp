@@ -214,9 +214,9 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     public void displayWaitForMoney() {
         layoutQrcode.setVisibility(View.VISIBLE);
         layoutSuccess.setVisibility(View.GONE);
-        if (layoutUserTransfer != null) {
+      /*  if (layoutUserTransfer != null) {
             layoutUserTransfer.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     @Override
