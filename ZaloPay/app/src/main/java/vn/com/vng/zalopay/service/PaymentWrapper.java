@@ -67,12 +67,7 @@ public class PaymentWrapper {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
                 Timber.d("pay onComplete resultStatus [%s]", resultStatus);
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
-
                     responseListener.onResponseSuccess(pPaymentResult);
-
-                    updateBalance();
-                    updateTransactionSuccess();
-
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                     responseListener.onResponseTokenInvalid();
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
@@ -108,9 +103,6 @@ public class PaymentWrapper {
                     } else {
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     }
-
-                    updateBalance();
-                    updateTransctionFail();
                 }
             }
         }
@@ -138,6 +130,15 @@ public class PaymentWrapper {
             AppVersionUtils.showUpgradeAppDialog(viewListener.getActivity());
         }
 
+        @Override
+        public void onPreComplete(boolean isSuccessful) {
+            if (isSuccessful) {
+                updateBalance();
+                updateTransactionSuccess();
+            } else {
+                updateTransctionFail();
+            }
+        }
     };
 
     public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, TransactionStore.Repository transactionRepository,
