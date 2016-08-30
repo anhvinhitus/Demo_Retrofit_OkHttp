@@ -35,7 +35,6 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfileView {
 
     private OnOTPFragmentListener mListener;
-    private int mRetryOtp = 0;
 
     @Inject
     OTPProfilePresenter presenter;
@@ -109,7 +108,6 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         edtOTP.requestFocus();
-        mRetryOtp = 0;
     }
 
     @Override
@@ -159,14 +157,8 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     }
 
     @Override
-    public void confirmOTPError() {
-        showError(R.string.otp_invalid);
-        if (mRetryOtp < 3) {
-            mRetryOtp++;
-            onClickContinue();
-        } else {
-            navigator.startHomeActivity(getContext(), true);
-        }
+    public void onConfirmOTPError() {
+
     }
 
     @Override

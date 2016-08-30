@@ -8,6 +8,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -51,7 +52,8 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
 
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
-        mView.confirmOTPError();
+        String message = ErrorMessageFactory.create(applicationContext, e);
+        mView.showError(message);
     }
 
     private void onVerifyOTPSuccess() {
