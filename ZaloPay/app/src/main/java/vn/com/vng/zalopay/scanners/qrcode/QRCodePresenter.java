@@ -8,6 +8,7 @@ import android.util.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
             @Override
             public void onPreComplete(boolean isSuccessful) {
-                
+
             }
 
             @Override
@@ -226,9 +227,9 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             fields.add(String.valueOf(amount));
         }
 
-        String message = data.optString("message");
-        if (!TextUtils.isEmpty(message)) {
-            fields.add(message);
+        String messageBase64 = data.optString("message");
+        if (!TextUtils.isEmpty(messageBase64)) {
+            fields.add(messageBase64);
         }
 
         String displayName = data.optString("displayname");
@@ -244,7 +245,9 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             return false;
         }
 
-        String computedChecksum = Utils.sha256(fields.toArray(new String[0]));
+        String computedChecksum = Utils.sha256(fields.toArray(new String[0])).substring(0, 8);
+
+        Timber.d("tryTransferMoney: computedChecksum %s", computedChecksum);
 
         if (!checksum.equals(computedChecksum)) {
             Timber.d("Checksum does not match");
@@ -252,7 +255,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
 
         // Start money transfer process
-        startMoneyTransfer(zalopayId, amount, message, displayName, avatar);
+        startMoneyTransfer(zalopayId, amount, messageBase64, displayName, avatar);
 
         hideLoadingView();
         return true;
@@ -266,7 +269,10 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         if (amount != -1) {
             item.amount = amount;
         }
-        item.message = message;
+
+        if (!TextUtils.isEmpty(message)) {
+            item.message = new String(Base64.decode(message, Base64.NO_PADDING | Base64.NO_WRAP));
+        }
 
         Bundle bundle = new Bundle();
         bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, vn.com.vng.zalopay.Constants.MoneyTransfer.MODE_QR);

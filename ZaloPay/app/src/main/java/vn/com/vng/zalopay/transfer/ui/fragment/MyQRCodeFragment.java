@@ -110,8 +110,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // loadImage(imageAvatarSenderView,"http://media.suckhoe.com.vn/uploads/medias/2016/08/28/550x500/x-bb-baaadEHRKq.jpg");
-        Timber.d("onActivityCreated");
     }
 
     @Override
@@ -216,6 +214,9 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     public void displayWaitForMoney() {
         layoutQrcode.setVisibility(View.VISIBLE);
         layoutSuccess.setVisibility(View.GONE);
+        if (layoutUserTransfer != null) {
+            layoutUserTransfer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -246,14 +247,14 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @Override
     public void setReceivedMoneyFail(String displayName, String avatar) {
-        setResult(false, 0);
+        // setResult(false, 0);
         setTransferUserInfo(String.format("%s đã chuyển tiền thất bại.", displayName), avatar);
     }
 
     @Override
     public void setReceivedMoneyCancel(String displayName, String avatar) {
         setTransferUserInfo(String.format("%s đã huỷ chuyển tiền.", displayName), avatar);
-        setResult(false, 0);
+        //setResult(false, 0);
     }
 
 

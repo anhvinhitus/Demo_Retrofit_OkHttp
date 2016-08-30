@@ -87,8 +87,9 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             }
 
             if (!TextUtils.isEmpty(message)) {
-                jsonObject.put("message", message);
-                fields.add(message);
+                String messageBase64 = Base64.encodeToString(message.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
+                jsonObject.put("message", messageBase64);
+                fields.add(messageBase64);
             }
 
             String displayName = Base64.encodeToString(user.displayName.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP);
@@ -101,7 +102,9 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 fields.add(avatar);
             }
 
-            jsonObject.put("checksum", Utils.sha256(fields.toArray(new String[0])));
+            String checksum = Utils.sha256(fields.toArray(new String[0])).substring(0, 8);
+            Timber.d("generateQrContent: checksum %s", checksum);
+            jsonObject.put("checksum", checksum);
             return jsonObject.toString();
         } catch (Exception ex) {
             Timber.d(ex, "generate content");
