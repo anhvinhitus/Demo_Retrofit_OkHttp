@@ -5,7 +5,6 @@ import android.os.HandlerThread;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 
 import timber.log.Timber;
 
@@ -43,7 +42,7 @@ public class TCPClient implements SocketClient {
         mHandler = new Handler(mHandlerThread.getLooper());
         mConnectionHandler = new Handler(mConnectionThread.getLooper());
 
-        mConnection = new SocketChannelConnection(hostname, port, new ConnectionListener());
+        mConnection = new SocketChannelConnection(hostname, port, new ConnectionListener(this));
     }
 
     public void connect() {
@@ -107,43 +106,7 @@ public class TCPClient implements SocketClient {
         return mConnection != null && mConnection.isConnecting();
     }
 
-    /**
-     * Created by huuhoa on 8/12/16.
-     * Implementation for connection events
-     */
-    private class ConnectionListener implements SocketChannelConnection.ConnectionListenable {
-        @Override
-        public void onConnected() {
-            postConnectedEvent();
-        }
-
-        @Override
-        public void onReceived(byte[] data) {
-            ByteBuffer buffer = ByteBuffer.wrap(data);
-            int messageLength = buffer.getInt();
-            Timber.d("Message length: %d", messageLength);
-            if (messageLength > 20000) {
-                Timber.e("Wrong message length: %s", messageLength);
-                return;
-            }
-            if (messageLength > 0) {
-                byte[] dataBuffer = new byte[messageLength];
-                buffer.get(dataBuffer);
-                Timber.d("Read %s bytes as message body", messageLength);
-                postReceivedDataEvent(dataBuffer);
-//                mListener.onMessage(dataBuffer);
-            } else {
-                Timber.d("messageLength is negative!");
-            }
-        }
-
-        @Override
-        public void onDisconnected(int reason) {
-            postDisconnectedEvent(reason);
-        }
-    }
-
-    private void postDisconnectedEvent(int reason) {
+    void postDisconnectedEvent(int reason) {
         if (mHandler == null || mListener == null) {
             return;
         }
@@ -155,7 +118,7 @@ public class TCPClient implements SocketClient {
         mHandler.post(() -> mConnection.write(data));
     }
 
-    private void postReceivedDataEvent(byte[] data) {
+    void postReceivedDataEvent(byte[] data) {
         if (mHandler == null || mListener == null) {
             return;
         }
@@ -163,7 +126,7 @@ public class TCPClient implements SocketClient {
         mHandler.post(() -> mListener.onMessage(data));
     }
 
-    private void postConnectedEvent() {
+    void postConnectedEvent() {
         if (mHandler == null || mListener == null) {
             return;
         }
