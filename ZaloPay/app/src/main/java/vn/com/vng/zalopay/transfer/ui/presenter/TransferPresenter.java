@@ -7,6 +7,8 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
+import org.w3c.dom.Text;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -19,6 +21,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
@@ -442,6 +445,17 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 mTransaction.getAvatar(),
                 mTransaction.getZaloPayName());
 
+        if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
+
+
+            Timber.d("begin get user info");
+
+            Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new UserInfoSubscriber());
+            compositeSubscription.add(subscription);
+        }
+
         initCurrentState();
         checkShowBtnContinue();
     }
@@ -582,5 +596,28 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<BaseResponse>());
         compositeSubscription.add(subscription);
+    }
+
+    private class UserInfoSubscriber extends DefaultSubscriber<Person> {
+        @Override
+        public void onNext(Person person) {
+
+            Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
+            mTransaction.avatar = person.avatar;
+            mTransaction.displayName = person.displayName;
+            mTransaction.zaloPayName = person.zalopayname;
+
+            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            String message = ErrorMessageFactory.create(applicationContext, e);
+            mView.showError(message);
+        }
     }
 }

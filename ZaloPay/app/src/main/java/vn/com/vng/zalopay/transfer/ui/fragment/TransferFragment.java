@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
@@ -109,6 +110,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void updateReceiverInfo(String displayName, String avatar, String zalopayName) {
+
+        Timber.d("updateReceiverInfo displayName %s avatar %s", displayName, avatar);
+
         if (!TextUtils.isEmpty(displayName)) {
             tvDisplayName.setText(displayName);
         }
@@ -168,6 +172,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 (RecentTransaction) Parcels.unwrap(argument.getParcelable(Constants.ARG_TRANSFERRECENT)),
                 argument.getLong(Constants.ARG_AMOUNT),
                 argument.getString(Constants.ARG_MESSAGE));
+
         mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
 
         btnContinue.setEnabled(false);
