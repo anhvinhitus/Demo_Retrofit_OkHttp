@@ -219,24 +219,12 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutCmnd)
     public void onClickIdentity() {
-
-        if (mPresenter.getProfileLevel() < 2) {
-            showToast(R.string.alert_need_update_level_2);
-            return;
-        }
-
-        navigator.startUpdateProfile3Activity(getContext());
+        mPresenter.updateIdentity();
     }
 
     @OnClick(R.id.layoutEmail)
     public void onClickEmail() {
-
-        if (mPresenter.getProfileLevel() < 2) {
-            showToast(R.string.alert_need_update_level_2);
-            return;
-        }
-
-        navigator.startUpdateProfile3Activity(getContext());
+        mPresenter.updateEmail();
     }
 
     @OnClick(R.id.layoutAccountName)

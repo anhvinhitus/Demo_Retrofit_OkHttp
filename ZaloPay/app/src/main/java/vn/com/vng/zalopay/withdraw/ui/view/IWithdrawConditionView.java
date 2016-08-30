@@ -12,4 +12,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IWithdrawConditionView extends ILoadDataView {
     Activity getActivity();
     void updateUserInfo(User user);
+    void hideUpdateProfile();
+    void showUserNote();
+    void hideUserNote();
 }

@@ -236,6 +236,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @Override
     public void updateSuccess() {
         showToast(R.string.update_profile_success);
+        userConfig.setWaitingApproveProfileLevel3(true);
         getActivity().finish();
     }
 

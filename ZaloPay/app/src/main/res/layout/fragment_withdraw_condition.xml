@@ -125,6 +125,16 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate"/>
 
+    <TextView
+        android:id="@+id/tvUserNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.small"
+        android:text="@string/withdraw_condition_user_note"
+        android:visibility="gone"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -169,6 +169,7 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_INVITATION_USERID);
         editor.remove(Constants.PREF_USER_IDENTITY_NUMBER);
         editor.remove(Constants.PREF_USER_ZALOPAY_NAME);
+        editor.remove(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3);
         editor.apply();
     }
 
@@ -275,6 +276,35 @@ public class UserConfigImpl implements UserConfig {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_LAST_USER_ID, uid);
         editor.apply();
+    }
+
+    @Override
+    public void setWaitingApproveProfileLevel3(boolean waitingApproveProfile) {
+        SharedPreferences.Editor editor = preferences.edit();
+        if (waitingApproveProfile) {
+            editor.putLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, System.currentTimeMillis()/1000);
+        } else {
+            editor.putLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, 0);
+        }
+        editor.apply();
+    }
+
+    /**
+     * If user have updated ProfileLevel3 then cache this and disable UpdateProfileLevel3 UI.
+     * Server'll check UpdateProfile request in 24h.
+     * @return is Waiting Approve ProfileLevel3
+     */
+    @Override
+    public boolean isWaitingApproveProfileLevel3() {
+        String email = preferences.getString(Constants.PREF_USER_EMAIL, "");
+        String identity = preferences.getString(Constants.PREF_USER_IDENTITY_NUMBER, "");
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(identity)) {
+            setWaitingApproveProfileLevel3(false);
+            return false;
+        }
+        long lastTime = preferences.getLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, 0);
+        long currentTime = System.currentTimeMillis()/1000;
+        return !(currentTime - lastTime >= 24*60*60);
     }
 
     @Override

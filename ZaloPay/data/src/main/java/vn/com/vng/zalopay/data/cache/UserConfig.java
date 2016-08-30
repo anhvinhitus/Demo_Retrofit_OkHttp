@@ -60,4 +60,8 @@ public interface UserConfig {
     String getLastUid();
 
     void setLastUid(String uid);
+
+    void setWaitingApproveProfileLevel3(boolean waitingApproveProfile);
+
+    boolean isWaitingApproveProfileLevel3();
 }

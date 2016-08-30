@@ -80,6 +80,12 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
 
     @Override
     public void pause() {
+        if (userConfig.isWaitingApproveProfileLevel3()) {
+            mView.showUserNote();
+            mView.hideUpdateProfile();
+        } else {
+            mView.hideUserNote();
+        }
     }
 
     @Override

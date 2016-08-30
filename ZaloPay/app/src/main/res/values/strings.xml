@@ -251,7 +251,7 @@
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
     <string name="update.profile.success">Thông tin của bạn đã được gửi đi và đang chờ phê duyệt.</string>
-
+    <string name="update.profile.waiting.approve">Thông tin của bạn đang chờ phê duyệt.</string>
 
     <string name="accept">Đồng ý</string>
     <string name="cancel">Huỷ</string>
@@ -299,6 +299,7 @@
     <string name="update_info">Cập nhật thông tin</string>
     <string name="withdraw_miss_condition">Bạn chưa đủ điều kiện để rút tiền.</string>
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
+    <string name="withdraw_condition_user_note">(*) Thông tin của bạn đang chờ phê duyệt.</string>
 
     <string name="account_existed">Tên tài khoản đã được sử dụng</string>
 

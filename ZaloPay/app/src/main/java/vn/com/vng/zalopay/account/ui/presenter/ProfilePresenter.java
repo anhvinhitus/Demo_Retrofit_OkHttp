@@ -10,6 +10,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -118,6 +119,26 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         User user = userConfig.getCurrentUser();
         if (user != null) {
             updateUserInfo(user);
+        }
+    }
+
+    public void updateIdentity() {
+        if (getProfileLevel() < 2) {
+            mView.showError(mView.getContext().getString(R.string.alert_need_update_level_2));
+        } else if (userConfig.isWaitingApproveProfileLevel3()) {
+            mView.showError(mView.getContext().getString(R.string.update_profile_waiting_approve));
+        } else {
+            navigator.startUpdateProfile3Activity(mView.getContext());
+        }
+    }
+
+    public void updateEmail() {
+        if (getProfileLevel() < 2) {
+            mView.showError(mView.getContext().getString(R.string.alert_need_update_level_2));
+        } else if (userConfig.isWaitingApproveProfileLevel3()) {
+            mView.showError(mView.getContext().getString(R.string.update_profile_waiting_approve));
+        } else {
+            navigator.startUpdateProfile3Activity(mView.getContext());
         }
     }
 

@@ -107,6 +107,8 @@ public class NetworkError {
     public static final int INVITATION_CODE_INVALID = -142;
     public static final int USER_EXISTED = -150;
     public static final int USER_NOT_EXISTED = -149;
+    // TODO: 30/08/2016 Need update when server ready (longlv2)
+    public static final int WAITING_APPROVE_PROFILE_LEVEL_3 = -151;
 
     public static String create(Context context, int errorCode) {
         switch (errorCode) {

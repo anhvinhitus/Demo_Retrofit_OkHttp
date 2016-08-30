@@ -17,7 +17,9 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -122,6 +124,11 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     }
 
     private void onUpdateError(Throwable e) {
+        if (e instanceof BodyException) {
+            if (((BodyException)e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
+                userConfig.setWaitingApproveProfileLevel3(true);
+            }
+        }
         mView.hideLoading();
         String message = ErrorMessageFactory.create(applicationContext, e);
         mView.showError(message);

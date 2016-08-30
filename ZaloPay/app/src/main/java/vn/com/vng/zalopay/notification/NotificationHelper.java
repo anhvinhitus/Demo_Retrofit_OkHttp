@@ -124,6 +124,9 @@ public class NotificationHelper {
 
         if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             updateProfilePermission(notify);
+            AndroidApplication.instance().getAppComponent().userConfig().setWaitingApproveProfileLevel3(false);
+        } else if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_FAILED) {
+            AndroidApplication.instance().getAppComponent().userConfig().setWaitingApproveProfileLevel3(false);
         } else if (notificationType == NotificationType.SEND_RED_PACKET) {
             extractRedPacketFromNotification(notify);
         } else if (notificationType == NotificationType.RETRY_TRANSACTION) {

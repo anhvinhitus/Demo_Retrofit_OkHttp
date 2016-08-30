@@ -55,6 +55,8 @@ public interface Constants {
     int PRE_PROFILE_TYPE = 1;
     int PIN_PROFILE_TYPE = 2;
 
+    String PREF_WAITING_APPROVE_PROFILE_LEVEL3 = "pref_waiting_approve_profile_level3";
+
     int STATE_START_RECORDING = 4;
     int STATE_STOP_RECORDING = 5;
 
