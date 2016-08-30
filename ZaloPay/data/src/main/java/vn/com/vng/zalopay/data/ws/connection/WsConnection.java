@@ -15,6 +15,8 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
@@ -48,7 +50,7 @@ public class WsConnection extends Connection {
     private final Parser parser;
     private final UserConfig userConfig;
 
-    private final SocketClient mSocketClient;
+    private SocketClient mSocketClient;
     private RxBus mServerPongBus;
 
     // state machine for keeping track of network connection
@@ -56,6 +58,7 @@ public class WsConnection extends Connection {
     private final Handler mConnectionHandler;
     private Long mCheckCountDown = 100L;
 
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
     /**
      * Next connection state.
      * If request to disconnect: set mNextConnectionState = DISCONNECT
@@ -76,24 +79,14 @@ public class WsConnection extends Connection {
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
 
-        mServerPongBus = new RxBus();
-        mServerPongBus.toObserverable()
-                .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
-                .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
-                .filter((obj) -> this.isUserLoggedIn() && mNextConnectionState == NEXTSTATE_RETRY_CONNECT)
-                .subscribe((obj) -> {
-                    Timber.d("Server is not responding ...");
-                    reconnect();
-                });
+        subscribeServerPongEvent();
+        subscribeKeepClientHeartBeatEvent();
+        subscribeRetryConnectionEvent(context);
+    }
 
-        Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
-                .filter((value) -> mSocketClient.isConnected())
-                .subscribe((value) -> {
-            Timber.d("Begin send heart beat [%s]", value);
-            ping();
-        });
-
-        Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
+    private void subscribeRetryConnectionEvent(Context context) {
+        Subscription subscription =
+                Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
                 .map((value) -> mCheckCountDown --)
                 .filter((value) ->
                     !mSocketClient.isConnected() &&
@@ -106,6 +99,32 @@ public class WsConnection extends Connection {
                     Timber.d("Check for reconnect");
                     connect();
                 });
+        compositeSubscription.add(subscription);
+    }
+
+    private void subscribeKeepClientHeartBeatEvent() {
+        Subscription subscription =
+                Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
+                .filter((value) -> mSocketClient.isConnected())
+                .subscribe((value) -> {
+            Timber.d("Begin send heart beat [%s]", value);
+            ping();
+        });
+        compositeSubscription.add(subscription);
+    }
+
+    private void subscribeServerPongEvent() {
+        mServerPongBus = new RxBus();
+        Subscription subscription =
+                mServerPongBus.toObserverable()
+                .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
+                .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
+                .filter((obj) -> this.isUserLoggedIn() && mNextConnectionState == NEXTSTATE_RETRY_CONNECT)
+                .subscribe((obj) -> {
+                    Timber.d("Server is not responding ...");
+                    reconnect();
+                });
+        compositeSubscription.add(subscription);
     }
 
     private boolean isUserLoggedIn() {
@@ -126,6 +145,22 @@ public class WsConnection extends Connection {
 
     public void setGCMToken(String token) {
         this.gcmToken = token;
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+
+        Timber.d("Should cleanup current instance to prevent memory leak");
+        if (compositeSubscription != null) {
+            compositeSubscription.clear();
+            compositeSubscription = null;
+        }
+
+        if (mSocketClient != null) {
+            mSocketClient.disconnect();
+            mSocketClient = null;
+        }
     }
 
     @Override
@@ -330,7 +365,9 @@ public class WsConnection extends Connection {
             Timber.d("onDisconnected %s", code);
             mState = Connection.State.Disconnected;
 
-            mSocketClient.disconnect();
+            if (mSocketClient != null) {
+                mSocketClient.disconnect();
+            }
 
             Timber.d("Next expected network state: %s", mNextConnectionState);
             if (mNextConnectionState == NEXTSTATE_RETRY_CONNECT) {

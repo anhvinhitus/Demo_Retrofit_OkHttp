@@ -31,7 +31,6 @@ public abstract class Connection {
     public static final int TYPE_FIELD_LENGTH = 1;
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
-    public static final int MAX_NUMBER_RETRY_CONNECT = 3;
 
     List<OnReceiverMessageListener> listCallBack;
 
@@ -90,15 +89,19 @@ public abstract class Connection {
         }
     }
 
-    public Message postResult(Event message) {
+    Message postResult(Event message) {
+
         Message uiMsg = new Message();
         uiMsg.what = message.getMsgType();
         uiMsg.obj = message;
-        messageHandler.sendMessage(uiMsg);
+
+        if (messageHandler != null) {
+            messageHandler.sendMessage(uiMsg);
+        }
         return uiMsg;
     }
 
-    public void onPostExecute(Event event) {
+    private void onPostExecute(Event event) {
         try {
             if (listCallBack != null) {
                 for (int i = listCallBack.size() - 1; i >= 0; i--) {
@@ -110,8 +113,12 @@ public abstract class Connection {
         }
     }
 
+    public void cleanup() {
+        messageHandler = null;
+    }
 
-    private final Handler messageHandler = new Handler(Looper.getMainLooper()) {
+
+    private Handler messageHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             Connection.this.onPostExecute((Event) msg.obj);

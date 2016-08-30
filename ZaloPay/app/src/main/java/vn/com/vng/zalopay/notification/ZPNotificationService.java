@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
+import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -47,14 +48,22 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     public ZPNotificationService() {
     }
 
-    final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-    final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
-    final Gson mGson = AndroidApplication.instance().getAppComponent().gson();
+    @Inject
+    EventBus eventBus;
+
+    @Inject
+    UserConfig userConfig;
+
+    @Inject
+    Gson mGson;
 
     WsConnection mWsConnection;
 
     @Inject
     NotificationHelper notificationHelper;
+
+    @Inject
+    ThreadExecutor mExecutor;
 
     @Nullable
     @Override
@@ -66,8 +75,9 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     public void onCreate() {
         super.onCreate();
         Timber.d("onCreate");
-        eventBus.register(this);
         doInject();
+
+        eventBus.register(this);
     }
 
     @Override
@@ -75,7 +85,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         Timber.d("onStartCommand: flags %s startId %s", flags, startId);
         ensureInitializeNetworkConnection();
 
-        getAppComponent().threadExecutor().execute(new Runnable() {
+        mExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 connectToServer();
@@ -92,9 +102,17 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         if (mWsConnection != null) {
             mWsConnection.disconnect();
             mWsConnection.clearReceiverListener();
+            mWsConnection.cleanup();
             mWsConnection = null;
         }
+        notificationHelper = null;
         super.onDestroy();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Timber.d("Finalize ZPNotificationService");
     }
 
     private void connectToServer() {

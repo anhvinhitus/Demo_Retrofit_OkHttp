@@ -12,11 +12,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.view.WindowManager;
 
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
+
+import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,9 +36,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.DonateMoneyEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -45,34 +44,40 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class NotificationHelper {
 
-    final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-    Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+    private final NotificationStore.Repository mNotifyRepository;
+    private final AccountStore.Repository mAccountRepository;
+    private final Context mContext;
+    private final RedPacketStore.Repository mRedPacketRepository;
+    private final TransactionStore.Repository mTransactionRepository;
+    private final BalanceStore.Repository mBalanceRepository;
+    private final User mUser;
+    private final EventBus mEventBus;
 
-    final NotificationStore.Repository notifyRepository;
-    final AccountStore.Repository accountRepository;
-    final Context context;
-    final RedPacketStore.Repository mRedPacketRepository;
-    final TransactionStore.Repository transactionRepository;
-    final BalanceStore.Repository balanceRepository;
-    final User mUser;
-
-
+    @Inject
     public NotificationHelper(Context applicationContext, User user,
                               NotificationStore.Repository notifyRepository,
                               AccountStore.Repository accountRepository,
                               RedPacketStore.Repository redPacketRepository,
                               TransactionStore.Repository transactionRepository,
-                              BalanceStore.Repository balanceRepository
+                              BalanceStore.Repository balanceRepository,
+                              EventBus eventBus
     ) {
-        this.notifyRepository = notifyRepository;
-        this.context = applicationContext;
-        this.accountRepository = accountRepository;
+        Timber.d("Create new instance of NotificationHelper");
+        this.mNotifyRepository = notifyRepository;
+        this.mContext = applicationContext;
+        this.mAccountRepository = accountRepository;
         this.mRedPacketRepository = redPacketRepository;
         this.mUser = user;
-        this.transactionRepository = transactionRepository;
-        this.balanceRepository = balanceRepository;
+        this.mTransactionRepository = transactionRepository;
+        this.mBalanceRepository = balanceRepository;
+        this.mEventBus = eventBus;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Timber.d("Finalize NotificationHelper");
+    }
 
     public void create(Context context, int id, Intent intent, int smallIcon, String contentTitle, String contentText) {
         NotificationManager manager =
@@ -127,11 +132,11 @@ public class NotificationHelper {
             showAlertDonateMoney(notify);
         } else if (notificationType == NotificationType.MONEY_TRANSFER) {
             if (!notify.isRead()) {
-                eventBus.post(notify);
+                mEventBus.post(notify);
             }
         } else if (notificationType == NotificationType.APP_P2P_NOTIFICATION) {
             // post notification and skip write to db
-            eventBus.post(notify);
+            mEventBus.post(notify);
             skipStorage = true;
         }
 
@@ -141,7 +146,7 @@ public class NotificationHelper {
     }
 
     private void putNotification(NotificationData notify) {
-        Subscription subscription = notifyRepository.putNotify(notify)
+        Subscription subscription = mNotifyRepository.putNotify(notify)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
@@ -170,7 +175,7 @@ public class NotificationHelper {
     }
 
     private void showAlertDonateMoney(final NotificationData notify) {
-        eventBus.postSticky(new DonateMoneyEvent(notify));
+        mEventBus.postSticky(new DonateMoneyEvent(notify));
     }
 
 
@@ -196,7 +201,7 @@ public class NotificationHelper {
     }
 
     private void updateTransactionStatus(NotificationData notify) {
-        Subscription subscription = transactionRepository.updateTransactionStatusSuccess(notify.transid)
+        Subscription subscription = mTransactionRepository.updateTransactionStatusSuccess(notify.transid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
@@ -209,7 +214,7 @@ public class NotificationHelper {
                 int status = embeddata.get("status").getAsInt();
                 int profileLevel = embeddata.get("profilelevel").getAsInt();
                 if (profileLevel > 2 && status == 1) {
-                    Subscription subscription = accountRepository.getUserProfileLevelCloud()
+                    Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
                             .subscribeOn(Schedulers.io())
                             .subscribe(new DefaultSubscriber<Boolean>());
                 }
@@ -220,7 +225,7 @@ public class NotificationHelper {
     }
 
     public void showNotificationSystem() {
-        Subscription subscription = notifyRepository.totalNotificationUnRead()
+        Subscription subscription = mNotifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
     }
@@ -230,12 +235,12 @@ public class NotificationHelper {
             return;
         }
 
-        String title = context.getString(R.string.app_name);
-        String message = String.format(context.getString(R.string.you_have_unread_messages), numberUnread);
+        String title = mContext.getString(R.string.app_name);
+        String message = String.format(mContext.getString(R.string.you_have_unread_messages), numberUnread);
         int notificationId = 1;
-        Intent intent = new Intent(context, NotificationActivity.class);
+        Intent intent = new Intent(mContext, NotificationActivity.class);
 
-        this.create(context, notificationId,
+        this.create(mContext, notificationId,
                 intent,
                 R.mipmap.ic_launcher,
                 title, message);
@@ -256,19 +261,19 @@ public class NotificationHelper {
 
 
     public void closeNotificationSystem() {
-        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(mContext);
         nm.cancelAll();
     }
 
 
     private void updateTransaction() {
-        Subscription subscription = transactionRepository.updateTransaction()
+        Subscription subscription = mTransactionRepository.updateTransaction()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     private void updateBalance() {
-        Subscription subscription = balanceRepository.updateBalance()
+        Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
     }

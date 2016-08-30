@@ -51,18 +51,4 @@ public class UserNotificationModule {
                                                                 ) {
         return new NotificationRepository(storage, eventBus, rxBus, requestService, user);
     }
-
-    @UserScope
-    @Provides
-    NotificationHelper providesNotificationHelper(Context context, User user,
-                                                  AccountStore.Repository accountRepository,
-                                                  NotificationStore.Repository notifyRepository,
-                                                  RedPacketStore.Repository redPacketRepository,
-                                                  TransactionStore.Repository transactionRepository,
-                                                  BalanceStore.Repository balanceRepository
-    ) {
-        return new NotificationHelper(context, user,
-                notifyRepository, accountRepository, redPacketRepository,
-                transactionRepository, balanceRepository);
-    }
 }
