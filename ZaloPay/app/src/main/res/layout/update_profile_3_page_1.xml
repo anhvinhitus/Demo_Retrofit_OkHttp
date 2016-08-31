@@ -33,8 +33,8 @@
                 android:id="@+id/textInputFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="10dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 app:errorEnabled="false"
@@ -49,8 +49,9 @@
                     android:hint="@string/email"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:minHeight="48dp"
+                    android:minHeight="44dp"
                     android:singleLine="true" />
+
             </android.support.design.widget.TextInputLayout>
 
             <View
@@ -63,8 +64,8 @@
                 android:id="@+id/textInputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="10dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 app:errorEnabled="false"
@@ -79,7 +80,7 @@
                     android:hint="Số CMND"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    android:minHeight="48dp"
+                    android:minHeight="44dp"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
