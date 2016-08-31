@@ -106,11 +106,11 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<BaseResponse> recoveryPin(String pin, String oldPin) {
-        pin = sha256Base(pin);
+    public Observable<BaseResponse> recoveryPin(String oldPin, String newPin) {
         oldPin = sha256Base(oldPin);
+        newPin = sha256Base(newPin);
 
-        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, pin, oldPin, null);
+        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, newPin, oldPin, null);
     }
 
     @Override
