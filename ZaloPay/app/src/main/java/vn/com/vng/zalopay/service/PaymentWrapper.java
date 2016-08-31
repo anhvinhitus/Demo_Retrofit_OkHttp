@@ -23,8 +23,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.JsonUtil;
-import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
-import vn.com.zalopay.wallet.application.ZingMobilePayService;
+import vn.com.zalopay.wallet.application.WalletSDKApplication;
+import vn.com.zalopay.wallet.application.WalletSDKPayment;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.entity.enumeration.EPayError;
@@ -288,7 +288,7 @@ public class PaymentWrapper {
         paymentInfo.walletTransID = walletTransId;
 
         Timber.d("saveCardMap, start paymentsdk");
-        ZingMobilePayApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
+        WalletSDKApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
@@ -309,7 +309,7 @@ public class PaymentWrapper {
 
         Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
                 viewListener.getActivity(), paymentChannel, paymentInfo);
-        ZingMobilePayService.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
+        WalletSDKPayment.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
     }
 
     private int getUserProfileLevel() {

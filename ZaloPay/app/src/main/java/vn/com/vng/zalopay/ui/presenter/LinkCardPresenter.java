@@ -31,7 +31,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
-import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.application.WalletSDKApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
@@ -217,7 +217,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         params.userID = String.valueOf(user.zaloPayId);
         params.mapCard = mapCard;
 
-        ZingMobilePayApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
+        WalletSDKApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
     }
 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {

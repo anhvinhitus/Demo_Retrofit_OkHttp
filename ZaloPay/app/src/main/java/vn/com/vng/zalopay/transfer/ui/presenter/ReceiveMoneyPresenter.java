@@ -25,7 +25,6 @@ import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 
 /**

@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.application.WalletSDKApplication;
 import vn.com.zalopay.wallet.data.GlobalData;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.entity.base.ZPWPaymentInfo;
@@ -113,7 +113,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         userInfo.zaloPayUserId = user.zaloPayId;
         userInfo.accessToken = user.accesstoken;
         paymentInfo.userInfo = userInfo;
-        ZingMobilePayApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
+        WalletSDKApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
