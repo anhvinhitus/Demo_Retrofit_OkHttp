@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.game.businnesslogic.provider.config.IGetUrlConfig;
 import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
 import vn.com.zalopay.game.businnesslogic.provider.networking.INetworking;
-import vn.com.zalopay.game.controller.AppGameController;
 
 public class AppGameGlobal
 {
@@ -94,6 +95,7 @@ public class AppGameGlobal
 
 	public static boolean isResultChannel()
 	{
+		Timber.d("isResultChannel appTransId [%s]", mAppGamePayInfo.getApptransid());
 		if(mAppGamePayInfo != null && ! TextUtils.isEmpty(mAppGamePayInfo.getApptransid()))
 			return true;
 		return false;

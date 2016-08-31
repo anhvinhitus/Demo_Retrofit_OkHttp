@@ -1,4 +1,17 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
 
 def cfg = rootProject.ext.configuration
 android {
@@ -23,4 +36,6 @@ dependencies {
     def libs = rootProject.ext.libraries
     compile libs.support_appcompat_v7
     compile libs.timber
+    compile libs.parceler
+    apt libs.parceler_apt
 }

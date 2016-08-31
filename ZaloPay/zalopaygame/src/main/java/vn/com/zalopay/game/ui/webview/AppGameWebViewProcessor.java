@@ -12,6 +12,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import org.parceler.Parcels;
+
 import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
@@ -108,6 +110,13 @@ public class AppGameWebViewProcessor extends WebViewClient {
         bundle.putString("embeddata", embeddata);
         bundle.putString("amount", amount);
         bundle.putString("mac", mac);
+        bundle.putParcelable("AppGamePayInfo", Parcels.wrap(AppGameGlobal.getAppGamePayInfo()));
+
+        Timber.d("onResponseSuccess appId [%s]", AppGameGlobal.getAppGamePayInfo().getAppId());
+        Timber.d("onResponseSuccess getApptransid [%s]", AppGameGlobal.getAppGamePayInfo().getApptransid());
+        Timber.d("onResponseSuccess getUid [%s]", AppGameGlobal.getAppGamePayInfo().getUid());
+        Timber.d("onResponseSuccess getAccessToken [%s]", AppGameGlobal.getAppGamePayInfo().getAccessToken());
+
         intent.putExtras(bundle);
         AppGameBaseActivity.getCurrentActivity().setResult(Activity.RESULT_OK, intent);
         AppGameBaseActivity.getCurrentActivity().finish();

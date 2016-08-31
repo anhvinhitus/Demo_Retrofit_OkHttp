@@ -24,6 +24,8 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +53,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
 
@@ -201,9 +204,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         String amount = bundle.getString("amount");
         String mac = bundle.getString("mac");
 
+        AppGamePayInfo appGamePayInfo = Parcels.unwrap(bundle.getParcelable("AppGamePayInfo"));
         Order order = new Order(Long.valueOf(appid), accesstoken, apptransid, appuser, Long.valueOf(apptime),
                 embeddata, item, Long.parseLong(amount), description, null, mac);
-        presenter.payOrder(order);
+        presenter.payOrder(order, appGamePayInfo);
     }
 
     @Override

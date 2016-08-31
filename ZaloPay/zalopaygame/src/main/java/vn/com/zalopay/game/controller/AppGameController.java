@@ -69,8 +69,8 @@ public class AppGameController {
      * @param pNetworking
      */
     public synchronized static void viewPayResult(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
-                                                  IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking)
-    {
+                                                  IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking) {
+        Timber.d("viewPayResult start [%s]", pAppGamePayInfo.getApptransid());
         if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null) {
             if (pListener != null)
                 pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL, "Component (activity,httpclient) is null"));
@@ -82,6 +82,7 @@ public class AppGameController {
         try {
             AppGameGlobal.setApplication(pOwner, pAppGamePayInfo, pListener, pDialog, pUrlConfig, pNetworking);
         } catch (Exception e) {
+            Timber.w(e, "view pay result exception [%s]", e.getMessage());
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
 
             return;
@@ -113,6 +114,7 @@ public class AppGameController {
      * determinate which flow will start.
      */
     private static void startScreen() {
+        Timber.d("startScreen start");
         IAppGameStartFlow startFlow = AppGameChannelFactory.procedureChannel();
 
         if (startFlow == null) {

@@ -173,7 +173,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void payOrder(Order order) {
+    public void payOrder(Order order, final AppGamePayInfo appGamePayInfo) {
         showLoadingView();
         PaymentWrapper paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
@@ -231,7 +231,34 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                         || zpPaymentResult.paymentInfo == null) {
                     return;
                 }
-                AppGameController.viewPayResult(zpPaymentResult.paymentInfo.appTransID);
+                IAppGameResultListener iAppGameResultListener = new IAppGameResultListener() {
+                    @Override
+                    public void onError(AppGameError pError) {
+                        Timber.d("onError pError [%s]", pError);
+                        if (pError == null) {
+                            return;
+                        }
+                        mZaloPayView.showError(pError.messError);
+                    }
+
+                    @Override
+                    public void onLogout() {
+                        Timber.d("onLogout start");
+                        if (mZaloPayView == null) {
+                            return;
+                        }
+                        mZaloPayView.onSessionExpired();
+                    }
+                };
+
+                AppGamePayInfo appGamePayInfo2 = new AppGamePayInfo();
+                appGamePayInfo2.setAppId(appGamePayInfo.getAppId());
+                appGamePayInfo2.setApptransid(zpPaymentResult.paymentInfo.appTransID);
+                appGamePayInfo2.setUid(appGamePayInfo.getUid());
+                appGamePayInfo2.setAccessToken(appGamePayInfo.getAccessToken());
+
+                AppGameController.viewPayResult(mZaloPayView.getActivity(), appGamePayInfo2, iAppGameResultListener,
+                        new AppGameDialogImpl(), new AppGameConfigImpl(), new AppGameNetworkingImpl());
             }
 
             @Override

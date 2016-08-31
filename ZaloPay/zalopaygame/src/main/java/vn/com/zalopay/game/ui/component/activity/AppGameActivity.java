@@ -32,7 +32,7 @@ public class AppGameActivity extends AppGameBaseActivity {
      */
     private Fragment getView() {
         mFragment = AppGameInjectView.getInstance(AppGameViewFactory.procedureChannel()).getView();
-
+        Timber.d("getView fragment [%s]", mFragment);
         return mFragment;
     }
 

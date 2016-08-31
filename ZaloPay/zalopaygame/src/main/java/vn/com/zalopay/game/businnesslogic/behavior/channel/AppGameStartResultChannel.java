@@ -5,7 +5,6 @@ import android.content.Intent;
 import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.behavior.IAppGameStartFlow;
-import vn.com.zalopay.game.config.AppGameConfig;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 

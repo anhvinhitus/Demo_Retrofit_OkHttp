@@ -1,11 +1,13 @@
 package vn.com.zalopay.game.businnesslogic.entity.pay;
 
-public class AppGamePayInfo
-{
-    private String uid;
-    private String accessToken;
-    private int appId;
-    private String apptransid;
+import org.parceler.Parcel;
+
+@Parcel
+public class AppGamePayInfo {
+    String uid;
+    String accessToken;
+    int appId;
+    String apptransid;
 
     public String getUid() {
         return uid;

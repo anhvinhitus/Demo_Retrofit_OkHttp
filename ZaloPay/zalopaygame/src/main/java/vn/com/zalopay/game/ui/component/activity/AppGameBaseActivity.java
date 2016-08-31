@@ -24,7 +24,7 @@ public abstract class AppGameBaseActivity extends FragmentActivity
 	{
 		synchronized (mActivitiesStack)
 		{
-			if (mActivitiesStack == null)
+			if (mActivitiesStack == null || mActivitiesStack.isEmpty())
 			{
 				return AppGameGlobal.getOwnerActivity();
 			}
