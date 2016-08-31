@@ -160,14 +160,14 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_intro, menu);
+        inflater.inflate(R.menu.receiver_money, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
-        if (itemId == R.id.action_intro) {
+        if (itemId == R.id.action_amount) {
             startActivityForResult(new Intent(getContext(), SetAmountActivity.class), 100);
             return true;
         }
