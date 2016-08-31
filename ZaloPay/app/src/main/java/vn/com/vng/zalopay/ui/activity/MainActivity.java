@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -365,5 +366,14 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AppGameActivity.REQUEST_CODE) {
+            if (mZaloPayFragment != null) {
+                mZaloPayFragment.onActivityResult(requestCode, resultCode, data);
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,11 +38,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
+import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -48,6 +51,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
 
 
@@ -55,7 +59,8 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
-public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener, IZaloPayView, BannerPagerAdapter.IBannerClick {
+public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener,
+        IZaloPayView, BannerPagerAdapter.IBannerClick {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -171,6 +176,37 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AppGameActivity.REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            payOrder(data);
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void payOrder(Intent data) {
+        if (data == null || data.getExtras() == null) {
+            return;
+        }
+        Bundle bundle = data.getExtras();
+        String muid = bundle.getString("muid");
+        String accesstoken = bundle.getString("accesstoken");
+        String appid = bundle.getString("appid");
+        String apptransid = bundle.getString("apptransid");
+        String appuser = bundle.getString("appuser");
+        String apptime = bundle.getString("apptime");
+        String item = bundle.getString("item");
+        String description = bundle.getString("description");
+        String embeddata = bundle.getString("embeddata");
+        String amount = bundle.getString("amount");
+        String mac = bundle.getString("mac");
+
+        Order order = new Order(Long.valueOf(appid), accesstoken, apptransid, appuser, Long.valueOf(apptime),
+                embeddata, item, Long.parseLong(amount), description, null, mac);
+        presenter.payOrder(order);
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();
@@ -209,8 +245,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
         } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
             navigator.startMyQrCode(getContext());
-        } else if (app.appid == PaymentAppConfig.Constants.ZING_XU) {
-
+        } else if (app.appid == PaymentAppConfig.Constants.BUY_GAME_CARD) {
+            presenter.startGamePayWebActivity(PaymentAppConfig.Constants.BUY_GAME_CARD);
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
         }
@@ -287,6 +323,27 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         mBalanceView.setText(span);
+    }
+
+    @Override
+    public void showError(String error) {
+        showToast(error);
+    }
+
+    @Override
+    public void onSessionExpired() {
+        showError(getString(R.string.exception_token_expired_message));
+        getAppComponent().applicationSession().clearUserSession();
+    }
+
+    @Override
+    public void showLoading() {
+        super.showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideProgressDialog();
     }
 
     @Override

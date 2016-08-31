@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -11,14 +13,29 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
+import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.game.AppGameConfigImpl;
+import vn.com.vng.zalopay.game.AppGameDialogImpl;
+import vn.com.vng.zalopay.game.AppGameNetworkingImpl;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
+import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
+import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
+import vn.com.zalopay.game.controller.AppGameController;
+import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -27,8 +44,13 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
 
     private IZaloPayView mZaloPayView;
+    private ZaloPayIAPRepository mZaloPayIAPRepository;
 
     protected CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository) {
+        mZaloPayIAPRepository = zaloPayIAPRepository;
+    }
 
     @Override
     public void setView(IZaloPayView o) {
@@ -142,6 +164,112 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     }
 
+    @Override
+    public void startGamePayWebActivity(int appId) {
+        mZaloPayIAPRepository.getMerchantUserInfo(appId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GamePaySubscribe(appId));
+    }
+
+    @Override
+    public void payOrder(Order order) {
+        showLoadingView();
+        PaymentWrapper paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
+            @Override
+            public Activity getActivity() {
+                if (mZaloPayView != null) {
+                    return mZaloPayView.getActivity();
+                }
+                return null;
+            }
+        }, new PaymentWrapper.IResponseListener() {
+            @Override
+            public void onParameterError(String param) {
+
+                Timber.d("onParameterError");
+
+                if (mZaloPayView == null) {
+                    return;
+                }
+
+                if ("order".equalsIgnoreCase(param)) {
+                    mZaloPayView.showError(applicationContext.getString(R.string.order_invalid));
+                } else if ("uid".equalsIgnoreCase(param)) {
+                    mZaloPayView.showError(applicationContext.getString(R.string.user_invalid));
+                } else if ("token".equalsIgnoreCase(param)) {
+                    mZaloPayView.showError(applicationContext.getString(R.string.order_invalid));
+                }
+
+                hideLoadingView();
+            }
+
+            @Override
+            public void onPreComplete(boolean isSuccessful) {
+
+            }
+
+            @Override
+            public void onResponseError(PaymentError paymentError) {
+                Timber.d("onResponseError");
+                if (mZaloPayView == null) {
+                    return;
+                }
+
+                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
+                    mZaloPayView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                }
+
+                hideLoadingView();
+            }
+
+            @Override
+            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                Timber.d("onResponseSuccess");
+                hideLoadingView();
+                if (mZaloPayView == null || zpPaymentResult == null
+                        || zpPaymentResult.paymentInfo == null) {
+                    return;
+                }
+                AppGameController.viewPayResult(zpPaymentResult.paymentInfo.appTransID);
+            }
+
+            @Override
+            public void onResponseTokenInvalid() {
+                Timber.d("onResponseTokenInvalid");
+                if (mZaloPayView == null) {
+                    return;
+                }
+                hideLoadingView();
+            }
+
+            @Override
+            public void onAppError(String msg) {
+                Timber.d("onAppError msg [%s]", msg);
+                if (mZaloPayView == null) {
+                    return;
+                }
+                if (mZaloPayView.getContext() != null) {
+                    mZaloPayView.showError(mZaloPayView.getContext().getString(R.string.exception_generic));
+                }
+                hideLoadingView();
+            }
+
+            @Override
+            public void onNotEnoughMoney() {
+                Timber.d("onNotEnoughMoney");
+
+                if (mZaloPayView == null) {
+                    return;
+                }
+                hideLoadingView();
+                navigator.startDepositActivity(applicationContext);
+            }
+        });
+
+        paymentWrapper.payWithOrder(order);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChange(NetworkChangeEvent event) {
         if (!event.isOnline && mZaloPayView != null) {
@@ -178,5 +306,69 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 mZaloPayView.setTotalNotify(integer);
             }
         }
+    }
+
+    private class GamePaySubscribe extends DefaultSubscriber<MerchantUserInfo> {
+        private int mAppId;
+
+        public GamePaySubscribe(int appId) {
+            this.mAppId = appId;
+        }
+
+        @Override
+        public void onNext(MerchantUserInfo merchantUserInfo) {
+            Timber.d("onNext merchantInfo [%s]", merchantUserInfo);
+            if (merchantUserInfo == null) {
+                mZaloPayView.showError("MerchantUserInfo invalid");
+                return;
+            }
+            AppGamePayInfo gamePayInfo = new AppGamePayInfo();
+            gamePayInfo.setUid(merchantUserInfo.muid);
+            gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
+            gamePayInfo.setAppId(mAppId);
+            IAppGameResultListener gameResultListener = new IAppGameResultListener() {
+                @Override
+                public void onError(AppGameError pError) {
+                    Timber.d("onError pError [%s]", pError);
+                    if (pError == null) {
+                        return;
+                    }
+                    mZaloPayView.showError(pError.messError);
+                }
+
+                @Override
+                public void onLogout() {
+                    Timber.d("onLogout start");
+                    if (mZaloPayView == null) {
+                        return;
+                    }
+                    mZaloPayView.onSessionExpired();
+                }
+            };
+            Timber.d("onNext startPayFlow");
+            AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
+                    new AppGameDialogImpl(), new AppGameConfigImpl(), new AppGameNetworkingImpl());
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (e instanceof BodyException) {
+                mZaloPayView.showError(((BodyException) e).getMessage());
+            }
+        }
+    }
+
+    private void showLoadingView() {
+        if (mZaloPayView == null) {
+            return;
+        }
+        mZaloPayView.showLoading();
+    }
+
+    private void hideLoadingView() {
+        if (mZaloPayView == null) {
+            return;
+        }
+        mZaloPayView.hideLoading();
     }
 }

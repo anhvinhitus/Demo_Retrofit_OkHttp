@@ -3,6 +3,7 @@ package vn.com.zalopay.game.ui.component.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.base.AppGameSingletonLifeCircle;
@@ -10,35 +11,33 @@ import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameInjectView;
 import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameViewFactory;
 import vn.com.zalopay.game.ui.component.fragment.AppGameFragment;
 
-public class AppGameActivity extends AppGameBaseActivity
-{
-
+public class AppGameActivity extends AppGameBaseActivity {
+    public static final int REQUEST_CODE = 10001;
     private AppGameFragment mFragment;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
+        Timber.d("onCreate start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__main);
 
         Fragment subView = getView();
 
-        if(subView != null)
-            inflatFragment(subView,false);
+        if (subView != null)
+            inflatFragment(subView, false);
     }
+
     /**
      * start flow by app id.
      */
-    private Fragment getView()
-    {
+    private Fragment getView() {
         mFragment = AppGameInjectView.getInstance(AppGameViewFactory.procedureChannel()).getView();
 
         return mFragment;
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         /*
         if(mFragment != null && mFragment.canBack())
         {
@@ -54,23 +53,23 @@ public class AppGameActivity extends AppGameBaseActivity
 
     @Override
     protected void onDestroy() {
+        Timber.d("onDestroy start");
         super.onDestroy();
 
         AppGameSingletonLifeCircle.disposeAll();
     }
 
     @Override
-    public void logout()
-    {
-        if(AppGameGlobal.getResultListener() != null)
+    public void logout() {
+        Timber.d("logout start");
+        if (AppGameGlobal.getResultListener() != null)
             AppGameGlobal.getResultListener().onLogout();
 
         finish();
     }
 
     @Override
-    public void startUrl(String pUrl)
-    {
+    public void startUrl(String pUrl) {
         mFragment.loadUrl(pUrl);
     }
 

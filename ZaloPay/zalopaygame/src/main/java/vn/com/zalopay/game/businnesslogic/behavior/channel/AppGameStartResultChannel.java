@@ -12,24 +12,20 @@ import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 /**
  * Created by admin on 8/27/16.
  */
-public class AppGameStartResultChannel implements IAppGameStartFlow
-{
+public class AppGameStartResultChannel implements IAppGameStartFlow {
     @Override
-    public void startFlow()
-    {
-        Timber.d(getClass().getName()+"===starting flow===");
+    public void startFlow() {
+        Timber.d(getClass().getName() + "===starting flow===");
 
         //still have a running activity.
-        if(AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
-            ((AppGameActivity)AppGameActivity.getCurrentActivity()).startUrl(String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid()));
+        if (AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
+            ((AppGameActivity) AppGameActivity.getCurrentActivity()).
+                    startUrl(String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid()));
 
-        else
-        {
+        else {
             //start new activity
-            Intent intentPayResult = new Intent(AppGameGlobal.getApplication(), AppGameActivity.class);
-            intentPayResult.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            AppGameGlobal.getApplication().startActivity(intentPayResult);
+            Intent intentPayResult = new Intent(AppGameGlobal.getOwnerActivity(), AppGameActivity.class);
+            AppGameGlobal.getOwnerActivity().startActivity(intentPayResult);
         }
     }
 }

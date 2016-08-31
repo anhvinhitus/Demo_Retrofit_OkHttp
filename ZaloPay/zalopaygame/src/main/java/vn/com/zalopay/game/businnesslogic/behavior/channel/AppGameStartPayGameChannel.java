@@ -6,33 +6,28 @@ import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.behavior.IAppGameStartFlow;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
-import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 
 /**
  * Created by admin on 8/27/16.
  */
-public class AppGameStartPayGameChannel implements IAppGameStartFlow
-{
+public class AppGameStartPayGameChannel implements IAppGameStartFlow {
     @Override
-    public void startFlow()
-    {
-        Timber.d(getClass().getName()+"===starting flow===");
+    public void startFlow() {
+        Timber.d("===starting flow AppGameGlobal.getApplication()[%s]", AppGameGlobal.getApplication());
 
-        if(AppGameGlobal.getApplication() == null)
-        {
-            Timber.e(getClass().getName()+" application is null");
+        if (AppGameGlobal.getOwnerActivity() == null) {
+            Timber.e(getClass().getName() + " application is null");
             return;
         }
 
-        if(AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
-        {
-            Timber.e(getClass().getName()+"there're a running activity");
-            return;
-        }
+//        if (AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity) {
+//            Timber.e("there're a running activity");
+//            return;
+//        }
 
-        Intent intentZingXu = new Intent(AppGameGlobal.getApplication(), AppGameActivity.class);
-        intentZingXu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        AppGameGlobal.getApplication().startActivity(intentZingXu);
+        Timber.d("start getOwnerActivity [%s]", AppGameGlobal.getOwnerActivity());
+        Intent intentZingXu = new Intent(AppGameGlobal.getOwnerActivity(), AppGameActivity.class);
+        AppGameGlobal.getOwnerActivity().startActivityForResult(intentZingXu, AppGameActivity.REQUEST_CODE);
+        Timber.d("startFlow end");
     }
 }

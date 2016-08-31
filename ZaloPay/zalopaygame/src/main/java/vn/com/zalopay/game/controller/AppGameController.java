@@ -21,34 +21,27 @@ import vn.com.zalopay.game.businnesslogic.provider.networking.INetworking;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 
-public class AppGameController
-{
+public class AppGameController {
     public synchronized static void startPayFlow(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
-                                                 IDialog pDialog, IGetUrlConfig pUrlConfig,INetworking pNetworking)
-    {
-        if(pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null)
-        {
-            if(pListener != null)
-                pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL,"Component (activity,httpclient) is null"));
+                                                 IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking) {
+        if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null) {
+            if (pListener != null)
+                pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL, "Component (activity,httpclient) is null"));
 
             return;
         }
 
         //set global static
-        try
-        {
-            AppGameGlobal.setApplication(pOwner,pAppGamePayInfo,pListener,pDialog,pUrlConfig,pNetworking);
-        }
-        catch (Exception e)
-        {
+        try {
+            AppGameGlobal.setApplication(pOwner, pAppGamePayInfo, pListener, pDialog, pUrlConfig, pNetworking);
+        } catch (Exception e) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
 
             return;
         }
 
         //is networking online?
-        if (AppGameGlobal.getNetworking() != null && ! AppGameGlobal.getNetworking().isOnline(pOwner))
-        {
+        if (AppGameGlobal.getNetworking() != null && !AppGameGlobal.getNetworking().isOnline(pOwner)) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_no_connection));
 
             return;
@@ -57,8 +50,7 @@ public class AppGameController
         //validate input
         String strCheck = validatePaymentInfo();
 
-        if( ! TextUtils.isEmpty(strCheck))
-        {
+        if (!TextUtils.isEmpty(strCheck)) {
             onReturnCancel(strCheck);
 
             return;
@@ -69,29 +61,24 @@ public class AppGameController
 
     /***
      * view result payment screen.
+     *
      * @param pTransId
      */
-    public synchronized static void viewPayResult(String pTransId)
-    {
-        if(AppGameGlobal.getOwnerActivity() == null || TextUtils.isEmpty(pTransId))
-        {
-            Timber.e("viewPayResult"+"===Please pay before calling view result===");
+    public synchronized static void viewPayResult(String pTransId) {
+        if (AppGameGlobal.getOwnerActivity() == null || TextUtils.isEmpty(pTransId)) {
+            Timber.e("viewPayResult" + "===Please pay before calling view result===");
 
             return;
         }
 
-        try
-        {
+        try {
             AppGameGlobal.getAppGamePayInfo().setApptransid(pTransId);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
             return;
         }
 
-        if (AppGameGlobal.getNetworking() != null &&  ! AppGameGlobal.getNetworking().isOnline(AppGameBaseActivity.getCurrentActivity()))
-        {
+        if (AppGameGlobal.getNetworking() != null && !AppGameGlobal.getNetworking().isOnline(AppGameBaseActivity.getCurrentActivity())) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_no_connection));
 
             return;
@@ -103,16 +90,12 @@ public class AppGameController
     /***
      * dispose all
      */
-    public synchronized static void dispose()
-    {
-        try
-        {
-            if(AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
+    public synchronized static void dispose() {
+        try {
+            if (AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
                 AppGameBaseActivity.getCurrentActivity().finish();
-        }
-        catch (Exception e)
-        {
-            Timber.e("===dispose===%s", e != null ? e.getMessage(): "error");
+        } catch (Exception e) {
+            Timber.e("===dispose===%s", e != null ? e.getMessage() : "error");
             return;
         }
     }
@@ -120,12 +103,10 @@ public class AppGameController
     /***
      * determinate which flow will start.
      */
-    private static void startScreen()
-    {
+    private static void startScreen() {
         IAppGameStartFlow startFlow = AppGameChannelFactory.procedureChannel();
 
-        if(startFlow == null)
-        {
+        if (startFlow == null) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
 
             return;
@@ -134,14 +115,12 @@ public class AppGameController
         AppGameGateway.getInstance(startFlow).startFlow();
     }
 
-    private static String validatePaymentInfo()
-    {
-        if(AppGameGlobal.getAppGamePayInfo() == null)
-        {
+    private static String validatePaymentInfo() {
+        if (AppGameGlobal.getAppGamePayInfo() == null) {
             return AppGameGlobal.getString(R.string.appgame_alert_input_error);
         }
 
-        if(AppGameGlobal.getAppGamePayInfo().getAppId() <=0
+        if (AppGameGlobal.getAppGamePayInfo().getAppId() <= 0
                 || TextUtils.isEmpty(AppGameGlobal.getAppGamePayInfo().getUid())
                 || TextUtils.isEmpty(AppGameGlobal.getAppGamePayInfo().getAccessToken()))
             return AppGameGlobal.getString(R.string.appgame_alert_input_error);
@@ -150,12 +129,10 @@ public class AppGameController
     }
 
     /***
-     *show dialog and callback to app
+     * show dialog and callback to app
      */
-    private static void onReturnCancel(final String pMessage)
-    {
-        if(AppGameGlobal.getDialog() != null)
-        {
+    private static void onReturnCancel(final String pMessage) {
+        if (AppGameGlobal.getDialog() != null) {
             AppGameGlobal.getDialog().hideLoadingDialog();
 
             AppGameGlobal.getDialog().showInfoDialog(AppGameGlobal.getOwnerActivity(),
@@ -163,8 +140,8 @@ public class AppGameController
                     3, new IDialogListener() {
                         @Override
                         public void onClose() {
-                            if(AppGameGlobal.getResultListener() != null)
-                                AppGameGlobal.getResultListener().onError(new AppGameError(EAppGameError.DATA_INVALID,pMessage));
+                            if (AppGameGlobal.getResultListener() != null)
+                                AppGameGlobal.getResultListener().onError(new AppGameError(EAppGameError.DATA_INVALID, pMessage));
 
                             AppGameSingletonLifeCircle.disposeAll();
                         }

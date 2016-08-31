@@ -26,4 +26,12 @@ public interface IZaloPayView {
     void showNetworkError();
 
     void setBalance(long balance);
+
+    void showError(String error);
+
+    void onSessionExpired();
+
+    void showLoading();
+
+    void hideLoading();
 }

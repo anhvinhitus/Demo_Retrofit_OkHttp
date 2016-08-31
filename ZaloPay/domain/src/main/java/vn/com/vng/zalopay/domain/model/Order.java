@@ -29,7 +29,8 @@ public class Order extends AbstractData {
 
     }
 
-    public Order(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac) {
+    public Order(long appid, String zptranstoken, String apptransid, String appuser, long apptime,
+                 String embeddata, String item, long amount, String description, String payoption, String mac) {
         this.appid = appid;
         this.zptranstoken = zptranstoken;
         this.apptransid = apptransid;
