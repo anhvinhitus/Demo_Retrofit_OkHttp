@@ -3,6 +3,7 @@ package vn.com.zalopay.game.controller;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.base.AppGameSingletonLifeCircle;
@@ -16,7 +17,6 @@ import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultList
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.provider.config.IGetUrlConfig;
 import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
-import vn.com.zalopay.game.businnesslogic.provider.log.ILog;
 import vn.com.zalopay.game.businnesslogic.provider.networking.INetworking;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
@@ -24,9 +24,9 @@ import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 public class AppGameController
 {
     public synchronized static void startPayFlow(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
-                                                 IDialog pDialog, IGetUrlConfig pUrlConfig, ILog pLog,INetworking pNetworking)
+                                                 IDialog pDialog, IGetUrlConfig pUrlConfig,INetworking pNetworking)
     {
-        if(pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null || pLog == null)
+        if(pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null)
         {
             if(pListener != null)
                 pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL,"Component (activity,httpclient) is null"));
@@ -37,7 +37,7 @@ public class AppGameController
         //set global static
         try
         {
-            AppGameGlobal.setApplication(pOwner,pAppGamePayInfo,pListener,pDialog,pUrlConfig,pLog,pNetworking);
+            AppGameGlobal.setApplication(pOwner,pAppGamePayInfo,pListener,pDialog,pUrlConfig,pNetworking);
         }
         catch (Exception e)
         {
@@ -75,7 +75,7 @@ public class AppGameController
     {
         if(AppGameGlobal.getOwnerActivity() == null || TextUtils.isEmpty(pTransId))
         {
-            AppGameGlobal.getLog().e("viewPayResult","===Please pay before calling view result===");
+            Timber.e("viewPayResult"+"===Please pay before calling view result===");
 
             return;
         }
@@ -112,7 +112,7 @@ public class AppGameController
         }
         catch (Exception e)
         {
-            AppGameGlobal.getLog().e("===dispose===",e != null ? e.getMessage(): "error");
+            Timber.e("===dispose===%s", e != null ? e.getMessage(): "error");
             return;
         }
     }

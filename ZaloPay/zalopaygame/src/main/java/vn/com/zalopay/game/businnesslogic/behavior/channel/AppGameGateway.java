@@ -1,5 +1,5 @@
 package vn.com.zalopay.game.businnesslogic.behavior.channel;
-
+import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
@@ -45,6 +45,6 @@ public class AppGameGateway extends AppGameBaseChannel
                     AppGameGlobal.getString(R.string.appgame_alert_error_start_channel)));
 
         else
-            AppGameGlobal.getLog().e(getClass().getName(),"===can not start channel==");
+            Timber.e(getClass().getName() + "===can not start channel==");
     }
 }

@@ -1,10 +1,12 @@
 package vn.com.zalopay.game.ui.component.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
@@ -43,7 +45,7 @@ public class FragmentZingXu extends AppGameFragment
         {
             @Override
             public void onTimeoutLoading() {
-                AppGameGlobal.getLog().e("loadUrl-"+AppGameConfig.ZINGXU_PAGE,"onProgressTimeout");
+                Timber.e("onProgressTimeout-%s",AppGameConfig.ZINGXU_PAGE);
             }
         });
     }

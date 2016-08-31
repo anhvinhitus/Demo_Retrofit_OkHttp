@@ -5,12 +5,13 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import timber.log.Timber;
 
 public class AppGameWebView extends WebView {
 
@@ -66,7 +67,7 @@ public class AppGameWebView extends WebView {
 	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public void runScript(String scriptContent)
 	{
-		AppGameGlobal.getLog().d("AppGameWebView", "##### runScript: " + scriptContent);
+		Timber.d("##### runScript: %s" , scriptContent);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 		{

@@ -4,7 +4,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.zalopay.game.businnesslogic.provider.config.IGetUrlConfig;
 
 /**
- * Created by admin on 8/30/16.
+ * Created by chucvv
  */
 public class AppGameConfigImpl implements IGetUrlConfig
 {

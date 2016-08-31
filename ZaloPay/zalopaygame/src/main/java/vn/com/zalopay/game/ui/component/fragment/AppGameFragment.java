@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.ui.webview.AppGameWebView;
@@ -58,7 +59,7 @@ public abstract class AppGameFragment extends Fragment
             {
                 @Override
                 public void onTimeoutLoading() {
-                    AppGameGlobal.getLog().e("loadUrl-"+pUrl,"onProgressTimeout");
+                    Timber.e("onProgressTimeout-%s",pUrl);
                 }
             });
     }

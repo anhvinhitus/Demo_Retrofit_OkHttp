@@ -3,10 +3,12 @@ package vn.com.zalopay.game.ui.webview;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.config.AppGameConfig;
@@ -52,7 +54,7 @@ public class AppGameWebViewProcessor extends WebViewClient
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url)
 	{
-		AppGameGlobal.getLog().d("===shouldOverrideUrlLoading===",url);
+		Timber.d("===shouldOverrideUrlLoading===%s",url);
 
 		//use case for url
 		if( ! TextUtils.isEmpty(url) && url.equalsIgnoreCase(AppGameConfig.URL_TO_APP) && AppGameBaseActivity.getCurrentActivity() != null)
@@ -74,7 +76,7 @@ public class AppGameWebViewProcessor extends WebViewClient
 
 	public void onLoadResource(WebView view, String url)
 	{
-		AppGameGlobal.getLog().d("onLoadResource", "===url===" + url);
+		Log.d("onLoadResource " , url);
 	}
 
 	@JavascriptInterface

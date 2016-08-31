@@ -22,4 +22,5 @@ dependencies {
 
     def libs = rootProject.ext.libraries
     compile libs.support_appcompat_v7
+    compile libs.timber
 }

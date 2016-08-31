@@ -1,5 +1,6 @@
 package vn.com.zalopay.game.businnesslogic.provider.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
@@ -10,7 +11,7 @@ import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListe
  */
 public interface IDialog
 {
-    void showInfoDialog(Context pContext, String pMessage,String pButtonText,int pDialogType,IDialogListener pListener);
-    void showLoadingDialog(Context pContext,ITimeoutLoadingListener pListener);
+    void showInfoDialog(Activity pActivity, String pMessage, String pButtonText, int pDialogType, IDialogListener pListener);
+    void showLoadingDialog(Activity pActivity,ITimeoutLoadingListener pListener);
     void hideLoadingDialog();
 }

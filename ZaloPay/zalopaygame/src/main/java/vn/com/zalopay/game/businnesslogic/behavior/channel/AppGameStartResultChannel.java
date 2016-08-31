@@ -2,6 +2,7 @@ package vn.com.zalopay.game.businnesslogic.behavior.channel;
 
 import android.content.Intent;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.behavior.IAppGameStartFlow;
 import vn.com.zalopay.game.config.AppGameConfig;
@@ -16,7 +17,7 @@ public class AppGameStartResultChannel implements IAppGameStartFlow
     @Override
     public void startFlow()
     {
-        AppGameGlobal.getLog().d(getClass().getName(),"===starting flow===");
+        Timber.d(getClass().getName()+"===starting flow===");
 
         //still have a running activity.
         if(AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)

@@ -2,6 +2,7 @@ package vn.com.zalopay.game.businnesslogic.behavior.channel;
 
 import android.content.Intent;
 
+import timber.log.Timber;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.interfaces.behavior.IAppGameStartFlow;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
@@ -15,17 +16,17 @@ public class AppGameStartPayGameChannel implements IAppGameStartFlow
     @Override
     public void startFlow()
     {
-        AppGameGlobal.getLog().d(getClass().getName(),"===starting flow===");
+        Timber.d(getClass().getName()+"===starting flow===");
 
         if(AppGameGlobal.getApplication() == null)
         {
-            AppGameGlobal.getLog().e(getClass().getName(),"application is null");
+            Timber.e(getClass().getName()+" application is null");
             return;
         }
 
         if(AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
         {
-            AppGameGlobal.getLog().e(getClass().getName(),"there're a running activity");
+            Timber.e(getClass().getName()+"there're a running activity");
             return;
         }
 

@@ -1,11 +1,12 @@
 package vn.com.vng.zalopay.game;
 
-import android.content.Context;
+import android.app.Activity;
 
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
@@ -14,16 +15,32 @@ import vn.com.zalopay.wallet.view.dialog.DialogManager;
 public class AppGameDialogImpl implements IDialog
 {
     @Override
-    public void showInfoDialog(Context pContext, String pMessage, String pButtonText, int pDialogType, final IDialogListener pListener) {
+    public void showInfoDialog(Activity pActivity, String pMessage, String pButtonText, int pDialogType, final IDialogListener pListener)
+    {
+        DialogManager.showSweetDialogCustom(pActivity, pMessage, pButtonText, pDialogType, new ZPWOnEventDialogListener() {
+            @Override
+            public void onOKevent() {
+                if(pListener != null)
+                    pListener.onClose();
+            }
+        });
     }
 
     @Override
-    public void showLoadingDialog(Context pContext, ITimeoutLoadingListener pListener) {
-
+    public void showLoadingDialog(Activity pActivity, final ITimeoutLoadingListener pListener)
+    {
+        DialogManager.showProcessDialog(pActivity, new ZPWOnProgressDialogTimeoutListener() {
+            @Override
+            public void onProgressTimeout() {
+                if(pListener != null)
+                    pListener.onTimeoutLoading();
+            }
+        });
     }
 
     @Override
-    public void hideLoadingDialog() {
-
+    public void hideLoadingDialog()
+    {
+        DialogManager.closeProcessDialog();
     }
 }
