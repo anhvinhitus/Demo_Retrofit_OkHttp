@@ -297,6 +297,9 @@
 -keep public class * extends com.google.protobuf.GeneratedMessage { *; }
 #Warning:vn.com.zalopay.wallet.entity.protobuf.LogicMessages: can't find referenced class com.google.protobuf.Descriptors$Descriptor
 -keepclassmembernames class * extends com.google.protobuf.GeneratedMessage { *; }
+-keepclassmembers class vn.com.vng.zalopay.data.ws.protobuf.* {
+    <methods>;
+}
 
 #Warning:vn.com.zalopay.wallet.entity.protobuf.LogicMessages$Login: can't find referenced class com.google.protobuf.UnknownFieldSet
 
