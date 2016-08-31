@@ -102,7 +102,7 @@ public class NotificationData extends Event {
     }
 
     public JsonObject getEmbeddata() {
-        if (embeddata.object != null) {
+        if (embeddata != null) {
             return embeddata.object;
         } else {
             return null;
