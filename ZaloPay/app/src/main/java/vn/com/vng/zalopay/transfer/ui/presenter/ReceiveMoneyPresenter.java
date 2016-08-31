@@ -25,6 +25,8 @@ import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.wallet.application.ZingMobilePayApplication;
+import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by huuhoa on 8/28/16.
@@ -58,7 +60,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
     @Override
     public void destroy() {
-        destroyView();
+        GlobalData.initApplication(null);
     }
 
 
@@ -91,7 +93,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 jsonObject.put("message", messageBase64);
                 fields.add(messageBase64);
             }
-            
+
             String checksum = Utils.sha256(fields.toArray(new String[0])).substring(0, 8);
             Timber.d("generateQrContent: checksum %s", checksum);
             jsonObject.put("checksum", checksum);
@@ -175,6 +177,9 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 String senderDisplayName = embedData.get("displayname").getAsString();
                 String senderAvatar = embedData.get("avatar").getAsString();
                 int progress = embedData.get("mt_progress").getAsInt();
+
+                String zaloPayId = embedData.get("uid").getAsString();
+
                 long amount = 0;
                 if (embedData.has("amount")) {
                     amount = embedData.get("amount").getAsLong();
@@ -185,20 +190,20 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                     case Constants.MoneyTransfer.STAGE_PRETRANSFER:
                         Timber.d("Stage: Pre transfer");
                         mView.displayWaitForMoney();
-                        mView.setReceiverInfo(senderDisplayName, senderAvatar);
+                        mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                         Timber.d("Stage: Transfer succeeded with amount %s", amount);
                         mView.displayReceivedMoney();
-                        mView.setReceivedMoney(senderDisplayName, senderAvatar, amount);
+                        mView.setReceivedMoney(zaloPayId, senderDisplayName, senderAvatar, amount);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                         Timber.d("Stage: Transfer failed");
-                        mView.setReceivedMoneyFail(senderDisplayName, senderAvatar);
+                        mView.setReceivedMoneyFail(zaloPayId, senderDisplayName, senderAvatar);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
                         Timber.d("Stage: Transfer canceled");
-                        mView.setReceivedMoneyCancel(senderDisplayName, senderAvatar);
+                        mView.setReceivedMoneyCancel(zaloPayId, senderDisplayName, senderAvatar);
                         break;
                 }
             }

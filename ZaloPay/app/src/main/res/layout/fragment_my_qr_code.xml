@@ -1,29 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:padding="16dp">
+-->
 
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fillViewport="true"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:baselineAligned="false"
+        android:orientation="vertical">
 
-        <include layout="@layout/my_qr_code_layout" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/my_qr_code_layout" />
+
+            <include
+                android:id="@+id/layoutSuccess"
+                layout="@layout/qrcode_receive_success_layout" />
+        </FrameLayout>
 
         <include
-            android:id="@+id/layoutSuccess"
-            layout="@layout/qrcode_receive_success_layout" />
+            android:id="@+id/layoutSender"
+            layout="@layout/my_qrcode_sender_layout" />
 
-        <include layout="@layout/my_qrcode_sender_layout" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listview"
+            style="@style/RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+    </LinearLayout>
 
-       <!-- <include layout="@layout/fragment_recycleview" />-->
+</android.support.v4.widget.NestedScrollView>
 
-    </FrameLayout>
+    <!--
 
-
-</FrameLayout>
+    </FrameLayout>-->

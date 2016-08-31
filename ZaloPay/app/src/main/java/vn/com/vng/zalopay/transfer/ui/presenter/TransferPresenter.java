@@ -124,9 +124,9 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 saveTransferRecentToDB();
                 clearCurrentData();
 
-                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+               /* if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
                     sendNotificationSuccess();
-                }
+                }*/
             }
 
             @Override
@@ -579,6 +579,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
         jsonObject.addProperty("displayname", user.displayName);
         jsonObject.addProperty("avatar", user.avatar);
+        jsonObject.addProperty("uid", user.zaloPayId);
         jsonObject.addProperty("mt_progress", stage);
         if (amount > 0) {
             jsonObject.addProperty("amount", mTransaction.amount);

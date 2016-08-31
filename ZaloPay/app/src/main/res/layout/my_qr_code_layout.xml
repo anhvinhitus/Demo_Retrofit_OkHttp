@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutQrCode"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,32 +22,31 @@
     <TextView
         android:id="@+id/tvAmount"
         style="@style/TextView.Title"
-        tools:text="1.000 VND"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:singleLine="false"
-        android:textSize="22dp" />
+        android:textSize="22dp"
+        tools:text="1.000 VND" />
 
 
     <TextView
         android:id="@+id/tvMessage"
         style="@style/TextView.Title"
-        tools:text="Nhận tiền nhé!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:singleLine="false"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        tools:text="Nhận tiền nhé!" />
 
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="72dp"
         android:layout_marginTop="28dp">
 
         <include layout="@layout/progress" />
@@ -62,12 +61,12 @@
 
         <com.zalopay.ui.widget.image.BezelImageView
             android:id="@+id/imageAvatar"
-            app:borderDrawable="@drawable/circle_border_white"
-            app:maskDrawable="@drawable/circle_mask"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_gravity="center"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:borderDrawable="@drawable/circle_border_white"
+            app:maskDrawable="@drawable/circle_mask" />
 
     </FrameLayout>
 

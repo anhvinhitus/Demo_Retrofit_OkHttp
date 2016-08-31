@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.image.BezelImageView;
+import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import org.w3c.dom.Text;
 
@@ -25,7 +28,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.transfer.ui.activities.SetAmountActivity;
+import vn.com.vng.zalopay.transfer.ui.adapter.PersonTransferAdapter;
 import vn.com.vng.zalopay.transfer.ui.presenter.ReceiveMoneyPresenter;
 import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -71,6 +76,12 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     @Inject
     ReceiveMoneyPresenter mPresenter;
 
+
+    @BindView(R.id.listview)
+    RecyclerView mListView;
+
+    PersonTransferAdapter mAdapter;
+
     public static MyQRCodeFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -94,12 +105,18 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mAdapter = new PersonTransferAdapter(getContext());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
+        mListView.setHasFixedSize(true);
+        mListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mListView.setAdapter(mAdapter);
+        mListView.setNestedScrollingEnabled(false);
+
         mMyQrCodeView.setImageResource(R.color.silver);
         mPresenter.setView(this);
         mPresenter.onViewCreated();
@@ -226,15 +243,15 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     @Override
-    public void setReceiverInfo(String displayName, String avatar) {
+    public void setReceiverInfo(String zaloPayId, String displayName, String avatar) {
         setTransferUserInfo(String.format("%s đang chuyển tiền ...", displayName), avatar);
     }
 
     @Override
-    public void setReceivedMoney(String displayName, String avatar, long amount) {
+    public void setReceivedMoney(String zaloPayId, String displayName, String avatar, long amount) {
         setTransferUserInfo(String.format("%s đã chuyển tiền thành công.", displayName), avatar);
         setResult(true, amount);
-
+        addAdapter(displayName, avatar, amount);
         layoutSuccess.postDelayed(mRunnable, 5000);
     }
 
@@ -246,13 +263,13 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     };
 
     @Override
-    public void setReceivedMoneyFail(String displayName, String avatar) {
+    public void setReceivedMoneyFail(String zaloPayId, String displayName, String avatar) {
         // setResult(false, 0);
         setTransferUserInfo(String.format("%s đã chuyển tiền thất bại.", displayName), avatar);
     }
 
     @Override
-    public void setReceivedMoneyCancel(String displayName, String avatar) {
+    public void setReceivedMoneyCancel(String zaloPayId, String displayName, String avatar) {
         setTransferUserInfo(String.format("%s đã huỷ chuyển tiền.", displayName), avatar);
         //setResult(false, 0);
     }
@@ -309,5 +326,13 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
             mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount));
             mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(success ? R.drawable.ic_thanhcong_24dp : R.drawable.ic_thatbai_24dp, 0, 0, 0);
         }
+    }
+
+    private void addAdapter(String name, String avatar, long amount) {
+        PersonTransfer item = new PersonTransfer();
+        item.avatar = avatar;
+        item.displayName = name;
+        item.amount = amount;
+        mAdapter.insert(item, 0);
     }
 }

@@ -49,7 +49,7 @@ public interface NotificationStore {
          * @param embededdata stringify of json data sent to another user
          * @return basic response
          */
-        @GET("/um/sendnotification")
+        @GET("um/sendnotification")
         Observable<BaseResponse> sendNotification(@Query("userid") String uid,
                                                   @Query("accesstoken") String accesstoken,
                                                   @Query("receiverid") String receiverid,
