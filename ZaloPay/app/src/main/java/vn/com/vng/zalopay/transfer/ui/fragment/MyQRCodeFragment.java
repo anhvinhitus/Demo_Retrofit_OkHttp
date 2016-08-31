@@ -13,15 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.zalopay.ui.widget.image.BezelImageView;
-import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -76,6 +75,8 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     @Inject
     ReceiveMoneyPresenter mPresenter;
 
+    @BindView(R.id.container)
+    ViewGroup mContainerView;
 
     @BindView(R.id.listview)
     RecyclerView mListView;
@@ -116,6 +117,7 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         mListView.setLayoutManager(new LinearLayoutManager(getContext()));
         mListView.setAdapter(mAdapter);
         mListView.setNestedScrollingEnabled(false);
+        mListView.getLayoutManager().setAutoMeasureEnabled(true);
 
         mMyQrCodeView.setImageResource(R.color.silver);
         mPresenter.setView(this);
@@ -231,9 +233,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     public void displayWaitForMoney() {
         layoutQrcode.setVisibility(View.VISIBLE);
         layoutSuccess.setVisibility(View.GONE);
-      /*  if (layoutUserTransfer != null) {
-            layoutUserTransfer.setVisibility(View.GONE);
-        }*/
     }
 
     @Override
@@ -258,7 +257,21 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            displayWaitForMoney();
+            layoutQrcode.setVisibility(View.VISIBLE);
+            layoutSuccess.setVisibility(View.GONE);
+
+
+            /*
+            layoutSuccess.animate()
+                    .translationY(0)
+                    .alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            layoutSuccess.setVisibility(View.GONE);
+                        }
+                    });*/
         }
     };
 
@@ -304,7 +317,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         }
 
         if (imageAvatarSenderView != null) {
-
             loadImage(imageAvatarSenderView, avatar);
         }
 
@@ -314,11 +326,14 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     private void setResult(boolean success, long amount) {
-        if (layoutQrcode != null) {
+      /*  if (layoutQrcode != null) {
             layoutQrcode.setVisibility(View.INVISIBLE);
-        }
+        }*/
+
         if (layoutSuccess != null) {
             layoutSuccess.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.simple_grow);
+            layoutSuccess.startAnimation(animation);
         }
 
         if (mMoneyChangeSuccess != null) {
@@ -334,5 +349,6 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         item.displayName = name;
         item.amount = amount;
         mAdapter.insert(item, 0);
+        mContainerView.requestLayout();
     }
 }

@@ -106,7 +106,6 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
     public void onViewCreated() {
         String content = generateQrContent();
-        Timber.d("QR Content: %s", content);
         mPreviousContent = content;
         if (!TextUtils.isEmpty(content)) {
             new GenerateQrCodeTask(this, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -138,11 +137,6 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             return;
         }
 
-        // {"transid":160828000000011,"appid":1,"timestamp":1472352416687,
-        // "message":"Nguyễn Hữu Hoà đã chuyển cho bạn 15.000 VND",
-        // "notificationtype":4,
-        // "userid":"160526000000502",
-        // "destuserid":"160601000000002"}
         if (notify.appid == Constants.ZALOPAY_APP_ID &&
                 isEqualCurrentUser(notify.destuserid) &&
                 notify.notificationtype == NotificationType.MONEY_TRANSFER) {
@@ -151,24 +145,12 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             mView.displayReceivedMoney();
         }
 
-        // {"transid":0,"appid":1,"timestamp":1472488434621,
-        // "notificationtype":109,"userid":"160526000000502",
-        // "receiverid":"160526000000502",
-        // "embeddata":"eyJ0eXBlIjoxLCJkaXNwbGF5bmFtZSI6Ik5ndXnhu4VuIEjhu691IEhvw6AiLCJhdmF0YXIiOiJodHRwOi8vczI0MC5hdmF0YXIudGFsay56ZG4udm4vZS9kL2UvMi80LzI0MC9mMTg5OGEwYTBhM2YwNWJiYjExMDg4Y2IyMDJkMWMwMi5qcGciLCJtdF9wcm9ncmVzcyI6MX0"}
         if (notify.appid == 1 &&
                 notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION) {
             JsonObject embedData = notify.getEmbeddata();
             if (embedData == null) {
                 return;
             }
-
-            Timber.d("Embed data: %s", embedData);
-//            jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
-//            jsonObject.addProperty("displayname", user.displayName);
-//            jsonObject.addProperty("avatar", user.avatar);
-//            jsonObject.addProperty("mt_progress", stage);
-//            if (amount > 0) {
-//                jsonObject.addProperty("amount", mTransaction.amount);
 
             int type = 0;
             if (embedData.has("type")) {
@@ -180,7 +162,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 String senderAvatar = embedData.get("avatar").getAsString();
                 int progress = embedData.get("mt_progress").getAsInt();
 
-                String zaloPayId = notify.getUserid();
+                String zaloPayId = notify.userid;
 
                 long amount = 0;
                 if (embedData.has("amount")) {
