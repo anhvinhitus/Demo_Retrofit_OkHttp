@@ -308,7 +308,15 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void saveZaloPayName(String accountName) {
+    public void updateZaloPayName(String accountName) {
+        if (currentUser == null) {
+            return;
+        }
+        currentUser.zalopayname = accountName;
+        saveZaloPayName(accountName);
+    }
+
+    private void saveZaloPayName(String accountName) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.PREF_USER_ZALOPAY_NAME, accountName);
         editor.apply();

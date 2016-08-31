@@ -47,6 +47,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
     private String mCurrentPhone = null;
+    private String mCurrentZaloPayName = "";
 
     @Inject
     PreProfilePresenter presenter;
@@ -272,8 +273,9 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     }
 
     @Override
-    public void onUpdatePinSuccess(String phone) {
+    public void onUpdatePinSuccess(String phone, String zaloPayName) {
         mCurrentPhone = phone;
+        mCurrentZaloPayName = zaloPayName;
         nextPager();
     }
 
@@ -298,6 +300,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
         presenter.saveUserPhone(mCurrentPhone);
+        presenter.saveZaloPayName(mCurrentZaloPayName);
         if (!TextUtils.isEmpty(walletTransId)) {
             showLoading();
             paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {

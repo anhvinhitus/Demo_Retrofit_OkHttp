@@ -9,7 +9,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface IPinProfileView extends ILoadDataView {
     Activity getActivity();
-    void updateProfileSuccess(String phone);
+    void updateProfileSuccess(String phone, String zaloPayName);
     void onCheckSuccess();
     void onCheckFail();
     void hideInputZaloPayName();

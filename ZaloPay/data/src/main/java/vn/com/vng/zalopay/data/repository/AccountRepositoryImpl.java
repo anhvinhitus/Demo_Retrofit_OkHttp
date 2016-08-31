@@ -230,7 +230,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     private void saveZalopayName(String accountName) {
         mUser.zalopayname = accountName;
-        mUserConfig.saveZaloPayName(accountName);
+        mUserConfig.updateZaloPayName(accountName);
     }
 
 }

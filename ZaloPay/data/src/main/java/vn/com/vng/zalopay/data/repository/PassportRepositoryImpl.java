@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.domain.repository.PassportRepository;
 
 /**
  * Created by AnhHieu on 3/26/16.
+ *
  */
 
 @Singleton
@@ -63,7 +64,7 @@ public class PassportRepositoryImpl implements PassportRepository {
         User user = transformWithZaloInfo(response);
         userConfig.setCurrentUser(user);
         userConfig.saveConfig(user);
-        userConfig.saveZaloPayName(user.zalopayname);
+        userConfig.updateZaloPayName(user.zalopayname);
         return user;
     }
 

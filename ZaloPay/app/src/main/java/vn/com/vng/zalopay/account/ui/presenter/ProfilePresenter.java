@@ -48,6 +48,10 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void resume() {
+        User user = userConfig.getCurrentUser();
+        if (user != null) {
+            updateUserInfo(user);
+        }
     }
 
     @Override

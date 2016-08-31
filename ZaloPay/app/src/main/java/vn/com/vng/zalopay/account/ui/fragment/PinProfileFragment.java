@@ -381,9 +381,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     @Override
-    public void updateProfileSuccess(String phone) {
+    public void updateProfileSuccess(String phone, String zaloPayName) {
         if (mListener != null) {
-            mListener.onUpdatePinSuccess(phone);
+            mListener.onUpdatePinSuccess(phone, zaloPayName);
         }
     }
 
@@ -398,8 +398,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @Override
     public void onCheckFail() {
-
+        hideLoading();
         inputZaloPayName.showCheckFail();
+        inputZaloPayName.requestFocus();
     }
 
     @Override
@@ -418,7 +419,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPinProfileFragmentListener {
-        void onUpdatePinSuccess(String phone);
+        void onUpdatePinSuccess(String phone, String zaloPayName);
 
         void onUpdatePinFail();
 

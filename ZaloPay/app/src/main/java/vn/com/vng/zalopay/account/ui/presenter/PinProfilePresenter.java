@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.text.TextUtils;
 
-import java.security.MessageDigest;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -72,7 +70,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         Subscription subscriptionLogin = accountRepository.updateUserProfileLevel2(pin, phone, zalopayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UpdateProfileSubscriber(phone));
+                .subscribe(new UpdateProfileSubscriber(phone, zalopayName));
         mCompositeSubscription.add(subscriptionLogin);
     }
 
@@ -89,15 +87,17 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     private final class UpdateProfileSubscriber extends DefaultSubscriber<Boolean> {
         private String phone;
+        private String zalopayName;
 
-        public UpdateProfileSubscriber(String phone) {
+        public UpdateProfileSubscriber(String phone, String zalopayName) {
             this.phone = phone;
+            this.zalopayName = zalopayName;
         }
 
         @Override
         public void onNext(Boolean result) {
             Timber.d("updateProfile success " + result);
-            PinProfilePresenter.this.onUpdateProfileSuccess(phone);
+            PinProfilePresenter.this.onUpdateProfileSuccess(phone, zalopayName);
         }
 
         @Override
@@ -129,9 +129,9 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         mView.showError(error);
     }
 
-    private void onUpdateProfileSuccess(String phone) {
+    private void onUpdateProfileSuccess(String phone, String zalopayName) {
         hideLoading();
-        mView.updateProfileSuccess(phone);
+        mView.updateProfileSuccess(phone, zalopayName);
     }
 
     public void showLoading() {
