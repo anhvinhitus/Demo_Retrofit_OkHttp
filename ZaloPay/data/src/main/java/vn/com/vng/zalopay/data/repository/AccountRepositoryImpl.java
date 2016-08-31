@@ -110,7 +110,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         oldPin = sha256Base(oldPin);
         newPin = sha256Base(newPin);
 
-        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, newPin, oldPin, null);
+        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, oldPin, newPin, null);
     }
 
     @Override

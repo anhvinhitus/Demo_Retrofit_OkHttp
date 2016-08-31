@@ -26,6 +26,7 @@ public interface AccountStore {
 
     interface LocalStorage {
         Person get(String zpName);
+
         Person getById(String zaloPayId);
 
         void put(Person person);
@@ -43,7 +44,7 @@ public interface AccountStore {
 
         @FormUrlEncoded
         @POST("um/recoverypin")
-        Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("oldpin") String oldpin, @Field("otp") String otp);
+        Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("oldpin") String oldPin, @Field("pin") String newPin, @Field("otp") String otp);
 
         @GET("um/getuserinfo")
         Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("loginuid") long zaloId, @Query("systemlogin") int systemlogin);
