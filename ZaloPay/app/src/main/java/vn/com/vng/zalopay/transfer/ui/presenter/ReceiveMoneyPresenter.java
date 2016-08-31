@@ -106,6 +106,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
     public void onViewCreated() {
         String content = generateQrContent();
+        Timber.d("QR Content: %s", content);
         mPreviousContent = content;
         if (!TextUtils.isEmpty(content)) {
             new GenerateQrCodeTask(this, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -161,6 +162,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 return;
             }
 
+            Timber.d("Embed data: %s", embedData);
 //            jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
 //            jsonObject.addProperty("displayname", user.displayName);
 //            jsonObject.addProperty("avatar", user.avatar);
@@ -178,7 +180,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 String senderAvatar = embedData.get("avatar").getAsString();
                 int progress = embedData.get("mt_progress").getAsInt();
 
-                String zaloPayId = embedData.get("uid").getAsString();
+                String zaloPayId = notify.getUserid();
 
                 long amount = 0;
                 if (embedData.has("amount")) {
