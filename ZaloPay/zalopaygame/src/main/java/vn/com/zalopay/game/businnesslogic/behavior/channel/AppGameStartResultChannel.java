@@ -17,15 +17,19 @@ public class AppGameStartResultChannel implements IAppGameStartFlow {
     public void startFlow() {
         Timber.d(getClass().getName() + "===starting flow===");
 
-        //still have a running activity.
-        if (AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
-            ((AppGameActivity) AppGameActivity.getCurrentActivity()).
-                    startUrl(String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid()));
-
-        else {
-            //start new activity
-            Intent intentPayResult = new Intent(AppGameGlobal.getOwnerActivity(), AppGameActivity.class);
-            AppGameGlobal.getOwnerActivity().startActivity(intentPayResult);
+        if(AppGameGlobal.getApplication() == null)
+        {
+            Timber.e(getClass().getName() + "===application is null===");
+            return;
         }
+
+        if(AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity)
+        {
+            Timber.e(getClass().getName()+"===there're a running activity===");
+            return;
+        }
+
+        Intent intentResult = new Intent(AppGameGlobal.getOwnerActivity(), AppGameActivity.class);
+        AppGameGlobal.getOwnerActivity().startActivity(intentResult);
     }
 }

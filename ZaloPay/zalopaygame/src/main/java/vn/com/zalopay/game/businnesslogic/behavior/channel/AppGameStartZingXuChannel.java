@@ -30,9 +30,7 @@ public class AppGameStartZingXuChannel implements IAppGameStartFlow
             return;
         }
 
-        Intent intentZingXu = new Intent(AppGameGlobal.getApplication(), AppGameActivity.class);
-        intentZingXu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        AppGameGlobal.getApplication().startActivity(intentZingXu);
+        Intent intentZingXu = new Intent(AppGameGlobal.getOwnerActivity(), AppGameActivity.class);
+        AppGameGlobal.getOwnerActivity().startActivity(intentZingXu);
     }
 }

@@ -60,21 +60,30 @@ public class AppGameController {
     }
 
     /***
-     * view result payment screen.
-     *
-     * @param pTransId
+     * view pay game result
+     * @param pOwner
+     * @param pAppGamePayInfo
+     * @param pListener
+     * @param pDialog
+     * @param pUrlConfig
+     * @param pNetworking
      */
-    public synchronized static void viewPayResult(String pTransId) {
-        if (AppGameGlobal.getOwnerActivity() == null || TextUtils.isEmpty(pTransId)) {
-            Timber.e("viewPayResult" + "===Please pay before calling view result===");
+    public synchronized static void viewPayResult(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
+                                                  IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking)
+    {
+        if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null) {
+            if (pListener != null)
+                pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL, "Component (activity,httpclient) is null"));
 
             return;
         }
 
+        //set global static
         try {
-            AppGameGlobal.getAppGamePayInfo().setApptransid(pTransId);
+            AppGameGlobal.setApplication(pOwner, pAppGamePayInfo, pListener, pDialog, pUrlConfig, pNetworking);
         } catch (Exception e) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
+
             return;
         }
 
