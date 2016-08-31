@@ -1,7 +1,13 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.text.TextUtils;
+
+import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONObject;
 
 import javax.inject.Singleton;
 
@@ -9,6 +15,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
@@ -102,9 +109,25 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
-        if (event.isOnline && !isInitiated) {
+        if (!event.isOnline) {
+            return;
+        }
+        if (!isInitiated) {
             this.getBalance();
             this.initializeZaloPay();
+        }
+        if (TextUtils.isEmpty(userConfig.getCurrentUser().displayName) ||
+                TextUtils.isEmpty(userConfig.getCurrentUser().avatar)) {
+            ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
+                @Override
+                public void onResult(JSONObject profile) {
+                    try {
+                        userConfig.saveZaloUserInfo(profile);
+                    } catch (Exception ex) {
+                        Timber.w(ex, " Exception :");
+                    }
+                }
+            });
         }
     }
 
