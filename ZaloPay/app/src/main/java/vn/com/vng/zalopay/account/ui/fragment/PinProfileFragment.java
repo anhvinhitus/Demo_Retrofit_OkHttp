@@ -134,6 +134,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             if (isFocus) {
                 return;
             }
+            if (passCode == null) {
+                return;
+            }
+
             if (!isValidPin()) {
                 passCode.showError(getString(R.string.invalid_pin));
             } else {
@@ -159,6 +163,10 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (passCode == null) {
+                return;
+            }
+
             if (isValidPin()) {
                 passCode.hideError();
             }
@@ -211,7 +219,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             //passCode.showError(getString(R.string.invalid_pin));
             return false;
         } else {
-            passCode.hideError();
+            if (passCode != null) {
+                passCode.hideError();
+            }
         }
 
         if (!isValidPhone()) {
