@@ -297,30 +297,35 @@ public class WsConnection extends Connection {
     }
 
     private boolean sendFeedbackStatus(Event event) {
-        long mtaid = event.getMtaid();
-        long mtuid = event.getMtuid();
-        long uid = getCurrentUserId();
+        try {
+            long mtaid = event.getMtaid();
+            long mtuid = event.getMtuid();
+            long uid = getCurrentUserId();
 
-        if (mtaid <= 0 && mtuid <= 0) {
-            return true;
+            if (mtaid <= 0 && mtuid <= 0) {
+                return true;
+            }
+
+            Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
+
+            ZPMsgProtos.StatusMessageClient.Builder statusMsg = ZPMsgProtos.StatusMessageClient.newBuilder()
+                    .setStatus(ZPMsgProtos.MessageStatus.RECEIVED.getNumber());
+
+            if (mtaid > 0) {
+                statusMsg.setMtaid(mtaid);
+            }
+            if (mtuid > 0) {
+                statusMsg.setMtuid(mtuid);
+            }
+            if (uid > 0) {
+                statusMsg.setUserid(uid);
+            }
+
+            return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
+        } catch (Throwable e) {
+            Timber.w(e, "Exception while sending feedback message");
+            return false;
         }
-
-        Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
-
-        ZPMsgProtos.StatusMessageClient.Builder statusMsg = ZPMsgProtos.StatusMessageClient.newBuilder()
-                .setStatus(ZPMsgProtos.MessageStatus.RECEIVED.getNumber());
-
-        if (mtaid > 0) {
-            statusMsg.setMtaid(mtaid);
-        }
-        if (mtuid > 0) {
-            statusMsg.setMtuid(mtuid);
-        }
-        if (uid > 0) {
-            statusMsg.setUserid(uid);
-        }
-
-        return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
     }
 
     private class ConnectionListener implements Listener {
