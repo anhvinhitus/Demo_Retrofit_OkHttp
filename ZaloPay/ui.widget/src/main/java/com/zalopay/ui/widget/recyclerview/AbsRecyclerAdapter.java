@@ -128,5 +128,12 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
         }
     }
 
+    public void replace(int location, T object) {
+        synchronized (_lock) {
+            mItems.set(location, object);
+        }
+        notifyItemChanged(location);
+    }
+
 
 }

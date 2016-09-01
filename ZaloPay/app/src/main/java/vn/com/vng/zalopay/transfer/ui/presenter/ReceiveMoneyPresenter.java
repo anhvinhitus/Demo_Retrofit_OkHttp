@@ -111,8 +111,19 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             new GenerateQrCodeTask(this, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getAvatar());
-        mView.displayWaitForMoney();
+        //  mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getCurrentUser().avatar);
+        // mView.displayWaitForMoney();
+    }
+
+
+    public void setUserInfo() {
+        if (mView == null) {
+            return;
+        }
+
+        if (userConfig.hasCurrentUser()) {
+            mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getCurrentUser().avatar);
+        }
     }
 
     String mPreviousContent;

@@ -6,4 +6,5 @@ package vn.com.vng.zalopay.domain.model;
  */
 public class PersonTransfer extends Person {
     public long amount;
+    public int state;
 }
