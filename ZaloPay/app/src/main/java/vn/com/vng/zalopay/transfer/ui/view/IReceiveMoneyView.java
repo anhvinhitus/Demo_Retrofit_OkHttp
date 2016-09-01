@@ -14,15 +14,9 @@ public interface IReceiveMoneyView extends ILoadDataView {
 
     void setUserInfo(String displayName, String avatar);
 
-    void displayReceivedMoney();
+    void displayReceivedMoney(long amount);
 
     void displayWaitForMoney();
 
-    void setReceiverInfo(String uid, String displayName, String avatar);
-
-    void setReceivedMoney(String uid, String displayName, String avatar, long amount);
-
-    void setReceivedMoneyFail(String uid, String displayName, String avatar);
-
-    void setReceivedMoneyCancel(String uid, String displayName, String avatar);
+    void setReceiverInfo(String uid, String displayName, String avatar, int state, long amount);
 }

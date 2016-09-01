@@ -147,7 +147,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 notify.notificationtype == NotificationType.MONEY_TRANSFER) {
             // extract sender, amount
             // extract transid
-            mView.displayReceivedMoney();
+            // mView.displayReceivedMoney();
         }
 
         // {"transid":0,"appid":1,"timestamp":1472488434621,
@@ -191,22 +191,20 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                     case Constants.MoneyTransfer.STAGE_PRETRANSFER:
                         Timber.d("Stage: Pre transfer");
                         mView.displayWaitForMoney();
-                        mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                         Timber.d("Stage: Transfer succeeded with amount %s", amount);
-                        mView.displayReceivedMoney();
-                        mView.setReceivedMoney(zaloPayId, senderDisplayName, senderAvatar, amount);
+                        mView.displayReceivedMoney(amount);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                         Timber.d("Stage: Transfer failed");
-                        mView.setReceivedMoneyFail(zaloPayId, senderDisplayName, senderAvatar);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
                         Timber.d("Stage: Transfer canceled");
-                        mView.setReceivedMoneyCancel(zaloPayId, senderDisplayName, senderAvatar);
                         break;
                 }
+
+                mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar, progress, amount);
             }
         }
     }

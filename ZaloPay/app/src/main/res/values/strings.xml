@@ -64,6 +64,7 @@
     <string name="vnd"> VND</string>
     <string name="hint_amount">Số tiền (VND)</string>
     <string name="hint_message">Lời nhắn</string>
+    <string name="note">Ghi chú</string>
 
     <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
