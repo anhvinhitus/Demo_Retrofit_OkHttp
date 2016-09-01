@@ -51,8 +51,8 @@ public class MenuItemUtil {
 
         mMenuItems.add(new MenuItem(APPLICATION_ID, MenuItemType.HEADER, null, "ỨNG DỤNG"));
         mMenuItems.add(new MenuItem(FAQ_ID, MenuItemType.ITEM, R.drawable.ic_faq_menu, "FAQ"));
-        mMenuItems.add(new MenuItem(CONTACT_SUPPORT_ID, MenuItemType.ITEM, R.drawable.ic_lienhe_menu, "Liên Hệ Hỗ Trợ"));
         mMenuItems.add(new MenuItem(TERM_OF_USE, MenuItemType.ITEM, R.drawable.ic_thoathuan_menu, "Thỏa Thuận Sử Dụng"));
+        mMenuItems.add(new MenuItem(CONTACT_SUPPORT_ID, MenuItemType.ITEM, R.drawable.ic_lienhe_menu, "Liên Hệ Hỗ Trợ"));
         mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, R.drawable.ic_thongtin_menu, "Thông Tin Ứng Dụng"));
 
 //        mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
