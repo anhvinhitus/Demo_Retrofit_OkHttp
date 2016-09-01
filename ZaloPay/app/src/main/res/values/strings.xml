@@ -130,7 +130,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="link.card">Lưu thẻ</string>
+    <string name="save.card.description">Xác thực lưu thẻ</string>
 
     <string name="action_notifications">Thông báo</string>
 
