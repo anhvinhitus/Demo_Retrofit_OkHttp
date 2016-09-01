@@ -67,6 +67,7 @@ public class WsConnection extends Connection {
     private int mNextConnectionState = NEXTSTATE_DISCONNECT;
     private static final int NEXTSTATE_RETRY_CONNECT = 1;
     private static final int NEXTSTATE_DISCONNECT = 2;
+    private static final int NEXTSTATE_RETRY_AFTER_KICKEDOUT = 3;
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
@@ -91,7 +92,8 @@ public class WsConnection extends Connection {
                 .filter((value) ->
                     !mSocketClient.isConnected() &&
                     !mSocketClient.isConnecting() &&
-                    mNextConnectionState == NEXTSTATE_RETRY_CONNECT &&
+                            (mNextConnectionState == NEXTSTATE_RETRY_CONNECT ||
+                             mNextConnectionState == NEXTSTATE_RETRY_AFTER_KICKEDOUT) &&
                     NetworkHelper.isNetworkAvailable(context) &&
                     mCheckCountDown <= 0
                 )
@@ -119,7 +121,8 @@ public class WsConnection extends Connection {
                 mServerPongBus.toObserverable()
                 .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
                 .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
-                .filter((obj) -> this.isUserLoggedIn() && mNextConnectionState == NEXTSTATE_RETRY_CONNECT)
+                .filter((obj) -> this.isUserLoggedIn() &&
+                        (mNextConnectionState == NEXTSTATE_RETRY_CONNECT))
                 .subscribe((obj) -> {
                     Timber.d("Server is not responding ...");
                     reconnect();
@@ -215,7 +218,14 @@ public class WsConnection extends Connection {
     public void disconnect() {
         Timber.d("disconnect");
         mNextConnectionState = NEXTSTATE_DISCONNECT;
-        mSocketClient.disconnect();
+        doDisconnect();
+    }
+
+
+    private void doDisconnect() {
+        if (mSocketClient != null) {
+            mSocketClient.disconnect();
+        }
     }
 
     @Override
@@ -343,8 +353,13 @@ public class WsConnection extends Connection {
                 mServerPongBus.send(0L);
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.KICK_OUT_USER.getNumber()) {
                 needFeedback = false;
-                mNextConnectionState = NEXTSTATE_DISCONNECT;
-                disconnect();
+                if (mNextConnectionState != NEXTSTATE_RETRY_AFTER_KICKEDOUT) {
+                    mNextConnectionState = NEXTSTATE_RETRY_AFTER_KICKEDOUT;
+                } else {
+                    // kicked out 1 time, this time should disconnect
+                    mNextConnectionState = NEXTSTATE_DISCONNECT;
+                }
+                doDisconnect();
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.PONG_CLIENT.getNumber()) {
                 needFeedback = false;
                 long currentTime = System.currentTimeMillis();
@@ -391,6 +406,7 @@ public class WsConnection extends Connection {
             }
         }
     }
+
 
     private void scheduleReconnect() {
         if (!userConfig.hasCurrentUser()) {
