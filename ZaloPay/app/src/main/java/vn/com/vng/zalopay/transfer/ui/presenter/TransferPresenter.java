@@ -130,9 +130,9 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful) {
+            public void onPreComplete(boolean isSuccessful, String transId) {
                 if (isSuccessful) {
-                    sendNotificationSuccess();
+                    sendNotificationSuccess(transId);
                 } else {
                     sendNotificationFailed();
                 }
@@ -562,7 +562,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         sendNotificationMessage(Constants.MoneyTransfer.STAGE_PRETRANSFER, 0);
     }
 
-    private void sendNotificationSuccess() {
+    private void sendNotificationSuccess(String transId) {
         sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount);
     }
 
@@ -574,12 +574,16 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0);
     }
 
-    private void sendNotificationMessage(int stage, long amount) {
+    private void sendNotificationMessage(int stage, long amount, String transId) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
         jsonObject.addProperty("displayname", user.displayName);
         jsonObject.addProperty("avatar", user.avatar);
         jsonObject.addProperty("mt_progress", stage);
+        if (!TextUtils.isEmpty(transId)) {
+            jsonObject.addProperty("transid", transId);
+        }
+
         if (amount > 0) {
             jsonObject.addProperty("amount", mTransaction.amount);
         }
@@ -591,6 +595,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<BaseResponse>());
         compositeSubscription.add(subscription);
+    }
+
+    private void sendNotificationMessage(int stage, long amount) {
+        sendNotificationMessage(stage, amount, null);
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {

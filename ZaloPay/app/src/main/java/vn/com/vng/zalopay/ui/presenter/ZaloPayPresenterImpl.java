@@ -205,7 +205,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful) {
+            public void onPreComplete(boolean isSuccessful,String transId) {
 
             }
 

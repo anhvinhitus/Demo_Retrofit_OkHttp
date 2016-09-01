@@ -181,7 +181,7 @@ public class ScanSoundFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onPreComplete(boolean isSuccessful) {
+                    public void onPreComplete(boolean isSuccessful,String pTransId) {
 
                     }
 

@@ -98,7 +98,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful) {
+            public void onPreComplete(boolean isSuccessful,String transId) {
 
             }
 

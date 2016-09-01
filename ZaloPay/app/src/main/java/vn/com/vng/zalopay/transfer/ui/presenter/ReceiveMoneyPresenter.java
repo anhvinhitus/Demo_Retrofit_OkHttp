@@ -189,6 +189,12 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 String senderDisplayName = embedData.get("displayname").getAsString();
                 String senderAvatar = embedData.get("avatar").getAsString();
                 int progress = embedData.get("mt_progress").getAsInt();
+                String transId = null;
+                try {
+                    transId = embedData.get("transid").getAsString();
+                } catch (Exception e) {
+                    Timber.d(e, "exception");
+                }
 
                 String zaloPayId = notify.getUserid();
 
@@ -205,7 +211,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                         Timber.d("Stage: Transfer succeeded with amount %s", amount);
-                        mView.displayReceivedMoney(amount);
+                        mView.displayReceivedMoney(amount, transId);
                         break;
                     case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                         Timber.d("Stage: Transfer failed");
@@ -215,7 +221,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                         break;
                 }
 
-                mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar, progress, amount);
+                mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar, progress, amount, transId);
             }
         }
     }

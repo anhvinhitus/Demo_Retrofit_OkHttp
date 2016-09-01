@@ -230,7 +230,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 }
 
                 @Override
-                public void onPreComplete(boolean isSuccessful) {
+                public void onPreComplete(boolean isSuccessful, String transId) {
 
                 }
 

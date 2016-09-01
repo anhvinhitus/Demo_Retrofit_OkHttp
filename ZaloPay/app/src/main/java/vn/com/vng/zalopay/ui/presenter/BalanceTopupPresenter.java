@@ -83,7 +83,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful) {
+            public void onPreComplete(boolean isSuccessful,String transId) {
 
             }
 

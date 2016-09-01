@@ -176,15 +176,15 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
     }
 
     @Override
-    public void displayReceivedMoney(long amount) {
+    public void displayReceivedMoney(long amount, String transactionId) {
         if (getHeaderView() != null) {
-            getHeaderView().displayReceivedMoney(amount);
+            getHeaderView().displayReceivedMoney(amount, transactionId);
         }
     }
 
     @Override
-    public void setReceiverInfo(String uid, String displayName, String avatar, int state, long amount) {
-        addItem(uid, displayName, avatar, state, amount);
+    public void setReceiverInfo(String uid, String displayName, String avatar, int state, long amount, String transId) {
+        addItem(uid, displayName, avatar, state, amount, transId);
         if (mAdapter.getItemCount() >= 3) {
             if (getHeaderView() != null) {
                 getHeaderView().showTotalView();
@@ -216,14 +216,15 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
         Toast.makeText(getContext(), "Sinh mã QR thất bại!", Toast.LENGTH_SHORT).show();
     }
 
-    private void addItem(String uid, String name, String avatar, int state, long amount) {
+    private void addItem(String uid, String name, String avatar, int state, long amount, String transId) {
         PersonTransfer item = new PersonTransfer();
         item.avatar = avatar;
         item.zaloPayId = uid;
         item.state = state;
         item.displayName = name;
         item.amount = amount;
-        mAdapter.insert(item, 1);
+        item.transId = transId;
+        mAdapter.insert(item, 0);
     }
 
     public PersonTransferAdapter.HeaderViewHolder getHeaderView() {

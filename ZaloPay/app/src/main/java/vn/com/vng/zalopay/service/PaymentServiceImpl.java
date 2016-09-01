@@ -92,7 +92,7 @@ public class PaymentServiceImpl implements IPaymentService {
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful) {
+            public void onPreComplete(boolean isSuccessful,String transId) {
 
             }
         });

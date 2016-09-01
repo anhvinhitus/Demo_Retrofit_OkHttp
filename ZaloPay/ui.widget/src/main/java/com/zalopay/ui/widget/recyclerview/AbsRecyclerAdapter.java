@@ -17,7 +17,7 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
 
     protected final Context context;
     protected LayoutInflater mInflater;
-    private final Object _lock = new Object();
+    protected final Object _lock = new Object();
 
     public AbsRecyclerAdapter(Context context) {
         this.context = context;

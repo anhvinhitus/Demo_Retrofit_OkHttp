@@ -102,7 +102,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful) {
+            public void onPreComplete(boolean isSuccessful,String transId) {
                 
             }
 

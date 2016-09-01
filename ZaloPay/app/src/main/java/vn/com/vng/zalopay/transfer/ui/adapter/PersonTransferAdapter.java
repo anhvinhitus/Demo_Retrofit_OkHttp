@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +53,8 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Timber.d("onBindViewHolder position %s", position);
+
         if (holder instanceof ViewHolder) {
             PersonTransfer person = getItem(position);
             if (person != null) {
@@ -88,7 +92,10 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         }
 
         if (getItems().indexOf(object) < 0) {
-            super.insert(object, index);
+            synchronized (_lock) {
+                mItems.add(index, object);
+            }
+            notifyItemInserted(index + 1);
             return;
         }
 
@@ -96,10 +103,18 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             PersonTransfer item = getItems().get(i);
             if (item.equals(object)) {
                 if (item.state == Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED) {
-                    super.insert(object, index);
+                    Timber.d("insert state [%s] amount [%s]", object.state, object.amount);
+
+                    synchronized (_lock) {
+                        mItems.add(index, object);
+                    }
+                    notifyItemInserted(index + 1);
                 } else {
                     Timber.d("insert: replace %s", i);
-                    getItems().set(i, object);
+
+                    synchronized (_lock) {
+                        mItems.set(i, object);
+                    }
                     notifyItemChanged(i + 1); // 1 -> header
                 }
 
@@ -125,6 +140,8 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         }
 
         public void bindView(PersonTransfer person) {
+
+            Timber.d("bindView: person name [%s] state [%s]", person.displayName, person.state);
             loadImage(imgAvatar, person.avatar);
             displayNameView.setText(person.displayName);
 
@@ -218,7 +235,22 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             layoutSuccess.setVisibility(View.GONE);
         }
 
-        public void displayReceivedMoney(long amount) {
+        Set<String> mSetTransactionId = new HashSet<>();
+
+        public void displayReceivedMoney(long amount, String pTransId) {
+
+            Timber.d("displayReceivedMoney: pTrans %s", pTransId);
+
+         /*   if (TextUtils.isEmpty(pTransId)) {
+                return;
+            }
+
+            if (mSetTransactionId.contains(pTransId)) {
+                return;
+            }*/
+
+            mSetTransactionId.add(pTransId);
+
             mTotal += amount;
             totalView.setText(CurrencyUtil.spanFormatCurrency(mTotal));
             setResult(true, amount);
