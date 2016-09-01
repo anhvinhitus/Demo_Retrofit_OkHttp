@@ -191,7 +191,9 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
                 int progress = embedData.get("mt_progress").getAsInt();
                 String transId = null;
                 try {
-                    transId = embedData.get("transid").getAsString();
+                    if (embedData.has("transid")) {
+                        transId = embedData.get("transid").getAsString();
+                    }
                 } catch (Exception e) {
                     Timber.d(e, "exception");
                 }

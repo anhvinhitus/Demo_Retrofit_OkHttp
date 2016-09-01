@@ -29,7 +29,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * Created by AnhHieu on 8/25/16.
  * QR Code for receiving money
  */
-public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView {
+public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyView {
 
     @Inject
     ReceiveMoneyPresenter mPresenter;
@@ -39,11 +39,11 @@ public class MyQRCodeFragment extends BaseFragment implements IReceiveMoneyView 
 
     PersonTransferAdapter mAdapter;
 
-    public static MyQRCodeFragment newInstance() {
+    public static ReceiveMoneyFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        MyQRCodeFragment fragment = new MyQRCodeFragment();
+        ReceiveMoneyFragment fragment = new ReceiveMoneyFragment();
         fragment.setArguments(args);
         return fragment;
     }

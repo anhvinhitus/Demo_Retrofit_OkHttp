@@ -37,7 +37,7 @@ import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
-import vn.com.vng.zalopay.transfer.ui.activities.MyQRCodeActivity;
+import vn.com.vng.zalopay.transfer.ui.activities.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.activities.ZaloContactActivity;
@@ -389,7 +389,7 @@ public class Navigator implements INavigator {
     }
 
     public void startMyQrCode(Context context) {
-        Intent intent = new Intent(context, MyQRCodeActivity.class);
+        Intent intent = new Intent(context, ReceiveMoneyActivity.class);
         context.startActivity(intent);
     }
 }

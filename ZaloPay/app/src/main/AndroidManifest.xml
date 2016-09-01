@@ -219,7 +219,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".transfer.ui.activities.MyQRCodeActivity"
+            android:name=".transfer.ui.activities.ReceiveMoneyActivity"
             android:label="@string/title.activity.my.qr"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
