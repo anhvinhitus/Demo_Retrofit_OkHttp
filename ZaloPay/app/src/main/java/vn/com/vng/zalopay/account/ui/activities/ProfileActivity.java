@@ -57,7 +57,11 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         if (!TextUtils.isEmpty(getUserComponent().currentUser().zalopayname)) {
             return;
         }
-        navigator.startEditAccountActivity(this);
+        if (getUserComponent().currentUser().profilelevel < 2) {
+            navigator.startUpdateProfileLevel2Activity(this, false);
+        } else {
+            navigator.startEditAccountActivity(this);
+        }
         ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
     }
 
