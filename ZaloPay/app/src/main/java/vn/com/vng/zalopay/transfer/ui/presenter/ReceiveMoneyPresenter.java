@@ -186,46 +186,50 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             }
 
             if (type == Constants.QRCode.RECEIVE_MONEY) {
-                String senderDisplayName = embedData.get("displayname").getAsString();
-                String senderAvatar = embedData.get("avatar").getAsString();
-                int progress = embedData.get("mt_progress").getAsInt();
-                String transId = null;
-                try {
-                    if (embedData.has("transid")) {
-                        transId = embedData.get("transid").getAsString();
-                    }
-                } catch (Exception e) {
-                    Timber.d(e, "exception");
-                }
-
-                String zaloPayId = notify.getUserid();
-
-                long amount = 0;
-                if (embedData.has("amount")) {
-                    amount = embedData.get("amount").getAsLong();
-                }
-
-                Timber.d("Receiver profile: %s - %s", senderDisplayName, senderAvatar);
-                switch (progress) {
-                    case Constants.MoneyTransfer.STAGE_PRETRANSFER:
-                        Timber.d("Stage: Pre transfer");
-                        mView.displayWaitForMoney();
-                        break;
-                    case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
-                        Timber.d("Stage: Transfer succeeded with amount %s", amount);
-                        mView.displayReceivedMoney(amount, transId);
-                        break;
-                    case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
-                        Timber.d("Stage: Transfer failed");
-                        break;
-                    case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
-                        Timber.d("Stage: Transfer canceled");
-                        break;
-                }
-
-                mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar, progress, amount, transId);
+                handleNotifications(notify, embedData);
             }
         }
+    }
+
+    private void handleNotifications(NotificationData notify, JsonObject embedData) {
+        String senderDisplayName = embedData.get("displayname").getAsString();
+        String senderAvatar = embedData.get("avatar").getAsString();
+        int progress = embedData.get("mt_progress").getAsInt();
+        String transId = null;
+        try {
+            if (embedData.has("transid")) {
+                transId = embedData.get("transid").getAsString();
+            }
+        } catch (Exception e) {
+            Timber.d(e, "exception");
+        }
+
+        String zaloPayId = notify.getUserid();
+
+        long amount = 0;
+        if (embedData.has("amount")) {
+            amount = embedData.get("amount").getAsLong();
+        }
+
+        Timber.d("Receiver profile: %s - %s", senderDisplayName, senderAvatar);
+        switch (progress) {
+            case Constants.MoneyTransfer.STAGE_PRETRANSFER:
+                Timber.d("Stage: Pre transfer");
+                mView.displayWaitForMoney();
+                break;
+            case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
+                Timber.d("Stage: Transfer succeeded with amount %s", amount);
+                mView.displayReceivedMoney(amount, transId);
+                break;
+            case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
+                Timber.d("Stage: Transfer failed");
+                break;
+            case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
+                Timber.d("Stage: Transfer canceled");
+                break;
+        }
+
+        mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar, progress, amount, transId);
     }
 
     private boolean isEqualCurrentUser(String zalopayId) {
