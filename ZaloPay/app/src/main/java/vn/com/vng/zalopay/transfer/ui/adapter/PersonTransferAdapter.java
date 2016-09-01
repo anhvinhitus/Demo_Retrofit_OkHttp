@@ -258,7 +258,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
         Set<String> mSetTransactionId = new HashSet<>();
 
-        public void displayReceivedMoney(long amount, String pTransId) {
+        public void displayReceivedMoney(String senderDisplayName, String senderAvatar, long amount, String pTransId) {
 
             Timber.d("displayReceivedMoney: pTrans %s", pTransId);
 
@@ -275,14 +275,16 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             mTotal += amount;
             totalView.setText(CurrencyUtil.spanFormatCurrency(mTotal));
             setResult(true, amount);
+            loadImage(imageAvatarLarge, senderAvatar);
+            mNameView.setText(senderDisplayName);
             layoutSuccess.postDelayed(mRunnable, 5000);
         }
 
         public void setUserInfo(String displayName, String avatar) {
             Timber.d("setUserInfo: displayName %s avatar %s", displayName, avatar);
             loadImage(mImageAvatarView, avatar);
-            loadImage(imageAvatarLarge, avatar);
-            mNameView.setText(displayName);
+//            loadImage(imageAvatarLarge, avatar);
+//            mNameView.setText(displayName);
         }
 
         private void loadImage(ImageView imageView, String url) {

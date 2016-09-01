@@ -232,7 +232,7 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                 Timber.d("Stage: Transfer succeeded with amount %s", amount);
-                mView.displayReceivedMoney(amount, transId);
+                mView.displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                 Timber.d("Stage: Transfer failed");

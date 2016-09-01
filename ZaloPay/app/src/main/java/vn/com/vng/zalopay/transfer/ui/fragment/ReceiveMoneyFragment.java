@@ -176,9 +176,9 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     }
 
     @Override
-    public void displayReceivedMoney(long amount, String transactionId) {
+    public void displayReceivedMoney(String senderDisplayName, String senderAvatar, long amount, String transactionId) {
         if (getHeaderView() != null) {
-            getHeaderView().displayReceivedMoney(amount, transactionId);
+            getHeaderView().displayReceivedMoney(senderDisplayName, senderAvatar, amount, transactionId);
         }
     }
 
