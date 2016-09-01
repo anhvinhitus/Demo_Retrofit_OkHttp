@@ -165,7 +165,7 @@
     <string name="terms_of_use_1">Để bảo đảm quyền lợi tốt nhất cho khách hàng, Quý khách vui lòng cập nhật đầy đủ mục thông tin cá nhân.</string>
     <string name="terms_of_use_2">Nếu mất SIM, Quý khách gọi ngay %s đế khoá TK Zalo Pay</string>
     <string name="agree.term.of.use">Tôi đã đọc và đồng ý với %s của Zalo Pay</string>
-    <string name="term.of.use">Điều khoản sử dụng</string>
+    <string name="term.of.use">Thỏa thuận sử dụng</string>
     <string name="invalid_amount_empty">Bạn chưa nhập số tiền</string>
     <string name="invalid_transfer_msg_empty">Bạn chưa nhập lời nhắn</string>
 
