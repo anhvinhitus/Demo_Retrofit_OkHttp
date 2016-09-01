@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -106,7 +107,9 @@ public class AppGameWebViewProcessor extends WebViewClient {
         bundle.putString("appuser", appuser);
         bundle.putString("apptime", apptime);
         bundle.putString("item", item);
-        bundle.putString("description", description);
+        //decode Base64
+        String decodeDescription = new String(Base64.decode(description.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE));
+        bundle.putString("description", decodeDescription);
         bundle.putString("embeddata", embeddata);
         bundle.putString("amount", amount);
         bundle.putString("mac", mac);
