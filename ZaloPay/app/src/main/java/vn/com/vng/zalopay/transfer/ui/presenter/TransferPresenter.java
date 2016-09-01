@@ -97,14 +97,14 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     return;
                 }
                 mView.hideLoading();
-                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-                    if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
-                        sendNotificationCancel();
-                    }
+//                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+//                    if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
+//                        sendNotificationCancel();
+//                    }
                     /*else if (paymentError != PaymentError.ERR_CODE_SUCCESS) {
                           sendNotificationFailed();
                     }*/
-                }
+//                }
             }
 
             @Override
@@ -131,6 +131,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
             @Override
             public void onPreComplete(boolean isSuccessful, String transId) {
+                Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
                 if (isSuccessful) {
                     sendNotificationSuccess(transId);
                 } else {
@@ -559,19 +560,19 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     private void sendNotificationPreTransfer() {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_PRETRANSFER, 0);
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null);
     }
 
     private void sendNotificationSuccess(String transId) {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount);
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId);
     }
 
     private void sendNotificationFailed() {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0);
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null);
     }
 
     private void sendNotificationCancel() {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0);
+        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null);
     }
 
     private void sendNotificationMessage(int stage, long amount, String transId) {
@@ -595,10 +596,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<BaseResponse>());
         compositeSubscription.add(subscription);
-    }
-
-    private void sendNotificationMessage(int stage, long amount) {
-        sendNotificationMessage(stage, amount, null);
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
