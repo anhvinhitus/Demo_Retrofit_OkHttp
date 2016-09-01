@@ -1,6 +1,6 @@
 package vn.com.vng.zalopay.utils;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -9,11 +9,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by longlv on 05/08/2016.
- *
  */
 public class AppVersionUtils {
 
@@ -85,28 +85,24 @@ public class AppVersionUtils {
         return true;
     }
 
-    public static void showUpgradeAppDialog(final Context context) {
-        Timber.d("Show update Dialog, context [%s]", context);
-        if (context == null) {
+    public static void showUpgradeAppDialog(final Activity activity) {
+        Timber.d("Show update Dialog, context [%s]", activity);
+        if (activity == null) {
             return;
         }
         String contentText = getUpdateMessageInServer();
+        String newVersion = getLatestVersionInServer();
         if (TextUtils.isEmpty(contentText)) {
-            contentText = context.getString(R.string.need_update_to_use);
+            contentText = activity.getString(R.string.need_update_to_use);
         }
-        new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setTitleText(context.getString(R.string.new_version))
-                .setContentText(contentText)
-                .setConfirmText(context.getString(R.string.btn_update))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+        DialogManager.showSweetDialogUpdate(activity, contentText, newVersion, activity.getString(R.string.btn_update),
+                new ZPWOnEventUpdateListener() {
                     @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
+                    public void onUpdateListenner() {
                         checkClearSession();
-                        AndroidUtils.openPlayStoreForUpdate(context);
+                        AndroidUtils.openPlayStoreForUpdate(activity);
                     }
-                })
-                .show();
+                });
     }
 
     private static void checkClearSession() {

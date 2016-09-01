@@ -138,7 +138,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 if (!upgradeApp || homeView == null) {
                     return;
                 }
-                AppVersionUtils.showUpgradeAppDialog(homeView.getContext());
+                AppVersionUtils.showUpgradeAppDialog(homeView.getActivity());
             }
         });
     }
