@@ -131,8 +131,7 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onPreComplete(boolean isSuccessful) {
-
+        public void onPreComplete(boolean isSuccessful, String s) {
             responseListener.onPreComplete(isSuccessful);
 
             if (isSuccessful) {
