@@ -241,13 +241,13 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
             Timber.d("displayReceivedMoney: pTrans %s", pTransId);
 
-         /*   if (TextUtils.isEmpty(pTransId)) {
+            if (TextUtils.isEmpty(pTransId)) {
                 return;
             }
 
             if (mSetTransactionId.contains(pTransId)) {
                 return;
-            }*/
+            }
 
             mSetTransactionId.add(pTransId);
 
