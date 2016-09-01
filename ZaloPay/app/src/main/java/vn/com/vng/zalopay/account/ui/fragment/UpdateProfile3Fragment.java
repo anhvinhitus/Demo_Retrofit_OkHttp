@@ -246,6 +246,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     @Override
+    public void waitingApproveProfileLevel3() {
+        hideLoading();
+        getActivity().finish();
+    }
+
+    @Override
     public void setProfile(User user) {
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 .format(new Date(user.birthDate * 1000)));

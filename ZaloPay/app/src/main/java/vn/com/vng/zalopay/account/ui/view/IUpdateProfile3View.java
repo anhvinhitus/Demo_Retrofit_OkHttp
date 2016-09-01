@@ -12,6 +12,8 @@ public interface IUpdateProfile3View {
 
     void updateSuccess();
 
+    void waitingApproveProfileLevel3();
+
     void setProfile(User user);
 
     void showError(String message);

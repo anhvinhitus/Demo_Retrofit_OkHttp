@@ -127,6 +127,9 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         if (e instanceof BodyException) {
             if (((BodyException)e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
                 userConfig.setWaitingApproveProfileLevel3(true);
+                mView.showError(((BodyException)e).message);
+                mView.waitingApproveProfileLevel3();
+                return;
             }
         }
         mView.hideLoading();
