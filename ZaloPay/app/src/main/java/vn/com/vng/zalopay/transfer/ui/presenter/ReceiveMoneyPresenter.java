@@ -15,9 +15,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
@@ -32,10 +35,22 @@ import vn.com.zalopay.wallet.data.GlobalData;
  * Controller for receiving money
  */
 
-public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
+public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
 
-    private EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
     private IReceiveMoneyView mView;
+
+    private String mPreviousContent;
+
+    @Inject
+    EventBus eventBus;
+
+    @Inject
+    UserConfig userConfig;
+
+    @Inject
+    ReceiveMoneyPresenter() {
+
+    }
 
     @Override
     public void setView(IReceiveMoneyView view) {
@@ -125,8 +140,6 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
             mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getCurrentUser().avatar);
         }
     }
-
-    String mPreviousContent;
 
     public void updateQRWithAmount(long amount, String message) {
         String content = generateQrContent(amount, message);

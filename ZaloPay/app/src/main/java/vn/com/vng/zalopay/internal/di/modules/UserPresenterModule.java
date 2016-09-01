@@ -158,10 +158,4 @@ public class UserPresenterModule {
         return new ChangePinPresenter();
     }
 
-
-    @UserScope
-    @Provides
-    ReceiveMoneyPresenter provideReceiveMoneyPresenter() {
-        return new ReceiveMoneyPresenter();
-    }
 }
