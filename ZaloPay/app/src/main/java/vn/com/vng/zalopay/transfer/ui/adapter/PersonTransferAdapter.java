@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -34,7 +33,11 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
  */
 public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, RecyclerView.ViewHolder> {
 
+    private static final int VIEWTYPE_HEADER = 0;
+    private static final int VIEWTYPE_INPROGRESS = 1;
+    private static final int VIEWTYPE_DONE = 2;
     private User mOwner;
+
 
     public PersonTransferAdapter(Context context, User user) {
         super(context);
@@ -43,12 +46,17 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 0) {
-            return new HeaderViewHolder(mInflater.inflate(R.layout.header_my_qr_code, parent, false));
-        } else {
-            return new ViewHolder(mInflater.inflate(R.layout.row_person_transfer, parent, false));
+        switch (viewType) {
+            case VIEWTYPE_HEADER:
+                return new HeaderViewHolder(mInflater.inflate(R.layout.header_my_qr_code, parent, false));
+            case VIEWTYPE_INPROGRESS:
+                return new ViewHolder(mInflater.inflate(R.layout.row_person_transfer_inprogress, parent, false));
+            case VIEWTYPE_DONE:
+                return new ViewHolder(mInflater.inflate(R.layout.row_person_transfer_done, parent, false));
+            default:
+                Timber.w("Unknown viewType: %s", viewType);
+                return null;
         }
-
     }
 
     @Override
@@ -69,7 +77,20 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? 0 : 1;
+        if (position == 0) {
+            return VIEWTYPE_HEADER;
+        }
+
+        PersonTransfer person = getItem(position);
+        if (person == null) {
+            return VIEWTYPE_INPROGRESS;
+        }
+
+        if (person.state == Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED) {
+            return VIEWTYPE_DONE;
+        } else {
+            return VIEWTYPE_INPROGRESS;
+        }
     }
 
     @Override
@@ -139,7 +160,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindView(PersonTransfer person) {
+        void bindView(PersonTransfer person) {
 
             Timber.d("bindView: person name [%s] state [%s]", person.displayName, person.state);
             loadImage(imgAvatar, person.avatar);
@@ -152,7 +173,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             } else if (person.state == Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL) {
                 tvAmountView.setText("hủy chuyển tiền");
             } else {
-                tvAmountView.setText(TextUtils.concat("đã chuyển ", CurrencyUtil.spanFormatCurrency(person.amount)));
+                tvAmountView.setText(CurrencyUtil.spanFormatCurrency(person.amount));
             }
         }
 

@@ -51,7 +51,10 @@ public class SetAmountFragment extends BaseFragment {
         Intent data = new Intent();
         Bundle bundle = new Bundle();
         bundle.putLong("amount", mAmount);
-        bundle.putString("message", textInputMessageView.getEditText().getText().toString());
+        EditText editText = textInputMessageView.getEditText();
+        if (editText != null) {
+            bundle.putString("message", editText.getText().toString());
+        }
         data.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, data);
         getActivity().finish();
