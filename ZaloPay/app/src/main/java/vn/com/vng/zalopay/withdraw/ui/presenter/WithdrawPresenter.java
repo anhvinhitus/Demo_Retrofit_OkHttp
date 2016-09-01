@@ -28,7 +28,7 @@ import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
 public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<IWithdrawView> {
     private final int WITHDRAW_APPID = 2;
 
-    IWithdrawView mView;
+    private IWithdrawView mView;
     private User mUser;
     private PaymentWrapper paymentWrapper;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -122,10 +122,10 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void withdraw(long amount) {
-
-        if (amount <= 0) {
+        if (amount <= 0 || mView == null) {
             return;
         }
+
         mView.showLoading();
         String description = mView.getContext().getString(R.string.txt_withdraw);
         Subscription subscription = zaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, description)
@@ -140,7 +140,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onNext(Order order) {
-            Timber.d("GetUserInfoSubscriber success " + order);
+            Timber.d("CreateWalletOrderSubscriber success " + order);
             WithdrawPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -162,14 +162,22 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void onCreateWalletOrderError(Throwable e) {
+        if (mView == null) {
+            return;
+        }
+
         mView.hideLoading();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
         mView.showError(message);
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        Timber.d("session =========" + order.getItem());
         paymentWrapper.withdraw(order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber), mUser.zalopayname);
+
+        if (mView == null) {
+            return;
+        }
+
         mView.hideLoading();
     }
 
@@ -180,7 +188,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void destroyView() {
-
+        mView = null;
     }
 
     @Override
