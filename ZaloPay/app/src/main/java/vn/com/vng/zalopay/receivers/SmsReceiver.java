@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.receiver;
+package vn.com.vng.zalopay.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

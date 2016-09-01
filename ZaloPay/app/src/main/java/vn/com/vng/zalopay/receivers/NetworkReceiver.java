@@ -1,14 +1,10 @@
-package vn.com.vng.zalopay.receiver;
+package vn.com.vng.zalopay.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import org.greenrobot.eventbus.EventBus;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;

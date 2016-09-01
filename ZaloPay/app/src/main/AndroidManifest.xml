@@ -198,7 +198,7 @@
             android:label="@string/notification" />
 
         <receiver
-            android:name=".receiver.NetworkReceiver"
+            android:name=".receivers.NetworkReceiver"
             android:label="NetworkReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -207,7 +207,7 @@
         </receiver>
 
         <!-- SMS -->
-        <receiver android:name=".receiver.SmsReceiver">
+        <receiver android:name=".receivers.SmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
