@@ -141,4 +141,5 @@ public class ClearableEditText extends EditText implements View.OnTouchListener,
     private boolean isNotEmpty(CharSequence str) {
         return !TextUtils.isEmpty(str);
     }
+
 }

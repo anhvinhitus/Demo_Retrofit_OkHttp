@@ -1,8 +1,10 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -106,7 +108,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
 
     private void showOTPError() {
         textInputOTP.setErrorEnabled(true);
-        if (TextUtils.isEmpty(edtOTP.getText().toString())) {
+        if (TextUtils.isEmpty(ClearableEditText.optText(edtOTP))) {
             textInputOTP.setError(getString(R.string.invalid_otp_empty));
         } else {
             textInputOTP.setError(getString(R.string.invalid_otp));
@@ -119,7 +121,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     }
 
     public boolean isValidOTP() {
-        String otp = edtOTP.getText().toString();
+        String otp = ClearableEditText.optText(edtOTP);
         return !TextUtils.isEmpty(otp);
     }
 
@@ -131,7 +133,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
         } else {
             hideOTPError();
         }
-        presenter.verify(edtOTP.getText().toString());
+        presenter.verify(ClearableEditText.optText(edtOTP));
     }
 
     @Override

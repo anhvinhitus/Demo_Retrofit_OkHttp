@@ -279,4 +279,17 @@ public class ClearableEditText extends EditText {
         }
 
     }
+
+    public static String optText(ClearableEditText editText) {
+        if (editText == null) {
+            return null;
+        }
+
+        Editable text = editText.getText();
+        if (text == null) {
+            return null;
+        }
+
+        return text.toString();
+    }
 }

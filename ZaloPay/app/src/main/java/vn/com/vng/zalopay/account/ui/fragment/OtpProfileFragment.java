@@ -2,9 +2,11 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -50,7 +52,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     private void showOTPError() {
         textInputOTP.setErrorEnabled(true);
-        if (TextUtils.isEmpty(edtOTP.getText().toString())) {
+        if (TextUtils.isEmpty(ClearableEditText.optText(edtOTP))) {
             textInputOTP.setError(getString(R.string.invalid_otp_empty));
         } else {
             textInputOTP.setError(getString(R.string.invalid_otp));
@@ -63,7 +65,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
     }
 
     public boolean isValidOTP() {
-        String otp = edtOTP.getText().toString();
+        String otp = ClearableEditText.optText(edtOTP);
         return !TextUtils.isEmpty(otp);
     }
 
@@ -85,7 +87,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
         } else {
             hideOTPError();
         }
-        presenter.verifyOtp(edtOTP.getText().toString());
+        presenter.verifyOtp(ClearableEditText.optText(edtOTP));
     }
 
     @Override

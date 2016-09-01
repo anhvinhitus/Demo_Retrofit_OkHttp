@@ -81,7 +81,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     private void showPhoneError() {
         textInputPhone.setErrorEnabled(true);
-        if (TextUtils.isEmpty(edtPhone.getText().toString())) {
+        if (TextUtils.isEmpty(ClearableEditText.optText(edtPhone))) {
             textInputPhone.setError(getString(R.string.invalid_phone_empty));
         } else {
             textInputPhone.setError(getString(R.string.invalid_phone));
