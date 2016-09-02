@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.fragment;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,10 +19,6 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
-import vn.com.vng.zalopay.transfer.ui.activities.SetAmountActivity;
-import vn.com.vng.zalopay.transfer.ui.adapter.PersonTransferAdapter;
-import vn.com.vng.zalopay.transfer.ui.presenter.ReceiveMoneyPresenter;
-import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**

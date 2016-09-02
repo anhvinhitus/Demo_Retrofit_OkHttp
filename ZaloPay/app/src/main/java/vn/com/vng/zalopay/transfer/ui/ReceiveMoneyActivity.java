@@ -1,10 +1,9 @@
-package vn.com.vng.zalopay.transfer.ui.activities;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.os.Bundle;
 import android.view.WindowManager;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.transfer.ui.fragment.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 

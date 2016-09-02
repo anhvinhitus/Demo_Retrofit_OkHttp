@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.fragment;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,8 +25,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.presenter.TransferMoneyPresenter;
-import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;

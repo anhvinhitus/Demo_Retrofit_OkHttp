@@ -1,10 +1,8 @@
-package vn.com.vng.zalopay.transfer.ui.presenter;
+package vn.com.vng.zalopay.transfer.ui;
 
-import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
+import vn.com.vng.zalopay.transfer.ui.ITransferView;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**

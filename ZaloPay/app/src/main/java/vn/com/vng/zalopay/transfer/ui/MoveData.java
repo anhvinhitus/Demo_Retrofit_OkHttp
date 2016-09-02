@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.model;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.view.View;
 

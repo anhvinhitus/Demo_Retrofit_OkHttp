@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.presenter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;

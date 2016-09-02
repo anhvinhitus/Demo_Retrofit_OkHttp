@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.view;
+package vn.com.vng.zalopay.transfer.ui;
 
 import de.greenrobot.dao.query.LazyList;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;

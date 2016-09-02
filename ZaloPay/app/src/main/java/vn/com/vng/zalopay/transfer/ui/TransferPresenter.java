@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.presenter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,7 +30,6 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.transfer.ui.view.ITransferView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;

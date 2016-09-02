@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.presenter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -18,15 +18,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
-import vn.com.vng.zalopay.transfer.ui.view.IReceiveMoneyView;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.data.GlobalData;
 

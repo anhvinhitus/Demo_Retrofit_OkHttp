@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.fragment;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,9 +32,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.transfer.ui.adapter.TransferRecentAdapter;
-import vn.com.vng.zalopay.transfer.ui.presenter.TransferHomePresenter;
-import vn.com.vng.zalopay.transfer.ui.view.ITransferHomeView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 

@@ -219,7 +219,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".transfer.ui.activities.ReceiveMoneyActivity"
+            android:name=".transfer.ui.ReceiveMoneyActivity"
             android:label="@string/title.activity.my.qr"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
@@ -233,13 +233,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".transfer.ui.activities.TransferHomeActivity"
+            android:name=".transfer.ui.TransferHomeActivity"
             android:label="@string/title.activity.transfer" />
         <activity
-            android:name=".transfer.ui.activities.ZaloContactActivity"
+            android:name=".transfer.ui.ZaloContactActivity"
             android:label="@string/title.activity.zalopay.contact" />
         <activity
-            android:name=".transfer.ui.activities.TransferActivity"
+            android:name=".transfer.ui.TransferActivity"
             android:label="@string/title.activity.transfer.to" />
         <activity
             android:name=".ui.activity.IntroActivity"
@@ -257,7 +257,7 @@
             android:label="@string/title.activity.withdraw" />
 
         <activity
-            android:name=".transfer.ui.activities.SetAmountActivity"
+            android:name=".transfer.ui.SetAmountActivity"
             android:label="@string/title.activity.set.amount"
             android:windowSoftInputMode="adjustResize|stateVisible" />
 

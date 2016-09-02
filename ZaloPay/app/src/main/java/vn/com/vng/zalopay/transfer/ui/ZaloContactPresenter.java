@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.presenter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.transfer.ui.view.IZaloContactView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 

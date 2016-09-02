@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:background="@color/background"
             app:layoutManager="LinearLayoutManager"
-            tools:context=".transfer.ui.fragment.TransferHomeFragment"
+            tools:context=".transfer.ui.TransferHomeFragment"
             tools:listitem="@layout/fragment_zalo_contact_item" />
     </android.support.v4.widget.SwipeRefreshLayout>
 

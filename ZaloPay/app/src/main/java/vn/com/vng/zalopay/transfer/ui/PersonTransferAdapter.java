@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui.adapter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;

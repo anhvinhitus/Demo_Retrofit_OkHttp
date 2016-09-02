@@ -1,6 +1,5 @@
-package vn.com.vng.zalopay.transfer.ui.activities;
+package vn.com.vng.zalopay.transfer.ui;
 
-import vn.com.vng.zalopay.transfer.ui.fragment.TransferFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 

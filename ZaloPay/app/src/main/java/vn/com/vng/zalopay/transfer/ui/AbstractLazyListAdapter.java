@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package vn.com.vng.zalopay.transfer.ui.adapter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
