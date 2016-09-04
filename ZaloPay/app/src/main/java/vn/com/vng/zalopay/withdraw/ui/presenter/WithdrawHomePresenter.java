@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by longlv on 11/08/2016.
+ *
  */
 public class WithdrawHomePresenter extends AbsWithdrawConditionPresenter
         implements IPresenter<IWithdrawHomeView> {
@@ -114,12 +115,7 @@ public class WithdrawHomePresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void setChkVietinBank(boolean isValid) {
-
-    }
-
-    @Override
-    public void setChkSacomBank(boolean isValid) {
+    public void setBankValid(String bankCode, boolean isValid) {
 
     }
 

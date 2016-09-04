@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.withdraw.ui.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -21,8 +22,12 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
     public abstract Activity getActivity();
     public abstract void setChkEmail(boolean isValid);
     public abstract void setChkIdentityNumber(boolean isValid);
-    public abstract void setChkVietinBank(boolean isValid);
-    public abstract void setChkSacomBank(boolean isValid);
+    public abstract void setBankValid(String bankCode, boolean isValid);
+
+    private List<String> mListBankCardValid = new ArrayList<String>() {{
+        add(ECardType.PVTB.toString());
+        add(ECardType.PSCB.toString());
+    }};
 
     protected boolean isValidProfileLevel() {
         User user = userConfig.getCurrentUser();
@@ -56,11 +61,8 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
                 if (card == null || TextUtils.isEmpty(card.bankcode)) {
                     continue;
                 }
-                if (ECardType.PVTB.toString().equals(card.bankcode)) {
-                    setChkVietinBank(true);
-                    isMapped = true;
-                } else if (ECardType.PSCB.toString().equals(card.bankcode)) {
-                    setChkSacomBank(true);
+                if (mListBankCardValid.contains(card.bankcode)) {
+                    setBankValid(card.bankcode, true);
                     isMapped = true;
                 }
             }

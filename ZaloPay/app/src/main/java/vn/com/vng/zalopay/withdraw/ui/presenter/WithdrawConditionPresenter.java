@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.data.GlobalData;
+import vn.com.zalopay.wallet.entity.enumeration.ECardType;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -130,19 +131,15 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void setChkVietinBank(boolean isValid) {
+    public void setBankValid(String bankCode, boolean isValid) {
         if (mView == null) {
             return;
         }
-        mView.setChkVietinBank(isValid);
-    }
-
-    @Override
-    public void setChkSacomBank(boolean isValid) {
-        if (mView == null) {
-            return;
+        if (ECardType.PVTB.toString().equals(bankCode)) {
+            mView.setChkVietinBank(isValid);
+        } else if (ECardType.PSCB.toString().equals(bankCode)) {
+            mView.setChkSacomBank(isValid);
         }
-        mView.setChkSacomBank(isValid);
     }
 
 }
