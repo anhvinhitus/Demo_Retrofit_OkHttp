@@ -21,17 +21,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.ws.Listener;
-import vn.com.vng.zalopay.data.ws.SocketClient;
-import vn.com.vng.zalopay.data.ws.TCPClient;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
-
-//import io.netty.channel.ConnectTimeoutException;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -53,21 +48,33 @@ public class WsConnection extends Connection {
     private SocketClient mSocketClient;
     private RxBus mServerPongBus;
 
-    // state machine for keeping track of network connection
-    private int mConnectionState;
     private final Handler mConnectionHandler;
     private Long mCheckCountDown = 100L;
 
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     /**
      * Next connection state.
      * If request to disconnect: set mNextConnectionState = DISCONNECT
      * If network connection is lost due to error: set mNextConnectionState = RETRY_CONNECT
      */
-    private int mNextConnectionState = NEXTSTATE_DISCONNECT;
-    private static final int NEXTSTATE_RETRY_CONNECT = 1;
-    private static final int NEXTSTATE_DISCONNECT = 2;
-    private static final int NEXTSTATE_RETRY_AFTER_KICKEDOUT = 3;
+    private NextState mNextConnectionState = NextState.DISCONNECT;
+    
+    private enum NextState {
+        RETRY_CONNECT(1),
+        DISCONNECT(2),
+        RETRY_AFTER_KICKEDOUT(3);
+        
+        private final int value;
+
+        NextState(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
         super(host, port);
@@ -92,8 +99,8 @@ public class WsConnection extends Connection {
                 .filter((value) ->
                     !mSocketClient.isConnected() &&
                     !mSocketClient.isConnecting() &&
-                            (mNextConnectionState == NEXTSTATE_RETRY_CONNECT ||
-                             mNextConnectionState == NEXTSTATE_RETRY_AFTER_KICKEDOUT) &&
+                            (mNextConnectionState == NextState.RETRY_CONNECT ||
+                             mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
                     NetworkHelper.isNetworkAvailable(context) &&
                     mCheckCountDown <= 0
                 )
@@ -122,7 +129,7 @@ public class WsConnection extends Connection {
                 .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
                 .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
                 .filter((obj) -> this.isUserLoggedIn() &&
-                        (mNextConnectionState == NEXTSTATE_RETRY_CONNECT))
+                        (mNextConnectionState == NextState.RETRY_CONNECT))
                 .subscribe((obj) -> {
                     Timber.d("Server is not responding ...");
                     reconnect();
@@ -139,11 +146,7 @@ public class WsConnection extends Connection {
             return false;
         }
 
-        if (TextUtils.isEmpty(userConfig.getCurrentUser().zaloPayId)) {
-            return false;
-        }
-
-        return true;
+        return !TextUtils.isEmpty(userConfig.getCurrentUser().zaloPayId);
     }
 
     public void setGCMToken(String token) {
@@ -209,7 +212,7 @@ public class WsConnection extends Connection {
             }
 
             Timber.d("Begin to reconnect");
-            mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
+            mNextConnectionState = NextState.RETRY_CONNECT;
             connect();
         }, 1000);
     }
@@ -217,7 +220,7 @@ public class WsConnection extends Connection {
     @Override
     public void disconnect() {
         Timber.d("disconnect");
-        mNextConnectionState = NEXTSTATE_DISCONNECT;
+        mNextConnectionState = NextState.DISCONNECT;
         doDisconnect();
     }
 
@@ -334,7 +337,7 @@ public class WsConnection extends Connection {
         public void onConnected() {
             Timber.d("onConnected");
             mState = State.Connected;
-            mNextConnectionState = NEXTSTATE_RETRY_CONNECT;
+            mNextConnectionState = NextState.RETRY_CONNECT;
             //    numRetry = 0;
             sendAuthentication();
 
@@ -358,11 +361,11 @@ public class WsConnection extends Connection {
                 mServerPongBus.send(0L);
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.KICK_OUT_USER.getNumber()) {
                 needFeedback = false;
-                if (mNextConnectionState != NEXTSTATE_RETRY_AFTER_KICKEDOUT) {
-                    mNextConnectionState = NEXTSTATE_RETRY_AFTER_KICKEDOUT;
+                if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
+                    mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
                 } else {
                     // kicked out 1 time, this time should disconnect
-                    mNextConnectionState = NEXTSTATE_DISCONNECT;
+                    mNextConnectionState = NextState.DISCONNECT;
                 }
                 doDisconnect();
             } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.PONG_CLIENT.getNumber()) {
@@ -381,7 +384,7 @@ public class WsConnection extends Connection {
         }
 
         @Override
-        public void onDisconnected(int code, String reason) {
+        public void onDisconnected(ConnectionErrorCode code, String reason) {
             Timber.d("onDisconnected %s", code);
             mState = Connection.State.Disconnected;
 
@@ -390,7 +393,7 @@ public class WsConnection extends Connection {
             }
 
             Timber.d("Next expected network state: %s", mNextConnectionState);
-            if (mNextConnectionState == NEXTSTATE_RETRY_CONNECT) {
+            if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
         }
@@ -406,7 +409,7 @@ public class WsConnection extends Connection {
             } else if (e instanceof UnknownHostException) {
             }
 
-            if (mNextConnectionState == NEXTSTATE_RETRY_CONNECT) {
+            if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
         }

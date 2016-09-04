@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws;
+package vn.com.vng.zalopay.data.ws.connection;
 
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -10,8 +10,9 @@ import timber.log.Timber;
 
 /**
  * Created by AnhHieu on 7/24/16.
+ * TCP nonblocking socket
  */
-public class TCPClient implements SocketClient {
+class TCPClient implements SocketClient {
     private Listener mListener;
 
     /**
@@ -106,7 +107,7 @@ public class TCPClient implements SocketClient {
         return mConnection != null && mConnection.isConnecting();
     }
 
-    void postDisconnectedEvent(int reason) {
+    void postDisconnectedEvent(ConnectionErrorCode reason) {
         if (mHandler == null || mListener == null) {
             return;
         }

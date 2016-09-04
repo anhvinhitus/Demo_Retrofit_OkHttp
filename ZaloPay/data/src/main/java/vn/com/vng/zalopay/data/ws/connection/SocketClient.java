@@ -1,9 +1,10 @@
-package vn.com.vng.zalopay.data.ws;
+package vn.com.vng.zalopay.data.ws.connection;
 
 /**
  * Created by AnhHieu on 8/10/16.
+ * Interface for socket connect
  */
-public interface SocketClient {
+interface SocketClient {
     void connect();
     void disconnect();
     void send(byte[] data);

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws;
+package vn.com.vng.zalopay.data.ws.connection;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -46,7 +46,7 @@ class ConnectionListener implements SocketChannelConnection.ConnectionListenable
     }
 
     @Override
-    public void onDisconnected(int reason) {
+    public void onDisconnected(ConnectionErrorCode reason) {
         if (mTcpClient.get() != null) {
             mTcpClient.get().postDisconnectedEvent(reason);
         }

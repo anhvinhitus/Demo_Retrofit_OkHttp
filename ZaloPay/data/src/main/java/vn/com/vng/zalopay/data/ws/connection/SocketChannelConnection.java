@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws;
+package vn.com.vng.zalopay.data.ws.connection;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,12 +24,6 @@ import timber.log.Timber;
  * Non-blocking socket communication
  */
 class SocketChannelConnection {
-    private static final int REASON_FINALIZE = 1;
-    private static final int REASON_TRIGGER_DISCONNECT = 2;
-    private static final int REASON_READ_ERROR = 3;
-    private static final int REASON_WRITE_ERROR = 4;
-    private static final int REASON_CONNECTION_ERROR = 5;
-
     private final ConnectionListenable mListenable;
     private final List<ByteBuffer> mWriteQueue = new LinkedList<>();
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(4096);
@@ -45,7 +39,7 @@ class SocketChannelConnection {
     }
 
     public void close() {
-        handleDisconnected(REASON_TRIGGER_DISCONNECT);
+        handleDisconnected(ConnectionErrorCode.TRIGGER_DISCONNECT);
     }
 
     private enum ConnectionState {
@@ -65,7 +59,7 @@ class SocketChannelConnection {
     interface ConnectionListenable {
         void onConnected();
         void onReceived(byte[] data);
-        void onDisconnected(int reason);
+        void onDisconnected(ConnectionErrorCode reason);
     }
 
     SocketChannelConnection(String address, int port, ConnectionListenable listenable) {
@@ -128,9 +122,9 @@ class SocketChannelConnection {
         } catch (ClosedSelectorException e) {
             // selector has been closed
         } catch (IOException e) {
-            handleDisconnected(REASON_TRIGGER_DISCONNECT);
+            handleDisconnected(ConnectionErrorCode.TRIGGER_DISCONNECT);
         } finally {
-            handleDisconnected(REASON_FINALIZE);
+            handleDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE);
         }
     }
 
@@ -238,7 +232,7 @@ class SocketChannelConnection {
                 Timber.d(ee, "reoccurs exception");
             }
 
-            mListenable.onDisconnected(REASON_CONNECTION_ERROR);
+            mListenable.onDisconnected(ConnectionErrorCode.CONNECTION_ERROR);
             return false;
         }
     }
@@ -262,7 +256,7 @@ class SocketChannelConnection {
                 Timber.d("Connection closed by client: %s", remoteAddr);
 
                 key.cancel();
-                handleDisconnected(REASON_READ_ERROR);
+                handleDisconnected(ConnectionErrorCode.READ_ERROR);
                 return false;
             }
 
@@ -289,7 +283,7 @@ class SocketChannelConnection {
         return true;
     }
 
-    private void handleDisconnected(int reason) {
+    private void handleDisconnected(ConnectionErrorCode reason) {
         if (mConnectionState != ConnectionState.CONNECTED &&
                 mConnectionState != ConnectionState.CONNECTING) {
             return;
@@ -309,7 +303,7 @@ class SocketChannelConnection {
 
     @Override
     protected void finalize() throws Throwable {
-        handleDisconnected(REASON_FINALIZE);
+        handleDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE);
         super.finalize();
     }
 
