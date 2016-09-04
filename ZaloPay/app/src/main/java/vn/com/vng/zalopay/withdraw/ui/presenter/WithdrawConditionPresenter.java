@@ -30,18 +30,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
 
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public void getProfile() {
-        User user = userConfig.getCurrentUser();
-        if (user != null) {
-            checkValidCondition();
-            if (user.profilelevel >= 3 &&
-                    (TextUtils.isEmpty(user.identityNumber) || TextUtils.isEmpty(user.email))) {
-                getUserProfile();
-            }
-        }
-    }
-
-    private void getUserProfile() {
+    private void getUserProfileFromServer() {
         Subscription subscription = accountRepository.getUserProfileLevelCloud()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -53,7 +42,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
 
         @Override
         public void onCompleted() {
-            WithdrawConditionPresenter.this.getProfileSuccess();
+            WithdrawConditionPresenter.this.checkConditionAndStartWithdrawActivity();
         }
 
         @Override
@@ -61,14 +50,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
         }
     }
 
-    private void getProfileSuccess() {
-        User user = userConfig.getCurrentUser();
-        if (user != null) {
-            checkValidCondition();
-        }
-    }
-
-    private boolean checkValidProfileLevel() {
+    private boolean isValidProfileLevel() {
         User user = userConfig.getCurrentUser();
         if (user == null) {
             return false;
@@ -87,7 +69,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
         return isValid;
     }
 
-    private boolean checkValidLinkCard() {
+    private boolean isValidLinkCard() {
         User user = userConfig.getCurrentUser();
         boolean isMapped = false;
         try {
@@ -115,22 +97,37 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
         return isMapped;
     }
 
-    public void checkValidCondition() {
-        boolean isValidProfile = checkValidProfileLevel();
-        boolean isValidLinkCard = checkValidLinkCard();
+    public boolean isValidCondition() {
+        boolean isValidProfile = isValidProfileLevel();
+        boolean isValidLinkCard = isValidLinkCard();
         boolean isValidCondition = isValidProfile && isValidLinkCard;
         if (isValidProfile) {
             mView.hideUpdateProfile();
             mView.hideUserNote();
-        } else if (AndroidApplication.instance().getAppComponent().userConfig().isWaitingApproveProfileLevel3()) {
-            mView.hideUpdateProfile();
-            mView.showUserNote();
         } else {
-            mView.showUpdateProfile();
-            mView.hideUserNote();
+            if (userConfig.isWaitingApproveProfileLevel3()) {
+                mView.hideUpdateProfile();
+                mView.showUserNote();
+            } else {
+                mView.showUpdateProfile();
+                mView.hideUserNote();
+
+            }
+            User user = userConfig.getCurrentUser();
+            if (user.profilelevel >= 3 &&
+                    (TextUtils.isEmpty(user.identityNumber) || TextUtils.isEmpty(user.email))) {
+                getUserProfileFromServer();
+            }
         }
 
-        if (isValidCondition) {
+        return isValidCondition;
+    }
+
+    private void checkConditionAndStartWithdrawActivity() {
+        if (mView == null) {
+            return;
+        }
+        if (isValidCondition()) {
             navigator.startWithdrawActivity(mView.getContext());
             mView.getActivity().finish();
         }
@@ -149,8 +146,7 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
 
     @Override
     public void resume() {
-        checkValidCondition();
-        getProfile();
+        checkConditionAndStartWithdrawActivity();
     }
 
     @Override
