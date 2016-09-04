@@ -66,6 +66,8 @@ ext {
     zalopayanalyticsVersion = "1.2"
     debugviewerVersion = "1.0"
 
+    cborVersion = "0.7"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
@@ -112,8 +114,9 @@ ext {
 
             zalopay_analytics      : "vn.com.zalopay:analytics:${zalopayanalyticsVersion}",
             debugViewer            : "vn.com.vng:debugviewer:${debugviewerVersion}",
-            debugViewer_noops      : "vn.com.vng:debugviewer-noops:${debugviewerVersion}"
+            debugViewer_noops      : "vn.com.vng:debugviewer-noops:${debugviewerVersion}",
 
+            cbor                   : "co.nstant.in:cbor:${cborVersion}"
     ]
 
     testingLibraries = [
@@ -130,6 +133,4 @@ ext {
     configurationAndroid = [
             multidex: "com.android.support:multidex:${multidexVersion}"
     ]
-
-
 }

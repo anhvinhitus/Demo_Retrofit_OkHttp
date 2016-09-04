@@ -78,6 +78,8 @@ dependencies {
     compile libs.timber
     compile libs.eventbus
     compile libs.gson
+    compile libs.cbor
+
     compile project(':domain')
 
     // compile 'io.netty:netty-all:4.1.0.CR4'
