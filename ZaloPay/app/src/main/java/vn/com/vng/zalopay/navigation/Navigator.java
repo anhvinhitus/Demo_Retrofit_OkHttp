@@ -50,7 +50,7 @@ import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
-import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawHomeActivity;
+import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
@@ -325,7 +325,7 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }
 
-    public void startWithdrawHomeActivity(Context context) {
+    public void startBalanceManagementActivity(Context context) {
         if (userConfig == null || userConfig.getCurrentUser() == null) {
             EventBus.getDefault().post(new TokenExpiredEvent(NetworkError.TOKEN_INVALID));
             return;
@@ -333,7 +333,7 @@ public class Navigator implements INavigator {
             showUpdateProfileInfoDialog(context);
             return;
         }
-        Intent intent = new Intent(context, WithdrawHomeActivity.class);
+        Intent intent = new Intent(context, BalanceManagementActivity.class);
         context.startActivity(intent);
     }
 

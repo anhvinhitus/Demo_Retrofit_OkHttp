@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.withdraw.ui.presenter;
+package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
@@ -13,23 +13,23 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawHomeView;
+import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
+import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.zalopay.wallet.data.GlobalData;
 
 /**
  * Created by longlv on 11/08/2016.
  *
  */
-public class WithdrawHomePresenter extends AbsWithdrawConditionPresenter
-        implements IPresenter<IWithdrawHomeView> {
+public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
+        implements IPresenter<IBalanceManagementView> {
 
-    private IWithdrawHomeView mView;
+    private IBalanceManagementView mView;
     private User mUser;
 
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public WithdrawHomePresenter(User user) {
+    public BalanceManagementPresenter(User user) {
         mUser = user;
     }
 
@@ -38,7 +38,7 @@ public class WithdrawHomePresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void setView(IWithdrawHomeView iWithdrawView) {
+    public void setView(IBalanceManagementView iWithdrawView) {
         mView = iWithdrawView;
     }
 

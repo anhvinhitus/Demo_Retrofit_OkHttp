@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.withdraw.ui.fragment;
+package vn.com.vng.zalopay.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,23 +18,22 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawHomePresenter;
-import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawHomeView;
+import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
+import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link BaseFragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link WithdrawHomeFragment#newInstance} factory method to
+ * Use the {@link BalanceManagementFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeView {
+public class BalanceManagementFragment extends BaseFragment implements IBalanceManagementView {
 
     @Inject
-    WithdrawHomePresenter mPresenter;
+    BalanceManagementPresenter mPresenter;
 
     @BindView(R.id.tv_balance)
     TextView tvBalance;
@@ -63,7 +62,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
         navigator.startMiniAppActivity(getActivity(), ModuleName.FAQ);
     }
 
-    public WithdrawHomeFragment() {
+    public BalanceManagementFragment() {
         // Required empty public constructor
     }
 
@@ -71,11 +70,11 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment WithdrawHomeFragment.
+     * @return A new instance of fragment BalanceManagementFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WithdrawHomeFragment newInstance() {
-        return new WithdrawHomeFragment();
+    public static BalanceManagementFragment newInstance() {
+        return new BalanceManagementFragment();
     }
 
     @Override
@@ -85,7 +84,7 @@ public class WithdrawHomeFragment extends BaseFragment implements IWithdrawHomeV
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_withdraw_home;
+        return R.layout.fragment_balance_management;
     }
 
     @Override

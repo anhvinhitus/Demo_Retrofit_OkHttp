@@ -286,7 +286,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @OnClick(R.id.btn_balance)
     public void onClickBalance() {
-        navigator.startWithdrawHomeActivity(getContext());
+        navigator.startBalanceManagementActivity(getContext());
     }
 
     List<AppResource> mListApps = null;
@@ -359,7 +359,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             if (banner.function == BannerInternalFunction.Deposit.getValue()) {
                 navigator.startDepositActivity(getActivity());
             } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
-                navigator.startWithdrawHomeActivity(getActivity());
+                navigator.startBalanceManagementActivity(getActivity());
             } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
                 navigator.startLinkCardActivity(getActivity());
             } else if (banner.function == BannerInternalFunction.Pay.getValue()) {

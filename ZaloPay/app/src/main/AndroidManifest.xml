@@ -250,7 +250,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".withdraw.ui.activities.WithdrawHomeActivity"
+            android:name=".ui.activity.BalanceManagementActivity"
             android:label="@string/title.activity.withdraw.home" />
         <activity
             android:name=".withdraw.ui.activities.WithdrawActivity"

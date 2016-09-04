@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.transfer.ui.TransferHomePresenter;
 import vn.com.vng.zalopay.transfer.ui.TransferMoneyPresenter;
 import vn.com.vng.zalopay.transfer.ui.TransferPresenter;
+import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
@@ -30,7 +31,6 @@ import vn.com.vng.zalopay.scanners.qrcode.QRCodePresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
-import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawHomePresenter;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 
 @Module
@@ -123,8 +123,8 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    WithdrawHomePresenter providesWithdrawHomePresenter(User user) {
-        return new WithdrawHomePresenter(user);
+    BalanceManagementPresenter providesWithdrawHomePresenter(User user) {
+        return new BalanceManagementPresenter(user);
     }
 
     @UserScope

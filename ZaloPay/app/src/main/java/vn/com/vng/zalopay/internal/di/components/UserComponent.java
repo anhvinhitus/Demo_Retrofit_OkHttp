@@ -53,13 +53,13 @@ import vn.com.vng.zalopay.transfer.ui.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.IntroFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
-import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawHomeFragment;
 
 @UserScope
 @Subcomponent(
@@ -161,7 +161,7 @@ public interface UserComponent {
 
     void inject(IntroFragment f);
 
-    void inject(WithdrawHomeFragment f);
+    void inject(BalanceManagementFragment f);
 
     void inject(WithdrawFragment f);
 

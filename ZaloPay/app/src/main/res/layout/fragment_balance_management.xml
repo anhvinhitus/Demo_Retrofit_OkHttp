@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:background="@color/background"
               android:orientation="vertical"
-              tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawHomeFragment">
+              tools:context=".ui.fragment.BalanceManagementFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
