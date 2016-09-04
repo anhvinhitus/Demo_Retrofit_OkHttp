@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.withdraw.ui.presenter;
 
+import android.app.Activity;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -11,7 +13,6 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawHomeView;
 import vn.com.zalopay.wallet.data.GlobalData;
@@ -19,7 +20,8 @@ import vn.com.zalopay.wallet.data.GlobalData;
 /**
  * Created by longlv on 11/08/2016.
  */
-public class WithdrawHomePresenter extends BaseUserPresenter implements IPresenter<IWithdrawHomeView> {
+public class WithdrawHomePresenter extends AbsWithdrawConditionPresenter
+        implements IPresenter<IWithdrawHomeView> {
 
     private IWithdrawHomeView mView;
     private User mUser;
@@ -83,6 +85,42 @@ public class WithdrawHomePresenter extends BaseUserPresenter implements IPresent
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);
+    }
+
+    public void startWithdrawActivity() {
+        if (isValidProfileLevel() && isValidLinkCard()) {
+            navigator.startWithdrawActivity(mView.getContext());
+        } else {
+            navigator.startWithdrawConditionActivity(mView.getContext());
+        }
+    }
+
+    @Override
+    public Activity getActivity() {
+        if (mView == null) {
+            return null;
+        }
+        return mView.getActivity();
+    }
+
+    @Override
+    public void setChkEmail(boolean isValid) {
+
+    }
+
+    @Override
+    public void setChkIdentityNumber(boolean isValid) {
+
+    }
+
+    @Override
+    public void setChkVietinBank(boolean isValid) {
+
+    }
+
+    @Override
+    public void setChkSacomBank(boolean isValid) {
+
     }
 
 }

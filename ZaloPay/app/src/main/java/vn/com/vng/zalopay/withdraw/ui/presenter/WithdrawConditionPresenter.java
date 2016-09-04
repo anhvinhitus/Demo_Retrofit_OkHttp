@@ -1,30 +1,24 @@
 package vn.com.vng.zalopay.withdraw.ui.presenter;
 
+import android.app.Activity;
 import android.text.TextUtils;
-
-import java.util.List;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.data.GlobalData;
-import vn.com.zalopay.wallet.entity.enumeration.ECardType;
-import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 11/08/2016.
  * Presenter of WithdrawConditionFragment
  */
-public class WithdrawConditionPresenter extends BaseUserPresenter implements IPresenter<IWithdrawConditionView> {
+public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
+        implements IPresenter<IWithdrawConditionView> {
 
     private IWithdrawConditionView mView;
 
@@ -48,53 +42,6 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
         @Override
         public void onError(Throwable e) {
         }
-    }
-
-    private boolean isValidProfileLevel() {
-        User user = userConfig.getCurrentUser();
-        if (user == null) {
-            return false;
-        }
-        boolean isValid = true;
-        if (!TextUtils.isEmpty(user.email)) {
-            mView.setChkEmail(true);
-        } else {
-            isValid = false;
-        }
-        if (!TextUtils.isEmpty(user.identityNumber)) {
-            mView.setChkIdentityNumber(true);
-        } else {
-            isValid = false;
-        }
-        return isValid;
-    }
-
-    private boolean isValidLinkCard() {
-        User user = userConfig.getCurrentUser();
-        boolean isMapped = false;
-        try {
-            List<DMappedCard> mapCardLis = CShareData.getInstance(mView.getActivity()).getMappedCardList(user.zaloPayId);
-            if (mapCardLis == null || mapCardLis.size() <= 0) {
-                return false;
-            }
-            for (int i = 0; i < mapCardLis.size(); i++) {
-                DMappedCard card = mapCardLis.get(i);
-                if (card == null || TextUtils.isEmpty(card.bankcode)) {
-                    continue;
-                }
-                if (ECardType.PVTB.toString().equals(card.bankcode)) {
-                    mView.setChkVietinBank(true);
-                    isMapped = true;
-                } else if (ECardType.PSCB.toString().equals(card.bankcode)) {
-                    mView.setChkSacomBank(true);
-                    isMapped = true;
-                }
-            }
-            return isMapped;
-        } catch (Exception e) {
-            Timber.w(e, "Get mapped card exception: %s", e.getMessage());
-        }
-        return isMapped;
     }
 
     public boolean isValidCondition() {
@@ -158,4 +105,44 @@ public class WithdrawConditionPresenter extends BaseUserPresenter implements IPr
     public void destroy() {
         GlobalData.initApplication(null);
     }
+    @Override
+    public Activity getActivity() {
+        if (mView == null) {
+            return null;
+        }
+        return mView.getActivity();
+    }
+
+    @Override
+    public void setChkEmail(boolean isValid) {
+        if (mView == null) {
+            return;
+        }
+        mView.setChkEmail(isValid);
+    }
+
+    @Override
+    public void setChkIdentityNumber(boolean isValid) {
+        if (mView == null) {
+            return;
+        }
+        mView.setChkIdentityNumber(isValid);
+    }
+
+    @Override
+    public void setChkVietinBank(boolean isValid) {
+        if (mView == null) {
+            return;
+        }
+        mView.setChkVietinBank(isValid);
+    }
+
+    @Override
+    public void setChkSacomBank(boolean isValid) {
+        if (mView == null) {
+            return;
+        }
+        mView.setChkSacomBank(isValid);
+    }
+
 }
