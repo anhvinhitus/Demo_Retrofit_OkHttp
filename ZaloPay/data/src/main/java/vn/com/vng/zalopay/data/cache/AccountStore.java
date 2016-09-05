@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.data.cache;
 
+import android.support.annotation.Nullable;
+
+import java.util.Map;
+
 import okhttp3.RequestBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -17,6 +21,7 @@ import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Person;
+import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 
 /**
  * Created by AnhHieu on 7/3/16.
@@ -30,6 +35,12 @@ public interface AccountStore {
         Person getById(String zaloPayId);
 
         void put(Person person);
+
+        void saveProfileInfo3(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg);
+
+        void clearProfileInfo3();
+
+        Map getProfileInfo3();
     }
 
     interface RequestService {
@@ -115,5 +126,8 @@ public interface AccountStore {
 
         Observable<Boolean> updateZaloPayName(String zaloPayName);
 
+        Observable<ProfileInfo3> getProfileInfo3Cache();
+
+        Observable<Boolean> saveProfileInfo3(String email, String identity, @Nullable String foregroundImg, @Nullable String backgroundImg, @Nullable String avatarImg);
     }
 }

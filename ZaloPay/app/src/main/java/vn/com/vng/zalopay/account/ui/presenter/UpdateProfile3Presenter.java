@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.presenter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -23,6 +24,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -102,7 +104,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
                         Uri fimgPath,
                         Uri bimgPath,
                         Uri avatarPath) {
-        
+
         byte[] _fimgBytes = resizeImageByteArray(fimgPath);
         byte[] _bimgBytes = resizeImageByteArray(bimgPath);
         byte[] _avatarBytes = resizeImageByteArray(avatarPath);
@@ -131,9 +133,9 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
     private void onUpdateError(Throwable e) {
         if (e instanceof BodyException) {
-            if (((BodyException)e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
+            if (((BodyException) e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
                 userConfig.setWaitingApproveProfileLevel3(true);
-                mView.showError(((BodyException)e).message);
+                mView.showError(((BodyException) e).message);
                 mView.waitingApproveProfileLevel3();
                 return;
             }
@@ -167,6 +169,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         }
     }
 
+/*
 
     protected int byteSizeOf(Bitmap data) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -177,6 +180,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
             return data.getAllocationByteCount();
         }
     }
+
 
     protected byte[] bitmap2byteArray(Bitmap b) {
         int bytes = byteSizeOf(b);
@@ -208,6 +212,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         resizeImageByteArray(uri);
         return bitmap;
     }
+*/
 
     private byte[] resizeImageByteArray(Uri uri) {
         byte[] ret = null;
@@ -230,7 +235,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         return ret;
     }
 
-    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+/*    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
         if (maxHeight > 0 && maxWidth > 0) {
             int width = image.getWidth();
             int height = image.getHeight();
@@ -266,5 +271,43 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
             }
         }
         return ret;
+    }*/
+
+    public void saveProfileInfo3(String email, String identity, Uri foregroundImg, Uri backgroundImg, Uri avatarImg) {
+
+        String foregroundImgPath = null;
+        if (foregroundImg != null) {
+            foregroundImgPath = foregroundImg.getPath();
+        }
+
+
+        String backgroundImgPath = null;
+        if (backgroundImg != null) {
+            backgroundImgPath = backgroundImg.getPath();
+        }
+
+        String avatarImgPath = null;
+        if (avatarImg != null) {
+            avatarImgPath = avatarImg.getPath();
+        }
+
+        accountRepository.saveProfileInfo3(email, identity, foregroundImgPath, backgroundImgPath, avatarImgPath)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+    }
+
+    public void getProfileInfo() {
+        Subscription subscription = accountRepository.getProfileInfo3Cache()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ProfileInfo3Subscriber());
+        compositeSubscription.add(subscription);
+    }
+
+    private class ProfileInfo3Subscriber extends DefaultSubscriber<ProfileInfo3> {
+
+        @Override
+        public void onNext(ProfileInfo3 profileInfo3) {
+            mView.setProfileInfo(profileInfo3.email, profileInfo3.identity, profileInfo3.foregroundImg, profileInfo3.backgroundImg, profileInfo3.avatarImg);
+        }
     }
 }

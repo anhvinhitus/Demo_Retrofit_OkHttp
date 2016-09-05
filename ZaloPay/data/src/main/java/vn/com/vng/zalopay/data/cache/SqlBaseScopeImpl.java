@@ -54,6 +54,10 @@ public class SqlBaseScopeImpl {
         return def;
     }
 
+    public void deleteByKey(String key) {
+        daoSession.getDataManifestDao().deleteByKey(key);
+    }
+
     public AppResourceGDDao getAppInfoDao() {
         return daoSession.getAppResourceGDDao();
     }

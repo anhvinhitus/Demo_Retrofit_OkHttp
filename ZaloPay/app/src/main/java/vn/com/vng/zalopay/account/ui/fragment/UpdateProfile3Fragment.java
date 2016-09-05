@@ -153,6 +153,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        presenter.getProfileInfo();
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();
@@ -180,6 +187,16 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         } else {
             updateProfile();
         }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        String email = mEmailView.getText().toString();
+        String cmnd = mIdentityNumberView.getText().toString();
+
+        presenter.saveProfileInfo3(email, cmnd, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
+
+        return super.onBackPressed();
     }
 
     private void updateProfile() {
@@ -316,25 +333,36 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 case BACKGROUND_IMAGE_REQUEST_CODE:
 
                     mUriBgCmnd = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
-                    loadImage(mBgCmndView, mUriBgCmnd);
-                    mTvBgCmndView.setVisibility(View.GONE);
+                    loadBackgroundImageCMND(mUriFgCmnd);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
 
                     mUriFgCmnd = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
-                    loadImage(mFgCmndView, mUriFgCmnd);
-                    mTvFgCmndView.setVisibility(View.GONE);
+                    loadForegroundImageCMND(mUriFgCmnd);
                     break;
                 case AVATAR_REQUEST_CODE:
 
                     mUriAvatar = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
-                    loadImage(mAvatarView, mUriAvatar);
-                    mTvAvatarView.setVisibility(View.GONE);
-
+                    loadAvatar(mUriAvatar);
                     break;
                 default:
             }
         }
+    }
+
+    void loadForegroundImageCMND(Uri uri) {
+        loadImage(mFgCmndView, uri);
+        mTvFgCmndView.setVisibility(View.GONE);
+    }
+
+    void loadAvatar(Uri uri) {
+        loadImage(mAvatarView, uri);
+        mTvAvatarView.setVisibility(View.GONE);
+    }
+
+    void loadBackgroundImageCMND(Uri uri) {
+        loadImage(mAvatarView, uri);
+        mTvBgCmndView.setVisibility(View.GONE);
     }
 
     private void loadImage(ImageView image, Uri uri) {
@@ -346,5 +374,27 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 .centerCrop()
                 .into(image);
         image.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
+
+        mEmailView.setText(email);
+        mIdentityNumberView.setText(identity);
+
+        if (!TextUtils.isEmpty(foregroundImg)) {
+            mUriFgCmnd = Uri.parse(foregroundImg);
+            loadForegroundImageCMND(mUriFgCmnd);
+        }
+
+        if (!TextUtils.isEmpty(backgroundImg)) {
+            mUriBgCmnd = Uri.parse(backgroundImg);
+            loadBackgroundImageCMND(mUriBgCmnd);
+        }
+
+        if (!TextUtils.isEmpty(avatarImg)) {
+            mUriAvatar = Uri.parse(avatarImg);
+            loadAvatar(mUriAvatar);
+        }
     }
 }

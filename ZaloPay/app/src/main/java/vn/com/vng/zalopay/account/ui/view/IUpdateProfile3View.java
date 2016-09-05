@@ -17,4 +17,6 @@ public interface IUpdateProfile3View {
     void setProfile(User user);
 
     void showError(String message);
+
+    void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg);
 }

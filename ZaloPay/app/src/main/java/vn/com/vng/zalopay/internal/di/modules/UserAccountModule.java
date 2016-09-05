@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.AccountLocalStorage;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -37,7 +38,7 @@ public class UserAccountModule {
     AccountStore.Repository providesAccountRepository(AccountStore.RequestService service,
                                                       AccountStore.UploadPhotoService photoService,
                                                       UserConfig userConfig, User user,
-                                                      UserEntityDataMapper mapper) {
-        return new AccountRepositoryImpl(new AccountLocalStorage(), service, photoService, userConfig, user, mapper);
+                                                      UserEntityDataMapper mapper, @Named("daosession") DaoSession session) {
+        return new AccountRepositoryImpl(new AccountLocalStorage(session), service, photoService, userConfig, user, mapper);
     }
 }
