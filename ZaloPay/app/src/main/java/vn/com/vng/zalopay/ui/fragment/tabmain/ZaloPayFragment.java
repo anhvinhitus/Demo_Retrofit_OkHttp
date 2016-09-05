@@ -26,7 +26,6 @@ import com.zalopay.ui.widget.textview.RoundTextView;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
@@ -176,7 +174,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter.setData(getListData());
         presenter.initialize();
     }
 
@@ -194,7 +191,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             return;
         }
         Bundle bundle = data.getExtras();
-        String muid = bundle.getString("muid");
+//        String muid = bundle.getString("muid");
         String accesstoken = bundle.getString("accesstoken");
         String appid = bundle.getString("appid");
         String apptransid = bundle.getString("apptransid");
@@ -270,11 +267,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
-    //    @OnClick(R.id.btn_deposit)
+    /*@OnClick(R.id.btn_deposit)
     public void onBtnDepositClick() {
         navigator.startDepositActivity(getActivity());
         ZPAnalytics.trackEvent(ZPEvents.TAPADDCASH);
-    }
+    }*/
 
     @OnClick(R.id.btn_link_card)
     public void onBtnLinkCardClick() {
@@ -283,7 +280,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @OnClick(R.id.btn_scan_to_pay)
-    public void onScanToPayClick(View view) {
+    public void onScanToPayClick() {
         getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
         getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
         getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
@@ -293,15 +290,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @OnClick(R.id.btn_balance)
     public void onClickBalance() {
         navigator.startBalanceManagementActivity(getContext());
-    }
-
-    List<AppResource> mListApps = null;
-
-    private List<AppResource> getListData() {
-        if (Lists.isEmptyOrNull(mListApps)) {
-            mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
-        }
-        return mListApps;
     }
 
     @Override
