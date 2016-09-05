@@ -4,6 +4,7 @@
         <attr name="length" format="integer" />
         <attr name="hint" format="string" />
         <attr name="note" format="string" />
+        <attr name="paddingLeft" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="WaveView">

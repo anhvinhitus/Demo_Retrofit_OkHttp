@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.ui.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -12,6 +10,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,36 +20,48 @@ import com.zalopay.ui.widget.edittext.NonSelectionActionModeCallback;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by longlv on 30/05/2016.
  */
-public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFocusChangeListener {
+public class PassCodeView extends FrameLayout {
 
     private int length;
     private boolean mShowPassCode = false;
     private String mHint = "";
 
-    private LinearLayout mRootView;
-    private TextView mTvHint;
-    private EditText mEditText;
-    private TextView mTvShowHide;
+    @BindView(R.id.root)
+    LinearLayout mRootView;
+
+    @BindView(R.id.tvHint)
+    TextView mTvHint;
+
+    @BindView(R.id.editText)
+    EditText mEditText;
+
+    @BindView(R.id.btnShowHide)
+    Button mTvShowHide;
+
     private ArrayList<TextView> mTextViews;
     private int mTextViewSize = 0;
 
-    private IPasscodeFocusChanged mIPassCodeFocusChanged;
+    private IPassCodeFocusChanged mIPassCodeFocusChanged;
 
     private IPassCodeMaxLength mIPassCodeMaxLength;
 
     public PassCodeView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public PassCodeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initAttrs(context, attrs);
+        this(context, attrs, 0);
     }
 
     public PassCodeView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -58,18 +69,13 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         initAttrs(context, attrs);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public PassCodeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initAttrs(context, attrs);
-    }
-
     private void initAttrs(Context context, AttributeSet attrs) {
-
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PassCodeView, 0, 0);
+        float paddingLeft = 0;
         try {
             length = typedArray.getInt(R.styleable.PassCodeView_length, getResources().getInteger(R.integer.pin_length));
             mHint = typedArray.getString(R.styleable.PassCodeView_hint);
+            paddingLeft = typedArray.getDimension(R.styleable.PassCodeView_paddingLeft, 0f);
         } finally {
             typedArray.recycle();
         }
@@ -78,34 +84,15 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         mTextViewSize = AndroidUtils.dp(36f);
 
         View view = LayoutInflater.from(context).inflate(R.layout.passcodeview, this, false);
-        mRootView = (LinearLayout) view.findViewById(R.id.root);
-        mTvHint = (TextView) view.findViewById(R.id.tvHint);
+        ButterKnife.bind(this, view);
+
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
         }
-
-        mEditText = (EditText) view.findViewById(R.id.editText);
+        mTvHint.setPadding((int) paddingLeft, 0, 0, 0);
+        mRootView.setPadding((int) paddingLeft, 0, 0, 0);
         mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
-        mEditText.addTextChangedListener(this);
-        mEditText.setOnFocusChangeListener(this);
-
-        mTvShowHide = (TextView) view.findViewById(R.id.tvShowHide);
-
-        mTvShowHide.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mShowPassCode) {
-                    hidePasscode();
-                    mTvShowHide.setText(getContext().getResources().getString(R.string.show));
-                } else {
-                    showPasscode();
-                    mTvShowHide.setText(getContext().getResources().getString(R.string.hide));
-                }
-            }
-        });
-
         initTextView(context);
-
         addView(view);
     }
 
@@ -132,17 +119,17 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         this.mIPassCodeMaxLength = null;
     }
 
-    public void showPasscode() {
+    public void showPassCode() {
         mShowPassCode = true;
-        showOrHidePasscode();
+        showOrHidePassCode();
     }
 
-    public void hidePasscode() {
+    public void hidePassCode() {
         mShowPassCode = false;
-        showOrHidePasscode();
+        showOrHidePassCode();
     }
 
-    private void showOrHidePasscode() {
+    private void showOrHidePassCode() {
         if (mShowPassCode) {
             String strInput = mEditText.getText().toString();
             char[] charArray = null;
@@ -179,6 +166,7 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         return mEditText.getText().toString();
     }
 
+
     public void hideError() {
         mTvHint.setText(mHint);
         mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
@@ -193,24 +181,20 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         mTvHint.setTextColor(Color.RED);
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    @OnTextChanged(R.id.editText)
+    public void onTextChanged(CharSequence s) {
+        showOrHidePassCode();
     }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        showOrHidePasscode();
-    }
-
-    @Override
+    @OnTextChanged(value = R.id.editText, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterTextChanged(Editable s) {
         if (mIPassCodeMaxLength != null && s.length() == length && length > 0) {
             mIPassCodeMaxLength.hasMaxLength();
         }
     }
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
+    @OnFocusChange(R.id.editText)
+    public void onFocusChange(View view, boolean hasFocus) {
         if (hasFocus) {
             mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         } else {
@@ -224,24 +208,30 @@ public class PassCodeView extends FrameLayout implements TextWatcher, View.OnFoc
         }
     }
 
-    public boolean requestFocusView() {
-        return mEditText.requestFocus();
+    @OnClick(R.id.btnShowHide)
+    public void onClickShowHide() {
+        if (mShowPassCode) {
+            hidePassCode();
+            mTvShowHide.setText(getContext().getResources().getString(R.string.show));
+        } else {
+            showPassCode();
+            mTvShowHide.setText(getContext().getResources().getString(R.string.hide));
+        }
     }
 
-    public boolean isRequestFocus() {
-        return mEditText.hasFocus();
+    public boolean requestFocusView() {
+        return mEditText.requestFocus();
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {
         mEditText.addTextChangedListener(textWatcher);
     }
 
-    public void setPasscodeFocusChanged(IPasscodeFocusChanged listener) {
+    public void setPassCodeFocusChanged(IPassCodeFocusChanged listener) {
         mIPassCodeFocusChanged = listener;
     }
 
-    public void removePasscodeFocusChanged() {
-        mIPassCodeFocusChanged = null;
+    public boolean isValid() {
+        return getText().length() == getMaxLength();
     }
-
 }

@@ -9,7 +9,6 @@
         style="@style/TextView.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
         android:textSize="@dimen/textsize.tiny" />
 
     <FrameLayout
@@ -51,11 +50,10 @@
                 android:layout_marginRight="48dp"
                 android:orientation="horizontal"
                 android:paddingBottom="2dp"
-                android:paddingLeft="16dp"
                 android:paddingTop="2dp" />
 
             <Button
-                android:id="@+id/tvShowHide"
+                android:id="@+id/btnShowHide"
                 style="@style/Button.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

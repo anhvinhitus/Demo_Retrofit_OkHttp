@@ -19,13 +19,12 @@ import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
-import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
+import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 8/25/16.
- *
  */
 public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
@@ -70,7 +69,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (isValidPinView(mNewPassCodeView)) {
+            if (mNewPassCodeView.isValid()) {
                 mNewPassCodeView.hideError();
             }
 
@@ -85,11 +84,6 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
             checkPinValid();
         }
     };
-
-    private boolean isValidPinView(PassCodeView passCode) {
-        String pin = passCode.getText();
-        return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
-    }
 
     private boolean isDifferencePin() {
         String newPin = mNewPassCodeView.getText();
@@ -107,7 +101,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
         presenter.setChangePassView(this);
         mNewPassCodeView.addTextChangedListener(passCodeChanged);
-        mNewPassCodeView.setPasscodeFocusChanged(new IPasscodeFocusChanged() {
+        mNewPassCodeView.setPassCodeFocusChanged(new IPassCodeFocusChanged() {
             @Override
             public void onFocusChangedPin(boolean isFocus) {
                 if (isFocus) {
@@ -134,7 +128,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     }
 
     private void checkPinValid() {
-        boolean valid = isValidPinView(mNewPassCodeView) && isValidPinView(mOldPassCodeView);
+        boolean valid = mNewPassCodeView.isValid() && mOldPassCodeView.isValid();
         Timber.d("checkPinValid: valid %s", valid);
         presenter.pinValid(valid);
     }

@@ -25,7 +25,7 @@ import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
-import vn.com.vng.zalopay.ui.widget.IPasscodeFocusChanged;
+import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
@@ -128,7 +128,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         return !TextUtils.isEmpty(pin) && pin.length() == passCode.getMaxLength();
     }
 
-    IPasscodeFocusChanged passcodeFocusChanged = new IPasscodeFocusChanged() {
+    IPassCodeFocusChanged passcodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
             if (isFocus) {
@@ -295,9 +295,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    passCode.showPasscode();
+                    passCode.showPassCode();
                 } else {
-                    passCode.hidePasscode();
+                    passCode.hidePassCode();
                 }
             }
         });
@@ -305,7 +305,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         passCode.requestFocus();
         passCode.setPassCodeMaxLength(passCodeMaxLength);
         passCode.addTextChangedListener(passcodeChanged);
-        passCode.setPasscodeFocusChanged(passcodeFocusChanged);
+        passCode.setPassCodeFocusChanged(passcodeFocusChanged);
 
         inputZaloPayName.setOnClickBtnCheck(mOnClickCheckZaloPayName);
         inputZaloPayName.setOntextChangeListener(mInputZaloPayNameListener);
