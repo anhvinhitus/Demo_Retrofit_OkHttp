@@ -10,6 +10,7 @@ import vn.com.zalopay.game.businnesslogic.base.AppGameSingletonLifeCircle;
 import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameInjectView;
 import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameViewFactory;
 import vn.com.zalopay.game.ui.component.fragment.AppGameFragment;
+import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 public class AppGameActivity extends AppGameBaseActivity {
     public static final int REQUEST_CODE = 10001;
@@ -48,7 +49,10 @@ public class AppGameActivity extends AppGameBaseActivity {
 
         super.onBackPressed();
         */
-        return;
+        if(AppGameWebViewProcessor.hasError)
+            super.onBackPressed();
+        else
+            return;
     }
 
     @Override

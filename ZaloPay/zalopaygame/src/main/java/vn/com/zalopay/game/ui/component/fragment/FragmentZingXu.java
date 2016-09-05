@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.config.AppGameConfig;
+import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 import vn.com.zalopay.game.ui.webview.AppGameWebView;
 import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
@@ -46,6 +48,17 @@ public class FragmentZingXu extends AppGameFragment
             @Override
             public void onTimeoutLoading() {
                 Timber.e("onProgressTimeout-%s",AppGameConfig.ZINGXU_PAGE);
+
+                //load website timeout, show confirm dialog: continue to load or exit.
+                if (AppGameGlobal.getDialog() != null)
+                    AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),getResources().getString(R.string.appgame_waiting_loading),
+                            getResources().getString(R.string.appgame_button_left),getResources().getString(R.string.appgame_button_right), new IDialogListener() {
+                                @Override
+                                public void onClose()
+                                {
+                                    AppGameBaseActivity.getCurrentActivity().finish();
+                                }
+                            });
             }
         });
     }

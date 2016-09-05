@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -16,7 +18,9 @@ import android.widget.Toast;
 import org.parceler.Parcels;
 
 import timber.log.Timber;
+import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.config.AppGameConfig;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
@@ -26,10 +30,17 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
     private static final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
 
+    public static boolean hasError;
+
+    //flag to animate activity
+    public static boolean canPayment;
+
     private AppGameWebView mWebView = null;
 
     public AppGameWebViewProcessor(AppGameWebView pWebView) {
         mWebView = pWebView;
+        AppGameWebViewProcessor.hasError = false;
+        AppGameWebViewProcessor.canPayment = false;
         mWebView.setWebViewClient(this);
         mWebView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
     }
@@ -37,6 +48,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
     public void start(String pUrl, Activity pActivity, ITimeoutLoadingListener pTimeoutListener) {
         if (AppGameGlobal.getDialog() != null)
             AppGameGlobal.getDialog().showLoadingDialog(pActivity, pTimeoutListener);
+
+        AppGameWebViewProcessor.hasError = false;
 
         mWebView.loadUrl(pUrl);
     }
@@ -47,6 +60,50 @@ public class AppGameWebViewProcessor extends WebViewClient {
             AppGameGlobal.getDialog().hideLoadingDialog();
 
         super.onPageFinished(view, url);
+    }
+
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
+    {
+        Timber.e("Webview error %s", description);
+
+        AppGameWebViewProcessor.hasError = true;
+
+        if (AppGameGlobal.getDialog() != null)
+        {
+            AppGameGlobal.getDialog().showInfoDialog(AppGameBaseActivity.getCurrentActivity(),
+                    AppGameGlobal.getString(R.string.appgame_error_loading), AppGameGlobal.getString(R.string.appgame_button_dialog_close),
+                    3, new IDialogListener() {
+                        @Override
+                        public void onClose() {
+                            AppGameBaseActivity.getCurrentActivity().finish();
+                        }
+                    });
+        }
+
+        super.onReceivedError(view, errorCode, description, failingUrl);
+    }
+
+    @Override
+    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
+    {
+
+        Timber.e("Webview error %s", error != null ? error.getDescription() : null);
+
+        AppGameWebViewProcessor.hasError = true;
+
+        if (AppGameGlobal.getDialog() != null)
+            AppGameGlobal.getDialog().showInfoDialog(AppGameBaseActivity.getCurrentActivity(),
+                    AppGameGlobal.getString(R.string.appgame_error_loading), AppGameGlobal.getString(R.string.appgame_button_dialog_close),
+                    3, new IDialogListener() {
+                        @Override
+                        public void onClose() {
+                            AppGameBaseActivity.getCurrentActivity().finish();
+                        }
+                    });
+
+
+        super.onReceivedError(view, request, error);
     }
 
     @Override
@@ -94,8 +151,15 @@ public class AppGameWebViewProcessor extends WebViewClient {
                 TextUtils.isEmpty(appuser) ||
                 TextUtils.isEmpty(amount) ||
                 TextUtils.isEmpty(mac)) {
-            Toast.makeText(AppGameBaseActivity.getCurrentActivity(), "Dữ liệu thanh toán không hợp lệ.",
-                    Toast.LENGTH_SHORT).show();
+            AppGameGlobal.getDialog().showInfoDialog(AppGameBaseActivity.getCurrentActivity(),
+                    AppGameGlobal.getString(R.string.appgame_alert_input_error), AppGameGlobal.getString(R.string.appgame_button_dialog_close),
+                    3, new IDialogListener() {
+                        @Override
+                        public void onClose() {
+                            AppGameBaseActivity.getCurrentActivity().finish();
+                        }
+                    });
+
             return;
         }
         Intent intent = new Intent();
@@ -121,6 +185,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
         Timber.d("onResponseSuccess getAccessToken [%s]", AppGameGlobal.getAppGamePayInfo().getAccessToken());
 
         intent.putExtras(bundle);
+
+        AppGameWebViewProcessor.canPayment = true;
         AppGameBaseActivity.getCurrentActivity().setResult(Activity.RESULT_OK, intent);
         AppGameBaseActivity.getCurrentActivity().finish();
     }

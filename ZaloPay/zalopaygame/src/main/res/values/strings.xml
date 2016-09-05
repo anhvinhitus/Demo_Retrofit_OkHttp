@@ -10,4 +10,12 @@
     <string name="appgame_alert_no_connection">Không có kết nối internet, vui lòng thử lại sau</string>
 
     <string name="appgame_alert_error_start_channel">Không thể khởi tạo cổng giao dịch!</string>
+
+    <string name="appgame_waiting_loading">Đang tải trang.\nBạn có muốn tiếp tục đợi?</string>
+
+    <string name="appgame_error_loading">Tải trang thất bại.Vui lòng thử lại sau ít phút!</string>
+
+    <string name="appgame_button_left">Thoát</string>
+
+    <string name="appgame_button_right">Đợi tải</string>
 </resources>

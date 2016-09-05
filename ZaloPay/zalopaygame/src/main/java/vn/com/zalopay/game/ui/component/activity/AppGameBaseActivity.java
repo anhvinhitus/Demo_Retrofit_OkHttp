@@ -11,6 +11,7 @@ import java.util.Stack;
 
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 
 public abstract class AppGameBaseActivity extends FragmentActivity
@@ -53,7 +54,10 @@ public abstract class AppGameBaseActivity extends FragmentActivity
 	{
 		super.finish();
 
-		slideOutTransition();
+		if(!AppGameWebViewProcessor.canPayment)
+			slideOutTransition();
+		else
+			fadeInTransition();
 	}
 
 	//replace sreen

@@ -5,6 +5,7 @@ import android.app.Activity;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -34,6 +35,22 @@ public class AppGameDialogImpl implements IDialog
             public void onProgressTimeout() {
                 if(pListener != null)
                     pListener.onTimeoutLoading();
+            }
+        });
+    }
+
+    @Override
+    public void showConfirmDialog(Activity pActivity, String pMessage, String pButtonTextLeft, String pButtonTextRight, final IDialogListener pListener) {
+        DialogManager.showSweetDialogConfirm(pActivity, pMessage, pButtonTextLeft, pButtonTextRight, new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+                if(pListener != null)
+                    pListener.onClose();
+            }
+
+            @Override
+            public void onOKevent() {
+
             }
         });
     }
