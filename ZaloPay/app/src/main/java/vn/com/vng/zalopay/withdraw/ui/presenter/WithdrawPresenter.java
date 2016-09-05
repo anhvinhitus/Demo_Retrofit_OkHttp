@@ -126,6 +126,10 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
 
+        if (amount > balanceRepository.currentBalance()) {
+            mView.showAmountError(mView.getContext().getString(R.string.withdraw_exceed_balance));
+            return;
+        }
         mView.showLoading();
         String description = mView.getContext().getString(R.string.txt_withdraw);
         Subscription subscription = zaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, description)

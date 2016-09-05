@@ -62,7 +62,8 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
         mPresenter.continueWithdraw(mAmount);
     }
 
-    private void showAmountError(String error) {
+    @Override
+    public void showAmountError(String error) {
         if (!TextUtils.isEmpty(error)) {
             textInputAmount.setErrorEnabled(true);
             textInputAmount.setError(error);

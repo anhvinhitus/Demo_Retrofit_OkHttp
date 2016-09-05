@@ -11,4 +11,5 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IWithdrawView extends ILoadDataView {
     Activity getActivity();
     void onTokenInvalid();
+    void showAmountError(String error);
 }

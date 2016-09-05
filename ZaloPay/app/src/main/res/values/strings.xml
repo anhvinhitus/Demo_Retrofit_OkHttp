@@ -312,4 +312,6 @@
     <string name="view.detail">Xem chi tiết</string>
 
     <string name="update_to_use">Nâng cấp phiên bản Zalo Pay mới nhất để sử dụng tính năng này.</string>
+
+    <string name="withdraw.exceed.balance">Số tiền rút vượt quá số dư</string>
 </resources>
