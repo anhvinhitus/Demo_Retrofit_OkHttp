@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import org.parceler.Parcels;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
@@ -172,7 +175,13 @@ public class AppGameWebViewProcessor extends WebViewClient {
         bundle.putString("apptime", apptime);
         bundle.putString("item", item);
         //decode Base64
-        String decodeDescription = new String(Base64.decode(description.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE));
+        //String decodeDescription = new String(Base64.decode(description.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE));
+        String decodeDescription = description;
+        try {
+            decodeDescription = URLDecoder.decode(description, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Timber.w(e, "Url decode exception [%s]", e.getMessage());
+        }
         bundle.putString("description", decodeDescription);
         bundle.putString("embeddata", embeddata);
         bundle.putString("amount", amount);
