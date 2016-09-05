@@ -56,6 +56,6 @@ public class MenuItemUtil {
         mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, R.drawable.ic_thongtin_menu, "Thông Tin Ứng Dụng"));
 
 //        mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
-        mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, R.drawable.ic_recycle, "Đăng Xuất", false));
+        mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, R.drawable.ic_dangxuat, "Đăng Xuất", false));
     }
 }
