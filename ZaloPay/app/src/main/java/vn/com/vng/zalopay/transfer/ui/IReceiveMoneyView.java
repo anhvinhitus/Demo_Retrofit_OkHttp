@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.transfer.ui;
 
 import android.graphics.Bitmap;
 
+import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -18,5 +19,9 @@ public interface IReceiveMoneyView extends ILoadDataView {
 
     void displayWaitForMoney();
 
-    void setReceiverInfo(String uid, String displayName, String avatar, int state, long amount, String transId);
+    void addPersonTransfer(PersonTransfer person);
+
+    void replacePersonTransfer(int position, PersonTransfer person);
+
+    void insertPersonTransfer(int position, PersonTransfer person);
 }

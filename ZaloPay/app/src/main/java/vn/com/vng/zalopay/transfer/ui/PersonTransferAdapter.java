@@ -100,48 +100,23 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
     @Override
     public PersonTransfer getItem(int position) {
-        position = position - 1;
-        return super.getItem(position);
+        return super.getItem(position - 1);
     }
 
     @Override
-    public void insert(PersonTransfer object, int index) {
-
-        if (getItemCount() == 1) {
-            insert(object);
-            return;
+    public void insert(PersonTransfer item, int index) {
+        synchronized (_lock) {
+            mItems.add(index, item);
         }
+        notifyItemInserted(index + 1);
+    }
 
-        if (getItems().indexOf(object) < 0) {
-            synchronized (_lock) {
-                mItems.add(index, object);
-            }
-            notifyItemInserted(index + 1);
-            return;
+    @Override
+    public void replace(int location, PersonTransfer object) {
+        synchronized (_lock) {
+            mItems.set(location, object);
         }
-
-        for (int i = 0; i < getItems().size(); i++) {
-            PersonTransfer item = getItems().get(i);
-            if (item.equals(object)) {
-                if (item.state == Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED) {
-                    Timber.d("insert state [%s] amount [%s]", object.state, object.amount);
-
-                    synchronized (_lock) {
-                        mItems.add(index, object);
-                    }
-                    notifyItemInserted(index + 1);
-                } else {
-                    Timber.d("insert: replace %s", i);
-
-                    synchronized (_lock) {
-                        mItems.set(i, object);
-                    }
-                    notifyItemChanged(i + 1); // 1 -> header
-                }
-
-                break;
-            }
-        }
+        notifyItemChanged(location + 1);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -256,22 +231,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             layoutSuccess.setVisibility(View.GONE);
         }
 
-        Set<String> mSetTransactionId = new HashSet<>();
-
         public void displayReceivedMoney(String senderDisplayName, String senderAvatar, long amount, String pTransId) {
-
-            Timber.d("displayReceivedMoney: pTrans %s", pTransId);
-
-            if (TextUtils.isEmpty(pTransId)) {
-                return;
-            }
-
-            if (mSetTransactionId.contains(pTransId)) {
-                return;
-            }
-
-            mSetTransactionId.add(pTransId);
-
             mTotal += amount;
             totalView.setText(CurrencyUtil.spanFormatCurrency(mTotal));
             setResult(true, amount);

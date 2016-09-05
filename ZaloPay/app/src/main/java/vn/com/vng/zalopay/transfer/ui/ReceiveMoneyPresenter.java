@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -44,9 +45,11 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
     @Inject
     UserConfig userConfig;
 
+    final List<PersonTransfer> mListTransfer;
+
     @Inject
     ReceiveMoneyPresenter() {
-
+        mListTransfer = new ArrayList<>();
     }
 
     @Override
@@ -57,6 +60,7 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
     @Override
     public void destroyView() {
         mView = null;
+        mListTransfer.clear();
     }
 
     @Override
@@ -122,20 +126,6 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
         if (!TextUtils.isEmpty(content)) {
             new GenerateQrCodeTask(this, content).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-
-        //  mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getCurrentUser().avatar);
-        // mView.displayWaitForMoney();
-    }
-
-
-    public void setUserInfo() {
-        if (mView == null) {
-            return;
-        }
-
-        if (userConfig.hasCurrentUser()) {
-            mView.setUserInfo(userConfig.getCurrentUser().displayName, userConfig.getCurrentUser().avatar);
-        }
     }
 
     public void updateQRWithAmount(long amount, String message) {
@@ -163,20 +153,21 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
         // "notificationtype":4,
         // "userid":"160526000000502",
         // "destuserid":"160601000000002"}
-        if (notify.appid == Constants.ZALOPAY_APP_ID &&
+
+        /*if (notify.appid == Constants.ZALOPAY_APP_ID &&
                 isEqualCurrentUser(notify.destuserid) &&
                 notify.notificationtype == NotificationType.MONEY_TRANSFER) {
             // extract sender, amount
             // extract transid
             // mView.displayReceivedMoney();
-        }
+        }*/
 
         // {"transid":0,"appid":1,"timestamp":1472488434621,
         // "notificationtype":109,"userid":"160526000000502",
         // "receiverid":"160526000000502",
         // "embeddata":"eyJ0eXBlIjoxLCJkaXNwbGF5bmFtZSI6Ik5ndXnhu4VuIEjhu691IEhvw6AiLCJhdmF0YXIiOiJodHRwOi8vczI0MC5hdmF0YXIudGFsay56ZG4udm4vZS9kL2UvMi80LzI0MC9mMTg5OGEwYTBhM2YwNWJiYjExMDg4Y2IyMDJkMWMwMi5qcGciLCJtdF9wcm9ncmVzcyI6MX0"}
         if (notify.appid == 1 &&
-                notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION) {
+                notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION && isEqualCurrentUser(notify.destuserid)) {
             JsonObject embedData = notify.getEmbeddata();
             if (embedData == null) {
                 return;
@@ -229,7 +220,7 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                 Timber.d("Stage: Transfer succeeded with amount %s", amount);
-                mView.displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
+                displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                 Timber.d("Stage: Transfer failed");
@@ -239,7 +230,33 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
                 break;
         }
 
-        mView.setReceiverInfo(zaloPayId, senderDisplayName, senderAvatar, progress, amount, transId);
+        addPersonTransfer(zaloPayId, senderDisplayName, senderAvatar, progress, amount, transId);
+
+    }
+
+
+    private void displayReceivedMoney(String senderDisplayName, String senderAvatar, long amount, String transId) {
+
+        if (TextUtils.isEmpty(transId)) {
+            return;
+        }
+
+        if (existTransaction(transId)) {
+            return;
+        }
+
+        mView.displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
+    }
+
+    private boolean existTransaction(String transId) {
+        synchronized (mListTransfer) {
+            for (PersonTransfer personTransfer : mListTransfer) {
+                if (transId.equals(personTransfer.transId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isEqualCurrentUser(String zalopayId) {
@@ -274,5 +291,48 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
         }
 
         mView.showError("Sinh mã QR thất bại!");
+    }
+
+    private void addPersonTransfer(String uid, String displayName, String avatar, int state, long amount, String transId) {
+        PersonTransfer item = transform(uid, displayName, avatar, state, amount, transId);
+        synchronized (mListTransfer) {
+            if (mListTransfer.isEmpty()) {
+                mListTransfer.add(item);
+                mView.addPersonTransfer(item);
+                return;
+            }
+
+            if (mListTransfer.indexOf(item) < 0) {
+                mListTransfer.add(0, item);
+                mView.insertPersonTransfer(0, item);
+                return;
+            }
+
+            for (int i = 0; i < mListTransfer.size(); i++) {
+                PersonTransfer person = mListTransfer.get(i);
+                if (person.equals(item)) {
+                    if (person.state == Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED) {
+                        mListTransfer.add(0, item);
+                        mView.insertPersonTransfer(0, item);
+                    } else {
+                        mListTransfer.set(i, item);
+                        mView.replacePersonTransfer(i, item);
+                    }
+                    return;
+                }
+
+            }
+        }
+    }
+
+    PersonTransfer transform(String uid, String displayName, String avatar, int state, long amount, String transId) {
+        PersonTransfer item = new PersonTransfer();
+        item.avatar = avatar;
+        item.zaloPayId = uid;
+        item.state = state;
+        item.displayName = displayName;
+        item.amount = amount;
+        item.transId = transId;
+        return item;
     }
 }

@@ -179,17 +179,6 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     }
 
     @Override
-    public void setReceiverInfo(String uid, String displayName, String avatar, int state, long amount, String transId) {
-        addItem(uid, displayName, avatar, state, amount, transId);
-        if (mAdapter.getItemCount() >= 3) {
-            if (getHeaderView() != null) {
-                getHeaderView().showTotalView();
-            }
-        }
-    }
-
-
-    @Override
     public void showLoading() {
         showProgressDialog();
     }
@@ -212,17 +201,6 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
         Toast.makeText(getContext(), "Sinh mã QR thất bại!", Toast.LENGTH_SHORT).show();
     }
 
-    private void addItem(String uid, String name, String avatar, int state, long amount, String transId) {
-        PersonTransfer item = new PersonTransfer();
-        item.avatar = avatar;
-        item.zaloPayId = uid;
-        item.state = state;
-        item.displayName = name;
-        item.amount = amount;
-        item.transId = transId;
-        mAdapter.insert(item, 0);
-    }
-
     public PersonTransferAdapter.HeaderViewHolder getHeaderView() {
         try {
             return (PersonTransferAdapter.HeaderViewHolder) mListView.findViewHolderForAdapterPosition(0);
@@ -233,4 +211,32 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     }
 
 
+    @Override
+    public void addPersonTransfer(PersonTransfer person) {
+        Timber.d("replacePersonTransfer");
+        mAdapter.insert(person);
+        checkShowTotalView();
+    }
+
+    @Override
+    public void replacePersonTransfer(int position, PersonTransfer person) {
+        Timber.d("replacePersonTransfer: position %s state %s", position, person.state);
+        mAdapter.replace(position, person);
+        checkShowTotalView();
+    }
+
+    @Override
+    public void insertPersonTransfer(int position, PersonTransfer person) {
+        Timber.d("replacePersonTransfer: position %s state %s", position, person.state);
+        mAdapter.insert(person, position);
+        checkShowTotalView();
+    }
+
+    private void checkShowTotalView() {
+        if (mAdapter.getItemCount() >= 3) {
+            if (getHeaderView() != null) {
+                getHeaderView().showTotalView();
+            }
+        }
+    }
 }
