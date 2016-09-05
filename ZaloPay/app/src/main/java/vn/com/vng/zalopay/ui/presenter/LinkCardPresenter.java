@@ -53,15 +53,15 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     private ILinkCardView mLinkCardView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private PaymentWrapper paymentWrapper;
-    private SharedPreferences mSharedPreferences;
+
+    @Inject
+    SharedPreferences mSharedPreferences;
 
     @Inject
     User user;
 
-    public LinkCardPresenter(User user, SharedPreferences sharedPreferences) {
-        this.user = user;
-        this.mSharedPreferences = sharedPreferences;
-
+    @Inject
+    public LinkCardPresenter() {
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {

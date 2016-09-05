@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Subscription;
@@ -25,19 +26,20 @@ import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
 /**
  * Created by AnhHieu on 5/11/16.
+ *
  */
-
-@Singleton
 public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<ILeftMenuView> {
     private ILeftMenuView menuView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private User user;
+
+    @Inject
+    User user;
 
     private boolean isInitiated;
 
-    public LeftMenuPresenter(User user) {
-        this.user = user;
+    @Inject
+    public LeftMenuPresenter() {
     }
 
     @Override
@@ -61,6 +63,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void initializeZaloPay() {
+        Timber.d("initializeZaloPay transactionRepository [%s]", transactionRepository);
         Subscription subscription = transactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {

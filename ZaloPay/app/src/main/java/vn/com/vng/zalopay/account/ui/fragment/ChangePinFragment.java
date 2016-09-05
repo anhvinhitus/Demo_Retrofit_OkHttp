@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -60,7 +61,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     ScrollView mScrollView;
 
     @Inject
-    IChangePinPresenter presenter;
+    ChangePinPresenter presenter;
 
     TextWatcher passCodeChanged = new TextWatcher() {
         @Override

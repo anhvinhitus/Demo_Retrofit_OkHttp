@@ -9,6 +9,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -51,6 +53,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
+    @Inject
     public MainPresenter() {
     }
 

@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
@@ -50,7 +51,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     }
 
     @Inject
-    IChangePinPresenter presenter;
+    ChangePinPresenter presenter;
 
     @Inject
     EventBus mEventBus;

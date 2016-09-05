@@ -13,6 +13,8 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Utils;
@@ -40,6 +42,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
     private PaymentWrapper paymentWrapper;
 
+    @Inject
     public QRCodePresenter() {
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override

@@ -89,7 +89,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         reloadListTransactionSync(count, TRANSACTION_STATUS_FAIL);
     }
 
-    public void reloadListTransactionSync(int count, int statusType) {
+    private void reloadListTransactionSync(int count, int statusType) {
         long lastUpdated;
         if (statusType == TRANSACTION_STATUS_SUCCESS) {
             lastUpdated = mSqlZaloPayScope.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_TRANSACTION, 0);

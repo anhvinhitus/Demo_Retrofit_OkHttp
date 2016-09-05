@@ -14,7 +14,7 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
     private ZaloPayService zaloPayService;
-    private User user;
+    private final User user;
 
 
     public ZaloPayRepositoryImpl(ZaloPayEntityDataMapper zaloPayEntityDataMapper, ZaloPayService zaloPayService, User user) {

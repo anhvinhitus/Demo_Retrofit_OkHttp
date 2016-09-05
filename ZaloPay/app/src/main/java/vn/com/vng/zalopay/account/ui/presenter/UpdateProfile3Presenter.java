@@ -9,6 +9,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.nio.ByteBuffer;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,6 +34,10 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
     IUpdateProfile3View mView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Inject
+    public UpdateProfile3Presenter() {
+    }
 
     @Override
     public void setView(IUpdateProfile3View iUpdateProfile3View) {

@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
+import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -48,7 +49,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     View mBtnContinueView;
 
     @Inject
-    IChangePinPresenter presenter;
+    ChangePinPresenter presenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.account.ui.presenter;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,6 +26,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     IProfileInfoView mView;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
+    @Inject
     public ProfileInfoPresenter() {
     }
 

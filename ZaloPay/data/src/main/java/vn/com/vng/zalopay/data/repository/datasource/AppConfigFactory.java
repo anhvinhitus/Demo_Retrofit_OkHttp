@@ -23,7 +23,7 @@ public class AppConfigFactory {
 
     private AppConfigService appConfigService;
 
-    private User user;
+    private final User user;
 
     private SqlitePlatformScope sqlitePlatformScope;
 

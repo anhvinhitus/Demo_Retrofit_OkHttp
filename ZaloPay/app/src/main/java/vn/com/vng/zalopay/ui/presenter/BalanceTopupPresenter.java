@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -29,6 +31,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
     private final PaymentWrapper paymentWrapper;
 
+    @Inject
     public BalanceTopupPresenter() {
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
             @Override

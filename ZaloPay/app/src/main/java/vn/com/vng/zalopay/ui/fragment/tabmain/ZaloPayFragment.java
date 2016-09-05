@@ -48,6 +48,7 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -80,7 +81,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     private final static int SPAN_COUNT_APPLICATION = 3;
 
     @Inject
-    ZaloPayPresenter presenter;
+    ZaloPayPresenterImpl presenter;
 
     /* Advertisement START */
     @BindView(R.id.layoutBannerFullScreen)

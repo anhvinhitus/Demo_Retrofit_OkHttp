@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.transfer.ui;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -23,6 +25,10 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
 
     ITransferHomeView mView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Inject
+    public TransferHomePresenter() {
+    }
 
     @Override
     public void setView(ITransferHomeView iTransferHomeView) {

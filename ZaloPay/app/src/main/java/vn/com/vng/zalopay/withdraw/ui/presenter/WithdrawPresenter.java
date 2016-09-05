@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.withdraw.ui.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -29,12 +31,14 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     private final int WITHDRAW_APPID = 2;
 
     private IWithdrawView mView;
-    private User mUser;
     private PaymentWrapper paymentWrapper;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    public WithdrawPresenter(User user) {
-        this.mUser = user;
+    @Inject
+    User mUser;
+
+    @Inject
+    public WithdrawPresenter() {
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {

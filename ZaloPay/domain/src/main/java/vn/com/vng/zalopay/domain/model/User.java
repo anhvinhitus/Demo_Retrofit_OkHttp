@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 @org.parceler.Parcel
 public final class User extends Person {
@@ -51,12 +52,12 @@ public final class User extends Person {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("{");
-        result.append("zaloPayId: ").append(this.zaloPayId);
-        result.append(", ");
-        result.append("accesstoken: ").append(this.accesstoken);
-        result.append("}");
-        return result.toString();
+        return "{" +
+                "zaloPayId: " +
+                this.zaloPayId +
+                ", " +
+                "accesstoken: " +
+                this.accesstoken +
+                "}";
     }
 }

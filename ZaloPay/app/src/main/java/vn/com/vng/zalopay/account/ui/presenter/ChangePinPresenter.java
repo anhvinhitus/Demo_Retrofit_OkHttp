@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -25,6 +27,11 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     IChangePinVerifyView mChangePinVerifyView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Inject
+    public ChangePinPresenter() {
+
+    }
 
     @Override
     public void setChangePassView(IChangePinView iChangePinView) {

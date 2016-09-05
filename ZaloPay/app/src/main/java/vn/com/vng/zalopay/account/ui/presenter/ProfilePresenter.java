@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,6 +29,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     IProfileView mView;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
+    @Inject
     public ProfilePresenter() {
     }
 

@@ -7,6 +7,8 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,7 +46,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private ITransferView mView;
     private PaymentWrapper paymentWrapper;
-    private User user;
 
 //    private ZaloFriend mCurrentZaloFriend;
 //    private MappingZaloAndZaloPay mCurrentMappingZaloAndZaloPay;
@@ -56,17 +57,20 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private String mValidMaxAmount;
     private RecentTransaction mTransaction;
     private int mMoneyTransferMode;
-    private NotificationStore.Repository mNotificationRepository;
+
+    @Inject
+    User user;
+
+    @Inject
+    NotificationStore.Repository mNotificationRepository;
 
     private void clearCurrentData() {
 //        mCurrentZaloFriend = null;
 //        mCurrentMappingZaloAndZaloPay = null;
     }
 
-    public TransferPresenter(User user, NotificationStore.Repository notificationRepository) {
-        this.user = user;
-        this.mNotificationRepository = notificationRepository;
-
+    @Inject
+    public TransferPresenter() {
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {

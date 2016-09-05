@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
@@ -34,14 +33,12 @@ import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
-import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
 import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
-import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
@@ -67,7 +64,6 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserModule.class,
                 UserApiModule.class,
                 UserControllerModule.class,
-                UserPresenterModule.class,
                 UserBalanceModule.class,
                 UserTransactionModule.class,
                 AppResourceModule.class,
@@ -86,10 +82,6 @@ public interface UserComponent {
     AccountStore.Repository accountRepository();
 
     ZaloPayRepository zaloPayRepository();
-
-    RedPacketStore.Repository redPackageStoreRepository();
-
-    IPaymentService paymentService();
 
     BalanceStore.Repository balanceRepository();
 

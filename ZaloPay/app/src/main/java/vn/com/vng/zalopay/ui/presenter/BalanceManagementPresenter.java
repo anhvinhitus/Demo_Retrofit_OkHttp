@@ -5,6 +5,8 @@ import android.app.Activity;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -25,12 +27,14 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
         implements IPresenter<IBalanceManagementView> {
 
     private IBalanceManagementView mView;
-    private User mUser;
-
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public BalanceManagementPresenter(User user) {
-        mUser = user;
+    @Inject
+    User mUser;
+
+    @Inject
+    public BalanceManagementPresenter() {
+
     }
 
     public void updateUserInfo() {

@@ -8,6 +8,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,12 +46,14 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
 
     private IZaloPayView mZaloPayView;
-    private ZaloPayIAPRepository mZaloPayIAPRepository;
 
     protected CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository) {
-        mZaloPayIAPRepository = zaloPayIAPRepository;
+    @Inject
+    ZaloPayIAPRepository mZaloPayIAPRepository;
+
+    @Inject
+    public ZaloPayPresenterImpl() {
     }
 
     @Override

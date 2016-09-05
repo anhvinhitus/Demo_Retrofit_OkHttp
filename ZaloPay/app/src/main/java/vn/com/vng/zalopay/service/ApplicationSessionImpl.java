@@ -43,7 +43,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
      * Clear current user session and move to login state
      */
     public void clearUserSession() {
-
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
         nm.cancelAll();

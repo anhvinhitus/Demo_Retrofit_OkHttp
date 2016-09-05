@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,6 +22,10 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     IOTPProfileView mView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Inject
+    public OTPProfilePresenter() {
+    }
 
     @Override
     public void setView(IOTPProfileView iProfileView) {

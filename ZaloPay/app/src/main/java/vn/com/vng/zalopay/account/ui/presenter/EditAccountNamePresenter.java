@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,6 +26,7 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
     IEditAccountNameView mView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
+    @Inject
     public EditAccountNamePresenter() {
     }
 

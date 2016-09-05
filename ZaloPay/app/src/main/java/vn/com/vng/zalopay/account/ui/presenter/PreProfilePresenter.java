@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import javax.inject.Inject;
+
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.presenter.BaseAppPresenter;
@@ -11,10 +13,12 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<IPreProfileView> {
 
     IPreProfileView mView;
-    private UserConfig mUserConfig;
 
-    public PreProfilePresenter(UserConfig userConfig) {
-        mUserConfig = userConfig;
+    @Inject
+    UserConfig mUserConfig;
+
+    @Inject
+    public PreProfilePresenter() {
     }
 
     @Override

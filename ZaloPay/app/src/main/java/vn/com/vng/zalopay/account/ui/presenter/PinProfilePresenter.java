@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.text.TextUtils;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,10 +29,11 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     IPinProfileView mView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
+    @Inject
     User mUser;
 
-    public PinProfilePresenter(User user) {
-        this.mUser = user;
+    @Inject
+    public PinProfilePresenter() {
     }
 
     @Override

@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.withdraw.ui.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,6 +26,10 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
     private IWithdrawConditionView mView;
 
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Inject
+    public WithdrawConditionPresenter() {
+    }
 
     private void getUserProfileFromServer() {
         Subscription subscription = accountRepository.getUserProfileLevelCloud()
