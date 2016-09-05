@@ -33,7 +33,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         public final static Property NumOfPackages = new Property(7, Integer.class, "numOfPackages", false, "NUM_OF_PACKAGES");
         public final static Property SendMessage = new Property(8, String.class, "sendMessage", false, "SEND_MESSAGE");
         public final static Property Status = new Property(9, Integer.class, "status", false, "STATUS");
-    }
+    };
 
     private DaoSession daoSession;
 

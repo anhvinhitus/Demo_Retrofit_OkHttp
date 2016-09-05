@@ -5,6 +5,7 @@ import android.app.Activity;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,7 @@ import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultList
 import vn.com.zalopay.game.controller.AppGameController;
 import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.utils.DimensionUtil;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -121,7 +123,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
-        // mZaloPayView.insertApps(resources);
+         mZaloPayView.setInsideApps(resources);
     }
 
     private final class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {

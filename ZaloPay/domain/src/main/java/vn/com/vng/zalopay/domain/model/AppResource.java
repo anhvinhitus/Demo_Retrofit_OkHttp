@@ -1,12 +1,12 @@
 package vn.com.vng.zalopay.domain.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import org.parceler.Parcel;
 
 /**
  * Created by AnhHieu on 5/23/16.
  */
-public class AppResource extends AbstractData {
+@Parcel
+public class AppResource {
 
     public int appid;
 
@@ -18,11 +18,11 @@ public class AppResource extends AbstractData {
 
     public String urlImage;
 
-    public AppResource(Parcel source) {
-        appid = source.readInt();
-        appname = source.readString();
-        checksum = source.readString();
-    }
+    public String appType;
+
+    public String webUrl;
+
+    public String iconUrl;
 
     public AppResource(int appid, String appname, String urlImage) {
         this.appid = appid;
@@ -37,34 +37,50 @@ public class AppResource extends AbstractData {
         this.status = status;
     }
 
+    public AppResource(int appid, String appname, String checksum, int status, String urlImage, String appType, String webUrl, String iconUrl) {
+        this.appid = appid;
+        this.appname = appname;
+        this.checksum = checksum;
+        this.status = status;
+        this.urlImage = urlImage;
+        this.appType = appType;
+        this.webUrl = webUrl;
+        this.iconUrl = iconUrl;
+    }
+
     public AppResource() {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(appid);
-        dest.writeString(appname);
-        dest.writeString(checksum);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AppResource that = (AppResource) o;
+
+        if (appid != that.appid) return false;
+        if (status != that.status) return false;
+        if (appname != null ? !appname.equals(that.appname) : that.appname != null) return false;
+        if (checksum != null ? !checksum.equals(that.checksum) : that.checksum != null)
+            return false;
+        if (urlImage != null ? !urlImage.equals(that.urlImage) : that.urlImage != null)
+            return false;
+        if (appType != null ? !appType.equals(that.appType) : that.appType != null) return false;
+        if (webUrl != null ? !webUrl.equals(that.webUrl) : that.webUrl != null) return false;
+        return iconUrl != null ? iconUrl.equals(that.iconUrl) : that.iconUrl == null;
+
     }
 
-
-    public static final Parcelable.Creator<AppResource> CREATOR = new Parcelable.Creator<AppResource>() {
-        @Override
-        public AppResource createFromParcel(Parcel source) {
-            return new AppResource(source);
-        }
-
-        @Override
-        public AppResource[] newArray(int size) {
-            return new AppResource[size];
-        }
-    };
-
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof AppResource) {
-            return appid == ((AppResource) o).appid && appid > 0;
-        }
-        return false;
+    public int hashCode() {
+        int result = appid;
+        result = 31 * result + (appname != null ? appname.hashCode() : 0);
+        result = 31 * result + (checksum != null ? checksum.hashCode() : 0);
+        result = 31 * result + status;
+        result = 31 * result + (urlImage != null ? urlImage.hashCode() : 0);
+        result = 31 * result + (appType != null ? appType.hashCode() : 0);
+        result = 31 * result + (webUrl != null ? webUrl.hashCode() : 0);
+        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
+        return result;
     }
 }

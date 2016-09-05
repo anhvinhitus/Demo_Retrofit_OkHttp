@@ -20,8 +20,7 @@ public class PaymentAppConfig {
         public static final int RED_PACKET = 6;
         public static final int RECHARGE_MONEY_PHONE = 11;
         public static final int BUY_PHONE_CARD = 12;
-        public static final int ZING_XU = 14;
-        public static final int BUY_GAME_CARD = 15;
+        public static final int SERVICE = 15;
         public static final int ELECTRIC_BILL = 17;
     }
 
@@ -34,8 +33,7 @@ public class PaymentAppConfig {
         APP_RESOURCE_MAP.put(Constants.RECEIVE_MONEY, new AppResource(Constants.RECEIVE_MONEY, AndroidApplication.instance().getString(R.string.receive_money), String.valueOf(R.drawable.ic_nhantien)));
         APP_RESOURCE_MAP.put(Constants.RED_PACKET, new AppResource(Constants.RED_PACKET, AndroidApplication.instance().getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)));
         APP_RESOURCE_MAP.put(Constants.RECHARGE_MONEY_PHONE, new AppResource(Constants.RECHARGE_MONEY_PHONE, AndroidApplication.instance().getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)));
-        APP_RESOURCE_MAP.put(Constants.ZING_XU, new AppResource(Constants.ZING_XU, AndroidApplication.instance().getString(R.string.zing_xu), String.valueOf(R.drawable.ic_zingxu)));
-        APP_RESOURCE_MAP.put(Constants.BUY_GAME_CARD, new AppResource(Constants.BUY_GAME_CARD, AndroidApplication.instance().getString(R.string.buy_game_card), String.valueOf(R.drawable.ic_muathegame)));
+        APP_RESOURCE_MAP.put(Constants.SERVICE, new AppResource(Constants.SERVICE, AndroidApplication.instance().getString(R.string.service), String.valueOf(R.drawable.ic_dichvu)));
         APP_RESOURCE_MAP.put(Constants.ELECTRIC_BILL, new AppResource(Constants.ELECTRIC_BILL, AndroidApplication.instance().getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)));
 
         APP_RESOURCE_LIST = new ArrayList<>();
@@ -43,8 +41,7 @@ public class PaymentAppConfig {
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RED_PACKET));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECHARGE_MONEY_PHONE));
-        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.ZING_XU));
-        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.BUY_GAME_CARD));
+        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.SERVICE));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.ELECTRIC_BILL));
 
     }

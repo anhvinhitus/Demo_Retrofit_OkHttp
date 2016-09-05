@@ -306,7 +306,7 @@ public class Navigator implements INavigator {
             return null;
         }
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("appResource", appResource);
+        intent.putExtra("appResource", Parcels.wrap(appResource));
         Bundle options = new Bundle();
         for (Map.Entry<String, String> e : launchOptions.entrySet()) {
             options.putString(e.getKey(), e.getValue());

@@ -55,6 +55,10 @@ public class AppConfigEntityDataMapper {
             appResource.appname = appResourceEntity.appname;
             appResource.status = appResourceEntity.status;
             appResource.appid = appResourceEntity.appid;
+            appResource.appType = appResourceEntity.apptype;
+            appResource.webUrl = appResourceEntity.weburl;
+            appResource.urlImage = appResourceEntity.imageurl;
+            appResource.iconUrl = appResourceEntity.imageurl;
         }
         return appResource;
     }

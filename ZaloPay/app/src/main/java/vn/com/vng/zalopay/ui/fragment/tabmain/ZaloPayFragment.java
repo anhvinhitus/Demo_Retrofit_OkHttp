@@ -47,7 +47,6 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
-import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
@@ -149,11 +148,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
         hideTextAds();
 
-        getBanners();
+        getBannersAndInsideApps();
     }
 
-    public void getBanners() {
+    public void getBannersAndInsideApps() {
         presenter.getBanners();
+        presenter.listAppResource();
     }
 
     @Override
@@ -250,8 +250,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
         } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
             navigator.startMyQrCode(getContext());
-        } else if (app.appid == PaymentAppConfig.Constants.BUY_GAME_CARD) {
-            presenter.startGamePayWebActivity(PaymentAppConfig.Constants.BUY_GAME_CARD);
+        } else if (app.appid == PaymentAppConfig.Constants.SERVICE) {
+            presenter.startGamePayWebActivity(PaymentAppConfig.Constants.SERVICE);
         } else {
             navigator.startPaymentApplicationActivity(getActivity(), app.appid);
         }
@@ -300,8 +300,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void insertApps(List<AppResource> list) {
-        mAdapter.insertItems(list);
+    public void setInsideApps(List<AppResource> list) {
+        //mAdapter.insertItems(list);
+        mAdapter.removeAll();
+        mAdapter.setData(list);
     }
 
     @Override
@@ -377,10 +379,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
             } else if (banner.appid == PaymentAppConfig.Constants.ELECTRIC_BILL) {
                 navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.ELECTRIC_BILL);
-            } else if (banner.appid == PaymentAppConfig.Constants.ZING_XU) {
-                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.ZING_XU);
-            } else if (banner.appid == PaymentAppConfig.Constants.BUY_GAME_CARD) {
-                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.BUY_GAME_CARD);
+            } else if (banner.appid == PaymentAppConfig.Constants.SERVICE) {
+                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.SERVICE);
             } else {
                 showToast(getString(R.string.update_to_use));
             }

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by AnhHieu on 5/18/16.
+ *
  */
 public class AppResourceEntity {
 
@@ -29,6 +30,15 @@ public class AppResourceEntity {
     @SerializedName("checksum")
     public String checksum;
 
+    @SerializedName("apptype")
+    public String apptype;
+
+    @SerializedName("weburl")
+    public String weburl;
+
+    @SerializedName("iconurl")
+    public String iconurl;
+
     @Expose(deserialize = false, serialize = false)
     public int stateDownload;
 
@@ -43,20 +53,23 @@ public class AppResourceEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AppResourceEntity entity = (AppResourceEntity) o;
+        AppResourceEntity that = (AppResourceEntity) o;
 
-        if (appid != entity.appid) return false;
-        if (needdownloadrs != entity.needdownloadrs) return false;
-        if (status != entity.status) return false;
-        if (stateDownload != entity.stateDownload) return false;
-        if (timeDownload != entity.timeDownload) return false;
-        if (numRetry != entity.numRetry) return false;
-        if (appname != null ? !appname.equals(entity.appname) : entity.appname != null)
+        if (appid != that.appid) return false;
+        if (needdownloadrs != that.needdownloadrs) return false;
+        if (status != that.status) return false;
+        if (stateDownload != that.stateDownload) return false;
+        if (timeDownload != that.timeDownload) return false;
+        if (numRetry != that.numRetry) return false;
+        if (appname != null ? !appname.equals(that.appname) : that.appname != null) return false;
+        if (imageurl != null ? !imageurl.equals(that.imageurl) : that.imageurl != null)
             return false;
-        if (imageurl != null ? !imageurl.equals(entity.imageurl) : entity.imageurl != null)
+        if (jsurl != null ? !jsurl.equals(that.jsurl) : that.jsurl != null) return false;
+        if (checksum != null ? !checksum.equals(that.checksum) : that.checksum != null)
             return false;
-        if (jsurl != null ? !jsurl.equals(entity.jsurl) : entity.jsurl != null) return false;
-        return checksum != null ? checksum.equals(entity.checksum) : entity.checksum == null;
+        if (apptype != null ? !apptype.equals(that.apptype) : that.apptype != null) return false;
+        if (weburl != null ? !weburl.equals(that.weburl) : that.weburl != null) return false;
+        return iconurl != null ? iconurl.equals(that.iconurl) : that.iconurl == null;
 
     }
 
@@ -69,6 +82,9 @@ public class AppResourceEntity {
         result = 31 * result + (jsurl != null ? jsurl.hashCode() : 0);
         result = 31 * result + status;
         result = 31 * result + (checksum != null ? checksum.hashCode() : 0);
+        result = 31 * result + (apptype != null ? apptype.hashCode() : 0);
+        result = 31 * result + (weburl != null ? weburl.hashCode() : 0);
+        result = 31 * result + (iconurl != null ? iconurl.hashCode() : 0);
         result = 31 * result + stateDownload;
         result = 31 * result + (int) (timeDownload ^ (timeDownload >>> 32));
         result = 31 * result + numRetry;

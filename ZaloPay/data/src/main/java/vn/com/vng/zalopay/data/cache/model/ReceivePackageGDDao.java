@@ -35,7 +35,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         public final static Property Message = new Property(9, String.class, "message", false, "MESSAGE");
         public final static Property IsLuckiest = new Property(10, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
         public final static Property CreateTime = new Property(11, Long.class, "createTime", false, "CREATE_TIME");
-    }
+    };
 
     private DaoSession daoSession;
 

@@ -18,6 +18,7 @@ import com.zalopay.zcontacts.ZContactsPackage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcels;
 
 import java.util.Arrays;
 import java.util.List;
@@ -128,7 +129,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         super.onSaveInstanceState(outState);
 
         if (appResource != null) {
-            outState.putParcelable("appResource", appResource);
+            outState.putParcelable("appResource", Parcels.wrap(appResource));
         }
 
         outState.putBundle("launchOptions", mLaunchOptions);

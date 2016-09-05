@@ -44,8 +44,7 @@
     <string name="tel_card">Thẻ cào</string>
     <string name="buy.phone.card">Thẻ ĐT</string>
     <string name="receive.money">Nhận Tiền</string>
-    <string name="buy.game.card">Nạp Game</string>
-    <string name="zing.xu">ZingXu</string>
+    <string name="service">Dịch Vụ</string>
     <string name="transfer.to.mobile">Đến số điện thoại di động</string>
     <string name="transfer.to.atm.visa">Đến số thẻ ATM / VISA</string>
     <string name="transfer.to.bank.account">Đến tài khoản ngân hàng</string>

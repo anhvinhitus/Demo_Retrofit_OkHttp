@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 35;
+    private static final int APP_DB_VERSION = 36;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -139,6 +139,9 @@ public class GreenDaoGenerator {
         appInfoEntity.addStringProperty("jsurl");
         appInfoEntity.addIntProperty("status");
         appInfoEntity.addStringProperty("checksum");
+        appInfoEntity.addStringProperty("apptype");
+        appInfoEntity.addStringProperty("weburl");
+        appInfoEntity.addStringProperty("iconurl");
 
         appInfoEntity.addIntProperty("stateDownload");
         appInfoEntity.addLongProperty("timeDownload");

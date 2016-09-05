@@ -256,7 +256,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (mZaloPayFragment == null) {
             return;
         }
-        mZaloPayFragment.getBanners();
+        mZaloPayFragment.getBannersAndInsideApps();
     }
 
     private final class OpenMenuRunnable implements Runnable {
