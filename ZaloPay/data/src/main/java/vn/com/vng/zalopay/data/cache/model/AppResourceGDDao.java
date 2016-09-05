@@ -30,7 +30,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         public final static Property Jsurl = new Property(4, String.class, "jsurl", false, "JSURL");
         public final static Property Status = new Property(5, Integer.class, "status", false, "STATUS");
         public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
-        public final static Property Apptype = new Property(7, String.class, "apptype", false, "APPTYPE");
+        public final static Property Apptype = new Property(7, Integer.class, "apptype", false, "APPTYPE");
         public final static Property Weburl = new Property(8, String.class, "weburl", false, "WEBURL");
         public final static Property Iconurl = new Property(9, String.class, "iconurl", false, "ICONURL");
         public final static Property StateDownload = new Property(10, Integer.class, "stateDownload", false, "STATE_DOWNLOAD");
@@ -58,7 +58,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
                 "\"JSURL\" TEXT," + // 4: jsurl
                 "\"STATUS\" INTEGER," + // 5: status
                 "\"CHECKSUM\" TEXT," + // 6: checksum
-                "\"APPTYPE\" TEXT," + // 7: apptype
+                "\"APPTYPE\" INTEGER," + // 7: apptype
                 "\"WEBURL\" TEXT," + // 8: weburl
                 "\"ICONURL\" TEXT," + // 9: iconurl
                 "\"STATE_DOWNLOAD\" INTEGER," + // 10: stateDownload
@@ -108,9 +108,9 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(7, checksum);
         }
  
-        String apptype = entity.getApptype();
+        Integer apptype = entity.getApptype();
         if (apptype != null) {
-            stmt.bindString(8, apptype);
+            stmt.bindLong(8, apptype);
         }
  
         String weburl = entity.getWeburl();
@@ -156,7 +156,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // jsurl
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // status
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // checksum
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // apptype
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // apptype
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // weburl
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // iconurl
             cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // stateDownload
@@ -176,7 +176,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         entity.setJsurl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setStatus(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
         entity.setChecksum(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setApptype(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setApptype(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setWeburl(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setIconurl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setStateDownload(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));

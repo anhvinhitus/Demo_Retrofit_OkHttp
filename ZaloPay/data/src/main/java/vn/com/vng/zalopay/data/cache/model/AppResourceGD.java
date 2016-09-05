@@ -13,7 +13,7 @@ public class AppResourceGD {
     private String jsurl;
     private Integer status;
     private String checksum;
-    private String apptype;
+    private Integer apptype;
     private String weburl;
     private String iconurl;
     private Integer stateDownload;
@@ -23,7 +23,7 @@ public class AppResourceGD {
     public AppResourceGD() {
     }
 
-    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, String apptype, String weburl, String iconurl, Integer stateDownload, Long timeDownload, Integer numRetry) {
+    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Integer apptype, String weburl, String iconurl, Integer stateDownload, Long timeDownload, Integer numRetry) {
         this.appid = appid;
         this.appname = appname;
         this.needdownloadrs = needdownloadrs;
@@ -95,11 +95,11 @@ public class AppResourceGD {
         this.checksum = checksum;
     }
 
-    public String getApptype() {
+    public Integer getApptype() {
         return apptype;
     }
 
-    public void setApptype(String apptype) {
+    public void setApptype(Integer apptype) {
         this.apptype = apptype;
     }
 

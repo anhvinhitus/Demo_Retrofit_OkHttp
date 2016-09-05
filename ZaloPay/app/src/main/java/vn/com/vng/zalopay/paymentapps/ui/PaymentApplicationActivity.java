@@ -95,7 +95,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         if (savedInstanceState == null) {
             Intent intent = getIntent();
 
-            appResource = intent.getParcelableExtra("appResource");
+            appResource = Parcels.unwrap(intent.getParcelableExtra("appResource"));
             mLaunchOptions = intent.getBundleExtra("launchOptions");
         } else {
             appResource = savedInstanceState.getParcelable("appResource");

@@ -31,7 +31,7 @@ public class AppResourceEntity {
     public String checksum;
 
     @SerializedName("apptype")
-    public String apptype;
+    public int apptype;
 
     @SerializedName("weburl")
     public String weburl;
@@ -58,6 +58,7 @@ public class AppResourceEntity {
         if (appid != that.appid) return false;
         if (needdownloadrs != that.needdownloadrs) return false;
         if (status != that.status) return false;
+        if (apptype != that.apptype) return false;
         if (stateDownload != that.stateDownload) return false;
         if (timeDownload != that.timeDownload) return false;
         if (numRetry != that.numRetry) return false;
@@ -67,7 +68,6 @@ public class AppResourceEntity {
         if (jsurl != null ? !jsurl.equals(that.jsurl) : that.jsurl != null) return false;
         if (checksum != null ? !checksum.equals(that.checksum) : that.checksum != null)
             return false;
-        if (apptype != null ? !apptype.equals(that.apptype) : that.apptype != null) return false;
         if (weburl != null ? !weburl.equals(that.weburl) : that.weburl != null) return false;
         return iconurl != null ? iconurl.equals(that.iconurl) : that.iconurl == null;
 
@@ -82,7 +82,7 @@ public class AppResourceEntity {
         result = 31 * result + (jsurl != null ? jsurl.hashCode() : 0);
         result = 31 * result + status;
         result = 31 * result + (checksum != null ? checksum.hashCode() : 0);
-        result = 31 * result + (apptype != null ? apptype.hashCode() : 0);
+        result = 31 * result + apptype;
         result = 31 * result + (weburl != null ? weburl.hashCode() : 0);
         result = 31 * result + (iconurl != null ? iconurl.hashCode() : 0);
         result = 31 * result + stateDownload;
