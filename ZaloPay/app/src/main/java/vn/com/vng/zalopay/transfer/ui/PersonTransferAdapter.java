@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -259,15 +260,30 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         private Runnable mRunnable = new Runnable() {
             @Override
             public void run() {
-                layoutSuccess.setVisibility(View.GONE);
+                if (layoutSuccess != null) {
+                    slideToBottom(layoutSuccess);
+                }
             }
         };
 
+        void slideToBottom(View view) {
+            TranslateAnimation animate = new TranslateAnimation(0, view.getWidth(), 0, view.getHeight());
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            view.startAnimation(animate);
+            view.setVisibility(View.GONE);
+        }
+
+        void simpleGrow(View view) {
+            view.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.simple_grow);
+            view.startAnimation(animation);
+        }
+
+
         public void setResult(boolean success, long amount) {
             if (layoutSuccess != null) {
-                layoutSuccess.setVisibility(View.VISIBLE);
-                Animation animation = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.simple_grow);
-                layoutSuccess.startAnimation(animation);
+                simpleGrow(layoutSuccess);
             }
 
             if (mMoneyChangeSuccess != null) {
