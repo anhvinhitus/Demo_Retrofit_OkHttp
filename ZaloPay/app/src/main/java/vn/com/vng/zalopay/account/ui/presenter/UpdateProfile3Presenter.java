@@ -277,18 +277,18 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
         String foregroundImgPath = null;
         if (foregroundImg != null) {
-            foregroundImgPath = foregroundImg.getPath();
+            foregroundImgPath = foregroundImg.toString();
         }
 
 
         String backgroundImgPath = null;
         if (backgroundImg != null) {
-            backgroundImgPath = backgroundImg.getPath();
+            backgroundImgPath = backgroundImg.toString();
         }
 
         String avatarImgPath = null;
         if (avatarImg != null) {
-            avatarImgPath = avatarImg.getPath();
+            avatarImgPath = avatarImg.toString();
         }
 
         accountRepository.saveProfileInfo3(email, identity, foregroundImgPath, backgroundImgPath, avatarImgPath)
@@ -306,8 +306,11 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     private class ProfileInfo3Subscriber extends DefaultSubscriber<ProfileInfo3> {
 
         @Override
-        public void onNext(ProfileInfo3 profileInfo3) {
-            mView.setProfileInfo(profileInfo3.email, profileInfo3.identity, profileInfo3.foregroundImg, profileInfo3.backgroundImg, profileInfo3.avatarImg);
+        public void onNext(ProfileInfo3 profile) {
+
+            Timber.d("onNext: email [%s] cmnd [%s] avatar %s", profile.email, profile.identity, profile.avatarImg);
+
+            mView.setProfileInfo(profile.email, profile.identity, profile.foregroundImg, profile.backgroundImg, profile.avatarImg);
         }
     }
 }

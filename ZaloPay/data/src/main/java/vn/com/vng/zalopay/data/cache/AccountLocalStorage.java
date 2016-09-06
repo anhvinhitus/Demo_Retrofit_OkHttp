@@ -3,9 +3,15 @@ package vn.com.vng.zalopay.data.cache;
 import android.text.TextUtils;
 import android.util.LruCache;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.model.Person;
 
@@ -17,9 +23,12 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
 
     private final LruCache<String, Person> mCachePersonName = new LruCache<>(10);
     private final LruCache<String, Person> mCachePersonId = new LruCache<>(10);
+    private final Gson mGson;
 
-    public AccountLocalStorage(DaoSession daoSession) {
+    public AccountLocalStorage(DaoSession daoSession, Gson gson) {
         super(daoSession);
+        this.mGson = gson;
+
     }
 
     @Override
@@ -51,60 +60,38 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
 
     @Override
     public void saveProfileInfo3(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
-        insertDataManifest("email", email);
-        insertDataManifest("identity", identity);
 
-        if (foregroundImg != null) {
-            insertDataManifest("foregroundImg", foregroundImg);
-        }
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("email", TextUtils.isEmpty(email) ? "" : email);
+        jsonObject.addProperty("identity", TextUtils.isEmpty(identity) ? "" : identity);
+        jsonObject.addProperty("foregroundImg", TextUtils.isEmpty(foregroundImg) ? "" : foregroundImg);
+        jsonObject.addProperty("backgroundImg", TextUtils.isEmpty(backgroundImg) ? "" : backgroundImg);
+        jsonObject.addProperty("avatarImg", TextUtils.isEmpty(avatarImg) ? "" : avatarImg);
 
-        if (backgroundImg != null) {
-            insertDataManifest("backgroundImg", backgroundImg);
-        }
-
-        if (avatarImg != null) {
-            insertDataManifest("avatarImg", avatarImg);
-        }
+        insertDataManifest("profile3info", jsonObject.toString());
     }
 
     @Override
     public void clearProfileInfo3() {
-        deleteByKey("email");
-        deleteByKey("identity");
-        deleteByKey("foregroundImg");
-        deleteByKey("backgroundImg");
-        deleteByKey("avatarImg");
+        deleteByKey("profile3info");
     }
 
     @Override
     public Map getProfileInfo3() {
         Map<String, String> map = new HashMap<>();
+        String temp = getDataManifest("profile3info");
+        if (!TextUtils.isEmpty(temp)) {
 
-        String email = getDataManifest("email");
-        if (!TextUtils.isEmpty(email)) {
-            map.put("email", email);
+            Type type = new TypeToken<Map<String, String>>() {
+            }.getType();
+
+            try {
+                map = mGson.fromJson(temp, type);
+            } catch (Exception e) {
+                Timber.d(e, "exception");
+            }
+
         }
-
-        String identity = getDataManifest("identity");
-        if (!TextUtils.isEmpty(identity)) {
-            map.put("identity", identity);
-        }
-
-        String foregroundImg = getDataManifest("foregroundImg");
-        if (!TextUtils.isEmpty(foregroundImg)) {
-            map.put("foregroundImg", foregroundImg);
-        }
-
-        String backgroundImg = getDataManifest("backgroundImg");
-        if (!TextUtils.isEmpty(backgroundImg)) {
-            map.put("backgroundImg", backgroundImg);
-        }
-
-        String avatarImg = getDataManifest("avatarImg");
-        if (!TextUtils.isEmpty(avatarImg)) {
-            map.put("avatarImg", avatarImg);
-        }
-
         return map;
     }
 }

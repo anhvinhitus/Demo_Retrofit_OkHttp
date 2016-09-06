@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import com.google.gson.Gson;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -38,7 +40,7 @@ public class UserAccountModule {
     AccountStore.Repository providesAccountRepository(AccountStore.RequestService service,
                                                       AccountStore.UploadPhotoService photoService,
                                                       UserConfig userConfig, User user,
-                                                      UserEntityDataMapper mapper, @Named("daosession") DaoSession session) {
-        return new AccountRepositoryImpl(new AccountLocalStorage(session), service, photoService, userConfig, user, mapper);
+                                                      UserEntityDataMapper mapper, @Named("daosession") DaoSession session, Gson gson) {
+        return new AccountRepositoryImpl(new AccountLocalStorage(session, gson), service, photoService, userConfig, user, mapper);
     }
 }
