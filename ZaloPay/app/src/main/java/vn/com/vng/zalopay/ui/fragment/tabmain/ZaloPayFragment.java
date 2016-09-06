@@ -56,7 +56,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
-import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 
 /**

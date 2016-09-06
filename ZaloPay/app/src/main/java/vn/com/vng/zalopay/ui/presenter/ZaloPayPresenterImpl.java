@@ -37,7 +37,7 @@ import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.game.controller.AppGameController;
-import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**

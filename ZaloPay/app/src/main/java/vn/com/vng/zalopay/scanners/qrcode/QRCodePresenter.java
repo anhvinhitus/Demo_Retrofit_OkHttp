@@ -29,7 +29,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 09/05/2016.

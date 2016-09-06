@@ -13,8 +13,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
-import vn.com.zalopay.wallet.data.GlobalData;
-import vn.com.zalopay.wallet.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 
 /**
  * Created by longlv on 11/08/2016.

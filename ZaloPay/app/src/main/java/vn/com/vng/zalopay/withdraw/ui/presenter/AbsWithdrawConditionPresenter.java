@@ -9,8 +9,8 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.zalopay.wallet.entity.enumeration.ECardType;
-import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**

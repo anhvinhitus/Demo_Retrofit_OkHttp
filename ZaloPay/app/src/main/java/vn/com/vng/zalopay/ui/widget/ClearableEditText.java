@@ -17,11 +17,10 @@ import android.widget.EditText;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.wallet.business.factory.AdapterBase;
-import vn.com.zalopay.wallet.data.ResourceManager;
-import vn.com.zalopay.wallet.entity.staticconfig.page.DDynamicEditText;
-import vn.com.zalopay.wallet.listener.ZPOnSelectionChangeListener;
-import vn.com.zalopay.wallet.view.screen.PaymentChannelActivity;
+import vn.com.zalopay.wallet.business.behavior.factory.AdapterBase;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
+import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 /**
  * Created by longlv on 23/05/2016.
@@ -43,7 +42,6 @@ public class ClearableEditText extends EditText {
     private int actionX;
     private int actionY;
     private boolean mIsCameraScan = false;
-    private ZPOnSelectionChangeListener mSelectionChangeListener = null;
     private View.OnClickListener mSelectedCardScanListener = null;
     private View.OnFocusChangeListener mOnFocusChangeListener = new View.OnFocusChangeListener() {
         public void onFocusChange(View v, boolean hasFocus) {
@@ -266,18 +264,6 @@ public class ClearableEditText extends EditText {
         } else {
             return this.getText().toString().replace(String.valueOf(this.SPACE_SEPERATOR), "");
         }
-    }
-
-    public void setOnSelectionChangeListener(ZPOnSelectionChangeListener pListener) {
-        this.mSelectionChangeListener = pListener;
-    }
-
-    protected void onSelectionChanged(int selStart, int selEnd) {
-        super.onSelectionChanged(selStart, selEnd);
-        if (this.mSelectionChangeListener != null) {
-            this.mSelectionChangeListener.onSelectionChanged(selStart, selEnd);
-        }
-
     }
 
     public static String optText(ClearableEditText editText) {

@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
-import vn.com.zalopay.wallet.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /**
  * Created by longlv on 11/08/2016.

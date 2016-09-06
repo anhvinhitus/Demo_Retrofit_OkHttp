@@ -31,8 +31,8 @@ import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.application.WalletSDKApplication;
-import vn.com.zalopay.wallet.data.Constants;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.business.data.Constants;
 
 /**
  * Created by AnhHieu on 3/24/16.

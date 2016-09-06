@@ -17,8 +17,8 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 
 /**
  * Created by longlv on 10/05/2016.

@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.WaveView;
 import vn.com.vng.zalopay.utils.DebugUtils;
 import vn.com.vng.zalopay.utils.FileUtil;
-import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * A simple {@link Fragment} subclass.

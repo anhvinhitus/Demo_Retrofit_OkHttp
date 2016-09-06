@@ -5,7 +5,7 @@ import android.app.Activity;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.zalopay.wallet.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
  * Created by AnhHieu on 5/11/16.

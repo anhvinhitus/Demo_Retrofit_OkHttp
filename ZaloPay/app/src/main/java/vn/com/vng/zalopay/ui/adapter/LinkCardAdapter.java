@@ -19,7 +19,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.utils.BankCardUtil;
-import vn.com.zalopay.wallet.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.wallet.entity.gatewayinfo.DBanner;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by longlv on 12/05/2016.

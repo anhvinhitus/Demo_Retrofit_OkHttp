@@ -13,7 +13,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.zalopay.wallet.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 19/07/2016.
