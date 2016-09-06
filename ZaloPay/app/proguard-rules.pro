@@ -173,11 +173,6 @@
 -keepclasseswithmembers class io.netty.** {
     *;
 }
--keepnames class io.netty.** {
-    *;
-}
-
--dontwarn io.netty.**
 
 -keep class org.apache.log4j.* {*;}
 
@@ -189,12 +184,6 @@
 #
 #-keep class java.util.concurrent.atomic.AtomicReferenceFieldUpdater {*;}
 #-keep class java.util.concurrent.atomic.AtomicReferenceFieldUpdaterImpl{*;}
-#
-#-keep class org.jboss.netty.channel.DefaultChannelPipeline{volatile <fields>;}
-#
-#-keep class org.jboss.netty.util.internal.QueueFactory{static <fields>;}
-#
-#-keepclassmembernames class org.jboss.netty.util.internal.**{*;}
 
 
 #leakcanary
@@ -308,17 +297,6 @@
 #-keep interface com.google.protobuf.** { *; }
 -dontwarn com.google.protobuf.**
 
-#-keep class vn.com.zalopay.wallet.entity.protobuf.** { *; }
-
--keep public class io.netty.channel.** { *; }
--dontwarn io.netty.channel.**
-
--keep public class io.netty.bootstrap.** { *; }
--dontwarn io.netty.bootstrap.**
-
--keep public class io.netty.handler.** { *; }
--dontwarn io.netty.handler.**
-
 -keep public interface com.sun.msv.datatype.SerializationContext
 -keep public interface org.relaxng.datatype.** { *; }
 
@@ -360,9 +338,9 @@
   public protected *;
 }
 
--keep public class io.card.payment.** {
-  public protected *;
-}
+#-keep public class io.card.payment.** {
+#  public protected *;
+#}
 
 -dontwarn vn.com.zalopay.wallet.**
 
@@ -372,20 +350,20 @@
 
 # Don't obfuscate DetectionInfo or public fields, since
 # it is used by native methods
--keep class io.card.payment.DetectionInfo
--keepclassmembers class io.card.payment.DetectionInfo {
-public *;
-}
+#-keep class io.card.payment.DetectionInfo
+#-keepclassmembers class io.card.payment.DetectionInfo {
+#public *;
+#}
 
--keep class io.card.payment.CreditCard
--keep class io.card.payment.CreditCard$1
--keepclassmembers class io.card.payment.CreditCard {
-*;
-}
+#-keep class io.card.payment.CreditCard
+#-keep class io.card.payment.CreditCard$1
+#-keepclassmembers class io.card.payment.CreditCard {
+#*;
+#}
 
--keepclassmembers class io.card.payment.CardScanner {
-*** onEdgeUpdate(...);
-}
+#-keepclassmembers class io.card.payment.CardScanner {
+#*** onEdgeUpdate(...);
+#}
 
 # Don't mess with classes with native methods
 
@@ -397,15 +375,15 @@ native <methods>;
 native <methods>;
 }
 
--keep public class io.card.payment.* {
-public protected *;
-}
+#-keep public class io.card.payment.* {
+#public protected *;
+#}
 
 # required to suppress errors when building on android 22
--dontwarn io.card.payment.CardIOActivity
+#-dontwarn io.card.payment.CardIOActivity
 
--keep class io.card.payment.OverlayView
--keep class io.card.payment.Util
+#-keep class io.card.payment.OverlayView
+#-keep class io.card.payment.Util
 
 #Zalo SDK
 
