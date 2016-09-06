@@ -14,9 +14,10 @@
 
         <ImageView
             android:id="@+id/iv_logo"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="30dp"
+            android:layout_height="28dp"
             android:layout_marginTop="24dp"
+            android:adjustViewBounds="true"
             android:scaleType="centerInside"
             tools:src="@drawable/ic_chuyentien" />
 
