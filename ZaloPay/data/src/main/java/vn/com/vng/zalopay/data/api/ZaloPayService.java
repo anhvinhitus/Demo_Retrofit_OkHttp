@@ -31,6 +31,7 @@ public interface ZaloPayService {
                                                    @Field(Constants.AMOUNT) long amount,
                                                    @Field(Constants.TRANSTYPE) String transtype,
                                                    @Field(Constants.APPUSER) String appUser,
-                                                   @Field(Constants.DESCRIPTION) String description);
+                                                   @Field(Constants.DESCRIPTION) String description,
+                                                   @Field(Constants.EMBEDDATA) String embeddata);
 
 }

@@ -36,7 +36,12 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     @Override
     public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description) {
-        return zaloPayService.createwalletorder(user.zaloPayId, user.accesstoken, appId, amount, transtype, appUser, description)
+        return createwalletorder(appId, amount, transtype, appUser, description, null);
+    }
+
+    @Override
+    public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description, String embeddata) {
+        return zaloPayService.createwalletorder(user.zaloPayId, user.accesstoken, appId, amount, transtype, appUser, description, embeddata)
                 .map(getOrderResponse -> {
                     getOrderResponse.setAppid(appId);
                     getOrderResponse.amount = amount;

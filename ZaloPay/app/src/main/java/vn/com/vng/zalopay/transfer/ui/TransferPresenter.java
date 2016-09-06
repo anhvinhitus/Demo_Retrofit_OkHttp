@@ -255,8 +255,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
                     "1;" + mTransaction.getZaloPayId(),
-                    mTransaction.message)
-
+                    mTransaction.message,
+                    mTransaction.displayName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber());
