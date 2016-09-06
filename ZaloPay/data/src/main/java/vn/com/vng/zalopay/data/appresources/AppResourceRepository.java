@@ -62,11 +62,16 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
+    public List<vn.com.vng.zalopay.domain.model.AppResource> listAppResourceFromDB() {
+        return mAppConfigEntityDataMapper.transformAppResourceEntity(mLocalStorage.get());
+    }
+
+    @Override
     public Observable<List<vn.com.vng.zalopay.domain.model.AppResource>> listAppResource() {
         return Observable.concat(
-                    ObservableHelper.makeObservable(mLocalStorage::get),
-                    fetchAppResource().flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
-                .delaySubscription(200, TimeUnit.MILLISECONDS)
+                ObservableHelper.makeObservable(mLocalStorage::get),
+                fetchAppResource().flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
+                //.delaySubscription(200, TimeUnit.MILLISECONDS)
                 .map(o -> mAppConfigEntityDataMapper.transformAppResourceEntity(o));
     }
 
@@ -129,12 +134,20 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private void processAppResourceResponse(AppResourceResponse resourceResponse) {
         List<Integer> listAppId = resourceResponse.appidlist;
 
-        List<AppResourceEntity> resourcelist = resourceResponse.resourcelist;
+        List<AppResourceEntity> resourcelist = new ArrayList<>();;
+        if (!Lists.isEmptyOrNull(resourceResponse.resourcelist)) {
+            for (int i = 0; i< resourceResponse.resourcelist.size(); i++) {
+                AppResourceEntity appResourceEntity = resourceResponse.resourcelist.get(i);
+                if (!TextUtils.isEmpty(appResourceEntity.iconurl)) {
+                    appResourceEntity.iconurl = resourceResponse.baseurl + appResourceEntity.iconurl;
+                }
+                resourcelist.add(appResourceEntity);
+            }
+        }
 
         startDownloadService(resourcelist, resourceResponse.baseurl);
 
         Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceResponse.baseurl, listAppId, resourcelist.size());
-
         mLocalStorage.put(resourcelist);
         mLocalStorage.updateAppList(listAppId);
     }

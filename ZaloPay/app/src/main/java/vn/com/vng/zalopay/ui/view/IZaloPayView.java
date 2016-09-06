@@ -19,7 +19,7 @@ public interface IZaloPayView {
 
     void showBannerAds(List<DBanner> banners);
 
-    void setInsideApps(List<AppResource> list);
+    void refreshInsideApps(List<AppResource> list);
 
     void setTotalNotify(int total);
 

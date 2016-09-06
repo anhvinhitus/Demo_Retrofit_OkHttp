@@ -252,11 +252,12 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     @Override
-    public void refreshBanners() {
+    public void refreshBannersAndInsideApp() {
         if (mZaloPayFragment == null) {
             return;
         }
-        mZaloPayFragment.getBannersAndInsideApps();
+        mZaloPayFragment.getBanners();
+        mZaloPayFragment.getInsideApp();
     }
 
     private final class OpenMenuRunnable implements Runnable {
@@ -364,6 +365,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (requestCode == AppGameActivity.REQUEST_CODE) {
             if (mZaloPayFragment != null) {
                 mZaloPayFragment.onActivityResult(requestCode, resultCode, data);

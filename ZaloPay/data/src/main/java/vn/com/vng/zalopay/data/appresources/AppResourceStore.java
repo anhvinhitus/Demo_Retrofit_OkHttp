@@ -46,6 +46,8 @@ public interface AppResourceStore {
     interface Repository {
         Observable<Boolean> initialize();
 
+        List<AppResource> listAppResourceFromDB();
+
         Observable<List<AppResource>> listAppResource();
     }
 

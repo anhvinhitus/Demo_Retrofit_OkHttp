@@ -26,6 +26,7 @@ import com.zalopay.ui.widget.textview.RoundTextView;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
@@ -147,12 +149,16 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
         hideTextAds();
 
-        getBannersAndInsideApps();
+        getInsideApp();
+        getBanners();
     }
 
-    public void getBannersAndInsideApps() {
-        presenter.getBanners();
+    public void getInsideApp() {
         presenter.listAppResource();
+    }
+
+    public void getBanners() {
+        presenter.getBanners();
     }
 
     @Override
@@ -174,6 +180,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mAdapter.setData(getListData());
         presenter.initialize();
     }
 
@@ -250,7 +257,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
                 navigator.startMyQrCode(getContext());
             } else {
-                navigator.startPaymentApplicationActivity(getActivity(), app.appid);
+                AppResource appResource = PaymentAppConfig.getAppResource(app.appid);
+                if (appResource == null) {
+                    appResource = new AppResource(app.appid);
+                }
+                navigator.startPaymentApplicationActivity(getActivity(), appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             presenter.startGamePayWebActivity(app.appid);
@@ -292,11 +303,30 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         navigator.startBalanceManagementActivity(getContext());
     }
 
+    List<AppResource> mListApps = null;
+
+    private List<AppResource> getListData() {
+        if (Lists.isEmptyOrNull(mListApps)) {
+            mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
+        }
+        List<AppResource> appResourceList = presenter.getListAppResourceFromDB();
+        if (!Lists.isEmptyOrNull(appResourceList)) {
+            mListApps.addAll(appResourceList);
+        }
+        return mListApps;
+    }
+
     @Override
-    public void setInsideApps(List<AppResource> list) {
-        //mAdapter.insertItems(list);
-        mAdapter.removeAll();
-        mAdapter.setData(list);
+    public void refreshInsideApps(List<AppResource> list) {
+        Timber.d("refreshInsideApps list: [%s]", list.size());
+        if (!Lists.isEmptyOrNull(mListApps)) {
+            mListApps.clear();
+        }
+        mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
+        if (!Lists.isEmptyOrNull(list)) {
+            mListApps.addAll(list);
+        }
+        mAdapter.setData(mListApps);
     }
 
     @Override
@@ -368,15 +398,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 showToast(getString(R.string.update_to_use));
             }
         } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
-            if (banner.appid == PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE) {
-                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.RECHARGE_MONEY_PHONE);
-            } else if (banner.appid == PaymentAppConfig.Constants.ELECTRIC_BILL) {
-                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.ELECTRIC_BILL);
-            } else if (banner.appid == PaymentAppConfig.Constants.SERVICE) {
-                navigator.startPaymentApplicationActivity(getActivity(), PaymentAppConfig.Constants.SERVICE);
-            } else {
-                showToast(getString(R.string.update_to_use));
-            }
+            navigator.startPaymentApplicationActivity(getActivity(), new AppResource(banner.appid));
         } else {
             showToast(getString(R.string.update_to_use));
         }

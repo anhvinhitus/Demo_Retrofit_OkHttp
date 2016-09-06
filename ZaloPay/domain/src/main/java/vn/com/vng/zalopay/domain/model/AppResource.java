@@ -24,28 +24,15 @@ public class AppResource {
 
     public String iconUrl;
 
-    public AppResource(int appid, String appname, String urlImage) {
+    public AppResource(int appid) {
         this.appid = appid;
-        this.appname = appname;
-        this.urlImage = urlImage;
     }
 
-    public AppResource(int appid, String appname, String urlImage, int status) {
+    public AppResource(int appid, int appType, String appname, String urlImage) {
         this.appid = appid;
-        this.appname = appname;
-        this.urlImage = urlImage;
-        this.status = status;
-    }
-
-    public AppResource(int appid, String appname, String checksum, int status, String urlImage, int appType, String webUrl, String iconUrl) {
-        this.appid = appid;
-        this.appname = appname;
-        this.checksum = checksum;
-        this.status = status;
-        this.urlImage = urlImage;
         this.appType = appType;
-        this.webUrl = webUrl;
-        this.iconUrl = iconUrl;
+        this.appname = appname;
+        this.iconUrl = urlImage;
     }
 
     public AppResource() {
@@ -58,16 +45,7 @@ public class AppResource {
 
         AppResource that = (AppResource) o;
 
-        if (appid != that.appid) return false;
-        if (status != that.status) return false;
-        if (appType != that.appType) return false;
-        if (appname != null ? !appname.equals(that.appname) : that.appname != null) return false;
-        if (checksum != null ? !checksum.equals(that.checksum) : that.checksum != null)
-            return false;
-        if (urlImage != null ? !urlImage.equals(that.urlImage) : that.urlImage != null)
-            return false;
-        if (webUrl != null ? !webUrl.equals(that.webUrl) : that.webUrl != null) return false;
-        return iconUrl != null ? iconUrl.equals(that.iconUrl) : that.iconUrl == null;
+        return appid == that.appid;
 
     }
 

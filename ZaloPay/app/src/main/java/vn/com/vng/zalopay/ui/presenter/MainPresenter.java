@@ -122,7 +122,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 Timber.d("load payment sdk finish");
                 isLoadedGateWayInfo = true;
                 if (homeView != null) {
-                    homeView.refreshBanners();
+                    homeView.refreshBannersAndInsideApp();
                 }
             }
 
@@ -137,6 +137,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             @Override
             public void onUpVersion(String latestVersion, String msg) {
+                Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
                 boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
                 if (!upgradeApp || homeView == null) {
                     return;

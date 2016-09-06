@@ -209,10 +209,10 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startPaymentApplicationActivity(Context context, int appId) {
+    public void startPaymentApplicationActivity(Context context, AppResource appResource) {
         Map<String, String> options = new HashMap<>();
         options.put("view", "main");
-        Intent intent = intentPaymentApp(context, appId, options);
+        Intent intent = intentPaymentApp(context, appResource, options);
         context.startActivity(intent);
     }
 
@@ -300,8 +300,7 @@ public class Navigator implements INavigator {
     }
 
     @Override
-    public Intent intentPaymentApp(Context context, int appId, Map<String, String> launchOptions) {
-        AppResource appResource = PaymentAppConfig.getAppResource(appId);
+    public Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions) {
         if (appResource == null) {
             return null;
         }

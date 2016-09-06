@@ -16,13 +16,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
+
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 /**
  * Created by AnhHieu on 5/25/16.
+ *
  */
 public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, ListAppRecyclerAdapter.ViewHolder> {
 
@@ -64,8 +69,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-
         AppResource item = getItem(position);
         if (item != null) {
             holder.bindView(item);
@@ -74,11 +77,15 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
     @Override
     public void insertItems(Collection<AppResource> items) {
-        for (AppResource item : items) {
-            if (!exist(item)) {
-                insert(item);
+        if (items == null || items.isEmpty()) return;
+        synchronized (_lock) {
+            for (AppResource item : items) {
+                if (!exist(item)) {
+                    insert(item);
+                }
             }
         }
+        notifyDataSetChanged();
     }
 
     private boolean exist(AppResource item) {
@@ -111,7 +118,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
         public void bindView(AppResource appResource) {
             mNameView.setText(appResource.appname);
-            setImage(mLogoView, appResource.urlImage);
+            setImage(mLogoView, appResource);
          /*   if (appResource.status == 0) {
                 itemView.setSelected(false);
             } else {
@@ -120,21 +127,26 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
         }
 
-        private void setImage(ImageView image, String url) {
-            image.setVisibility(View.VISIBLE);
-
-            try {
-                int resId = Integer.parseInt(url);
-                image.setImageResource(resId);
-            } catch (NumberFormatException ex) {
-
-                if (TextUtils.isEmpty(url)) {
-                    image.setVisibility(View.INVISIBLE);
-                } else {
-                    loadImage(image, url);
-                }
-
+        private void setImage(ImageView image, AppResource appResource) {
+            Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
+            if (TextUtils.isEmpty(appResource.iconUrl) &&
+                    appResource.appType == PaymentAppTypeEnum.NATIVE.getValue() &&
+                    PaymentAppConfig.getAppResource(appResource.appid) != null) {
+                appResource.iconUrl = PaymentAppConfig.getAppResource(appResource.appid).iconUrl;
             }
+            if (!TextUtils.isEmpty(appResource.iconUrl)) {
+                try {
+                    loadImage(image, Integer.parseInt(appResource.iconUrl));
+                } catch (NumberFormatException ex) {
+                    loadImage(image, appResource.iconUrl);
+                }
+            } else {
+                image.setImageResource(R.drawable.ic_imagedefault);
+            }
+        }
+
+        private void loadImage(ImageView image, int resourceId) {
+            Glide.with(context).load(resourceId).centerCrop().placeholder(R.color.white).into(image);
         }
 
         private void loadImage(ImageView image, String url) {

@@ -6,6 +6,8 @@ import android.content.Intent;
 import java.util.HashMap;
 import java.util.Map;
 
+import vn.com.vng.zalopay.domain.model.AppResource;
+
 /**
  * Created by AnhHieu on 6/21/16.
  */
@@ -15,5 +17,5 @@ public interface INavigator {
 
     Intent intentLinkCard(Context context);
 
-    Intent intentPaymentApp(Context context, int appId, Map<String, String> launchOptions);
+    Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions);
 }

@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -109,7 +110,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        Intent intent = navigator.intentPaymentApp(activity, appid, options);
+        Intent intent = navigator.intentPaymentApp(activity, new AppResource(appid), options);
         if (intent != null) {
             activity.startActivity(intent);
         }

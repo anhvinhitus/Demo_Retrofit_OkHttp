@@ -29,20 +29,40 @@ public class PaymentAppConfig {
 
     static {
         APP_RESOURCE_MAP = new HashMap<>();
-        APP_RESOURCE_MAP.put(Constants.TRANSFER_MONEY, new AppResource(Constants.TRANSFER_MONEY, AndroidApplication.instance().getString(R.string.transfer_money), String.valueOf(R.drawable.ic_chuyentien)));
-        APP_RESOURCE_MAP.put(Constants.RECEIVE_MONEY, new AppResource(Constants.RECEIVE_MONEY, AndroidApplication.instance().getString(R.string.receive_money), String.valueOf(R.drawable.ic_nhantien)));
-        APP_RESOURCE_MAP.put(Constants.RED_PACKET, new AppResource(Constants.RED_PACKET, AndroidApplication.instance().getString(R.string.red_envelope), String.valueOf(R.drawable.ic_lixi)));
-        APP_RESOURCE_MAP.put(Constants.RECHARGE_MONEY_PHONE, new AppResource(Constants.RECHARGE_MONEY_PHONE, AndroidApplication.instance().getString(R.string.recharge_money_phone), String.valueOf(R.drawable.ic_naptiendt)));
-        APP_RESOURCE_MAP.put(Constants.SERVICE, new AppResource(Constants.SERVICE, AndroidApplication.instance().getString(R.string.service), String.valueOf(R.drawable.ic_dichvu)));
-        APP_RESOURCE_MAP.put(Constants.ELECTRIC_BILL, new AppResource(Constants.ELECTRIC_BILL, AndroidApplication.instance().getString(R.string.electric_bill), String.valueOf(R.drawable.ic_tiendien)));
+        APP_RESOURCE_MAP.put(Constants.TRANSFER_MONEY,
+                new AppResource(Constants.TRANSFER_MONEY,
+                        PaymentAppTypeEnum.NATIVE.value,
+                        AndroidApplication.instance().getString(R.string.transfer_money),
+                        String.valueOf(R.drawable.ic_chuyentien)));
+        APP_RESOURCE_MAP.put(Constants.RECEIVE_MONEY,
+                new AppResource(Constants.RECEIVE_MONEY,
+                        PaymentAppTypeEnum.NATIVE.value,
+                        AndroidApplication.instance().getString(R.string.receive_money),
+                        String.valueOf(R.drawable.ic_nhantien)));
+        APP_RESOURCE_MAP.put(Constants.RED_PACKET,
+                new AppResource(Constants.RED_PACKET,
+                        PaymentAppTypeEnum.NATIVE.value,
+                        AndroidApplication.instance().getString(R.string.red_envelope),
+                        String.valueOf(R.drawable.ic_lixi)));
+        APP_RESOURCE_MAP.put(Constants.RECHARGE_MONEY_PHONE,
+                new AppResource(Constants.RECHARGE_MONEY_PHONE,
+                        PaymentAppTypeEnum.NATIVE.value,
+                        AndroidApplication.instance().getString(R.string.recharge_money_phone),
+                        String.valueOf(R.drawable.ic_naptiendt)));
+//        APP_RESOURCE_MAP.put(Constants.SERVICE, new AppResource(Constants.SERVICE, AndroidApplication.instance().getString(R.string.service), String.valueOf(R.drawable.ic_dichvu)));
+        APP_RESOURCE_MAP.put(Constants.ELECTRIC_BILL,
+                new AppResource(Constants.ELECTRIC_BILL,
+                        PaymentAppTypeEnum.NATIVE.value,
+                        AndroidApplication.instance().getString(R.string.electric_bill),
+                        String.valueOf(R.drawable.ic_tiendien)));
 
         APP_RESOURCE_LIST = new ArrayList<>();
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.TRANSFER_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RED_PACKET));
-        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECHARGE_MONEY_PHONE));
-        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.SERVICE));
-        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.ELECTRIC_BILL));
+//        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECHARGE_MONEY_PHONE));
+//        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.SERVICE));
+//        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.ELECTRIC_BILL));
 
     }
 
