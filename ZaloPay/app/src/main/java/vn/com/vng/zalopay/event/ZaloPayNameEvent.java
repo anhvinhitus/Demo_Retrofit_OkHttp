@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.interactor.event;
+package vn.com.vng.zalopay.event;
 
 /**
  * Created by longlv on 15/08/2016.

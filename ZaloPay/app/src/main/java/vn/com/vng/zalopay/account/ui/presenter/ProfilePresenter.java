@@ -16,8 +16,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
-import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.event.ZaloPayNameEvent;
+import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 

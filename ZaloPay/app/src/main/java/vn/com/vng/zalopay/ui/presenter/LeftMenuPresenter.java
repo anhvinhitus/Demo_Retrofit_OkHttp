@@ -10,7 +10,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -20,8 +19,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.interactor.event.ZaloPayNameEvent;
-import vn.com.vng.zalopay.interactor.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.event.ZaloPayNameEvent;
+import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
 /**

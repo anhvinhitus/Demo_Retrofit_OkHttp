@@ -1,7 +1,8 @@
-package vn.com.vng.zalopay.interactor.event;
+package vn.com.vng.zalopay.event;
 
 /**
  * Created by AnhHieu on 5/11/16.
+ *
  */
 public class ZaloProfileInfoEvent {
 
