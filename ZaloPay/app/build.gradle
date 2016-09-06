@@ -141,7 +141,7 @@ android {
         production {
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.RELEASE'
             buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
-            buildConfigField 'vn.com.zalopay.wallet.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.business.data.Constants.HostType.LIVE'
+            buildConfigField 'vn.com.zalopay.wallet.business.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.business.data.Constants.HostType.LIVE'
             buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
             buildConfigField 'String', 'WS_HOST', '"notify.zalopay.com.vn"'
             buildConfigField 'int', 'WS_PORT', '8414'
