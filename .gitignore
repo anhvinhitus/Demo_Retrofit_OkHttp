@@ -86,7 +86,7 @@ trestle.keystore
 .mtj.tmp/
 
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.ear
 
@@ -100,3 +100,4 @@ hs_err_pid*
 **/*.iml
 *.class
 
+gradle-wrapper.jar
