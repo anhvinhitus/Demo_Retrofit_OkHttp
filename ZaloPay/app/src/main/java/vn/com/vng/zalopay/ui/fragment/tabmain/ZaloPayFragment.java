@@ -44,7 +44,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.ui.AppTypeEnum;
+import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenterImpl;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -242,7 +242,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onClickAppListener(AppResource app, int position) {
         Timber.d("onclick app %s %s ", app.appid, app.appname);
-        if (app.appType == AppTypeEnum.NATIVE.getValue()) {
+        if (app.appType == PaymentAppTypeEnum.NATIVE.getValue()) {
             if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
                 navigator.startTransferMoneyActivity(getActivity());
             } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
@@ -252,7 +252,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             } else {
                 navigator.startPaymentApplicationActivity(getActivity(), app.appid);
             }
-        } else if (app.appType == AppTypeEnum.WEBVIEW.getValue()) {
+        } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             presenter.startGamePayWebActivity(app.appid);
         } else {
             showToast(getString(R.string.need_update_to_use));
