@@ -29,4 +29,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //    testCompile 'junit:junit:4.12'
     compile libs.support_appcompat_v7
+    compile files('libs/zdk-2.1.0612.jar')
 }
