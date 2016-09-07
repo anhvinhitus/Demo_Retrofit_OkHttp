@@ -61,6 +61,13 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
     }
 
     @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof HeaderViewHolder) {
+            ((HeaderViewHolder) holder).detach();
+        }
+    }
+
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Timber.d("onBindViewHolder position %s", position);
 
@@ -296,6 +303,13 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         public void showTotalView() {
             if (!layoutTotal.isShown()) {
                 layoutTotal.setVisibility(View.VISIBLE);
+            }
+        }
+
+        public void detach() {
+            if (layoutSuccess != null) {
+                layoutSuccess.removeCallbacks(mRunnable);
+                layoutSuccess.clearAnimation();
             }
         }
 

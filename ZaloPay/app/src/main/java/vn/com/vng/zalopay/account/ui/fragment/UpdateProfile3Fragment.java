@@ -361,7 +361,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     void loadBackgroundImageCMND(Uri uri) {
-        loadImage(mAvatarView, uri);
+        loadImage(mBgCmndView, uri);
         mTvBgCmndView.setVisibility(View.GONE);
     }
 
