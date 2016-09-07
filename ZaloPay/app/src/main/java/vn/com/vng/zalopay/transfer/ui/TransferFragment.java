@@ -39,7 +39,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Inject
-    TransferPresenter mPresenter;
+    TransferMoneyPresenter mPresenter;
 
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;

@@ -48,7 +48,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     }
 
     @Inject
-    ChangePinPresenter presenter;
+    IChangePinPresenter presenter;
 
     @Inject
     EventBus mEventBus;

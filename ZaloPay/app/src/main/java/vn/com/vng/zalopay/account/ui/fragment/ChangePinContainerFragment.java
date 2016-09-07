@@ -48,7 +48,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     View mBtnContinueView;
 
     @Inject
-    ChangePinPresenter presenter;
+    IChangePinPresenter presenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

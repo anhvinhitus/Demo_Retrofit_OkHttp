@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
+import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
 import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -64,6 +65,7 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserModule.class,
                 UserApiModule.class,
                 UserControllerModule.class,
+                UserPresenterModule.class,
                 UserBalanceModule.class,
                 UserTransactionModule.class,
                 AppResourceModule.class,
