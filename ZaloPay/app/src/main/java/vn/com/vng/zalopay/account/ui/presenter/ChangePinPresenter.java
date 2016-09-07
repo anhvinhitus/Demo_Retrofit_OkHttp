@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * 
  */
 public class ChangePinPresenter extends BaseUserPresenter implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
 
@@ -26,15 +27,19 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     IChangePinView mChangePinView;
     IChangePinVerifyView mChangePinVerifyView;
 
+    final int LIMIT_CHANGE_PASSWORD_ERROR = 3;
+
+    private int numberError;
+
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Inject
     public ChangePinPresenter() {
-
     }
 
     @Override
     public void setChangePassView(IChangePinView iChangePinView) {
+        numberError = 0;
         mChangePinView = iChangePinView;
     }
 
@@ -132,14 +137,23 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
         mChangePinContainer.nextPage();
     }
 
+
+
     private void onChangePinError(Throwable e) {
         mChangePinView.hideLoading();
         String message = ErrorMessageFactory.create(applicationContext, e);
         mChangePinView.showError(message);
         if (e instanceof BodyException) {
-            int code = ((BodyException)e).errorCode;
+            int code = ((BodyException) e).errorCode;
             if (code == NetworkError.OLD_PIN_NOT_MATCH) {
-                mChangePinView.requestFocusOldPin();
+
+                if (numberError == LIMIT_CHANGE_PASSWORD_ERROR) {
+                    mChangePinContainer.onChangePinOverLimit();
+                } else {
+                    mChangePinView.requestFocusOldPin();
+                }
+
+                numberError++;
             }
         }
     }
@@ -150,12 +164,10 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
         mChangePinVerifyView.showError(message);
     }
 
-
     private void onVerifyOTPSuccess() {
         mChangePinVerifyView.hideLoading();
         mChangePinContainer.onVerifySuccess();
     }
-
 
     private class ChangePinSubscriber extends DefaultSubscriber<BaseResponse> {
         public ChangePinSubscriber() {

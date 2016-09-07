@@ -10,4 +10,6 @@ public interface IChangePinContainer {
     void onVerifySuccess();
 
     void onPinValid(boolean isValid);
+
+    void onChangePinOverLimit();
 }

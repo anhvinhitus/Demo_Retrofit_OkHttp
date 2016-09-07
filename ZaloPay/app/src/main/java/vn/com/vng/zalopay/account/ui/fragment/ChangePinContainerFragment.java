@@ -14,7 +14,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
-import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -92,12 +91,12 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @Override
     public void onPinValid(boolean isValid) {
-        Timber.d("onPinValid: isValid %s", isValid);
         mBtnContinueView.setEnabled(isValid);
     }
 
     @Override
     public void onDestroyView() {
+
         presenter.destroyView();
         super.onDestroyView();
     }
@@ -118,5 +117,10 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     public void onResume() {
         presenter.resume();
         super.onResume();
+    }
+
+    @Override
+    public void onChangePinOverLimit() {
+        getActivity().finish();
     }
 }
