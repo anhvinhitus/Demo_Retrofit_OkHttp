@@ -542,21 +542,21 @@ public class ZPEvents {
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:
-                return "UpdateProfile3";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_PRESSCHECK:
-                return "UpdateProfile4";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_ZPN_EDIT_INVALID:
-                return "UpdateProfile5";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_ZPN_EMPTY:
-                return "UpdateProfile6";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_ZPN_VALID:
-                return "UpdateProfile7";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_ZPN_INUSED:
-                return "UpdateProfile8";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_ZPN_INUSED2:
-                return "UpdateProfile9";
+                return "UpdateProfile2";
             case UPDATEPROFILE2_ZPN_EDIT_DELETE:
-                return "UpdateProfile10";
+                return "UpdateProfile2";
             case UPDATEZPN_LAUNCH:
                 return "UpdateZPN";
             case UPDATEZPN_BACK:

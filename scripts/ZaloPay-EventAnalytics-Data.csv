@@ -93,14 +93,14 @@ EventId,Category,Action
 2000,Timing Get Order,Timing_GetOrder
 2001,Timing Scan QR,Timing_ScanQR
 2100,UpdateProfile2,UpdateProfile2_Launch
-2101,UpdateProfile3,UpdateProfile2_NavigateBack
-2102,UpdateProfile4,UpdateProfile2_PressCheck
-2103,UpdateProfile5,UpdateProfile2_ZPN_Edit_Invalid
-2104,UpdateProfile6,UpdateProfile2_ZPN_Empty
-2105,UpdateProfile7,UpdateProfile2_ZPN_Valid
-2106,UpdateProfile8,UpdateProfile2_ZPN_InUsed
-2107,UpdateProfile9,UpdateProfile2_ZPN_InUsed2
-2108,UpdateProfile10,UpdateProfile2_ZPN_Edit_Delete
+2101,UpdateProfile2,UpdateProfile2_NavigateBack
+2102,UpdateProfile2,UpdateProfile2_PressCheck
+2103,UpdateProfile2,UpdateProfile2_ZPN_Edit_Invalid
+2104,UpdateProfile2,UpdateProfile2_ZPN_Empty
+2105,UpdateProfile2,UpdateProfile2_ZPN_Valid
+2106,UpdateProfile2,UpdateProfile2_ZPN_InUsed
+2107,UpdateProfile2,UpdateProfile2_ZPN_InUsed2
+2108,UpdateProfile2,UpdateProfile2_ZPN_Edit_Delete
 2200,UpdateZPN,UpdateZPN_Launch
 2201,UpdateZPN,UpdateZPN_Back
 2202,UpdateZPN,UpdateZPN_Launch_FromHeader
