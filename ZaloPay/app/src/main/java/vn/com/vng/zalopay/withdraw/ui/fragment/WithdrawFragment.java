@@ -58,7 +58,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
         if (!isValidAmount()) {
             return;
         }
-        showProgressDialog();
         mPresenter.continueWithdraw(mAmount);
     }
 
