@@ -6,9 +6,9 @@ public class AppGameConfig
 {
     public static final String ZINGXU_PAGE      =   "";
 
-    public static final String PAYGAME_PAGE     =   AppGameGlobal.getUrlConfig().getUrl() + "dichvu/?muid=%s&maccesstoken=%s&appid=%d";
+    public static final String PAYGAME_PAGE     =   AppGameGlobal.getUrlConfig() + "?muid=%s&maccesstoken=%s&appid=%d";
 
-    public static final String PAY_RESULT_PAGE  =   AppGameGlobal.getUrlConfig().getUrl() + "dichvu/result/?apptransid=%s&muid=%s&maccesstoken=%s";
+    public static final String PAY_RESULT_PAGE  =   AppGameGlobal.getUrlConfig() + "result/?apptransid=%s&muid=%s&maccesstoken=%s";
 
     public static final String URL_TO_APP       =   "zalopay-1://backtoapp";
 

@@ -225,7 +225,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 navigator.startPaymentApplicationActivity(getActivity(), appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
-            presenter.startGamePayWebActivity(app.appid);
+            presenter.startGamePayWebActivity(app);
         } else {
             showToast(getString(R.string.need_update_to_use));
         }

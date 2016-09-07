@@ -1,21 +1,16 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.app.Activity;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
@@ -24,21 +19,16 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
-import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.game.AppGameConfigImpl;
 import vn.com.vng.zalopay.game.AppGameDialogImpl;
 import vn.com.vng.zalopay.game.AppGameNetworkingImpl;
 import vn.com.vng.zalopay.game.AppGamePaymentImpl;
-import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.game.controller.AppGameController;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -173,11 +163,14 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void startGamePayWebActivity(int appId) {
-        mZaloPayIAPRepository.getMerchantUserInfo(appId)
+    public void startGamePayWebActivity(AppResource appResource) {
+        if (appResource == null) {
+            return;
+        }
+        mZaloPayIAPRepository.getMerchantUserInfo(appResource.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GamePaySubscribe(appId));
+                .subscribe(new GamePaySubscribe(appResource));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -219,10 +212,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private class GamePaySubscribe extends DefaultSubscriber<MerchantUserInfo> {
-        private int mAppId;
+        private AppResource mAppResource;
 
-        public GamePaySubscribe(int appId) {
-            this.mAppId = appId;
+        public GamePaySubscribe(AppResource appResource) {
+            this.mAppResource = appResource;
         }
 
         @Override
@@ -235,7 +228,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             AppGamePayInfo gamePayInfo = new AppGamePayInfo();
             gamePayInfo.setUid(merchantUserInfo.muid);
             gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
-            gamePayInfo.setAppId(mAppId);
+            gamePayInfo.setAppId(mAppResource.appid);
             IAppGameResultListener gameResultListener = new IAppGameResultListener() {
                 @Override
                 public void onError(AppGameError pError) {
@@ -257,7 +250,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             };
             Timber.d("onNext startPayFlow");
             AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
-                    new AppGamePaymentImpl(), new AppGameDialogImpl(), new AppGameConfigImpl(), new AppGameNetworkingImpl());
+                    new AppGamePaymentImpl(), new AppGameDialogImpl(), mAppResource.webUrl , new AppGameNetworkingImpl());
         }
 
         @Override

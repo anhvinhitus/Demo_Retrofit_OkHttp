@@ -19,7 +19,7 @@ public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView>
 
     void getBanners();
 
-    void startGamePayWebActivity(int appId);
+    void startGamePayWebActivity(AppResource appResource);
 
     List<AppResource> getListAppResourceFromDB();
 }

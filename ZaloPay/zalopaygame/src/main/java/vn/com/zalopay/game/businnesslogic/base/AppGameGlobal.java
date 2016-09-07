@@ -10,7 +10,6 @@ import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.payment.IPaymentService;
-import vn.com.zalopay.game.businnesslogic.provider.config.IGetUrlConfig;
 import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
 import vn.com.zalopay.game.businnesslogic.provider.networking.INetworking;
 
@@ -30,12 +29,12 @@ public class AppGameGlobal
 	 * providers from main app.
      */
 	private static IDialog mDialog;
-	private static IGetUrlConfig mUrlConfig;
+	private static String mUrlConfig;
 	private static INetworking mNetworking;
 	private static IPaymentService mPayment;
 
 	public static void setApplication(Activity pActivity, IPaymentService payment, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
-									  IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking) throws Exception
+									  IDialog pDialog, String webUrl, INetworking pNetworking) throws Exception
 	{
 		AppGameGlobal.mApplication 		= pActivity;
 		AppGameGlobal.mAppGamePayInfo	= pAppGamePayInfo;
@@ -43,7 +42,7 @@ public class AppGameGlobal
 
 		AppGameGlobal.mPayment			= payment;
 		AppGameGlobal.mDialog			= pDialog;
-		AppGameGlobal.mUrlConfig		= pUrlConfig;
+		AppGameGlobal.mUrlConfig		= webUrl;
 		AppGameGlobal.mNetworking		= pNetworking;
 	}
 
@@ -121,12 +120,8 @@ public class AppGameGlobal
 		AppGameGlobal.mDialog = mDialog;
 	}
 
-	public static IGetUrlConfig getUrlConfig() {
+	public static String getUrlConfig() {
 		return mUrlConfig;
-	}
-
-	public static void setUrlConfig(IGetUrlConfig mUrlConfig) {
-		AppGameGlobal.mUrlConfig = mUrlConfig;
 	}
 
 	public static INetworking getNetworking() {

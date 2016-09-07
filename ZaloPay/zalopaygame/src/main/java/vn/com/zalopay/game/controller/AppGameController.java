@@ -16,7 +16,6 @@ import vn.com.zalopay.game.businnesslogic.interfaces.behavior.IAppGameStartFlow;
 import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.payment.IPaymentService;
-import vn.com.zalopay.game.businnesslogic.provider.config.IGetUrlConfig;
 import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
 import vn.com.zalopay.game.businnesslogic.provider.networking.INetworking;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
@@ -24,8 +23,8 @@ import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 
 public class AppGameController {
     public synchronized static void startPayFlow(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
-                                                 IPaymentService paymentService, IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking) {
-        if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null) {
+                                                 IPaymentService paymentService, IDialog pDialog, String webUrl, INetworking pNetworking) {
+        if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || TextUtils.isEmpty(webUrl)) {
             if (pListener != null)
                 pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL, "Component (activity,httpclient) is null"));
 
@@ -34,7 +33,7 @@ public class AppGameController {
 
         //set global static
         try {
-            AppGameGlobal.setApplication(pOwner, paymentService, pAppGamePayInfo, pListener, pDialog, pUrlConfig, pNetworking);
+            AppGameGlobal.setApplication(pOwner, paymentService, pAppGamePayInfo, pListener, pDialog, webUrl, pNetworking);
         } catch (Exception e) {
             onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
 
@@ -60,43 +59,43 @@ public class AppGameController {
         startScreen();
     }
 
-    /***
-     * view pay game result
-     * @param pOwner
-     * @param pAppGamePayInfo
-     * @param pListener
-     * @param pDialog
-     * @param pUrlConfig
-     * @param pNetworking
-     */
-    public synchronized static void viewPayResult(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
-                                                  IPaymentService paymentService, IDialog pDialog, IGetUrlConfig pUrlConfig, INetworking pNetworking) {
-        Timber.d("viewPayResult start [%s]", pAppGamePayInfo.getApptransid());
-        if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null) {
-            if (pListener != null)
-                pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL, "Component (activity,httpclient) is null"));
-
-            return;
-        }
-
-        //set global static
-        try {
-            AppGameGlobal.setApplication(pOwner, paymentService, pAppGamePayInfo, pListener, pDialog, pUrlConfig, pNetworking);
-        } catch (Exception e) {
-            Timber.w(e, "view pay result exception [%s]", e.getMessage());
-            onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
-
-            return;
-        }
-
-        if (AppGameGlobal.getNetworking() != null && !AppGameGlobal.getNetworking().isOnline(AppGameBaseActivity.getCurrentActivity())) {
-            onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_no_connection));
-
-            return;
-        }
-
-        startScreen();
-    }
+//    /***
+//     * view pay game result
+//     * @param pOwner
+//     * @param pAppGamePayInfo
+//     * @param pListener
+//     * @param pDialog
+//     * @param pUrlConfig
+//     * @param pNetworking
+//     */
+//    public synchronized static void viewPayResult(final Activity pOwner, AppGamePayInfo pAppGamePayInfo, IAppGameResultListener pListener,
+//                                                  IPaymentService paymentService, IDialog pDialog, String webUrl, INetworking pNetworking) {
+//        Timber.d("viewPayResult start [%s]", pAppGamePayInfo.getApptransid());
+//        if (pOwner == null || pAppGamePayInfo == null || pListener == null || pDialog == null || pUrlConfig == null) {
+//            if (pListener != null)
+//                pListener.onError(new AppGameError(EAppGameError.COMPONENT_NULL.COMPONENT_NULL, "Component (activity,httpclient) is null"));
+//
+//            return;
+//        }
+//
+//        //set global static
+//        try {
+//            AppGameGlobal.setApplication(pOwner, paymentService, pAppGamePayInfo, pListener, pDialog, pUrlConfig, pNetworking);
+//        } catch (Exception e) {
+//            Timber.w(e, "view pay result exception [%s]", e.getMessage());
+//            onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_input_error));
+//
+//            return;
+//        }
+//
+//        if (AppGameGlobal.getNetworking() != null && !AppGameGlobal.getNetworking().isOnline(AppGameBaseActivity.getCurrentActivity())) {
+//            onReturnCancel(AppGameGlobal.getString(R.string.appgame_alert_no_connection));
+//
+//            return;
+//        }
+//
+//        startScreen();
+//    }
 
     /***
      * dispose all
