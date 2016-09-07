@@ -98,6 +98,7 @@ public class PlatformDaoMapper {
             appResourceGD.setApptype(appResourceEntity.apptype);
             appResourceGD.setWeburl(appResourceEntity.weburl);
             appResourceGD.setIconurl(appResourceEntity.iconurl);
+            appResourceGD.setSortOrder(appResourceEntity.sortOrder);
         }
         return appResourceGD;
     }
@@ -116,6 +117,7 @@ public class PlatformDaoMapper {
             appResourceEntity.apptype = appResourceGD.getApptype();
             appResourceEntity.weburl = appResourceGD.getWeburl();
             appResourceEntity.iconurl = appResourceGD.getIconurl();
+            appResourceEntity.sortOrder = appResourceGD.getSortOrder();
             appResourceEntity.stateDownload = appResourceGD.getStateDownload();
             appResourceEntity.numRetry = appResourceGD.getNumRetry();
             appResourceEntity.timeDownload = appResourceGD.getTimeDownload();

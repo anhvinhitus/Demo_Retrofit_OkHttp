@@ -39,6 +39,8 @@ public class AppResourceEntity {
     @SerializedName("iconurl")
     public String iconurl;
 
+    public int sortOrder;
+
     @Expose(deserialize = false, serialize = false)
     public int stateDownload;
 

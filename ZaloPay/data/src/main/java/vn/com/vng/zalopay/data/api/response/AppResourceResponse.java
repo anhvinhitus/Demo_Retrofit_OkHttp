@@ -20,6 +20,9 @@ public class AppResourceResponse extends BaseResponse {
     @SerializedName("appidlist")
     public List<Integer> appidlist;
 
+    @SerializedName("orderedInsideApps")
+    public List<Integer> orderedInsideApps;
+
     @SerializedName("resourcelist")
     public List<AppResourceEntity> resourcelist;
 

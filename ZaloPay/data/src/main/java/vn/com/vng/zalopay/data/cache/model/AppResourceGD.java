@@ -16,6 +16,7 @@ public class AppResourceGD {
     private Integer apptype;
     private String weburl;
     private String iconurl;
+    private Integer sortOrder;
     private Integer stateDownload;
     private Long timeDownload;
     private Integer numRetry;
@@ -23,7 +24,7 @@ public class AppResourceGD {
     public AppResourceGD() {
     }
 
-    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Integer apptype, String weburl, String iconurl, Integer stateDownload, Long timeDownload, Integer numRetry) {
+    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Integer apptype, String weburl, String iconurl, Integer sortOrder, Integer stateDownload, Long timeDownload, Integer numRetry) {
         this.appid = appid;
         this.appname = appname;
         this.needdownloadrs = needdownloadrs;
@@ -34,6 +35,7 @@ public class AppResourceGD {
         this.apptype = apptype;
         this.weburl = weburl;
         this.iconurl = iconurl;
+        this.sortOrder = sortOrder;
         this.stateDownload = stateDownload;
         this.timeDownload = timeDownload;
         this.numRetry = numRetry;
@@ -117,6 +119,14 @@ public class AppResourceGD {
 
     public void setIconurl(String iconurl) {
         this.iconurl = iconurl;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public Integer getStateDownload() {

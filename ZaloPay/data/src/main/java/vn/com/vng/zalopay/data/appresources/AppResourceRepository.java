@@ -141,6 +141,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 if (!TextUtils.isEmpty(appResourceEntity.iconurl)) {
                     appResourceEntity.iconurl = resourceResponse.baseurl + appResourceEntity.iconurl;
                 }
+                int index = resourceResponse.orderedInsideApps.indexOf(appResourceEntity.appid);
+                Timber.d("processAppResourceResponse appid [%s] index [%s]", appResourceEntity.appid, index);
+                appResourceEntity.sortOrder = index;
                 resourcelist.add(appResourceEntity);
             }
         }
