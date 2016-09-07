@@ -107,7 +107,7 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onPreComplete(boolean isSuccessful,String pTransId) {
+                    public void onPreComplete(boolean isSuccessful,String pTransId, String pAppTransId) {
 
                     }
 

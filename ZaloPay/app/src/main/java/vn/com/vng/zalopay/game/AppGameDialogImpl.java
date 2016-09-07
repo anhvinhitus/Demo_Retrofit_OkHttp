@@ -13,27 +13,24 @@ import vn.com.zalopay.wallet.view.dialog.DialogManager;
 /**
  * Created by admin on 8/30/16.
  */
-public class AppGameDialogImpl implements IDialog
-{
+public class AppGameDialogImpl implements IDialog {
     @Override
-    public void showInfoDialog(Activity pActivity, String pMessage, String pButtonText, int pDialogType, final IDialogListener pListener)
-    {
+    public void showInfoDialog(Activity pActivity, String pMessage, String pButtonText, int pDialogType, final IDialogListener pListener) {
         DialogManager.showSweetDialogCustom(pActivity, pMessage, pButtonText, pDialogType, new ZPWOnEventDialogListener() {
             @Override
             public void onOKevent() {
-                if(pListener != null)
+                if (pListener != null)
                     pListener.onClose();
             }
         });
     }
 
     @Override
-    public void showLoadingDialog(Activity pActivity, final ITimeoutLoadingListener pListener)
-    {
+    public void showLoadingDialog(Activity pActivity, final ITimeoutLoadingListener pListener) {
         DialogManager.showProcessDialog(pActivity, new ZPWOnProgressDialogTimeoutListener() {
             @Override
             public void onProgressTimeout() {
-                if(pListener != null)
+                if (pListener != null)
                     pListener.onTimeoutLoading();
             }
         });
@@ -41,23 +38,30 @@ public class AppGameDialogImpl implements IDialog
 
     @Override
     public void showConfirmDialog(Activity pActivity, String pMessage, String pButtonTextLeft, String pButtonTextRight, final IDialogListener pListener) {
+        showConfirmDialog(pActivity, pMessage, pButtonTextLeft, pButtonTextRight, pListener, null);
+    }
+
+    @Override
+    public void showConfirmDialog(Activity pActivity, String pMessage, String pButtonTextLeft, String pButtonTextRight, final IDialogListener btnLeftListener, final IDialogListener btnRightListener) {
         DialogManager.showSweetDialogConfirm(pActivity, pMessage, pButtonTextLeft, pButtonTextRight, new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                if(pListener != null)
-                    pListener.onClose();
+                if (btnLeftListener != null) {
+                    btnLeftListener.onClose();
+                }
             }
 
             @Override
             public void onOKevent() {
-
+                if (btnRightListener != null) {
+                    btnRightListener.onClose();
+                }
             }
         });
     }
 
     @Override
-    public void hideLoadingDialog()
-    {
+    public void hideLoadingDialog() {
         DialogManager.closeProcessDialog();
     }
 }

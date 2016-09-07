@@ -13,7 +13,6 @@ import vn.com.zalopay.game.ui.component.fragment.AppGameFragment;
 import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 public class AppGameActivity extends AppGameBaseActivity {
-    public static final int REQUEST_CODE = 10001;
     private AppGameFragment mFragment;
 
     @Override

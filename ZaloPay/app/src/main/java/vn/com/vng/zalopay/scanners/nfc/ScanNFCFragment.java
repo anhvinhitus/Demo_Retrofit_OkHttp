@@ -127,7 +127,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                     }
 
                     @Override
-                    public void onPreComplete(boolean isSuccessful,String pTransId) {
+                    public void onPreComplete(boolean isSuccessful,String pTransId, String pAppTransId) {
 
                     }
 

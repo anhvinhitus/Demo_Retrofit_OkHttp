@@ -21,7 +21,5 @@ public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView>
 
     void startGamePayWebActivity(int appId);
 
-    void payOrder(Order order, AppGamePayInfo appGamePayInfo);
-
     List<AppResource> getListAppResourceFromDB();
 }

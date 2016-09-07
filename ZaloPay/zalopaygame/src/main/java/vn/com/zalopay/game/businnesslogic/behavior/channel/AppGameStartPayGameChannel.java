@@ -27,7 +27,7 @@ public class AppGameStartPayGameChannel implements IAppGameStartFlow {
 
         Timber.d("start getOwnerActivity [%s]", AppGameGlobal.getOwnerActivity());
         Intent intentZingXu = new Intent(AppGameGlobal.getOwnerActivity(), AppGameActivity.class);
-        AppGameGlobal.getOwnerActivity().startActivityForResult(intentZingXu, AppGameActivity.REQUEST_CODE);
+        AppGameGlobal.getOwnerActivity().startActivity(intentZingXu);
         Timber.d("startFlow end");
     }
 }

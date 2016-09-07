@@ -131,9 +131,9 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onPreComplete(boolean isSuccessful, String pTransId) {
+        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
-            responseListener.onPreComplete(isSuccessful, pTransId);
+            responseListener.onPreComplete(isSuccessful, pTransId, pAppTransId);
 
             if (isSuccessful) {
                 updateBalance();
@@ -390,7 +390,7 @@ public class PaymentWrapper {
 
         void onNotEnoughMoney();
 
-        void onPreComplete(boolean isSuccessful, String pTransId);
+        void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId);
     }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {

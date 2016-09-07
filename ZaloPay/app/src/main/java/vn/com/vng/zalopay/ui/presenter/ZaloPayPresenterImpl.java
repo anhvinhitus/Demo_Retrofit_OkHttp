@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.game.AppGameConfigImpl;
 import vn.com.vng.zalopay.game.AppGameDialogImpl;
 import vn.com.vng.zalopay.game.AppGameNetworkingImpl;
+import vn.com.vng.zalopay.game.AppGamePaymentImpl;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -49,11 +50,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     protected CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    @Inject
-    ZaloPayIAPRepository mZaloPayIAPRepository;
+    private final ZaloPayIAPRepository mZaloPayIAPRepository;
 
-    @Inject
-    public ZaloPayPresenterImpl() {
+    public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository) {
+        this.mZaloPayIAPRepository = zaloPayIAPRepository;
     }
 
     @Override
@@ -180,131 +180,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .subscribe(new GamePaySubscribe(appId));
     }
 
-    @Override
-    public void payOrder(Order order, final AppGamePayInfo appGamePayInfo) {
-        showLoadingView();
-        PaymentWrapper paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                if (mZaloPayView != null) {
-                    return mZaloPayView.getActivity();
-                }
-                return null;
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-
-                Timber.d("onParameterError");
-
-                if (mZaloPayView == null) {
-                    return;
-                }
-
-                if ("order".equalsIgnoreCase(param)) {
-                    mZaloPayView.showError(applicationContext.getString(R.string.order_invalid));
-                } else if ("uid".equalsIgnoreCase(param)) {
-                    mZaloPayView.showError(applicationContext.getString(R.string.user_invalid));
-                } else if ("token".equalsIgnoreCase(param)) {
-                    mZaloPayView.showError(applicationContext.getString(R.string.order_invalid));
-                }
-
-                hideLoadingView();
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful,String transId) {
-
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                Timber.d("onResponseError");
-                if (mZaloPayView == null) {
-                    return;
-                }
-
-                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mZaloPayView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
-                }
-
-                hideLoadingView();
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                Timber.d("onResponseSuccess");
-                hideLoadingView();
-                if (mZaloPayView == null || zpPaymentResult == null
-                        || zpPaymentResult.paymentInfo == null) {
-                    return;
-                }
-                IAppGameResultListener iAppGameResultListener = new IAppGameResultListener() {
-                    @Override
-                    public void onError(AppGameError pError) {
-                        Timber.d("onError pError [%s]", pError);
-                        if (pError == null) {
-                            return;
-                        }
-                        mZaloPayView.showError(pError.messError);
-                    }
-
-                    @Override
-                    public void onLogout() {
-                        Timber.d("onLogout start");
-                        if (mZaloPayView == null) {
-                            return;
-                        }
-                        mZaloPayView.onSessionExpired();
-                    }
-                };
-
-                AppGamePayInfo appGamePayInfo2 = new AppGamePayInfo();
-                appGamePayInfo2.setAppId(appGamePayInfo.getAppId());
-                appGamePayInfo2.setApptransid(zpPaymentResult.paymentInfo.appTransID);
-                appGamePayInfo2.setUid(appGamePayInfo.getUid());
-                appGamePayInfo2.setAccessToken(appGamePayInfo.getAccessToken());
-
-                AppGameController.viewPayResult(mZaloPayView.getActivity(), appGamePayInfo2, iAppGameResultListener,
-                        new AppGameDialogImpl(), new AppGameConfigImpl(), new AppGameNetworkingImpl());
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                Timber.d("onResponseTokenInvalid");
-                if (mZaloPayView == null) {
-                    return;
-                }
-                hideLoadingView();
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                Timber.d("onAppError msg [%s]", msg);
-                if (mZaloPayView == null) {
-                    return;
-                }
-                if (mZaloPayView.getContext() != null) {
-                    mZaloPayView.showError(mZaloPayView.getContext().getString(R.string.exception_generic));
-                }
-                hideLoadingView();
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                Timber.d("onNotEnoughMoney");
-
-                if (mZaloPayView == null) {
-                    return;
-                }
-                hideLoadingView();
-                navigator.startDepositActivity(applicationContext);
-            }
-        });
-
-        paymentWrapper.payWithOrder(order);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChange(NetworkChangeEvent event) {
         if (!event.isOnline && mZaloPayView != null) {
@@ -382,7 +257,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             };
             Timber.d("onNext startPayFlow");
             AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
-                    new AppGameDialogImpl(), new AppGameConfigImpl(), new AppGameNetworkingImpl());
+                    new AppGamePaymentImpl(), new AppGameDialogImpl(), new AppGameConfigImpl(), new AppGameNetworkingImpl());
         }
 
         @Override

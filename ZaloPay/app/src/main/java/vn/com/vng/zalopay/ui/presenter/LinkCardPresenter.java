@@ -107,7 +107,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful,String tId) {
+            public void onPreComplete(boolean isSuccessful,String tId, String pAppTransId) {
 
             }
 

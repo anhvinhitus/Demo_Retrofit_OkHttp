@@ -1,19 +1,16 @@
 package vn.com.zalopay.game.ui.webview;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import org.parceler.Parcels;
 
@@ -23,8 +20,10 @@ import java.net.URLDecoder;
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
+import vn.com.zalopay.game.businnesslogic.interfaces.payment.IPaymentCallback;
 import vn.com.zalopay.game.config.AppGameConfig;
 import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
@@ -39,6 +38,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
     public static boolean canPayment;
 
     private AppGameWebView mWebView = null;
+    private Activity mActivity;
+    private ITimeoutLoadingListener mTimeOutListener;
 
     public AppGameWebViewProcessor(AppGameWebView pWebView) {
         mWebView = pWebView;
@@ -49,6 +50,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
     }
 
     public void start(String pUrl, Activity pActivity, ITimeoutLoadingListener pTimeoutListener) {
+        mActivity = pActivity;
+        mTimeOutListener = pTimeoutListener;
         if (AppGameGlobal.getDialog() != null)
             AppGameGlobal.getDialog().showLoadingDialog(pActivity, pTimeoutListener);
 
@@ -57,8 +60,19 @@ public class AppGameWebViewProcessor extends WebViewClient {
         mWebView.loadUrl(pUrl);
     }
 
+    private void changePage(String pUrl) {
+        if (AppGameGlobal.getDialog() != null)
+            AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
+
+        AppGameWebViewProcessor.hasError = false;
+
+        mWebView.loadUrl(pUrl);
+    }
+
+
     @Override
     public void onPageFinished(WebView view, String url) {
+        Timber.d("onPageFinished url [%s]", url);
         if (AppGameGlobal.getDialog() != null)
             AppGameGlobal.getDialog().hideLoadingDialog();
 
@@ -66,20 +80,32 @@ public class AppGameWebViewProcessor extends WebViewClient {
     }
 
     @Override
-    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
-    {
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         Timber.e("Webview error %s", description);
 
         AppGameWebViewProcessor.hasError = true;
 
-        if (AppGameGlobal.getDialog() != null)
-        {
-            AppGameGlobal.getDialog().showInfoDialog(AppGameBaseActivity.getCurrentActivity(),
-                    AppGameGlobal.getString(R.string.appgame_error_loading), AppGameGlobal.getString(R.string.appgame_button_dialog_close),
-                    3, new IDialogListener() {
+        if (AppGameGlobal.getDialog() != null) {
+            AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
+                    AppGameGlobal.getString(R.string.appgame_error_loading),
+                    AppGameGlobal.getString(R.string.appgame_button_dialog_close),
+                    AppGameGlobal.getString(R.string.appgame_button_dialog_retry),
+                    new IDialogListener() {
                         @Override
                         public void onClose() {
                             AppGameBaseActivity.getCurrentActivity().finish();
+                        }
+                    },
+                    new IDialogListener() {
+                        @Override
+                        public void onClose() {
+                            if (mWebView == null) {
+                                return;
+                            }
+                            if (AppGameGlobal.getDialog() != null) {
+                                AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
+                            }
+                            mWebView.reload();
                         }
                     });
         }
@@ -88,10 +114,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
     }
 
     @Override
-    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
-    {
-
-        Timber.e("Webview error %s", error != null ? error.getDescription() : null);
+    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+//        Timber.e("Webview error %s", error != null ? error.getDescription() : null);
 
         AppGameWebViewProcessor.hasError = true;
 
@@ -134,11 +158,11 @@ public class AppGameWebViewProcessor extends WebViewClient {
         return true;
     }
 
-    private void payOrder(String url) {
+    private void payOrder(final String url) {
         //Check param valid
         Uri data = Uri.parse(url);
         String muid = data.getQueryParameter("muid");
-        String  accesstoken = data.getQueryParameter("maccesstoken");
+        String accesstoken = data.getQueryParameter("maccesstoken");
         String appid = data.getQueryParameter("appid");
         String apptransid = data.getQueryParameter("apptransid");
         String appuser = data.getQueryParameter("appuser");
@@ -165,7 +189,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
             return;
         }
-        Intent intent = new Intent();
+
         Bundle bundle = new Bundle();
         bundle.putString("muid", muid);
         bundle.putString("accesstoken", accesstoken);
@@ -193,11 +217,23 @@ public class AppGameWebViewProcessor extends WebViewClient {
         Timber.d("onResponseSuccess getUid [%s]", AppGameGlobal.getAppGamePayInfo().getUid());
         Timber.d("onResponseSuccess getAccessToken [%s]", AppGameGlobal.getAppGamePayInfo().getAccessToken());
 
-        intent.putExtras(bundle);
-
         AppGameWebViewProcessor.canPayment = true;
-        AppGameBaseActivity.getCurrentActivity().setResult(Activity.RESULT_OK, intent);
-        AppGameBaseActivity.getCurrentActivity().finish();
+        AppGameGlobal.getPaymentService().pay(AppGameBaseActivity.getCurrentActivity(), bundle, new IPaymentCallback() {
+            @Override
+            public void onResponseSuccess(AppGamePayInfo appGamePayInfo) {
+                Timber.d("onResponseSuccess appGamePayInfo [%s]", appGamePayInfo);
+                Timber.d("onResponseSuccess getAccessToken [%s]", appGamePayInfo.getAccessToken());
+                Timber.d("onResponseSuccess getAppId [%s]", appGamePayInfo.getAppId());
+                Timber.d("onResponseSuccess getApptransid [%s]", appGamePayInfo.getApptransid());
+                Timber.d("onResponseSuccess getUid [%s]", appGamePayInfo.getUid());
+                AppGameGlobal.getAppGamePayInfo().setApptransid(appGamePayInfo.getApptransid());
+
+                final String urlPage = String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid(),
+                        AppGameGlobal.getAppGamePayInfo().getUid(), AppGameGlobal.getAppGamePayInfo().getAccessToken());
+                Timber.d("onResponseSuccess url [%s]", urlPage);
+                changePage(urlPage);
+            }
+        });
     }
 
     public void onLoadResource(WebView view, String url) {
@@ -206,5 +242,11 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
     @JavascriptInterface
     public void onJsCallBackResult(String pResult) {
+        Timber.d("JsCallBackResult [%s]", pResult);
+    }
+
+    public void onDestroy() {
+        mActivity = null;
+        mTimeOutListener = null;
     }
 }

@@ -70,6 +70,14 @@ public abstract class AppGameFragment extends Fragment {
             });
     }
 
+    @Override
+    public void onDestroy() {
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onDestroy();
+        }
+        super.onDestroy();
+    }
+
     protected abstract void initView(View view);
 
     protected abstract void initData();

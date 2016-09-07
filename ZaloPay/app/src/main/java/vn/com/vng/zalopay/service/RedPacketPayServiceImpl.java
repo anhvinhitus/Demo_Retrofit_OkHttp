@@ -63,7 +63,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful, String transId) {
+            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
 
             }
 

@@ -362,16 +362,4 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             mProgressDialog.dismiss();
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("onActivityResult requestCode [%s] resultCode [%s]", requestCode, resultCode);
-        if (requestCode == AppGameActivity.REQUEST_CODE) {
-            if (mZaloPayFragment != null) {
-                mZaloPayFragment.onActivityResult(requestCode, resultCode, data);
-            }
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }
