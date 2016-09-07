@@ -58,19 +58,17 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private RecentTransaction mTransaction;
     private int mMoneyTransferMode;
 
-    @Inject
-    User user;
-
-    @Inject
-    NotificationStore.Repository mNotificationRepository;
+    private User user;
+    private NotificationStore.Repository mNotificationRepository;
 
     private void clearCurrentData() {
 //        mCurrentZaloFriend = null;
 //        mCurrentMappingZaloAndZaloPay = null;
     }
 
-    @Inject
-    public TransferPresenter() {
+    public TransferPresenter(User user, NotificationStore.Repository notificationRepository) {
+        this.user = user;
+        this.mNotificationRepository = notificationRepository;
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -133,7 +131,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful, String transId) {
+            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
                 Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
                 if (isSuccessful) {
                     sendNotificationSuccess(transId);

@@ -44,13 +44,13 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    TransferMoneyPresenter provideTransferPresenter() {
-        return new TransferPresenter();
+    TransferMoneyPresenter provideTransferPresenter(User user, NotificationStore.Repository notificationRepository) {
+        return new TransferPresenter(user, notificationRepository);
     }
 
     @UserScope
     @Provides
-    ZaloPayPresenter providerZaloPayPresenter() {
-        return new ZaloPayPresenterImpl();
+    ZaloPayPresenter providerZaloPayPresenter(ZaloPayIAPRepository zaloPayIAPRepository) {
+        return new ZaloPayPresenterImpl(zaloPayIAPRepository);
     }
 }

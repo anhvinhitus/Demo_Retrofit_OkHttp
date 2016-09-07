@@ -61,7 +61,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     ScrollView mScrollView;
 
     @Inject
-    ChangePinPresenter presenter;
+    IChangePinPresenter presenter;
 
     TextWatcher passCodeChanged = new TextWatcher() {
         @Override

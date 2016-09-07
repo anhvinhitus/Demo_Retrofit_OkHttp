@@ -33,10 +33,6 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    @Inject
-    public ChangePinPresenter() {
-    }
-
     @Override
     public void setChangePassView(IChangePinView iChangePinView) {
         numberError = 0;
