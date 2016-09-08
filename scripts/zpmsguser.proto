@@ -48,6 +48,7 @@ message ResultAuth{
 	required uint64 usrid = 1;
 	required int32	result = 2;
 	optional int32	code = 3;
+	optional string	msg = 4;
 }
 
 message DataResponseUser{
