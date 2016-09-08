@@ -2,34 +2,26 @@ package vn.com.vng.zalopay.game;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import org.parceler.Parcels;
 
-import javax.inject.Inject;
-
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.AccountStore;
-import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
-import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.payment.IPaymentCallback;
 import vn.com.zalopay.game.businnesslogic.interfaces.payment.IPaymentService;
-import vn.com.zalopay.game.controller.AppGameController;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+
+import static android.text.TextUtils.isEmpty;
 
 /**
  * Created by longlv on 07/09/2016.
@@ -37,16 +29,13 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  */
 public class AppGamePaymentImpl implements IPaymentService {
 
-    protected ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
+    private ZaloPayRepository zaloPayRepository = AndroidApplication.instance().getUserComponent().zaloPayRepository();
 
-    protected AccountStore.Repository accountRepository = AndroidApplication.instance().getUserComponent().accountRepository();
+    private TransactionStore.Repository transactionRepository = AndroidApplication.instance().getUserComponent().transactionRepository();
 
-    protected TransactionStore.Repository transactionRepository = AndroidApplication.instance().getUserComponent().transactionRepository();
+    private BalanceStore.Repository balanceRepository = AndroidApplication.instance().getUserComponent().balanceRepository();
 
-    protected BalanceStore.Repository balanceRepository = AndroidApplication.instance().getUserComponent().balanceRepository();
-
-    @Inject
-    Navigator navigator;
+    private Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
     @Override
     public void pay(final Activity activity, Bundle bundle, final IPaymentCallback paymentCallback) {
@@ -77,11 +66,6 @@ public class AppGamePaymentImpl implements IPaymentService {
             @Override
             public void onParameterError(String param) {
                 Timber.d("onParameterError");
-
-                if (activity == null) {
-                    return;
-                }
-
                 if ("order".equalsIgnoreCase(param)) {
                     showError(activity.getString(R.string.order_invalid));
                 } else if ("uid".equalsIgnoreCase(param)) {
@@ -100,10 +84,6 @@ public class AppGamePaymentImpl implements IPaymentService {
             @Override
             public void onResponseError(PaymentError paymentError) {
                 Timber.d("onResponseError");
-                if (activity == null) {
-                    return;
-                }
-
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     showError(activity.getString(R.string.exception_no_connection_try_again));
                 }
@@ -115,16 +95,14 @@ public class AppGamePaymentImpl implements IPaymentService {
                 if (paymentCallback == null) {
                     return;
                 }
-
-                AppGamePayInfo appGamePayInfo2 = appGamePayInfo;
-                appGamePayInfo2.setApptransid(zpPaymentResult.paymentInfo.appTransID);
-
-                paymentCallback.onResponseSuccess(appGamePayInfo2);
+                appGamePayInfo.setApptransid(zpPaymentResult.paymentInfo.appTransID);
+                paymentCallback.onResponseSuccess(appGamePayInfo);
             }
 
             @Override
             public void onResponseTokenInvalid() {
                 Timber.d("onResponseTokenInvalid");
+                onSessionExpired();
             }
 
             @Override
@@ -135,19 +113,20 @@ public class AppGamePaymentImpl implements IPaymentService {
 
             @Override
             public void onNotEnoughMoney() {
-                Timber.d("onNotEnoughMoney");
+                Timber.d("onNotEnoughMoney activity [%s]", activity);
                 navigator.startDepositActivity(activity);
             }
 
             private void showError(String text) {
-                if (activity == null || TextUtils.isEmpty(text)) {
+                if (isEmpty(text)) {
                     return;
                 }
                 Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
             }
 
             private void onSessionExpired() {
-
+                showError(activity.getString(R.string.exception_token_expired_message));
+                AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
             }
         });
 
@@ -158,5 +137,4 @@ public class AppGamePaymentImpl implements IPaymentService {
     public void destroyVariable() {
 
     }
-
 }
