@@ -1,20 +1,20 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.Manifest;
 import android.app.Dialog;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 
@@ -78,36 +78,77 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
         }
     }
 
+    private int mRequestCode;
+    private String mImageName;
+
     protected void startCaptureImage(int requestCode, String name) {
-        try {
-            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri contentUri = getCaptureImageOutputUri(name, true);
-            Timber.d("startCaptureImage: capture uri %s", contentUri.toString());
+        mRequestCode = requestCode;
+        mImageName = name;
+        if (checkAndRequestPermission()) {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            } else {
-                List<ResolveInfo> resInfoList =
-                        getContext().getPackageManager()
-                                .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+            try {
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri contentUri = getCaptureImageOutputUri(name, true);
+                Timber.d("startCaptureImage: capture uri %s", contentUri.toString());
 
-                for (ResolveInfo resolveInfo : resInfoList) {
-                    String packageName = resolveInfo.activityInfo.packageName;
-                    getContext().grantUriPermission(packageName, contentUri,
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
-                                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                } else {
+                    List<ResolveInfo> resInfoList =
+                            getContext().getPackageManager()
+                                    .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        getContext().grantUriPermission(packageName, contentUri,
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
                 }
+
+//            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            i.setClipData(ClipData.newRawUri(null, contentUri));
+
+                i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+
+                startActivityForResult(i, requestCode);
+            } catch (Exception ex) {
+                Timber.w(ex, "startCaptureImage");
             }
-
-        /*    i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            i.setClipData(ClipData.newRawUri(null, contentUri));*/
-            i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-
-            startActivityForResult(i, requestCode);
-        } catch (Exception ex) {
-            Timber.w(ex, "startCaptureImage");
         }
+
+    }
+
+    public boolean checkAndRequestPermission() {
+        boolean hasPermission = true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                hasPermission = false;
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
+            }
+        }
+        return hasPermission;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onCapturePermissionAllowed();
+            } else {
+                // Your app will not have this permission. Turn off all functions
+                // that require this permission or it will force close like your
+                // original question
+            }
+        }
+    }
+
+    private void onCapturePermissionAllowed() {
+        startCaptureImage(mRequestCode, mImageName);
     }
 
     public static class CoverBottomSheetDialogFragment extends BottomSheetDialogFragment {
