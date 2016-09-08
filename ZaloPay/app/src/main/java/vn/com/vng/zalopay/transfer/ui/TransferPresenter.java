@@ -133,10 +133,12 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             @Override
             public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
                 Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
-                if (isSuccessful) {
-                    sendNotificationSuccess(transId);
-                } else {
-                    sendNotificationFailed();
+                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+                    if (isSuccessful) {
+                        sendNotificationSuccess(transId);
+                    } else {
+                        sendNotificationFailed();
+                    }
                 }
             }
 
