@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -185,6 +186,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showToast(String message) {
         ToastUtil.showToast(this, message);
+    }
+
+    public void showToastLonger(String message) {
+        ToastUtil.showToast(this, message, Toast.LENGTH_LONG);
     }
 
     public void showToast(int message) {

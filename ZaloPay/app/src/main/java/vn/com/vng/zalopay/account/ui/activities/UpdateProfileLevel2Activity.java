@@ -306,19 +306,24 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
             paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {
                 @Override
                 public void onSuccess() {
-                    if (getActivity() != null) {
-                        showToast("Lưu thẻ thành công.");
-                        getActivity().finish();
+                    if (getActivity() == null) {
+                        return;
                     }
-
+                    showToastLonger("Lưu thẻ thành công.");
+                    getActivity().finish();
                 }
 
                 @Override
                 public void onError(String s) {
-                    if (getActivity() != null) {
-                        showToast("Lưu thẻ thất bại.");
-                        getActivity().finish();
+                    if (getActivity() == null) {
+                        return;
                     }
+                    if (TextUtils.isEmpty(s)) {
+                        showToast("Lưu thẻ thất bại.");
+                    } else {
+                        showToastLonger(s);
+                    }
+                    getActivity().finish();
                 }
             });
         } else if (getActivity() != null && !getActivity().isFinishing()) {
