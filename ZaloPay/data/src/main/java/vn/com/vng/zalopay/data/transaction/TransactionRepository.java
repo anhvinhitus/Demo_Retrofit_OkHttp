@@ -103,7 +103,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private void transactionHistoryServer(final long timestamp, final int count, final int sortOrder, int statusType, int deep) {
-        Timber.d("get transaction from server [%s] statusType [%s] ", timestamp, statusType);
+        Timber.d("get transaction from server [%s] statusType [%s] deep[%s] ", timestamp, statusType, deep);
         mTransactionRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, count, sortOrder, statusType)
                 .map(response -> response.data)
                 .doOnNext(data -> {
@@ -111,7 +111,7 @@ public class TransactionRepository implements TransactionStore.Repository {
                     this.writeTransactionEntity(data, statusType, sortOrder, deep);
                     int size = data.size();
 
-                    if (size >= count) {
+                    if (size >= count && deep < 16) {
 
                         long nextTimestamp;
                         if (sortOrder == TRANSACTION_ORDER_OLDEST) {

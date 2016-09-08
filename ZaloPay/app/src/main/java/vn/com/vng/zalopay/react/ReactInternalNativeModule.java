@@ -23,6 +23,9 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -127,13 +130,40 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showDialogWithMessage(String message, String lblCancel, String lblConfirm, Promise promise) {
-        Timber.d("showDialogWithMessage %s",message);
+    public void showDialogWithMessage(String message, String lblCancel, String lblConfirm, final Promise promise) {
+        Timber.d("showDialogWithMessage %s", message);
+        DialogManager.showSweetDialogConfirm(getCurrentActivity(), message, lblConfirm, lblCancel, new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+                if (promise != null) {
+                    promise.resolve(0);
+                }
+            }
+
+            @Override
+            public void onOKevent() {
+                if (promise != null) {
+                    promise.resolve(1);
+                }
+            }
+        });
     }
 
     @ReactMethod
-    public void showDialogErrorWithMessage(String message, String lblCancel) {
-        Timber.d("showDialogErrorWithMessage %s",message);
+    public void showDialogErrorWithMessage(String message, String lblCancel, final Promise promise) {
+        Timber.d("showDialogErrorWithMessage %s", message);
+        DialogManager.showSweetDialogCustom(getCurrentActivity(), message, lblCancel, SweetAlertDialog.ERROR_TYPE, new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+            }
+
+            @Override
+            public void onOKevent() {
+                if (promise != null) {
+                    promise.resolve(0);
+                }
+            }
+        });
     }
 }
 
