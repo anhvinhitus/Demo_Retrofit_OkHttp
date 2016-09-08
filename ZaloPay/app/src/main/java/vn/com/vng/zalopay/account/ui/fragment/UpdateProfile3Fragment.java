@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
@@ -316,33 +317,40 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     private String getImageNameFromReqCode(int requestCode) {
         if (requestCode == AVATAR_REQUEST_CODE) {
-            return "avatar.jpg";
+            return "avatar";
         } else if (requestCode == BACKGROUND_IMAGE_REQUEST_CODE) {
-            return "bgcmnd.jpg";
+            return "bgcmnd";
         } else if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
-            return "fgcmnd.jpg";
+            return "fgcmnd";
         } else {
-            return "noname.jpg";
+            return "noname";
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Timber.d("onActivityResult: requestCode %s resultCode %s", requestCode, resultCode);
+
         if (resultCode == Activity.RESULT_OK) {
+            Uri uri = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
+            if (uri == null) {
+                return;
+            }
+
+            Timber.d("onActivityResult: uri %s", uri.toString());
+
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
-
-                    mUriBgCmnd = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
-                    loadBackgroundImageCMND(mUriFgCmnd);
+                    mUriBgCmnd = uri;
+                    loadBackgroundImageCMND(mUriBgCmnd);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
-
-                    mUriFgCmnd = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
+                    mUriFgCmnd = uri;
                     loadForegroundImageCMND(mUriFgCmnd);
                     break;
                 case AVATAR_REQUEST_CODE:
-
-                    mUriAvatar = getPickImageResultUri(data, getImageNameFromReqCode(requestCode));
+                    mUriAvatar = uri;
                     loadAvatar(mUriAvatar);
                     break;
                 default:
@@ -378,7 +386,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
-
+        Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg ", foregroundImg, backgroundImg, avatarImg);
         mEmailView.setText(email);
         mIdentityNumberView.setText(identity);
 

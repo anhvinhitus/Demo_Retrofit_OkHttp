@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--http://www.blogc.at/2014/03/23/share-private-files-with-other-apps-fileprovider/-->
+    <files-path
+        name="zpimages"
+        path="images/" />
+</paths>
