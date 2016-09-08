@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 
 /**
  * Created by AnhHieu on 8/25/16.
- * 
+ *
  */
 public class ChangePinPresenter extends BaseUserPresenter implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
 

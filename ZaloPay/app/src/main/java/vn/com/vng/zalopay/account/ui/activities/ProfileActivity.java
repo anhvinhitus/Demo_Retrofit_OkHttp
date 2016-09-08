@@ -46,9 +46,6 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     @BindView(R.id.tv_name)
     TextView tvName;
 
-    @BindView(R.id.tv_balance)
-    TextView tvBalance;
-
     @BindView(R.id.tvZaloPayName)
     TextView tvZaloPayName;
 
@@ -162,7 +159,6 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @Override
     public void setBalance(long balance) {
-        tvBalance.setText(CurrencyUtil.spanFormatCurrency(balance));
     }
 }
 

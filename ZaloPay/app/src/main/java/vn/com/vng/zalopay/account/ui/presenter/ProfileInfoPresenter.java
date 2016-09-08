@@ -48,7 +48,6 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void resume() {
         mView.updateUserInfo(userConfig.getCurrentUser());
-        getBalance();
     }
 
 
@@ -59,41 +58,6 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void destroy() {
         destroyView();
-    }
-
-    private void getBalance() {
-        Subscription subscription = balanceRepository.balance()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BalanceSubscriber());
-
-        compositeSubscription.add(subscription);
-    }
-
-    private void onGetBalanceSuccess(Long aLong) {
-        mView.setBalance(aLong);
-    }
-
-    private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        public BalanceSubscriber() {
-        }
-
-        @Override
-        public void onCompleted() {
-            super.onCompleted();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-        }
-
-        @Override
-        public void onNext(Long aLong) {
-            ProfileInfoPresenter.this.onGetBalanceSuccess(aLong);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
