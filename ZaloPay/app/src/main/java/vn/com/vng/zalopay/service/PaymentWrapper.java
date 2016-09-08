@@ -139,7 +139,7 @@ public class PaymentWrapper {
                 updateBalance();
                 updateTransactionSuccess();
             } else {
-                updateTransctionFail();
+                updateTransactionFail();
             }
         }
     };
@@ -431,7 +431,7 @@ public class PaymentWrapper {
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
 
-    private void updateTransctionFail() {
+    private void updateTransactionFail() {
         Subscription subscription = transactionRepository.updateTransactionFail()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());

@@ -125,5 +125,15 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         map.put("storeUrl", AndroidUtils.getPlayStoreUrl("React Native", "Internal"));
         return map;
     }
+
+    @ReactMethod
+    public void showDialogWithMessage(String message, String lblCancel, String lblConfirm, Promise promise) {
+        Timber.d("showDialogWithMessage %s",message);
+    }
+
+    @ReactMethod
+    public void showDialogErrorWithMessage(String message, String lblCancel) {
+        Timber.d("showDialogErrorWithMessage %s",message);
+    }
 }
 

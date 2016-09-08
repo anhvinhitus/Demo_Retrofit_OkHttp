@@ -223,6 +223,10 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             return false;
         }
 
+        if (String.valueOf(zalopayId).equals(userConfig.getCurrentUser().zaloPayId)) {
+            return false;
+        }
+
         fields.add(String.valueOf(zalopayId));
 
         long amount = data.optLong("amount", -1);
