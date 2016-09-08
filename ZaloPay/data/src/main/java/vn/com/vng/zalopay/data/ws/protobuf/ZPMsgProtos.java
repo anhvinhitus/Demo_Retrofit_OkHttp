@@ -91,7 +91,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private MessageStatus(int index, int value) {
+    MessageStatus(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -182,7 +182,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private OSType(int index, int value) {
+    OSType(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -273,7 +273,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private MessageType(int index, int value) {
+    MessageType(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -373,7 +373,7 @@ public final class ZPMsgProtos {
     private final int index;
     private final int value;
 
-    private ServerMessageType(int index, int value) {
+    ServerMessageType(int index, int value) {
       this.index = index;
       this.value = value;
     }
@@ -1106,11 +1106,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasSignature()) {
-          
-          return false;
-        }
-        return true;
+        return hasSignature();
       }
 
       public Builder mergeFrom(
@@ -2054,11 +2050,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasToken()) {
-          
-          return false;
-        }
-        return true;
+        return hasToken();
       }
 
       public Builder mergeFrom(
@@ -2337,20 +2329,6 @@ public final class ZPMsgProtos {
      * <code>optional int32 code = 3;</code>
      */
     int getCode();
-
-    /**
-     * <code>optional string msg = 4;</code>
-     */
-    boolean hasMsg();
-    /**
-     * <code>optional string msg = 4;</code>
-     */
-    java.lang.String getMsg();
-    /**
-     * <code>optional string msg = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getMsgBytes();
   }
   /**
    * Protobuf type {@code protobuf.ResultAuth}
@@ -2417,12 +2395,6 @@ public final class ZPMsgProtos {
             case 24: {
               bitField0_ |= 0x00000004;
               code_ = input.readInt32();
-              break;
-            }
-            case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              msg_ = bs;
               break;
             }
           }
@@ -2510,53 +2482,10 @@ public final class ZPMsgProtos {
       return code_;
     }
 
-    public static final int MSG_FIELD_NUMBER = 4;
-    private java.lang.Object msg_;
-    /**
-     * <code>optional string msg = 4;</code>
-     */
-    public boolean hasMsg() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string msg = 4;</code>
-     */
-    public java.lang.String getMsg() {
-      java.lang.Object ref = msg_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          msg_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string msg = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getMsgBytes() {
-      java.lang.Object ref = msg_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        msg_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     private void initFields() {
       usrid_ = 0L;
       result_ = 0;
       code_ = 0;
-      msg_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2588,9 +2517,6 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(3, code_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getMsgBytes());
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2611,10 +2537,6 @@ public final class ZPMsgProtos {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, code_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getMsgBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2739,8 +2661,6 @@ public final class ZPMsgProtos {
         bitField0_ = (bitField0_ & ~0x00000002);
         code_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        msg_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -2781,10 +2701,6 @@ public final class ZPMsgProtos {
           to_bitField0_ |= 0x00000004;
         }
         result.code_ = code_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.msg_ = msg_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2810,11 +2726,6 @@ public final class ZPMsgProtos {
         if (other.hasCode()) {
           setCode(other.getCode());
         }
-        if (other.hasMsg()) {
-          bitField0_ |= 0x00000008;
-          msg_ = other.msg_;
-          onChanged();
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -2824,11 +2735,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasResult()) {
-          
-          return false;
-        }
-        return true;
+        return hasResult();
       }
 
       public Builder mergeFrom(
@@ -2942,82 +2849,6 @@ public final class ZPMsgProtos {
       public Builder clearCode() {
         bitField0_ = (bitField0_ & ~0x00000004);
         code_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object msg_ = "";
-      /**
-       * <code>optional string msg = 4;</code>
-       */
-      public boolean hasMsg() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string msg = 4;</code>
-       */
-      public java.lang.String getMsg() {
-        java.lang.Object ref = msg_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            msg_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string msg = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getMsgBytes() {
-        java.lang.Object ref = msg_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          msg_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string msg = 4;</code>
-       */
-      public Builder setMsg(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        msg_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string msg = 4;</code>
-       */
-      public Builder clearMsg() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        msg_ = getDefaultInstance().getMsg();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string msg = 4;</code>
-       */
-      public Builder setMsgBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        msg_ = value;
         onChanged();
         return this;
       }
@@ -3607,11 +3438,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasData()) {
-          
-          return false;
-        }
-        return true;
+        return hasData();
       }
 
       public Builder mergeFrom(
@@ -4804,11 +4631,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasAlert()) {
-          
-          return false;
-        }
-        return true;
+        return hasAlert();
       }
 
       public Builder mergeFrom(
@@ -5965,11 +5788,7 @@ public final class ZPMsgProtos {
           
           return false;
         }
-        if (!hasStatus()) {
-          
-          return false;
-        }
-        return true;
+        return hasStatus();
       }
 
       public Builder mergeFrom(
@@ -6544,11 +6363,7 @@ public final class ZPMsgProtos {
       }
 
       public final boolean isInitialized() {
-        if (!hasUserid()) {
-          
-          return false;
-        }
-        return true;
+        return hasUserid();
       }
 
       public Builder mergeFrom(
@@ -6695,28 +6510,28 @@ public final class ZPMsgProtos {
       "\022\021\n\tpushtitle\030\005 \001(\t\022\025\n\rpushembeddata\030\006 \001" +
       "(\t\022\020\n\010sourceid\030\007 \001(\r\"Q\n\014MessageLogin\022\r\n\005" +
       "usrid\030\001 \002(\004\022\r\n\005token\030\002 \002(\t\022\016\n\006ostype\030\003 \001" +
-      "(\005\022\023\n\013devicetoken\030\004 \001(\t\"F\n\nResultAuth\022\r\n" +
+      "(\005\022\023\n\013devicetoken\030\004 \001(\t\"9\n\nResultAuth\022\r\n" +
       "\005usrid\030\001 \002(\004\022\016\n\006result\030\002 \002(\005\022\014\n\004code\030\003 \001" +
-      "(\005\022\013\n\003msg\030\004 \001(\t\"q\n\020DataResponseUser\022\017\n\007m" +
-      "sgtype\030\001 \002(\005\022\014\n\004data\030\002 \002(\014\022\016\n\006status\030\003 \001",
-      "(\005\022\r\n\005mtaid\030\004 \001(\004\022\r\n\005mtuid\030\005 \001(\004\022\020\n\010sour" +
-      "ceid\030\006 \001(\r\"\253\001\n\013MsgPushUser\022\023\n\013devicetoke" +
-      "n\030\001 \002(\t\022\016\n\006ostype\030\002 \002(\005\022\r\n\005alert\030\003 \002(\t\022\r" +
-      "\n\005sound\030\004 \001(\t\022\r\n\005badge\030\005 \001(\005\022\021\n\tactionke" +
-      "y\030\006 \001(\t\022\025\n\rpushembeddata\030\007 \001(\t\022\021\n\tservic" +
-      "eid\030\010 \001(\t\022\r\n\005msgid\030\t \001(\t\"e\n\023StatusMessag" +
-      "eClient\022\016\n\006userid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022" +
-      "\r\n\005mtaid\030\003 \001(\004\022\r\n\005mtuid\030\004 \001(\004\022\020\n\010sourcei" +
-      "d\030\005 \001(\r\":\n\025MessageConnectionInfo\022\016\n\006user" +
-      "id\030\001 \002(\004\022\021\n\tembeddata\030\002 \001(\004*6\n\rMessageSt",
-      "atus\022\014\n\010RECEIVED\020\001\022\n\n\006READED\020\002\022\013\n\007DELETE" +
-      "D\020\003*0\n\006OSType\022\007\n\003IOS\020\001\022\013\n\007ANDROID\020\002\022\020\n\014W" +
-      "INDOW_PHONE\020\003*>\n\013MessageType\022\020\n\014AUTHEN_L" +
-      "OGIN\020\001\022\014\n\010FEEDBACK\020\002\022\017\n\013PING_SERVER\020\003*g\n" +
-      "\021ServerMessageType\022\027\n\023AUTHEN_LOGIN_RESUL" +
-      "T\020\001\022\017\n\013PONG_CLIENT\020\002\022\021\n\rKICK_OUT_USER\0203\022" +
-      "\025\n\021PUSH_NOTIFICATION\020eB2\n#vn.com.vng.zal" +
-      "opay.data.ws.protobufB\013ZPMsgProtos"
+      "(\005\"q\n\020DataResponseUser\022\017\n\007msgtype\030\001 \002(\005\022" +
+      "\014\n\004data\030\002 \002(\014\022\016\n\006status\030\003 \001(\005\022\r\n\005mtaid\030\004",
+      " \001(\004\022\r\n\005mtuid\030\005 \001(\004\022\020\n\010sourceid\030\006 \001(\r\"\253\001" +
+      "\n\013MsgPushUser\022\023\n\013devicetoken\030\001 \002(\t\022\016\n\006os" +
+      "type\030\002 \002(\005\022\r\n\005alert\030\003 \002(\t\022\r\n\005sound\030\004 \001(\t" +
+      "\022\r\n\005badge\030\005 \001(\005\022\021\n\tactionkey\030\006 \001(\t\022\025\n\rpu" +
+      "shembeddata\030\007 \001(\t\022\021\n\tserviceid\030\010 \001(\t\022\r\n\005" +
+      "msgid\030\t \001(\t\"e\n\023StatusMessageClient\022\016\n\006us" +
+      "erid\030\001 \002(\004\022\016\n\006status\030\002 \002(\005\022\r\n\005mtaid\030\003 \001(" +
+      "\004\022\r\n\005mtuid\030\004 \001(\004\022\020\n\010sourceid\030\005 \001(\r\":\n\025Me" +
+      "ssageConnectionInfo\022\016\n\006userid\030\001 \002(\004\022\021\n\te" +
+      "mbeddata\030\002 \001(\004*6\n\rMessageStatus\022\014\n\010RECEI",
+      "VED\020\001\022\n\n\006READED\020\002\022\013\n\007DELETED\020\003*0\n\006OSType" +
+      "\022\007\n\003IOS\020\001\022\013\n\007ANDROID\020\002\022\020\n\014WINDOW_PHONE\020\003" +
+      "*>\n\013MessageType\022\020\n\014AUTHEN_LOGIN\020\001\022\014\n\010FEE" +
+      "DBACK\020\002\022\017\n\013PING_SERVER\020\003*g\n\021ServerMessag" +
+      "eType\022\027\n\023AUTHEN_LOGIN_RESULT\020\001\022\017\n\013PONG_C" +
+      "LIENT\020\002\022\021\n\rKICK_OUT_USER\0203\022\025\n\021PUSH_NOTIF" +
+      "ICATION\020eB2\n#vn.com.vng.zalopay.data.ws." +
+      "protobufB\013ZPMsgProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6747,7 +6562,7 @@ public final class ZPMsgProtos {
     internal_static_protobuf_ResultAuth_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protobuf_ResultAuth_descriptor,
-        new java.lang.String[] { "Usrid", "Result", "Code", "Msg", });
+        new java.lang.String[] { "Usrid", "Result", "Code", });
     internal_static_protobuf_DataResponseUser_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_protobuf_DataResponseUser_fieldAccessorTable = new
