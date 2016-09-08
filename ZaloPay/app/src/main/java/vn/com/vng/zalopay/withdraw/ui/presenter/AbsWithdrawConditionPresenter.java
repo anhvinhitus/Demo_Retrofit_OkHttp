@@ -20,33 +20,12 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
 
     public abstract Activity getActivity();
-    public abstract void setChkEmail(boolean isValid);
-    public abstract void setChkIdentityNumber(boolean isValid);
     public abstract void setBankValid(String bankCode, boolean isValid);
 
     private List<String> mListBankCardValid = new ArrayList<String>() {{
         add(ECardType.PVTB.toString());
         add(ECardType.PSCB.toString());
     }};
-
-    protected boolean isValidProfileLevel() {
-        User user = userConfig.getCurrentUser();
-        if (user == null) {
-            return false;
-        }
-        boolean isValid = true;
-        if (!TextUtils.isEmpty(user.email)) {
-            setChkEmail(true);
-        } else {
-            isValid = false;
-        }
-        if (!TextUtils.isEmpty(user.identityNumber)) {
-            setChkIdentityNumber(true);
-        } else {
-            isValid = false;
-        }
-        return isValid;
-    }
 
     protected boolean isValidLinkCard() {
         User user = userConfig.getCurrentUser();

@@ -25,63 +25,15 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
 
     private IWithdrawConditionView mView;
 
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     @Inject
     public WithdrawConditionPresenter() {
-    }
-
-    private void getUserProfileFromServer() {
-        Subscription subscription = accountRepository.getUserProfileLevelCloud()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ProfileSubscriber());
-        compositeSubscription.add(subscription);
-    }
-
-    private class ProfileSubscriber extends DefaultSubscriber<Boolean> {
-
-        @Override
-        public void onCompleted() {
-            WithdrawConditionPresenter.this.checkConditionAndStartWithdrawActivity();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-        }
-    }
-
-    public boolean isValidCondition() {
-        boolean isValidProfile = isValidProfileLevel();
-        boolean isValidLinkCard = isValidLinkCard();
-        boolean isValidCondition = isValidProfile && isValidLinkCard;
-        if (isValidProfile) {
-            mView.hideUpdateProfile();
-            mView.hideUserNote();
-        } else {
-            if (userConfig.isWaitingApproveProfileLevel3()) {
-                mView.hideUpdateProfile();
-                mView.showUserNote();
-            } else {
-                mView.showUpdateProfile();
-                mView.hideUserNote();
-
-            }
-            User user = userConfig.getCurrentUser();
-            if (user.profilelevel >= 3 &&
-                    (TextUtils.isEmpty(user.identityNumber) || TextUtils.isEmpty(user.email))) {
-                getUserProfileFromServer();
-            }
-        }
-
-        return isValidCondition;
     }
 
     private void checkConditionAndStartWithdrawActivity() {
         if (mView == null) {
             return;
         }
-        if (isValidCondition()) {
+        if (isValidLinkCard()) {
             navigator.startWithdrawActivity(mView.getContext());
             mView.getActivity().finish();
         }
@@ -94,7 +46,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
 
     @Override
     public void destroyView() {
-        unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }
 
@@ -118,22 +69,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
             return null;
         }
         return mView.getActivity();
-    }
-
-    @Override
-    public void setChkEmail(boolean isValid) {
-        if (mView == null) {
-            return;
-        }
-        mView.setChkEmail(isValid);
-    }
-
-    @Override
-    public void setChkIdentityNumber(boolean isValid) {
-        if (mView == null) {
-            return;
-        }
-        mView.setChkIdentityNumber(isValid);
     }
 
     @Override

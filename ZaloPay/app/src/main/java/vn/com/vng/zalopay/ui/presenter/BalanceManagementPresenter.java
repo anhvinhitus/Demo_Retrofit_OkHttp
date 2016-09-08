@@ -15,8 +15,8 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
+import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /**
@@ -93,7 +93,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     }
 
     public void startWithdrawActivity() {
-        if (isValidProfileLevel() && isValidLinkCard()) {
+        if (isValidLinkCard()) {
             navigator.startWithdrawActivity(mView.getContext());
         } else {
             navigator.startWithdrawConditionActivity(mView.getContext());
@@ -106,16 +106,6 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
             return null;
         }
         return mView.getActivity();
-    }
-
-    @Override
-    public void setChkEmail(boolean isValid) {
-
-    }
-
-    @Override
-    public void setChkIdentityNumber(boolean isValid) {
-
     }
 
     @Override

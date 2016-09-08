@@ -26,28 +26,11 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Inject
     WithdrawConditionPresenter mPresenter;
 
-    @BindView(R.id.chkEmail)
-    CheckBox chkEmail;
-
-    @BindView(R.id.chkIdentityNumber)
-    CheckBox chkIdentityNumber;
-
     @BindView(R.id.chkVietinBank)
     CheckBox chkVietinBank;
 
     @BindView(R.id.chkSacomBank)
     CheckBox chkSacomBank;
-
-    @BindView(R.id.tvUpdateProfile)
-    View tvUpdateProfile;
-
-    @BindView(R.id.tvUserNote)
-    View tvUserNote;
-
-    @OnClick(R.id.tvUpdateProfile)
-    public void onClickUpdateProfile() {
-        navigator.startUpdateProfile3Activity(getActivity());
-    }
 
     @OnClick(R.id.tvSaveCard)
     public void onClickSaveCard() {
@@ -99,48 +82,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
-    }
-
-    public void hideUpdateProfile() {
-        if (tvUpdateProfile == null) {
-            return;
-        }
-        tvUpdateProfile.setVisibility(View.GONE);
-    }
-
-    public void showUpdateProfile() {
-        if (tvUpdateProfile == null) {
-            return;
-        }
-        tvUpdateProfile.setVisibility(View.VISIBLE);
-    }
-
-    public void showUserNote() {
-        if (tvUserNote == null) {
-            return;
-        }
-        tvUserNote.setVisibility(View.VISIBLE);
-    }
-
-    public void hideUserNote() {
-        if (tvUserNote == null) {
-            return;
-        }
-        tvUserNote.setVisibility(View.GONE);
-    }
-
-    public void setChkEmail(boolean isChecked) {
-        if (chkEmail == null) {
-            return;
-        }
-        chkEmail.setChecked(isChecked);
-    }
-
-    public void setChkIdentityNumber(boolean isChecked) {
-        if (chkIdentityNumber == null) {
-            return;
-        }
-        chkIdentityNumber.setChecked(isChecked);
     }
 
     public void setChkVietinBank(boolean isChecked) {
