@@ -76,6 +76,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Override
     public void initialize() {
         this.getTotalNotification(2000);
+        this.getBanners();
         this.listAppResource();
         this.getBalance();
     }

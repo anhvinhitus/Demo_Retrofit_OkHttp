@@ -141,9 +141,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setFocusable(false);
 
         hideTextAds();
-
-        getInsideApp();
-        getBanners();
     }
 
     public void getInsideApp() {
