@@ -93,6 +93,7 @@ public class PassCodeView extends FrameLayout {
         }
         mTvHint.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
         mRootView.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
+        mTvShowHide.setPadding(0, 0, (int) paddingRight, 0);
         mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
         initTextView(context);
         addView(view);
