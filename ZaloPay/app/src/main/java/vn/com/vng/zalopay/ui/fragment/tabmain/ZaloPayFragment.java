@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
+import vn.com.vng.zalopay.ui.widget.SmoothViewPager;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -81,7 +82,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     View mLayoutBannerFullScreen;
 
     @BindView(R.id.viewpager)
-    ViewPager mBannerViewpager;
+    SmoothViewPager mBannerViewpager;
 
     BannerPagerAdapter mBannerPagerAdapter;
 
@@ -332,6 +333,25 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void hideLoading() {
         super.hideProgressDialog();
+    }
+
+    @Override
+    public void changeBanner() {
+        if (mBannerViewpager == null) {
+            return;
+        }
+        int count = mBannerViewpager.getChildCount();
+        if (count <= 0) {
+            return;
+        }
+        int currentItem = mBannerViewpager.getCurrentItem();
+        if (currentItem >= count) {
+            currentItem = 0;
+            mBannerViewpager.setCurrentItem(currentItem);
+        } else {
+            currentItem++;
+            mBannerViewpager.setCurrentItem(currentItem, true);
+        }
     }
 
     @Override

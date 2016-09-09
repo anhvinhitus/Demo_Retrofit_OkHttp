@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.os.CountDownTimer;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -42,6 +44,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private final ZaloPayIAPRepository mZaloPayIAPRepository;
 
+    private CountDownTimer mCountDownTimer;
+
     public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository) {
         this.mZaloPayIAPRepository = zaloPayIAPRepository;
     }
@@ -63,21 +67,23 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void resume() {
+        startCountDownTimer();
     }
 
     @Override
     public void pause() {
+        stopCountDownTimer();
     }
 
     @Override
     public void destroy() {
+        mCountDownTimer = null;
     }
 
     @Override
     public void initialize() {
         this.getTotalNotification(2000);
         this.getBanners();
-        this.listAppResource();
         this.getBalance();
     }
 
@@ -155,9 +161,47 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         mZaloPayView.setBalance(balance);
     }
 
+    private void startCountDownTimer() {
+        if (mCountDownTimer == null) {
+            mCountDownTimer = new CountDownTimer(9000, 3000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (mZaloPayView == null) {
+                        return;
+                    }
+                    mZaloPayView.changeBanner();
+                }
+
+                @Override
+                public void onFinish() {
+                    mCountDownTimer.cancel();
+                    startCountDownTimer();
+                }
+            };
+            mCountDownTimer.start();
+        } else {
+            mCountDownTimer.cancel();
+            mCountDownTimer.start();
+        }
+    }
+
+    private void stopCountDownTimer() {
+        if (mCountDownTimer == null) {
+            return;
+        }
+        mCountDownTimer.cancel();
+    }
+
     public void getBanners() {
         try {
-            mZaloPayView.showBannerAds(CShareData.getInstance(mZaloPayView.getActivity()).getBannerList());
+            List banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
+            if (banners != null && banners.size() > 1) {
+                startCountDownTimer();
+            } else {
+                stopCountDownTimer();
+            }
+
+            mZaloPayView.showBannerAds(banners);
         } catch (Exception e) {
             Timber.w("Get banners exception: [%s]", e.getMessage());
         }

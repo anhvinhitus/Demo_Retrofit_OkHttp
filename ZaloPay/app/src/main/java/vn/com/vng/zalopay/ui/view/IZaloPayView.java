@@ -34,4 +34,6 @@ public interface IZaloPayView {
     void showLoading();
 
     void hideLoading();
+
+    void changeBanner();
 }
