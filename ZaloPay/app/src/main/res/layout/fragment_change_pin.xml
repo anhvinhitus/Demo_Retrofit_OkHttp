@@ -38,7 +38,8 @@
                 android:layout_height="wrap_content"
                 zalopay:hint="Nhập mã số PIN cũ"
                 zalopay:length="@integer/pin_length"
-                zalopay:paddingLeft="16dp" />
+                zalopay:paddingLeft="16dp"
+                zalopay:paddingRight="16dp"/>
         </FrameLayout>
 
 
@@ -69,7 +70,8 @@
                 android:layout_height="wrap_content"
                 zalopay:hint="Nhập mã số PIN mới"
                 zalopay:length="@integer/pin_length"
-                zalopay:paddingLeft="16dp" />
+                zalopay:paddingLeft="16dp"
+                zalopay:paddingRight="16dp" />
 
         </FrameLayout>
 

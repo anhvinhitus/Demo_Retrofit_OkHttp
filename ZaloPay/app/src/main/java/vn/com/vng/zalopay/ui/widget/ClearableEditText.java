@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 /**
  * Created by longlv on 23/05/2016.
+ *
  */
 public class ClearableEditText extends EditText {
     private static final String TAG = ClearableEditText.class.getName();

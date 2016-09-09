@@ -67,6 +67,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @BindView(R.id.textInputPhone)
     TextInputLayout textInputPhone;
+
     @BindView(R.id.edtPhone)
     ClearableEditText edtPhone;
 
@@ -86,11 +87,17 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         } else {
             textInputPhone.setError(getString(R.string.invalid_phone));
         }
+        edtPhone.setBackgroundResource(R.drawable.txt_bottom_error_style);
     }
 
     private void hidePhoneError() {
         textInputPhone.setErrorEnabled(false);
         textInputPhone.setError(null);
+        if (edtPhone.isFocused()) {
+            edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
+        } else {
+            edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_normal);
+        }
     }
 
     public boolean isValidPhone() {
@@ -314,6 +321,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+                    edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
                     return;
                 }
                 if (!isValidPhone()) {

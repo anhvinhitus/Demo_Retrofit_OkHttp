@@ -72,10 +72,12 @@ public class PassCodeView extends FrameLayout {
     private void initAttrs(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PassCodeView, 0, 0);
         float paddingLeft = 0;
+        float paddingRight = 0;
         try {
             length = typedArray.getInt(R.styleable.PassCodeView_length, getResources().getInteger(R.integer.pin_length));
             mHint = typedArray.getString(R.styleable.PassCodeView_hint);
             paddingLeft = typedArray.getDimension(R.styleable.PassCodeView_paddingLeft, 0f);
+            paddingRight = typedArray.getDimension(R.styleable.PassCodeView_paddingRight, 0f);
         } finally {
             typedArray.recycle();
         }
@@ -89,8 +91,8 @@ public class PassCodeView extends FrameLayout {
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
         }
-        mTvHint.setPadding((int) paddingLeft, 0, 0, 0);
-        mRootView.setPadding((int) paddingLeft, 0, 0, 0);
+        mTvHint.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
+        mRootView.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
         mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
         initTextView(context);
         addView(view);
