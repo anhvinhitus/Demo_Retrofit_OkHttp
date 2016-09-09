@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -26,6 +27,14 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
         add(ECardType.PVTB.toString());
         add(ECardType.PSCB.toString());
     }};
+
+    protected boolean isValidProfile() {
+        User user = userConfig.getCurrentUser();
+        if (user == null || user.profilelevel < 2) {
+            return false;
+        }
+        return true;
+    }
 
     protected boolean isValidLinkCard() {
         User user = userConfig.getCurrentUser();

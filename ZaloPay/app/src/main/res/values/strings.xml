@@ -253,7 +253,6 @@
     <string name="accept">Đồng ý</string>
     <string name="cancel">Huỷ</string>
     <string name="confirm">Xác nhận</string>
-    <string name="accept.card">Chấp nhận thẻ</string>
     <string name="slogan">Thanh toán trong <font size='18'>2</font> giây</string>
 
     <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
@@ -293,10 +292,11 @@
 
     <string name="input.account.zalo.pay">Nhập tên tài khoản Zalo Pay</string>
 
-    <string name="update_info">Cập nhật thông tin</string>
     <string name="withdraw_miss_condition">Bạn chưa đủ điều kiện để rút tiền.</string>
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
-    <string name="withdraw_condition_user_note">(*) Thông tin của bạn đang chờ duyệt.</string>
+    <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
+    <string name="withdraw_condition_card_note">Cần phải lưu một trong các thẻ ngân hàng sau:</string>
+    <string name="withdraw_condition_pin">Mã PIN</string>
 
     <string name="account_existed">Tên tài khoản đã được sử dụng</string>
 

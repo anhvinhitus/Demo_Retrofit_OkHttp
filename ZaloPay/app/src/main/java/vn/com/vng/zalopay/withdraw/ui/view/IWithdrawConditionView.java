@@ -11,6 +11,9 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IWithdrawConditionView extends ILoadDataView {
     Activity getActivity();
 
+    void setProfileValid(boolean isValid);
     void setChkVietinBank(boolean isChecked);
     void setChkSacomBank(boolean isChecked);
+
+    void hideCardNote();
 }

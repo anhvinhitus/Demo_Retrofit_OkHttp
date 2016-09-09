@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/background"
-              android:orientation="vertical"
-              tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:text="@string/withdraw_miss_condition"
             android:textColor="@color/txt_item_sub"
             android:textSize="@dimen/textsize.text.main"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,13 +27,8 @@
             android:layout_marginTop="@dimen/spacing.tiny"
             android:text="@string/withdraw_condition_note"
             android:textColor="@color/txt_item_sub"
-            android:textSize="@dimen/textsize.tiny"/>
+            android:textSize="@dimen/textsize.tiny" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -44,10 +39,121 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.medium.t"
+            android:paddingLeft="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.large.t"
-            android:text="@string/accept.card"
-            android:textAllCaps="true"/>
+            android:text="@string/user_info"
+            android:textAllCaps="true" />
+
+        <TextView
+            android:id="@+id/tvUpdateProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.large.t"
+            android:text="@string/txt_update"
+            android:textColor="@color/colorPrimary" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvUserNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginRight="@dimen/spacing.medium"
+            android:layout_marginTop="@dimen/spacing.medium.t"
+            android:text="@string/withdraw_condition_user_note"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/chkPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:button="@drawable/checkbox"
+                    android:checked="false"
+                    android:clickable="false"
+                    android:gravity="center" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.small"
+                    android:lines="1"
+                    android:text="@string/hint_phone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/chkPin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:button="@drawable/checkbox"
+                    android:clickable="false"
+                    android:gravity="center" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.small"
+                    android:lines="1"
+                    android:text="@string/withdraw_condition_pin" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/TextView.Group.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.large.t"
+            android:text="@string/txt_home_link_card"
+            android:textAllCaps="true" />
 
         <TextView
             android:id="@+id/tvSaveCard"
@@ -59,74 +165,91 @@
             android:paddingRight="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.large.t"
             android:text="@string/link_card_other"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary" />
     </FrameLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvCardNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginRight="@dimen/spacing.medium"
+            android:layout_marginTop="@dimen/spacing.medium.t"
+            android:text="@string/withdraw_condition_card_note"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:gravity="center_vertical"
+            android:layout_height="50dp"
+            android:background="@color/white"
             android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/chkVietinBank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:button="@drawable/checkbox"
-                android:clickable="false"
-                android:gravity="center"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                style="@style/TextView.Title.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.small"
-                android:lines="1"
-                android:text="@string/vietin_bank"/>
-        </LinearLayout>
+                <CheckBox
+                    android:id="@+id/chkVietinBank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:button="@drawable/checkbox"
+                    android:clickable="false"
+                    android:gravity="center" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.small"
+                    android:lines="1"
+                    android:text="@string/vietin_bank" />
+            </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/chkSacomBank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:button="@drawable/checkbox"
-                android:clickable="false"
-                android:gravity="center"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                style="@style/TextView.Title.Default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.small"
-                android:lines="1"
-                android:text="@string/sacombank_bank"/>
+                <CheckBox
+                    android:id="@+id/chkSacomBank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:button="@drawable/checkbox"
+                    android:clickable="false"
+                    android:gravity="center" />
+
+                <TextView
+                    style="@style/TextView.Title.Default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.small"
+                    android:lines="1"
+                    android:text="@string/sacombank_bank" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
 </LinearLayout>

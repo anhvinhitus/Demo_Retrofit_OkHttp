@@ -33,7 +33,9 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
         if (mView == null) {
             return;
         }
-        if (isValidLinkCard()) {
+        boolean isProfileValid = isValidProfile();
+        mView.setProfileValid(isProfileValid);
+        if (isProfileValid && isValidLinkCard()) {
             navigator.startWithdrawActivity(mView.getContext());
             mView.getActivity().finish();
         }
@@ -75,6 +77,9 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
     public void setBankValid(String bankCode, boolean isValid) {
         if (mView == null) {
             return;
+        }
+        if (isValid) {
+            mView.hideCardNote();
         }
         if (ECardType.PVTB.toString().equals(bankCode)) {
             mView.setChkVietinBank(isValid);

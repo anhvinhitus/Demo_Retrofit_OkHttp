@@ -26,11 +26,31 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Inject
     WithdrawConditionPresenter mPresenter;
 
+    @BindView(R.id.tvCardNote)
+    View tvCardNote;
+
+    @BindView(R.id.tvUserNote)
+    View tvUserNote;
+
+    @BindView(R.id.chkPhone)
+    CheckBox chkPhone;
+
+    @BindView(R.id.chkPin)
+    CheckBox chkPin;
+
     @BindView(R.id.chkVietinBank)
     CheckBox chkVietinBank;
 
     @BindView(R.id.chkSacomBank)
     CheckBox chkSacomBank;
+
+    @BindView(R.id.tvUpdateProfile)
+    View tvUpdateProfile;
+
+    @OnClick(R.id.tvUpdateProfile)
+    public void onClickUpdateProfile() {
+        navigator.startUpdateProfileLevel2Activity(getActivity(), false);
+    }
 
     @OnClick(R.id.tvSaveCard)
     public void onClickSaveCard() {
@@ -82,6 +102,25 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
+    }
+
+    @Override
+    public void setProfileValid(boolean isValid) {
+        if (isValid) {
+            chkPhone.setChecked(true);
+            chkPin.setChecked(true);
+            tvUserNote.setVisibility(View.GONE);
+            tvUpdateProfile.setVisibility(View.GONE);
+        } else {
+            chkPhone.setChecked(false);
+            chkPin.setChecked(false);
+            tvUserNote.setVisibility(View.VISIBLE);
+            tvUpdateProfile.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideCardNote() {
+        tvCardNote.setVisibility(View.GONE);
     }
 
     public void setChkVietinBank(boolean isChecked) {

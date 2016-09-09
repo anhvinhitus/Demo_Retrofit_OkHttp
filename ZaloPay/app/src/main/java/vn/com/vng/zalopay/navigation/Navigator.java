@@ -328,9 +328,6 @@ public class Navigator implements INavigator {
         if (userConfig == null || userConfig.getCurrentUser() == null) {
             EventBus.getDefault().post(new TokenExpiredEvent(NetworkError.TOKEN_INVALID));
             return;
-        } else if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showUpdateProfileInfoDialog(context);
-            return;
         }
         Intent intent = new Intent(context, BalanceManagementActivity.class);
         context.startActivity(intent);
