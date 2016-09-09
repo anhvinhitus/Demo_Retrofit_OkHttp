@@ -297,6 +297,7 @@
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
     <string name="withdraw_condition_card_note">Cần phải lưu một trong các thẻ ngân hàng sau:</string>
     <string name="withdraw_condition_pin">Mã PIN</string>
+    <string name="withdraw_description">Rút tiền về thẻ đã lưu</string>
 
     <string name="account_existed">Tên tài khoản đã được sử dụng</string>
 
