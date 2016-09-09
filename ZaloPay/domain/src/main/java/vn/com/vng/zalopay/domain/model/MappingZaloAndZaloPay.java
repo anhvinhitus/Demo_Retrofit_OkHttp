@@ -7,15 +7,15 @@ public final class MappingZaloAndZaloPay {
 
     public long zaloId;
     public String zaloPayId;
-    public String phonenumber;
+    public long phonenumber;
 
     public MappingZaloAndZaloPay() {
         this.zaloId = -1;
         this.zaloPayId = "";
-        this.phonenumber = "";
+        this.phonenumber = 0;
     }
 
-    public MappingZaloAndZaloPay(long zaloId, String zaloPayId, String phonenumber) {
+    public MappingZaloAndZaloPay(long zaloId, String zaloPayId, long phonenumber) {
         this.zaloId = zaloId;
         this.zaloPayId = zaloPayId;
         this.phonenumber = phonenumber;
@@ -31,7 +31,7 @@ public final class MappingZaloAndZaloPay {
         return zaloPayId;
     }
 
-    public String getPhonenumber() {
+    public long getPhonenumber() {
         return phonenumber;
     }
 
@@ -43,7 +43,7 @@ public final class MappingZaloAndZaloPay {
         this.zaloPayId = zaloPayId;
     }
 
-    public void setPhonenumber(String phonenumber) {
+    public void setPhonenumber(long phonenumber) {
         this.phonenumber = phonenumber;
     }
 }

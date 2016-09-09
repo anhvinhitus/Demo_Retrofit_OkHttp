@@ -11,5 +11,5 @@ public class MappingZaloAndZaloPayResponse extends BaseResponse {
     public String userid;
 
     @SerializedName("phonenumber")
-    public String phonenumber;
+    public long phonenumber;
 }

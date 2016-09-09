@@ -11,6 +11,13 @@ public class PhoneUtil {
         return formatPhoneNumber(String.valueOf(phoneNumber));
     }
 
+    public static String formatPhoneNumber(long phoneNumber) {
+        if (phoneNumber <= 0) {
+            return "";
+        }
+        return formatPhoneNumber(String.valueOf(phoneNumber));
+    }
+
     public static String formatPhoneNumber(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber) || !isPhoneNumber(phoneNumber)) {
             return "";

@@ -127,6 +127,15 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
         return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
                 .map(mappingZaloAndZaloPayResponse -> {
+                    Person person = new Person();
+                    if (!TextUtils.isEmpty(person.zaloPayId)) {
+                        person = localStorage.getById(person.zaloPayId);
+                    }
+                    person.zaloId = zaloId;
+                    person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
+                    person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
+                    localStorage.put(person);
+
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
                     mappingZaloAndZaloPay.setZaloId(zaloId);
                     mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);

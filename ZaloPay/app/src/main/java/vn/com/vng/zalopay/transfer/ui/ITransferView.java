@@ -12,7 +12,8 @@ public interface ITransferView extends ILoadDataView {
     Activity getActivity();
     void onTokenInvalid();
     void setEnableBtnContinue(boolean isEnable);
-    void updateReceiverInfo(String displayName, String avatar, String zalopayName);
+    void updateReceiverInfo(String displayName, String avatar, String zalopayName, String phoneNumber);
+    void updateReceiverInfo(String phoneNumber);
     void toggleAmountError(String error);
 
     void setInitialValue(long currentAmount, String currentMessage);

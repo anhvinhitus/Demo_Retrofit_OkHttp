@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -108,8 +109,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     @Override
-    public void updateReceiverInfo(String displayName, String avatar, String zalopayName) {
-
+    public void updateReceiverInfo(String displayName, String avatar, String zalopayName, String phoneNumber) {
         Timber.d("updateReceiverInfo displayName %s avatar %s", displayName, avatar);
 
         if (!TextUtils.isEmpty(displayName)) {
@@ -124,11 +124,21 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                     .into(imgAvatar);
         }
 
-        if (TextUtils.isEmpty(zalopayName)) {
+        if (TextUtils.isEmpty(phoneNumber) && TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setText(getString(R.string.not_update_zalopayname));
-        } else {
+        } else if (!TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setText(zalopayName);
+        } else {
+            mTextViewZaloPayName.setText(phoneNumber);
         }
+    }
+
+    @Override
+    public void updateReceiverInfo(String phoneNumber) {
+        if (TextUtils.isEmpty(phoneNumber)) {
+            return;
+        }
+        mTextViewZaloPayName.setText(PhoneUtil.formatPhoneNumber(phoneNumber));
     }
 
     public TransferFragment() {

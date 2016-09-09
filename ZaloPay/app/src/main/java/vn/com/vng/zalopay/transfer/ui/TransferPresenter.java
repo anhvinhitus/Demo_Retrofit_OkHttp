@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 
@@ -422,7 +423,9 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             return;
         }
 
-        if (TextUtils.isEmpty(mTransaction.zaloPayId)) {
+        if (TextUtils.isEmpty(mTransaction.zaloPayId)
+                || (TextUtils.isEmpty(mTransaction.zaloPayName)
+                && TextUtils.isEmpty(mTransaction.phoneNumber))) {
             Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
             getUserMapping(mTransaction.getZaloId());
         }
@@ -434,7 +437,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         mView.updateReceiverInfo(mTransaction.getDisplayName(),
                 mTransaction.getAvatar(),
-                mTransaction.getZaloPayName());
+                mTransaction.getZaloPayName(),
+                mTransaction.getPhoneNumber());
 
         if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
 
@@ -484,24 +488,22 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         }
 
         mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
-        mTransaction.phoneNumber = userMapZaloAndZaloPay.getPhonenumber();
-        mView.updateReceiverInfo(mTransaction.getDisplayName(),
-                mTransaction.getAvatar(),
-                mTransaction.getZaloPayName());
+        mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
+        mView.updateReceiverInfo(mTransaction.phoneNumber);
 
         checkShowBtnContinue();
     }
 
-    private void onUpdateReceiverInfo(Person person) {
-        if (mView == null || person == null) {
-            return;
-        }
-
-        mTransaction.zaloPayName = person.zalopayname;
-        mTransaction.displayName = person.displayName;
-        mTransaction.avatar = person.avatar;
-//        mTransaction.phoneNumber = person.phonenumber;
-    }
+//    private void onUpdateReceiverInfo(Person person) {
+//        if (mView == null || person == null) {
+//            return;
+//        }
+//
+//        mTransaction.zaloPayName = person.zalopayname;
+//        mTransaction.displayName = person.displayName;
+//        mTransaction.avatar = person.avatar;
+////        mTransaction.phoneNumber = person.phonenumber;
+//    }
 
     @Override
     public void initView(ZaloFriend zaloFriend, RecentTransaction transaction, Long amount, String message) {
@@ -602,7 +604,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             mTransaction.displayName = person.displayName;
             mTransaction.zaloPayName = person.zalopayname;
 
-            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
+            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname, mTransaction.phoneNumber);
         }
 
         @Override
