@@ -234,6 +234,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
                 .setContentText(getString(R.string.txt_confirm_sigout))
                 .setCancelText(getString(R.string.cancel))
+                .setTitleText(getString(R.string.confirm))
                 .setConfirmText(getString(R.string.accept))
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override

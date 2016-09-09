@@ -7,8 +7,6 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
-import javax.inject.Inject;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -198,12 +196,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     private void onGetMappingUserError(Throwable e) {
-        if (e != null && e instanceof BodyException) {
-            if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                clearAndLogout();
-                return;
-            }
-        }
 
         if (mView == null) {
             return;

@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.UriUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 
 /**
@@ -374,7 +375,16 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void loadImage(ImageView image, Uri uri) {
-        Glide.with(this).loadFromMediaStore(uri)
+        if (uri == null) {
+            return;
+        }
+        String filePath = UriUtil.getPath(getContext(), uri);
+        Timber.d("loadImage: filePath %s", filePath);
+        if (TextUtils.isEmpty(filePath)) {
+            return;
+        }
+
+        Glide.with(this).load(filePath)
                 .placeholder(R.color.silver)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
