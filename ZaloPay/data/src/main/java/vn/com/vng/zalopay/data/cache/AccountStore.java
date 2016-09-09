@@ -76,6 +76,10 @@ public interface AccountStore {
         @POST("um/updatezalopayname")
         Observable<BaseResponse> updateZaloPayName(@Field("zalopayname") String zalopayname, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
+        @FormUrlEncoded
+        @POST("um/validatepin")
+        Observable<BaseResponse> validatePin(@Field("pin") String pin, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
+
     }
 
     interface UploadPhotoService {

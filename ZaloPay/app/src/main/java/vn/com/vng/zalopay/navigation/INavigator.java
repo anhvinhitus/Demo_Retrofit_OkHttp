@@ -13,6 +13,8 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  */
 public interface INavigator {
 
+    void startProfileInfoActivity(Context context);
+
     Intent intentProfile(Context context);
 
     Intent intentLinkCard(Context context);

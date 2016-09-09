@@ -230,8 +230,9 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startProfileInfoActivity(Activity activity) {
-        activity.startActivity(intentProfile(activity));
+    @Override
+    public void startProfileInfoActivity(Context context) {
+        context.startActivity(intentProfile(context));
     }
 
     public void startChangePinActivity(Activity activity) {

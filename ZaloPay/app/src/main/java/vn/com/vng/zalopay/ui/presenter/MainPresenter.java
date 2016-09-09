@@ -175,7 +175,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
             dialog.setTitleText("Tặng tiền");
             dialog.setCancelText(applicationContext.getString(R.string.txt_close));
-            dialog.setConfirmText(notify.message);
+            dialog.setContentText(notify.message);
             dialog.setConfirmText(applicationContext.getString(R.string.view_detail));
             dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override

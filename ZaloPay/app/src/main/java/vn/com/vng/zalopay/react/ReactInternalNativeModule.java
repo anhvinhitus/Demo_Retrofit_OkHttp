@@ -88,8 +88,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     public void navigateProfile() {
         Timber.d("navigateProfile");
         if (getCurrentActivity() != null) {
-            Intent intent = navigator.intentProfile(getCurrentActivity());
-            getCurrentActivity().startActivity(intent);
+            navigator.startProfileInfoActivity(getCurrentActivity());
         }
     }
 
