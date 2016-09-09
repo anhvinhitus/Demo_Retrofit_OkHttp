@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.medium.t"
+            android:paddingLeft="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.large.t"
             android:text="@string/transaction_recent"
             android:textAllCaps="true" />
