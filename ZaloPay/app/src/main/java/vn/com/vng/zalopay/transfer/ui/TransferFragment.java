@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -184,12 +185,20 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         edtTransferMsg.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                Timber.d("beforeTextChanged s [%s] start [%s] count [%s] after [%s]", s, start, count, after);
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                Timber.d("onTextChanged s [%s] start [%s] before [%s] count [%s]", s, start, before, count);
+                if (TextUtils.isEmpty(s) || s.length() <= 36) {
+                    return;
+                }
+                edtTransferMsg.setText(s.subSequence(0, 36));
+                edtTransferMsg.setSelection(edtTransferMsg.getText().length());
+                showDialog(null, getString(R.string.transfer_message_maxlength),
+                        getString(R.string.txt_close),
+                        null, null, SweetAlertDialog.WARNING_TYPE);
             }
 
             @Override
