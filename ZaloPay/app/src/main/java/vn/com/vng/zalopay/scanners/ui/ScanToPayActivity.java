@@ -31,6 +31,8 @@ import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
 import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class ScanToPayActivity extends BaseToolBarActivity {
 
@@ -146,17 +148,30 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     private void setupTabIcons() {
 
         try {
-            mTabLayout.getTabAt(TAB_NFC).setCustomView(genTabView("NFC", R.drawable.ic_pay_tab_nfc));
 
-            mTabLayout.getTabAt(TAB_QR).setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
+            TabLayout.Tab nfcTab = mTabLayout.getTabAt(TAB_NFC);
+            if (nfcTab != null) {
+                nfcTab.setCustomView(genTabView("NFC", R.drawable.ic_pay_tab_nfc));
+            }
 
-            mTabLayout.getTabAt(TAB_BEACON).setCustomView(genTabBeacon("Bluetooth"));
+            TabLayout.Tab qrTab = mTabLayout.getTabAt(TAB_QR);
+            if (qrTab != null) {
+                qrTab.setCustomView(genTabView("QR", R.drawable.ic_pay_tab_qr));
+            }
+
+            TabLayout.Tab blTab = mTabLayout.getTabAt(TAB_BEACON);
+            if (blTab != null) {
+                blTab.setCustomView(genTabBeacon("Bluetooth"));
+            }
 
             if (TAB_TOTAL > TAB_SOUND) {
+
                 mTabLayout.getTabAt(TAB_SOUND).setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
             }
 
-            mTabLayout.getTabAt(TAB_QR).getCustomView().setSelected(true);
+            if (qrTab != null && qrTab.getCustomView() != null) {
+                qrTab.getCustomView().setSelected(true);
+            }
         } catch (NullPointerException e) {
             Timber.w(e, "Should not happened in ScanToPayActivity");
         }
@@ -187,39 +202,39 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     private void checkBluetoothPermission() {
         // Android M Permission check 
         if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Cần lấy thông tin vị trí");
-            builder.setMessage("Xin hãy cho phép Zalo Pay sử dụng thông tin vị trí để hỗ trợ tốt thanh toán bằng Bluetooth");
-            builder.setPositiveButton(android.R.string.ok, null);
-            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                public void onDismiss(DialogInterface dialog) {
+            DialogManager.showSweetDialogConfirm(getActivity(), "Xin hãy cho phép Zalo Pay sử dụng thông tin vị trí để hỗ trợ tốt thanh toán bằng Bluetooth", getString(R.string.ok), getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
+                @Override
+                public void onCancelEvent() {
+                }
+
+                @Override
+                public void onOKevent() {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
                 }
             });
-            builder.show();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+
+        Timber.d("onRequestPermissionsResult: requestCode %s grantResults %s permission %s", requestCode, grantResults.length, grantResults[0]);
+
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION: {
                 if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("coarse location permission granted");
                 } else {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Hạn chế tính năng");
-                    builder.setMessage("Do Zalo Pay chưa được cấp quyền lấy thông tin vị trí, Zalo Pay chưa thể hỗ trợ thanh toán bằng Bluetooth");
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
+                    DialogManager.showSweetDialogCustom(getActivity(), "Do Zalo Pay chưa được cấp quyền lấy thông tin vị trí, Zalo Pay chưa thể hỗ trợ thanh toán bằng Bluetooth", getString(R.string.ok), DialogManager.NORMAL_TYPE, new ZPWOnEventConfirmDialogListener() {
                         @Override
-                        public void onDismiss(DialogInterface dialog) {
+                        public void onCancelEvent() {
                         }
 
+                        @Override
+                        public void onOKevent() {
+                        }
                     });
-                    builder.show();
                 }
                 return;
             }

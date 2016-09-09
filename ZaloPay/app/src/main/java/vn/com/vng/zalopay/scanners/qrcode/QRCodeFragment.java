@@ -134,7 +134,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
 
     @Override
     public void resumeScanner() {
-        start();
+        startAndCheckPermission();
     }
 
     @Override
@@ -142,12 +142,11 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         super.onResume();
         if (getUserVisibleHint()) {
             hideLoading();
-            start();
+            super.start();
         }
     }
 
-    @Override
-    public void start() {
+    private void startAndCheckPermission() {
         if (checkAndRequestPermission(Manifest.permission.CAMERA, PERMISSIONS_REQUEST_CAMERA)) {
             super.start();
         }
@@ -166,7 +165,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         super.setUserVisibleHint(isVisibleToUser);
         Timber.d("isVisibleToUser %s", isVisibleToUser);
         if (isVisibleToUser) {
-            start();
+            startAndCheckPermission();
         } else {
             pause();
         }
