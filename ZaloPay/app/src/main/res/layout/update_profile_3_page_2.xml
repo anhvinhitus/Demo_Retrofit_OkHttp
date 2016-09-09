@@ -55,6 +55,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
 
                 <ImageView
@@ -87,6 +88,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
 
                 <TextView
@@ -99,6 +101,7 @@
                     android:textSize="14dp" />
 
                 <ImageView
+                    android:id="@+id/btnRemoveBackCmnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
@@ -135,7 +138,6 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-
             <ImageView
                 android:id="@+id/avatar"
                 android:layout_width="120dp"
@@ -143,6 +145,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
                 android:visibility="gone" />
 
             <TextView

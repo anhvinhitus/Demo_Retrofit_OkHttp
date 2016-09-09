@@ -378,20 +378,24 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         if (uri == null) {
             return;
         }
-        String filePath = UriUtil.getPath(getContext(), uri);
+
+        image.setImageURI(uri);
+        image.setVisibility(View.VISIBLE);
+
+       /*   String filePath = UriUtil.getPath(getContext(), uri);
         Timber.d("loadImage: filePath %s", filePath);
         if (TextUtils.isEmpty(filePath)) {
             return;
         }
 
-        Glide.with(this).load(filePath)
+      Glide.with(this).load(filePath)
                 .placeholder(R.color.silver)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .dontTransform()
                 .centerCrop()
                 .into(image);
-        image.setVisibility(View.VISIBLE);
+        image.setVisibility(View.VISIBLE);*/
     }
 
     @Override

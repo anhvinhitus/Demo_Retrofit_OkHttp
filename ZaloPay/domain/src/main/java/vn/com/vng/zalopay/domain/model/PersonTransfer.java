@@ -8,4 +8,6 @@ public class PersonTransfer extends Person {
     public long amount;
     public int state;
     public String transId;
+
+    public long timeTransfer;
 }

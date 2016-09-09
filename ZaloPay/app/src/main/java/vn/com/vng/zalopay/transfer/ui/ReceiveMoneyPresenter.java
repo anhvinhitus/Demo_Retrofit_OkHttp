@@ -55,22 +55,24 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
     @Override
     public void setView(IReceiveMoneyView view) {
         mView = view;
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
     @Override
     public void destroyView() {
+        eventBus.unregister(this);
         mView = null;
         mListTransfer.clear();
     }
 
     @Override
     public void resume() {
-        eventBus.register(this);
     }
 
     @Override
     public void pause() {
-        eventBus.unregister(this);
     }
 
     @Override
