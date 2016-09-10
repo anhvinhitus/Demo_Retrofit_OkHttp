@@ -158,11 +158,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Fragment activeFragment = getActiveFragment();
-        if (activeFragment != null) {
-            if (activeFragment instanceof BaseFragment) {
-                if (((BaseFragment) activeFragment).onBackPressed()) {
-                    return;
-                }
+        if (activeFragment instanceof BaseFragment) {
+            if (((BaseFragment) activeFragment).onBackPressed()) {
+                return;
             }
         }
 
@@ -275,7 +273,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
-        }else if (TAG.equals(EditAccountNameActivity.class.getSimpleName())) {
+        } else if (TAG.equals(EditAccountNameActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_BACK);
         } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_NAVIGATEBACK);

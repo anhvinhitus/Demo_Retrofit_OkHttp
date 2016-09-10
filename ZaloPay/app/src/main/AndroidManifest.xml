@@ -19,7 +19,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
 
     <!-- Android 6.0 BLE permission -->
@@ -117,7 +118,7 @@
             android:label="@string/title_activity_scan_to_pay"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Primary"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
@@ -318,8 +319,8 @@
 
 
         <provider
-            android:authorities="vn.com.vng.zalopay.provider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="vn.com.vng.zalopay.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
