@@ -1,31 +1,31 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background"
-                android:orientation="vertical"
-                tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
+<com.zalopay.ui.widget.KeyboardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
     <ScrollView
         android:id="@+id/ScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_gravity="top">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/button.height"
+            android:paddingTop="@dimen/spacing.medium.t">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/spacing.medium.t"
-                android:paddingTop="@dimen/spacing.medium.t">
+                android:orientation="vertical">
 
                 <com.zalopay.ui.widget.image.BezelImageView
                     android:id="@+id/imgAvatar"
@@ -34,7 +34,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_avatar_default"
                     app:borderDrawable="@color/transparent"
-                    app:maskDrawable="@drawable/circle_mask"/>
+                    app:maskDrawable="@drawable/circle_mask" />
 
                 <TextView
                     android:id="@+id/tvDisplayName"
@@ -42,20 +42,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing.medium.t"
-                    tools:text="ThanhPTN"/>
+                    tools:text="ThanhPTN" />
 
                 <TextView
                     android:id="@+id/tvZaloPayName"
                     style="@style/TextView.Item.Sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="0987654321"/>
+                    tools:text="0987654321" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate"/>
+                android:background="@color/separate" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -88,13 +88,13 @@
                         android:maxLines="1"
                         android:paddingBottom="@dimen/spacing.tiny.s"
                         android:paddingTop="@dimen/spacing.tiny"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/separate_stroke"
-                    android:background="@color/separate"/>
+                    android:background="@color/separate" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/textInputTransferMsg"
@@ -119,14 +119,14 @@
                         android:maxLines="1"
                         android:paddingBottom="@dimen/spacing.tiny.s"
                         android:paddingTop="@dimen/spacing.tiny"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate"/>
+                android:background="@color/separate" />
         </LinearLayout>
     </ScrollView>
 
@@ -135,7 +135,7 @@
         style="@style/Button.Default"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button.height"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@drawable/bg_btn_blue"
-        android:text="@string/btn_continue"/>
-</RelativeLayout>
+        android:text="@string/btn_continue" />
+</com.zalopay.ui.widget.KeyboardFrameLayout>

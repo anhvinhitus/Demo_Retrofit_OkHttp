@@ -7,13 +7,14 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.zalopay.ui.widget.KeyboardFrameLayout;
 
 import org.parceler.Parcels;
 
@@ -27,6 +28,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -42,6 +44,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Inject
     TransferPresenter mPresenter;
+
+    @BindView(R.id.ScrollView)
+    ScrollView mScrollView;
 
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
@@ -60,6 +65,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @BindView(R.id.edtTransferMsg)
     EditText edtTransferMsg;
+
+    @BindView(R.id.rootView)
+    KeyboardFrameLayout rootView;
 
     @BindView(R.id.btnContinue)
     View btnContinue;
@@ -214,6 +222,28 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             @Override
             public void afterTextChanged(Editable s) {
                 mPresenter.updateMessage(s.toString());
+            }
+        });
+
+        rootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+            @Override
+            public void onKeyBoardShow(int height) {
+                if (edtTransferMsg == null || mScrollView == null) {
+                    return;
+                }
+                Timber.d("onKeyBoardShow: edtTransferMsg.isFocused() %s", edtTransferMsg.isFocused());
+                if (edtTransferMsg.isFocused()) {
+                    mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    edtTransferMsg.requestFocusFromTouch();
+                } else {
+                    //Scroll down 24dp (height of error text)
+                    mScrollView.scrollBy(0, AndroidUtils.dp(24));
+                }
+            }
+
+            @Override
+            public void onKeyBoardHide() {
+                Timber.d("onKeyBoardHide");
             }
         });
 
