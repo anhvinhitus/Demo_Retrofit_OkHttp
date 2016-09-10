@@ -174,6 +174,7 @@ public class WsConnection extends Connection {
         if (mConnectionHandler.getLooper() != Looper.myLooper()) {
             mConnectionHandler.post(() -> {
                 Timber.d("Trigger new connection");
+                mNextConnectionState = NextState.RETRY_CONNECT;
                 mSocketClient.connect();
             });
         } else {
@@ -183,6 +184,7 @@ public class WsConnection extends Connection {
                 return;
             }
 
+            mNextConnectionState = NextState.RETRY_CONNECT;
             mSocketClient.connect();
         }
     }
@@ -429,6 +431,6 @@ public class WsConnection extends Connection {
 
         numRetry++;
         mCheckCountDown = numRetry % 10L;
-        Timber.d("Try to reconnect after %s (milliseconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK * 1000, numRetry);
+        Timber.d("Try to reconnect after %s (seconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK, numRetry);
     }
 }
