@@ -61,6 +61,7 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        hideKeyboard();
         super.onDestroyView();
         hideProgressDialog();
         mProgressDialog = null;
