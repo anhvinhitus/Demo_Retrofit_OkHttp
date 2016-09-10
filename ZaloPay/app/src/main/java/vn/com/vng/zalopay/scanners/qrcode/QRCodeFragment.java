@@ -59,6 +59,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         try {
             vibrate();
         } catch (Exception ex) {
+            Timber.d(ex, "vibrate");
         }
 
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
@@ -197,10 +198,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
-                } else {
                 }
-
-                return;
             }
         }
     }

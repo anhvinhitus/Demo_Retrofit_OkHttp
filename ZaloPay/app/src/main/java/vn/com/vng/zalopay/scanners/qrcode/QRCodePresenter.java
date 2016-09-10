@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -101,7 +102,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful,String transId, String pAppTransId) {
+            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
 
             }
 
@@ -162,6 +163,15 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     public void pay(String jsonString) {
+
+        if (!NetworkHelper.isNetworkAvailable(applicationContext)) {
+            if (mView != null) {
+                mView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                mView.resumeScanner();
+            }
+            return;
+        }
+
         Timber.d("about to process payment with order: %s", jsonString);
         try {
             showLoadingView();
