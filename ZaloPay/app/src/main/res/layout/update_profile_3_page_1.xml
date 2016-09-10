@@ -9,7 +9,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/container1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="vertical">
 
         <TextView

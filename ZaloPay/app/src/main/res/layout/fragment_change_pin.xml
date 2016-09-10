@@ -15,9 +15,9 @@
             style="@style/TextView.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="9dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:text="Mã số pin cũ"
             android:textAllCaps="true" />
 
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:paddingTop="20dp">
+            android:paddingTop="12dp">
 
             <vn.com.vng.zalopay.ui.widget.PassCodeView
                 android:id="@+id/oldPassCodeInput"
@@ -47,9 +47,9 @@
             style="@style/TextView.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="9dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:text="Mã số pin mới"
             android:textAllCaps="true" />
 
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:paddingTop="20dp">
+            android:paddingTop="12dp">
 
             <vn.com.vng.zalopay.ui.widget.PassCodeView
                 android:id="@+id/passcodeInput"
