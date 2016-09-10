@@ -347,7 +347,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         int currentItem = mBannerViewpager.getCurrentItem();
         if (currentItem >= count) {
             currentItem = 0;
-            mBannerViewpager.setCurrentItem(currentItem);
+            mBannerViewpager.setCurrentItem(currentItem, false);
         } else {
             currentItem++;
             mBannerViewpager.setCurrentItem(currentItem, true);

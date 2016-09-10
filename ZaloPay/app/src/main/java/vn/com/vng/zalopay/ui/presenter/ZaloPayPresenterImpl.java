@@ -163,7 +163,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private void startCountDownTimer() {
         if (mCountDownTimer == null) {
-            mCountDownTimer = new CountDownTimer(9000, 3000) {
+            //Finish countDownTimer after 1h (60*60*1000)
+            mCountDownTimer = new CountDownTimer(60*60*1000, 3000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     if (mZaloPayView == null) {
