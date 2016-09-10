@@ -73,7 +73,7 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment PinProfileFragment.
+     * @return A new instance of fragment OtpProfileFragment.
      */
     public static OtpProfileFragment newInstance() {
         return new OtpProfileFragment();
