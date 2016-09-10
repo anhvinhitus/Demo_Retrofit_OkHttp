@@ -68,6 +68,12 @@
         <item name="android:textSize">@dimen/textsize.text.main</item>
     </style>
 
+    <style name="TextView.Item.Title" parent="android:Widget.TextView">
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/txt_item_sub</item>
+        <item name="android:textSize">@dimen/textsize.small</item>
+    </style>
+
     <style name="TextView.Item.Sub" parent="android:Widget.TextView">
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/txt_item_sub</item>
