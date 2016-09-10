@@ -7,6 +7,8 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -65,6 +67,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 //        mCurrentMappingZaloAndZaloPay = null;
     }
 
+    @Inject
     public TransferPresenter(User user, NotificationStore.Repository notificationRepository) {
         this.user = user;
         this.mNotificationRepository = notificationRepository;
@@ -328,6 +331,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     public void destroyView() {
         unsubscribeIfNotNull(compositeSubscription);
         this.mView = null;
+        mTransaction = null;
     }
 
     @Override
@@ -540,7 +544,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         intent.putExtra(Constants.ARG_AMOUNT, mTransaction.amount);
         intent.putExtra(Constants.ARG_MESSAGE, mTransaction.message);
         mView.getActivity().setResult(Activity.RESULT_CANCELED, intent);
-        mView.getActivity().finish();
 
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
             sendNotificationCancel();

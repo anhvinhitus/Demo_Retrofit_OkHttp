@@ -42,11 +42,11 @@ public class UserPresenterModule {
         return new ChangePinPresenter();
     }
 
-    @UserScope
+  /*  @UserScope
     @Provides
     TransferMoneyPresenter provideTransferPresenter(User user, NotificationStore.Repository notificationRepository) {
         return new TransferPresenter(user, notificationRepository);
-    }
+    }*/
 
     @UserScope
     @Provides

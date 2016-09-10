@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
@@ -37,7 +38,7 @@ public class GridPasswordViewFitWidth extends GridPasswordView {
 
         Timber.d("onMeasure:  %s %s", widthMeasureSpec, widthSpecSize);
 
-        int newHeight = widthSpecSize / 6;
+        int newHeight = widthSpecSize / getContext().getResources().getInteger(R.integer.pin_length);
 
         int newWidthMeasureSpec = View.MeasureSpec.makeMeasureSpec(widthSpecSize, MeasureSpec.getMode(widthMeasureSpec));
         int newHeightMeasureSpec = View.MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.getMode(heightMeasureSpec));
