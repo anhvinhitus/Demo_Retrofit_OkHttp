@@ -4,7 +4,7 @@
         <layer-list>
             <item android:width="18dp"
                   android:height="18dp">
-                <shape android:shape="rectangle">
+                <shape android:shape="oval">
                     <corners android:radius="2dp"/>
                     <solid android:color="@color/bg_checkbox_checked"/>
                     <padding android:bottom="6dp"
@@ -24,7 +24,7 @@
         <layer-list>
             <item android:width="18dp"
                   android:height="18dp">
-                <shape android:shape="rectangle">
+                <shape android:shape="oval">
                     <corners android:radius="2dp"/>
                     <solid android:color="@color/bg_checkbox_uncheck"/>
                     <padding android:bottom="6dp"
