@@ -70,4 +70,16 @@ public class Crc16Test {
         System.out.println(String.format("crc16 of [0x01, 0x02, 0x03, 0x04] = [%d]", crc));
 
     }
+
+
+    @Test
+    public void testCryptoData() {
+        long input = 160502000001234L;
+        long enc = Utils.encryptLong(input);
+        System.out.println(String.format("Encrypted value: %s", enc));
+        Assert.assertEquals(728734628205169517L, enc);
+        long dec = Utils.decryptLong(enc);
+        System.out.println(String.format("Decrypted value: %s", dec));
+        Assert.assertEquals(input, dec);
+    }
 }
