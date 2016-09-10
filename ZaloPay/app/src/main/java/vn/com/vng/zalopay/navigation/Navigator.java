@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.WindowManager;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -28,6 +29,7 @@ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
+import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -48,6 +50,7 @@ import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
@@ -232,7 +235,15 @@ public class Navigator implements INavigator {
 
     @Override
     public void startProfileInfoActivity(Context context) {
-        context.startActivity(intentProfile(context));
+        if (userConfig.hasCurrentUser()) {
+            if (userConfig.getCurrentUser().profilelevel <= 1) {
+                context.startActivity(intentProfile(context));
+            } else {
+                PinProfileDialog dialog = new PinProfileDialog(context);
+              //  dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                dialog.show();
+            }
+        }
     }
 
     public void startChangePinActivity(Activity activity) {

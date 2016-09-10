@@ -97,6 +97,8 @@ public interface AccountStore {
 
     interface Repository {
 
+        Observable<Boolean> validatePin(String pin);
+
         Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber, String zalopayName);
 
         Observable<Boolean> verifyOTPProfile(String otp);

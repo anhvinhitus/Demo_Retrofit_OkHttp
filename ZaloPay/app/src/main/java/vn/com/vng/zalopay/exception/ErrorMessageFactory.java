@@ -12,12 +12,14 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 import retrofit2.adapter.rxjava.HttpException;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
+
 import com.zalopay.ui.widget.errorview.HttpStatusCodes;
 
 public class ErrorMessageFactory {
@@ -52,7 +54,11 @@ public class ErrorMessageFactory {
         } else if (exception instanceof SocketTimeoutException) {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
-            message = mHttpStatusCode.get(((HttpException) exception).code());
+            if (BuildConfig.DEBUG) {
+                message = mHttpStatusCode.get(((HttpException) exception).code());
+            } else {
+                message = context.getString(R.string.exception_no_connection);
+            }
         } else if (exception instanceof UnknownHostException) {
             message = context.getString(R.string.exception_unknown_host);
         } else if (exception instanceof SSLHandshakeException) {

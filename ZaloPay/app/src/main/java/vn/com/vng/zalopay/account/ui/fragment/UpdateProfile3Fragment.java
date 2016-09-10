@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -111,6 +112,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.tvTerm)
     TextView tvTerm;
 
+    @BindView(R.id.scroll1)
+    ScrollView mScrollView;
+
+    @BindView(R.id.container1)
+    View mContainerView;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -134,11 +141,18 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         rootView.setOnKeyboardStateListener(new KeyboardLinearLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
             @Override
             public void onKeyBoardShow(int height) {
+              /*  int childHeight = mContainerView.getHeight();
+                boolean isScrollable = mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
+
+                Timber.d("onKeyBoardShow: childHeight %s isScrollable %s mScrollView %s", childHeight, isScrollable, mScrollView.getHeight());
+
+                headerView.setVisibility(isScrollable ? View.GONE : View.VISIBLE);*/
                 headerView.setVisibility(View.GONE);
             }
 
             @Override
             public void onKeyBoardHide() {
+                Timber.d("onKeyBoardHide");
                 headerView.setVisibility(View.VISIBLE);
             }
         });
@@ -158,7 +172,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        presenter.getProfileInfo();
+        presenter.getProfileInfo(); //Fixme dang bi cham.
     }
 
     @Override
