@@ -25,11 +25,14 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.event.DonateMoneyEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -41,7 +44,6 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 5/24/16.
- *
  */
 public class MainPresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
 
@@ -116,7 +118,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         userInfo.zaloPayUserId = user.zaloPayId;
         userInfo.accessToken = user.accesstoken;
         paymentInfo.userInfo = userInfo;
-        WalletSDKApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new ZPWGatewayInfoCallback() {
+        WalletSDKApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new DefaultZPGatewayInfoCallBack() {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
@@ -124,15 +126,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 if (homeView != null) {
                     homeView.refreshBannersAndInsideApp();
                 }
-            }
-
-            @Override
-            public void onProcessing() {
-            }
-
-            @Override
-            public void onError(String pMessage) {
-                Timber.d("load payment sdk error: %s", TextUtils.isEmpty(pMessage) ? "" : pMessage);
             }
 
             @Override
@@ -158,6 +151,23 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void onPayWithTransToken(final PaymentDataEvent event) {
         pay(event.appId, event.zptranstoken);
         eventBus.removeStickyEvent(PaymentDataEvent.class);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onRefreshPaymentSdk(RefreshPaymentSdkEvent event) {
+        if (homeView == null) {
+            return;
+        }
+
+        if (userConfig.hasCurrentUser()) {
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            paymentInfo.userInfo.zaloPayUserId = userConfig.getCurrentUser().zaloPayId;
+            paymentInfo.userInfo.accessToken = userConfig.getCurrentUser().accesstoken;
+
+            WalletSDKApplication.refreshGatewayInfo(homeView.getActivity(), paymentInfo,
+                    new DefaultZPGatewayInfoCallBack());
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

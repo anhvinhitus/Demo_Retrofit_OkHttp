@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,8 +36,14 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.DonateMoneyEvent;
+import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
+import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -142,7 +149,8 @@ public class NotificationHelper {
             mEventBus.post(notify);
             skipStorage = true;
         } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
-
+            refreshGatewayInfo();
+            skipStorage = true;
         }
 
         if (!skipStorage) {
@@ -287,5 +295,8 @@ public class NotificationHelper {
         return AndroidApplication.instance().getUserComponent();
     }
 
+    public void refreshGatewayInfo() {
+        mEventBus.post(new RefreshPaymentSdkEvent());
+    }
 
 }
