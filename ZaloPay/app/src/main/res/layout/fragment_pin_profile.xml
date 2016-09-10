@@ -36,8 +36,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
+            android:paddingLeft="@dimen/spacing.medium">
 
             <vn.com.vng.zalopay.ui.widget.PassCodeView
                 android:id="@+id/passcodeInput"
@@ -45,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing.small"
                 zalopay:hint="@string/hint_pin"
-                zalopay:length="@integer/pin_length" />
+                zalopay:length="@integer/pin_length"
+                zalopay:paddingRight="16dp" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputPhone"
@@ -65,6 +65,7 @@
                     android:inputType="phone"
                     android:maxLines="1"
                     android:paddingBottom="@dimen/spacing.small"
+                    android:paddingRight="16dp"
                     android:paddingTop="@dimen/spacing.small"
                     android:singleLine="true"
                     android:textColorHint="@color/hint" />
@@ -73,7 +74,8 @@
             <vn.com.vng.zalopay.ui.widget.InputZaloPayNameView
                 android:id="@+id/inputZaloPayName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingRight="4dp" />
         </LinearLayout>
 
         <View
