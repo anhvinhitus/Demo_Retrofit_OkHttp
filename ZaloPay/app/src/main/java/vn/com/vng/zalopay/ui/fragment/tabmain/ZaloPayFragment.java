@@ -132,6 +132,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Timber.d("onViewCreated");
         presenter.setView(this);
 
         listView.setHasFixedSize(true);
@@ -171,6 +172,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Timber.d("activity created");
         mAdapter.setData(getListData());
         presenter.initialize();
     }
