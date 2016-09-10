@@ -41,44 +41,6 @@
             android:layout_weight="0.0"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvTermsOfUser1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/spacing.small"
-                android:paddingRight="@dimen/spacing.small"
-                android:text="@string/terms_of_use_1"
-                android:textColor="@color/deposit.title"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="13sp"
-                android:visibility="visible"/>
-
-            <TextView
-                android:id="@+id/tvTermsOfUser2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/spacing.tiny"
-                android:paddingLeft="@dimen/spacing.small"
-                android:paddingRight="@dimen/spacing.small"
-                tools:text="@string/terms_of_use_2"
-                android:textColor="@color/deposit.title"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="13sp"/>
-
-            <TextView
-                android:id="@+id/tvTermsOfUser3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/spacing.medium"
-                android:paddingLeft="@dimen/spacing.small"
-                android:paddingRight="@dimen/spacing.small"
-                android:paddingTop="@dimen/spacing.tiny"
-                tools:text="@string/agree.term.of.use"
-                android:textColor="@color/deposit.title"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="13sp"
-               />
-
             <LinearLayout
                 android:id="@+id/btnContinue"
                 android:layout_width="match_parent"

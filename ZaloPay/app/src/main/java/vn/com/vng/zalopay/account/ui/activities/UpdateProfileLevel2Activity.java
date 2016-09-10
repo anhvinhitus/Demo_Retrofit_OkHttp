@@ -67,14 +67,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     @BindView(R.id.tv_name)
     TextView tvName;
 
-    @BindView(R.id.tvTermsOfUser1)
-    TextView tvTermsOfUser1;
-    @BindView(R.id.tvTermsOfUser2)
-    TextView tvTermsOfUser2;
-    @BindView(R.id.tvTermsOfUser3)
-    TextView tvTermsOfUser3;
-
-
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
 
@@ -142,18 +134,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         Timber.d("initData, walletTransId %s", walletTransId);
     }
 
-    private void showHideTermOfUser(boolean isShow) {
-        if (isShow) {
-            tvTermsOfUser1.setVisibility(View.VISIBLE);
-            tvTermsOfUser2.setVisibility(View.VISIBLE);
-            tvTermsOfUser3.setVisibility(View.VISIBLE);
-        } else {
-            tvTermsOfUser1.setVisibility(View.GONE);
-            tvTermsOfUser2.setVisibility(View.GONE);
-            tvTermsOfUser3.setVisibility(View.GONE);
-        }
-    }
-
     private void initContent() {
         adapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
@@ -163,42 +143,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         } else if (profileType == Constants.PIN_PROFILE_TYPE) {
             viewPager.setCurrentItem(1);
         }
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                showHideTermOfUser(position == 0);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        AndroidUtils.setSpannedMessageToView(tvTermsOfUser2, R.string.terms_of_use_2, R.string.phone_support,
-                false, false, R.color.colorPrimary,
-                new ClickableSpanNoUnderline() {
-                    @Override
-                    public void onClick(View widget) {
-                        navigator.startDialSupport(getContext());
-                    }
-                });
-
-        AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
-                false, false, R.color.colorPrimary,
-                new ClickableSpanNoUnderline() {
-                    @Override
-                    public void onClick(View widget) {
-                        navigator.startTermActivity(getContext());
-                    }
-                });
-
     }
 
     public void nextPager() {

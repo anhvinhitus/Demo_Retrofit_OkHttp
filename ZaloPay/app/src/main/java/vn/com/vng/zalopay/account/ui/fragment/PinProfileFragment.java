@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -10,31 +9,28 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
-import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
+import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
+import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
-import static android.text.Html.fromHtml;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,15 +49,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
 
-    @BindView(R.id.checkbox)
-    CheckBox chkShowPass;
-
-    @BindView(R.id.tvShowPass)
-    TextView tvShowPass;
-
-    @BindView(R.id.tvCancel)
-    TextView tvCancel;
-
     @BindView(R.id.layoutAction)
     View layoutAction;
 
@@ -73,6 +60,25 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @BindView(R.id.inputZaloPayName)
     InputZaloPayNameView inputZaloPayName;
+
+    @BindView(R.id.tvTermsOfUser1)
+    TextView tvTermsOfUser1;
+    @BindView(R.id.tvTermsOfUser2)
+    TextView tvTermsOfUser2;
+    @BindView(R.id.tvTermsOfUser3)
+    TextView tvTermsOfUser3;
+
+    private void showHideTermOfUser(boolean isShow) {
+        if (isShow) {
+            tvTermsOfUser1.setVisibility(View.VISIBLE);
+            tvTermsOfUser2.setVisibility(View.VISIBLE);
+            tvTermsOfUser3.setVisibility(View.VISIBLE);
+        } else {
+            tvTermsOfUser1.setVisibility(View.GONE);
+            tvTermsOfUser2.setVisibility(View.GONE);
+            tvTermsOfUser3.setVisibility(View.GONE);
+        }
+    }
 
     @OnTextChanged(R.id.edtPhone)
     public void onTextChangedPhone() {
@@ -113,23 +119,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         String phone = edtPhone.getString();
         return !TextUtils.isEmpty(phone) && ValidateUtil.isMobileNumber(phone);
-    }
-
-    @OnClick(R.id.tvShowPass)
-    public void onClickShowPass() {
-        boolean isChecked = chkShowPass.isChecked();
-        chkShowPass.setChecked(!isChecked);
-    }
-
-    @Nullable
-    @OnClick(R.id.btnContinue)
-    public void onClickBtnContinute() {
-        onClickContinue();
-    }
-
-    @OnClick(R.id.tvCancel)
-    public void onClickCancel() {
-        getActivity().finish();
     }
 
     private boolean isValidPin() {
@@ -301,21 +290,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        tvCancel.setPaintFlags(tvCancel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tvCancel.setText(fromHtml(getString(R.string.txt_cancel)));
 
-        chkShowPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    passCode.showPassCode();
-                } else {
-                    passCode.hidePassCode();
-                }
-            }
-        });
-
-        passCode.requestFocus();
         passCode.setPassCodeMaxLength(passCodeMaxLength);
         passCode.addTextChangedListener(passcodeChanged);
         passCode.setPassCodeFocusChanged(passcodeFocusChanged);
@@ -337,6 +312,29 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                 }
             }
         });
+
+        showHideTermOfUser(true);
+
+        AndroidUtils.setSpannedMessageToView(tvTermsOfUser2, R.string.terms_of_use_2, R.string.phone_support,
+                false, false, R.color.colorPrimary,
+                new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startDialSupport(getContext());
+                    }
+                });
+
+        AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
+                false, false, R.color.colorPrimary,
+                new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startTermActivity(getContext());
+                    }
+                });
+
+        passCode.requestFocus();
+        passCode.requestFocusView();
     }
 
     private View.OnClickListener mOnClickCheckZaloPayName = new View.OnClickListener() {
