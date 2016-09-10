@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -332,6 +333,20 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                         navigator.startTermActivity(getContext());
                     }
                 });
+
+        inputZaloPayName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Timber.d("onKey keycode [%s] keyEvent [%s]", keyCode, event.getAction());
+                if (event.getAction() == KeyEvent.ACTION_DOWN
+                        && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    if (isShowBtnContinue()) {
+                        onClickContinue();
+                    }
+                }
+                return false;
+            }
+        });
 
         passCode.requestFocus();
         passCode.requestFocusView();

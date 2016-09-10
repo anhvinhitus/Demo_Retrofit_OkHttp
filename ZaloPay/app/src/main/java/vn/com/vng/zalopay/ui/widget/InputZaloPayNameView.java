@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -68,6 +69,15 @@ public class InputZaloPayNameView extends FrameLayout {
                 }
             }
         });
+    }
+
+    @Override
+    public void setOnKeyListener(OnKeyListener l) {
+        if (mEdtZaloPayName != null) {
+            mEdtZaloPayName.setOnKeyListener(l);
+        } else {
+            super.setOnKeyListener(l);
+        }
     }
 
     @OnClick(R.id.imgInfo)
