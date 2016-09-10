@@ -141,6 +141,8 @@ public class NotificationHelper {
             // post notification and skip write to db
             mEventBus.post(notify);
             skipStorage = true;
+        } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
+
         }
 
         if (!skipStorage) {

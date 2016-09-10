@@ -23,6 +23,7 @@ public class NotificationType {
     public static final int REFUND_TRANSACTION_BANK = 106;
     public static final int RETRY_TRANSACTION = 107;
     public static final int APP_P2P_NOTIFICATION = 109;
+    public static final int UPDATE_PLATFORMINFO = 110;
 
     static boolean isTransactionNotification(int notificationType) {
         return notificationType == ORDER_PAYMENT ||
