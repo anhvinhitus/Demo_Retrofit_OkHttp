@@ -32,11 +32,10 @@
         android:layout_width="match_parent"
         android:layout_height="28dp"
         android:background="@color/white"
-        android:layout_below="@+id/layoutQrCode"
         android:visibility="gone">
 
         <TextView
-            style="@style/TextView.SubTitle"
+            style="@style/TextView.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
@@ -46,7 +45,7 @@
 
         <TextView
             android:id="@+id/totalView"
-            style="@style/TextView.SubTitle"
+            style="@style/TextView.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"

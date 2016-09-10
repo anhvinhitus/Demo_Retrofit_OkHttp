@@ -64,6 +64,10 @@ public class CurrencyUtil {
     }
 
     public static SpannableString spanFormatCurrency(double money) {
+        return spanFormatCurrency(money, true);
+    }
+
+    public static SpannableString spanFormatCurrency(double money, boolean isBold) {
         String _temp = CurrencyUtil.formatCurrency(money, true);
         SpannableString span = new SpannableString(_temp);
 
@@ -72,8 +76,10 @@ public class CurrencyUtil {
         span.setSpan(new RelativeSizeSpan(0.8f), indexSuffix, _temp.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        span.setSpan(new StyleSpan(Typeface.BOLD), 0, indexSuffix,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (isBold) {
+            span.setSpan(new StyleSpan(Typeface.BOLD), 0, indexSuffix,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
 
         return span;
     }

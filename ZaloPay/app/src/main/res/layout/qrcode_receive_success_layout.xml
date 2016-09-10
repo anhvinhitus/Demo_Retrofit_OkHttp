@@ -38,7 +38,6 @@
         android:drawablePadding="8dp"
         android:text="300.000 VND"
         android:textColor="@color/green"
-        android:textSize="22dp" />
-
+        android:textSize="26dp" />
 
 </LinearLayout>

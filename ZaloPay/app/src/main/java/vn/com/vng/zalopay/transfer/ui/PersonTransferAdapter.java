@@ -156,7 +156,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             } else if (person.state == Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL) {
                 tvAmountView.setText("hủy chuyển tiền");
             } else {
-                tvAmountView.setText(CurrencyUtil.spanFormatCurrency(person.amount));
+                tvAmountView.setText(CurrencyUtil.spanFormatCurrency(person.amount, false));
             }
         }
 
@@ -216,7 +216,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         }
 
         public void setAmount(long amount) {
-            tvAmountView.setText(CurrencyUtil.spanFormatCurrency(amount));
+            tvAmountView.setText(CurrencyUtil.spanFormatCurrency(amount, false));
             tvAmountView.setVisibility(amount <= 0 ? View.GONE : View.VISIBLE);
         }
 
@@ -241,7 +241,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
         public void displayReceivedMoney(String senderDisplayName, String senderAvatar, long amount, String pTransId) {
             mTotal += amount;
-            totalView.setText(CurrencyUtil.spanFormatCurrency(mTotal));
+            totalView.setText(CurrencyUtil.spanFormatCurrency(mTotal, false));
             setResult(true, amount);
             loadImage(imageAvatarLarge, senderAvatar);
             mNameView.setText(senderDisplayName);
@@ -295,7 +295,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
             if (mMoneyChangeSuccess != null) {
                 mMoneyChangeSuccess.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
-                mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount));
+                mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount, false));
                 mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(success ? R.drawable.ic_thanhcong_24dp : R.drawable.ic_thatbai_24dp, 0, 0, 0);
             }
         }

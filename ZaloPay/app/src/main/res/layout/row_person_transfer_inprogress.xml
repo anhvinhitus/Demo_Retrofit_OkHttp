@@ -33,21 +33,23 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tvDisplayName"
-                style="@style/TextView.Item.Main"
+                style="@style/TextView.Item.Sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
-                android:textAppearance="?attr/textAppearanceListItem"
+                android:textSize="@dimen/font_size_medium"
                 tools:text="Nguyễn Hữu Hoà" />
 
             <TextView
                 android:id="@+id/tvAmount"
-                style="@style/TextView.SubTitle"
+                style="@style/TextView.Item.Sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
+                android:textSize="@dimen/font_size_medium"
                 tools:text="đang chuyển tiền" />
         </LinearLayout>
     </LinearLayout>
