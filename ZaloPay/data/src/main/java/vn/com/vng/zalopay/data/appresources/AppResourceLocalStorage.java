@@ -35,6 +35,15 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
+    public AppResourceEntity get(int appid) {
+        List<AppResourceEntity> entityList = platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appid)).limit(1).list());
+        if (Lists.isEmptyOrNull(entityList)) {
+            return null;
+        }
+        return entityList.get(0);
+    }
+
+    @Override
     public void deleteAllAppResource() {
         getAppInfoDao().deleteAll();
     }

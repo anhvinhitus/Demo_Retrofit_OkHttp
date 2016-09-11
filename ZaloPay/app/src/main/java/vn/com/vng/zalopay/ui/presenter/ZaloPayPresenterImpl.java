@@ -117,11 +117,16 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void listAppResource() {
-        Subscription subscription = mAppResourceRepository.listAppResource()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AppResourceSubscriber());
+        try {
+            List<Integer> insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
+            Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new AppResourceSubscriber());
 
-        compositeSubscription.add(subscription);
+            compositeSubscription.add(subscription);
+        } catch (Exception e) {
+            Timber.w(e, "Get inside apps from PaymetSDK exception [%s]", e.getMessage());
+        }
     }
 
     public List<AppResource> getListAppResourceFromDB() {

@@ -67,26 +67,26 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<List<vn.com.vng.zalopay.domain.model.AppResource>> listAppResource() {
+    public Observable<List<vn.com.vng.zalopay.domain.model.AppResource>> listAppResource(List<Integer> appidlist) {
         return Observable.concat(
                 ObservableHelper.makeObservable(mLocalStorage::get),
-                fetchAppResource().flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
+                fetchAppResource(appidlist).flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
                 //.delaySubscription(200, TimeUnit.MILLISECONDS)
                 .map(o -> mAppConfigEntityDataMapper.transformAppResourceEntity(o));
     }
 
-    private Observable<AppResourceResponse> fetchAppResource() {
+    private Observable<AppResourceResponse> fetchAppResource(List<Integer> appidlist) {
 
-        List<Integer> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
-
-        listAppIdAndChecksum(appidlist, checksumlist);
+        if (!Lists.isEmptyOrNull(appidlist)) {
+            listAppIdAndChecksum(appidlist, checksumlist);
+        }
 
         String appIds = appidlist.toString().replaceAll("\\s", "");
+        String checkSum = checksumlist.toString();
+        Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
-        Timber.d("appIds react-native list %s", appIds);
-
-        return mRequestService.insideappresource(appIds, checksumlist.toString(), mRequestParameters, appVersion)
+        return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, appVersion)
                 .doOnNext(this::processAppResourceResponse)
                 ;
     }
@@ -120,14 +120,17 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private void listAppIdAndChecksum(List<Integer> appidlist, List<String> checksumlist) {
-        List<AppResourceEntity> listApp = mLocalStorage.get();
-        if (Lists.isEmptyOrNull(listApp)) {
+        if (Lists.isEmptyOrNull(appidlist)) {
             return;
         }
 
-        for (AppResourceEntity appResourceEntity : listApp) {
-            appidlist.add(appResourceEntity.appid);
-            checksumlist.add(appResourceEntity.checksum);
+        for (Integer appid : appidlist) {
+            AppResourceEntity appResourceEntity = mLocalStorage.get(appid);
+            if (appResourceEntity == null) {
+                checksumlist.add("");
+            } else {
+                checksumlist.add(appResourceEntity.checksum);
+            }
         }
     }
 
