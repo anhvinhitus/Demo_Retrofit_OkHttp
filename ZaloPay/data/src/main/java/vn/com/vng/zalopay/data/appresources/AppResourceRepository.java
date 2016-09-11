@@ -137,8 +137,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private void processAppResourceResponse(AppResourceResponse resourceResponse) {
         List<Integer> listAppId = resourceResponse.appidlist;
 
-        List<AppResourceEntity> resourcelist = new ArrayList<>();
         if (!Lists.isEmptyOrNull(resourceResponse.resourcelist)) {
+            List<AppResourceEntity> resourcelist = new ArrayList<>();
             for (int i = 0; i< resourceResponse.resourcelist.size(); i++) {
                 AppResourceEntity appResourceEntity = resourceResponse.resourcelist.get(i);
                 if (!TextUtils.isEmpty(appResourceEntity.iconurl)) {
@@ -149,14 +149,29 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 appResourceEntity.sortOrder = index;
                 resourcelist.add(appResourceEntity);
             }
+
+            Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceResponse.baseurl, listAppId, resourcelist.size());
+            startDownloadService(resourcelist, resourceResponse.baseurl);
+            mLocalStorage.put(resourcelist);
+        } else if (!Lists.isEmptyOrNull(resourceResponse.orderedInsideApps)) {
+            updateInsideAppIndex(resourceResponse.orderedInsideApps);
         }
 
-        startDownloadService(resourcelist, resourceResponse.baseurl);
-
-        Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceResponse.baseurl, listAppId, resourcelist.size());
-        //mLocalStorage.deleteAllAppResource();
-        mLocalStorage.put(resourcelist);
         mLocalStorage.updateAppList(listAppId);
+    }
+
+    private void updateInsideAppIndex(List<Integer> orderedInsideApps) {
+        if (Lists.isEmptyOrNull(orderedInsideApps)) {
+            return;
+        }
+        List<AppResourceEntity> appResourceEntities = mLocalStorage.get();
+        if (Lists.isEmptyOrNull(appResourceEntities)) {
+            return;
+        }
+        for (int i = 0; i< appResourceEntities.size(); i++) {
+            appResourceEntities.get(i).sortOrder = orderedInsideApps.indexOf(appResourceEntities.get(i).appid);
+        }
+        mLocalStorage.put(appResourceEntities);
     }
 
 

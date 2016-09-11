@@ -20,9 +20,7 @@ public interface AppResourceStore {
     interface LocalStorage {
         List<AppResourceEntity> get();
 
-        AppResourceEntity get(int appid);
-
-        void deleteAllAppResource();
+        AppResourceEntity get(int appId);
 
         void put(List<AppResourceEntity> resourceEntities);
 
