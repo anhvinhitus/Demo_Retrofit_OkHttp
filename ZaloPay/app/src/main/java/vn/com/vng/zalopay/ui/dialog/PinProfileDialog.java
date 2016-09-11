@@ -48,14 +48,13 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         super(context, R.style.alert_dialog);
         this.setCancelable(true);
         this.setCanceledOnTouchOutside(false);
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplication.instance().getAppComponent().inject(this);
-        setContentView(R.layout.pin_profile_dialog);
+        setContentView(R.layout.dialog_pin_profile);
         ButterKnife.bind(this, this);
         setWidthDialog();
         presenter.setView(this);
