@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:baselineAligned="false"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingBottom="@dimen/zpw_padding_20"
@@ -39,7 +40,7 @@
             android:layout_marginTop="15dp"
             android:gravity="left"
             android:lineSpacingExtra="@dimen/pading_top_min"
-            android:text="Nhập mã PIN để truy cập thông tin cá nhân"
+            android:text="Nhập mã PIN để truy cập"
             android:textColor="@color/text_color_bold"
             android:textSize="14sp" />
 
@@ -54,19 +55,6 @@
             android:textColor="@color/red"
             android:textColorHint="@color/colorPrimary"
             android:textSize="@dimen/textsize.tiny" />
-
-        <!-- <EditText
-             android:id="@+id/passCodeInput"
-             style="@style/EditText.Default"
-             android:layout_width="match_parent"
-             android:layout_height="44dp"
-             android:layout_gravity="center"
-             android:background="@drawable/edt_border_invitation"
-             android:gravity="center"
-             android:inputType="numberDecimal"
-             android:maxLength="@integer/invitation_code_length"
-             android:scrollbars="none"
-             android:textSize="18dp" />-->
 
         <vn.com.vng.zalopay.ui.widget.GridPasswordViewFitWidth
             android:id="@+id/passCodeInput"
@@ -104,7 +92,6 @@
             style="@style/dialog_blue_button"
             android:layout_width="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:paddingBottom="@dimen/zpw_padding_6"
             android:paddingLeft="@dimen/zpw_padding_15"
             android:paddingRight="@dimen/zpw_padding_15"
