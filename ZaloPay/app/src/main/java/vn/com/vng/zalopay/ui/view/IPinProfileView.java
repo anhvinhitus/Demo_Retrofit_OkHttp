@@ -8,6 +8,8 @@ public interface IPinProfileView {
 
     void setError(String message);
 
+    void clearPin();
+
     void onPinSuccess();
 
     void showLoading();

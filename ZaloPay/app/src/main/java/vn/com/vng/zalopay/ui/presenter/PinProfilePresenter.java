@@ -7,6 +7,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IPinProfileView;
@@ -74,9 +76,12 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
         @Override
         public void onError(Throwable e) {
-            Timber.d(e,"onError");
+            Timber.d(e, "onError");
             hideLoadingView();
             pinProfileView.setError(ErrorMessageFactory.create(applicationContext, e));
+            if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.INCORRECT_PIN) {
+                pinProfileView.clearPin();
+            }
         }
 
         @Override

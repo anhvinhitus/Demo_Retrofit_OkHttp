@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyView {
 
     public TransferMoneyDialog(Context context) {
-        super(context, R.style.alert_dialog);
+        super(context, R.style.AlertDialogStyle);
         this.setCancelable(true);
         this.setCanceledOnTouchOutside(false);
     }
@@ -74,6 +75,9 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
             public void onShow(DialogInterface dialog) {
                 mAccountNameView.requestFocus();
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mAccountNameView, 1);
             }
         });
         setOnDismissListener(new OnDismissListener() {

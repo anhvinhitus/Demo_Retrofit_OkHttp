@@ -111,6 +111,11 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     }
 
     @Override
+    public void clearPin() {
+        passCodeInput.clearPassword();
+    }
+
+    @Override
     public void onPinSuccess() {
         Timber.d("onPinSuccess");
         dismiss();

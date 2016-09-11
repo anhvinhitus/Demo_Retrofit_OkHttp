@@ -109,6 +109,7 @@ public class NetworkError {
     public static final int USER_NOT_EXISTED = -149;
     public static final int OLD_PIN_NOT_MATCH = -157;
     public static final int WAITING_APPROVE_PROFILE_LEVEL_3 = -169;
+    public static final int INCORRECT_PIN = -117;
 
     public static String create(Context context, int errorCode) {
         switch (errorCode) {
