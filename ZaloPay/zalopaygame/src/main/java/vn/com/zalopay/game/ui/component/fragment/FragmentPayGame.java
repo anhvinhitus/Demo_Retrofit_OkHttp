@@ -25,7 +25,7 @@ public class FragmentPayGame extends AppGameFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment__pay__game, container, false);
+        return inflater.inflate(R.layout.webapp_fragment_webview, container, false);
     }
 
     @Override

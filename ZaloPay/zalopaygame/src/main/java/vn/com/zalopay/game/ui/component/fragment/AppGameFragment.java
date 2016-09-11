@@ -100,24 +100,29 @@ public abstract class AppGameFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.webapp_menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-       if (id == R.id.action_refresh) {
+        Timber.d("onOptionsItemSelected: %s", id);
+        if (id == R.id.webapp_action_refresh) {
             refreshWeb();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
 
     private void refreshWeb() {
+        Timber.d("Request to reload web view");
         if (mWebview == null) {
             return;
         }
+
         mWebview.reload();
     }
 }

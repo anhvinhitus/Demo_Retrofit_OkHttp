@@ -3,7 +3,6 @@ package vn.com.zalopay.game.ui.component.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import timber.log.Timber;
@@ -13,7 +12,6 @@ import vn.com.zalopay.game.businnesslogic.base.AppGameSingletonLifeCircle;
 import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameInjectView;
 import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameViewFactory;
 import vn.com.zalopay.game.ui.component.fragment.AppGameFragment;
-import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 public class AppGameActivity extends AppGameBaseActivity {
     private AppGameFragment mFragment;
@@ -23,7 +21,7 @@ public class AppGameActivity extends AppGameBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Timber.d("onCreate start");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity__main);
+        setContentView(R.layout.webapp_activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbarLayout);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
