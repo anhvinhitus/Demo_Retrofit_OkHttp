@@ -238,7 +238,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         if (this instanceof LoginZaloActivity) {
-            showDialog(eventMessage, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+            showDialog(eventMessage, SweetAlertDialog.NORMAL_TYPE, getString(R.string.accept));
         } else {
             getAppComponent().applicationSession().setMessageAtLogin(eventMessage);
             getAppComponent().applicationSession().clearUserSession();

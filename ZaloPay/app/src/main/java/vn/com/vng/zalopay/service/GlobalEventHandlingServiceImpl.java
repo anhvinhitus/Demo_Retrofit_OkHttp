@@ -97,7 +97,8 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         } else {
             message = event.getMessage();
         }
-        enqueueMessageAtLogin(SweetAlertDialog.ERROR_TYPE, "ĐÓNG", message);
+        String close = AndroidApplication.instance().getString(R.string.accept);
+        enqueueMessageAtLogin(SweetAlertDialog.NORMAL_TYPE, close, message);
     }
 
     @Override

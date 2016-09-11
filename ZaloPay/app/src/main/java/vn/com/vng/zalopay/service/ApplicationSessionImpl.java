@@ -79,7 +79,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
         } else {
             AndroidApplication.instance().getAppComponent().globalEventService()
                     .enqueueMessageAtLogin(
-                            SweetAlertDialog.INFO_TYPE,
+                            SweetAlertDialog.NORMAL_TYPE,
                             applicationContext.getString(R.string.accept),
                             mLoginMessage);
             navigator.startLoginActivity(applicationContext, true);

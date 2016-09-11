@@ -29,6 +29,10 @@ class GetNavigationCallback implements ValueCallback<String> {
         }
 
         Timber.d("result of utils.getNav(): %s", value);
+        if (value == null) {
+            return;
+        }
+
         try {
             JsonParser parser = new JsonParser();
             JsonElement jsonObject = parser.parse(value);
