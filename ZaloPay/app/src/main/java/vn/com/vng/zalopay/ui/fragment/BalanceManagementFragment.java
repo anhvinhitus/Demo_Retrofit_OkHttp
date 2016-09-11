@@ -62,6 +62,24 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         navigator.startMiniAppActivity(getActivity(), ModuleName.FAQ);
     }
 
+    private void onClickAccountName() {
+        if (!TextUtils.isEmpty(getUserComponent().currentUser().zalopayname)) {
+            return;
+        }
+        if (getUserComponent().currentUser().profilelevel < 2) {
+            navigator.startUpdateProfileLevel2Activity(getActivity(), false);
+        } else {
+            navigator.startEditAccountActivity(getActivity());
+        }
+    }
+
+    private View.OnClickListener mOnClickAccountName = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onClickAccountName();
+        }
+    };
+
     public BalanceManagementFragment() {
         // Required empty public constructor
     }
@@ -172,10 +190,12 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         String zaloPayName = user.zalopayname;
 
         if (TextUtils.isEmpty(zaloPayName)) {
-            tvAccountName.setText(getString(R.string.not_update));
+            tvAccountName.setHint(getString(R.string.not_update));
+            tvAccountName.setOnClickListener(mOnClickAccountName);
         } else {
             tvAccountName.setText(zaloPayName);
             tvAccountName.setCompoundDrawables(null, null, null, null);
+            tvAccountName.setOnClickListener(null);
         }
     }
 
