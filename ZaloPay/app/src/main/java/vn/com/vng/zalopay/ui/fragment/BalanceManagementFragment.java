@@ -142,7 +142,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_history) {
-            navigator.startMiniAppActivity(getActivity(), ModuleName.TRANSACTION_LOGS);
+            navigator.startTransactionHistoryList(getActivity());
             return true;
         }
         return super.onOptionsItemSelected(item);

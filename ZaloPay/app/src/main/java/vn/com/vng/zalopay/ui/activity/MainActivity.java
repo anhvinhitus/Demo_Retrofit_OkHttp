@@ -211,7 +211,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 showConfirmSignOut();
                 break;
             case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startMiniAppActivity(this, ModuleName.TRANSACTION_LOGS);
+                navigator.startTransactionHistoryList(getContext());
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
             case MenuItemUtil.TRANSFER_ID:

@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.Display;
@@ -44,10 +45,13 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Inject
     Navigator navigator;
 
-    public PinProfileDialog(Context context) {
+    Intent pendingIntent;
+
+    public PinProfileDialog(Context context, Intent pendingIntent) {
         super(context, R.style.alert_dialog);
         this.setCancelable(true);
         this.setCanceledOnTouchOutside(false);
+        this.pendingIntent = pendingIntent;
     }
 
     @Override
@@ -110,7 +114,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     public void onPinSuccess() {
         Timber.d("onPinSuccess");
         dismiss();
-        getContext().startActivity(navigator.intentProfile(getContext()));
+        getContext().startActivity(pendingIntent);
     }
 
     @Override

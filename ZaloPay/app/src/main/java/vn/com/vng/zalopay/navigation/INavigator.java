@@ -15,9 +15,12 @@ public interface INavigator {
 
     void startProfileInfoActivity(Context context);
 
+    void startLinkCardActivity(Context context);
+
     Intent intentProfile(Context context);
 
     Intent intentLinkCard(Context context);
 
     Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions);
+
 }

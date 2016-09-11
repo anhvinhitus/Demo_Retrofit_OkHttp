@@ -79,8 +79,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     public void navigateLinkCard() {
         Timber.d("navigateLinkCard");
         if (getCurrentActivity() != null) {
-            Intent intent = navigator.intentLinkCard(getCurrentActivity());
-            getCurrentActivity().startActivity(intent);
+            navigator.startLinkCardActivity(getCurrentActivity());
         }
     }
 

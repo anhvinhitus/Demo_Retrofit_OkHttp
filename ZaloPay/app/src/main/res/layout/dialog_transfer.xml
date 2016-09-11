@@ -94,7 +94,8 @@
             android:paddingLeft="@dimen/zpw_padding_15"
             android:paddingRight="@dimen/zpw_padding_15"
             android:paddingTop="@dimen/zpw_padding_6"
-            android:text="@string/dialog_continue_button" />
+            android:text="@string/dialog_continue_button"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

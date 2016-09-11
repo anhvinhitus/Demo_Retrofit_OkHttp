@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.WindowManager;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -29,21 +28,20 @@ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
-import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.Person;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
-import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
+import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
+import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.IntroActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
@@ -53,7 +51,6 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
-import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
@@ -204,11 +201,13 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardActivity(Activity activity) {
-        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            showUpdateProfileInfoDialog(activity);
-        } else {
-            activity.startActivity(intentLinkCard(activity));
+    public void startLinkCardActivity(Context context) {
+        if (userConfig.hasCurrentUser()) {
+            if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+                showUpdateProfileInfoDialog(context);
+            } else {
+                new PinProfileDialog(context, intentLinkCard(context)).show();
+            }
         }
     }
 
@@ -236,12 +235,10 @@ public class Navigator implements INavigator {
     @Override
     public void startProfileInfoActivity(Context context) {
         if (userConfig.hasCurrentUser()) {
-            if (userConfig.getCurrentUser().profilelevel <= 1) {
+            if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
                 context.startActivity(intentProfile(context));
             } else {
-                PinProfileDialog dialog = new PinProfileDialog(context);
-                dialog.show();
-
+                new PinProfileDialog(context, intentProfile(context)).show();
             }
         }
     }
@@ -288,7 +285,7 @@ public class Navigator implements INavigator {
     }
 
     public void startUpdateProfile3Activity(Context context) {
-        if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel == 2) {
+        if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
             context.startActivity(intent);
         }
@@ -301,14 +298,12 @@ public class Navigator implements INavigator {
 
     @Override
     public Intent intentProfile(Context context) {
-        Intent intent = new Intent(context, ProfileActivity.class);
-        return intent;
+        return new Intent(context, ProfileActivity.class);
     }
 
     @Override
     public Intent intentLinkCard(Context context) {
-        Intent intent = new Intent(context, LinkCardActivity.class);
-        return intent;
+        return new Intent(context, LinkCardActivity.class);
     }
 
     @Override
@@ -368,6 +363,17 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startTransactionHistoryList(Context context) {
+        if (userConfig.hasCurrentUser()) {
+            Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<String, String>());
+            if (userConfig.getCurrentUser().profilelevel >= MIN_PROFILE_LEVEL) {
+                new PinProfileDialog(context, intent).show();
+            } else {
+                context.startActivity(intent);
+            }
+        }
+    }
+
     public void startTermActivity(Context context) {
         Map<String, String> option = new HashMap<>();
         option.put("view", "termsOfUse");
@@ -393,6 +399,7 @@ public class Navigator implements INavigator {
             callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(callIntent);
         } catch (Exception e) {
+            Timber.d(e, "startDialSupport");
         }
     }
 
