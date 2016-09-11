@@ -46,21 +46,17 @@ public class AppGameActivity extends AppGameBaseActivity {
 
     @Override
     public void onBackPressed() {
-        /*
-        if(mFragment != null && mFragment.canBack())
-        {
-            mFragment.goBack();
-
+        Timber.d("onBackPressed");
+        if (mFragment != null && mFragment.onBackPressed()) {
+            // fragment handle the back event
             return;
         }
 
         super.onBackPressed();
-        */
-        Timber.d("onBackPressed hasError [%s]", AppGameWebViewProcessor.hasError);
-        if(AppGameWebViewProcessor.hasError)
-            super.onBackPressed();
-        else
-            return;
+//        Timber.d("onBackPressed hasError [%s]", AppGameWebViewProcessor.hasError);
+//        if (AppGameWebViewProcessor.hasError) {
+//            super.onBackPressed();
+//        }
     }
 
     @Override

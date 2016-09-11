@@ -37,6 +37,7 @@ dependencies {
     compile libs.support_appcompat_v7
     compile libs.timber
     compile libs.parceler
+    compile libs.gson
     apt libs.parceler_apt
 
     compile project(':ui.widget')

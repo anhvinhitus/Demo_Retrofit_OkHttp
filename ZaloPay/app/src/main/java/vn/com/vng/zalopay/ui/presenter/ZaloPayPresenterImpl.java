@@ -186,7 +186,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         mBannerCountDownTimer = new CountDownTimer(BANNER_MILLIS_IN_FUTURE, BANNER_COUNT_DOWN_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Timber.d("onTick currentTime [%s]", System.currentTimeMillis());
+//                Timber.d("onTick currentTime [%s]", System.currentTimeMillis());
                 if (mZaloPayView == null) {
                     return;
                 }

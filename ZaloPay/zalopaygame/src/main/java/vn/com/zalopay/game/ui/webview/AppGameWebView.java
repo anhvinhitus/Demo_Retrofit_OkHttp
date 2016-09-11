@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -63,19 +64,13 @@ public class AppGameWebView extends WebView {
 
 	}
 
-	@TargetApi(Build.VERSION_CODES.KITKAT)
-	public void runScript(String scriptContent)
-	{
+	public void runScript(String scriptContent, ValueCallback<String> resultCallback)  {
 		Timber.d("##### runScript: %s" , scriptContent);
 		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-		{
-			evaluateJavascript(scriptContent, null);
-		}
-		else
-		{
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			evaluateJavascript(scriptContent, resultCallback);
+		} else {
 			loadUrl("javascript:{" + scriptContent + "}");
 		}
 	}
-
 }

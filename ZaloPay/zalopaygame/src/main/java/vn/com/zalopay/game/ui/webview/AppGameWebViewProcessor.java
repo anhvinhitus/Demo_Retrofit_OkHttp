@@ -73,8 +73,11 @@ public class AppGameWebViewProcessor extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         Timber.d("onPageFinished url [%s]", url);
-        if (AppGameGlobal.getDialog() != null)
+        if (AppGameGlobal.getDialog() != null) {
             AppGameGlobal.getDialog().hideLoadingDialog();
+        }
+
+        mWebView.runScript("utils.getNav()", new GetNavigationCallback(mActivity));
 
         super.onPageFinished(view, url);
     }
@@ -249,4 +252,5 @@ public class AppGameWebViewProcessor extends WebViewClient {
         mActivity = null;
         mTimeOutListener = null;
     }
+
 }

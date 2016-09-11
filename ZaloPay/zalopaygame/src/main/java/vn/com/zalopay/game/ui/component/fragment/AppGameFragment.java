@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.webkit.ValueCallback;
 
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
@@ -15,7 +16,8 @@ import vn.com.zalopay.game.ui.webview.AppGameWebView;
 import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 /**
- * Created by admin on 8/28/16.
+ * Created by chucvv on 8/28/16.
+ * Fragment
  */
 public abstract class AppGameFragment extends Fragment {
     protected AppGameWebView mWebview;
@@ -55,7 +57,7 @@ public abstract class AppGameFragment extends Fragment {
             mWebViewProcessor.start(pUrl, getActivity(), new ITimeoutLoadingListener() {
                 @Override
                 public void onTimeoutLoading() {
-                    Timber.e("onProgressTimeout-%s", pUrl);
+                    Timber.d("onProgressTimeout-%s", pUrl);
                     //load website timeout, show confirm dialog: continue to load or exit.
                     if (AppGameGlobal.getDialog() != null)
                         AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),getResources().getString(R.string.appgame_waiting_loading),
@@ -81,4 +83,14 @@ public abstract class AppGameFragment extends Fragment {
     protected abstract void initView(View view);
 
     protected abstract void initData();
+
+    public boolean onBackPressed() {
+        mWebview.runScript("utils.back()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                Timber.d("navigation back: %s", value);
+            }
+        });
+        return true;
+    }
 }
