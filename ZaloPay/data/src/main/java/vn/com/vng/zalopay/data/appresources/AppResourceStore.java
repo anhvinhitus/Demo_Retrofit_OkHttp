@@ -19,6 +19,8 @@ public interface AppResourceStore {
     interface LocalStorage {
         List<AppResourceEntity> get();
 
+        void deleteAllAppResource();
+
         void put(List<AppResourceEntity> resourceEntities);
 
         void updateAppList(List<Integer> listAppId);
