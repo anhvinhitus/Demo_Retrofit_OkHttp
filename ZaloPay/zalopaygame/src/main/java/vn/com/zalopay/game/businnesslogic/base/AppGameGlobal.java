@@ -88,19 +88,21 @@ public class AppGameGlobal
 		return false;
 	}
 
-	public static boolean isPayForGameChannel()
-	{
-		if(mAppGamePayInfo != null && mAppGamePayInfo.getAppId() == Integer.parseInt(getString(R.string.appgame_payforgame_channel_id)))
+	public static boolean isPayForGameChannel()	{
+		if (mAppGamePayInfo != null && mAppGamePayInfo.getAppId() == Integer.parseInt(getString(R.string.appgame_payforgame_channel_id))) {
 			return true;
+		}
 		return false;
 	}
 
-	public static boolean isResultChannel()
-	{
-		Timber.d("isResultChannel appTransId [%s]", mAppGamePayInfo.getApptransid());
-		if(mAppGamePayInfo != null && ! TextUtils.isEmpty(mAppGamePayInfo.getApptransid()))
+	public static boolean isResultChannel()	{
+		if (mAppGamePayInfo != null && ! TextUtils.isEmpty(mAppGamePayInfo.getApptransid())) {
+			Timber.d("isResultChannel appTransId [%s]", mAppGamePayInfo.getApptransid());
 			return true;
-		return false;
+		} else {
+			Timber.d("isResultChannel appTransId [NULL]");
+			return false;
+		}
 	}
 
 	public static IPaymentService getPaymentService() {
