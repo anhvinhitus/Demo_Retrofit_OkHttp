@@ -81,7 +81,8 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         if (ex instanceof RuntimeException) {
             RuntimeException runtimeException = (RuntimeException) ex;
             Throwable cause = runtimeException.getCause();
-            if (cause instanceof ExecutionException || cause instanceof InterruptedException) {
+            Timber.i("Exception cause: %s", cause == null ? "NULL" : cause.getClass());
+            if (cause instanceof ExecutionException || cause instanceof InterruptedException || cause == null) {
                 Timber.i("Should handle uncaught exception");
                 mEventBus.post(new UncaughtRuntimeExceptionEvent(ex));
             }

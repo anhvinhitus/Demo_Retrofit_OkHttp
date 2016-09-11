@@ -29,8 +29,8 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
  * + Download bundle updates
  */
 public class BundleServiceImpl implements BundleService {
-    Application mApplication;
-    public String mCurrentInternalBundleFolder;
+    private Application mApplication;
+//    private String mCurrentInternalBundleFolder;
     private final LocalResourceRepository mLocalResourceRepository;
     private final String mBundleRootFolder;
     private Gson mGson;
@@ -44,7 +44,8 @@ public class BundleServiceImpl implements BundleService {
 
     @Override
     public String getInternalBundleFolder() {
-        return mCurrentInternalBundleFolder;
+        return "assets:/";
+        //return mCurrentInternalBundleFolder;
     }
 
     @Override
@@ -58,34 +59,34 @@ public class BundleServiceImpl implements BundleService {
             PackageInfo packageInfo = mApplication.getPackageManager().getPackageInfo(mApplication.getPackageName(), 0);
             Timber.i("Version name: %s", packageInfo.versionName);
 
-            ensureInternalLocalResources(packageInfo);
+//            ensureInternalLocalResources(packageInfo);
             ensurePaymentAppLocalResources(packageInfo);
         } catch (PackageManager.NameNotFoundException e) {
             Timber.w(e, "Error!!!");
         }
     }
 
-    private String getInternalBundleRoot() {
-        return mBundleRootFolder + File.separator + "modules/zalopay";
-    }
+//    private String getInternalBundleRoot() {
+//        return mBundleRootFolder + File.separator + "modules/zalopay";
+//    }
 
-    private void ensureInternalLocalResources(PackageInfo packageInfo) {
-        String currentInternalVersion = mLocalResourceRepository.getInternalResourceVersion();
-        if (currentInternalVersion == null) {
-            currentInternalVersion = "";
-        }
-        Timber.i("Internal version: %s", currentInternalVersion);
-        if (!currentInternalVersion.equalsIgnoreCase(packageInfo.versionName)) {
-            Timber.i("Need to update internal resource");
-            if (updateInternalResource()) {
-                mLocalResourceRepository.setInternalResourceVersion(packageInfo.versionName);
-            }
-        } else {
-            Timber.i("Internal resource is updated");
-        }
-
-        mCurrentInternalBundleFolder = getInternalBundleRoot();
-    }
+//    private void ensureInternalLocalResources(PackageInfo packageInfo) {
+//        String currentInternalVersion = mLocalResourceRepository.getInternalResourceVersion();
+//        if (currentInternalVersion == null) {
+//            currentInternalVersion = "";
+//        }
+//        Timber.i("Internal version: %s", currentInternalVersion);
+//        if (!currentInternalVersion.equalsIgnoreCase(packageInfo.versionName)) {
+//            Timber.i("Need to update internal resource");
+//            if (updateInternalResource()) {
+//                mLocalResourceRepository.setInternalResourceVersion(packageInfo.versionName);
+//            }
+//        } else {
+//            Timber.i("Internal resource is updated");
+//        }
+//
+//        mCurrentInternalBundleFolder = getInternalBundleRoot();
+//    }
 
     private void ensurePaymentAppLocalResources(PackageInfo packageInfo) {
 
@@ -131,12 +132,12 @@ public class BundleServiceImpl implements BundleService {
      *
      * @return true if succeeded
      */
-    private boolean updateInternalResource() {
-        Timber.d("updateInternalResource");
-        String internalRoot = getInternalBundleRoot();
-
-        return unzipAssetToFolder("zalopay_internal.zip", internalRoot);
-    }
+//    private boolean updateInternalResource() {
+//        Timber.d("updateInternalResource");
+//        String internalRoot = getInternalBundleRoot();
+//
+//        return unzipAssetToFolder("zalopay_internal.zip", internalRoot);
+//    }
 
     private boolean unzipAssetToFolder(String assetName, String dstPath) {
         try {
