@@ -63,8 +63,6 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                // getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 passCodeInput.forceInputViewGetFocus();
             }
@@ -137,5 +135,13 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @OnClick(R.id.cancel_button)
     public void onClickCancel() {
         dismiss();
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        getWindow().clearFlags(
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 }

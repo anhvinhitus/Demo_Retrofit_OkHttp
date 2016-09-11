@@ -13,6 +13,10 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -1032,7 +1036,8 @@ public class AndroidUtils {
 
     /**
      * Zalo Pay url in google play store.
-     * @param campaign title use to analytic
+     *
+     * @param campaign        title use to analytic
      * @param trackingContent detail use to analytic
      */
     public static String getPlayStoreUrl(String campaign, String trackingContent) {
@@ -1070,5 +1075,29 @@ public class AndroidUtils {
                     context.getResources().getString(R.string.miss_playstore),
                     Toast.LENGTH_SHORT);
         }
+    }
+
+    public static int getFrontCameraId(CameraManager cManager) {
+        if (Build.VERSION.SDK_INT < 22) {
+            Camera.CameraInfo ci = new Camera.CameraInfo();
+            for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
+                Camera.getCameraInfo(i, ci);
+                if (ci.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) return i;
+            }
+        } else {
+            try {
+                for (int j = 0; j < cManager.getCameraIdList().length; j++) {
+                    String[] cameraId = cManager.getCameraIdList();
+                    CameraCharacteristics characteristics = cManager.getCameraCharacteristics(cameraId[j]);
+                    int cOrientation = characteristics.get(CameraCharacteristics.LENS_FACING);
+                    if (cOrientation == CameraCharacteristics.LENS_FACING_FRONT)
+                        return j;
+                }
+            } catch (Exception e) {
+                Timber.d(e, "get front camera Id");
+            }
+        }
+
+        return -1; // No front-facing camera found
     }
 }

@@ -241,7 +241,7 @@ public class Navigator implements INavigator {
             } else {
                 PinProfileDialog dialog = new PinProfileDialog(context);
                 dialog.show();
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
             }
         }
     }
