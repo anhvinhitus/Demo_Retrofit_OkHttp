@@ -117,7 +117,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Override
     public void listAppResource() {
         Subscription subscription = mAppResourceRepository.listAppResource()
-                .delaySubscription(3, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
 
