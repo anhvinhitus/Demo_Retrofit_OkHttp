@@ -54,7 +54,7 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
-import vn.com.vng.zalopay.ui.fragment.IntroFragment;
+import vn.com.vng.zalopay.ui.fragment.IntroSaveCardFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
@@ -155,7 +155,7 @@ public interface UserComponent {
 
     void inject(UpdateProfile3Fragment f);
 
-    void inject(IntroFragment f);
+    void inject(IntroSaveCardFragment f);
 
     void inject(BalanceManagementFragment f);
 

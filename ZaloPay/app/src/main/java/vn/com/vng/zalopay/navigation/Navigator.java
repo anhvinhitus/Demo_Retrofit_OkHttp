@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
@@ -42,7 +41,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
-import vn.com.vng.zalopay.ui.activity.IntroActivity;
+import vn.com.vng.zalopay.ui.activity.IntroSaveCardActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -290,12 +289,12 @@ public class Navigator implements INavigator {
     }
 
     public void startIntroActivity(Context context) {
-        Intent intent = new Intent(context, IntroActivity.class);
+        Intent intent = new Intent(context, IntroSaveCardActivity.class);
         context.startActivity(intent);
     }
 
     public void startIntroActivityForResult(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), IntroActivity.class);
+        Intent intent = new Intent(fragment.getContext(), IntroSaveCardActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }
 

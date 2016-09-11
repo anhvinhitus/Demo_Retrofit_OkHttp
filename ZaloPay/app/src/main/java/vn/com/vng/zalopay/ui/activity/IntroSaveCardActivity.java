@@ -3,13 +3,13 @@ package vn.com.vng.zalopay.ui.activity;
 import android.os.Bundle;
 
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.fragment.IntroFragment;
+import vn.com.vng.zalopay.ui.fragment.IntroSaveCardFragment;
 
-public class IntroActivity extends BaseActivity {
+public class IntroSaveCardActivity extends BaseActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return IntroFragment.newInstance();
+        return IntroSaveCardFragment.newInstance();
     }
 
     @Override

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.34"
-        android:background="@drawable/ic_bg_intro">
+        android:background="@drawable/ic_bg_intro_savecard">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:contentDescription="@string/loremipsum"
             android:scaleType="center"
-            android:src="@drawable/ic_intro_step1"/>
+            android:src="@drawable/ic_intro_savecard_step1"/>
     </FrameLayout>
 
     <LinearLayout

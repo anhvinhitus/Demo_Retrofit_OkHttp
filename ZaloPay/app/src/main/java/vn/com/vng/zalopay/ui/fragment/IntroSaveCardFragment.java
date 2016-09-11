@@ -15,16 +15,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.adapter.IntroPagerAdapter;
+import vn.com.vng.zalopay.ui.adapter.IntroSaveCardPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link IntroFragment#newInstance} factory method to
+ * Use the {@link IntroSaveCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class IntroFragment extends BaseFragment {
+public class IntroSaveCardFragment extends BaseFragment {
 
     @BindView(R.id.tvCancel)
     View tvCancel;
@@ -60,17 +60,17 @@ public class IntroFragment extends BaseFragment {
         getActivity().finish();
     }
 
-    private IntroPagerAdapter mPagerAdapter;
+    private IntroSaveCardPagerAdapter mPagerAdapter;
 
-    public IntroFragment() {
+    public IntroSaveCardFragment() {
         // Required empty public constructor
     }
 
     private List<Integer> getIntroResourceIds() {
         List<Integer> introResourceIds = new ArrayList<>();
-        introResourceIds.add(R.layout.fragment_intro_step1);
-        introResourceIds.add(R.layout.fragment_intro_step2);
-        introResourceIds.add(R.layout.fragment_intro_step3);
+        introResourceIds.add(R.layout.fragment_intro_savecard_step1);
+        introResourceIds.add(R.layout.fragment_intro_savecard_step2);
+        introResourceIds.add(R.layout.fragment_intro_savecard_step3);
         return introResourceIds;
     }
 
@@ -78,11 +78,11 @@ public class IntroFragment extends BaseFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment IntroFragment.
+     * @return A new instance of fragment IntroSaveCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static IntroFragment newInstance() {
-        return new IntroFragment();
+    public static IntroSaveCardFragment newInstance() {
+        return new IntroSaveCardFragment();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class IntroFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_intro;
+        return R.layout.fragment_intro_savecard;
     }
 
     @Override
@@ -103,8 +103,8 @@ public class IntroFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        mPagerAdapter = new IntroPagerAdapter(getContext(), getIntroResourceIds());
-        mPagerAdapter = new IntroPagerAdapter(getChildFragmentManager(), getIntroResourceIds());
+//        mPagerAdapter = new IntroSaveCardPagerAdapter(getContext(), getIntroResourceIds());
+        mPagerAdapter = new IntroSaveCardPagerAdapter(getChildFragmentManager(), getIntroResourceIds());
         mViewPager.setAdapter(mPagerAdapter);
         mIndicator.setViewPager(mViewPager);
 

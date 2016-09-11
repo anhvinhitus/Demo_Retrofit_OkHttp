@@ -5,13 +5,13 @@
               android:background="@color/background_intro"
               android:orientation="vertical"
               android:weightSum="1.0"
-              tools:context="vn.com.vng.zalopay.ui.fragment.IntroFragment">
+              tools:context=".ui.fragment.IntroSaveCardFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.34"
-        android:background="@drawable/ic_bg_intro">
+        android:background="@drawable/ic_bg_intro_savecard">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -19,7 +19,8 @@
             android:layout_gravity="bottom|center_horizontal"
             android:contentDescription="@string/loremipsum"
             android:scaleType="center"
-            android:src="@drawable/ic_intro_step2"/>
+            android:layout_marginBottom="@dimen/spacing.medium"
+            android:src="@drawable/ic_intro_savecard_step3"/>
     </FrameLayout>
 
     <LinearLayout
@@ -32,10 +33,10 @@
 
         <TextView
             style="@style/Intro.TextView.Title"
-            android:text="@string/intro.title.step2"/>
+            android:text="@string/intro.title.step3"/>
 
         <TextView
             style="@style/Intro.TextView.Content"
-            android:text="@string/intro.content.step2"/>
+            android:text="@string/intro.content.step3"/>
     </LinearLayout>
 </LinearLayout>

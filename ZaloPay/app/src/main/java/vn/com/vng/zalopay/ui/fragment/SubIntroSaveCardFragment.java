@@ -6,15 +6,15 @@ import android.os.Bundle;
  * A simple {@link BaseFragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link SubIntroFragment#newInstance} factory method to
+ * Use the {@link SubIntroSaveCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SubIntroFragment extends BaseFragment {
+public class SubIntroSaveCardFragment extends BaseFragment {
     private static final String ARG_INTRO_RESOURCE = "intro_resource";
 
     private int mIntroResource;
 
-    public SubIntroFragment() {
+    public SubIntroSaveCardFragment() {
         // Required empty public constructor
     }
 
@@ -23,11 +23,11 @@ public class SubIntroFragment extends BaseFragment {
      * this fragment using the provided parameters.
      *
      * @param introStep mIntroResource.
-     * @return A new instance of fragment SubIntroFragment.
+     * @return A new instance of fragment SubIntroSaveCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SubIntroFragment newInstance(int introStep) {
-        SubIntroFragment fragment = new SubIntroFragment();
+    public static SubIntroSaveCardFragment newInstance(int introStep) {
+        SubIntroSaveCardFragment fragment = new SubIntroSaveCardFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_INTRO_RESOURCE, introStep);
         fragment.setArguments(args);
