@@ -10,6 +10,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 5/9/16.
+ *
  */
 public interface IZaloPayView {
 
@@ -28,6 +29,8 @@ public interface IZaloPayView {
     void setBalance(long balance);
 
     void showError(String error);
+
+    void showErrorDialog(String error);
 
     void onSessionExpired();
 

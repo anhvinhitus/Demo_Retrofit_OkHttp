@@ -1,6 +1,9 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.View;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -23,6 +26,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.game.AppGameDialogImpl;
 import vn.com.vng.zalopay.game.AppGameNetworkingImpl;
 import vn.com.vng.zalopay.game.AppGamePaymentImpl;
@@ -37,6 +41,8 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * Created by AnhHieu on 5/9/16.
  */
 public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
+    private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
+    private final int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
 
     private IZaloPayView mZaloPayView;
 
@@ -44,7 +50,16 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private final ZaloPayIAPRepository mZaloPayIAPRepository;
 
-    private CountDownTimer mCountDownTimer;
+    //Banner variable
+    private CountDownTimer mBannerCountDownTimer;
+    //avoid case: new & release CountDownTimer continuously
+    private Handler mBannerHandle = new Handler();
+    private Runnable mBannerRunable = new Runnable() {
+        @Override
+        public void run() {
+            startBannerCountDownTimer();
+        }
+    };
 
     public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository) {
         this.mZaloPayIAPRepository = zaloPayIAPRepository;
@@ -67,17 +82,19 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void resume() {
-        startCountDownTimer();
+        startBannerCountDownTimer();
     }
 
     @Override
     public void pause() {
-        stopCountDownTimer();
+        stopBannerCountDownTimer();
     }
 
     @Override
     public void destroy() {
-        mCountDownTimer = null;
+        mBannerCountDownTimer = null;
+        mBannerHandle = null;
+        mBannerRunable = null;
     }
 
     @Override
@@ -122,7 +139,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
-         mZaloPayView.refreshInsideApps(resources);
+        mZaloPayView.refreshInsideApps(resources);
     }
 
     private final class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
@@ -161,45 +178,56 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         mZaloPayView.setBalance(balance);
     }
 
-    private void startCountDownTimer() {
-        if (mCountDownTimer == null) {
-            //Finish countDownTimer after 1h (60*60*1000)
-            mCountDownTimer = new CountDownTimer(60*60*1000, 3000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    if (mZaloPayView == null) {
-                        return;
-                    }
-                    mZaloPayView.changeBanner();
-                }
-
-                @Override
-                public void onFinish() {
-                    mCountDownTimer.cancel();
-                    startCountDownTimer();
-                }
-            };
-            mCountDownTimer.start();
-        } else {
-            mCountDownTimer.cancel();
-            mCountDownTimer.start();
-        }
-    }
-
-    private void stopCountDownTimer() {
-        if (mCountDownTimer == null) {
+    @Override
+    public void startBannerCountDownTimer() {
+        if (mBannerCountDownTimer != null) {
             return;
         }
-        mCountDownTimer.cancel();
+        mBannerCountDownTimer = new CountDownTimer(BANNER_MILLIS_IN_FUTURE, BANNER_COUNT_DOWN_INTERVAL) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Timber.d("onTick currentTime [%s]", System.currentTimeMillis());
+                if (mZaloPayView == null) {
+                    return;
+                }
+                mZaloPayView.changeBanner();
+            }
+
+            @Override
+            public void onFinish() {
+                mBannerCountDownTimer = null;
+                startBannerCountDownTimer();
+            }
+        };
+        mBannerCountDownTimer.start();
+    }
+
+    @Override
+    public void stopBannerCountDownTimer() {
+        if (mBannerCountDownTimer == null) {
+            return;
+        }
+        mBannerCountDownTimer.cancel();
+        mBannerCountDownTimer = null;
+    }
+
+    @Override
+    public void onTouchBanner(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            stopBannerCountDownTimer();
+            mBannerHandle.removeCallbacks(mBannerRunable);
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            mBannerHandle.postDelayed(mBannerRunable, BANNER_COUNT_DOWN_INTERVAL);
+        }
     }
 
     public void getBanners() {
         try {
             List banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
             if (banners != null && banners.size() > 1) {
-                startCountDownTimer();
+                startBannerCountDownTimer();
             } else {
-                stopCountDownTimer();
+                stopBannerCountDownTimer();
             }
 
             mZaloPayView.showBannerAds(banners);
@@ -296,28 +324,16 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             };
             Timber.d("onNext startPayFlow");
             AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
-                    new AppGamePaymentImpl(), new AppGameDialogImpl(), mAppResource.webUrl , new AppGameNetworkingImpl());
+                    new AppGamePaymentImpl(), new AppGameDialogImpl(), mAppResource.webUrl, new AppGameNetworkingImpl());
         }
 
         @Override
         public void onError(Throwable e) {
-            if (e instanceof BodyException) {
-                mZaloPayView.showError(((BodyException) e).getMessage());
+            Timber.d("onError exception [%s]", e);
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
             }
+            mZaloPayView.showErrorDialog(ErrorMessageFactory.create(mZaloPayView.getContext(), e));
         }
-    }
-
-    private void showLoadingView() {
-        if (mZaloPayView == null) {
-            return;
-        }
-        mZaloPayView.showLoading();
-    }
-
-    private void hideLoadingView() {
-        if (mZaloPayView == null) {
-            return;
-        }
-        mZaloPayView.hideLoading();
     }
 }

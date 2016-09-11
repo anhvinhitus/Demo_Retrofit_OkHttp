@@ -2,17 +2,19 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -51,6 +53,7 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -195,6 +198,16 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
             mBannerViewpager.setAdapter(mBannerPagerAdapter);
             mBannerIndicator.setViewPager(mBannerViewpager);
+            mBannerViewpager.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Timber.d("Banner viewpager onTouch action [%s]", event.getAction());
+                    if (presenter != null) {
+                        presenter.onTouchBanner(v, event);
+                    }
+                    return false;
+                }
+            });
             if (mLayoutBannerFullScreen != null) {
                 mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
             }
@@ -319,6 +332,20 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @Override
     public void showError(String error) {
         showToast(error);
+    }
+
+    @Override
+    public void showErrorDialog(String error) {
+        if (TextUtils.isEmpty(error)) {
+            return;
+        }
+        showErrorDialog(error, getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
+
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.cancel();
+            }
+        });
     }
 
     @Override
