@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/spacing.tiny"
             android:text="@string/withdraw_condition_note"
             android:textColor="@color/txt_item_sub"
-            android:textSize="@dimen/textsize.tiny" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <FrameLayout
