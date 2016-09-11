@@ -3,6 +3,7 @@ package vn.com.zalopay.game.ui.component.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import timber.log.Timber;
