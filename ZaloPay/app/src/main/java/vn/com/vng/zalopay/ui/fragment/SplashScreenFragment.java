@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.ui.presenter.SplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
+import vn.com.vng.zalopay.utils.IntroAppUtils;
 
 /**
  * Created by AnhHieu on 5/13/16.
@@ -100,7 +101,11 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     public void gotoLoginScreen() {
-        navigator.startLoginActivity(getContext(), false);
+        if (!IntroAppUtils.isShowedIntro()) {
+            navigator.startIntroAppActivity(getContext());
+        } else {
+            navigator.startLoginActivity(getContext(), false);
+        }
         getActivity().finish();
     }
 

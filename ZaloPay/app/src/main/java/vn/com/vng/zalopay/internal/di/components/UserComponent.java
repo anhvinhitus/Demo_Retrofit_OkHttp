@@ -54,6 +54,7 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
+import vn.com.vng.zalopay.ui.fragment.IntroAppFragment;
 import vn.com.vng.zalopay.ui.fragment.IntroSaveCardFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;

@@ -35,7 +35,9 @@ import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
+import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
+import vn.com.vng.zalopay.ui.fragment.IntroAppFragment;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
@@ -96,4 +98,5 @@ public interface ApplicationComponent {
 
     void inject(InvitationCodeFragment f);
 
+    void inject(IntroAppFragment f);
 }

@@ -41,6 +41,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
+import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.IntroSaveCardActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
@@ -372,6 +373,11 @@ public class Navigator implements INavigator {
 
     public void startMyQrCode(Context context) {
         Intent intent = new Intent(context, ReceiveMoneyActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startIntroAppActivity(Context context) {
+        Intent intent = new Intent(context, IntroAppActivity.class);
         context.startActivity(intent);
     }
 }
