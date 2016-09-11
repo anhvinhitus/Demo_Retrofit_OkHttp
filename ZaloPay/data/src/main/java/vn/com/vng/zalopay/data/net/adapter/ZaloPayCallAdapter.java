@@ -35,7 +35,7 @@ final class ZaloPayCallAdapter extends BaseCallAdapter {
             EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
             return Observable.error(new TokenException());
         } else if (baseResponse.isServerMaintain()) {
-            EventBus.getDefault().post(new ServerMaintainEvent());
+            EventBus.getDefault().post(new ServerMaintainEvent(baseResponse.message));
             return Observable.error(new ServerMaintainException());
         } else if (baseResponse.isInvitationCode()) {
             return Observable.error(new InvitationCodeException(body.err, body));

@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -231,10 +232,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
+        String eventMessage = event.getMessage();
+        if (TextUtils.isEmpty(eventMessage)) {
+            eventMessage = getString(R.string.exception_server_maintain);
+        }
+
         if (this instanceof LoginZaloActivity) {
-            showDialog(getString(R.string.exception_server_maintain), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+            showDialog(eventMessage, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
         } else {
-            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
+            getAppComponent().applicationSession().setMessageAtLogin(eventMessage);
             getAppComponent().applicationSession().clearUserSession();
         }
     }

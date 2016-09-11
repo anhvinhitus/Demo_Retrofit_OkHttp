@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -43,6 +44,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -263,7 +265,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
+        if (TextUtils.isEmpty(event.getMessage())) {
+            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
+        } else {
+            getAppComponent().applicationSession().setMessageAtLogin(event.getMessage());
+        }
         getAppComponent().applicationSession().clearUserSession();
 
     }

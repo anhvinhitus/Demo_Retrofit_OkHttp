@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -226,7 +227,11 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
+        if (TextUtils.isEmpty(event.getMessage())) {
+            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
+        } else {
+            getAppComponent().applicationSession().setMessageAtLogin(event.getMessage());
+        }
         getAppComponent().applicationSession().clearUserSession();
 
     }

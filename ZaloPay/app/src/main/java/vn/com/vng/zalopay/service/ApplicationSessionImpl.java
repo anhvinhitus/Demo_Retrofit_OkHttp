@@ -15,12 +15,14 @@ import de.greenrobot.dao.AbstractDao;
 import okhttp3.OkHttpClient;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 6/14/16.
@@ -75,7 +77,12 @@ public class ApplicationSessionImpl implements ApplicationSession {
         if (TextUtils.isEmpty(mLoginMessage)) {
             navigator.startLoginActivity(applicationContext, true);
         } else {
-            navigator.startLoginActivity(applicationContext, mLoginMessage);
+            AndroidApplication.instance().getAppComponent().globalEventService()
+                    .enqueueMessageAtLogin(
+                            SweetAlertDialog.INFO_TYPE,
+                            applicationContext.getString(R.string.accept),
+                            mLoginMessage);
+            navigator.startLoginActivity(applicationContext, true);
             mLoginMessage = null;
         }
     }

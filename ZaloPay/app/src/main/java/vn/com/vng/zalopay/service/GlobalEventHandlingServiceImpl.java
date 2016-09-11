@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.service;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -28,6 +29,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingService {
     private Message mCurrentMessage;
+    private Message mCurrentMessageAtLogin;
     private final EventBus mEventBus;
 
     public GlobalEventHandlingServiceImpl(EventBus eventBus) {
@@ -46,11 +48,28 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         mCurrentMessage = new Message(messageType, title, body);
     }
 
+    @Override
+    public void enqueueMessageAtLogin(int messageType, String title, String body) {
+        mCurrentMessageAtLogin = new Message(messageType, title, body);
+    }
+
+    @Override
+    public void enqueueMessageAtLogin(int messageType, int title, int body) {
+        mCurrentMessageAtLogin = new Message(messageType, title, body);
+    }
+
     @Nullable
     @Override
     public Message popMessage() {
         Message message = mCurrentMessage;
         mCurrentMessage = null;
+        return message;
+    }
+
+    @Override
+    public Message popMessageAtLogin() {
+        Message message = mCurrentMessageAtLogin;
+        mCurrentMessageAtLogin = null;
         return message;
     }
 
@@ -72,7 +91,13 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
 
     @Subscribe
     public void onServerMaintainEvent(ServerMaintainEvent event) {
-        enqueueMessage(SweetAlertDialog.ERROR_TYPE, "ĐÓNG", AndroidApplication.instance().getString(R.string.exception_server_maintain));
+        String message;
+        if (TextUtils.isEmpty(event.getMessage())) {
+            message = AndroidApplication.instance().getString(R.string.exception_server_maintain);
+        } else {
+            message = event.getMessage();
+        }
+        enqueueMessageAtLogin(SweetAlertDialog.ERROR_TYPE, "ĐÓNG", message);
     }
 
     @Override

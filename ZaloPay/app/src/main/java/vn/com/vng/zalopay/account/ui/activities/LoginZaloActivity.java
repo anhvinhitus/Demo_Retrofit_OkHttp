@@ -51,11 +51,11 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
 
-        String message = getIntent().getStringExtra(Constants.ARG_MESSAGE);
-
-        if (!TextUtils.isEmpty(message)) {
-            showDialog(message, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
-        }
+//        String message = getIntent().getStringExtra(Constants.ARG_MESSAGE);
+//
+//        if (!TextUtils.isEmpty(message)) {
+//            showDialog(message, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+//        }
     }
 
     @OnClick(R.id.layoutLoginZalo)
@@ -74,7 +74,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void onResume() {
         super.onResume();
 
-        GlobalEventHandlingService.Message message = getAppComponent().globalEventService().popMessage();
+        GlobalEventHandlingService.Message message = getAppComponent().globalEventService().popMessageAtLogin();
         if (message == null) {
             return;
         }
