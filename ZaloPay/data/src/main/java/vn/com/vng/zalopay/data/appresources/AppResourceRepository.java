@@ -151,7 +151,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         startDownloadService(resourcelist, resourceResponse.baseurl);
 
         Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceResponse.baseurl, listAppId, resourcelist.size());
-        mLocalStorage.deleteAllAppResource();
+        //mLocalStorage.deleteAllAppResource();
         mLocalStorage.put(resourcelist);
         mLocalStorage.updateAppList(listAppId);
     }
