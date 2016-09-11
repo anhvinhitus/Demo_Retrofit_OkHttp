@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.Stack;
 
@@ -14,7 +15,7 @@ import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 
-public abstract class AppGameBaseActivity extends FragmentActivity
+public abstract class AppGameBaseActivity extends AppCompatActivity
 {
 	private FragmentTransaction mFragmentTransaction;
 	private FragmentManager mFragmentManager;

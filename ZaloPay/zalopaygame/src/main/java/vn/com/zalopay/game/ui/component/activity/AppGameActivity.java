@@ -2,6 +2,8 @@ package vn.com.zalopay.game.ui.component.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
@@ -14,12 +16,18 @@ import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 public class AppGameActivity extends AppGameBaseActivity {
     private AppGameFragment mFragment;
+    protected Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Timber.d("onCreate start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__main);
+        mToolbar = (Toolbar) findViewById(R.id.toolbarLayout);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         Fragment subView = getView();
 
@@ -48,10 +56,21 @@ public class AppGameActivity extends AppGameBaseActivity {
 
         super.onBackPressed();
         */
+        Timber.d("onBackPressed hasError [%s]", AppGameWebViewProcessor.hasError);
         if(AppGameWebViewProcessor.hasError)
             super.onBackPressed();
         else
             return;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -74,6 +93,24 @@ public class AppGameActivity extends AppGameBaseActivity {
     @Override
     public void startUrl(String pUrl) {
         mFragment.loadUrl(pUrl);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void setTitle(int titleId) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(titleId);
+        }
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 
 }

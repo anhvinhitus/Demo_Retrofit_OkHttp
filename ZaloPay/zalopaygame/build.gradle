@@ -38,4 +38,6 @@ dependencies {
     compile libs.timber
     compile libs.parceler
     apt libs.parceler_apt
+
+    compile project(':ui.widget')
 }
