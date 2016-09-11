@@ -54,11 +54,7 @@ public class ErrorMessageFactory {
         } else if (exception instanceof SocketTimeoutException) {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
-            if (BuildConfig.DEBUG) {
-                message = mHttpStatusCode.get(((HttpException) exception).code());
-            } else {
-                message = context.getString(R.string.exception_no_connection);
-            }
+            message = context.getString(R.string.exception_server_error);
         } else if (exception instanceof UnknownHostException) {
             message = context.getString(R.string.exception_unknown_host);
         } else if (exception instanceof SSLHandshakeException) {
