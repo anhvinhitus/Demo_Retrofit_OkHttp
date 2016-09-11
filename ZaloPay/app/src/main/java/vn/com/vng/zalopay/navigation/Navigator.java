@@ -164,37 +164,13 @@ public class Navigator implements INavigator {
         sweetAlertDialog.show();
     }
 
-    private void showUpdateProfileLevel3Dialog(final Context context) {
-        if (context == null) {
-            return;
-        }
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setContentText(context.getString(R.string.txt_need_input_userinfo))
-                .setCancelText(context.getString(R.string.txt_close))
-                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                    }
-                })
-                .setConfirmText(context.getString(R.string.txt_input_userinfo))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        startUpdateProfile3Activity(context);
-                    }
-                });
-        sweetAlertDialog.show();
-    }
-
     public void startMiniAppActivity(Activity activity, String moduleName) {
         if (ModuleName.RED_PACKET.equals(moduleName)) {
-            if (userConfig == null ||
-                    userConfig.getCurrentUser() == null ||
-                    userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-                showUpdateProfileInfoDialog(activity);
-                return;
+            if (userConfig.hasCurrentUser()) {
+                if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+                    showUpdateProfileInfoDialog(activity);
+                    return;
+                }
             }
         }
         Intent intent = getIntentMiniAppActivity(activity, moduleName, new HashMap<String, String>());
@@ -249,13 +225,13 @@ public class Navigator implements INavigator {
     }
 
     public void startTransferMoneyActivity(Activity activity) {
-        if (userConfig == null || userConfig.getCurrentUser() == null || userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            if (activity != null) {
+        if (userConfig.hasCurrentUser()) {
+            if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
                 showUpdateProfileInfoDialog(activity);
+            } else {
+                Intent intent = new Intent(activity, TransferHomeActivity.class);
+                activity.startActivity(intent);
             }
-        } else {
-            Intent intent = new Intent(activity, TransferHomeActivity.class);
-            activity.startActivity(intent);
         }
     }
 
@@ -272,14 +248,6 @@ public class Navigator implements INavigator {
 
     public void startTransferActivity(Context context, Bundle bundle) {
         Intent intent = new Intent(context, TransferActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    public void startTransferActivity(Context context, Person person) {
-        Intent intent = new Intent(context, TransferActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("person", Parcels.wrap(person));
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
