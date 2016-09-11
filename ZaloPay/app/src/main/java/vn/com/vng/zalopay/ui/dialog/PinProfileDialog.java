@@ -53,7 +53,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AndroidApplication.instance().getAppComponent().inject(this);
+        AndroidApplication.instance().getUserComponent().inject(this);
         setContentView(R.layout.dialog_pin_profile);
         ButterKnife.bind(this, this);
         setWidthDialog();

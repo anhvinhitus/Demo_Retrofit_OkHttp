@@ -96,6 +96,4 @@ public interface ApplicationComponent {
 
     void inject(InvitationCodeFragment f);
 
-    void inject(PinProfileDialog dialog);
-
 }

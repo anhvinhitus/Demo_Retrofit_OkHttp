@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 
@@ -70,68 +71,8 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Chuyển tiền");
-
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_transfer, null);
-
-        final TextView mInputAccountNameView = (TextView) view.findViewById(R.id.tvMessage);
-        final EditText editText = (EditText) view.findViewById(R.id.tvAccountName);
-
-        builder.setView(view);
-
-        builder.setPositiveButton(R.string.btn_continue,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        final AlertDialog dialog = builder.create();
+        TransferMoneyDialog dialog = new TransferMoneyDialog(getContext());
         dialog.show();
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timber.d("name %s", editText.getText().toString());
-
-                String s = editText.getText().toString().trim();
-                boolean isValid = false;
-
-                if (!ValidateUtil.isValidLengthZPName(s)) {
-                    mInputAccountNameView.setText(getString(R.string.exception_account_name_length));
-                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-                } else if (s.indexOf(" ") > 0) {
-                    mInputAccountNameView.setText(getString(R.string.exception_account_name_with_space));
-                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-                } else if (!ValidateUtil.isValidZaloPayName(s)) {
-                    mInputAccountNameView.setText(getString(R.string.exception_account_name_special_char));
-                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
-                } else {
-                    mInputAccountNameView.setError(getString(R.string.input_account_zalo_pay));
-                    mInputAccountNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-
-                    if (!TextUtils.isEmpty(s)) {
-                        isValid = true;
-                    }
-                }
-
-                if (isValid) {
-                    presenter.getUserInfo(s);
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     /**

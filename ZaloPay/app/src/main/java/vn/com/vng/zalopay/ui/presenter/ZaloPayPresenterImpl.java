@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -199,6 +200,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             }
         };
         mBannerCountDownTimer.start();
+
     }
 
     @Override
