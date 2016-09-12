@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.config.AppGameConfig;
@@ -37,10 +38,17 @@ public class FragmentPayGame extends AppGameFragment
     }
 
     @Override
-    protected void initData()
-    {
-        String urlPage = String.format(AppGameConfig.PAYGAME_PAGE, AppGameGlobal.getAppGamePayInfo().getUid(),AppGameGlobal.getAppGamePayInfo().getAccessToken(),
-                AppGameGlobal.getAppGamePayInfo().getAppId());
+    protected void initData() {
+        AppGamePayInfo payInfo = AppGameGlobal.getAppGamePayInfo();
+        if (payInfo == null) {
+            return;
+        }
+
+        String urlPage = String.format(
+                AppGameConfig.PAYGAME_PAGE,
+                payInfo.getUid(),
+                payInfo.getAccessToken(),
+                payInfo.getAppId());
 
         mWebViewProcessor.start(urlPage, getActivity(), new ITimeoutLoadingListener() {
             @Override
