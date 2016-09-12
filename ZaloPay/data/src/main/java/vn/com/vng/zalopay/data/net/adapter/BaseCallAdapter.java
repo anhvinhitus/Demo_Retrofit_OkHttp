@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.SocketTimeoutException;
 
 import retrofit2.Call;
 import retrofit2.CallAdapter;
@@ -22,7 +21,7 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
  * BaseCallAdapter for retry API request when has request error
  */
 public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
-    private final int REST_RETRY_COUNT = 3;
+    final int REST_RETRY_COUNT = 3;
     protected final Context mContext;
     protected final Type mResponseType;
     protected final Scheduler mScheduler;
@@ -48,9 +47,6 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
                     boolean needRetry = false;
                     if (mRestRetryCount >= 1) {
                         if (error instanceof IOException) {
-                            needRetry = true;
-                        } else if (error instanceof SocketTimeoutException) {
-                            Timber.d("adapt SocketTimeoutException");
                             needRetry = true;
                         } else if (error instanceof HttpException) {
                             Timber.d("adapt ((HttpException) error).code() [%s]", ((HttpException) error).code());

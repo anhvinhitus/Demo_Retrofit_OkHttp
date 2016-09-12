@@ -119,6 +119,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     public void onPinSuccess() {
         Timber.d("onPinSuccess");
         dismiss();
+        navigator.setLastTimeCheckPin(System.currentTimeMillis());
         getContext().startActivity(pendingIntent);
     }
 

@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -51,6 +52,8 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
@@ -61,6 +64,10 @@ public class Navigator implements INavigator {
     private final int MIN_PROFILE_LEVEL = 2;
 
     UserConfig userConfig;
+
+    private long lastTimeCheckPassword = 0;
+
+    final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
     @Inject
     public Navigator(UserConfig userConfig) {
@@ -182,7 +189,22 @@ public class Navigator implements INavigator {
             if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
                 showUpdateProfileInfoDialog(context);
             } else {
-                new PinProfileDialog(context, intentLinkCard(context)).show();
+
+                long now = System.currentTimeMillis();
+                int numberCard = 0;
+                try {
+                    CShareData shareData = CShareData.getInstance((Activity) context);
+                    List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                    numberCard = mapCardLis.size();
+                } catch (Exception ex) {
+                    Timber.d(ex, "startLinkCardActivity");
+                }
+
+                if (numberCard <= 0 || now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
+                    context.startActivity(intentLinkCard(context));
+                } else {
+                    new PinProfileDialog(context, intentLinkCard(context)).show();
+                }
             }
         }
     }
@@ -211,10 +233,8 @@ public class Navigator implements INavigator {
     @Override
     public void startProfileInfoActivity(Context context) {
         if (userConfig.hasCurrentUser()) {
-            if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            if (checkAndOpenPinDialog(context, intentProfile(context), userConfig.getCurrentUser().profilelevel)) {
                 context.startActivity(intentProfile(context));
-            } else {
-                new PinProfileDialog(context, intentProfile(context)).show();
             }
         }
     }
@@ -334,9 +354,7 @@ public class Navigator implements INavigator {
     public void startTransactionHistoryList(Context context) {
         if (userConfig.hasCurrentUser()) {
             Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<String, String>());
-            if (userConfig.getCurrentUser().profilelevel >= MIN_PROFILE_LEVEL) {
-                new PinProfileDialog(context, intent).show();
-            } else {
+            if (checkAndOpenPinDialog(context, intent, userConfig.getCurrentUser().profilelevel)) {
                 context.startActivity(intent);
             }
         }
@@ -379,5 +397,18 @@ public class Navigator implements INavigator {
     public void startIntroAppActivity(Context context) {
         Intent intent = new Intent(context, IntroAppActivity.class);
         context.startActivity(intent);
+    }
+
+    boolean checkAndOpenPinDialog(Context context, Intent pendingIntent, int level) {
+        long now = System.currentTimeMillis();
+        if (now - lastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD && level >= MIN_PROFILE_LEVEL) {
+            new PinProfileDialog(context, pendingIntent).show();
+            return false;
+        }
+        return true;
+    }
+
+    public void setLastTimeCheckPin(long time) {
+        lastTimeCheckPassword = time;
     }
 }

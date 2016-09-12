@@ -69,8 +69,8 @@
                     android:ellipsize="end"
                     android:hint="@string/note"
                     android:inputType="text"
-                    android:maxLength="@integer/max_length_message"
-                    android:maxLines="1"
+                    android:maxLength="36"
+                    android:maxLines="2"
                     android:minHeight="44dp"
                     android:singleLine="true" />
 

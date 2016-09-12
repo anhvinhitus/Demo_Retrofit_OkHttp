@@ -13,10 +13,21 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.internal.producers.QueuedProducer;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -25,7 +36,9 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /**
@@ -33,7 +46,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
  * Controller for receiving money
  */
 
-public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
+public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
 
     private IReceiveMoneyView mView;
 
@@ -65,6 +78,7 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
         eventBus.unregister(this);
         mView = null;
         mListTransfer.clear();
+        cancelAllTimer();
     }
 
     @Override
@@ -189,36 +203,43 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
             }
 
             if (type == Constants.QRCode.RECEIVE_MONEY) {
-                handleNotifications(notify, embedData);
+                try {
+                    handleNotifications(notify, embedData);
+                } catch (Exception e) {
+                    Timber.e(e, "handle Notifications");
+                }
             }
         }
     }
 
     private void handleNotifications(NotificationData notify, JsonObject embedData) {
-        String senderDisplayName = embedData.get("displayname").getAsString();
-        String senderAvatar = embedData.get("avatar").getAsString();
-        int progress = embedData.get("mt_progress").getAsInt();
+        final String senderDisplayName = embedData.get("displayname").getAsString();
+        final String senderAvatar = embedData.get("avatar").getAsString();
+        final int progress = embedData.get("mt_progress").getAsInt();
         String transId = null;
-        try {
-            if (embedData.has("transid")) {
-                transId = embedData.get("transid").getAsString();
-            }
-        } catch (Exception e) {
-            Timber.d(e, "exception");
+
+        if (embedData.has("transid")) {
+            transId = embedData.get("transid").getAsString();
         }
 
-        String zaloPayId = notify.getUserid();
+        final String zaloPayId = notify.getUserid();
 
-        long amount = 0;
+        final long amount;
         if (embedData.has("amount")) {
             amount = embedData.get("amount").getAsLong();
+        } else {
+            amount = 0;
         }
 
         Timber.d("Receiver profile: %s - %s", senderDisplayName, senderAvatar);
+
+        cancelTimer(zaloPayId);
+
         switch (progress) {
             case Constants.MoneyTransfer.STAGE_PRETRANSFER:
                 Timber.d("Stage: Pre transfer");
                 mView.displayWaitForMoney();
+                startTimer(zaloPayId, senderDisplayName, senderAvatar);
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                 Timber.d("Stage: Transfer succeeded with amount %s", amount);
@@ -234,6 +255,41 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
 
         addPersonTransfer(zaloPayId, senderDisplayName, senderAvatar, progress, amount, transId);
 
+    }
+
+    Map<String, Subscription> mapSubscription = new HashMap<>();
+
+    private void startTimer(final String zaloPayId, final String senderDisplayName, final String senderAvatar) {
+        Subscription subscription = Observable.timer(5, TimeUnit.MINUTES)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        Timber.d("call:  %s", aLong);
+                        try {
+                            addPersonTransfer(zaloPayId, senderDisplayName, senderAvatar, Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null);
+                        } catch (Exception e) {
+                            Timber.d(e, "add person with state cancel");
+                        }
+                    }
+                });
+        mapSubscription.put(zaloPayId, subscription);
+    }
+
+    private void cancelTimer(String zaloPayId) {
+        if (mapSubscription.containsKey(zaloPayId)) {
+            Subscription subscription = mapSubscription.get(zaloPayId);
+            unsubscribeIfNotNull(subscription);
+            mapSubscription.remove(zaloPayId);
+        }
+    }
+
+    private void cancelAllTimer() {
+        Collection<Subscription> subscriptions = mapSubscription.values();
+        for (Subscription subscription : subscriptions) {
+            unsubscribeIfNotNull(subscription);
+        }
+        mapSubscription.clear();
     }
 
 
@@ -326,6 +382,7 @@ public class ReceiveMoneyPresenter implements IPresenter<IReceiveMoneyView>, Gen
             }
         }
     }
+
 
     PersonTransfer transform(String uid, String displayName, String avatar, int state, long amount, String transId) {
         PersonTransfer item = new PersonTransfer();
