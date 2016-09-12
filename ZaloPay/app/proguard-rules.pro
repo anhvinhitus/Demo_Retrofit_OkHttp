@@ -30,12 +30,14 @@
 
 # Disabling obfuscation is useful if you collect stack traces from production crashes
 # (unless you are using a system that supports de-obfuscate the stack traces).
--dontobfuscate
+# -dontobfuscate
 
 -keep class vn.com.vng.zalopay.react.** { *; }
 -keep class vn.com.vng.zalopay.domain.** { *; }
 # -keep class vn.com.vng.zalopay.data.** { *; }
 -keep class vn.com.vng.zalopay.event.** { *; }
+-keep class vn.com.vng.zalopay.data.api.response.** { *; }
+-keepattributes Signature, *Annotation*
 
 # React Native
 
@@ -46,6 +48,7 @@
 -keep class com.facebook.react.bridge.Promise
 -keep class com.facebook.react.bridge.ReadableMap
 -keep class com.facebook.react.bridge.ReadableArray
+-keep class com.facebook.react.bridge.queue.NativeRunnable { *; }
 
 -dontwarn bolts.**
 
@@ -83,8 +86,6 @@
 
 # okhttp
 
--keepattributes Signature
--keepattributes *Annotation*
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
 -dontwarn com.squareup.okhttp.**
@@ -96,8 +97,6 @@
 #-keep class com.squareup.okhttp3.** { *;}
 #-dontwarn okio.*
 
--keepattributes Signature
--keepattributes *Annotation*
 -keep class okhttp3.** { *; }
 -keep interface okhttp3.** { *; }
 -dontwarn okhttp3.**
@@ -123,25 +122,17 @@
 
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature
 -keepattributes Exceptions
 
 # Parcel library
 -keep class **$$Parcelable { *; }
-
-#gson
-
--keepattributes Signature
-
-# For using GSON @Expose annotation
--keepattributes *Annotation*
 
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
+#-keep class com.google.gson.examples.android.model.** { *; }
 
 
 #Event bus
@@ -170,9 +161,6 @@
 #Netty
 
 -keepattributes Signature,InnerClasses
--keepclasseswithmembers class io.netty.** {
-    *;
-}
 
 -keep class org.apache.log4j.* {*;}
 
