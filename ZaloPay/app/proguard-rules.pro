@@ -359,6 +359,8 @@
 
 -dontwarn vn.com.zalopay.wallet.**
 
+-keep class vn.com.zalopay.game.businnesslogic.entity.** { *; }
+
 
 # Don't mess with classes with native methods
 
