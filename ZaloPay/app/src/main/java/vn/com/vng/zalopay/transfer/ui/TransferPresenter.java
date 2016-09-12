@@ -48,11 +48,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private ITransferView mView;
     private PaymentWrapper paymentWrapper;
 
-//    private ZaloFriend mCurrentZaloFriend;
-//    private MappingZaloAndZaloPay mCurrentMappingZaloAndZaloPay;
-//    private long mCurrentAmount;
-//    private String mCurrentMessage;
-
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private String mValidMinAmount;
     private String mValidMaxAmount;
@@ -61,11 +56,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private User user;
     private NotificationStore.Repository mNotificationRepository;
-
-    private void clearCurrentData() {
-//        mCurrentZaloFriend = null;
-//        mCurrentMappingZaloAndZaloPay = null;
-    }
 
     @Inject
     public TransferPresenter(User user, NotificationStore.Repository notificationRepository) {
@@ -125,11 +115,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 }
 
                 saveTransferRecentToDB();
-                clearCurrentData();
-
-               /* if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-                    sendNotificationSuccess();
-                }*/
             }
 
             @Override
@@ -307,8 +292,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             if (mTransaction == null) {
                 return;
             }
-
-//            int transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
 
             transferRepository.append(mTransaction,
                     Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
@@ -497,17 +480,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         checkShowBtnContinue();
     }
-
-//    private void onUpdateReceiverInfo(Person person) {
-//        if (mView == null || person == null) {
-//            return;
-//        }
-//
-//        mTransaction.zaloPayName = person.zalopayname;
-//        mTransaction.displayName = person.displayName;
-//        mTransaction.avatar = person.avatar;
-////        mTransaction.phoneNumber = person.phonenumber;
-//    }
 
     @Override
     public void initView(ZaloFriend zaloFriend, RecentTransaction transaction, Long amount, String message) {

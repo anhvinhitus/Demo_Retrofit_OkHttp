@@ -272,6 +272,12 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startTransferActivity(Activity context, Bundle bundle) {
+        Intent intent = new Intent(context, TransferActivity.class);
+        intent.putExtras(bundle);
+        context.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+    }
+
     public void startUpdateProfile3Activity(Context context) {
         if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);

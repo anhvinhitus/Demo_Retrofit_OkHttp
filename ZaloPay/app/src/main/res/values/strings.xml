@@ -162,7 +162,7 @@
     <string name="hint_zalopay_name">Tên tài khoản Zalo Pay</string>
     <string name="valid_zalopay_name">Tên tài khoản hợp lệ</string>
     <string name="invalid_zalopay_name">Tên tài khoản đã được sử dụng</string>
-    <string name="note_zalopay_name">Tên tài khoản Zalo Pay là chuỗi ký tự bao gồm các ký tự từ a->z, các số 0-9, không phân biệt chữ hoa, chữ thường.</string>
+    <string name="note_zalopay_name">Tên tài khoản Zalo Pay là chuỗi ký tự bao gồm các ký tự từ a->z, các số 0&#8211;9, không phân biệt chữ hoa, chữ thường.</string>
     <string name="invalid__zalopay_name">Tên tài khoản Zalo Pay không hợp lệ</string>
     <string name="phone_support">1900545436</string>
     <string name="terms_of_use_1">Để bảo đảm quyền lợi tốt nhất cho khách hàng, Quý khách vui lòng cập nhật đầy đủ mục thông tin cá nhân.</string>
@@ -277,7 +277,7 @@
     <string name="intro.app.title.step2">TỰ CHỌN TÊN TÀI KHOẢN</string>
     <string name="intro.app.content.step2">Tên Tài Khoản dùng để chuyển khoản\n hay nhận tiền giống như tài khoản ngân hàng.</string>
     <string name="intro.app.title.step3">NHIỀU DỊCH VỤ TIỆN ÍCH</string>
-    <string name="intro.app.content.step3">Hỗ trợ thanh toán nhiều dịch vụ thiết yếu\n như tiền điện, tiền nước, Internet,\n nạp tiền điện thoại...</string>
+    <string name="intro.app.content.step3">Hỗ trợ thanh toán nhiều dịch vụ thiết yếu\n như tiền điện, tiền nước, Internet,\n nạp tiền điện thoại&#8230;</string>
     <string name="intro.app.title.step4">LÌ XÌ</string>
     <string name="intro.app.content.step4">Lì xì cho cả nhóm hoặc cá nhân\n Tăng niềm vui bằng cách lì xì số tiền ngẫu nhiên\n hay bằng nhau.</string>
     <string name="intro.app.title.step5">THANH TOÁN TRONG 2 GIÂY</string>
@@ -292,7 +292,7 @@
     <string name="warning_update_zalopay_name">Tên tài khoản được tạo một lần duy nhất và không được thay đổi.\nBạn có chắc muốn dùng tên này không?</string>
     <string name="lbl.edit.account.name">Tên tài khoản Zalo Pay để nhận/chuyển khoản cho bạn bè nhanh nhất</string>
     <string name="hint.edit.account">Tên tài khoản bao gồm:</string>
-    <string name="hint.edit.account1">Độ dài từ 4-24 ký tự (gồm chữ và số)</string>
+    <string name="hint.edit.account1">Độ dài từ 4 &#8211; 24 ký tự (gồm chữ và số)</string>
     <string name="hint.edit.account2">Không phân biệt chữ hoa, thường</string>
     <string name="hint.edit.account3">Chỉ được đăng ký một lần duy nhất</string>
 

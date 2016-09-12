@@ -51,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
+            android:maxLength="@integer/max_length_zalopay_name"
             android:maxWidth="280dp"
             android:textSize="@dimen/font_size_medium" />
 

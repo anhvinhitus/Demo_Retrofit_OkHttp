@@ -118,6 +118,15 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.container1)
     View mContainerView;
 
+    @BindView(R.id.btnRemoveFrontCmnd)
+    View btnRemoveFrontImage;
+
+    @BindView(R.id.btnRemoveBackCmnd)
+    View btnRemoveBackImage;
+
+    @BindView(R.id.btnRemoveAvatar)
+    View btnRemoveAvatar;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -166,6 +175,10 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                         navigator.startTermActivity(getContext());
                     }
                 });
+
+        btnRemoveFrontImage.setEnabled(false);
+        btnRemoveBackImage.setEnabled(false);
+        btnRemoveAvatar.setEnabled(false);
     }
 
     @Override
@@ -189,6 +202,21 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         viewFlipper.setInAnimation(getContext(), R.anim.in_from_left);
         viewFlipper.setOutAnimation(getContext(), R.anim.out_to_right);
         viewFlipper.showNext();
+    }
+
+    @OnClick(R.id.btnRemoveAvatar)
+    public void onClickRemoveAvatar() {
+        clearAvatar();
+    }
+
+    @OnClick(R.id.btnRemoveBackCmnd)
+    public void onClickRemoveBackImage() {
+        clearBackgroundImage();
+    }
+
+    @OnClick(R.id.btnRemoveFrontCmnd)
+    public void onClickRemoveFrontImage() {
+        clearFrontImage();
     }
 
     @OnClick(R.id.btnContinue)
@@ -376,16 +404,43 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     void loadForegroundImageCMND(Uri uri) {
         loadImage(mFgCmndView, uri);
         mTvFgCmndView.setVisibility(View.GONE);
+        btnRemoveFrontImage.setEnabled(true);
+    }
+
+    void clearFrontImage() {
+        mFgCmndView.setImageDrawable(null);
+        mFgCmndView.setVisibility(View.GONE);
+        mTvFgCmndView.setVisibility(View.VISIBLE);
+        btnRemoveFrontImage.setEnabled(false);
+        mUriFgCmnd = null;
     }
 
     void loadAvatar(Uri uri) {
         loadImage(mAvatarView, uri);
         mTvAvatarView.setVisibility(View.GONE);
+        btnRemoveAvatar.setEnabled(true);
+    }
+
+    void clearAvatar() {
+        mAvatarView.setImageDrawable(null);
+        mAvatarView.setVisibility(View.GONE);
+        mTvAvatarView.setVisibility(View.VISIBLE);
+        btnRemoveAvatar.setEnabled(false);
+        mUriAvatar = null;
     }
 
     void loadBackgroundImageCMND(Uri uri) {
         loadImage(mBgCmndView, uri);
         mTvBgCmndView.setVisibility(View.GONE);
+        btnRemoveBackImage.setEnabled(true);
+    }
+
+    void clearBackgroundImage() {
+        mBgCmndView.setImageDrawable(null);
+        mBgCmndView.setVisibility(View.GONE);
+        mTvBgCmndView.setVisibility(View.VISIBLE);
+        btnRemoveBackImage.setEnabled(false);
+        mUriBgCmnd = null;
     }
 
     private void loadImage(ImageView image, Uri uri) {
@@ -395,21 +450,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         image.setImageURI(uri);
         image.setVisibility(View.VISIBLE);
-
-       /*   String filePath = UriUtil.getPath(getContext(), uri);
-        Timber.d("loadImage: filePath %s", filePath);
-        if (TextUtils.isEmpty(filePath)) {
-            return;
-        }
-
-      Glide.with(this).load(filePath)
-                .placeholder(R.color.silver)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .dontTransform()
-                .centerCrop()
-                .into(image);
-        image.setVisibility(View.VISIBLE);*/
     }
 
     @Override

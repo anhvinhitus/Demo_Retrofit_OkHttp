@@ -10,6 +10,8 @@ import android.widget.EditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
@@ -48,6 +50,19 @@ public class SetAmountFragment extends BaseFragment {
 
     @OnClick(R.id.btnUpdate)
     public void onClickUpdate() {
+
+
+        if (mAmount < Constants.MIN_TRANSFER_MONEY) {
+            textInputAmountView.setError(String.format(getString(R.string.min_money), Constants.MIN_TRANSFER_MONEY));
+            return;
+        }
+
+        if (mAmount > Constants.MAX_TRANSFER_MONEY) {
+            textInputAmountView.setError(String.format(getString(R.string.max_money), Constants.MAX_TRANSFER_MONEY));
+            return;
+        }
+
+
         Intent data = new Intent();
         Bundle bundle = new Bundle();
         bundle.putLong("amount", mAmount);
@@ -81,8 +96,8 @@ public class SetAmountFragment extends BaseFragment {
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    @OnTextChanged(R.id.edtAmount)
+    public void onTextChanged(CharSequence s) {
+        textInputAmountView.setError("");
     }
 }

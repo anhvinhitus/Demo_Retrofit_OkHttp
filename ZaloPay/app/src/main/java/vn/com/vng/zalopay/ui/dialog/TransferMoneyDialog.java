@@ -1,10 +1,10 @@
 package vn.com.vng.zalopay.ui.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -38,10 +38,13 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyView {
 
-    public TransferMoneyDialog(Context context) {
-        super(context, R.style.AlertDialogStyle);
+    private Activity activity;
+
+    public TransferMoneyDialog(Activity activity) {
+        super(activity, R.style.AlertDialogStyle);
         this.setCancelable(true);
         this.setCanceledOnTouchOutside(false);
+        this.activity = activity;
     }
 
     private SweetAlertDialog mProgressDialog;
@@ -90,7 +93,9 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
 
     @OnTextChanged(R.id.tvAccountName)
     public void onTextChanged(CharSequence s) {
-        isValid(s.toString());
+        if (isValidChanged(s.toString())) {
+            showError(null);
+        }
     }
 
     public void setWidthDialog() {
@@ -108,23 +113,28 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
         super.onDetachedFromWindow();
     }
 
-    private boolean isValid(String s) {
-        boolean isValid = false;
-
-        if (!ValidateUtil.isValidLengthZPName(s)) {
+    private boolean isValidExt(String s) {
+        if (s.length() == 0) {
+            showError(getContext().getString(R.string.exception_empty_account));
+            return false;
+        } else if (!ValidateUtil.isValidLengthZPName(s)) {
             showError(getContext().getString(R.string.exception_account_name_length));
-        } else if (s.indexOf(" ") > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidChanged(String s) {
+        if (s.indexOf(" ") > 0) {
             showError(getContext().getString(R.string.exception_account_name_with_space));
+            return false;
         } else if (!ValidateUtil.isValidZaloPayName(s)) {
             showError(getContext().getString(R.string.exception_account_name_special_char));
-        } else {
-            showError(null);
-
-            if (!TextUtils.isEmpty(s)) {
-                isValid = true;
-            }
+            return false;
         }
-        return isValid;
+
+        return true;
     }
 
     @OnClick(R.id.cancel_button)
@@ -137,10 +147,17 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
         Timber.d("name %s", mAccountNameView.getText().toString());
         String s = mAccountNameView.getText().toString().trim();
 
-        boolean isValid = isValid(s);
-        if (isValid) {
-            presenter.getUserInfo(s);
+        boolean isValidExt = isValidExt(s);
+        if (!isValidExt) {
+            return;
         }
+        boolean isValid = isValidChanged(s);
+        if (!isValid) {
+            return;
+        }
+
+        presenter.getUserInfo(s);
+
     }
 
     public void showLoading() {
@@ -172,8 +189,6 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
 
     @Override
     public void onGetProfileSuccess(Person person, String zaloPayName) {
-        dismiss();
-
         RecentTransaction item = new RecentTransaction();
         item.avatar = person.avatar;
         item.zaloPayId = person.zaloPayId;
@@ -183,6 +198,7 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
-        navigator.startTransferActivity(getContext(), bundle);
+        navigator.startTransferActivity(activity, bundle);
+        dismiss();
     }
 }
