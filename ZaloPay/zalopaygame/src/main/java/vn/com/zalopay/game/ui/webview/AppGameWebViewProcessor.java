@@ -91,8 +91,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (AppGameGlobal.getDialog() != null) {
             AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
                     AppGameGlobal.getString(R.string.appgame_error_loading),
-                    AppGameGlobal.getString(R.string.appgame_button_dialog_close),
                     AppGameGlobal.getString(R.string.appgame_button_dialog_retry),
+                    AppGameGlobal.getString(R.string.appgame_button_dialog_close),
                     new IDialogListener() {
                         @Override
                         public void onClose() {
