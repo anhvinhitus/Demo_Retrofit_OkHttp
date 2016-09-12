@@ -1,23 +1,13 @@
 package vn.com.vng.zalopay.transfer.ui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.parceler.Parcels;
 
@@ -27,14 +17,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.ValidateUtil;
 
 /**
  * A fragment representing a list of Items.
@@ -128,12 +116,6 @@ public class TransferHomeFragment extends BaseFragment implements
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        presenter.getRecent();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         presenter.resume();
@@ -153,15 +135,6 @@ public class TransferHomeFragment extends BaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == vn.com.vng.zalopay.Constants.REQUEST_CODE_TRANSFER) {
-            if (resultCode == Activity.RESULT_OK) {
-                getActivity().finish();
-            }
-        }
     }
 
     @Override

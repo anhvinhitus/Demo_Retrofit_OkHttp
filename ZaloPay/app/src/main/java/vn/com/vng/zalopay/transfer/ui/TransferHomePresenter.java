@@ -43,7 +43,7 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
 
     @Override
     public void resume() {
-
+        this.getRecent();
     }
 
     @Override
@@ -63,13 +63,6 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
         compositeSubscription.add(subscription);
     }
 
-    public void getUserInfo(String zpName) {
-        Subscription subscription = accountRepository.getUserInfoByZaloPayName(zpName)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UserInfoSubscriber(zpName));
-        compositeSubscription.add(subscription);
-    }
-
     private class RecentSubscriber extends DefaultSubscriber<List<RecentTransaction>> {
 
         @Override
@@ -83,30 +76,4 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
             mView.setData(recentTransactions);
         }
     }
-
-    private class UserInfoSubscriber extends DefaultSubscriber<Person> {
-
-        String zaloPayName;
-
-        public UserInfoSubscriber(String zaloPayName) {
-            this.zaloPayName = zaloPayName;
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "onError");
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-
-            String message = ErrorMessageFactory.create(applicationContext, e);
-            mView.showError(message);
-        }
-
-        @Override
-        public void onNext(Person person) {
-            mView.onGetProfileSuccess(person, zaloPayName);
-        }
-    }
-
 }
