@@ -305,11 +305,14 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                 if (hasFocus) {
                     edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
                     return;
-                }
-                if (!isValidPhone()) {
-                    showPhoneError();
                 } else {
-                    hidePhoneError();
+                    if (TextUtils.isEmpty(edtPhone.getText().toString())) {
+                        hidePhoneError();
+                    } else if (!isValidPhone()) {
+                        showPhoneError();
+                    } else {
+                        hidePhoneError();
+                    }
                 }
             }
         });
