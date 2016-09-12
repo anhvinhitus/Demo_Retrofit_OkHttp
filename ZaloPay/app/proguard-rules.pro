@@ -40,6 +40,8 @@
 -keepattributes Signature, *Annotation*
 
 # React Native
+-keep class com.facebook.react.** { *; }
+
 
 # Keep our interfaces so they can be used by other ProGuard rules.
 # See http://sourceforge.net/p/proguard/bugs/466/
@@ -69,6 +71,33 @@
 -keepclassmembers class *  { @com.facebook.react.uimanager.UIProp <fields>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
+
+# Keep our interfaces so they can be used by other ProGuard rules.
+# See http://sourceforge.net/p/proguard/bugs/466/
+-keep,allowobfuscation @interface com.facebook.proguard.annotations.DoNotStrip
+-keep,allowobfuscation @interface com.facebook.proguard.annotations.KeepGettersAndSetters
+-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+
+# Do not strip any method/class that is annotated with @DoNotStrip
+-keep @com.facebook.proguard.annotations.DoNotStrip class *
+-keep @com.facebook.common.internal.DoNotStrip class *
+-keepclassmembers class * {
+    @com.facebook.proguard.annotations.DoNotStrip *;
+    @com.facebook.common.internal.DoNotStrip *;
+}
+
+-keepclassmembers @com.facebook.proguard.annotations.KeepGettersAndSetters class * {
+  void set*(***);
+  *** get*();
+}
+
+-keep class * extends com.facebook.react.bridge.JavaScriptModule { *; }
+-keep class * extends com.facebook.react.bridge.NativeModule { *; }
+-keepclassmembers,includedescriptorclasses class * { native <methods>; }
+-keepclassmembers class *  { @com.facebook.react.uimanager.UIProp <fields>; }
+-keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
+-keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
+
 
 -dontwarn com.facebook.react.**
 
@@ -321,37 +350,15 @@
 
 
 #Payment SDK
+-keep class vn.com.zalopay.wallet.** { *; }
 
--keep public class vn.com.zalopay.wallet.** {
-  public protected *;
-}
-
-#-keep public class io.card.payment.** {
+#-keep public class vn.com.zalopay.wallet.** {
 #  public protected *;
 #}
 
+
 -dontwarn vn.com.zalopay.wallet.**
 
-
-# ---- REQUIRED card.io CONFIG ----------------------------------------
-# card.io is a native lib, so anything crossing JNI must not be changed
-
-# Don't obfuscate DetectionInfo or public fields, since
-# it is used by native methods
-#-keep class io.card.payment.DetectionInfo
-#-keepclassmembers class io.card.payment.DetectionInfo {
-#public *;
-#}
-
-#-keep class io.card.payment.CreditCard
-#-keep class io.card.payment.CreditCard$1
-#-keepclassmembers class io.card.payment.CreditCard {
-#*;
-#}
-
-#-keepclassmembers class io.card.payment.CardScanner {
-#*** onEdgeUpdate(...);
-#}
 
 # Don't mess with classes with native methods
 
@@ -363,15 +370,6 @@ native <methods>;
 native <methods>;
 }
 
-#-keep public class io.card.payment.* {
-#public protected *;
-#}
-
-# required to suppress errors when building on android 22
-#-dontwarn io.card.payment.CardIOActivity
-
-#-keep class io.card.payment.OverlayView
-#-keep class io.card.payment.Util
 
 #Zalo SDK
 
