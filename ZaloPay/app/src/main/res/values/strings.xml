@@ -177,7 +177,7 @@
 
     <string name="pin_title">Tạo PIN để thanh toán qua số dư tài khoản và thẻ đã lưu</string>
     <string name="hint_pin">Mã số PIN</string>
-    <string name="invalid_pin">Mã số PIN không hợp lệ</string>
+    <string name="invalid_pin">Nhập vào mã PIN 6 số</string>
     <string name="pin.mismatch">Mã số PIN không khớp</string>
     <string name="pin.not.change">PIN mới phải khác PIN cũ</string>
     <string name="note_pin">Là mã số bí mật khi thực hiện thanh toán hoặc giao dịch</string>
