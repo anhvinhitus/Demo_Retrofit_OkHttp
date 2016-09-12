@@ -55,6 +55,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate_stroke"
+                android:layout_marginTop="@dimen/spacing.medium.t"
                 android:background="@color/separate" />
 
             <LinearLayout
