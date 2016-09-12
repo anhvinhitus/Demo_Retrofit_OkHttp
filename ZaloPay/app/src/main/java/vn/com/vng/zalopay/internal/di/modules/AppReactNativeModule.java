@@ -41,8 +41,6 @@ public class AppReactNativeModule {
         StringBuilder builder = new StringBuilder();
         if (BuildConfig.DEBUG) {
             builder.append(context.getCacheDir().getAbsolutePath());
-            builder.append(File.separator)
-                    .append(context.getPackageName());
         } else {
             builder.append(context.getFilesDir().getAbsolutePath());
             builder.append(File.separator)
