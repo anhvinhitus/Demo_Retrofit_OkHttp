@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/layoutChangePin"
@@ -24,7 +24,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/spacing.medium.l"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_doimapin"/>
+                android:src="@drawable/ic_doimapin" />
 
             <TextView
                 style="@style/TextView.Profile.Edit"
@@ -34,234 +34,250 @@
                 android:layout_marginLeft="@dimen/spacing.medium.l"
                 android:layout_weight="1.0"
                 android:text="@string/reset_pin"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing.medium"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_arrow_right"/>
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/birthday"/>
-
-        <TextView
-            android:id="@+id/tvBirthday"
-            style="@style/TextView.Profile.Edit"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:hint="@string/not_update"/>
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium">
+
+            <TextView
+                style="@style/TextView.Item.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/birthday" />
+
+            <TextView
+                android:id="@+id/tvBirthday"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:hint="@string/not_update" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:background="@color/separate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium">
+
+            <TextView
+                style="@style/TextView.Item.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gender" />
+
+            <TextView
+                android:id="@+id/tvGender"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:hint="@string/not_update" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
-
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/gender"/>
-
-        <TextView
-            android:id="@+id/tvGender"
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:hint="@string/not_update"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <LinearLayout
-        android:id="@+id/layoutAccountName"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/account_name"/>
-
-        <TextView
-            android:id="@+id/tvAccountName"
-            style="@style/TextView.Profile.Edit"
+        <LinearLayout
+            android:id="@+id/layoutAccountName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableRight="@drawable/ic_arrow_right"
-            android:gravity="right|center_vertical"
-            android:hint="@string/not_update"/>
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium">
+
+            <TextView
+                style="@style/TextView.Item.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/account_name" />
+
+            <TextView
+                android:id="@+id/tvAccountName"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing.small"
+                android:drawableRight="@drawable/ic_arrow_right"
+                android:gravity="right|center_vertical"
+                android:hint="@string/not_update" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:background="@color/separate" />
+
+        <LinearLayout
+            android:id="@+id/layoutPhone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium">
+
+            <TextView
+                style="@style/TextView.Item.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_phone" />
+
+            <TextView
+                android:id="@+id/tvPhone"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing.small"
+                android:drawableRight="@drawable/ic_arrow_right"
+                android:gravity="right|center_vertical"
+                android:hint="@string/not_update" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
-
-    <LinearLayout
-        android:id="@+id/layoutPhone"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
-
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_phone"/>
-
-        <TextView
-            android:id="@+id/tvPhone"
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableRight="@drawable/ic_arrow_right"
-            android:gravity="right|center_vertical"
-            android:hint="@string/not_update"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
-
+        android:background="@color/separate" />
 
     <LinearLayout
-        android:id="@+id/layoutEmail"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_email"/>
-
-        <TextView
-            android:id="@+id/tvEmail"
-            style="@style/TextView.Profile.Edit"
+        <LinearLayout
+            android:id="@+id/layoutEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableRight="@drawable/ic_arrow_right"
-            android:gravity="right|center_vertical"
-            android:hint="@string/not_update"/>
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium">
+
+            <TextView
+                style="@style/TextView.Item.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_email" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing.small"
+                android:drawableRight="@drawable/ic_arrow_right"
+                android:gravity="right|center_vertical"
+                android:hint="@string/not_update" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:background="@color/separate" />
+
+        <LinearLayout
+            android:id="@+id/layoutCmnd"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium">
+
+            <TextView
+                style="@style/TextView.Item.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cmnd_passpost" />
+
+            <TextView
+                android:id="@+id/tvCMND"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing.small"
+                android:drawableRight="@drawable/ic_arrow_right"
+                android:gravity="right|center_vertical"
+                android:hint="@string/not_update" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
-
-    <LinearLayout
-        android:id="@+id/layoutCmnd"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium">
-
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cmnd_passpost"/>
-
-        <TextView
-            android:id="@+id/tvCMND"
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableRight="@drawable/ic_arrow_right"
-            android:gravity="right|center_vertical"
-            android:hint="@string/not_update"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -274,7 +290,7 @@
             style="@style/TextView.Item.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/zalopay_id"/>
+            android:text="@string/zalopay_id" />
 
         <TextView
             android:id="@+id/tvZaloPayId"
@@ -282,7 +298,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:hint="@string/not_update"/>
+            android:hint="@string/not_update" />
     </LinearLayout>
 
     <!--<View
@@ -316,6 +332,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 </LinearLayout>
 

@@ -38,6 +38,9 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @BindView(R.id.tv_balance)
     TextView tvBalance;
 
+    @BindView(R.id.layoutAccountName)
+    View layoutAccountName;
+
     @BindView(R.id.tvAccountName)
     TextView tvAccountName;
 
@@ -191,11 +194,11 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
         if (TextUtils.isEmpty(zaloPayName)) {
             tvAccountName.setHint(getString(R.string.not_update));
-            tvAccountName.setOnClickListener(mOnClickAccountName);
+            layoutAccountName.setOnClickListener(mOnClickAccountName);
         } else {
             tvAccountName.setText(zaloPayName);
             tvAccountName.setCompoundDrawables(null, null, null, null);
-            tvAccountName.setOnClickListener(null);
+            layoutAccountName.setOnClickListener(null);
         }
     }
 
