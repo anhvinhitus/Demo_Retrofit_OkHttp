@@ -143,7 +143,7 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_other">Thêm Thẻ</string>
-    <string name="add_card_now">Thêm Thẻ Ngay</string>
+    <string name="add_card_now">Lưu Thẻ Ngay</string>
 
     <string name="alert_processing">Đang xử lý</string>
 
@@ -275,7 +275,7 @@
     <string name="intro.app.title.step1">ĐĂNG NHẬP VỚI ZALO</string>
     <string name="intro.app.content.step1">Không cần đăng ký mới.\n Đăng nhập dễ dàng với tài khoản Zalo.</string>
     <string name="intro.app.title.step2">TỰ CHỌN TÊN TÀI KHOẢN</string>
-    <string name="intro.app.content.step2">Tên Tài Khoản dùng để chuyển khoản hay nhận tiền giống như tài khoản ngân hàng.</string>
+    <string name="intro.app.content.step2">Tên Tài Khoản dùng để chuyển khoản\n hay nhận tiền giống như tài khoản ngân hàng.</string>
     <string name="intro.app.title.step3">NHIỀU DỊCH VỤ TIỆN ÍCH</string>
     <string name="intro.app.content.step3">Hỗ trợ thanh toán nhiều dịch vụ thiết yếu\n như tiền điện, tiền nước, Internet,\n nạp tiền điện thoại...</string>
     <string name="intro.app.title.step4">LÌ XÌ</string>
