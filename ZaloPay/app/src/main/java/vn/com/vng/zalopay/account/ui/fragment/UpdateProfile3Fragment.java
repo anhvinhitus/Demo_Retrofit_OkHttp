@@ -119,13 +119,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     View mContainerView;
 
     @BindView(R.id.btnRemoveFrontCmnd)
-    View btnRemoveFrontImage;
+    ImageView btnRemoveFrontImage;
 
     @BindView(R.id.btnRemoveBackCmnd)
-    View btnRemoveBackImage;
+    ImageView btnRemoveBackImage;
 
     @BindView(R.id.btnRemoveAvatar)
-    View btnRemoveAvatar;
+    ImageView btnRemoveAvatar;
 
     @Override
     protected void setupFragmentComponent() {
@@ -176,9 +176,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                     }
                 });
 
-        btnRemoveFrontImage.setEnabled(false);
-        btnRemoveBackImage.setEnabled(false);
-        btnRemoveAvatar.setEnabled(false);
+        btnRemoveFrontImage.setClickable(false);
+        btnRemoveBackImage.setClickable(false);
+        btnRemoveAvatar.setClickable(false);
     }
 
     @Override
@@ -404,42 +404,64 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     void loadForegroundImageCMND(Uri uri) {
         loadImage(mFgCmndView, uri);
         mTvFgCmndView.setVisibility(View.GONE);
-        btnRemoveFrontImage.setEnabled(true);
+        btnRemoveFrontImage.setClickable(true);
+        Glide.with(getContext())
+                .load(R.drawable.ic_remove_circle)
+                .into(btnRemoveFrontImage);
     }
 
     void clearFrontImage() {
         mFgCmndView.setImageDrawable(null);
         mFgCmndView.setVisibility(View.GONE);
         mTvFgCmndView.setVisibility(View.VISIBLE);
-        btnRemoveFrontImage.setEnabled(false);
+        btnRemoveFrontImage.setClickable(false);
+        Glide.with(getContext())
+                .load(R.drawable.ic_camera)
+                .into(btnRemoveFrontImage);
         mUriFgCmnd = null;
     }
 
     void loadAvatar(Uri uri) {
         loadImage(mAvatarView, uri);
         mTvAvatarView.setVisibility(View.GONE);
-        btnRemoveAvatar.setEnabled(true);
+        btnRemoveAvatar.setClickable(true);
+
+        Glide.with(getContext())
+                .load(R.drawable.ic_remove_circle)
+                .into(btnRemoveAvatar);
     }
 
     void clearAvatar() {
         mAvatarView.setImageDrawable(null);
         mAvatarView.setVisibility(View.GONE);
         mTvAvatarView.setVisibility(View.VISIBLE);
-        btnRemoveAvatar.setEnabled(false);
+
+        Glide.with(getContext())
+                .load(R.drawable.ic_camera)
+                .into(btnRemoveAvatar);
+        btnRemoveAvatar.setClickable(false);
         mUriAvatar = null;
     }
 
     void loadBackgroundImageCMND(Uri uri) {
         loadImage(mBgCmndView, uri);
         mTvBgCmndView.setVisibility(View.GONE);
-        btnRemoveBackImage.setEnabled(true);
+        btnRemoveBackImage.setClickable(true);
+        Glide.with(getContext())
+                .load(R.drawable.ic_remove_circle)
+                .into(btnRemoveBackImage);
     }
 
     void clearBackgroundImage() {
         mBgCmndView.setImageDrawable(null);
         mBgCmndView.setVisibility(View.GONE);
         mTvBgCmndView.setVisibility(View.VISIBLE);
-        btnRemoveBackImage.setEnabled(false);
+        btnRemoveBackImage.setClickable(false);
+
+        btnRemoveBackImage.destroyDrawingCache();
+        Glide.with(getContext())
+                .load(R.drawable.ic_camera)
+                .into(btnRemoveBackImage);
         mUriBgCmnd = null;
     }
 
