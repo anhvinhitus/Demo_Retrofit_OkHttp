@@ -86,7 +86,10 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
             if (pinProfileView != null) {
                 pinProfileView.setError(ErrorMessageFactory.create(applicationContext, e));
                 if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.INCORRECT_PIN) {
-                    pinProfileView.clearPin();
+                    if (((BodyException) e).errorCode == NetworkError.INCORRECT_PIN
+                            || ((BodyException) e).errorCode == NetworkError.INCORRECT_PIN_LIMIT) {
+                        pinProfileView.clearPin();
+                    }
                 }
             }
         }
