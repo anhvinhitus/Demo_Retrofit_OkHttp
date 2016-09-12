@@ -124,6 +124,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
 
     @Override
     public void onDetachedFromWindow() {
+        Timber.d("onDetachedFromWindow");
         presenter.destroyView();
         listener = null;
         super.onDetachedFromWindow();
@@ -143,7 +144,6 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     public void onPinSuccess() {
         Timber.d("onPinSuccess");
         pinSuccess = true;
-        dismiss();
         navigator.setLastTimeCheckPin(System.currentTimeMillis());
 
         if (pendingIntent != null) {
@@ -153,6 +153,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         if (listener != null) {
             listener.onPinSuccess();
         }
+        dismiss();
     }
 
     @Override
