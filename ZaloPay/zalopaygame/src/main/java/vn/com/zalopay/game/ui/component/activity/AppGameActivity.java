@@ -3,7 +3,13 @@ package vn.com.zalopay.game.ui.component.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
@@ -17,6 +23,9 @@ public class AppGameActivity extends AppGameBaseActivity {
     private AppGameFragment mFragment;
     protected Toolbar mToolbar;
 
+    ImageView mLogoView;
+    TextView mTitleView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Timber.d("onCreate start");
@@ -24,8 +33,11 @@ public class AppGameActivity extends AppGameBaseActivity {
         setContentView(R.layout.webapp_activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbarLayout);
         setSupportActionBar(mToolbar);
+        mLogoView = (ImageView) mToolbar.findViewById(R.id.iv_logo);
+        mTitleView = (TextView) mToolbar.findViewById(R.id.title);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         Fragment subView = getView();
@@ -92,16 +104,29 @@ public class AppGameActivity extends AppGameBaseActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-        }
+        mTitleView.setText(title);
     }
 
     @Override
     public void setTitle(int titleId) {
+        mTitleView.setText(titleId);
+    }
+
+    public void setLogo(String url) {
+        Timber.d("setLogo url %s", url);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(titleId);
+            if (TextUtils.isEmpty(url)) {
+                mLogoView.setVisibility(View.GONE);
+            } else {
+                mLogoView.setVisibility(View.VISIBLE);
+                Glide.with(this).load(url)
+                        .centerCrop()
+                        .placeholder(R.color.silver)
+                        .error(R.color.silver)
+                        .into(mLogoView);
+            }
         }
+
     }
 
     public Toolbar getToolbar() {

@@ -7,11 +7,11 @@
 
     <include
         android:id="@+id/toolbarLayout"
-        layout="@layout/toolbar"></include>
+        layout="@layout/toolbar_game" />
 
     <RelativeLayout
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></RelativeLayout>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

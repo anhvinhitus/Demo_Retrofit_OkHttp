@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.webkit.ValueCallback;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
+import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 
 /**
  * Created by huuhoa on 9/11/16.
@@ -40,8 +44,18 @@ class GetNavigationCallback implements ValueCallback<String> {
                 return;
             }
 
-            String title = jsonObject.getAsJsonObject().get("title").getAsString();
-            mActivityWeakReference.get().setTitle(title);
+            JsonObject data = jsonObject.getAsJsonObject();
+            String title = data.get("title").getAsString();
+            String thumb = data.get("thumb").getAsString();
+
+            Activity activity = mActivityWeakReference.get();
+            activity.setTitle(title);
+
+            if (activity instanceof AppGameActivity) {
+                ((AppGameActivity) activity).setLogo(thumb);
+            }
+
+
         } catch (Throwable t) {
             Timber.w(t, "Caught error while parsing navigation information");
         }
