@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start|center_vertical"
             android:padding="@dimen/spacing.medium"
-            android:text="@string/btn_start"
+            android:text="@string/btn_cancel"
             android:textColor="@color/white" />
 
         <com.ogaclejapan.smarttablayout.SmartTabLayout
