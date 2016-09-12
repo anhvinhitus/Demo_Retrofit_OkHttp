@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.navigation;
 import android.content.Context;
 import android.content.Intent;
 
+import com.facebook.react.bridge.Promise;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,4 +25,5 @@ public interface INavigator {
 
     Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions);
 
+    boolean promptPIN(Context context, int channel, Promise promise);
 }

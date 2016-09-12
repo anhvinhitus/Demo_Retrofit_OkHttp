@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
@@ -416,5 +417,52 @@ public class Navigator implements INavigator {
 
     public void setLastTimeCheckPin(long time) {
         lastTimeCheckPassword = time;
+    }
+
+
+    @Override
+    public boolean promptPIN(Context context, int channel, final Promise promise) {
+        long now = System.currentTimeMillis();
+
+        if (now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
+            promise.resolve(1);
+            return true;
+        }
+
+        if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            promise.resolve(1);
+            return true;
+        }
+
+
+        if (channel == 2) {
+            try {
+                CShareData shareData = CShareData.getInstance((Activity) context);
+                List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                if (mapCardLis == null || mapCardLis.size() == 0) {
+                    promise.resolve(1);
+                    return true;
+                }
+            } catch (Exception ex) {
+                Timber.d(ex, "startLinkCardActivity");
+                promise.resolve(1);
+                return true;
+            }
+        }
+
+        PinProfileDialog dialog = new PinProfileDialog(context);
+        dialog.setListener(new PinProfileDialog.PinProfileListener() {
+            @Override
+            public void onPinSuccess() {
+                promise.resolve(1);
+            }
+
+            @Override
+            public void onPinError() {
+                promise.resolve(0);
+            }
+        });
+        dialog.show();
+        return false;
     }
 }

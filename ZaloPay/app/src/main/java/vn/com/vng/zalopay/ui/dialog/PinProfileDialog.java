@@ -30,6 +30,12 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class PinProfileDialog extends AlertDialog implements IPinProfileView {
 
+    public interface PinProfileListener {
+        void onPinSuccess();
+
+        void onPinError();
+    }
+
     @BindView(R.id.tvHint)
     TextView tvHint;
 
@@ -47,11 +53,23 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
 
     Intent pendingIntent;
 
+    PinProfileListener listener;
+
+    boolean pinSuccess = false;
+
     public PinProfileDialog(Context context, Intent pendingIntent) {
         super(context, R.style.alert_dialog);
         this.setCancelable(true);
         this.setCanceledOnTouchOutside(false);
         this.pendingIntent = pendingIntent;
+    }
+
+    public PinProfileDialog(Context context) {
+        this(context, null);
+    }
+
+    public void setListener(PinProfileListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -74,6 +92,11 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 hideLoading();
+                if (!pinSuccess) {
+                    if (listener != null) {
+                        listener.onPinError();
+                    }
+                }
             }
         });
 
@@ -102,6 +125,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     public void onDetachedFromWindow() {
         presenter.destroyView();
+        listener = null;
         super.onDetachedFromWindow();
     }
 
@@ -118,9 +142,17 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     public void onPinSuccess() {
         Timber.d("onPinSuccess");
+        pinSuccess = true;
         dismiss();
         navigator.setLastTimeCheckPin(System.currentTimeMillis());
-        getContext().startActivity(pendingIntent);
+
+        if (pendingIntent != null) {
+            getContext().startActivity(pendingIntent);
+        }
+
+        if (listener != null) {
+            listener.onPinSuccess();
+        }
     }
 
     @Override
