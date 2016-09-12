@@ -103,6 +103,9 @@ public class BundleServiceImpl implements BundleService {
         ReactBundleAssetData reactBundleAssetData = mGson.fromJson(bundle, ReactBundleAssetData.class);
 
         for (ReactBundleAssetData.ExternalBundle ebundle : reactBundleAssetData.external_bundle) {
+            String destination = getExternalBundleFolder(ebundle.appid);
+            ensurePaymentAppFolder(destination);
+
             String appVersion = mLocalResourceRepository.getExternalResourceVersion(ebundle.appid);
             if (appVersion != null && appVersion.equalsIgnoreCase(packageInfo.versionName)) {
                 continue;
@@ -147,6 +150,15 @@ public class BundleServiceImpl implements BundleService {
         } catch (Exception e) {
             Timber.w(e, "exception %s", e);
             return false;
+        }
+    }
+
+    private void ensurePaymentAppFolder(String destination) {
+        try {
+            File destinationFolder = new File(destination);
+            destinationFolder.mkdirs();
+        } catch (Exception e) {
+            Timber.w(e, "exception while ensuring payment app folder %s", destination);
         }
     }
 }

@@ -50,6 +50,12 @@ public class FileUtil {
     }
 
     public static void decompress(byte[] compressed, String location) throws IOException {
+        try {
+            File destinationFolder = new File(location);
+            destinationFolder.mkdirs();
+        } catch (Exception e) {
+            Timber.e(e, "Error while creating destination folder for holding decompressed contents");
+        }
 
         InputStream is;
         ZipInputStream zis;
@@ -240,15 +246,13 @@ public class FileUtil {
         }
     }
 
-    public static File ensureDirectory(String path) {
+    static File ensureDirectory(String path) {
         File file = new File(path);
         ensureDirectory(file);
         return file;
     }
 
-    public static void ensureDirectory(File dir) {
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
+    static void ensureDirectory(File dir) {
+        dir.mkdirs();
     }
 }

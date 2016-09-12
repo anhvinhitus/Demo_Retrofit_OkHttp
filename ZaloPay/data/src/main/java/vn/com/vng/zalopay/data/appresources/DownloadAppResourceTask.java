@@ -67,6 +67,7 @@ public class DownloadAppResourceTask {
         Timber.d("destinationPath %s", destinationPath);
 
         FileUtil.ensureDirectory(mBundleRootFolder);
+        FileUtil.ensureDirectory(destinationPath);
 
         boolean result = false;
         try {
