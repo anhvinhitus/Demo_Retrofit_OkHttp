@@ -1,22 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/background_intro"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_intro"
+    android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1.0"/>
+        android:layout_weight="1.0" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_weight="0.0"
-        android:background="@color/intro.line"/>
+        android:background="@color/intro.line" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             android:layout_gravity="start|center_vertical"
             android:padding="@dimen/spacing.medium"
             android:text="@string/btn_start"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <com.ogaclejapan.smarttablayout.SmartTabLayout
             android:id="@+id/indicator"
@@ -50,16 +50,19 @@
             app:stl_indicatorInterpolation="linear"
             app:stl_indicatorThickness="12dp"
             app:stl_underlineColor="@color/transparent"
-            app:stl_underlineThickness="0dp"/>
+            app:stl_underlineThickness="0dp" />
 
-        <TextView
+        <ImageView
             android:id="@+id/tvContinue"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
+            android:background="@color/transparent"
             android:padding="@dimen/spacing.medium"
-            android:text="@string/btn_continue"
-            android:textColor="@color/white"/>
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/white" />
 
         <TextView
             android:id="@+id/tvClose"
@@ -67,9 +70,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
             android:padding="@dimen/spacing.medium"
-            android:text="@string/txt_close"
+            android:text="@string/btn_start"
             android:textColor="@color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 
 </LinearLayout>

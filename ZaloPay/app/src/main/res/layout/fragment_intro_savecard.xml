@@ -53,14 +53,17 @@
             app:stl_underlineColor="@color/transparent"
             app:stl_underlineThickness="0dp"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/tvContinue"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
+            android:background="@color/transparent"
             android:padding="@dimen/spacing.medium"
-            android:text="@string/btn_continue"
-            android:textColor="@color/white"/>
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/white" />
 
         <TextView
             android:id="@+id/tvClose"

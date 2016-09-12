@@ -114,7 +114,6 @@ public class IntroAppFragment extends BaseFragment {
         mViewPager.setAdapter(mPagerAdapter);
         mIndicator.setViewPager(mViewPager);
 
-        mViewPager.setOffscreenPageLimit(2);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -123,7 +122,7 @@ public class IntroAppFragment extends BaseFragment {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == mViewPager.getChildCount()) {
+                if (position == (mPagerAdapter.getCount() - 1)) {
                     tvStart.setVisibility(View.GONE);
                     tvContinue.setVisibility(View.GONE);
                     tvClose.setVisibility(View.VISIBLE);

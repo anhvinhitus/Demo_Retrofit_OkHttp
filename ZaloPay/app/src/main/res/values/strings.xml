@@ -123,7 +123,7 @@
     <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
     <string name="txt_link_card_view_detail">Xem chi tiết</string>
     <string name="txt_link_card_remove_link">Xóa thẻ</string>
-    <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
+    <string name="txt_link_card_empty">Chưa có thẻ nào được lưu</string>
     <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã lưu này không?</string>
     <string name="txt_home_link_card">Lưu Thẻ</string>
     <string name="txt_home_scantopay">Trả Tiền</string>
@@ -265,21 +265,23 @@
     <string name="intro.title.step1">BƯỚC 1</string>
     <string name="intro.content.step1">Nhập thông tin thẻ\n Gồm: Số thẻ, tên chủ thẻ.</string>
     <string name="intro.title.step2">BƯỚC 2</string>
-    <string name="intro.content.step2">Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài\n khoản thẻ vào tài khoản Zalo Pay của bạn\n để kiểm tra tính hợp lệ.</string>
+    <string name="intro.content.step2">Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài\n khoản thẻ vào tài khoản Zalo Pay của bạn\n để kiểm tra tính hợp lệ của thẻ.</string>
     <string name="intro.title.step3">CHẤP NHẬN THẺ</string>
     <string name="intro.content.step3">Zalo Pay hỗ trợ các thẻ ATM nội địa và\n thẻ tín dụng.</string>
     <!-- Link CARDS END-->
 
+    <!-- Intro App Start-->
     <string name="intro.app.title.step1">ĐĂNG NHẬP VỚI ZALO</string>
-    <string name="intro.app.content.step1">Không cần đăng ký mới\n Đăng nhập dễ dàng với tài khoản Zalo\n Tự nhận biết bạn bè đang sử dụng Zalo Pay.</string>
+    <string name="intro.app.content.step1">Không cần đăng ký mới.\n Đăng nhập dễ dàng với tài khoản Zalo.</string>
     <string name="intro.app.title.step2">TỰ CHỌN TÊN TÀI KHOẢN</string>
-    <string name="intro.app.content.step2">Người dùng tự chọn Tên Tài Khoản mình yêu thích\nTên Tài Khoản dùng để chuyển khoản hay nhận tiền\n giống như tài khoản ngân hàng.</string>
+    <string name="intro.app.content.step2">Tên Tài Khoản dùng để chuyển khoản hay nhận tiền giống như tài khoản ngân hàng.</string>
     <string name="intro.app.title.step3">NHIỀU DỊCH VỤ TIỆN ÍCH</string>
     <string name="intro.app.content.step3">Hỗ trợ thanh toán nhiều dịch vụ thiết yếu\n như tiền điện, tiền nước, Internet,\n nạp tiền điện thoại...</string>
     <string name="intro.app.title.step4">LÌ XÌ</string>
-    <string name="intro.app.content.step4">Lì xì cho cả nhóm hoặc cá nhân\n Tăng niềm vui bằng cách lì xì số tiền ngẫu nhiên hay bằng nhau.</string>
+    <string name="intro.app.content.step4">Lì xì cho cả nhóm hoặc cá nhân\n Tăng niềm vui bằng cách lì xì số tiền ngẫu nhiên\n hay bằng nhau.</string>
     <string name="intro.app.title.step5">THANH TOÁN TRONG 2 GIÂY</string>
     <string name="intro.app.content.step5">Giao dịch siêu nhanh, ổn định,\n thành công cao.</string>
+    <!-- Intro App END-->
 
     <string name="my_balance">Số dư của tôi <font size='12'>(VND)</font></string>
     <string name="account_name">Tên tài khoản</string>
