@@ -166,7 +166,10 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void promptPIN(int channel, Promise promise) {
-        navigator.promptPIN(getCurrentActivity(), channel, promise);
+        Timber.d("promptPIN: channel %s", channel);
+        boolean pinSuccess = navigator.promptPIN(getCurrentActivity(), channel, promise);
+
+        Timber.d("promptPIN:  %s", pinSuccess);
     }
 }
 
