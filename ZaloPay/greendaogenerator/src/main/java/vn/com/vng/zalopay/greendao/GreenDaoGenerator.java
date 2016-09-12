@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 38;
+    private static final int APP_DB_VERSION = 39;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -114,14 +114,10 @@ public class GreenDaoGenerator {
 
     private static void addTransferRecent(Schema appSchema) {
         Entity appInfoEntity = appSchema.addEntity("TransferRecent");
-        appInfoEntity.addIdProperty().autoincrement();//zaloId
-        appInfoEntity.addStringProperty("zaloPayId");
-        appInfoEntity.addStringProperty("userName");
+        appInfoEntity.addStringProperty("zaloPayId").primaryKey();
+        appInfoEntity.addStringProperty("zaloPayName");
         appInfoEntity.addStringProperty("displayName");
         appInfoEntity.addStringProperty("avatar");
-        appInfoEntity.addIntProperty("userGender");
-        appInfoEntity.addStringProperty("birthday");
-        appInfoEntity.addBooleanProperty("usingApp");
         appInfoEntity.addStringProperty("phoneNumber");
         appInfoEntity.addIntProperty("transferType");
         appInfoEntity.addLongProperty("amount");

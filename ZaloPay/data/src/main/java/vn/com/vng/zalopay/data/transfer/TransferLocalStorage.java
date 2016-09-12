@@ -24,7 +24,7 @@ public class TransferLocalStorage extends SqlBaseScopeImpl implements TransferSt
 
     @Override
     public List<TransferRecent> get() {
-        return mDao.queryBuilder().orderDesc(TransferRecentDao.Properties.TimeCreate).limit(3).list();
+        return mDao.queryBuilder().orderDesc(TransferRecentDao.Properties.TimeCreate).limit(5).list();
     }
 
     @Override

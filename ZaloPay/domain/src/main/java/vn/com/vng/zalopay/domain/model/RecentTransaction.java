@@ -32,9 +32,6 @@ public class RecentTransaction {
     public String zaloPayName;
     public String displayName;
     public String avatar;
-    public int userGender;
-    public String birthday;
-    public boolean usingApp;
     public String phoneNumber;
     int transferType;
     public long amount;
@@ -43,15 +40,12 @@ public class RecentTransaction {
     public RecentTransaction() {
     }
 
-    public RecentTransaction(long zaloId, String zaloPayId, String userName, String displayName, String avatar, int userGender, String birthday, boolean usingApp, String phoneNumber, int transferType, long amount, String message) {
+    public RecentTransaction(long zaloId, String zaloPayId, String userName, String displayName, String avatar, String phoneNumber, int transferType, long amount, String message) {
         this.zaloId = zaloId;
         this.zaloPayId = zaloPayId;
         this.zaloPayName = userName;
         this.displayName = displayName;
         this.avatar = avatar;
-        this.userGender = userGender;
-        this.birthday = birthday;
-        this.usingApp = usingApp;
         this.phoneNumber = phoneNumber;
         this.transferType = transferType;
         this.amount = amount;
@@ -76,18 +70,6 @@ public class RecentTransaction {
 
     public String getAvatar() {
         return avatar;
-    }
-
-    public int getUserGender() {
-        return userGender;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public boolean isUsingApp() {
-        return usingApp;
     }
 
     public String getPhoneNumber() {

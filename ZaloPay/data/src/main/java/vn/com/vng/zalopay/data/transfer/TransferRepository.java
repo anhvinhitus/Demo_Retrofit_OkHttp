@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.domain.model.RecentTransaction;
 
 /**
  * Created by AnhHieu on 8/15/16.
+ * Implementation for TransferStore.Repository
  */
 public class TransferRepository implements TransferStore.Repository {
 
@@ -29,14 +30,10 @@ public class TransferRepository implements TransferStore.Repository {
     @Override
     public Observable<Boolean> append(RecentTransaction item, int transactionType) {
         TransferRecent transferRecent = new TransferRecent(
-                Long.valueOf(item.getZaloPayId()),
                 item.getZaloPayId(),
                 item.getZaloPayName(),
                 item.getDisplayName(),
                 item.getAvatar(),
-                0,
-                "",
-                true,
                 item.getPhoneNumber(),
                 transactionType,
                 item.amount,
@@ -52,14 +49,11 @@ public class TransferRepository implements TransferStore.Repository {
     public RecentTransaction transform(TransferRecent item) {
         if (item != null) {
             return new RecentTransaction(
-                    item.getId(),
+                    0,
                     item.getZaloPayId(),
-                    item.getUserName(),
+                    item.getZaloPayName(),
                     item.getDisplayName(),
                     item.getAvatar(),
-                    item.getUserGender(),
-                    item.getBirthday(),
-                    item.getUsingApp(),
                     item.getPhoneNumber(),
                     item.getTransferType(),
                     item.getAmount(),

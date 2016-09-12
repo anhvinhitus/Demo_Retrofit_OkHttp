@@ -6,14 +6,10 @@ package vn.com.vng.zalopay.data.cache.model;
  */
 public class TransferRecent {
 
-    private Long id;
     private String zaloPayId;
-    private String userName;
+    private String zaloPayName;
     private String displayName;
     private String avatar;
-    private Integer userGender;
-    private String birthday;
-    private Boolean usingApp;
     private String phoneNumber;
     private Integer transferType;
     private Long amount;
@@ -23,32 +19,20 @@ public class TransferRecent {
     public TransferRecent() {
     }
 
-    public TransferRecent(Long id) {
-        this.id = id;
+    public TransferRecent(String zaloPayId) {
+        this.zaloPayId = zaloPayId;
     }
 
-    public TransferRecent(Long id, String zaloPayId, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String phoneNumber, Integer transferType, Long amount, String message, Long timeCreate) {
-        this.id = id;
+    public TransferRecent(String zaloPayId, String zaloPayName, String displayName, String avatar, String phoneNumber, Integer transferType, Long amount, String message, Long timeCreate) {
         this.zaloPayId = zaloPayId;
-        this.userName = userName;
+        this.zaloPayName = zaloPayName;
         this.displayName = displayName;
         this.avatar = avatar;
-        this.userGender = userGender;
-        this.birthday = birthday;
-        this.usingApp = usingApp;
         this.phoneNumber = phoneNumber;
         this.transferType = transferType;
         this.amount = amount;
         this.message = message;
         this.timeCreate = timeCreate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getZaloPayId() {
@@ -59,12 +43,12 @@ public class TransferRecent {
         this.zaloPayId = zaloPayId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getZaloPayName() {
+        return zaloPayName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setZaloPayName(String zaloPayName) {
+        this.zaloPayName = zaloPayName;
     }
 
     public String getDisplayName() {
@@ -81,30 +65,6 @@ public class TransferRecent {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public Integer getUserGender() {
-        return userGender;
-    }
-
-    public void setUserGender(Integer userGender) {
-        this.userGender = userGender;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public Boolean getUsingApp() {
-        return usingApp;
-    }
-
-    public void setUsingApp(Boolean usingApp) {
-        this.usingApp = usingApp;
     }
 
     public String getPhoneNumber() {

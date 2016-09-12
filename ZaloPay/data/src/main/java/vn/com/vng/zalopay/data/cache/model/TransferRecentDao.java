@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 /** 
  * DAO for table "TRANSFER_RECENT".
 */
-public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
+public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
 
     public static final String TABLENAME = "TRANSFER_RECENT";
 
@@ -23,19 +23,15 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property ZaloPayId = new Property(1, String.class, "zaloPayId", false, "ZALO_PAY_ID");
-        public final static Property UserName = new Property(2, String.class, "userName", false, "USER_NAME");
-        public final static Property DisplayName = new Property(3, String.class, "displayName", false, "DISPLAY_NAME");
-        public final static Property Avatar = new Property(4, String.class, "avatar", false, "AVATAR");
-        public final static Property UserGender = new Property(5, Integer.class, "userGender", false, "USER_GENDER");
-        public final static Property Birthday = new Property(6, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property UsingApp = new Property(7, Boolean.class, "usingApp", false, "USING_APP");
-        public final static Property PhoneNumber = new Property(8, String.class, "phoneNumber", false, "PHONE_NUMBER");
-        public final static Property TransferType = new Property(9, Integer.class, "transferType", false, "TRANSFER_TYPE");
-        public final static Property Amount = new Property(10, Long.class, "amount", false, "AMOUNT");
-        public final static Property Message = new Property(11, String.class, "message", false, "MESSAGE");
-        public final static Property TimeCreate = new Property(12, Long.class, "timeCreate", false, "TIME_CREATE");
+        public final static Property ZaloPayId = new Property(0, String.class, "zaloPayId", true, "ZALO_PAY_ID");
+        public final static Property ZaloPayName = new Property(1, String.class, "zaloPayName", false, "ZALO_PAY_NAME");
+        public final static Property DisplayName = new Property(2, String.class, "displayName", false, "DISPLAY_NAME");
+        public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
+        public final static Property PhoneNumber = new Property(4, String.class, "phoneNumber", false, "PHONE_NUMBER");
+        public final static Property TransferType = new Property(5, Integer.class, "transferType", false, "TRANSFER_TYPE");
+        public final static Property Amount = new Property(6, Long.class, "amount", false, "AMOUNT");
+        public final static Property Message = new Property(7, String.class, "message", false, "MESSAGE");
+        public final static Property TimeCreate = new Property(8, Long.class, "timeCreate", false, "TIME_CREATE");
     };
 
 
@@ -51,19 +47,15 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TRANSFER_RECENT\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"ZALO_PAY_ID\" TEXT," + // 1: zaloPayId
-                "\"USER_NAME\" TEXT," + // 2: userName
-                "\"DISPLAY_NAME\" TEXT," + // 3: displayName
-                "\"AVATAR\" TEXT," + // 4: avatar
-                "\"USER_GENDER\" INTEGER," + // 5: userGender
-                "\"BIRTHDAY\" TEXT," + // 6: birthday
-                "\"USING_APP\" INTEGER," + // 7: usingApp
-                "\"PHONE_NUMBER\" TEXT," + // 8: phoneNumber
-                "\"TRANSFER_TYPE\" INTEGER," + // 9: transferType
-                "\"AMOUNT\" INTEGER," + // 10: amount
-                "\"MESSAGE\" TEXT," + // 11: message
-                "\"TIME_CREATE\" INTEGER);"); // 12: timeCreate
+                "\"ZALO_PAY_ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: zaloPayId
+                "\"ZALO_PAY_NAME\" TEXT," + // 1: zaloPayName
+                "\"DISPLAY_NAME\" TEXT," + // 2: displayName
+                "\"AVATAR\" TEXT," + // 3: avatar
+                "\"PHONE_NUMBER\" TEXT," + // 4: phoneNumber
+                "\"TRANSFER_TYPE\" INTEGER," + // 5: transferType
+                "\"AMOUNT\" INTEGER," + // 6: amount
+                "\"MESSAGE\" TEXT," + // 7: message
+                "\"TIME_CREATE\" INTEGER);"); // 8: timeCreate
     }
 
     /** Drops the underlying database table. */
@@ -77,95 +69,71 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
     protected void bindValues(SQLiteStatement stmt, TransferRecent entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
-        }
- 
         String zaloPayId = entity.getZaloPayId();
         if (zaloPayId != null) {
-            stmt.bindString(2, zaloPayId);
+            stmt.bindString(1, zaloPayId);
         }
  
-        String userName = entity.getUserName();
-        if (userName != null) {
-            stmt.bindString(3, userName);
+        String zaloPayName = entity.getZaloPayName();
+        if (zaloPayName != null) {
+            stmt.bindString(2, zaloPayName);
         }
  
         String displayName = entity.getDisplayName();
         if (displayName != null) {
-            stmt.bindString(4, displayName);
+            stmt.bindString(3, displayName);
         }
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(5, avatar);
-        }
- 
-        Integer userGender = entity.getUserGender();
-        if (userGender != null) {
-            stmt.bindLong(6, userGender);
-        }
- 
-        String birthday = entity.getBirthday();
-        if (birthday != null) {
-            stmt.bindString(7, birthday);
-        }
- 
-        Boolean usingApp = entity.getUsingApp();
-        if (usingApp != null) {
-            stmt.bindLong(8, usingApp ? 1L: 0L);
+            stmt.bindString(4, avatar);
         }
  
         String phoneNumber = entity.getPhoneNumber();
         if (phoneNumber != null) {
-            stmt.bindString(9, phoneNumber);
+            stmt.bindString(5, phoneNumber);
         }
  
         Integer transferType = entity.getTransferType();
         if (transferType != null) {
-            stmt.bindLong(10, transferType);
+            stmt.bindLong(6, transferType);
         }
  
         Long amount = entity.getAmount();
         if (amount != null) {
-            stmt.bindLong(11, amount);
+            stmt.bindLong(7, amount);
         }
  
         String message = entity.getMessage();
         if (message != null) {
-            stmt.bindString(12, message);
+            stmt.bindString(8, message);
         }
  
         Long timeCreate = entity.getTimeCreate();
         if (timeCreate != null) {
-            stmt.bindLong(13, timeCreate);
+            stmt.bindLong(9, timeCreate);
         }
     }
 
     /** @inheritdoc */
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public TransferRecent readEntity(Cursor cursor, int offset) {
         TransferRecent entity = new TransferRecent( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // zaloPayId
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // userName
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // displayName
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // avatar
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // userGender
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // birthday
-            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0, // usingApp
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // phoneNumber
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // transferType
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // amount
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // message
-            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // timeCreate
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // zaloPayId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // zaloPayName
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // displayName
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // phoneNumber
+            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // transferType
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // amount
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // message
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8) // timeCreate
         );
         return entity;
     }
@@ -173,33 +141,28 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, TransferRecent entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setZaloPayId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setUserName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setDisplayName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setAvatar(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setUserGender(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setBirthday(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setUsingApp(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
-        entity.setPhoneNumber(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setTransferType(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setAmount(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setMessage(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setTimeCreate(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
+        entity.setZaloPayId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setZaloPayName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setDisplayName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setPhoneNumber(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setTransferType(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
+        entity.setAmount(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setMessage(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setTimeCreate(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
      }
     
     /** @inheritdoc */
     @Override
-    protected Long updateKeyAfterInsert(TransferRecent entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
+    protected String updateKeyAfterInsert(TransferRecent entity, long rowId) {
+        return entity.getZaloPayId();
     }
     
     /** @inheritdoc */
     @Override
-    public Long getKey(TransferRecent entity) {
+    public String getKey(TransferRecent entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getZaloPayId();
         } else {
             return null;
         }
