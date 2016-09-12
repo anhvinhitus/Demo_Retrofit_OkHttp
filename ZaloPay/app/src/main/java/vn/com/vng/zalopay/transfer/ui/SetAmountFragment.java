@@ -14,6 +14,7 @@ import butterknife.OnTextChanged;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 
 /**
@@ -53,12 +54,12 @@ public class SetAmountFragment extends BaseFragment {
 
 
         if (mAmount < Constants.MIN_TRANSFER_MONEY) {
-            textInputAmountView.setError(String.format(getString(R.string.min_money), Constants.MIN_TRANSFER_MONEY));
+            textInputAmountView.setError(String.format(getString(R.string.min_money), CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY)));
             return;
         }
 
         if (mAmount > Constants.MAX_TRANSFER_MONEY) {
-            textInputAmountView.setError(String.format(getString(R.string.max_money), Constants.MAX_TRANSFER_MONEY));
+            textInputAmountView.setError(String.format(getString(R.string.max_money), CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY)));
             return;
         }
 
