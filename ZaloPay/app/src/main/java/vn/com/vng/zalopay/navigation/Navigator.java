@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
@@ -425,12 +426,12 @@ public class Navigator implements INavigator {
         long now = System.currentTimeMillis();
 
         if (now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
-            promise.resolve(1);
+            Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
 
         if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            promise.resolve(1);
+            Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
 
@@ -440,12 +441,12 @@ public class Navigator implements INavigator {
                 CShareData shareData = CShareData.getInstance((Activity) context);
                 List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 if (mapCardLis == null || mapCardLis.size() == 0) {
-                    promise.resolve(1);
+                    Helpers.promiseResolveSuccess(promise, null);
                     return true;
                 }
             } catch (Exception ex) {
                 Timber.d(ex, "startLinkCardActivity");
-                promise.resolve(1);
+                Helpers.promiseResolveSuccess(promise, null);
                 return true;
             }
         }
@@ -454,12 +455,13 @@ public class Navigator implements INavigator {
         dialog.setListener(new PinProfileDialog.PinProfileListener() {
             @Override
             public void onPinSuccess() {
-                promise.resolve(1);
+                Timber.d("onPinSuccess resolve true");
+                Helpers.promiseResolveSuccess(promise, null);
             }
 
             @Override
             public void onPinError() {
-                promise.resolve(0);
+                Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
             }
         });
         dialog.show();
