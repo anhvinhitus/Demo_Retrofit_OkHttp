@@ -78,17 +78,27 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void navigateLinkCard() {
         Timber.d("navigateLinkCard");
-        if (getCurrentActivity() != null) {
-            navigator.startLinkCardActivity(getCurrentActivity());
-        }
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null) {
+                    navigator.startLinkCardActivity(getCurrentActivity());
+                }
+            }
+        });
     }
 
     @ReactMethod
     public void navigateProfile() {
         Timber.d("navigateProfile");
-        if (getCurrentActivity() != null) {
-            navigator.startProfileInfoActivity(getCurrentActivity());
-        }
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null) {
+                    navigator.startProfileInfoActivity(getCurrentActivity());
+                }
+            }
+        });
     }
 
     @ReactMethod
@@ -100,21 +110,26 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showDetail(int appid, String transid) {
+    public void showDetail(final int appid, final String transid) {
         Timber.d("show Detail appid %s transid %s", appid, transid);
-        Map<String, String> options = new HashMap<>();
-        options.put("view", "history");
-        options.put("transid", transid);
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity == null) {
+                    return;
+                }
 
-        Activity activity = getCurrentActivity();
-        if (activity == null) {
-            return;
-        }
+                Map<String, String> options = new HashMap<>();
+                options.put("view", "history");
+                options.put("transid", transid);
 
-        Intent intent = navigator.intentPaymentApp(activity, new AppResource(appid), options);
-        if (intent != null) {
-            activity.startActivity(intent);
-        }
+                Intent intent = navigator.intentPaymentApp(activity, new AppResource(appid), options);
+                if (intent != null) {
+                    activity.startActivity(intent);
+                }
+            }
+        });
     }
 
     @Nullable
@@ -165,11 +180,15 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void promptPIN(int channel, Promise promise) {
+    public void promptPIN(final int channel, final Promise promise) {
         Timber.d("promptPIN: channel %s", channel);
-        boolean pinSuccess = navigator.promptPIN(getCurrentActivity(), channel, promise);
-
-        Timber.d("promptPIN:  %s", pinSuccess);
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                boolean pinSuccess = navigator.promptPIN(getCurrentActivity(), channel, promise);
+                Timber.d("pinSuccess %s", pinSuccess);
+            }
+        });
     }
 }
 
