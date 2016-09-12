@@ -143,6 +143,7 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_other">Thêm Thẻ</string>
+    <string name="add_card_now">Thêm Thẻ Ngay</string>
 
     <string name="alert_processing">Đang xử lý</string>
 

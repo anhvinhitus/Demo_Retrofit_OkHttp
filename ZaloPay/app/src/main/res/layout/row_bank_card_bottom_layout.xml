@@ -20,7 +20,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/spacing.small"
         android:gravity="center_vertical"
-        android:text="@string/link_card_other"
+        android:text="@string/add_card_now"
         android:textAllCaps="false" />
 </LinearLayout>
 
