@@ -187,26 +187,28 @@ public class Navigator implements INavigator {
     }
 
     public void startLinkCardActivity(Context context) {
-        if (userConfig.hasCurrentUser()) {
-            if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-                showUpdateProfileInfoDialog(context);
+        if (!userConfig.hasCurrentUser()) {
+            return;
+        }
+
+        if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showUpdateProfileInfoDialog(context);
+        } else {
+
+            long now = System.currentTimeMillis();
+            int numberCard = 0;
+            try {
+                CShareData shareData = CShareData.getInstance((Activity) context);
+                List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                numberCard = mapCardLis.size();
+            } catch (Exception ex) {
+                Timber.d(ex, "startLinkCardActivity");
+            }
+
+            if (numberCard <= 0 || now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
+                context.startActivity(intentLinkCard(context));
             } else {
-
-                long now = System.currentTimeMillis();
-                int numberCard = 0;
-                try {
-                    CShareData shareData = CShareData.getInstance((Activity) context);
-                    List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
-                    numberCard = mapCardLis.size();
-                } catch (Exception ex) {
-                    Timber.d(ex, "startLinkCardActivity");
-                }
-
-                if (numberCard <= 0 || now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
-                    context.startActivity(intentLinkCard(context));
-                } else {
-                    new PinProfileDialog(context, intentLinkCard(context)).show();
-                }
+                new PinProfileDialog(context, intentLinkCard(context)).show();
             }
         }
     }
@@ -234,10 +236,12 @@ public class Navigator implements INavigator {
 
     @Override
     public void startProfileInfoActivity(Context context) {
-        if (userConfig.hasCurrentUser()) {
-            if (checkAndOpenPinDialog(context, intentProfile(context), userConfig.getCurrentUser().profilelevel)) {
-                context.startActivity(intentProfile(context));
-            }
+        if (!userConfig.hasCurrentUser()) {
+            return;
+        }
+
+        if (checkAndOpenPinDialog(context, intentProfile(context), userConfig.getCurrentUser().profilelevel)) {
+            context.startActivity(intentProfile(context));
         }
     }
 
@@ -247,13 +251,15 @@ public class Navigator implements INavigator {
     }
 
     public void startTransferMoneyActivity(Activity activity) {
-        if (userConfig.hasCurrentUser()) {
-            if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-                showUpdateProfileInfoDialog(activity);
-            } else {
-                Intent intent = new Intent(activity, TransferHomeActivity.class);
-                activity.startActivity(intent);
-            }
+        if (!userConfig.hasCurrentUser()) {
+            return;
+        }
+
+        if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            showUpdateProfileInfoDialog(activity);
+        } else {
+            Intent intent = new Intent(activity, TransferHomeActivity.class);
+            activity.startActivity(intent);
         }
     }
 
