@@ -105,13 +105,14 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             mWsConnection.cleanup();
             mWsConnection = null;
         }
-        notificationHelper = null;
         super.onDestroy();
     }
+
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
+        notificationHelper = null;
         Timber.d("Finalize ZPNotificationService");
     }
 
@@ -180,6 +181,10 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                 Timber.d("Socket authentication succeeded");
             }
         } else if (event instanceof NotificationData) {
+            if (notificationHelper == null) {
+                return;
+            }
+
             notificationHelper.processNotification((NotificationData) event);
         }
     }

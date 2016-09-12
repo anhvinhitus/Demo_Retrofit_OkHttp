@@ -36,6 +36,10 @@ class GetNavigationCallback implements ValueCallback<String> {
         try {
             JsonParser parser = new JsonParser();
             JsonElement jsonObject = parser.parse(value);
+            if (jsonObject == null || !jsonObject.isJsonObject()) {
+                return;
+            }
+
             String title = jsonObject.getAsJsonObject().get("title").getAsString();
             mActivityWeakReference.get().setTitle(title);
         } catch (Throwable t) {
