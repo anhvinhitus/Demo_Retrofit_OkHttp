@@ -335,7 +335,7 @@ public class PaymentWrapper {
         }
 
         String permissionsStr = "{\"profilelevelpermisssion\":";
-        permissionsStr += JsonUtil.toJsonArrayString(user.profilePermissions);
+        permissionsStr += user.profilePermissions;
         permissionsStr += "}";
         Timber.d("permissionsStr: %s", permissionsStr);
         return permissionsStr;
@@ -353,7 +353,6 @@ public class PaymentWrapper {
         paymentInfo.userInfo = getUserInfo();
         paymentInfo.appTime = order.getApptime();
         paymentInfo.appTransID = order.getApptransid();
-        Timber.d("paymentInfo.appTransID: %s", paymentInfo.appTransID);
         paymentInfo.itemName = order.getItem();
         paymentInfo.amount = order.getAmount();
         paymentInfo.description = order.getDescription();

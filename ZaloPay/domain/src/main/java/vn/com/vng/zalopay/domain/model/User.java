@@ -26,7 +26,7 @@ public final class User extends Person {
 
     public int need_invitation;
 
-    public List<Permission> profilePermissions;
+    public String profilePermissions;
 
     public User() {
     }
@@ -39,15 +39,8 @@ public final class User extends Person {
         this.zaloPayId = uid;
     }
 
-    public <T> T fromJson(String jsonString, Type type) {
-        return new Gson().fromJson(jsonString, type);
-    }
-
     public void setPermissions(String jsonArray) {
-
-        profilePermissions = fromJson(jsonArray,
-                new TypeToken<ArrayList<Permission>>() {
-                }.getType());
+        profilePermissions = jsonArray;
     }
 
     @Override

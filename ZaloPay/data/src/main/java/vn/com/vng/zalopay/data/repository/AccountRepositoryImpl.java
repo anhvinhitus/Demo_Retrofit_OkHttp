@@ -36,19 +36,16 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     private final User mUser;
     private final UserConfig mUserConfig;
 
-    private UserEntityDataMapper userEntityDataMapper;
-
     public AccountRepositoryImpl(AccountStore.LocalStorage localStorage,
                                  AccountStore.RequestService accountService,
                                  AccountStore.UploadPhotoService photoService,
                                  UserConfig userConfig,
-                                 User user, UserEntityDataMapper userEntityDataMapper) {
+                                 User user) {
         this.localStorage = localStorage;
         this.mRequestService = accountService;
         this.mUploadPhotoService = photoService;
         this.mUser = user;
         this.mUserConfig = userConfig;
-        this.userEntityDataMapper = userEntityDataMapper;
     }
 
     @Override
@@ -64,7 +61,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Boolean> verifyOTPProfile(String otp) {
         return mRequestService.verifyOTPProfile(mUser.zaloPayId, mUser.accesstoken, otp)
-                .doOnNext(response -> savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion)))
+                .doOnNext(response -> savePermission(response.profilelevel, response.permisstion.toString()))
                 .map(response -> Boolean.TRUE)
                 ;
     }
@@ -73,7 +70,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<Boolean> getUserProfileLevelCloud() {
         return mRequestService.getUserProfileLevel(mUser.zaloPayId, mUser.accesstoken)
                 .doOnNext(response -> {
-                    savePermission(response.profilelevel, userEntityDataMapper.transform(response.permisstion));
+                    savePermission(response.profilelevel, response.permisstion.toString());
                     saveUserInfo(response.email, response.identityNumber);
                     saveZalopayName(response.zalopayname);
                 }).map(response -> Boolean.TRUE)
@@ -231,7 +228,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
 
-    private void savePermission(int profileLevel, List<Permission> permissions) {
+    private void savePermission(int profileLevel, String permissions) {
         mUser.profilelevel = profileLevel;
         mUser.profilePermissions = permissions;
         mUserConfig.savePermission(profileLevel, permissions);

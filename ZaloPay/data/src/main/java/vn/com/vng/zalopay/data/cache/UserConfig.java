@@ -21,7 +21,7 @@ public interface UserConfig {
 
     void saveConfig(User user);
 
-    void savePermission(int profileLevel, List<Permission> profilePermissions);
+    void savePermission(int profileLevel, String profilePermissions);
 
     void save(String email, String identity);
 

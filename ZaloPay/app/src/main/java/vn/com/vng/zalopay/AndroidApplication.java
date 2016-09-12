@@ -69,6 +69,7 @@ public class AndroidApplication extends MultiDexApplication {
                 }
             });
         } else {
+            Timber.plant(new Timber.DebugTree());
             Timber.plant(new CrashlyticsTree());
         }
 

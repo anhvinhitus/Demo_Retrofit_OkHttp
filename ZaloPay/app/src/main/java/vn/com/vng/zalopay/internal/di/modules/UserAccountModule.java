@@ -41,6 +41,6 @@ public class UserAccountModule {
                                                       AccountStore.UploadPhotoService photoService,
                                                       UserConfig userConfig, User user,
                                                       UserEntityDataMapper mapper, @Named("daosession") DaoSession session, Gson gson) {
-        return new AccountRepositoryImpl(new AccountLocalStorage(session, gson), service, photoService, userConfig, user, mapper);
+        return new AccountRepositoryImpl(new AccountLocalStorage(session, gson), service, photoService, userConfig, user);
     }
 }

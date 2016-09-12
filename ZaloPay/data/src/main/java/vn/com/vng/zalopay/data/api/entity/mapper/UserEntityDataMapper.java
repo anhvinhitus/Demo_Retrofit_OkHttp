@@ -28,39 +28,39 @@ public class UserEntityDataMapper {
             user.expirein = response.expirein;
             user.zaloPayId = response.userid;
             user.profilelevel = response.profilelevel;
-            user.profilePermissions = transform(response.permission);
+            user.profilePermissions = response.permission.toString();
             user.phonenumber = response.phonenumber;
             user.zalopayname = response.zalopayname;
         }
 
         return user;
     }
-
-    public Permission transform(PermissionEntity entity) {
-        Permission permission = null;
-        if (entity != null) {
-            permission = new Permission();
-            permission.allow = entity.allow;
-            permission.pmcid = entity.pmcid;
-            permission.profilelevel = entity.profilelevel;
-            permission.requireotp = entity.requireotp;
-            permission.transtype = entity.transtype;
-            permission.requirepin = entity.requirepin;
-        }
-        return permission;
-    }
-
-    public List<Permission> transform(List<PermissionEntity> entities) {
-        if (Lists.isEmptyOrNull(entities)) {
-            return Collections.emptyList();
-        }
-        List<Permission> permissions = new ArrayList<>();
-        for (PermissionEntity entity : entities) {
-            Permission permission = transform(entity);
-            if (permission != null) {
-                permissions.add(permission);
-            }
-        }
-        return permissions;
-    }
+//
+//    public Permission transform(PermissionEntity entity) {
+//        Permission permission = null;
+//        if (entity != null) {
+//            permission = new Permission();
+//            permission.allow = entity.allow;
+//            permission.pmcid = entity.pmcid;
+//            permission.profilelevel = entity.profilelevel;
+//            permission.requireotp = entity.requireotp;
+//            permission.transtype = entity.transtype;
+//            permission.requirepin = entity.requirepin;
+//        }
+//        return permission;
+//    }
+//
+//    public List<Permission> transform(List<PermissionEntity> entities) {
+//        if (Lists.isEmptyOrNull(entities)) {
+//            return Collections.emptyList();
+//        }
+//        List<Permission> permissions = new ArrayList<>();
+//        for (PermissionEntity entity : entities) {
+//            Permission permission = transform(entity);
+//            if (permission != null) {
+//                permissions.add(permission);
+//            }
+//        }
+//        return permissions;
+//    }
 }

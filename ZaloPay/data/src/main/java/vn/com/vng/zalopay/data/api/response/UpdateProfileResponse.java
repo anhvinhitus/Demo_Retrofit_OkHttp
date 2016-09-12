@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.api.response;
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -15,6 +16,6 @@ public class UpdateProfileResponse extends BaseResponse {
     public int profilelevel;
 
     @SerializedName("profilelevelpermisssion")
-    public List<PermissionEntity> permisstion;
+    public JsonElement permisstion;
 
 }

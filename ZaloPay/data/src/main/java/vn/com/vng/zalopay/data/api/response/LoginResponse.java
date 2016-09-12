@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.api.response;
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import vn.com.vng.zalopay.data.api.entity.PermissionEntity;
 
 /**
  * Created by AnhHieu on 4/25/16.
+ * Response object for login
  */
 public class LoginResponse extends BaseResponse {
 
@@ -30,5 +32,5 @@ public class LoginResponse extends BaseResponse {
     public long phonenumber;
 
     @SerializedName("profilelevelpermisssion")
-    public List<PermissionEntity> permission;
+    public JsonElement permission;
 }

@@ -25,17 +25,15 @@ public class UserConfigImpl implements UserConfig {
 
     private final SharedPreferences preferences;
 
-    private final DaoSession daoSession;
-    User currentUser;
+    private User currentUser;
 
-    EventBus eventBus;
+    private EventBus eventBus;
 
     private final static Object sync = new Object();
 
-    public UserConfigImpl(DaoSession daoSession, SharedPreferences pref, EventBus eventBus) {
+    public UserConfigImpl(SharedPreferences pref, EventBus eventBus) {
         this.preferences = pref;
         this.eventBus = eventBus;
-        this.daoSession = daoSession;
     }
 
 
@@ -70,9 +68,8 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_USER_NAME, user.displayName);
         editor.putString(Constants.PREF_USER_AVATAR, user.avatar);
         editor.putInt(Constants.PREF_PROFILE_LEVEL, user.profilelevel);
-        String permissionsStr = JsonUtil.toJsonArrayString(user.profilePermissions);
         editor.putLong(Constants.PREF_USER_PHONE, user.phonenumber);
-        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, user.profilePermissions);
 
         editor.apply();
 
@@ -99,7 +96,7 @@ public class UserConfigImpl implements UserConfig {
     }
 
     @Override
-    public void savePermission(int profileLevel, List<Permission> profilePermissions) {
+    public void savePermission(int profileLevel, String profilePermissions) {
         if (currentUser != null) {
             currentUser.profilelevel = profileLevel;
             currentUser.profilePermissions = profilePermissions;
@@ -107,11 +104,8 @@ public class UserConfigImpl implements UserConfig {
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constants.PREF_PROFILE_LEVEL, profileLevel);
-        String permissionsStr = JsonUtil.toJsonArrayString(profilePermissions);
-
-        Timber.d("saveProfilePermissions permissions: %s", permissionsStr);
-
-        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, permissionsStr);
+        Timber.d("saveProfilePermissions permissions: %s", profilePermissions);
+        editor.putString(Constants.PREF_PROFILE_PERMISSIONS, profilePermissions);
         editor.apply();
     }
 
