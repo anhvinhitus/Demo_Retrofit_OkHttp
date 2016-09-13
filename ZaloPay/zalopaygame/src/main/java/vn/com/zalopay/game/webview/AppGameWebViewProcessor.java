@@ -1,4 +1,4 @@
-package vn.com.zalopay.game.ui.webview;
+package vn.com.zalopay.game.webview;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -18,7 +18,6 @@ import org.parceler.Parcels;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
@@ -26,8 +25,6 @@ import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.businnesslogic.interfaces.payment.IPaymentCallback;
 import vn.com.zalopay.game.config.AppGameConfig;
-import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
-import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 
 public class AppGameWebViewProcessor extends WebViewClient {
     private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
@@ -57,16 +54,16 @@ public class AppGameWebViewProcessor extends WebViewClient {
         mTimeOutListener = new ITimeoutLoadingListener() {
             @Override
             public void onTimeoutLoading() {
-                Timber.d("onProgressTimeout-%s", pUrl);
+                //Timber.d("onProgressTimeout-%s", pUrl);
                 //load website timeout, show confirm dialog: continue to load or exit.
                 if (AppGameGlobal.getDialog() != null)
-                    AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
+                    AppGameGlobal.getDialog().showConfirmDialog(mActivity,
                             pActivity.getResources().getString(R.string.appgame_waiting_loading),
                             pActivity.getResources().getString(R.string.appgame_button_left),
                             pActivity.getResources().getString(R.string.appgame_button_right), new IDialogListener() {
                                 @Override
                                 public void onClose() {
-                                    AppGameBaseActivity.getCurrentActivity().finish();
+                                    mActivity.finish();
                                 }
                             });
             }
@@ -79,7 +76,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
     }
 
     private void changePage(String pUrl) {
-       start(pUrl, mActivity);
+        start(pUrl, mActivity);
     }
 
     public boolean hasError() {
@@ -88,7 +85,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        Timber.d("onPageFinished url [%s]", url);
+        //Timber.d("onPageFinished url [%s]", url);
         if (hasError) {
             return;
         }
@@ -97,7 +94,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
             AppGameGlobal.getDialog().hideLoadingDialog();
         }
 
-        mWebView.runScript("utils.getNav()", new GetNavigationCallback(mActivity));
+        mWebView.runScript("utils.getNav()", new GetNavigationCallback(mActivity, mWebViewListener));
 
         super.onPageFinished(view, url);
 
@@ -119,7 +116,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
             return;
         }
         hasError = true;
-        Timber.w("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
+        //Timber.w("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
         onReceivedError(errorCode, description);
 
         super.onReceivedError(view, errorCode, description, failingUrl);
@@ -132,8 +129,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
         }
         hasError = true;
         int errorCode = error != null ? error.getErrorCode() : WebViewClient.ERROR_UNKNOWN;
-        CharSequence description =  error != null ? error.getDescription() : null;
-        Timber.w("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
+        CharSequence description = error != null ? error.getDescription() : null;
+        //Timber.w("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
         onReceivedError(errorCode, description);
     }
 
@@ -143,16 +140,17 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Timber.d("===shouldOverrideUrlLoading===%s", url);
+        //Timber.d("===shouldOverrideUrlLoading===%s", url);
 
         //use case for url
         if (!TextUtils.isEmpty(url) && url.equalsIgnoreCase(AppGameConfig.URL_TO_APP) &&
-                AppGameBaseActivity.getCurrentActivity() != null) {
-            AppGameBaseActivity.getCurrentActivity().setResult(Activity.RESULT_CANCELED);
-            AppGameBaseActivity.getCurrentActivity().finish();
-        } else if (!TextUtils.isEmpty(url) && url.equalsIgnoreCase(AppGameConfig.URL_TO_LOGIN)
-                && AppGameBaseActivity.getCurrentActivity() instanceof AppGameActivity) {
-            ((AppGameActivity) AppGameBaseActivity.getCurrentActivity()).logout();
+                mActivity != null) {
+            mActivity.setResult(Activity.RESULT_CANCELED);
+            mActivity.finish();
+        } else if (!TextUtils.isEmpty(url) && url.equalsIgnoreCase(AppGameConfig.URL_TO_LOGIN)) {
+            if (mWebViewListener != null) {
+                mWebViewListener.logout();
+            }
         } else if (url.startsWith("zalopay-1://post")) {
             payOrder(url);
         } else {
@@ -182,12 +180,12 @@ public class AppGameWebViewProcessor extends WebViewClient {
                 TextUtils.isEmpty(appuser) ||
                 TextUtils.isEmpty(amount) ||
                 TextUtils.isEmpty(mac)) {
-            AppGameGlobal.getDialog().showInfoDialog(AppGameBaseActivity.getCurrentActivity(),
+            AppGameGlobal.getDialog().showInfoDialog(mActivity,
                     AppGameGlobal.getString(R.string.appgame_alert_input_error), AppGameGlobal.getString(R.string.appgame_button_dialog_close),
                     3, new IDialogListener() {
                         @Override
                         public void onClose() {
-                            AppGameBaseActivity.getCurrentActivity().finish();
+                            mActivity.finish();
                         }
                     });
 
@@ -208,7 +206,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
         try {
             decodeDescription = URLDecoder.decode(description, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            Timber.w(e, "Url decode exception [%s]", e.getMessage());
+            //Timber.w(e, "Url decode exception [%s]", e.getMessage());
         }
         bundle.putString("description", decodeDescription);
         bundle.putString("embeddata", embeddata);
@@ -216,25 +214,25 @@ public class AppGameWebViewProcessor extends WebViewClient {
         bundle.putString("mac", mac);
         bundle.putParcelable("AppGamePayInfo", Parcels.wrap(AppGameGlobal.getAppGamePayInfo()));
 
-        Timber.d("onResponseSuccess appId [%s]", AppGameGlobal.getAppGamePayInfo().getAppId());
-        Timber.d("onResponseSuccess getApptransid [%s]", AppGameGlobal.getAppGamePayInfo().getApptransid());
-        Timber.d("onResponseSuccess getUid [%s]", AppGameGlobal.getAppGamePayInfo().getUid());
-        Timber.d("onResponseSuccess getAccessToken [%s]", AppGameGlobal.getAppGamePayInfo().getAccessToken());
+        //Timber.d("onResponseSuccess appId [%s]", AppGameGlobal.getAppGamePayInfo().getAppId());
+        //Timber.d("onResponseSuccess getApptransid [%s]", AppGameGlobal.getAppGamePayInfo().getApptransid());
+        //Timber.d("onResponseSuccess getUid [%s]", AppGameGlobal.getAppGamePayInfo().getUid());
+        //Timber.d("onResponseSuccess getAccessToken [%s]", AppGameGlobal.getAppGamePayInfo().getAccessToken());
 
         AppGameWebViewProcessor.canPayment = true;
-        AppGameGlobal.getPaymentService().pay(AppGameBaseActivity.getCurrentActivity(), bundle, new IPaymentCallback() {
+        AppGameGlobal.getPaymentService().pay(mActivity, bundle, new IPaymentCallback() {
             @Override
             public void onResponseSuccess(AppGamePayInfo appGamePayInfo) {
-                Timber.d("onResponseSuccess appGamePayInfo [%s]", appGamePayInfo);
-                Timber.d("onResponseSuccess getAccessToken [%s]", appGamePayInfo.getAccessToken());
-                Timber.d("onResponseSuccess getAppId [%s]", appGamePayInfo.getAppId());
-                Timber.d("onResponseSuccess getApptransid [%s]", appGamePayInfo.getApptransid());
-                Timber.d("onResponseSuccess getUid [%s]", appGamePayInfo.getUid());
+                //Timber.d("onResponseSuccess appGamePayInfo [%s]", appGamePayInfo);
+                //Timber.d("onResponseSuccess getAccessToken [%s]", appGamePayInfo.getAccessToken());
+                //Timber.d("onResponseSuccess getAppId [%s]", appGamePayInfo.getAppId());
+                //Timber.d("onResponseSuccess getApptransid [%s]", appGamePayInfo.getApptransid());
+                //Timber.d("onResponseSuccess getUid [%s]", appGamePayInfo.getUid());
                 AppGameGlobal.getAppGamePayInfo().setApptransid(appGamePayInfo.getApptransid());
 
                 final String urlPage = String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid(),
                         AppGameGlobal.getAppGamePayInfo().getUid(), AppGameGlobal.getAppGamePayInfo().getAccessToken());
-                Timber.d("onResponseSuccess url [%s]", urlPage);
+                //Timber.d("onResponseSuccess url [%s]", urlPage);
                 changePage(urlPage);
             }
         });
@@ -246,7 +244,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
     @JavascriptInterface
     public void onJsCallBackResult(String pResult) {
-        Timber.d("JsCallBackResult [%s]", pResult);
+        //Timber.d("JsCallBackResult [%s]", pResult);
     }
 
     public void onDestroy() {
@@ -256,6 +254,11 @@ public class AppGameWebViewProcessor extends WebViewClient {
 
     public interface IWebViewListener {
         void onReceivedError(int errorCode, CharSequence description);
+
         void onPageFinished(String url);
+
+        void logout();
+
+        void setLogo(String url);
     }
 }

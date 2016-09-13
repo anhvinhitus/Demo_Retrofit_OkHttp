@@ -1,20 +1,9 @@
-package vn.com.zalopay.game.ui.component.fragment;
-
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+package vn.com.vng.zalopay.game.ui.fragment;
 
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.config.AppGameConfig;
-import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
-import vn.com.zalopay.game.ui.webview.AppGameWebView;
-import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 public class FragmentPayResult extends AppGameFragment {
 

@@ -1,9 +1,8 @@
-package vn.com.zalopay.game.ui.component.activity;
+package vn.com.vng.zalopay.game.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +11,7 @@ import java.util.Stack;
 
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
-import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
+import vn.com.zalopay.game.webview.AppGameWebViewProcessor;
 
 
 public abstract class AppGameBaseActivity extends AppCompatActivity {

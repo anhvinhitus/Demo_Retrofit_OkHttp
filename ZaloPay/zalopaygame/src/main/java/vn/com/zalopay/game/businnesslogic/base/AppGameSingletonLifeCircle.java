@@ -5,8 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import timber.log.Timber;
-
 /**
  * This class is used to manage all static instance
  */
@@ -44,7 +42,7 @@ public class AppGameSingletonLifeCircle {
      * active objects.
      */
     private static void dispose(Class<?> clazz) {
-        Timber.d("RELEASE_STATIC_OBJ ======== Considering to :" + clazz.getName());
+        //Timber.d("RELEASE_STATIC_OBJ ======== Considering to :" + clazz.getName());
 
         Field[] fields = clazz.getDeclaredFields();
 
@@ -59,10 +57,10 @@ public class AppGameSingletonLifeCircle {
 
                     fields[i].set(null, null);
 
-                    Timber.d("RELEASE_STATIC_OBJ **** Release " + fields[i].getName());
+                    //Timber.d("RELEASE_STATIC_OBJ **** Release " + fields[i].getName());
 
                 } catch (Exception e) {
-                    Timber.e("RELEASE_STATIC_OBJ %s", e != null ? e.getMessage() : "error");
+                    //Timber.e("RELEASE_STATIC_OBJ %s", e != null ? e.getMessage() : "error");
                 }
             }
         }

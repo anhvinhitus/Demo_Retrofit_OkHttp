@@ -1,4 +1,4 @@
-package vn.com.zalopay.game.ui.webview;
+package vn.com.zalopay.game.webview;
 
 import android.app.Activity;
 import android.webkit.ValueCallback;
@@ -7,12 +7,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
+
 
 /**
  * Created by huuhoa on 9/11/16.
@@ -20,9 +18,11 @@ import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
  */
 class GetNavigationCallback implements ValueCallback<String> {
     private WeakReference<Activity> mActivityWeakReference;
+    private AppGameWebViewProcessor.IWebViewListener mWebViewListener;
 
-    GetNavigationCallback(Activity activity) {
+    GetNavigationCallback(Activity activity, AppGameWebViewProcessor.IWebViewListener webViewListener) {
         mActivityWeakReference = new WeakReference<>(activity);
+        mWebViewListener = webViewListener;
     }
 
     @Override
@@ -51,8 +51,8 @@ class GetNavigationCallback implements ValueCallback<String> {
             Activity activity = mActivityWeakReference.get();
             activity.setTitle(title);
 
-            if (activity instanceof AppGameActivity) {
-                ((AppGameActivity) activity).setLogo(thumb);
+            if (mWebViewListener != null) {
+                mWebViewListener.setLogo(thumb);
             }
 
 

@@ -1,4 +1,4 @@
-package vn.com.zalopay.game.ui.component.activity;
+package vn.com.vng.zalopay.game.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,15 +12,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.game.ui.fragment.FragmentPayGame;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.base.AppGameSingletonLifeCircle;
-import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameInjectView;
-import vn.com.zalopay.game.businnesslogic.behavior.view.AppGameViewFactory;
-import vn.com.zalopay.game.ui.component.fragment.AppGameFragment;
+import vn.com.vng.zalopay.game.ui.fragment.AppGameFragment;
 
 public class AppGameActivity extends AppGameBaseActivity {
-    private AppGameFragment mFragment;
+    protected AppGameFragment mFragment;
     protected Toolbar mToolbar;
 
     ImageView mLogoView;
@@ -41,7 +40,6 @@ public class AppGameActivity extends AppGameBaseActivity {
         }
 
         Fragment subView = getView();
-
         if (subView != null)
             inflatFragment(subView, false);
     }
@@ -49,8 +47,8 @@ public class AppGameActivity extends AppGameBaseActivity {
     /**
      * start flow by app id.
      */
-    private Fragment getView() {
-        mFragment = AppGameInjectView.getInstance(AppGameViewFactory.procedureChannel()).getView();
+    protected Fragment getView() {
+        mFragment = FragmentPayGame.newInstance();
         Timber.d("getView fragment [%s]", mFragment);
         return mFragment;
     }
@@ -64,10 +62,6 @@ public class AppGameActivity extends AppGameBaseActivity {
         }
 
         super.onBackPressed();
-//        Timber.d("onBackPressed hasError [%s]", AppGameWebViewProcessor.hasError);
-//        if (AppGameWebViewProcessor.hasError) {
-//            super.onBackPressed();
-//        }
     }
 
     @Override

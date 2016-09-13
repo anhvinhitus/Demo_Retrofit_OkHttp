@@ -7,7 +7,7 @@
         android:theme="@style/WalletTheme">
 
         <activity
-            android:name="vn.com.zalopay.game.ui.component.activity.AppGameActivity"
+            android:name="vn.com.vng.zalopay.game.ui.activity.AppGameActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >

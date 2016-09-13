@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vn.com.zalopay.game.ui.webview.AppGameWebView
+<vn.com.zalopay.game.webview.AppGameWebView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/webview"
     android:layout_width="match_parent"

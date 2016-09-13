@@ -1,23 +1,10 @@
-package vn.com.zalopay.game.ui.component.fragment;
-
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+package vn.com.vng.zalopay.game.ui.fragment;
 
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
 import vn.com.zalopay.game.config.AppGameConfig;
-import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
-import vn.com.zalopay.game.ui.webview.AppGameWebView;
-import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
 public class FragmentPayGame extends AppGameFragment {
 
@@ -46,5 +33,4 @@ public class FragmentPayGame extends AppGameFragment {
         Timber.d("getWebViewUrl url [%s]", url);
         return url;
     }
-
 }

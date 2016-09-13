@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**

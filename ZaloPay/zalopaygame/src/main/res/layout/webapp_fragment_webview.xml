@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <vn.com.zalopay.game.ui.webview.AppGameWebView
+    <vn.com.zalopay.game.webview.AppGameWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
 import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
-import vn.com.zalopay.game.controller.AppGameController;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -327,8 +326,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 }
             };
             Timber.d("onNext startPayFlow");
-            AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
-                    new AppGamePaymentImpl(), new AppGameDialogImpl(), mAppResource.webUrl, new AppGameNetworkingImpl());
+            //Todo: longlv (13/09/2016) need update
+//            AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
+//                    new AppGamePaymentImpl(), new AppGameDialogImpl(), mAppResource.webUrl, new AppGameNetworkingImpl());
         }
 
         @Override

@@ -1,4 +1,4 @@
-package vn.com.zalopay.game.ui.component.fragment;
+package vn.com.vng.zalopay.game.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,18 +14,17 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import timber.log.Timber;
-import vn.com.zalopay.game.R;
+import vn.com.vng.zalopay.game.ui.activity.AppGameActivity;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
-import vn.com.zalopay.game.ui.webview.AppGameWebView;
-import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
+import vn.com.zalopay.game.webview.AppGameWebView;
+import vn.com.zalopay.game.webview.AppGameWebViewProcessor;
+import vn.com.zalopay.game.webview.AppGameWebViewProcessor.IWebViewListener;
 
 /**
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public abstract class AppGameFragment extends Fragment
-        implements AppGameWebViewProcessor.IWebViewListener {
+public abstract class AppGameFragment extends Fragment implements IWebViewListener {
     private AppGameWebView mWebview;
     private AppGameWebViewProcessor mWebViewProcessor;
     protected String mCurrentUrl = "";
@@ -54,7 +53,7 @@ public abstract class AppGameFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Timber.d("onViewCreated start");
+        //Timber.d("onViewCreated start");
         initViewWebView(view);
         initRetryView(view);
         loadUrl(getWebViewUrl());
@@ -62,45 +61,45 @@ public abstract class AppGameFragment extends Fragment
     }
 
     private void initViewWebView(View rootView) {
-        mWebview = (AppGameWebView) rootView.findViewById(R.id.webview);
+//        mWebview = (AppGameWebView) rootView.findViewById(R.id.webview);
         mWebViewProcessor = new AppGameWebViewProcessor(mWebview, this);
     }
 
     private void initRetryView(View rootView) {
-        layoutRetry = rootView.findViewById(R.id.layoutRetry);
-        imgError = (ImageView) rootView.findViewById(R.id.imgError);
-        tvError = (TextView) rootView.findViewById(R.id.tvError);
-        btnRetry = rootView.findViewById(R.id.btnRetry);
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideError();
-                refreshWeb();
-            }
-        });
-        hideError();
+//        layoutRetry = rootView.findViewById(R.id.layoutRetry);
+//        imgError = (ImageView) rootView.findViewById(R.id.imgError);
+//        tvError = (TextView) rootView.findViewById(R.id.tvError);
+//        btnRetry = rootView.findViewById(R.id.btnRetry);
+//        btnRetry.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hideError();
+//                refreshWeb();
+//            }
+//        });
+//        hideError();
     }
 
     private void showErrorNoConnection() {
-        if (layoutRetry == null || imgError == null || tvError == null) {
-            return;
-        }
-        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
-        tvError.setText(R.string.exception_no_connection_try_again);
-        layoutRetry.setVisibility(View.VISIBLE);
+//        if (layoutRetry == null || imgError == null || tvError == null) {
+//            return;
+//        }
+//        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
+//        tvError.setText(R.string.exception_no_connection_try_again);
+//        layoutRetry.setVisibility(View.VISIBLE);
     }
 
     private void showErrorNoLoad() {
-        if (layoutRetry == null || imgError == null || tvError == null) {
-            return;
-        }
-        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
-        tvError.setText(R.string.exception_no_connection_try_again);
-        layoutRetry.setVisibility(View.VISIBLE);
+//        if (layoutRetry == null || imgError == null || tvError == null) {
+//            return;
+//        }
+//        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
+//        tvError.setText(R.string.exception_no_connection_try_again);
+//        layoutRetry.setVisibility(View.VISIBLE);
     }
 
     public void showError(int errorCode) {
-        Timber.d("showError errorCode [%s]", errorCode);
+        //Timber.d("showError errorCode [%s]", errorCode);
         if (errorCode == WebViewClient.ERROR_CONNECT) {
             if (AppGameGlobal.getNetworking().isOnline(getContext())) {
                 showErrorNoLoad();
@@ -120,7 +119,7 @@ public abstract class AppGameFragment extends Fragment
     }
 
     public void hideError() {
-        Timber.d("hideError layoutRetry [%s]", layoutRetry);
+        //Timber.d("hideError layoutRetry [%s]", layoutRetry);
         if (layoutRetry == null) {
             return;
         }
@@ -182,7 +181,7 @@ public abstract class AppGameFragment extends Fragment
         mWebview.runScript("utils.back()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                Timber.d("navigation back: %s", value);
+                //Timber.d("navigation back: %s", value);
             }
         });
         return true;
@@ -190,39 +189,51 @@ public abstract class AppGameFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.webapp_menu_main, menu);
+//        inflater.inflate(R.menu.webapp_menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Timber.d("onOptionsItemSelected: %s", id);
-        if (id == R.id.webapp_action_refresh) {
-            refreshWeb();
-            return true;
-        }
+        //Timber.d("onOptionsItemSelected: %s", id);
+//        if (id == R.id.webapp_action_refresh) {
+//            refreshWeb();
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
 
 
     private void refreshWeb() {
-        Timber.d("Request to reload web view");
+        //Timber.d("Request to reload web view");
         hideError();
         loadUrl(mCurrentUrl);
     }
 
     @Override
     public void onReceivedError(int errorCode, CharSequence description) {
-        Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
+        //Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
         hideWebView();
         showError(errorCode);
     }
 
     @Override
     public void onPageFinished(String url) {
-        Timber.d("onPageFinished url [%s]", url);
+        //Timber.d("onPageFinished url [%s]", url);
         showWebView();
+    }
+
+    @Override
+    public void logout() {
+
+    }
+
+    @Override
+    public void setLogo(String url) {
+        if (getActivity() instanceof AppGameActivity) {
+            ((AppGameActivity)getActivity()).setLogo(url);
+        }
     }
 }
