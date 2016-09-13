@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.game;
+package vn.com.vng.zalopay.game.config;
 
 import android.content.Context;
 
