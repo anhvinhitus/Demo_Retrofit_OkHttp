@@ -27,6 +27,7 @@ class DataMapper {
         if (packageStatus == null) {
             return null;
         }
+
         WritableMap writableMap = Arguments.createMap();
         writableMap.putBoolean("isprocessing", packageStatus.isProcessing);
         writableMap.putString("zpTransid", packageStatus.zpTransID);
@@ -41,6 +42,7 @@ class DataMapper {
         if (packet == null) {
             return null;
         }
+
         WritableMap writableMap = Arguments.createMap();
         writableMap.putString("packageid", String.valueOf(packet.packageID));
         writableMap.putString("bundleid", String.valueOf(packet.bundleID));
@@ -59,6 +61,7 @@ class DataMapper {
         if (sentBundle == null) {
             return writableMap;
         }
+
         writableMap.putString("bundleid", String.valueOf(sentBundle.bundleID));
         writableMap.putString("sendzalopayid", sentBundle.sendZaloPayID);
         writableMap.putDouble("createtime", sentBundle.createTime);
@@ -92,6 +95,10 @@ class DataMapper {
     }
 
     static WritableMap transform(ZaloFriendGD zaloFriendGD) {
+        if (zaloFriendGD == null) {
+            return null;
+        }
+
         WritableMap friendItem = Arguments.createMap();
         friendItem.putString("displayName", zaloFriendGD.getDisplayName());
         friendItem.putString("ascciDisplayName", zaloFriendGD.getFulltextsearch());
@@ -131,6 +138,10 @@ class DataMapper {
     }
 
     static WritableMap transform(PackageInBundle packet) {
+        if (packet == null) {
+            return null;
+        }
+
         WritableMap map = Arguments.createMap();
         map.putDouble("amount", packet.amount);
         map.putBoolean("isluckiest", packet.isLuckiest);
@@ -141,6 +152,10 @@ class DataMapper {
     }
 
     public static WritableMap transform(GetSentBundle summary) {
+        if (summary == null) {
+            return null;
+        }
+
         WritableMap map = Arguments.createMap();
         if (summary.totalofsentamount > 0) {
             map.putDouble("totalofsentamount", summary.totalofsentamount);
@@ -154,6 +169,10 @@ class DataMapper {
     }
 
     public static WritableMap transform(GetReceivePacket summary) {
+        if (summary == null) {
+            return null;
+        }
+
         WritableMap map = Arguments.createMap();
         if (summary.totalofrevamount > 0) {
             map.putDouble("totalofrevamount", summary.totalofrevamount);
@@ -164,6 +183,7 @@ class DataMapper {
         if (summary.numofluckiestdraw > 0) {
             map.putDouble("totalofluckiestdraw", summary.numofluckiestdraw);
         }
+
         WritableArray receivePacketArray = transform(summary.revpackageList);
         map.putArray("revpackagelist", receivePacketArray);
         return map;
@@ -173,6 +193,7 @@ class DataMapper {
         if (redPacketAppInfo == null || redPacketAppInfo.appConfigEntity == null) {
             return null;
         }
+
         WritableMap map = Arguments.createMap();
         map.putDouble("minamounteach", redPacketAppInfo.appConfigEntity.minAmounTeach);
         map.putDouble("maxtotalamountperbundle", redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle);
