@@ -3,7 +3,6 @@ package vn.com.zalopay.game.ui.component.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,9 +17,6 @@ import android.widget.TextView;
 import timber.log.Timber;
 import vn.com.zalopay.game.R;
 import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
-import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 import vn.com.zalopay.game.ui.webview.AppGameWebView;
 import vn.com.zalopay.game.ui.webview.AppGameWebViewProcessor;
 
@@ -114,7 +110,13 @@ public abstract class AppGameFragment extends Fragment
         } else {
             showErrorNoLoad();
         }
+        hideLoading();
+    }
 
+    private void hideLoading() {
+        if (AppGameGlobal.getDialog() != null) {
+            AppGameGlobal.getDialog().hideLoadingDialog();
+        }
     }
 
     public void hideError() {
@@ -123,6 +125,18 @@ public abstract class AppGameFragment extends Fragment
             return;
         }
         layoutRetry.setVisibility(View.GONE);
+    }
+
+    private void hideWebView() {
+        if (mWebview != null) {
+            mWebview.setVisibility(View.GONE);
+        }
+    }
+
+    private void showWebView() {
+        if (mWebview != null) {
+            mWebview.setVisibility(View.VISIBLE);
+        }
     }
 
     public boolean canBack() {
@@ -145,21 +159,7 @@ public abstract class AppGameFragment extends Fragment
             return;
         }
         mCurrentUrl = pUrl;
-        mWebViewProcessor.start(mCurrentUrl, getActivity(), new ITimeoutLoadingListener() {
-            @Override
-            public void onTimeoutLoading() {
-                Timber.d("onProgressTimeout-%s", pUrl);
-                //load website timeout, show confirm dialog: continue to load or exit.
-                if (AppGameGlobal.getDialog() != null)
-                    AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(), getResources().getString(R.string.appgame_waiting_loading),
-                            getResources().getString(R.string.appgame_button_left), getResources().getString(R.string.appgame_button_right), new IDialogListener() {
-                                @Override
-                                public void onClose() {
-                                    AppGameBaseActivity.getCurrentActivity().finish();
-                                }
-                            });
-            }
-        });
+        mWebViewProcessor.start(mCurrentUrl, getActivity());
     }
 
     @Override
@@ -213,11 +213,13 @@ public abstract class AppGameFragment extends Fragment
     @Override
     public void onReceivedError(int errorCode, CharSequence description) {
         Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
+        hideWebView();
         showError(errorCode);
     }
 
     @Override
     public void onPageFinished(String url) {
         Timber.d("onPageFinished url [%s]", url);
+        showWebView();
     }
 }

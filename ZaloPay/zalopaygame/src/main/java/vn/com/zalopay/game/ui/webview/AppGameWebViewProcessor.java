@@ -30,11 +30,11 @@ import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 
 public class AppGameWebViewProcessor extends WebViewClient {
-
     private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
 
     //flag to animate activity
     public static boolean canPayment;
+    private boolean hasError = false;
 
     private AppGameWebView mWebView = null;
     private Activity mActivity;
@@ -49,35 +49,58 @@ public class AppGameWebViewProcessor extends WebViewClient {
         mWebView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
     }
 
-    public void start(String pUrl, Activity pActivity, ITimeoutLoadingListener pTimeoutListener) {
+    public void start(final String pUrl, final Activity pActivity) {
+        if (pActivity == null || TextUtils.isEmpty(pUrl)) {
+            return;
+        }
         mActivity = pActivity;
-        mTimeOutListener = pTimeoutListener;
-        if (AppGameGlobal.getDialog() != null)
-            AppGameGlobal.getDialog().showLoadingDialog(pActivity, pTimeoutListener);
-
+        mTimeOutListener = new ITimeoutLoadingListener() {
+            @Override
+            public void onTimeoutLoading() {
+                Timber.d("onProgressTimeout-%s", pUrl);
+                //load website timeout, show confirm dialog: continue to load or exit.
+                if (AppGameGlobal.getDialog() != null)
+                    AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
+                            pActivity.getResources().getString(R.string.appgame_waiting_loading),
+                            pActivity.getResources().getString(R.string.appgame_button_left),
+                            pActivity.getResources().getString(R.string.appgame_button_right), new IDialogListener() {
+                                @Override
+                                public void onClose() {
+                                    AppGameBaseActivity.getCurrentActivity().finish();
+                                }
+                            });
+            }
+        };
+        if (AppGameGlobal.getDialog() != null) {
+            AppGameGlobal.getDialog().showLoadingDialog(pActivity, mTimeOutListener);
+        }
+        hasError = false;
         mWebView.loadUrl(pUrl);
     }
 
     private void changePage(String pUrl) {
-        if (AppGameGlobal.getDialog() != null)
-            AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
-        mWebView.loadUrl(pUrl);
+       start(pUrl, mActivity);
     }
-
 
     @Override
     public void onPageFinished(WebView view, String url) {
         Timber.d("onPageFinished url [%s]", url);
+        if (hasError) {
+            return;
+        }
+
         if (AppGameGlobal.getDialog() != null) {
             AppGameGlobal.getDialog().hideLoadingDialog();
-        }
-        if (mWebViewListener != null) {
-            mWebViewListener.onPageFinished(url);
         }
 
         mWebView.runScript("utils.getNav()", new GetNavigationCallback(mActivity));
 
         super.onPageFinished(view, url);
+
+        if (mWebViewListener != null) {
+            mWebViewListener.onPageFinished(url);
+        }
+
     }
 
     private void onReceivedError(int errorCode, CharSequence description) {
@@ -91,6 +114,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return;
         }
+        hasError = true;
         Timber.w("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
         onReceivedError(errorCode, description);
 
@@ -102,6 +126,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
+        hasError = true;
         int errorCode = error != null ? error.getErrorCode() : WebViewClient.ERROR_UNKNOWN;
         CharSequence description =  error != null ? error.getDescription() : null;
         Timber.w("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
