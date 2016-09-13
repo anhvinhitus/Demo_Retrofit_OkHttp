@@ -89,19 +89,6 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startLoginActivity(Context context, String message) {
-        Intent intent = new Intent(context, LoginZaloActivity.class);
-        intent.putExtra("finish", true);
-        if (!TextUtils.isEmpty(message)) {
-            intent.putExtra(Constants.ARG_MESSAGE, message);
-        }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-
-        context.startActivity(intent);
-    }
-
     public void startHomeActivity(Context context, boolean clearTop) {
         Intent intent = intentHomeActivity(context, clearTop);
         context.startActivity(intent);

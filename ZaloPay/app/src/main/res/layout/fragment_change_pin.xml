@@ -18,7 +18,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:text="Mã số pin cũ"
+            android:text="@string/pin.old"
             android:textAllCaps="true" />
 
         <View
@@ -36,10 +36,10 @@
                 android:id="@+id/oldPassCodeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                zalopay:hint="Nhập mã số PIN cũ"
+                zalopay:hint="@string/input.pin.old"
                 zalopay:length="@integer/pin_length"
                 zalopay:paddingLeft="16dp"
-                zalopay:paddingRight="16dp"/>
+                zalopay:paddingRight="16dp" />
         </FrameLayout>
 
 
@@ -50,7 +50,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:text="Mã số pin mới"
+            android:text="@string/pin.new"
             android:textAllCaps="true" />
 
         <View
@@ -68,7 +68,7 @@
                 android:id="@+id/passcodeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                zalopay:hint="Nhập mã số PIN mới"
+                zalopay:hint="@string/input.pin.new"
                 zalopay:length="@integer/pin_length"
                 zalopay:paddingLeft="16dp"
                 zalopay:paddingRight="16dp" />

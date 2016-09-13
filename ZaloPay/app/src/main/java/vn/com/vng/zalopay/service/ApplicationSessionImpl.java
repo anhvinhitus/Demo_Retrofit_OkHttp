@@ -55,6 +55,8 @@ public class ApplicationSessionImpl implements ApplicationSession {
             Timber.d("unsubscriber gcm exception %s", e);
         }
 
+        navigator.setLastTimeCheckPin(0);
+
         applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
 
 

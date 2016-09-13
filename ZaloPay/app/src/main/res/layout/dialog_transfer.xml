@@ -42,7 +42,8 @@
             android:hint="@string/input.account.zalo.pay"
             android:lineSpacingExtra="@dimen/pading_top_min"
             android:textColor="@color/red"
-            android:textColorHint="@color/c_text_black" />
+            android:textColorHint="#ce24272b"
+            android:textSize="14dp" />
 
         <EditText
             android:id="@+id/tvAccountName"
@@ -50,10 +51,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@drawable/txt_bottom_default_style"
             android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
             android:maxLength="@integer/max_length_zalopay_name"
-            android:maxWidth="280dp"
-            android:textSize="@dimen/font_size_medium" />
+            android:paddingBottom="4dp"
+            android:textSize="16dp" />
 
     </LinearLayout>
 
