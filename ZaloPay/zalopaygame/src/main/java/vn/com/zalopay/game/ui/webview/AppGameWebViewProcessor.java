@@ -31,9 +31,7 @@ import vn.com.zalopay.game.ui.component.activity.AppGameBaseActivity;
 
 public class AppGameWebViewProcessor extends WebViewClient {
 
-    private static final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
-
-    public static boolean hasError;
+    private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
 
     //flag to animate activity
     public static boolean canPayment;
@@ -41,10 +39,11 @@ public class AppGameWebViewProcessor extends WebViewClient {
     private AppGameWebView mWebView = null;
     private Activity mActivity;
     private ITimeoutLoadingListener mTimeOutListener;
+    private IWebViewListener mWebViewListener;
 
-    public AppGameWebViewProcessor(AppGameWebView pWebView) {
+    public AppGameWebViewProcessor(AppGameWebView pWebView, IWebViewListener webViewListener) {
         mWebView = pWebView;
-        AppGameWebViewProcessor.hasError = false;
+        mWebViewListener = webViewListener;
         AppGameWebViewProcessor.canPayment = false;
         mWebView.setWebViewClient(this);
         mWebView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
@@ -56,17 +55,12 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (AppGameGlobal.getDialog() != null)
             AppGameGlobal.getDialog().showLoadingDialog(pActivity, pTimeoutListener);
 
-        AppGameWebViewProcessor.hasError = false;
-
         mWebView.loadUrl(pUrl);
     }
 
     private void changePage(String pUrl) {
         if (AppGameGlobal.getDialog() != null)
             AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
-
-        AppGameWebViewProcessor.hasError = false;
-
         mWebView.loadUrl(pUrl);
     }
 
@@ -77,6 +71,9 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (AppGameGlobal.getDialog() != null) {
             AppGameGlobal.getDialog().hideLoadingDialog();
         }
+        if (mWebViewListener != null) {
+            mWebViewListener.onPageFinished(url);
+        }
 
         mWebView.runScript("utils.getNav()", new GetNavigationCallback(mActivity));
 
@@ -84,34 +81,9 @@ public class AppGameWebViewProcessor extends WebViewClient {
     }
 
     private void onReceivedError(int errorCode, CharSequence description) {
-        Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
-        AppGameWebViewProcessor.hasError = true;
-
-        if (AppGameGlobal.getDialog() == null) {
-            return;
+        if (mWebViewListener != null) {
+            mWebViewListener.onReceivedError(errorCode, description);
         }
-        AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
-                AppGameGlobal.getString(R.string.appgame_error_loading),
-                AppGameGlobal.getString(R.string.appgame_button_dialog_retry),
-                AppGameGlobal.getString(R.string.appgame_button_dialog_close),
-                new IDialogListener() {
-                    @Override
-                    public void onClose() {
-                        AppGameBaseActivity.getCurrentActivity().finish();
-                    }
-                },
-                new IDialogListener() {
-                    @Override
-                    public void onClose() {
-                        if (mWebView == null) {
-                            return;
-                        }
-                        if (AppGameGlobal.getDialog() != null) {
-                            AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
-                        }
-                        mWebView.reload();
-                    }
-                });
     }
 
     @Override
@@ -119,7 +91,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return;
         }
-        Timber.e("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
+        Timber.w("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
         onReceivedError(errorCode, description);
 
         super.onReceivedError(view, errorCode, description, failingUrl);
@@ -132,7 +104,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
         }
         int errorCode = error != null ? error.getErrorCode() : WebViewClient.ERROR_UNKNOWN;
         CharSequence description =  error != null ? error.getDescription() : null;
-        Timber.e("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
+        Timber.w("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
         onReceivedError(errorCode, description);
     }
 
@@ -253,4 +225,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
         mTimeOutListener = null;
     }
 
+    public interface IWebViewListener {
+        void onReceivedError(int errorCode, CharSequence description);
+        void onPageFinished(String url);
+    }
 }

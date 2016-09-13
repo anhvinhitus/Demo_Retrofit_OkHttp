@@ -73,4 +73,5 @@ public class AppGameWebView extends WebView {
 			loadUrl("javascript:{" + scriptContent + "}");
 		}
 	}
+
 }

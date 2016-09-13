@@ -19,4 +19,8 @@
     <string name="appgame_button_left">Thoát</string>
 
     <string name="appgame_button_right">Đợi tải</string>
+
+    <string name="btn_reload">Tải Lại</string>
+
+    <string name="load_data_error">Không tải được nội dung</string>
 </resources>

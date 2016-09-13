@@ -1,6 +1,7 @@
 package vn.com.zalopay.game.ui.component.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,38 +24,16 @@ public class FragmentPayResult extends AppGameFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment__result, container, false);
+    protected int getResLayoutId() {
+        return R.layout.fragment__result;
     }
 
     @Override
-    protected void initView(View rootView) {
-        mWebview = (AppGameWebView) rootView.findViewById(R.id.webview);
-
-        mWebViewProcessor = new AppGameWebViewProcessor(mWebview);
-    }
-
-    @Override
-    protected void initData() {
-        Timber.d("initData start appTransId: [%s]", AppGameGlobal.getAppGamePayInfo().getApptransid());
-        final String urlPage = String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid(),
+    protected String getWebViewUrl() {
+        Timber.d("getWebViewUrl start appTransId: [%s]", AppGameGlobal.getAppGamePayInfo().getApptransid());
+        final String url = String.format(AppGameConfig.PAY_RESULT_PAGE, AppGameGlobal.getAppGamePayInfo().getApptransid(),
                 AppGameGlobal.getAppGamePayInfo().getUid(), AppGameGlobal.getAppGamePayInfo().getAccessToken());
-        Timber.d("initData url [%s]", urlPage);
-        mWebViewProcessor.start(urlPage, getActivity(), new ITimeoutLoadingListener() {
-            @Override
-            public void onTimeoutLoading() {
-                Timber.e("onProgressTimeout-%s", urlPage);
-                //load website timeout, show confirm dialog: continue to load or exit.
-                if (AppGameGlobal.getDialog() != null)
-                    AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),getResources().getString(R.string.appgame_waiting_loading),
-                            getResources().getString(R.string.appgame_button_left),getResources().getString(R.string.appgame_button_right), new IDialogListener() {
-                                @Override
-                                public void onClose()
-                                {
-                                    AppGameBaseActivity.getCurrentActivity().finish();
-                                }
-                            });
-            }
-        });
+        Timber.d("getWebViewUrl url [%s]", url);
+        return url;
     }
 }
