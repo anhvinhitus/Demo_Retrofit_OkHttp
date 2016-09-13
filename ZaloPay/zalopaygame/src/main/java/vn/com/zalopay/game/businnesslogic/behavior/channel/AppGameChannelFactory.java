@@ -6,18 +6,16 @@ import vn.com.zalopay.game.ui.component.activity.AppGameActivity;
 
 /**
  * Created by admin on 8/27/16.
+ *
  */
-public class AppGameChannelFactory
-{
-    public static IAppGameStartFlow procedureChannel()
-    {
-        if(AppGameGlobal.isResultChannel())
+public class AppGameChannelFactory {
+    public static IAppGameStartFlow procedureChannel() {
+        if (AppGameGlobal.isResultChannel()) {
             return new AppGameStartResultChannel();
-        else if(AppGameGlobal.isZingXuChannel())
-            return new AppGameStartZingXuChannel();
-        else if(AppGameGlobal.isPayForGameChannel())
+        } else if (AppGameGlobal.isPayForGameChannel()) {
             return new AppGameStartPayGameChannel();
-        else
+        } else {
             return null;
+        }
     }
 }

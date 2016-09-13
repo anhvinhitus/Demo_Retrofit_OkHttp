@@ -81,13 +81,6 @@ public class AppGameGlobal
 		return mAppGamePayInfo;
 	}
 
-	public static boolean isZingXuChannel()
-	{
-		if(mAppGamePayInfo != null && mAppGamePayInfo.getAppId() == Integer.parseInt(getString(R.string.appgame_zingxu_channel_id)))
-			return true;
-		return false;
-	}
-
 	public static boolean isPayForGameChannel()	{
 		if (mAppGamePayInfo != null && mAppGamePayInfo.getAppId() == Integer.parseInt(getString(R.string.appgame_payforgame_channel_id))) {
 			return true;

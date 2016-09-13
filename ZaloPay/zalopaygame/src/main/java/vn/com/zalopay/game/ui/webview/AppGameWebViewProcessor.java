@@ -83,8 +83,8 @@ public class AppGameWebViewProcessor extends WebViewClient {
         super.onPageFinished(view, url);
     }
 
-    private void onReceivedError() {
-        Timber.d("onReceivedError");
+    private void onReceivedError(int errorCode, CharSequence description) {
+        Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
         AppGameWebViewProcessor.hasError = true;
 
         if (AppGameGlobal.getDialog() == null) {
@@ -120,7 +120,7 @@ public class AppGameWebViewProcessor extends WebViewClient {
             return;
         }
         Timber.e("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
-        onReceivedError();
+        onReceivedError(errorCode, description);
 
         super.onReceivedError(view, errorCode, description, failingUrl);
     }
@@ -130,8 +130,10 @@ public class AppGameWebViewProcessor extends WebViewClient {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
-        Timber.e("Webview error %s", error != null ? error.getDescription() : null);
-        onReceivedError();
+        int errorCode = error != null ? error.getErrorCode() : WebViewClient.ERROR_UNKNOWN;
+        CharSequence description =  error != null ? error.getDescription() : null;
+        Timber.e("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
+        onReceivedError(errorCode, description);
     }
 
     @Override

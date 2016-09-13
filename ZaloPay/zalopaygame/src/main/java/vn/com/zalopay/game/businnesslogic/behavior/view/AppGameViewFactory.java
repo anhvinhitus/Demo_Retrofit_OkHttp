@@ -12,8 +12,6 @@ public class AppGameViewFactory {
         if (AppGameGlobal.isResultChannel()) {
             Timber.d("procedureChannel start");
             return new AppGamePayResultInjectView();
-        } else if (AppGameGlobal.isZingXuChannel()) {
-            return new AppGameZingXuInjectView();
         } else if (AppGameGlobal.isPayForGameChannel()) {
             return new AppGamePayGameInjectView();
         } else {
