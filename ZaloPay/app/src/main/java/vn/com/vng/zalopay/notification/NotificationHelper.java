@@ -150,7 +150,6 @@ public class NotificationHelper {
             skipStorage = true;
         } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
             refreshGatewayInfo();
-            skipStorage = true;
         }
 
         if (!skipStorage) {
