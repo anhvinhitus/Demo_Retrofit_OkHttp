@@ -369,9 +369,19 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         if (mTransaction == null) {
             return;
         }
+
+        if (user.zaloPayId.equals(mTransaction.zaloPayId)) {
+            if (mView != null) {
+                mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
+            }
+            return;
+        }
+
         if (!isValidAmount()) {
             return;
         }
+
+
         transferMoney();
         if (mView != null) {
             mView.setEnableBtnContinue(false);
@@ -412,7 +422,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || (TextUtils.isEmpty(mTransaction.zaloPayName)
-                    && TextUtils.isEmpty(mTransaction.phoneNumber))) {
+                && TextUtils.isEmpty(mTransaction.phoneNumber))) {
             Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
             getUserMapping(mTransaction.getZaloId());
         }
