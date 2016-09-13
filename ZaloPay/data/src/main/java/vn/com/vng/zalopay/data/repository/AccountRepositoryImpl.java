@@ -11,10 +11,13 @@ import java.util.concurrent.Callable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
+import timber.log.Timber;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Permission;
@@ -163,28 +166,6 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> updateUserProfileLevel3(String identityNumber,
-                                                       String email,
-                                                       String frontImagePath,
-                                                       String backImagePath,
-                                                       String avatarPath) {
-
-        RequestBody fimg = requestBodyFromFile(frontImagePath);
-        RequestBody bimg = requestBodyFromFile(backImagePath);
-        RequestBody avatar = requestBodyFromFile(avatarPath);
-
-        return mUploadPhotoService.updateProfile3(
-                requestBodyParam(mUser.zaloPayId),
-                requestBodyParam(mUser.accesstoken),
-                requestBodyParam(identityNumber),
-                requestBodyParam(email),
-                fimg,
-                bimg,
-                avatar)
-                .map(baseResponse -> Boolean.TRUE);
-    }
-
-    @Override
     public Observable<Boolean> updateZaloPayName(String zaloPayName) {
         return mRequestService.updateZaloPayName(zaloPayName, mUser.zaloPayId, mUser.accesstoken)
                 .doOnNext(response -> saveZalopayName(zaloPayName))
@@ -210,7 +191,19 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 frontImageBodyRequest,
                 backImageBodyRequest,
                 avatarBodyRequest)
-                .doOnNext(response -> localStorage.clearProfileInfo3())
+                .doOnNext(response -> {
+                    localStorage.clearProfileInfo3();
+                    mUserConfig.setWaitingApproveProfileLevel3(true);
+                })
+                .doOnError(throwable -> {
+                    Timber.d("throwable update profile 3");
+                    if (throwable instanceof BodyException) {
+                        if (((BodyException) throwable).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
+                            localStorage.clearProfileInfo3();
+                            mUserConfig.setWaitingApproveProfileLevel3(true);
+                        }
+                    }
+                })
                 .map(baseResponse -> Boolean.TRUE);
     }
 

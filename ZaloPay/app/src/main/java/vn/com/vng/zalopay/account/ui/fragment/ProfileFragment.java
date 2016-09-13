@@ -262,8 +262,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             navigator.startUpdateProfileLevel2Activity(getContext(), false);
         } else {
             navigator.startEditAccountActivity(getContext());
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
         }
-        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
     }
 
     @OnClick(R.id.layoutChangePin)

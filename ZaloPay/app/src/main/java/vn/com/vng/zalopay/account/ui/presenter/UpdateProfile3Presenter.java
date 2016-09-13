@@ -54,32 +54,14 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void destroy() {
-
-    }
-
-    public void update(String identityNumber,
-                       String email,
-                       String fimgPath,
-                       String bimgPath,
-                       String avatarPath) {
-
-        Timber.d("identityNumber %s email %s fimgPath %s bimgPath %s avatarPath %s", identityNumber, email, fimgPath, bimgPath, avatarPath);
-
-        mView.showLoading();
-        Subscription subscription = accountRepository.updateUserProfileLevel3(identityNumber, email, fimgPath, bimgPath, avatarPath)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UpdateSubscriber());
-        compositeSubscription.add(subscription);
     }
 
     public void updateProfile3(final String identityNumber,
@@ -134,8 +116,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     private void onUpdateError(Throwable e) {
         if (e instanceof BodyException) {
             if (((BodyException) e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
-                userConfig.setWaitingApproveProfileLevel3(true);
-                mView.showError(((BodyException) e).message);
+                mView.showError(ErrorMessageFactory.create(applicationContext, e));
                 mView.waitingApproveProfileLevel3();
                 return;
             }

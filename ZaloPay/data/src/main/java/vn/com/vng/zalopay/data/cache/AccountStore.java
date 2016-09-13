@@ -114,12 +114,6 @@ public interface AccountStore {
 
         Observable<Boolean> updateUserProfileLevel3(String identityNumber,
                                                     String email,
-                                                    String frontImagePath,
-                                                    String backImagePath,
-                                                    String avatarPath);
-
-        Observable<Boolean> updateUserProfileLevel3(String identityNumber,
-                                                    String email,
                                                     byte[] frontImage,
                                                     byte[] backImage,
                                                     byte[] avatar);

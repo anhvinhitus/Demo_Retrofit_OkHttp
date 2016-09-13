@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 
 import java.text.SimpleDateFormat;
@@ -32,8 +32,8 @@ import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.UriUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/30/16.
@@ -185,7 +185,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        presenter.getProfileInfo(); //Fixme dang bi cham.
+        presenter.getProfileInfo();
     }
 
     @Override
@@ -296,9 +296,29 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void updateSuccess() {
-        showToast(R.string.update_profile_success);
-        userConfig.setWaitingApproveProfileLevel3(true);
-        getActivity().finish();
+        showDialogSuccess();
+    }
+
+
+    private void showDialogSuccess() {
+        SweetAlertDialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.INFO_TYPE, R.style.alert_dialog);
+        dialog.setContentText(getString(R.string.update_profile_success));
+        dialog.setConfirmText(getString(R.string.ok));
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            }
+        });
+        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
