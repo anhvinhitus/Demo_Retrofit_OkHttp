@@ -3,6 +3,7 @@ package vn.com.zalopay.game.ui.webview;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -82,58 +83,55 @@ public class AppGameWebViewProcessor extends WebViewClient {
         super.onPageFinished(view, url);
     }
 
-    @Override
-    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        Timber.e("Webview error %s", description);
-
+    private void onReceivedError() {
+        Timber.d("onReceivedError");
         AppGameWebViewProcessor.hasError = true;
 
-        if (AppGameGlobal.getDialog() != null) {
-            AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
-                    AppGameGlobal.getString(R.string.appgame_error_loading),
-                    AppGameGlobal.getString(R.string.appgame_button_dialog_retry),
-                    AppGameGlobal.getString(R.string.appgame_button_dialog_close),
-                    new IDialogListener() {
-                        @Override
-                        public void onClose() {
-                            AppGameBaseActivity.getCurrentActivity().finish();
-                        }
-                    },
-                    new IDialogListener() {
-                        @Override
-                        public void onClose() {
-                            if (mWebView == null) {
-                                return;
-                            }
-                            if (AppGameGlobal.getDialog() != null) {
-                                AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
-                            }
-                            mWebView.reload();
-                        }
-                    });
+        if (AppGameGlobal.getDialog() == null) {
+            return;
         }
+        AppGameGlobal.getDialog().showConfirmDialog(AppGameBaseActivity.getCurrentActivity(),
+                AppGameGlobal.getString(R.string.appgame_error_loading),
+                AppGameGlobal.getString(R.string.appgame_button_dialog_retry),
+                AppGameGlobal.getString(R.string.appgame_button_dialog_close),
+                new IDialogListener() {
+                    @Override
+                    public void onClose() {
+                        AppGameBaseActivity.getCurrentActivity().finish();
+                    }
+                },
+                new IDialogListener() {
+                    @Override
+                    public void onClose() {
+                        if (mWebView == null) {
+                            return;
+                        }
+                        if (AppGameGlobal.getDialog() != null) {
+                            AppGameGlobal.getDialog().showLoadingDialog(mActivity, mTimeOutListener);
+                        }
+                        mWebView.reload();
+                    }
+                });
+    }
+
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return;
+        }
+        Timber.e("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
+        onReceivedError();
 
         super.onReceivedError(view, errorCode, description, failingUrl);
     }
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-//        Timber.e("Webview error %s", error != null ? error.getDescription() : null);
-
-        AppGameWebViewProcessor.hasError = true;
-
-        if (AppGameGlobal.getDialog() != null)
-            AppGameGlobal.getDialog().showInfoDialog(AppGameBaseActivity.getCurrentActivity(),
-                    AppGameGlobal.getString(R.string.appgame_error_loading), AppGameGlobal.getString(R.string.appgame_button_dialog_close),
-                    3, new IDialogListener() {
-                        @Override
-                        public void onClose() {
-                            AppGameBaseActivity.getCurrentActivity().finish();
-                        }
-                    });
-
-
-        super.onReceivedError(view, request, error);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        Timber.e("Webview error %s", error != null ? error.getDescription() : null);
+        onReceivedError();
     }
 
     @Override
