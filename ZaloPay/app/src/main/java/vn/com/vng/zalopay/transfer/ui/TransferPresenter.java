@@ -90,14 +90,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     return;
                 }
                 mView.hideLoading();
-//                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-//                    if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
-//                        sendNotificationCancel();
-//                    }
-                    /*else if (paymentError != PaymentError.ERR_CODE_SUCCESS) {
-                          sendNotificationFailed();
-                    }*/
-//                }
             }
 
             @Override

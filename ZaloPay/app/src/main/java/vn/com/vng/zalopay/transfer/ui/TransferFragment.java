@@ -192,8 +192,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
         mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
 
-        btnContinue.setEnabled(false);
-
         edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
             @Override
             public void onValueUpdate(long value) {
@@ -248,11 +246,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         });
 
         mPresenter.onViewCreated();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     @Override

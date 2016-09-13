@@ -16,13 +16,4 @@ public interface ZaloPayRepository {
 
     Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description, String embeddata);
 
-    /* Gọi lần mới run app */
-//    Observable<Boolean> initialize();
-
-
-    /*
-    *
-    * Sửa dụng cho App JS
-    * */
-
 }

@@ -332,8 +332,8 @@
     <string name="withdraw.exceed.balance">Số tiền rút vượt quá số dư</string>
 
     <string name="transfer.message.maxlength">Lời nhắn không được vượt quá 36 ký tự.</string>
-    <string name="pin.old">Mã pin cũ</string>
-    <string name="pin.new">Mã pin mới</string>
+    <string name="pin.old">Mã PIN cũ</string>
+    <string name="pin.new">Mã PIN mới</string>
     <string name="input.pin.old">Nhập mã PIN cũ</string>
     <string name="input.pin.new">Nhập mã PIN mới</string>
 
