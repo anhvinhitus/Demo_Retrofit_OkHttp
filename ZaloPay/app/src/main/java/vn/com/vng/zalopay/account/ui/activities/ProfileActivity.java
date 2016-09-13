@@ -55,11 +55,11 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             return;
         }
         if (getUserComponent().currentUser().profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(this, false);
+            navigator.startUpdateProfileLevel2Activity(this);
         } else {
             navigator.startEditAccountActivity(this);
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
         }
-        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
     }
 
     public void updateUserInfo(User user) {

@@ -276,7 +276,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void addLinkCard() {
         if (user.profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext(), false);
+            navigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext());
         } else if (!checkShowIntroSaveCard()) {
             long value = 10000;
             if (mLinkCardView.getActivity() != null) {

@@ -239,7 +239,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @OnClick(R.id.layoutPhone)
     public void onClickPhone() {
         if (tvPhone.length() == 0) {
-            navigator.startUpdateProfileLevel2Activity(getContext(), false);
+            navigator.startUpdateProfileLevel2Activity(getContext());
         }
     }
 
@@ -259,7 +259,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             return;
         }
         if (userConfig.getCurrentUser().profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(getContext(), false);
+            navigator.startUpdateProfileLevel2Activity(getContext());
         } else {
             navigator.startEditAccountActivity(getContext());
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);

@@ -70,7 +70,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
             return;
         }
         if (getUserComponent().currentUser().profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(getActivity(), false);
+            navigator.startUpdateProfileLevel2Activity(getActivity());
         } else {
             navigator.startEditAccountActivity(getActivity());
         }

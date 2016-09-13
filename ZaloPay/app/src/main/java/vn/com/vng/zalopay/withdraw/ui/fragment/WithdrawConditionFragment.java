@@ -49,7 +49,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
 
     @OnClick(R.id.tvUpdateProfile)
     public void onClickUpdateProfile() {
-        navigator.startUpdateProfileLevel2Activity(getActivity(), false);
+        navigator.startUpdateProfileLevel2Activity(getActivity());
     }
 
     @OnClick(R.id.tvSaveCard)

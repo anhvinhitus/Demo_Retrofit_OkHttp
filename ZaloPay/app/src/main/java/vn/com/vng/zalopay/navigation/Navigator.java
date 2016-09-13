@@ -115,16 +115,8 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startUpdateProfileLevel2Activity(Context context, boolean clearTop) {
+    public void startUpdateProfileLevel2Activity(Context context) {
         Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
-
-        if (clearTop) {
-            intent.putExtra("finish", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        }
-
         context.startActivity(intent);
     }
 
@@ -163,7 +155,7 @@ public class Navigator implements INavigator {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
-                        startUpdateProfileLevel2Activity(context, false);
+                        startUpdateProfileLevel2Activity(context);
                     }
                 });
         sweetAlertDialog.show();

@@ -67,7 +67,7 @@
             app:gpvPasswordLength="@integer/pin_length"
             app:gpvPasswordType="numberPassword"
             app:gpvTextColor="#000000"
-            app:gpvTextSize="20sp" />
+            app:gpvTextSize="5sp" />
 
     </LinearLayout>
 
