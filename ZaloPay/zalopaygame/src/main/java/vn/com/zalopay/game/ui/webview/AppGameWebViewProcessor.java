@@ -82,6 +82,10 @@ public class AppGameWebViewProcessor extends WebViewClient {
        start(pUrl, mActivity);
     }
 
+    public boolean hasError() {
+        return hasError;
+    }
+
     @Override
     public void onPageFinished(WebView view, String url) {
         Timber.d("onPageFinished url [%s]", url);

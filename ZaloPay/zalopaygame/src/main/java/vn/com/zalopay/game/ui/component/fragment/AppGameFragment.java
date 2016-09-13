@@ -176,6 +176,9 @@ public abstract class AppGameFragment extends Fragment
     }
 
     public boolean onBackPressed() {
+        if (mWebViewProcessor != null && mWebViewProcessor.hasError()) {
+            return false;
+        }
         mWebview.runScript("utils.back()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
