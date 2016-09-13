@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
@@ -63,11 +65,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.viewFlipper)
     ViewFlipper viewFlipper;
 
-    @BindView(R.id.edtEmail)
-    EditText mEmailView;
+    @BindView(R.id.textInputEmail)
+    TextInputLayout mEmailView;
 
-    @BindView(R.id.edtIdentityNumber)
-    EditText mIdentityNumberView;
+    @BindView(R.id.textInputIdentity)
+    TextInputLayout mIdentityNumberView;
 
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
@@ -181,6 +183,16 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setClickable(false);
     }
 
+    @OnTextChanged(R.id.edtEmail)
+    public void onTextChangedEmail(CharSequence s) {
+        mEmailView.setError(null);
+    }
+
+    @OnTextChanged(R.id.edtIdentity)
+    public void onTextChangeIdentity(CharSequence s) {
+        mIdentityNumberView.setError(null);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -235,8 +247,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public boolean onBackPressed() {
-        String email = mEmailView.getText().toString();
-        String cmnd = mIdentityNumberView.getText().toString();
+        String email = mEmailView.getEditText().getText().toString();
+        String cmnd = mIdentityNumberView.getEditText().getText().toString();
 
         presenter.saveProfileInfo3(email, cmnd, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
 
@@ -244,21 +256,21 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void updateProfile() {
-        String cmnd = mIdentityNumberView.getText().toString();
-        String email = mEmailView.getText().toString();
+        String cmnd = mIdentityNumberView.getEditText().getText().toString();
+        String email = mEmailView.getEditText().getText().toString();
         if (isValidatePageTwo()) {
             presenter.updateProfile3(cmnd, email, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
         }
     }
 
     private boolean isValidatePageOne() {
-        if (!ValidateUtil.isEmailAddress(mEmailView.getText().toString())) {
-            showToast(R.string.email_invalid);
+        if (!ValidateUtil.isEmailAddress(mEmailView.getEditText().getText().toString())) {
+            mEmailView.setError(getString(R.string.email_invalid));
             return false;
         }
 
-        if (!ValidateUtil.isCMND(mIdentityNumberView.getText().toString())) {
-            showToast(R.string.cmnd_invalid);
+        if (!ValidateUtil.isCMND(mIdentityNumberView.getEditText().getText().toString())) {
+            mIdentityNumberView.setError(getString(R.string.cmnd_invalid));
             return false;
         }
 
@@ -497,8 +509,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @Override
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
         Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg ", foregroundImg, backgroundImg, avatarImg);
-        mEmailView.setText(email);
-        mIdentityNumberView.setText(identity);
+        mEmailView.getEditText().setText(email);
+        mIdentityNumberView.getEditText().setText(identity);
 
         if (!TextUtils.isEmpty(foregroundImg)) {
             mUriFgCmnd = Uri.parse(foregroundImg);

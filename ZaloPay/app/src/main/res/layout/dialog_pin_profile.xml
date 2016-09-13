@@ -91,6 +91,7 @@
             android:id="@+id/cancel_button"
             style="@style/dialog_blue_button"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingBottom="@dimen/zpw_padding_6"
             android:paddingLeft="@dimen/zpw_padding_15"
