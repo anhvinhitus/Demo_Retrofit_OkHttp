@@ -43,12 +43,6 @@
 
     <color name="c_text_black">#24272b</color>
 
-    <color name="bg_btn_gray">#c8c7cd</color>
-    <color name="bg_btn_blue">#018fe5</color>
-    <color name="bg_btn_blue_selected">#005b92</color>
-    <color name="bg_btn_green">#06be04</color>
-    <color name="bg_btn_green_selected">#9906be04</color>
-
     <color name="bg_translucence_white">#88ffffff</color>
     <color name="text_green">#008fe5</color>
 
