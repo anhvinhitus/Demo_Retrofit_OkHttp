@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import org.greenrobot.eventbus.EventBus;
+
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 import java.lang.ref.WeakReference;
@@ -29,6 +32,7 @@ import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -245,6 +249,8 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         showToast("Cập nhật thông tin thành công.");
         presenter.saveUserPhone(mCurrentPhone);
         presenter.saveZaloPayName(mCurrentZaloPayName);
+        //Reload PaymentSDK for load new payment permission
+        EventBus.getDefault().post(new RefreshPaymentSdkEvent());
         if (!TextUtils.isEmpty(walletTransId)) {
             showLoading();
             paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {
