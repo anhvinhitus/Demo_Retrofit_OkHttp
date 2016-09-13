@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
+
 import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.button.GuardButton;
 
@@ -178,7 +179,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @Override
     public void gotoMainActivity() {
-        navigator.startHomeActivity(getContext(), true);
+        navigator.startHomeActivity(getContext());
         getActivity().finish();
     }
 

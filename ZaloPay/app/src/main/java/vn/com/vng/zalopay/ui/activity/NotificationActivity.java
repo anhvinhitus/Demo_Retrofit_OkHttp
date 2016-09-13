@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
@@ -13,12 +15,14 @@ public class NotificationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (isTaskRoot()) {
-            Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-            navigator.startHomeActivity(this, true);
+            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+            UserConfig userConfig = applicationComponent.userConfig();
+            if (userConfig.hasCurrentUser()) {
+                applicationComponent.navigator().startHomeActivity(this, true);
+            }
         }
-
+        
         finish();
     }
 }

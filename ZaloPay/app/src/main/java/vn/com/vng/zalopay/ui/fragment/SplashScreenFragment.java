@@ -21,7 +21,6 @@ import vn.com.vng.zalopay.utils.IntroAppUtils;
 
 /**
  * Created by AnhHieu on 5/13/16.
- *
  */
 public class SplashScreenFragment extends BaseFragment implements ISplashScreenView {
 
@@ -95,7 +94,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void gotoHomeScreen() {
         interstitialCanceled = true;
-        navigator.startHomeActivity(getContext(), false);
+        navigator.startHomeActivity(getContext());
         getActivity().finish();
     }
 
@@ -104,8 +103,9 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         if (!IntroAppUtils.isShowedIntro()) {
             navigator.startIntroAppActivity(getContext());
         } else {
-            navigator.startLoginActivity(getContext(), false);
+            navigator.startLoginActivity(getContext());
         }
+
         getActivity().finish();
     }
 

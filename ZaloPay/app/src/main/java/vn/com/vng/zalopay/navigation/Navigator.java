@@ -77,6 +77,11 @@ public class Navigator implements INavigator {
         this.userConfig = userConfig;
     }
 
+
+    public void startLoginActivity(Context context) {
+        startLoginActivity(context, false);
+    }
+
     public void startLoginActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, LoginZaloActivity.class);
         if (clearTop) {
@@ -89,12 +94,16 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startHomeActivity(Context context) {
+        startHomeActivity(context, false);
+    }
+
     public void startHomeActivity(Context context, boolean clearTop) {
         Intent intent = intentHomeActivity(context, clearTop);
         context.startActivity(intent);
     }
 
-    public Intent intentHomeActivity(Context context, boolean clearTop) {
+    private Intent intentHomeActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, MainActivity.class);
 
         if (clearTop) {

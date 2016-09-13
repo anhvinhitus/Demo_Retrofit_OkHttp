@@ -50,12 +50,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
-
-//        String message = getIntent().getStringExtra(Constants.ARG_MESSAGE);
-//
-//        if (!TextUtils.isEmpty(message)) {
-//            showDialog(message, SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
-//        }
     }
 
     @OnClick(R.id.layoutLoginZalo)
@@ -73,7 +67,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     public void onResume() {
         super.onResume();
-
+        loginPresenter.resume();
         GlobalEventHandlingService.Message message = getAppComponent().globalEventService().popMessageAtLogin();
         if (message == null) {
             return;
@@ -81,12 +75,12 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
         showDialog(message.content, message.messageType, message.title);
     }
-/*
+
     @Override
     public void onPause() {
         super.onPause();
         loginPresenter.pause();
-    }*/
+    }
 
     @Override
     public void onDestroy() {
@@ -113,7 +107,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void gotoMainActivity() {
-        navigator.startHomeActivity(this, true);
+        navigator.startHomeActivity(this);
         finish();
     }
 

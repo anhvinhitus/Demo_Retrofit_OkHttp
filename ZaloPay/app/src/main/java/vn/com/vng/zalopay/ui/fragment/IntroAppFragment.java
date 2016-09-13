@@ -45,7 +45,7 @@ public class IntroAppFragment extends BaseFragment {
 
     @OnClick(R.id.tvStart)
     public void onClickStart() {
-        navigator.startLoginActivity(getContext(), true);
+        navigator.startLoginActivity(getContext());
         getActivity().finish();
     }
 
@@ -54,13 +54,13 @@ public class IntroAppFragment extends BaseFragment {
         if (mViewPager.getCurrentItem() >= mPagerAdapter.getCount()) {
             getActivity().finish();
         } else {
-            mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1);
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
         }
     }
 
     @OnClick(R.id.tvClose)
     public void onClickClose() {
-        navigator.startLoginActivity(getContext(), true);
+        navigator.startLoginActivity(getContext());
         getActivity().finish();
     }
 
