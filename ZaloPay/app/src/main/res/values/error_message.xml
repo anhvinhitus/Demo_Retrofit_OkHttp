@@ -28,6 +28,7 @@
     <string name="exception.code.invalid">Mã không phù hợp</string>
     <string name="exception.data.invalid">Dữ liệu không hợp lệ.</string>
     <string name="exception.account.name.length">Tên tài khoản phải từ 4 &#8211; 24 ký tự</string>
+    <string name="exception.transfer.for.self">Bạn không thể chuyển khoản cho chính mình</string>
     <string name="exception.account.name.special.char">Tên tài khoản không có ký tự đặc biệt</string>
     <string name="exception.account.name.with.space">Tên tài khoản không có dấu cách</string>
     <string name="exception.server.error">Hệ thống đang có lỗi. Vui lòng thử lại sau!</string>

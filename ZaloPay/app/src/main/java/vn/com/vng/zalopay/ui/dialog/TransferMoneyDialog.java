@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.TransferMoneyViaAccountNamePresenter;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
@@ -60,6 +61,9 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
 
     @Inject
     Navigator navigator;
+
+    @Inject
+    User user;
 
     @Inject
     TransferMoneyViaAccountNamePresenter presenter;
@@ -119,6 +123,9 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
             return false;
         } else if (!ValidateUtil.isValidLengthZPName(s)) {
             showError(getContext().getString(R.string.exception_account_name_length));
+            return false;
+        } else if (s.equals(user.zalopayname)) {
+            showError(getContext().getString(R.string.exception_transfer_for_self));
             return false;
         }
 
