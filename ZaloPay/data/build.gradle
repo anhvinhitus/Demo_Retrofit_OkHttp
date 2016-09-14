@@ -79,8 +79,7 @@ dependencies {
     compile libs.eventbus
     compile libs.gson
     compile libs.cbor
-
-    compile 'com.squareup.wire:wire-runtime:2.2.0'
+    compile libs.wire_runtime
 
     compile project(':domain')
 

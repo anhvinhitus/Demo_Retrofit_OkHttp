@@ -49,7 +49,6 @@ ext {
 
     zxingVersion = "3.2.1"
     zxingAndroidCoreVersion = "3.2.1"
-    zxingAndroidEmbeddedVersion = "3.2.0@aar"
 
     reactNativeVersion = "0.31.0"
     animatedGifVersion = "0.10.0"
@@ -58,15 +57,14 @@ ext {
 
     crashlyticsVersion = "2.5.5@aar"
 
-    protobufVersion = "2.6.1"
-    nettyVesion = "4.1.1.Final"
-
     parcelerVersion = "1.1.5"
 
     zalopayanalyticsVersion = "1.2"
     debugviewerVersion = "1.0"
 
     cborVersion = "0.7"
+
+    wireRuntimeVersion = "2.2.0"
 
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
@@ -90,7 +88,6 @@ ext {
             gson                   : "com.google.code.gson:gson:${gsonVersion}",
             zxing                  : "com.google.zxing:core:${zxingVersion}",
             zxing_android_core     : "com.google.zxing:android-core:${zxingAndroidCoreVersion}",
-            zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
 
             support_support_v4     : "com.android.support:support-v4:${supportVersion}",
             support_appcompat_v7   : "com.android.support:appcompat-v7:${supportVersion}",
@@ -105,9 +102,6 @@ ext {
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
 
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
-            protobuf               : "com.google.protobuf:protobuf-java:${protobufVersion}",
-            netty_transport        : "io.netty:netty-transport:${nettyVesion}",
-            netty_codec            : "io.netty:netty-codec:${nettyVesion}",
 
             parceler               : "org.parceler:parceler-api:${parcelerVersion}",
             parceler_apt           : "org.parceler:parceler:${parcelerVersion}",
@@ -116,7 +110,8 @@ ext {
             debugViewer            : "vn.com.vng:debugviewer:${debugviewerVersion}",
             debugViewer_noops      : "vn.com.vng:debugviewer-noops:${debugviewerVersion}",
 
-            cbor                   : "co.nstant.in:cbor:${cborVersion}"
+            cbor                   : "co.nstant.in:cbor:${cborVersion}",
+            wire_runtime           : "com.squareup.wire:wire-runtime:${wireRuntimeVersion}"
     ]
 
     testingLibraries = [
