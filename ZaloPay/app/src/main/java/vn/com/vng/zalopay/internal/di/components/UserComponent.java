@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.game.ui.fragment.AppGameFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
@@ -178,4 +179,6 @@ public interface UserComponent {
     void inject(PinProfileDialog dialog);
 
     void inject(TransferViaZaloPayNameFragment f);
+
+    void inject(AppGameFragment f);
 }

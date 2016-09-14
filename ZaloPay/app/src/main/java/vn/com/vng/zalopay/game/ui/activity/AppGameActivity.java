@@ -12,18 +12,22 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.game.ui.fragment.FragmentPayGame;
-import vn.com.zalopay.game.R;
-import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
-import vn.com.zalopay.game.businnesslogic.base.AppGameSingletonLifeCircle;
 import vn.com.vng.zalopay.game.ui.fragment.AppGameFragment;
+import vn.com.vng.zalopay.ui.activity.BaseActivity;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.game.R;
 
-public class AppGameActivity extends AppGameBaseActivity {
+public class AppGameActivity extends BaseActivity {
     protected AppGameFragment mFragment;
     protected Toolbar mToolbar;
 
     ImageView mLogoView;
     TextView mTitleView;
+
+    @Override
+    public BaseFragment getFragmentToHost() {
+        return AppGameFragment.newInstance(getIntent().getExtras());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +42,13 @@ public class AppGameActivity extends AppGameBaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
-        Fragment subView = getView();
-        if (subView != null)
-            inflatFragment(subView, false);
     }
 
     /**
      * start flow by app id.
      */
     protected Fragment getView() {
-        mFragment = FragmentPayGame.newInstance();
+        mFragment = AppGameFragment.newInstance(getIntent().getExtras());
         Timber.d("getView fragment [%s]", mFragment);
         return mFragment;
     }
@@ -78,22 +78,6 @@ public class AppGameActivity extends AppGameBaseActivity {
     protected void onDestroy() {
         Timber.d("onDestroy start");
         super.onDestroy();
-
-        AppGameSingletonLifeCircle.disposeAll();
-    }
-
-    @Override
-    public void logout() {
-        Timber.d("logout start");
-        if (AppGameGlobal.getResultListener() != null)
-            AppGameGlobal.getResultListener().onLogout();
-
-        finish();
-    }
-
-    @Override
-    public void startUrl(String pUrl) {
-        mFragment.loadUrl(pUrl);
     }
 
     @Override
@@ -106,21 +90,24 @@ public class AppGameActivity extends AppGameBaseActivity {
         mTitleView.setText(titleId);
     }
 
-    public void setLogo(String url) {
-        Timber.d("setLogo url %s", url);
-        if (getSupportActionBar() != null) {
-            if (TextUtils.isEmpty(url)) {
-                mLogoView.setVisibility(View.GONE);
-            } else {
-                mLogoView.setVisibility(View.VISIBLE);
-                Glide.with(this).load(url)
-                        .centerCrop()
-                        .placeholder(R.color.silver)
-                        .error(R.color.silver)
-                        .into(mLogoView);
-            }
+    public void setTitleAndLogo(String title, String url) {
+        Timber.d("setTitleAndLogo url %s", url);
+        if (!TextUtils.isEmpty(title)) {
+            setTitle(title);
         }
-
+        if (getSupportActionBar() == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(url)) {
+            mLogoView.setVisibility(View.GONE);
+        } else {
+            mLogoView.setVisibility(View.VISIBLE);
+            Glide.with(this).load(url)
+                    .centerCrop()
+                    .placeholder(R.color.silver)
+                    .error(R.color.silver)
+                    .into(mLogoView);
+        }
     }
 
     public Toolbar getToolbar() {

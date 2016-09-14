@@ -26,13 +26,8 @@ import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.game.config.AppGameDialogImpl;
-import vn.com.vng.zalopay.game.config.AppGameNetworkingImpl;
-import vn.com.vng.zalopay.game.config.AppGamePaymentImpl;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.zalopay.game.businnesslogic.entity.base.AppGameError;
 import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
-import vn.com.zalopay.game.businnesslogic.interfaces.callback.IAppGameResultListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -306,29 +301,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             gamePayInfo.setUid(merchantUserInfo.muid);
             gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
             gamePayInfo.setAppId(mAppResource.appid);
-            IAppGameResultListener gameResultListener = new IAppGameResultListener() {
-                @Override
-                public void onError(AppGameError pError) {
-                    Timber.d("onError pError [%s]", pError);
-                    if (pError == null) {
-                        return;
-                    }
-                    mZaloPayView.showError(pError.messError);
-                }
-
-                @Override
-                public void onLogout() {
-                    Timber.d("onLogout start");
-                    if (mZaloPayView == null) {
-                        return;
-                    }
-                    mZaloPayView.onSessionExpired();
-                }
-            };
-            Timber.d("onNext startPayFlow");
-            //Todo: longlv (13/09/2016) need update
-//            AppGameController.startPayFlow(mZaloPayView.getActivity(), gamePayInfo, gameResultListener,
-//                    new AppGamePaymentImpl(), new AppGameDialogImpl(), mAppResource.webUrl, new AppGameNetworkingImpl());
+            navigator.startWebViewActivity(mZaloPayView.getContext(), gamePayInfo, mAppResource.webUrl);
         }
 
         @Override

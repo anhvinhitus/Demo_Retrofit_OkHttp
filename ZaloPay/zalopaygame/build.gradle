@@ -40,5 +40,10 @@ dependencies {
     compile libs.gson
     apt libs.parceler_apt
 
+    compile libs.support_annotations
+    compile libs.dagger
+    apt libs.daggerCompiler
+    provided libs.javaxAnnotation
+
     compile project(':ui.widget')
 }

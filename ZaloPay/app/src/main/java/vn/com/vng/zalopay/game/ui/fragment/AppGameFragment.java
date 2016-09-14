@@ -2,106 +2,158 @@ package vn.com.vng.zalopay.game.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.ValueCallback;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
+import timber.log.Timber;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.game.config.AppGameDialogImpl;
 import vn.com.vng.zalopay.game.ui.activity.AppGameActivity;
-import vn.com.zalopay.game.businnesslogic.base.AppGameGlobal;
+import vn.com.vng.zalopay.game.ui.presenter.WebViewPresenter;
+import vn.com.vng.zalopay.game.ui.view.IWebView;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
+import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
+import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
 import vn.com.zalopay.game.webview.AppGameWebView;
 import vn.com.zalopay.game.webview.AppGameWebViewProcessor;
 import vn.com.zalopay.game.webview.AppGameWebViewProcessor.IWebViewListener;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public abstract class AppGameFragment extends Fragment implements IWebViewListener {
-    private AppGameWebView mWebview;
+public class AppGameFragment extends BaseFragment implements IWebViewListener, IWebView {
     private AppGameWebViewProcessor mWebViewProcessor;
-    protected String mCurrentUrl = "";
+    private ITimeoutLoadingListener mTimeOutListener;
 
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
-    private View btnRetry;
 
-    protected abstract int getResLayoutId();
+    private IDialog mDialog;
 
-    protected abstract String getWebViewUrl();
+    protected String mCurrentUrl = "";
+
+    @Inject
+    WebViewPresenter mPresenter;
+
+    public static AppGameFragment newInstance(Bundle bundle) {
+        AppGameFragment fragment = new AppGameFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return vn.com.zalopay.game.R.layout.webapp_fragment_webview;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(getResLayoutId(), container, false);
-        return view;
+        mTimeOutListener = new ITimeoutLoadingListener() {
+            @Override
+            public void onTimeoutLoading() {
+                Timber.d("onTimeoutLoading");
+                //load website timeout, show confirm dialog: continue to load or exit.
+                if (mDialog == null || getActivity() == null) {
+                    return;
+                }
+                mDialog.showConfirmDialog(getActivity(),
+                        getActivity().getResources().getString(vn.com.zalopay.game.R.string.appgame_waiting_loading),
+                        getActivity().getResources().getString(vn.com.zalopay.game.R.string.appgame_button_left),
+                        getActivity().getResources().getString(vn.com.zalopay.game.R.string.appgame_button_right), new IDialogListener() {
+                            @Override
+                            public void onClose() {
+                                getActivity().finish();
+                            }
+                        });
+            }
+        };
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        //Timber.d("onViewCreated start");
+        super.onViewCreated(view, savedInstanceState);
+        Timber.d("onViewCreated start");
+        mPresenter.setView(this);
+        mPresenter.initData(getArguments());
         initViewWebView(view);
         initRetryView(view);
-        loadUrl(getWebViewUrl());
-        super.onViewCreated(view, savedInstanceState);
+        loadUrl(mPresenter.getWebViewUrl());
     }
 
+
     private void initViewWebView(View rootView) {
-//        mWebview = (AppGameWebView) rootView.findViewById(R.id.webview);
-        mWebViewProcessor = new AppGameWebViewProcessor(mWebview, this);
+        AppGameWebView mWebview = (AppGameWebView) rootView.findViewById(R.id.webview);
+        mDialog = new AppGameDialogImpl();
+        mWebViewProcessor = new AppGameWebViewProcessor(mWebview, mDialog, mTimeOutListener, this);
+    }
+
+    @Override
+    public void loadUrl(final String pUrl) {
+        if (mWebViewProcessor == null) {
+            return;
+        }
+        mCurrentUrl = pUrl;
+        mWebViewProcessor.start(mCurrentUrl, getActivity());
     }
 
     private void initRetryView(View rootView) {
-//        layoutRetry = rootView.findViewById(R.id.layoutRetry);
-//        imgError = (ImageView) rootView.findViewById(R.id.imgError);
-//        tvError = (TextView) rootView.findViewById(R.id.tvError);
-//        btnRetry = rootView.findViewById(R.id.btnRetry);
-//        btnRetry.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                hideError();
-//                refreshWeb();
-//            }
-//        });
-//        hideError();
+        layoutRetry = rootView.findViewById(R.id.layoutRetry);
+        imgError = (ImageView) rootView.findViewById(R.id.imgError);
+        tvError = (TextView) rootView.findViewById(R.id.tvError);
+        View btnRetry = rootView.findViewById(R.id.btnRetry);
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideError();
+                refreshWeb();
+            }
+        });
+        hideError();
     }
 
     private void showErrorNoConnection() {
-//        if (layoutRetry == null || imgError == null || tvError == null) {
-//            return;
-//        }
-//        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
-//        tvError.setText(R.string.exception_no_connection_try_again);
-//        layoutRetry.setVisibility(View.VISIBLE);
+        if (layoutRetry == null || imgError == null || tvError == null) {
+            return;
+        }
+        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
+        tvError.setText(R.string.exception_no_connection_try_again);
+        layoutRetry.setVisibility(View.VISIBLE);
     }
 
     private void showErrorNoLoad() {
-//        if (layoutRetry == null || imgError == null || tvError == null) {
-//            return;
-//        }
-//        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
-//        tvError.setText(R.string.exception_no_connection_try_again);
-//        layoutRetry.setVisibility(View.VISIBLE);
+        if (layoutRetry == null || imgError == null || tvError == null) {
+            return;
+        }
+        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
+        tvError.setText(R.string.exception_no_connection_try_again);
+        layoutRetry.setVisibility(View.VISIBLE);
     }
 
     public void showError(int errorCode) {
-        //Timber.d("showError errorCode [%s]", errorCode);
+        Timber.d("showError errorCode [%s]", errorCode);
         if (errorCode == WebViewClient.ERROR_CONNECT) {
-            if (AppGameGlobal.getNetworking().isOnline(getContext())) {
+            if (NetworkHelper.isNetworkAvailable(getContext())) {
                 showErrorNoLoad();
             } else {
                 showErrorNoConnection();
@@ -112,14 +164,42 @@ public abstract class AppGameFragment extends Fragment implements IWebViewListen
         hideLoading();
     }
 
-    private void hideLoading() {
-        if (AppGameGlobal.getDialog() != null) {
-            AppGameGlobal.getDialog().hideLoadingDialog();
+    @Override
+    public void hideLoading() {
+        if (mDialog != null) {
+            mDialog.hideLoadingDialog();
         }
     }
 
+    @Override
+    public void showLoading() {
+        if (mDialog != null) {
+            mDialog.showLoadingDialog(getActivity(), mTimeOutListener);
+        }
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        showErrorDialog(message, getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.dismiss();
+            }
+        });
+    }
+
     public void hideError() {
-        //Timber.d("hideError layoutRetry [%s]", layoutRetry);
+        Timber.d("hideError layoutRetry [%s]", layoutRetry);
         if (layoutRetry == null) {
             return;
         }
@@ -127,42 +207,32 @@ public abstract class AppGameFragment extends Fragment implements IWebViewListen
     }
 
     private void hideWebView() {
-        if (mWebview != null) {
-            mWebview.setVisibility(View.GONE);
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.hideWebView();
         }
     }
 
     private void showWebView() {
-        if (mWebview != null) {
-            mWebview.setVisibility(View.VISIBLE);
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.showWebView();
         }
     }
 
-    public boolean canBack() {
-        boolean canBack = false;
-
-        if (mWebview != null) {
-            canBack = mWebview.canGoBack();
-        }
-
-        return canBack;
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.resume();
     }
 
-    public void goBack() {
-        if (mWebview != null)
-            mWebview.goBack();
-    }
-
-    public void loadUrl(final String pUrl) {
-        if (mWebViewProcessor == null) {
-            return;
-        }
-        mCurrentUrl = pUrl;
-        mWebViewProcessor.start(mCurrentUrl, getActivity());
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
     }
 
     @Override
     public void onDestroyView() {
+        mPresenter.destroyView();
         super.onDestroyView();
     }
 
@@ -171,17 +241,21 @@ public abstract class AppGameFragment extends Fragment implements IWebViewListen
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onDestroy();
         }
+        mPresenter.destroy();
         super.onDestroy();
     }
 
     public boolean onBackPressed() {
-        if (mWebViewProcessor != null && mWebViewProcessor.hasError()) {
+        if (mWebViewProcessor == null) {
             return false;
         }
-        mWebview.runScript("utils.back()", new ValueCallback<String>() {
+        if (mWebViewProcessor.hasError()) {
+            return false;
+        }
+        mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                //Timber.d("navigation back: %s", value);
+                Timber.d("navigation back: %s", value);
             }
         });
         return true;
@@ -189,51 +263,78 @@ public abstract class AppGameFragment extends Fragment implements IWebViewListen
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.webapp_menu_main, menu);
+        inflater.inflate(R.menu.webapp_menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        //Timber.d("onOptionsItemSelected: %s", id);
-//        if (id == R.id.webapp_action_refresh) {
-//            refreshWeb();
-//            return true;
-//        }
+        Timber.d("onOptionsItemSelected: %s", id);
+        if (id == R.id.webapp_action_refresh) {
+            refreshWeb();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
 
     private void refreshWeb() {
-        //Timber.d("Request to reload web view");
+        Timber.d("Request to reload web view");
         hideError();
         loadUrl(mCurrentUrl);
     }
 
     @Override
     public void onReceivedError(int errorCode, CharSequence description) {
-        //Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
+        Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
         hideWebView();
         showError(errorCode);
     }
 
     @Override
     public void onPageFinished(String url) {
-        //Timber.d("onPageFinished url [%s]", url);
+        Timber.d("onPageFinished url [%s]", url);
         showWebView();
     }
 
     @Override
-    public void logout() {
+    public void payOrder(final String url) {
+        mPresenter.pay(url);
+    }
 
+
+    @Override
+    public void logout() {
+        getAppComponent().applicationSession().clearUserSession();
+        getActivity().finish();
     }
 
     @Override
-    public void setLogo(String url) {
-        if (getActivity() instanceof AppGameActivity) {
-            ((AppGameActivity)getActivity()).setLogo(url);
+    public void finishActivity() {
+        if (getActivity() == null) {
+            return;
         }
+        getActivity().finish();
+    }
+
+    @Override
+    public void setTitleAndLogo(String title, String url) {
+        if (getActivity() instanceof AppGameActivity) {
+            ((AppGameActivity) getActivity()).setTitleAndLogo(title, url);
+        }
+    }
+
+    @Override
+    public void showInputErrorDialog() {
+        mDialog.showInfoDialog(getActivity(), getContext().getString(vn.com.zalopay.game.R.string.appgame_alert_input_error),
+                getContext().getString(vn.com.zalopay.game.R.string.appgame_button_dialog_close),
+                SweetAlertDialog.WARNING_TYPE, new IDialogListener() {
+                    @Override
+                    public void onClose() {
+                        getActivity().finish();
+                    }
+                });
     }
 }

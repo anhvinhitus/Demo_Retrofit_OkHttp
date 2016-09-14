@@ -17,21 +17,14 @@ import timber.log.Timber;
  * Callback for utils.getNav()
  */
 class GetNavigationCallback implements ValueCallback<String> {
-    private WeakReference<Activity> mActivityWeakReference;
     private AppGameWebViewProcessor.IWebViewListener mWebViewListener;
 
-    GetNavigationCallback(Activity activity, AppGameWebViewProcessor.IWebViewListener webViewListener) {
-        mActivityWeakReference = new WeakReference<>(activity);
+    GetNavigationCallback(AppGameWebViewProcessor.IWebViewListener webViewListener) {
         mWebViewListener = webViewListener;
     }
 
     @Override
     public void onReceiveValue(String value) {
-        if (mActivityWeakReference.get() == null) {
-            Timber.i("Activity reference has been nullified");
-            return;
-        }
-
         Timber.d("result of utils.getNav(): %s", value);
         if (value == null) {
             return;
@@ -48,11 +41,8 @@ class GetNavigationCallback implements ValueCallback<String> {
             String title = data.get("title").getAsString();
             String thumb = data.get("thumb").getAsString();
 
-            Activity activity = mActivityWeakReference.get();
-            activity.setTitle(title);
-
             if (mWebViewListener != null) {
-                mWebViewListener.setLogo(thumb);
+                mWebViewListener.setTitleAndLogo(title, thumb);
             }
 
 

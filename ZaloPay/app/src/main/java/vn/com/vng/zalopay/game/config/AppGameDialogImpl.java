@@ -12,6 +12,7 @@ import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by admin on 8/30/16.
+ *
  */
 public class AppGameDialogImpl implements IDialog {
     @Override
