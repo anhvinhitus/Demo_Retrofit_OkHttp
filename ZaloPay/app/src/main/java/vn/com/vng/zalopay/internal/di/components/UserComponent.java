@@ -47,6 +47,7 @@ import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
+import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
@@ -175,4 +176,6 @@ public interface UserComponent {
     void inject(TransferMoneyDialog dialog);
 
     void inject(PinProfileDialog dialog);
+
+    void inject(TransferViaZaloPayNameFragment f);
 }

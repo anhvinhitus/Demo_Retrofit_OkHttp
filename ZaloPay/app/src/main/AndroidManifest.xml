@@ -262,6 +262,10 @@
             android:label="@string/title.activity.withdraw" />
 
         <activity
+            android:name=".transfer.ui.TransferViaZaloPayNameActivity"
+            android:label="@string/title.activity.transfer" />
+
+        <activity
             android:name=".transfer.ui.SetAmountActivity"
             android:label="@string/title.activity.set.amount"
             android:windowSoftInputMode="adjustResize|stateVisible" />
@@ -270,8 +274,7 @@
             android:name=".withdraw.ui.activities.WithdrawConditionActivity"
             android:label="@string/title.activity.withdraw.condition" />
 
-        <activity
-            android:name=".ui.activity.IntroAppActivity" />
+        <activity android:name=".ui.activity.IntroAppActivity" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

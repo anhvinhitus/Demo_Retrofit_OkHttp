@@ -59,8 +59,7 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
-        TransferMoneyDialog dialog = new TransferMoneyDialog(getActivity());
-        dialog.show();
+        navigator.startTransferViaAccountName(getContext());
     }
 
     /**

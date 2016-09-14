@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
+import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
@@ -460,5 +461,10 @@ public class Navigator implements INavigator {
         });
         dialog.show();
         return false;
+    }
+
+
+    public void startTransferViaAccountName(Context context) {
+        context.startActivity(new Intent(context, TransferViaZaloPayNameActivity.class));
     }
 }

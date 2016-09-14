@@ -40,8 +40,8 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
 
     @Override
     public void destroyView() {
-        mView = null;
         unsubscribeIfNotNull(compositeSubscription);
+        mView = null;
     }
 
     @Override
@@ -108,10 +108,6 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         }
     }
 
-    private void showErrorView(String message) {
-        mView.showError(message);
-    }
-
     private void gotoHomeScreen() {
         mView.gotoMainActivity();
     }
@@ -127,6 +123,10 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
     }
 
     private void onLoginError(Throwable e) {
+        if (mView == null) {
+            return;
+        }
+
         hideLoadingView();
         if (e instanceof BodyException) {
             if (((BodyException) e).errorCode == NetworkError.INVITATION_CODE_INVALID) {
@@ -136,7 +136,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         }
 
         String message = ErrorMessageFactory.create(applicationContext, e);
-        showErrorView(message);
+        mView.showError(message);
     }
 
 
