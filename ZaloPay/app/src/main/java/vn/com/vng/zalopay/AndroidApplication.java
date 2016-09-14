@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay;
 
+import android.app.Application;
+import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -37,7 +40,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 /**
  * Created by AnhHieu on 3/24/16.
  */
-public class AndroidApplication extends MultiDexApplication {
+public class AndroidApplication extends Application {
 
     private ApplicationComponent appComponent;
     private UserComponent userComponent;
@@ -46,6 +49,13 @@ public class AndroidApplication extends MultiDexApplication {
 
     public static AndroidApplication instance() {
         return _instance;
+    }
+
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        if (BuildConfig.DEBUG) {
+            MultiDex.install(this);
+        }
     }
 
     @Override

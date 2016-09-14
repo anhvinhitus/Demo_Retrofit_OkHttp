@@ -39,8 +39,6 @@ android {
         versionCode 39
         versionName "2.0.19"
 
-        multiDexEnabled true
-
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'PAYAPPID', '1'
         ndk {
@@ -126,6 +124,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            multiDexEnabled true
+
             minifyEnabled false
         //    applicationIdSuffix ".debug"
             debuggable true
