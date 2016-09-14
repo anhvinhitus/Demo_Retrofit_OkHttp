@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
@@ -36,7 +35,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.game.ui.activity.AppGameActivity;
+import vn.com.vng.zalopay.webview.ui.activity.WebViewActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -57,7 +56,7 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
-import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
+import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -405,8 +404,8 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startWebViewActivity(Context context, AppGamePayInfo appGamePayInfo, String host) {
-        Intent intent = new Intent(context, AppGameActivity.class);
+    public void startWebViewActivity(Context context, WebViewPayInfo appGamePayInfo, String host) {
+        Intent intent = new Intent(context, WebViewActivity.class);
         intent.putExtra("appGamePayInfo", Parcels.wrap(appGamePayInfo));
         intent.putExtra("webUrl", host);
         context.startActivity(intent);

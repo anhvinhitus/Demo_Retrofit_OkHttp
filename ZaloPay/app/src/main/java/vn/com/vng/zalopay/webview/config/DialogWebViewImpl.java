@@ -1,10 +1,10 @@
-package vn.com.vng.zalopay.game.config;
+package vn.com.vng.zalopay.webview.config;
 
 import android.app.Activity;
 
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
-import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
+import vn.com.vng.zalopay.webview.interfaces.IDialogListener;
+import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
+import vn.com.vng.zalopay.webview.interfaces.IDialog;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.view.dialog.DialogManager;
  * Created by admin on 8/30/16.
  *
  */
-public class AppGameDialogImpl implements IDialog {
+public class DialogWebViewImpl implements IDialog {
     @Override
     public void showInfoDialog(Activity pActivity, String pMessage, String pButtonText, int pDialogType, final IDialogListener pListener) {
         DialogManager.showSweetDialogCustom(pActivity, pMessage, pButtonText, pDialogType, new ZPWOnEventDialogListener() {

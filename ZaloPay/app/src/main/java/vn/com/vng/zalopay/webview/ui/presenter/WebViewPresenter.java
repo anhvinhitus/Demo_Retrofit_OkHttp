@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.game.ui.presenter;
+package vn.com.vng.zalopay.webview.ui.presenter;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -17,13 +17,13 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.game.ui.view.IWebView;
+import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.vng.zalopay.webview.ui.view.IWebView;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
-import vn.com.zalopay.game.config.AppGameConfig;
+import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 import static android.text.TextUtils.isEmpty;
@@ -37,7 +37,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
     private IWebView mView;
 
     protected String mHost;
-    protected AppGamePayInfo mAppGamePayInfo;
+    protected WebViewPayInfo mAppGamePayInfo;
 
     @Inject
     public WebViewPresenter() {
@@ -60,7 +60,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
         }
 
         final String url = String.format(
-                AppGameConfig.getWebViewUrl(mHost),
+                WebViewConfig.getWebViewUrl(mHost),
                 mAppGamePayInfo.getUid(),
                 mAppGamePayInfo.getAccessToken(),
                 mAppGamePayInfo.getAppId());
@@ -155,7 +155,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
                 Timber.d("onResponseSuccess getUid [%s]", mAppGamePayInfo.getUid());
                 mAppGamePayInfo.setApptransid(mAppGamePayInfo.getApptransid());
 
-                final String urlPage = String.format(AppGameConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.getApptransid(),
+                final String urlPage = String.format(WebViewConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.getApptransid(),
                         mAppGamePayInfo.getUid(), mAppGamePayInfo.getAccessToken());
                 Timber.d("onResponseSuccess url [%s]", urlPage);
                 mView.loadUrl(urlPage);

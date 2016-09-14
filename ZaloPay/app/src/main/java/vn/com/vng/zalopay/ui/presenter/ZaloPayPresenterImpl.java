@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.zalopay.game.businnesslogic.entity.pay.AppGamePayInfo;
+import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -297,7 +297,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 mZaloPayView.showError("MerchantUserInfo invalid");
                 return;
             }
-            AppGamePayInfo gamePayInfo = new AppGamePayInfo();
+            WebViewPayInfo gamePayInfo = new WebViewPayInfo();
             gamePayInfo.setUid(merchantUserInfo.muid);
             gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
             gamePayInfo.setAppId(mAppResource.appid);

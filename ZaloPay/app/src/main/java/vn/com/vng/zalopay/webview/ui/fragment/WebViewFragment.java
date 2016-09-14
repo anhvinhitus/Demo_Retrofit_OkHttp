@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.game.ui.fragment;
+package vn.com.vng.zalopay.webview.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ValueCallback;
-import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,25 +16,25 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.game.config.AppGameDialogImpl;
-import vn.com.vng.zalopay.game.ui.activity.AppGameActivity;
-import vn.com.vng.zalopay.game.ui.presenter.WebViewPresenter;
-import vn.com.vng.zalopay.game.ui.view.IWebView;
+import vn.com.vng.zalopay.webview.config.DialogWebViewImpl;
+import vn.com.vng.zalopay.webview.ui.activity.WebViewActivity;
+import vn.com.vng.zalopay.webview.ui.presenter.WebViewPresenter;
+import vn.com.vng.zalopay.webview.ui.view.IWebView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.IDialogListener;
-import vn.com.zalopay.game.businnesslogic.interfaces.dialog.ITimeoutLoadingListener;
-import vn.com.zalopay.game.businnesslogic.provider.dialog.IDialog;
-import vn.com.zalopay.game.webview.AppGameWebView;
-import vn.com.zalopay.game.webview.AppGameWebViewProcessor;
-import vn.com.zalopay.game.webview.AppGameWebViewProcessor.IWebViewListener;
+import vn.com.vng.zalopay.webview.interfaces.IDialogListener;
+import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
+import vn.com.vng.zalopay.webview.interfaces.IDialog;
+import vn.com.vng.zalopay.webview.widget.ZPWebView;
+import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
+import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor.IWebViewListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public class AppGameFragment extends BaseFragment implements IWebViewListener, IWebView {
-    private AppGameWebViewProcessor mWebViewProcessor;
+public class WebViewFragment extends BaseFragment implements IWebViewListener, IWebView {
+    private ZPWebViewProcessor mWebViewProcessor;
     private ITimeoutLoadingListener mTimeOutListener;
 
     private View layoutRetry;
@@ -49,8 +48,8 @@ public class AppGameFragment extends BaseFragment implements IWebViewListener, I
     @Inject
     WebViewPresenter mPresenter;
 
-    public static AppGameFragment newInstance(Bundle bundle) {
-        AppGameFragment fragment = new AppGameFragment();
+    public static WebViewFragment newInstance(Bundle bundle) {
+        WebViewFragment fragment = new WebViewFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -62,7 +61,7 @@ public class AppGameFragment extends BaseFragment implements IWebViewListener, I
 
     @Override
     protected int getResLayoutId() {
-        return vn.com.zalopay.game.R.layout.webapp_fragment_webview;
+        return R.layout.webapp_fragment_webview;
     }
 
     @Override
@@ -78,9 +77,9 @@ public class AppGameFragment extends BaseFragment implements IWebViewListener, I
                     return;
                 }
                 mDialog.showConfirmDialog(getActivity(),
-                        getActivity().getResources().getString(vn.com.zalopay.game.R.string.appgame_waiting_loading),
-                        getActivity().getResources().getString(vn.com.zalopay.game.R.string.appgame_button_left),
-                        getActivity().getResources().getString(vn.com.zalopay.game.R.string.appgame_button_right), new IDialogListener() {
+                        getActivity().getResources().getString(R.string.appgame_waiting_loading),
+                        getActivity().getResources().getString(R.string.appgame_button_left),
+                        getActivity().getResources().getString(R.string.appgame_button_right), new IDialogListener() {
                             @Override
                             public void onClose() {
                                 getActivity().finish();
@@ -103,9 +102,9 @@ public class AppGameFragment extends BaseFragment implements IWebViewListener, I
 
 
     private void initViewWebView(View rootView) {
-        AppGameWebView mWebview = (AppGameWebView) rootView.findViewById(R.id.webview);
-        mDialog = new AppGameDialogImpl();
-        mWebViewProcessor = new AppGameWebViewProcessor(mWebview, mDialog, mTimeOutListener, this);
+        ZPWebView mWebview = (ZPWebView) rootView.findViewById(R.id.webview);
+        mDialog = new DialogWebViewImpl();
+        mWebViewProcessor = new ZPWebViewProcessor(mWebview, mDialog, mTimeOutListener, this);
     }
 
     @Override
@@ -321,15 +320,15 @@ public class AppGameFragment extends BaseFragment implements IWebViewListener, I
 
     @Override
     public void setTitleAndLogo(String title, String url) {
-        if (getActivity() instanceof AppGameActivity) {
-            ((AppGameActivity) getActivity()).setTitleAndLogo(title, url);
+        if (getActivity() instanceof WebViewActivity) {
+            ((WebViewActivity) getActivity()).setTitleAndLogo(title, url);
         }
     }
 
     @Override
     public void showInputErrorDialog() {
-        mDialog.showInfoDialog(getActivity(), getContext().getString(vn.com.zalopay.game.R.string.appgame_alert_input_error),
-                getContext().getString(vn.com.zalopay.game.R.string.appgame_button_dialog_close),
+        mDialog.showInfoDialog(getActivity(), getContext().getString(R.string.appgame_alert_input_error),
+                getContext().getString(R.string.txt_close),
                 SweetAlertDialog.WARNING_TYPE, new IDialogListener() {
                     @Override
                     public void onClose() {

@@ -1,8 +1,7 @@
-include ':app', ':gamemodule'
+include ':app'
 include ':domain'
 include ':data'
 include ':ui.widget'
 include ':greendaogenerator'
 include ':app-loader'
 include ':zalopay.debug'
-project(':gamemodule').projectDir = new File('zalopaygame')

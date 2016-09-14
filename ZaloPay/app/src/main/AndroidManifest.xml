@@ -132,6 +132,13 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".paymentapps.ui.PaymentApplicationActivity" />
 
+        <activity
+            android:name="vn.com.vng.zalopay.webview.ui.activity.WebViewActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule" />

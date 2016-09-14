@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.game.ui.activity;
+package vn.com.vng.zalopay.webview.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.game.ui.fragment.AppGameFragment;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.webview.ui.fragment.WebViewFragment;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.zalopay.game.R;
 
-public class AppGameActivity extends BaseActivity {
-    protected AppGameFragment mFragment;
+public class WebViewActivity extends BaseActivity {
+    protected WebViewFragment mFragment;
     protected Toolbar mToolbar;
 
     ImageView mLogoView;
@@ -26,7 +26,7 @@ public class AppGameActivity extends BaseActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return AppGameFragment.newInstance(getIntent().getExtras());
+        return WebViewFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class AppGameActivity extends BaseActivity {
      * start flow by app id.
      */
     protected Fragment getView() {
-        mFragment = AppGameFragment.newInstance(getIntent().getExtras());
+        mFragment = WebViewFragment.newInstance(getIntent().getExtras());
         Timber.d("getView fragment [%s]", mFragment);
         return mFragment;
     }

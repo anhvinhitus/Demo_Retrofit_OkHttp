@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.game.ui.view;
+package vn.com.vng.zalopay.webview.ui.view;
 
 import android.app.Activity;
 
