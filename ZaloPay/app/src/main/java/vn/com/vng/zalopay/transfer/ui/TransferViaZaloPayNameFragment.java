@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -94,6 +96,19 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
         }
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case Constants.REQUEST_CODE_TRANSFER:
+                    getActivity().finish();
+                    break;
+            }
+        }
+    }
+
     @Override
     public void onGetProfileSuccess(Person person, String zaloPayName) {
         RecentTransaction item = new RecentTransaction();
@@ -106,7 +121,6 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
         navigator.startTransferActivity(this, bundle);
-        getActivity().finish();
     }
 
     @Override
