@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -131,7 +132,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void getListCard() {
         showLoadingView();
-        Subscription subscription = makeObservable(new Callable<List<BankCard>>() {
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
                 List<DMappedCard> mapCardLis = CShareData.getInstance(mLinkCardView.getActivity()).getMappedCardList(user.zaloPayId);
@@ -276,7 +277,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void addLinkCard() {
         if (user.profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext());
+            mNavigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext());
         } else if (!checkShowIntroSaveCard()) {
             long value = 10000;
             if (mLinkCardView.getActivity() != null) {

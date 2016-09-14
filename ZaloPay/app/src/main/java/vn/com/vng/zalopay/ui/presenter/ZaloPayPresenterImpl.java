@@ -301,7 +301,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             gamePayInfo.setUid(merchantUserInfo.muid);
             gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
             gamePayInfo.setAppId(mAppResource.appid);
-            navigator.startWebViewActivity(mZaloPayView.getContext(), gamePayInfo, mAppResource.webUrl);
+            mNavigator.startWebViewActivity(mZaloPayView.getContext(), gamePayInfo, mAppResource.webUrl);
         }
 
         @Override

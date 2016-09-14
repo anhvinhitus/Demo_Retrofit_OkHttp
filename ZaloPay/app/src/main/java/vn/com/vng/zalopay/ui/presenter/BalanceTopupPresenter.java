@@ -103,7 +103,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
             @Override
             public void onNotEnoughMoney() {
-                navigator.startDepositActivity(mView.getContext());
+                mNavigator.startDepositActivity(mView.getContext());
             }
         });
     }

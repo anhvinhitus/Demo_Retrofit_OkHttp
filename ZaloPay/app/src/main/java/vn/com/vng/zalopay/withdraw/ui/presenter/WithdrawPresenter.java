@@ -69,7 +69,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 }
                 mView.hideLoading();
                 if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINKCARD) {
-                    navigator.startLinkCardActivity(mView.getActivity());
+                    mNavigator.startLinkCardActivity(mView.getActivity());
                 }
             }
 
@@ -115,7 +115,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 if (mView == null) {
                     return;
                 }
-                navigator.startDepositActivity(mView.getContext());
+                mNavigator.startDepositActivity(mView.getContext());
             }
         });
     }

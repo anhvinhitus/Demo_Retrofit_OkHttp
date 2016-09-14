@@ -135,7 +135,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         } else if (userConfig.isWaitingApproveProfileLevel3()) {
             mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
         } else {
-            navigator.startUpdateProfile3Activity(mView.getContext());
+            mNavigator.startUpdateProfile3Activity(mView.getContext());
         }
     }
 
@@ -145,7 +145,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         } else if (userConfig.isWaitingApproveProfileLevel3()) {
             mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_email));
         } else {
-            navigator.startUpdateProfile3Activity(mView.getContext());
+            mNavigator.startUpdateProfile3Activity(mView.getContext());
         }
     }
 

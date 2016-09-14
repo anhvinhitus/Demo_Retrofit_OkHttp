@@ -146,7 +146,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 if (mView == null) {
                     return;
                 }
-                navigator.startDepositActivity(mView.getContext());
+                mNavigator.startDepositActivity(mView.getContext());
             }
         });
     }
@@ -216,7 +216,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private void transferMoney() {
         if (user.profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(mView.getContext());
+            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
         } else {
             if (mTransaction.amount <= 0) {
                 return;

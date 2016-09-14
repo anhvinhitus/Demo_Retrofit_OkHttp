@@ -176,7 +176,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
             @Override
             public void onNotEnoughMoney() {
                 Timber.d("onNotEnoughMoney activity [%s]", mView.getActivity());
-                navigator.startDepositActivity(mView.getActivity());
+                mNavigator.startDepositActivity(mView.getActivity());
             }
 
             private void showError(String text) {

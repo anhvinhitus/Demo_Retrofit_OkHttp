@@ -8,7 +8,6 @@ import android.util.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +123,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                     return;
                 }
 
-                navigator.startDepositActivity(applicationContext);
+                mNavigator.startDepositActivity(applicationContext);
             }
         });
     }
@@ -284,7 +283,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         Bundle bundle = new Bundle();
         bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, vn.com.vng.zalopay.Constants.MoneyTransfer.MODE_QR);
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
-        navigator.startTransferActivity(mView.getContext(), bundle);
+        mNavigator.startTransferActivity(mView.getContext(), bundle);
     }
 
     private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {

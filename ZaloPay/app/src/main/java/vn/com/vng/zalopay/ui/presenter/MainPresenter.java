@@ -188,7 +188,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 @Override
                 public void onClick(SweetAlertDialog dialog) {
                     if (homeView != null) {
-                        navigator.startTransactionDetail(homeView.getContext(), String.valueOf(notify.transid));
+                        mNavigator.startTransactionDetail(homeView.getContext(), String.valueOf(notify.transid));
                     }
                     dialog.dismiss();
                 }
@@ -303,7 +303,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         return;
                     }
                     hideLoadingView();
-                    navigator.startDepositActivity(applicationContext);
+                    mNavigator.startDepositActivity(applicationContext);
 
                 }
             });

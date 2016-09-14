@@ -94,9 +94,9 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
 
     public void startWithdrawActivity() {
         if (isValidLinkCard()) {
-            navigator.startWithdrawActivity(mView.getContext());
+            mNavigator.startWithdrawActivity(mView.getContext());
         } else {
-            navigator.startWithdrawConditionActivity(mView.getContext());
+            mNavigator.startWithdrawConditionActivity(mView.getContext());
         }
     }
 

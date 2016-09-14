@@ -1,16 +1,9 @@
 package vn.com.vng.zalopay.withdraw.ui.presenter;
 
 import android.app.Activity;
-import android.text.TextUtils;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -36,7 +29,7 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
         boolean isProfileValid = isValidProfile();
         mView.setProfileValid(isProfileValid);
         if (isProfileValid && isValidLinkCard()) {
-            navigator.startWithdrawActivity(mView.getContext());
+            mNavigator.startWithdrawActivity(mView.getContext());
             mView.getActivity().finish();
         }
     }

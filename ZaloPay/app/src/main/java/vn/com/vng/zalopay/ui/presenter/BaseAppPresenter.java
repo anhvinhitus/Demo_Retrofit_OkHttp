@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -29,13 +31,20 @@ public abstract class BaseAppPresenter {
 
     protected final String TAG = this.getClass().getSimpleName();
 
-    protected final EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-    protected final RxBus rxBus = AndroidApplication.instance().getAppComponent().rxBus();
+    @Inject
+    protected EventBus eventBus;
 
-    protected final PassportRepository passportRepository = AndroidApplication.instance().getAppComponent().passportRepository();
-    protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
+    @Inject
+    protected RxBus rxBus;
 
-    protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+    @Inject
+    protected PassportRepository passportRepository;
+
+    @Inject
+    protected UserConfig userConfig;
+
+    @Inject
+    protected Navigator mNavigator;
 
     protected final Context applicationContext = AndroidApplication.instance();
 
@@ -49,24 +58,6 @@ public abstract class BaseAppPresenter {
         if (subscription != null) {
             subscription.clear();
         }
-    }
-
-    public static <T> Observable<T> makeObservable(final Callable<T> func) {
-        return Observable.create(
-                new Observable.OnSubscribe<T>() {
-                    @Override
-                    public void call(Subscriber<? super T> subscriber) {
-                        try {
-                            subscriber.onNext(func.call());
-                            subscriber.onCompleted();
-                        } catch (Exception ex) {
-                            try {
-                                subscriber.onError(ex);
-                            } catch (Exception ex2) {
-                            }
-                        }
-                    }
-                });
     }
 
     protected void clearAndLogout() {
