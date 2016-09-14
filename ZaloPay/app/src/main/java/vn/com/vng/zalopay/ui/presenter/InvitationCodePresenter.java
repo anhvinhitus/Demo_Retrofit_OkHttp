@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
+
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 
@@ -17,6 +19,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
@@ -27,11 +30,15 @@ import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 public class InvitationCodePresenter extends BaseAppPresenter implements IPresenter<IInvitationCodeView> {
 
     @Inject
-    public InvitationCodePresenter() {
+    public InvitationCodePresenter(Context applicationContext, PassportRepository passportRepository) {
+        this.mApplicationContext = applicationContext;
+        this.mPassportRepository = passportRepository;
     }
 
     IInvitationCodeView mView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private Context mApplicationContext;
+    private PassportRepository mPassportRepository;
 
     @Override
     public void setView(IInvitationCodeView iInvitationCodeView) {
@@ -73,7 +80,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
 
     public void sendCode(String code) {
         showLoadingView();
-        Subscription subscription = passportRepository.verifyCode(code)
+        Subscription subscription = mPassportRepository.verifyCode(code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
@@ -135,7 +142,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
             }
         }
 
-        String message = ErrorMessageFactory.create(applicationContext, e);
+        String message = ErrorMessageFactory.create(mApplicationContext, e);
         mView.showError(message);
     }
 

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -9,6 +11,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -22,9 +25,13 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     IOTPProfileView mView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository accountRepository;
+    private Context applicationContext;
 
     @Inject
-    public OTPProfilePresenter() {
+    public OTPProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
+        this.accountRepository = accountRepository;
+        this.applicationContext = applicationContext;
     }
 
     @Override

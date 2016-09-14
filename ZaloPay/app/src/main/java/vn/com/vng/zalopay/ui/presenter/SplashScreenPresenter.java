@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 
 /**
@@ -12,10 +13,12 @@ import vn.com.vng.zalopay.ui.view.ISplashScreenView;
  */
 @Singleton
 public class SplashScreenPresenter extends BaseAppPresenter implements IPresenter<ISplashScreenView> {
+    private final UserConfig mUserConfig;
     private ISplashScreenView mView;
 
     @Inject
-    public SplashScreenPresenter() {
+    SplashScreenPresenter(UserConfig userConfig) {
+        mUserConfig = userConfig;
     }
 
     @Override
@@ -44,9 +47,9 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
     }
 
     public void verifyUser() {
-        if (userConfig.hasCurrentUser()) {
+        if (mUserConfig.hasCurrentUser()) {
             Timber.i("go to Home Screen");
-            getZaloProfileInfo();
+            getZaloProfileInfo(mView.getContext(), mUserConfig);
             mView.gotoHomeScreen();
         } else {
             Timber.d("gotoLoginScreen");

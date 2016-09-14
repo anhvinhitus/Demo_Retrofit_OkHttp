@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -12,6 +14,7 @@ import vn.com.vng.zalopay.account.ui.view.IChangePinView;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -30,6 +33,15 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     final int LIMIT_CHANGE_PASSWORD_ERROR = 3;
 
     private int numberError;
+
+    private AccountStore.Repository mAccountRepository;
+    private final Context mApplicationContext;
+
+    @Inject
+    public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
+        mApplicationContext = context;
+        mAccountRepository = accountRepository;
+    }
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -94,7 +106,7 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
             mChangePinView.showLoading();
         }
 
-        Subscription subscription = accountRepository.recoveryPin(oldPin, newPin)
+        Subscription subscription = mAccountRepository.recoveryPin(oldPin, newPin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ChangePinSubscriber());
@@ -106,7 +118,7 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
         if (mChangePinVerifyView != null) {
             mChangePinVerifyView.showLoading();
         }
-        Subscription subscription = accountRepository.verifyRecoveryPin(otp)
+        Subscription subscription = mAccountRepository.verifyRecoveryPin(otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifySubscriber());
@@ -137,7 +149,7 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
 
     private void onChangePinError(Throwable e) {
         mChangePinView.hideLoading();
-        String message = ErrorMessageFactory.create(applicationContext, e);
+        String message = ErrorMessageFactory.create(mApplicationContext, e);
         mChangePinView.showError(message);
         if (e instanceof BodyException) {
             int code = ((BodyException) e).errorCode;
@@ -156,7 +168,7 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
 
     private void onVerifyOTPError(Throwable e) {
         mChangePinVerifyView.hideLoading();
-        String message = ErrorMessageFactory.create(applicationContext, e);
+        String message = ErrorMessageFactory.create(mApplicationContext, e);
         mChangePinVerifyView.showError(message);
     }
 

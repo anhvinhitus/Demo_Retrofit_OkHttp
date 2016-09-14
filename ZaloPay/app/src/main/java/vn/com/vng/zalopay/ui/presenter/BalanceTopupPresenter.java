@@ -12,9 +12,14 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -25,6 +30,9 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
  */
 public class BalanceTopupPresenter extends BaseUserPresenter implements IPresenter<IBalanceTopupView> {
 
+    private final ZaloPayRepository mZaloPayRepository;
+    private final Navigator mNavigator;
+    private final UserConfig mUserConfig;
     private IBalanceTopupView mView;
 
     private Subscription subscriptionGetOrder;
@@ -32,7 +40,14 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     private final PaymentWrapper paymentWrapper;
 
     @Inject
-    public BalanceTopupPresenter() {
+    public BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
+                                 ZaloPayRepository zaloPayRepository,
+                                 TransactionStore.Repository transactionRepository,
+                                 Navigator navigator,
+                                 UserConfig userConfig) {
+        mZaloPayRepository = zaloPayRepository;
+        mNavigator = navigator;
+        mUserConfig = userConfig;
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -163,12 +178,17 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     private void createWalletOrder(long amount) {
-        if (userConfig == null || userConfig.getCurrentUser() == null) {
+        if (mUserConfig == null || mUserConfig.getCurrentUser() == null) {
             return;
         }
 
         String description = mView.getContext().getString(R.string.deposit);
-        subscriptionGetOrder = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, amount, ETransactionType.TOPUP.toString(), userConfig.getCurrentUser().zaloPayId, description)
+        subscriptionGetOrder = mZaloPayRepository.createwalletorder(
+            BuildConfig.PAYAPPID,
+            amount,
+            ETransactionType.TOPUP.toString(),
+            mUserConfig.getCurrentUser().zaloPayId,
+            description)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());

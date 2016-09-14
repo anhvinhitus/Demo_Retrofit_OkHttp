@@ -28,8 +28,14 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
         add(ECardType.PSCB.toString());
     }};
 
+    protected UserConfig mUserConfig;
+
+    protected AbsWithdrawConditionPresenter(UserConfig userConfig) {
+        this.mUserConfig = userConfig;
+    }
+
     protected boolean isValidProfile() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         if (user == null || user.profilelevel < 2) {
             return false;
         }
@@ -37,7 +43,7 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
     }
 
     protected boolean isValidLinkCard() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         boolean isMapped = false;
         try {
             List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.zaloPayId);

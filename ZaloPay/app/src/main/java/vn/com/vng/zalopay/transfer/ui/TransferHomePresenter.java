@@ -9,12 +9,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.transfer.ui.ITransferHomeView;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -25,9 +22,11 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
 
     ITransferHomeView mView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private TransferStore.Repository mTransferRepository;
 
     @Inject
-    public TransferHomePresenter() {
+    public TransferHomePresenter(TransferStore.Repository transferRepository) {
+        this.mTransferRepository = transferRepository;
     }
 
     @Override
@@ -57,7 +56,7 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
     }
 
     public void getRecent() {
-        Subscription subscription = transferRepository.getRecent()
+        Subscription subscription = mTransferRepository.getRecent()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RecentSubscriber());
         compositeSubscription.add(subscription);

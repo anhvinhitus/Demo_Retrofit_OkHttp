@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -10,6 +12,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -25,9 +28,13 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
 
     IEditAccountNameView mView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository accountRepository;
+    private Context applicationContext;
 
     @Inject
-    public EditAccountNamePresenter() {
+    public EditAccountNamePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
+        this.accountRepository = accountRepository;
+        this.applicationContext = applicationContext;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     @Override
     public void resume() {
-        mView.updateUserInfo(userConfig.getCurrentUser());
+        mView.updateUserInfo(mUserConfig.getCurrentUser());
     }
 
     @Override
@@ -47,11 +47,11 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
     }
 
     public void saveUserPhone(String phone) {
-        userConfig.updateUserPhone(phone);
+        mUserConfig.updateUserPhone(phone);
     }
 
     public void saveZaloPayName(String zaloPayName) {
-        userConfig.updateZaloPayName(zaloPayName);
+        mUserConfig.updateZaloPayName(zaloPayName);
     }
 
     public void showLoading() {

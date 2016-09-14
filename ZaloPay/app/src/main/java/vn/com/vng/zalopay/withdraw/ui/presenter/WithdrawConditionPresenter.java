@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import javax.inject.Inject;
 
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -17,9 +19,12 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
         implements IPresenter<IWithdrawConditionView> {
 
     private IWithdrawConditionView mView;
+    private Navigator mNavigator;
 
     @Inject
-    public WithdrawConditionPresenter() {
+    public WithdrawConditionPresenter(UserConfig userConfig, Navigator navigator) {
+        super(userConfig);
+        mNavigator = navigator;
     }
 
     private void checkConditionAndStartWithdrawActivity() {

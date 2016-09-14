@@ -21,6 +21,8 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -28,7 +30,9 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.ILinkCardView;
@@ -54,6 +58,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     private ILinkCardView mLinkCardView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private PaymentWrapper paymentWrapper;
+    private ZaloPayRepository zaloPayRepository;
+    private Navigator mNavigator;
 
     @Inject
     SharedPreferences mSharedPreferences;
@@ -62,8 +68,13 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     User user;
 
     @Inject
-    public LinkCardPresenter() {
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
+    public LinkCardPresenter(ZaloPayRepository zaloPayRepository,
+                             Navigator navigator,
+                             BalanceStore.Repository balanceRepository,
+                             TransactionStore.Repository transactionRepository) {
+        this.zaloPayRepository = zaloPayRepository;
+        mNavigator = navigator;
+        paymentWrapper = new PaymentWrapper(balanceRepository, this.zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mLinkCardView.getActivity();

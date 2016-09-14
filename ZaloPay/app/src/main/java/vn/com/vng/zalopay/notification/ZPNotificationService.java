@@ -239,7 +239,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         }
 
         UserConfig userConfig = getAppComponent().userConfig();
-        Timber.d(" userConfig %s", userConfig.isSignIn());
+        Timber.d(" mUserConfig %s", userConfig.isSignIn());
         if (userConfig.isSignIn()) {
             userConfig.loadConfig();
             AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());

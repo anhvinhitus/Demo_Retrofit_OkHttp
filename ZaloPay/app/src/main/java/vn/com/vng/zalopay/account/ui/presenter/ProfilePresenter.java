@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -14,10 +15,14 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
+import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -28,30 +33,38 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     IProfileView mView;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private EventBus mEventBus;
+    private UserConfig mUserConfig;
+    private AccountStore.Repository mAccountRepository;
+    private Navigator mNavigator;
 
     @Inject
-    public ProfilePresenter() {
+    public ProfilePresenter(EventBus eventBus, UserConfig userConfig, AccountStore.Repository accountRepository, Navigator navigator) {
+        this.mEventBus = eventBus;
+        this.mUserConfig = userConfig;
+        this.mAccountRepository = accountRepository;
+        mNavigator = navigator;
     }
 
     @Override
     public void setView(IProfileView iProfileView) {
         mView = iProfileView;
 
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
     @Override
     public void destroyView() {
         unsubscribeIfNotNull(compositeSubscription);
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
         mView = null;
     }
 
     @Override
     public void resume() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         if (user != null) {
             updateUserInfo(user);
         }
@@ -66,7 +79,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     public void getProfile() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         if (user != null) {
             updateUserInfo(user);
             // Neu chua co ZaloPayName hoac Chua get profile level 3
@@ -79,7 +92,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     public void checkShowOrHideChangePinView() {
         try {
-            boolean isShow = userConfig.getCurrentUser().profilelevel >= 2;
+            boolean isShow = mUserConfig.getCurrentUser().profilelevel >= 2;
             mView.showHideChangePinView(isShow);
         } catch (Exception e) {
             Timber.d(e, "checkShowOrHideChangePinView");
@@ -87,13 +100,13 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     public int getProfileLevel() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         if (user == null) {
             return 0;
-        } else if (userConfig.getCurrentUser() == null) {
+        } else if (mUserConfig.getCurrentUser() == null) {
             return 0;
         } else {
-            return userConfig.getCurrentUser().profilelevel;
+            return mUserConfig.getCurrentUser().profilelevel;
         }
     }
 
@@ -115,7 +128,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
 
     private void getUserProfile() {
-        Subscription subscription = accountRepository.getUserProfileLevelCloud()
+        Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ProfileSubscriber());
@@ -123,7 +136,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     private void getProfileSuccess() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         if (user != null) {
             updateUserInfo(user);
         }
@@ -132,7 +145,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     public void updateIdentity() {
         if (getProfileLevel() < 2) {
             mView.showDialogInfo(mView.getContext().getString(R.string.alert_need_update_level_2));
-        } else if (userConfig.isWaitingApproveProfileLevel3()) {
+        } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
             mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
         } else {
             mNavigator.startUpdateProfile3Activity(mView.getContext());
@@ -142,7 +155,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     public void updateEmail() {
         if (getProfileLevel() < 2) {
             mView.showDialogInfo(mView.getContext().getString(R.string.alert_need_update_level_2));
-        } else if (userConfig.isWaitingApproveProfileLevel3()) {
+        } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
             mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_email));
         } else {
             mNavigator.startUpdateProfile3Activity(mView.getContext());
@@ -167,7 +180,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true, priority = 1)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         Timber.d("onEventMainThread event %s", event);
-        updateUserInfo(userConfig.getCurrentUser());
+        updateUserInfo(mUserConfig.getCurrentUser());
     }
 
     private void updateUserInfo(User user) {
@@ -177,6 +190,6 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     public boolean isWaitingApproveProfileLevel3() {
-        return userConfig.isWaitingApproveProfileLevel3();
+        return mUserConfig.isWaitingApproveProfileLevel3();
     }
 }

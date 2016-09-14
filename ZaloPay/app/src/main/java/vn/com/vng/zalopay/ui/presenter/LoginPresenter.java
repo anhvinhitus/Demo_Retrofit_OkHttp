@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -21,11 +22,13 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -43,9 +46,17 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private LoginListener mLoginListener = new LoginListener(this);
+    private Context mApplicationContext;
+    private UserConfig mUserConfig;
+    private PassportRepository mPassportRepository;
 
     @Inject
-    public LoginPresenter() {
+    public LoginPresenter(Context applicationContext,
+                          UserConfig userConfig,
+                          PassportRepository passportRepository) {
+        this.mApplicationContext = applicationContext;
+        this.mUserConfig = userConfig;
+        this.mPassportRepository = passportRepository;
     }
 
     @Override
@@ -88,11 +99,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     public void loginZalo(Activity activity) {
-        if (NetworkHelper.isNetworkAvailable(applicationContext)) {
+        if (NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             //   showLoadingView();
             ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
         } else {
-            showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
+            showErrorView(mApplicationContext.getString(R.string.exception_no_connection_try_again));
         }
     }
 
@@ -103,14 +114,14 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         zaloProfilePreferences.setAuthCode("");*/
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
-            if (!NetworkHelper.isNetworkAvailable(applicationContext)) {
-                showErrorView(applicationContext.getString(R.string.exception_no_connection_try_again));
+            if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
+                showErrorView(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
             } else if (errorCode == -1111) {
                 Timber.d("onAuthError User click backpress");
             } else {
                 if (TextUtils.isEmpty(message)) {
-                    message = applicationContext.getString(R.string.exception_login_zalo_error);
+                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
                 }
                 showErrorView(message);
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
@@ -123,9 +134,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     public void onGetOAuthComplete(long zaloId, String authCode, String channel) {
         Timber.d("OAuthComplete uid: %s authCode: %s", zaloId, authCode);
 
-        userConfig.saveUserInfo(zaloId, "", "", 0, 0);
+        mUserConfig.saveUserInfo(zaloId, "", "", 0, 0);
         if (mView != null) {
-            this.getZaloProfileInfo();
+            this.getZaloProfileInfo(mApplicationContext, mUserConfig);
             this.loginPayment(zaloId, authCode);
         }
 
@@ -147,7 +158,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private void loginPayment(long zuid, String zalooauthcode) {
         showLoadingView();
-        Subscription subscriptionLogin = passportRepository.login(zuid, zalooauthcode)
+        Subscription subscriptionLogin = mPassportRepository.login(zuid, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
@@ -183,7 +194,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         } else {
 
             Timber.w(e, "exception  ");
-            String message = ErrorMessageFactory.create(applicationContext, e);
+            String message = ErrorMessageFactory.create(mApplicationContext, e);
             showErrorView(message);
             ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }

@@ -1,10 +1,12 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
@@ -16,6 +18,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
@@ -34,11 +39,25 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Inject
     User user;
+    private EventBus eventBus;
+    private TransactionStore.Repository transactionRepository;
+    private UserConfig userConfig;
+    private BalanceStore.Repository balanceRepository;
+    private Context context;
 
     private boolean isInitiated;
 
     @Inject
-    public LeftMenuPresenter() {
+    public LeftMenuPresenter(EventBus eventBus,
+                             TransactionStore.Repository transactionRepository,
+                             UserConfig userConfig,
+                             BalanceStore.Repository balanceRepository,
+                             Context context) {
+        this.eventBus = eventBus;
+        this.transactionRepository = transactionRepository;
+        this.userConfig = userConfig;
+        this.balanceRepository = balanceRepository;
+        this.context = context;
     }
 
     @Override
@@ -120,7 +139,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
         if (TextUtils.isEmpty(userConfig.getCurrentUser().displayName) ||
                 TextUtils.isEmpty(userConfig.getCurrentUser().avatar)) {
-            ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
+            ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
                 @Override
                 public void onResult(JSONObject profile) {
                     try {

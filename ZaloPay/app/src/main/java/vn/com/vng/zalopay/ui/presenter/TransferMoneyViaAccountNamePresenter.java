@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -8,6 +10,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -19,8 +22,17 @@ import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
  */
 public class TransferMoneyViaAccountNamePresenter extends BaseUserPresenter implements IPresenter<ITransferMoneyView> {
 
-    ITransferMoneyView mView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private ITransferMoneyView mView;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository mAccountRepository;
+    private Context mApplicationContext;
+
+    @Inject
+    TransferMoneyViaAccountNamePresenter(AccountStore.Repository accountRepository,
+                                         Context applicationContext) {
+        this.mAccountRepository = accountRepository;
+        this.mApplicationContext = applicationContext;
+    }
 
     @Override
     public void setView(ITransferMoneyView iTransferMoneyView) {
@@ -48,13 +60,9 @@ public class TransferMoneyViaAccountNamePresenter extends BaseUserPresenter impl
 
     }
 
-    @Inject
-    public TransferMoneyViaAccountNamePresenter() {
-    }
-
     public void getUserInfo(String zpName) {
         showLoadingView();
-        Subscription subscription = accountRepository.getUserInfoByZaloPayName(zpName)
+        Subscription subscription = mAccountRepository.getUserInfoByZaloPayName(zpName)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UserInfoSubscriber(zpName));
         compositeSubscription.add(subscription);
@@ -76,7 +84,7 @@ public class TransferMoneyViaAccountNamePresenter extends BaseUserPresenter impl
 
         String zaloPayName;
 
-        public UserInfoSubscriber(String zaloPayName) {
+        UserInfoSubscriber(String zaloPayName) {
             this.zaloPayName = zaloPayName;
         }
 
@@ -88,7 +96,7 @@ public class TransferMoneyViaAccountNamePresenter extends BaseUserPresenter impl
             }
             
             hideLoadingView();
-            String message = ErrorMessageFactory.create(applicationContext, e);
+            String message = ErrorMessageFactory.create(mApplicationContext, e);
             mView.showError(message);
         }
 

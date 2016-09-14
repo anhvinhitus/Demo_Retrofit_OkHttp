@@ -12,10 +12,14 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -29,6 +33,9 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
  */
 public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<IWithdrawView> {
     private final int WITHDRAW_APPID = 2;
+    private final BalanceStore.Repository mBalanceRepository;
+    private final ZaloPayRepository mZaloPayRepository;
+    private final Navigator mNavigator;
 
     private IWithdrawView mView;
     private PaymentWrapper paymentWrapper;
@@ -38,7 +45,13 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     User mUser;
 
     @Inject
-    public WithdrawPresenter() {
+    public WithdrawPresenter(BalanceStore.Repository balanceRepository,
+                             ZaloPayRepository zaloPayRepository,
+                             TransactionStore.Repository transactionRepository,
+                             Navigator navigator) {
+        this.mBalanceRepository = balanceRepository;
+        this.mZaloPayRepository = zaloPayRepository;
+        this.mNavigator = navigator;
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -130,13 +143,13 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
 
-        if (amount > balanceRepository.currentBalance()) {
+        if (amount > mBalanceRepository.currentBalance()) {
             mView.showAmountError(mView.getContext().getString(R.string.withdraw_exceed_balance));
             return;
         }
         mView.showLoading();
         String description = mView.getContext().getString(R.string.withdraw_description);
-        Subscription subscription = zaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, description)
+        Subscription subscription = mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, description)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());

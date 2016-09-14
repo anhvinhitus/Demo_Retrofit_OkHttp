@@ -16,7 +16,12 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.view.IWebView;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -38,9 +43,20 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
 
     protected String mHost;
     protected WebViewPayInfo mAppGamePayInfo;
+    private BalanceStore.Repository balanceRepository;
+    private ZaloPayRepository zaloPayRepository;
+    private TransactionStore.Repository transactionRepository;
+    private Navigator mNavigator;
 
     @Inject
-    public WebViewPresenter() {
+    public WebViewPresenter(BalanceStore.Repository balanceRepository,
+                            ZaloPayRepository zaloPayRepository,
+                            TransactionStore.Repository transactionRepository,
+                            Navigator navigator) {
+        this.balanceRepository = balanceRepository;
+        this.zaloPayRepository = zaloPayRepository;
+        this.transactionRepository = transactionRepository;
+        mNavigator = navigator;
     }
 
     public void initData(Bundle arguments) {

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -16,9 +17,14 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -38,12 +44,23 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 public final class QRCodePresenter extends BaseUserPresenter implements IPresenter<IQRScanView> {
 
+    private final Context mApplicationContext;
+    private final Navigator mNavigator;
+    private final UserConfig mUserConfig;
     private IQRScanView mView;
 
     private PaymentWrapper paymentWrapper;
 
     @Inject
-    public QRCodePresenter() {
+    public QRCodePresenter(BalanceStore.Repository balanceRepository,
+                           ZaloPayRepository zaloPayRepository,
+                           TransactionStore.Repository transactionRepository,
+                           Context applicationContext,
+                           Navigator navigator,
+                           UserConfig userConfig) {
+        mApplicationContext = applicationContext;
+        mNavigator = navigator;
+        mUserConfig = userConfig;
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -77,7 +94,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 }
 
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                    mView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                 }
                 hideLoadingView();
                 mView.resumeScanner();
@@ -123,7 +140,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                     return;
                 }
 
-                mNavigator.startDepositActivity(applicationContext);
+                mNavigator.startDepositActivity(mApplicationContext);
             }
         });
     }
@@ -163,9 +180,9 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
     public void pay(String jsonString) {
 
-        if (!NetworkHelper.isNetworkAvailable(applicationContext)) {
+        if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             if (mView != null) {
-                mView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                mView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                 mView.resumeScanner();
             }
             return;
@@ -232,7 +249,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             return false;
         }
 
-        if (String.valueOf(zalopayId).equals(userConfig.getCurrentUser().zaloPayId)) {
+        if (String.valueOf(zalopayId).equals(mUserConfig.getCurrentUser().zaloPayId)) {
             return false;
         }
 

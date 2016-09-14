@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -36,6 +37,9 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @Inject
     ProfileInfoPresenter presenter;
+
+    @Inject
+    UserConfig userConfig;
 
     @BindView(R.id.layoutUser)
     View layoutUser;
@@ -106,7 +110,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     private void initView() {
         presenter.setView(this);
-        presenter.getZaloProfileInfo();
+        presenter.getZaloProfileInfo(getApplicationContext(), userConfig);
         setTitle("");
 
         mCollapsingToolbarLayout.setTitleEnabled(false);

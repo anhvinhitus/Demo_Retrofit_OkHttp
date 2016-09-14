@@ -12,6 +12,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -27,13 +28,15 @@ import vn.com.zalopay.analytics.ZPEvents;
 public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
 
     IPinProfileView mView;
+
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository mAccountRepository;
+    private User mUser;
 
     @Inject
-    User mUser;
-
-    @Inject
-    public PinProfilePresenter() {
+    public PinProfilePresenter(AccountStore.Repository accountRepository, User user) {
+        this.mAccountRepository = accountRepository;
+        mUser = user;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     public void updateProfile(String pin, String phone, String zalopayName) {
         showLoading();
-        Subscription subscriptionLogin = accountRepository.updateUserProfileLevel2(pin, phone, zalopayName)
+        Subscription subscriptionLogin = mAccountRepository.updateUserProfileLevel2(pin, phone, zalopayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateProfileSubscriber(phone, zalopayName));
@@ -81,7 +84,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         if (TextUtils.isEmpty(zaloPayName)) {
             return;
         }
-        Subscription subscription = accountRepository.checkZaloPayNameExist(zaloPayName)
+        Subscription subscription = mAccountRepository.checkZaloPayNameExist(zaloPayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetUserInfoByZPNameSubscriber());

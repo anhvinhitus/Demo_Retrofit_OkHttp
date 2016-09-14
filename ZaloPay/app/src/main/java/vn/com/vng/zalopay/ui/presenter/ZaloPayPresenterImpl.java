@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -17,15 +18,19 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -42,6 +47,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     protected CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private final ZaloPayIAPRepository mZaloPayIAPRepository;
+    private EventBus mEventBus;
+    private BalanceStore.Repository mBalanceRepository;
+    private AppResourceStore.Repository mAppResourceRepository;
+    private NotificationStore.Repository mNotificationRepository;
+    private Navigator mNavigator;
 
     //Banner variable
     private CountDownTimer mBannerCountDownTimer;
@@ -54,22 +64,32 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     };
 
-    public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository) {
+    public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository,
+                                EventBus eventBus,
+                                BalanceStore.Repository balanceRepository,
+                                AppResourceStore.Repository appResourceRepository,
+                                NotificationStore.Repository notificationRepository,
+                                Navigator navigator) {
         this.mZaloPayIAPRepository = zaloPayIAPRepository;
+        this.mEventBus = eventBus;
+        this.mBalanceRepository = balanceRepository;
+        this.mAppResourceRepository = appResourceRepository;
+        this.mNotificationRepository = notificationRepository;
+        this.mNavigator = navigator;
     }
 
     @Override
     public void setView(IZaloPayView o) {
         this.mZaloPayView = o;
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
     @Override
     public void destroyView() {
         unsubscribeIfNotNull(compositeSubscription);
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
         this.mZaloPayView = null;
     }
 
@@ -99,7 +119,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void getBalance() {
-        Subscription subscription = balanceRepository.balance()
+        Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
@@ -128,7 +148,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
     // when received notification
     private void getTotalNotification(long delay) {
-        Subscription subscription = notificationRepository.totalNotificationUnRead()
+        Subscription subscription = mNotificationRepository.totalNotificationUnRead()
                 .delaySubscription(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());

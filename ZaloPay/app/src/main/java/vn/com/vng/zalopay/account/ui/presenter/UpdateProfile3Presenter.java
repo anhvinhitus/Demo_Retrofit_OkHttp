@@ -1,14 +1,11 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import java.nio.ByteBuffer;
 
 import javax.inject.Inject;
 
@@ -22,6 +19,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
@@ -36,9 +34,13 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
     IUpdateProfile3View mView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository mAccountRepository;
+    private Context mApplicationContext;
 
     @Inject
-    public UpdateProfile3Presenter() {
+    public UpdateProfile3Presenter(AccountStore.Repository accountRepository, Context applicationContext) {
+        this.mAccountRepository = accountRepository;
+        this.mApplicationContext = applicationContext;
     }
 
     @Override
@@ -93,7 +95,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
         if (_fimgBytes != null && _bimgBytes != null && _avatarBytes != null) {
             Timber.d(" _fimg %s _bimg %s avatar %s", _fimgBytes.length, _bimgBytes.length, _avatarBytes.length);
-            Subscription subscription = accountRepository.updateUserProfileLevel3(identityNumber, email,
+            Subscription subscription = mAccountRepository.updateUserProfileLevel3(identityNumber, email,
                     _fimgBytes,
                     _bimgBytes,
                     _avatarBytes)
@@ -116,13 +118,13 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     private void onUpdateError(Throwable e) {
         if (e instanceof BodyException) {
             if (((BodyException) e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
-                mView.showError(ErrorMessageFactory.create(applicationContext, e));
+                mView.showError(ErrorMessageFactory.create(mApplicationContext, e));
                 mView.waitingApproveProfileLevel3();
                 return;
             }
         }
         mView.hideLoading();
-        String message = ErrorMessageFactory.create(applicationContext, e);
+        String message = ErrorMessageFactory.create(mApplicationContext, e);
         mView.showError(message);
     }
 
@@ -179,7 +181,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
     private Bitmap resizeImage(Uri uri) throws Exception {
 
-        Bitmap bitmap = Glide.with(applicationContext).loadFromMediaStore(uri)
+        Bitmap bitmap = Glide.with(mApplicationContext).loadFromMediaStore(uri)
                 .asBitmap()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -198,7 +200,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     private byte[] resizeImageByteArray(Uri uri) {
         byte[] ret = null;
         try {
-            ret = Glide.with(applicationContext).loadFromMediaStore(uri)
+            ret = Glide.with(mApplicationContext).loadFromMediaStore(uri)
                     .asBitmap()
                     .toBytes(Bitmap.CompressFormat.JPEG, 100)
                     .skipMemoryCache(true)
@@ -272,13 +274,13 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
             avatarImgPath = avatarImg.toString();
         }
 
-        accountRepository.saveProfileInfo3(email, identity, foregroundImgPath, backgroundImgPath, avatarImgPath)
+        mAccountRepository.saveProfileInfo3(email, identity, foregroundImgPath, backgroundImgPath, avatarImgPath)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     public void getProfileInfo() {
-        Subscription subscription = accountRepository.getProfileInfo3Cache()
+        Subscription subscription = mAccountRepository.getProfileInfo3Cache()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ProfileInfo3Subscriber());
         compositeSubscription.add(subscription);

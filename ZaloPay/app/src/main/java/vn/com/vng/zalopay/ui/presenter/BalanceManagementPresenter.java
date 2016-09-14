@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -11,10 +12,13 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -29,12 +33,23 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     private IBalanceManagementView mView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    @Inject
-    User mUser;
+    private User mUser;
+    private EventBus mEventBus;
+    private BalanceStore.Repository mBalanceRepository;
+    private Navigator mNavigator;
 
     @Inject
-    public BalanceManagementPresenter() {
+    public BalanceManagementPresenter(User user,
+                                      EventBus eventBus,
+                                      BalanceStore.Repository balanceRepository,
+                                      Navigator navigator,
+                                      UserConfig userConfig) {
+        super(userConfig);
 
+        this.mUser = user;
+        this.mEventBus = eventBus;
+        this.mBalanceRepository = balanceRepository;
+        this.mNavigator = navigator;
     }
 
     public void updateUserInfo() {
@@ -54,15 +69,15 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
 
     @Override
     public void resume() {
-        eventBus.register(this);
-        mView.updateBalance(balanceRepository.currentBalance());
+        mEventBus.register(this);
+        mView.updateBalance(mBalanceRepository.currentBalance());
         updateBalance();
         updateUserInfo();
     }
 
     @Override
     public void pause() {
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
     }
 
     @Override
@@ -86,7 +101,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     }
 
     protected void updateBalance() {
-        Subscription subscription = balanceRepository.updateBalance()
+        Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);

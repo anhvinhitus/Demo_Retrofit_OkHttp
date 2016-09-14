@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -16,16 +18,23 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.repository.PassportRepository;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.DonateMoneyEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
@@ -51,9 +60,35 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     PaymentWrapper paymentWrapper;
 
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private EventBus mEventBus;
+    private AppResourceStore.Repository mAppResourceRepository;
+    private UserConfig mUserConfig;
+    private Context mApplicationContext;
+    private Navigator mNavigator;
+    private PassportRepository passportRepository;
+    private BalanceStore.Repository mBalanceRepository;
+    private ZaloPayRepository mZaloPayRepository;
+    private TransactionStore.Repository mTransactionRepository;
 
     @Inject
-    public MainPresenter() {
+    public MainPresenter(EventBus eventBus,
+                         AppResourceStore.Repository appResourceRepository,
+                         UserConfig userConfig,
+                         Context applicationContext,
+                         Navigator navigator,
+                         PassportRepository passportRepository,
+                         BalanceStore.Repository balanceRepository,
+                         ZaloPayRepository zaloPayRepository,
+                         TransactionStore.Repository transactionRepository) {
+        this.mEventBus = eventBus;
+        mAppResourceRepository = appResourceRepository;
+        this.mUserConfig = userConfig;
+        this.mApplicationContext = applicationContext;
+        mNavigator = navigator;
+        this.passportRepository = passportRepository;
+        this.mBalanceRepository = balanceRepository;
+        this.mZaloPayRepository = zaloPayRepository;
+        this.mTransactionRepository = transactionRepository;
     }
 
     private void getZaloFriend() {
@@ -68,14 +103,14 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Override
     public void setView(IHomeView iHomeView) {
         this.homeView = iHomeView;
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
     @Override
     public void destroyView() {
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
         unsubscribeIfNotNull(compositeSubscription);
         GlobalData.initApplication(null);
         this.homeView = null;
@@ -108,7 +143,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void loadGatewayInfoPaymentSDK() {
-        User user = userConfig.getCurrentUser();
+        User user = mUserConfig.getCurrentUser();
         final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloUserId = String.valueOf(user.zaloId);
@@ -147,7 +182,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onPayWithTransToken(final PaymentDataEvent event) {
         pay(event.appId, event.zptranstoken);
-        eventBus.removeStickyEvent(PaymentDataEvent.class);
+        mEventBus.removeStickyEvent(PaymentDataEvent.class);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -156,10 +191,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             return;
         }
 
-        if (userConfig.hasCurrentUser()) {
+        if (mUserConfig.hasCurrentUser()) {
             ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.userInfo.zaloPayUserId = userConfig.getCurrentUser().zaloPayId;
-            paymentInfo.userInfo.accessToken = userConfig.getCurrentUser().accesstoken;
+            paymentInfo.userInfo.zaloPayUserId = mUserConfig.getCurrentUser().zaloPayId;
+            paymentInfo.userInfo.accessToken = mUserConfig.getCurrentUser().accesstoken;
 
             WalletSDKApplication.refreshGatewayInfo(homeView.getActivity(), paymentInfo,
                     new DefaultZPGatewayInfoCallBack());
@@ -170,7 +205,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onReceiverDonateMoney(DonateMoneyEvent event) {
 
-        eventBus.removeStickyEvent(DonateMoneyEvent.class);
+        mEventBus.removeStickyEvent(DonateMoneyEvent.class);
 
         if (homeView == null) {
             return;
@@ -181,9 +216,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             SweetAlertDialog dialog = new SweetAlertDialog(homeView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
 
             dialog.setTitleText("Tặng tiền");
-            dialog.setCancelText(applicationContext.getString(R.string.txt_close));
+            dialog.setCancelText(mApplicationContext.getString(R.string.txt_close));
             dialog.setContentText(notify.message);
-            dialog.setConfirmText(applicationContext.getString(R.string.view_detail));
+            dialog.setConfirmText(mApplicationContext.getString(R.string.view_detail));
             dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog dialog) {
@@ -211,7 +246,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void pay(long appId, String zptranstoken) {
         showLoadingView();
         if (paymentWrapper == null) {
-            paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
+            paymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
                 @Override
                 public Activity getActivity() {
                     if (homeView != null) {
@@ -230,11 +265,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     }
 
                     if ("order".equalsIgnoreCase(param)) {
-                        homeView.showError(applicationContext.getString(R.string.order_invalid));
+                        homeView.showError(mApplicationContext.getString(R.string.order_invalid));
                     } else if ("uid".equalsIgnoreCase(param)) {
-                        homeView.showError(applicationContext.getString(R.string.user_invalid));
+                        homeView.showError(mApplicationContext.getString(R.string.user_invalid));
                     } else if ("token".equalsIgnoreCase(param)) {
-                        homeView.showError(applicationContext.getString(R.string.order_invalid));
+                        homeView.showError(mApplicationContext.getString(R.string.order_invalid));
                     }
 
                     hideLoadingView();
@@ -253,7 +288,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     }
 
                     if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                        homeView.showError(applicationContext.getString(R.string.exception_no_connection_try_again));
+                        homeView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                     }
 
                     hideLoadingView();
@@ -303,7 +338,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         return;
                     }
                     hideLoadingView();
-                    mNavigator.startDepositActivity(applicationContext);
+                    mNavigator.startDepositActivity(mApplicationContext);
 
                 }
             });

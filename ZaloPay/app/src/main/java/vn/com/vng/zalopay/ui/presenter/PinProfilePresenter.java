@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -9,6 +11,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -21,11 +24,15 @@ import vn.com.vng.zalopay.ui.view.IPinProfileView;
 public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
 
     @Inject
-    public PinProfilePresenter() {
+    public PinProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
+        this.mAccountRepository = accountRepository;
+        this.mApplicationContext = applicationContext;
     }
 
     IPinProfileView pinProfileView;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository mAccountRepository;
+    private Context mApplicationContext;
 
     @Override
     public void setView(IPinProfileView iPinProfileView) {
@@ -67,7 +74,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     public void validatePin(String pin) {
         showLoadingView();
-        Subscription subscription = accountRepository.validatePin(pin)
+        Subscription subscription = mAccountRepository.validatePin(pin)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ValidatePinSubscriber());
         compositeSubscription.add(subscription);
@@ -84,7 +91,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
             hideLoadingView();
             if (pinProfileView != null) {
-                pinProfileView.setError(ErrorMessageFactory.create(applicationContext, e));
+                pinProfileView.setError(ErrorMessageFactory.create(mApplicationContext, e));
                 if (e instanceof BodyException) {
                     if (((BodyException) e).errorCode == NetworkError.INCORRECT_PIN
                             || ((BodyException) e).errorCode == NetworkError.INCORRECT_PIN_LIMIT) {

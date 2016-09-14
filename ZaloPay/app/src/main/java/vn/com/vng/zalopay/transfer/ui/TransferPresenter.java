@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -20,8 +21,12 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -29,7 +34,9 @@ import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -56,11 +63,28 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private User user;
     private NotificationStore.Repository mNotificationRepository;
+    private final ZaloPayRepository mZaloPayRepository;
+    private final AccountStore.Repository accountRepository;
+    private final Navigator mNavigator;
+    private final TransferStore.Repository mTransferRepository;
+    private Context applicationContext;
 
     @Inject
-    public TransferPresenter(User user, NotificationStore.Repository notificationRepository) {
+    public TransferPresenter(User user, NotificationStore.Repository notificationRepository,
+                             BalanceStore.Repository balanceRepository,
+                             ZaloPayRepository zaloPayRepository,
+                             TransactionStore.Repository transactionRepository,
+                             AccountStore.Repository accountRepository,
+                             Navigator navigator,
+                             TransferStore.Repository transferRepository,
+                             Context applicationContext) {
         this.user = user;
         this.mNotificationRepository = notificationRepository;
+        mZaloPayRepository = zaloPayRepository;
+        this.accountRepository = accountRepository;
+        mNavigator = navigator;
+        this.mTransferRepository = transferRepository;
+        this.applicationContext = applicationContext;
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -224,7 +248,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
             mView.showLoading();
 
-            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
+            Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
                     mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
                     "1;" + mTransaction.getZaloPayId(),
@@ -285,7 +309,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 return;
             }
 
-            transferRepository.append(mTransaction,
+            mTransferRepository.append(mTransaction,
                     Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());

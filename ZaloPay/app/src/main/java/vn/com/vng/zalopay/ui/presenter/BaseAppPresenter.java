@@ -26,27 +26,10 @@ import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 3/26/16.
+ *
  */
 public abstract class BaseAppPresenter {
-
     protected final String TAG = this.getClass().getSimpleName();
-
-    @Inject
-    protected EventBus eventBus;
-
-    @Inject
-    protected RxBus rxBus;
-
-    @Inject
-    protected PassportRepository passportRepository;
-
-    @Inject
-    protected UserConfig userConfig;
-
-    @Inject
-    protected Navigator mNavigator;
-
-    protected final Context applicationContext = AndroidApplication.instance();
 
     protected void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
@@ -64,8 +47,8 @@ public abstract class BaseAppPresenter {
         AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 
-    public void getZaloProfileInfo() {
-        ZaloSDK.Instance.getProfile(applicationContext, new ZaloOpenAPICallback() {
+    public void getZaloProfileInfo(Context context, final UserConfig userConfig) {
+        ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
             @Override
             public void onResult(JSONObject profile) {
                 try {
