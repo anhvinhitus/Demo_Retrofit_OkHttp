@@ -16,17 +16,18 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.webview.config.DialogWebViewImpl;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
 import vn.com.vng.zalopay.webview.ui.activity.WebViewActivity;
 import vn.com.vng.zalopay.webview.ui.presenter.WebViewPresenter;
 import vn.com.vng.zalopay.webview.ui.view.IWebView;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.webview.interfaces.IDialogListener;
-import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
-import vn.com.vng.zalopay.webview.interfaces.IDialog;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor.IWebViewListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -40,8 +41,6 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
-
-    private IDialog mDialog;
 
     protected String mCurrentUrl = "";
 
@@ -73,16 +72,21 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
             public void onTimeoutLoading() {
                 Timber.d("onTimeoutLoading");
                 //load website timeout, show confirm dialog: continue to load or exit.
-                if (mDialog == null || getActivity() == null) {
+                if (getActivity() == null) {
                     return;
                 }
-                mDialog.showConfirmDialog(getActivity(),
+                DialogManager.showSweetDialogConfirm(getActivity(),
                         getActivity().getResources().getString(R.string.appgame_waiting_loading),
-                        getActivity().getResources().getString(R.string.appgame_button_left),
-                        getActivity().getResources().getString(R.string.appgame_button_right), new IDialogListener() {
+                        getActivity().getResources().getString(R.string.btn_exit),
+                        getActivity().getResources().getString(R.string.btn_wait_loading),
+                        new ZPWOnEventConfirmDialogListener() {
                             @Override
-                            public void onClose() {
+                            public void onCancelEvent() {
                                 getActivity().finish();
+                            }
+
+                            @Override
+                            public void onOKevent() {
                             }
                         });
             }
@@ -103,8 +107,7 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
 
     private void initViewWebView(View rootView) {
         ZPWebView mWebview = (ZPWebView) rootView.findViewById(R.id.webview);
-        mDialog = new DialogWebViewImpl();
-        mWebViewProcessor = new ZPWebViewProcessor(mWebview, mDialog, mTimeOutListener, this);
+        mWebViewProcessor = new ZPWebViewProcessor(mWebview, mTimeOutListener, this);
     }
 
     @Override
@@ -165,16 +168,19 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
 
     @Override
     public void hideLoading() {
-        if (mDialog != null) {
-            mDialog.hideLoadingDialog();
-        }
+        DialogManager.closeProcessDialog();
     }
 
     @Override
     public void showLoading() {
-        if (mDialog != null) {
-            mDialog.showLoadingDialog(getActivity(), mTimeOutListener);
-        }
+        DialogManager.showProcessDialog(getActivity(), new ZPWOnProgressDialogTimeoutListener() {
+            @Override
+            public void onProgressTimeout() {
+                if (mTimeOutListener != null) {
+                    mTimeOutListener.onTimeoutLoading();
+                }
+            }
+        });
     }
 
     @Override
@@ -327,11 +333,12 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
 
     @Override
     public void showInputErrorDialog() {
-        mDialog.showInfoDialog(getActivity(), getContext().getString(R.string.appgame_alert_input_error),
+        DialogManager.showSweetDialogCustom(getActivity(),
+                getContext().getString(R.string.appgame_alert_input_error),
                 getContext().getString(R.string.txt_close),
-                SweetAlertDialog.WARNING_TYPE, new IDialogListener() {
+                SweetAlertDialog.WARNING_TYPE, new ZPWOnEventDialogListener() {
                     @Override
-                    public void onClose() {
+                    public void onOKevent() {
                         getActivity().finish();
                     }
                 });

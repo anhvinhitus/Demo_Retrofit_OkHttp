@@ -14,9 +14,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
-import vn.com.vng.zalopay.webview.interfaces.IDialog;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
+import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
+import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class ZPWebViewProcessor extends WebViewClient {
     private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
@@ -26,14 +27,13 @@ public class ZPWebViewProcessor extends WebViewClient {
     private ZPWebView mWebView = null;
     private ITimeoutLoadingListener mTimeOutListener;
     private IWebViewListener mWebViewListener;
-    private IDialog mDialog;
+//    private IDialog mDialog;
 
-    public ZPWebViewProcessor(ZPWebView pWebView, IDialog dialog,
+    public ZPWebViewProcessor(ZPWebView pWebView,
                               ITimeoutLoadingListener timeoutLoadingListener,
                               IWebViewListener webViewListener) {
         mWebView = pWebView;
         mWebViewListener = webViewListener;
-        mDialog = dialog;
         mTimeOutListener = timeoutLoadingListener;
         mWebView.setWebViewClient(this);
         //ensure the method is called only when running on Android 4.2 or later for secure
@@ -46,9 +46,13 @@ public class ZPWebViewProcessor extends WebViewClient {
         if (pActivity == null || TextUtils.isEmpty(pUrl)) {
             return;
         }
-        if (mDialog != null) {
-            mDialog.showLoadingDialog(pActivity, mTimeOutListener);
-        }
+        DialogManager.showProcessDialog(pActivity, new ZPWOnProgressDialogTimeoutListener() {
+            @Override
+            public void onProgressTimeout() {
+                if (mTimeOutListener != null)
+                    mTimeOutListener.onTimeoutLoading();
+            }
+        });
         hasError = false;
         mWebView.loadUrl(pUrl);
     }
@@ -64,9 +68,7 @@ public class ZPWebViewProcessor extends WebViewClient {
             return;
         }
 
-        if (mDialog != null) {
-            mDialog.hideLoadingDialog();
-        }
+        DialogManager.closeProcessDialog();
 
         mWebView.runScript("utils.getNav()", new GetNavigationCallback(mWebViewListener));
 

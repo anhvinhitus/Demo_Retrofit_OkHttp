@@ -70,17 +70,18 @@
     <string name="btn_pay_now">Thanh Toán</string>
     <string name="btn_deposit">Nạp Tiền</string>
     <string name="btn_confirm">Xác Nhận</string>
+    <string name="btn_cancel">Bỏ Qua</string>
+    <string name="btn_start">Bắt Đầu</string>
+    <string name="btn_exit">Thoát</string>
+    <string name="btn_wait_loading">Đợi tải</string>
+    <string name="btn_reload">Tải Lại</string>
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>
     <string name="txt_update">Cập nhật</string>
-
     <string name="txt_close">Đóng</string>
     <string name="txt_retry">Thử lại</string>
     <string name="txt_cancel">Bỏ qua</string>
-    <string name="btn_cancel">Bỏ Qua</string>
-
-    <string name="btn_start">Bắt Đầu</string>
 
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
@@ -342,9 +343,6 @@
     <string name="appgame_alert_error_start_channel">Không thể khởi tạo cổng giao dịch!</string>
     <string name="appgame_waiting_loading">Đang tải trang.\nBạn có muốn tiếp tục đợi?</string>
     <string name="appgame_error_loading">Tải trang thất bại.Vui lòng thử lại sau ít phút!</string>
-    <string name="appgame_button_left">Thoát</string>
-    <string name="appgame_button_right">Đợi tải</string>
-    <string name="btn_reload">Tải Lại</string>
     <string name="load_data_error">Không tải được nội dung</string>
     <!--WebView Resource End-->
 </resources>
