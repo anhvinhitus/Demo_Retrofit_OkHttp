@@ -1,28 +1,25 @@
 package vn.com.vng.zalopay.data.ws.parser;
 
 import android.text.TextUtils;
-import android.util.Base64;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.google.protobuf.InvalidProtocolBufferException;
 
+import okio.ByteString;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
-import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
+import vn.com.vng.zalopay.data.ws.protobuf.DataResponseUser;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.data.ws.protobuf.ResultAuth;
+import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.model.User;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
+
 /**
  * Created by AnhHieu on 6/14/16.
  * Parser for notification messages
@@ -30,11 +27,9 @@ import java.lang.reflect.Type;
 public class MessageParser implements Parser {
 
     private final Gson mGson;
-    private final User user;
 
-    public MessageParser(UserConfig userConfig, Gson gson) {
+    public MessageParser(Gson gson) {
         this.mGson = gson;
-        this.user = userConfig.getCurrentUser();
     }
 
     @Override
@@ -45,7 +40,7 @@ public class MessageParser implements Parser {
             try {
                 ret = processMessage(msg);
             } catch (Exception ex) {
-                Timber.w(ex, " parserMessage Exception");
+                Timber.w(ex, "parserMessage Exception");
             }
         }
 
@@ -53,7 +48,7 @@ public class MessageParser implements Parser {
     }
 
     private Event processMessage(byte[] msg) throws Exception {
-        ZPMsgProtos.DataResponseUser respMsg = ZPMsgProtos.DataResponseUser.parseFrom(msg);
+        DataResponseUser respMsg = DataResponseUser.ADAPTER.decode(msg);
 
 //        if (!respMsg.hasMtaid() && !respMsg.hasMtuid()) {
 //            Timber.e("Notification mtaid and mtuid not have with msgType: [%s]", respMsg.getMsgtype());
@@ -67,24 +62,18 @@ public class MessageParser implements Parser {
 
         Event event = null;
 
-        if (respMsg.hasData()) {
+        if (respMsg.data != null) {
+            ByteString data = respMsg.data;
 
-            byte[] data = respMsg.getData().toByteArray();
-
-            switch (respMsg.getMsgtype()) {
-                case ZPMsgProtos.ServerMessageType.KICK_OUT_USER_VALUE:
-                    event = processKickOutUser(data);
-                    break;
-                case ZPMsgProtos.ServerMessageType.PUSH_NOTIFICATION_VALUE:
-                    event = processPushMessage(data);
-                    break;
-                case ZPMsgProtos.ServerMessageType.AUTHEN_LOGIN_RESULT_VALUE:
-                    event = processAuthenticationLoginSuccess(data);
-                    break;
-                case ZPMsgProtos.ServerMessageType.PONG_CLIENT_VALUE:
-                    event = parsePongMessage(data);
-                default:
-                    break;
+            ServerMessageType messageType = ServerMessageType.fromValue(respMsg.msgtype);
+            if (messageType == ServerMessageType.KICK_OUT_USER) {
+                event = processKickOutUser(data);
+            } else if (messageType == ServerMessageType.PUSH_NOTIFICATION) {
+                event = processPushMessage(data);
+            } else if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
+                event = processAuthenticationLoginSuccess(data);
+            } else if (messageType == ServerMessageType.PONG_CLIENT) {
+                event = parsePongMessage(data);
             }
         }
 
@@ -92,32 +81,32 @@ public class MessageParser implements Parser {
             event = new Event();
         }
 
-        event.setMsgType(respMsg.getMsgtype());
+        event.setMsgType(respMsg.msgtype);
 
-        if (respMsg.hasMtaid()) {
-            event.setMtaid(respMsg.getMtaid());
+        if (respMsg.mtaid != null) {
+            event.setMtaid(respMsg.mtaid);
         }
 
-        if (respMsg.hasMtuid()) {
-            event.setMtuid(respMsg.getMtuid());
+        if (respMsg.mtuid != null) {
+            event.setMtuid(respMsg.mtuid);
         }
 
-        if (respMsg.hasSourceid()) {
-            event.setSourceid(respMsg.getSourceid());
+        if (respMsg.sourceid != null) {
+            event.setSourceid(respMsg.sourceid);
         }
 
         return event;
     }
 
-    private Event processAuthenticationLoginSuccess(byte[] data) {
+    private Event processAuthenticationLoginSuccess(ByteString data) {
 
         try {
             AuthenticationData event = new AuthenticationData();
-            ZPMsgProtos.ResultAuth res = ZPMsgProtos.ResultAuth.parseFrom(data);
-            Timber.d("Result %s code %s", res.getResult(), res.getCode());
-            event.code = res.getCode();
-            event.uid = res.getUsrid();
-            event.result = res.getResult();
+            ResultAuth res = ResultAuth.ADAPTER.decode(data);
+            Timber.d("Result %s code %s", res.result, res.code);
+            event.code = res.code;
+            event.uid = res.usrid;
+            event.result = res.result;
             return event;
         } catch (Exception ex) {
             Timber.w(ex, "Error while handling authentication result");
@@ -126,33 +115,33 @@ public class MessageParser implements Parser {
         return null;
     }
 
-    private Event parsePongMessage(byte[] data) {
+    private Event parsePongMessage(ByteString data) {
         if (data == null) {
             return null;
         }
 
         try {
             ServerPongData pongData = new ServerPongData();
-            ZPMsgProtos.MessageConnectionInfo res = ZPMsgProtos.MessageConnectionInfo.parseFrom(data);
-            pongData.clientData = res.getEmbeddata();
+            MessageConnectionInfo res = MessageConnectionInfo.ADAPTER.decode(data);
+            pongData.clientData = res.embeddata;
             return pongData;
-        } catch (InvalidProtocolBufferException e) {
+        } catch (IOException e) {
             Timber.w(e, "Invalid server pong data");
             return null;
         }
     }
 
-    public Event processKickOutUser(byte[] data) {
+    public Event processKickOutUser(ByteString data) {
         Timber.d("Connection was kicked out by server");
         return null;
     }
 
 
-    public Event processPushMessage(byte[] data) {
+    public Event processPushMessage(ByteString data) {
 
         try {
             NotificationData event;
-            String str = new String(data);
+            String str = new String(data.toByteArray());
             Timber.d("notification message :  %s", str);
             if (TextUtils.isEmpty(str)) {
                 return new NotificationData();

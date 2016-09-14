@@ -309,6 +309,9 @@
 
 #Warning:vn.com.zalopay.wallet.entity.protobuf.LogicMessages$Login: can't find referenced class com.google.protobuf.UnknownFieldSet
 
+-keep class com.squareup.wire.** { *; }
+-keep class vn.com.vng.zalopay.data.ws.protobuf.** { *; }
+
 #-keep public class com.google.protobuf.** { *; }
 
 #-keep interface com.google.protobuf.** { *; }

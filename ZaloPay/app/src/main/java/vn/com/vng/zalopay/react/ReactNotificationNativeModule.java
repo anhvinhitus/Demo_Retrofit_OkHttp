@@ -15,7 +15,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -26,7 +25,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.ws.message.TransactionType;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -157,7 +155,7 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         int transtype = entity.transtype;
         int notificationtype = entity.notificationtype;
 
-        item.putString("title", TransactionType.getTitle(transtype));
+        item.putString("title", "");
         item.putInt("transtype", transtype);
         item.putInt("notificationtype", notificationtype);
         item.putDouble("transid", entity.getTransid());

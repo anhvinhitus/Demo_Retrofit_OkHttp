@@ -6,8 +6,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import com.google.protobuf.AbstractMessage;
-
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -24,7 +22,12 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
-import vn.com.vng.zalopay.data.ws.protobuf.ZPMsgProtos;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageLogin;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
+import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.data.ws.protobuf.StatusMessageClient;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -196,11 +199,12 @@ public class WsConnection extends Connection {
             return;
         }
 
-        ZPMsgProtos.MessageConnectionInfo.Builder pingMessage = ZPMsgProtos.MessageConnectionInfo.newBuilder()
-                .setUserid(getCurrentUserId())
-                .setEmbeddata(System.currentTimeMillis());
+        MessageConnectionInfo pingMessage = new MessageConnectionInfo.Builder()
+                .userid(getCurrentUserId())
+                .embeddata(System.currentTimeMillis())
+                .build();
 
-        send(ZPMsgProtos.MessageType.PING_SERVER.getNumber(), pingMessage.build());
+        send(MessageType.PING_SERVER.getValue(), MessageConnectionInfo.ADAPTER.encode(pingMessage));
     }
 
     private void reconnect() {
@@ -248,10 +252,10 @@ public class WsConnection extends Connection {
         return false;
     }
 
-    @Override
-    public boolean send(int msgType, AbstractMessage msgData) {
-        return send(msgType, msgData.toByteArray());
-    }
+//    @Override
+//    public boolean send(int msgType, AbstractMessage msgData) {
+//        return send(msgType, msgData.toByteArray());
+//    }
 
     @Override
     public boolean send(int msgType, byte[] data) {
@@ -269,16 +273,16 @@ public class WsConnection extends Connection {
 
         Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
 
-        ZPMsgProtos.MessageLogin.Builder loginMsg = ZPMsgProtos.MessageLogin.newBuilder()
-                .setToken(token)
-                .setUsrid(uid)
-                .setOstype(Enums.Platform.ANDROID.getId());
+        MessageLogin.Builder loginMsg = new MessageLogin.Builder()
+                .token(token)
+                .usrid(uid)
+                .ostype(Enums.Platform.ANDROID.getId());
 
         if (!TextUtils.isEmpty(gcmToken)) {
-            loginMsg.setDevicetoken(gcmToken);
+            loginMsg.devicetoken(gcmToken);
         }
 
-        return send(ZPMsgProtos.MessageType.AUTHEN_LOGIN.getNumber(), loginMsg.build());
+        return send(MessageType.AUTHEN_LOGIN.getValue(), MessageLogin.ADAPTER.encode(loginMsg.build()));
     }
 
     private boolean sendAuthentication() {
@@ -313,20 +317,20 @@ public class WsConnection extends Connection {
 
             Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
 
-            ZPMsgProtos.StatusMessageClient.Builder statusMsg = ZPMsgProtos.StatusMessageClient.newBuilder()
-                    .setStatus(ZPMsgProtos.MessageStatus.RECEIVED.getNumber());
+            StatusMessageClient.Builder statusMsg = new StatusMessageClient.Builder()
+                    .status(MessageStatus.RECEIVED.getValue());
 
             if (mtaid > 0) {
-                statusMsg.setMtaid(mtaid);
+                statusMsg.mtaid(mtaid);
             }
             if (mtuid > 0) {
-                statusMsg.setMtuid(mtuid);
+                statusMsg.mtuid(mtuid);
             }
             if (uid > 0) {
-                statusMsg.setUserid(uid);
+                statusMsg.userid(uid);
             }
 
-            return send(ZPMsgProtos.MessageType.FEEDBACK.getNumber(), statusMsg.build());
+            return send(MessageType.FEEDBACK.getValue(), StatusMessageClient.ADAPTER.encode(statusMsg.build()));
         } catch (Throwable e) {
             Timber.w(e, "Exception while sending feedback message");
             return false;
@@ -354,14 +358,15 @@ public class WsConnection extends Connection {
                 return;
             }
 
-            Timber.v("message.msgType %s", message.getMsgType());
+            ServerMessageType messageType = ServerMessageType.fromValue(message.getMsgType());
+            Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 
-            if (message.getMsgType() == ZPMsgProtos.ServerMessageType.AUTHEN_LOGIN_RESULT.getNumber()) {
+            if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
                 postResult(message);
                 mServerPongBus.send(0L);
-            } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.KICK_OUT_USER.getNumber()) {
+            } else if (messageType == ServerMessageType.KICK_OUT_USER) {
                 needFeedback = false;
                 if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
                     mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
@@ -370,7 +375,7 @@ public class WsConnection extends Connection {
                     mNextConnectionState = NextState.DISCONNECT;
                 }
                 doDisconnect();
-            } else if (message.getMsgType() == ZPMsgProtos.ServerMessageType.PONG_CLIENT.getNumber()) {
+            } else if (messageType == ServerMessageType.PONG_CLIENT) {
                 needFeedback = false;
                 long currentTime = System.currentTimeMillis();
                 Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData)message).clientData);

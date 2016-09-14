@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.google.protobuf.AbstractMessage;
-
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,7 @@ import vn.com.vng.zalopay.data.ws.model.Event;
 
 /**
  * Created by AnhHieu on 6/14/16.
+ * Socket connection interface
  */
 public abstract class Connection {
 
@@ -55,7 +54,7 @@ public abstract class Connection {
 
     public abstract boolean send(int msgType, byte[] data);
 
-    public abstract boolean send(int msgType, AbstractMessage msgData);
+//    public abstract boolean send(int msgType, AbstractMessage msgData);
 
     public boolean isConnected() {
         return mState == State.Connected;

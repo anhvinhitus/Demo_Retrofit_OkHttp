@@ -249,7 +249,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     private void ensureInitializeNetworkConnection() {
         if (mWsConnection == null) {
             mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
-                    new MessageParser(userConfig, mGson), userConfig);
+                    new MessageParser(mGson), userConfig);
             mWsConnection.addReceiverListener(this);
         }
     }

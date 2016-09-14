@@ -113,16 +113,8 @@ public class NotificationData extends Event {
         this.embeddata = new NotificationEmbedData(embeddata);
     }
 
-    public long getNotificationId() {
-        return notificationId;
-    }
-
     public void setNotificationId(long notificationId) {
         this.notificationId = notificationId;
-    }
-
-    public int getTransType() {
-        return transtype;
     }
 
     public int getNotificationType() {
@@ -134,62 +126,46 @@ public class NotificationData extends Event {
     }
 
     public long getPackageid() {
-        long packetId = -1;
-        try {
-            if (embeddata.object.has("packageid")) {
-                packetId = embeddata.object.get("packageid").getAsLong();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return packetId;
+        return getLongValue("packageid");
     }
 
     public long getBundleid() {
-        long bundleid = -1;
-        try {
-            if (embeddata.object.has("bundleid")) {
-                bundleid = embeddata.object.get("bundleid").getAsLong();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return bundleid;
+        return getLongValue("bundleid");
     }
 
     public String getAvatar() {
-        String avatar = "";
-        try {
-            if (embeddata.object.has("avatar")) {
-                avatar = embeddata.object.get("avatar").getAsString();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return avatar;
+        return getStringValue("avatar");
     }
 
     public String getName() {
-        String name = "";
-        try {
-            if (embeddata.object.has("name")) {
-                name = embeddata.object.get("name").getAsString();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception : ");
-        }
-        return name;
+        return getStringValue("name");
     }
 
     public String getLiximessage() {
-        String liximessage = "";
+        return getStringValue("liximessage");
+    }
+
+    private String getStringValue(String propertyName) {
+        String value = "";
         try {
-            if (embeddata.object.has("liximessage")) {
-                liximessage = embeddata.object.get("liximessage").getAsString();
+            if (embeddata.object.has(propertyName)) {
+                value = embeddata.object.get(propertyName).getAsString();
             }
         } catch (Exception e) {
-            Timber.w(e, "exception : ");
+            Timber.w(e, "exception while getting value for property: %s", propertyName);
         }
-        return liximessage;
+        return value;
+    }
+
+    private long getLongValue(String propertyName) {
+        long value = -1;
+        try {
+            if (embeddata.object.has(propertyName)) {
+                value = embeddata.object.get(propertyName).getAsLong();
+            }
+        } catch (Exception e) {
+            Timber.w(e, "exception while getting value for property: %s", propertyName);
+        }
+        return value;
     }
 }
