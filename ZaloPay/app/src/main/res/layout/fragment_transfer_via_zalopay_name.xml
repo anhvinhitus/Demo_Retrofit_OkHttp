@@ -20,21 +20,23 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate_stroke"
+                android:layout_marginTop="16dp"
                 android:background="@color/separate" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:minHeight="64dp">
+                android:background="@color/white">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/textInputAccountName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/spacing.tiny"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
                     android:orientation="vertical"
                     app:errorEnabled="false">
 
@@ -50,6 +52,8 @@
                         android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
                         android:maxLength="@integer/max_length_zalopay_name"
                         android:maxLines="1"
+                        android:paddingBottom="@dimen/spacing.tiny"
+                        android:paddingTop="@dimen/spacing.tiny"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
             </FrameLayout>

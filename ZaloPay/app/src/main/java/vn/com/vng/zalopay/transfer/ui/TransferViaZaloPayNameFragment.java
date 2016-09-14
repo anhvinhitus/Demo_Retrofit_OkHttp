@@ -136,7 +136,10 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     @OnTextChanged(R.id.edtAccountName)
     public void onTextChanged(CharSequence s) {
 
+
         boolean isValid = isValidChanged(s.toString());
+
+        Timber.d("onTextChanged: s %s isValid %s", s, isValid);
 
         if (isValid) {
             showError(null);
