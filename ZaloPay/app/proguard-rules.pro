@@ -353,7 +353,12 @@
 
 
 #Payment SDK
--keep class vn.com.zalopay.wallet.** { *; }
+-keep class vn.com.zalopay.wallet.business.** { *; }
+-keep public class vn.com.zalopay.wallet.view.** { *; }
+-keep class vn.com.zalopay.wallet.utils.** { *; }
+-keep class vn.com.zalopay.wallet.merchant.* { *; }
+-keep class vn.com.zalopay.wallet.listener.* { *; }
+-keep class vn.com.zalopay.wallet.controller.* { *; }
 
 #-keep public class vn.com.zalopay.wallet.** {
 #  public protected *;
