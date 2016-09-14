@@ -301,6 +301,7 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
     @Override
     public void onPageFinished(String url) {
         Timber.d("onPageFinished url [%s]", url);
+        mCurrentUrl = url;
         showWebView();
     }
 
