@@ -86,9 +86,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="post"
-                    android:scheme="zalopay-1" />
+                <data android:scheme="zalopay-1" />
             </intent-filter>
         </activity>
 
@@ -136,8 +134,7 @@
             android:name="vn.com.vng.zalopay.webview.ui.activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"

@@ -36,12 +36,9 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
 
     public SplashScreenFragment() {
-        mLinks = null;
     }
 
     private boolean interstitialCanceled = false;
-
-    private String mLinks;
 
     @Inject
     SplashScreenPresenter presenter;
@@ -122,18 +119,30 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.getData() != null) {
             Uri data = intent.getData();
-            mLinks = String.valueOf(intent.getData());
-            Timber.d("handleDeepLinks: mLinks %s", mLinks);
-            if (this.mLinks.startsWith("zalopay-1://")) {
+            String link = String.valueOf(data);
+            Timber.d("handle deep links [%s]", link);
+
+            String scheme = data.getScheme();
+            String host = data.getHost();
+
+            if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
                 String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
                 String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
-                if (TextUtils.isEmpty(appid) || !TextUtils.isDigitsOnly(appid) || TextUtils.isEmpty(zptranstoken)) {
-                    showToast(R.string.exception_data_invalid);
-                } else {
-                    EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-                    eventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken));
-                    Timber.d("postSticky payment");
+
+                if (TextUtils.isEmpty(appid)) {
+                    return;
                 }
+                if (!TextUtils.isDigitsOnly(appid)) {
+                    return;
+                }
+
+                if (TextUtils.isEmpty(zptranstoken)) {
+                    return;
+                }
+
+                EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+                eventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken));
+                Timber.d("post sticky payment");
             }
         }
     }
