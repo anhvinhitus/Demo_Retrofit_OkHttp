@@ -20,39 +20,37 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.view.IWebView;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
-import static android.text.TextUtils.isEmpty;
+import android.text.TextUtils;
 
 /**
  * Created by longlv on 14/09/2016.
  *
  */
-public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IWebView> {
+public class WebViewPresenter implements IPresenter<IWebView> {
 
     private IWebView mView;
 
-    protected String mHost;
-    protected WebViewPayInfo mAppGamePayInfo;
+    private String mHost;
+    private WebViewPayInfo mAppGamePayInfo;
     private BalanceStore.Repository balanceRepository;
     private ZaloPayRepository zaloPayRepository;
     private TransactionStore.Repository transactionRepository;
     private Navigator mNavigator;
 
     @Inject
-    public WebViewPresenter(BalanceStore.Repository balanceRepository,
-                            ZaloPayRepository zaloPayRepository,
-                            TransactionStore.Repository transactionRepository,
-                            Navigator navigator) {
+    WebViewPresenter(BalanceStore.Repository balanceRepository,
+                     ZaloPayRepository zaloPayRepository,
+                     TransactionStore.Repository transactionRepository,
+                     Navigator navigator) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.transactionRepository = transactionRepository;
@@ -196,7 +194,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
             }
 
             private void showError(String text) {
-                if (isEmpty(text)) {
+                if (TextUtils.isEmpty(text)) {
                     return;
                 }
                 Toast.makeText(mView.getActivity(), text, Toast.LENGTH_SHORT).show();
