@@ -344,5 +344,6 @@
     <string name="appgame_waiting_loading">Đang tải trang.\nBạn có muốn tiếp tục đợi?</string>
     <string name="appgame_error_loading">Tải trang thất bại.Vui lòng thử lại sau ít phút!</string>
     <string name="load_data_error">Không tải được nội dung</string>
+    <string name="delete">Xoá</string>
     <!--WebView Resource End-->
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -90,6 +91,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
                         setAmount(amount);
                         setNote(message);
                         mPresenter.updateQRWithAmount(amount, message);
+                        getActivity().invalidateOptionsMenu();
                     }
 
                     break;
@@ -103,6 +105,13 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
         }
     }
 
+    private boolean hasAmount() {
+        if (getHeaderView() != null) {
+            return getHeaderView().hasAmount();
+        }
+        return false;
+    }
+
     private void setNote(String message) {
         if (getHeaderView() != null) {
             getHeaderView().setNote(message);
@@ -111,15 +120,24 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.receiver_money, menu);
+        Timber.d("onCreateOptionsMenu %s", hasAmount());
+        if (!hasAmount()) {
+            inflater.inflate(R.menu.receiver_money, menu);
+        } else {
+            inflater.inflate(R.menu.receiver_money_del, menu);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int itemId = item.getItemId();
         if (itemId == R.id.action_amount) {
             startActivityForResult(new Intent(getContext(), SetAmountActivity.class), 100);
+            return true;
+        } else if (itemId == R.id.action_amount_clear) {
+
+            setAmount(0);
+            getActivity().invalidateOptionsMenu();
             return true;
         }
 

@@ -216,8 +216,12 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         }
 
         public void setAmount(long amount) {
-            tvAmountView.setText(CurrencyUtil.spanFormatCurrency(amount, false));
+            tvAmountView.setText(amount <= 0 ? "" : CurrencyUtil.spanFormatCurrency(amount, false));
             tvAmountView.setVisibility(amount <= 0 ? View.GONE : View.VISIBLE);
+        }
+
+        public boolean hasAmount() {
+            return tvAmountView.getText().length() > 0;
         }
 
         public void setNote(String message) {

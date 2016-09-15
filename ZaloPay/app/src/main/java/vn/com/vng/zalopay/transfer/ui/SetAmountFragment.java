@@ -47,18 +47,22 @@ public class SetAmountFragment extends BaseFragment {
     @BindView(R.id.textInputMessage)
     TextInputLayout textInputMessageView;
 
+    @BindView(R.id.btnUpdate)
+    View mBtnContinueView;
+
     public long mAmount;
 
     @OnClick(R.id.btnUpdate)
     public void onClickUpdate() {
 
-
         if (mAmount < Constants.MIN_TRANSFER_MONEY) {
+            textInputAmountView.requestFocus();
             textInputAmountView.setError(String.format(getString(R.string.min_money), CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY)));
             return;
         }
 
         if (mAmount > Constants.MAX_TRANSFER_MONEY) {
+            textInputAmountView.requestFocus();
             textInputAmountView.setError(String.format(getString(R.string.max_money), CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY)));
             return;
         }
@@ -95,10 +99,11 @@ public class SetAmountFragment extends BaseFragment {
                 }
             });
         }
+        mBtnContinueView.setEnabled(false);
     }
 
     @OnTextChanged(R.id.edtAmount)
     public void onTextChanged(CharSequence s) {
-        textInputAmountView.setError("");
+        mBtnContinueView.setEnabled(s.length() > 0);
     }
 }

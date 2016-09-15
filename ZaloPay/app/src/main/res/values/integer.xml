@@ -5,4 +5,5 @@
     <integer name="max_length_message">500</integer>
     <integer name="max_length_message_transfer">36</integer>
     <integer name="max_length_zalopay_name">24</integer>
+    <integer name="max_length_edittext_money">13</integer>
 </resources>
