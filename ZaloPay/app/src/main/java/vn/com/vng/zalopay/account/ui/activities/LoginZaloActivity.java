@@ -73,7 +73,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
             return;
         }
 
-        showDialog(message.content, message.messageType, message.title);
+        showCustomDialog(message.content, message.messageType, message.title, null);
     }
 
     @Override
