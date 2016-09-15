@@ -72,8 +72,6 @@ public interface ApplicationComponent {
 
     BundleService bundleService();
 
-    /*ZaloProfilePreferences profilePreferences();*/
-
     PassportRepository passportRepository();
 
     LocalResourceRepository localResourceRepository();

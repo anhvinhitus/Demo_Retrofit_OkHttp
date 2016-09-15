@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 

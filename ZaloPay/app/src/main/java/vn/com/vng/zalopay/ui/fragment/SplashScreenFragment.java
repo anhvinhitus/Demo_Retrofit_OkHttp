@@ -43,6 +43,9 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Inject
     SplashScreenPresenter presenter;
 
+    @Inject
+    EventBus mEventBus;
+
     @Override
     protected void setupFragmentComponent() {
         AndroidApplication.instance().getAppComponent().inject(this);
@@ -140,8 +143,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
                     return;
                 }
 
-                EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-                eventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken));
+                mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken));
                 Timber.d("post sticky payment");
             }
         }
