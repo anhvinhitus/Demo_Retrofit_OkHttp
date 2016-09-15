@@ -41,6 +41,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -238,7 +240,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         if (this instanceof LoginZaloActivity) {
-            showDialog(eventMessage, SweetAlertDialog.NORMAL_TYPE, getString(R.string.accept));
+            showCustomDialog(eventMessage, SweetAlertDialog.NORMAL_TYPE, getString(R.string.txt_close), null);
         } else {
             getAppComponent().applicationSession().setMessageAtLogin(eventMessage);
             getAppComponent().applicationSession().clearUserSession();
@@ -252,7 +254,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_zpw_account_suspended);
             getAppComponent().applicationSession().clearUserSession();
         } else {
-            showDialog(getString(R.string.exception_zpw_account_suspended), SweetAlertDialog.ERROR_TYPE, getString(R.string.accept));
+            showWarningDialog(getString(R.string.exception_zpw_account_suspended), getString(R.string.txt_close), null);
         }
     }
 
@@ -286,11 +288,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void showCustomDialog(String message, int dialogType, String cancelBtnText, final ZPWOnEventDialogListener listener) {
+        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, dialogType, listener);
+    }
 
-    protected void showDialog(String message, int alertType, String confirmText) {
-        SweetAlertDialog alertDialog = new SweetAlertDialog(this, alertType, R.style.alert_dialog);
-        alertDialog.setContentText(message);
-        alertDialog.setConfirmText(confirmText);
-        alertDialog.show();
+    public void showWarningDialog(String message, String cancelBtnText, final ZPWOnEventDialogListener cancelListener) {
+        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, SweetAlertDialog.WARNING_TYPE, cancelListener);
     }
 }
