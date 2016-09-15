@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -145,7 +146,8 @@ public abstract class BaseFragment extends Fragment {
         });
     }
 
-    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retryListener) {
+    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener,
+                                String retryBtnText, final SweetAlertDialog.OnSweetClickListener retryListener) {
         new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE, R.style.alert_dialog)
                 .setContentText(retryMessage)
                 .setCancelText(cancelBtnText)
@@ -155,16 +157,9 @@ public abstract class BaseFragment extends Fragment {
                 .show();
     }
 
-    public void showDialog(String title, String message, String cancelText, String confirmText, SweetAlertDialog.OnSweetClickListener confirmListener, int dialogType) {
-        new SweetAlertDialog(getContext(), dialogType, R.style.alert_dialog)
-                .setTitleText(title)
-                .setContentText(message)
-                .setCancelText(cancelText)
-                .setConfirmText(confirmText)
-                .setConfirmClickListener(confirmListener)
-                .show();
+    public void showConfirmDialog(String pMessage, String pOKButton, String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {
+        DialogManager.showSweetDialogConfirm(getActivity(), pMessage, pOKButton, pCancelButton, callback);
     }
-
 
     public UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();

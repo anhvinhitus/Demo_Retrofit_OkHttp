@@ -38,11 +38,10 @@ import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by AnhHieu on 5/10/16.
- *
  */
 public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
@@ -322,20 +321,21 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     private void showConfirmRemoveSaveCard() {
-        showDialog(getString(R.string.txt_link_card_remove_link),
-                getString(R.string.txt_confirm_remove_card),
-                getString(R.string.btn_cancel),
+        super.showConfirmDialog(getString(R.string.txt_confirm_remove_card),
                 getString(R.string.btn_confirm),
-                new SweetAlertDialog.OnSweetClickListener() {
+                getString(R.string.btn_cancel),
+                new ZPWOnEventConfirmDialogListener() {
                     @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
+                    public void onOKevent() {
                         presenter.removeLinkCard(mCurrentBankCard);
                         ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
                         mBottomSheetDialog.dismiss();
                     }
-                },
-                SweetAlertDialog.WARNING_TYPE);
+
+                    @Override
+                    public void onCancelEvent() {
+                    }
+                });
     }
 
     private void showBottomSheetDialog() {

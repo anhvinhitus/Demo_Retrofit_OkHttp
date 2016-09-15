@@ -31,7 +31,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -257,19 +257,21 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     private void showConfirmUpdateZaloPayName() {
-        showDialog(getString(R.string.notification),
-                getString(R.string.warning_update_zalopay_name),
-                getString(R.string.cancel),
+        super.showConfirmDialog(getString(R.string.warning_update_zalopay_name),
                 getString(R.string.accept),
-                new SweetAlertDialog.OnSweetClickListener() {
+                getString(R.string.cancel),
+                new ZPWOnEventConfirmDialogListener() {
                     @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    public void onOKevent() {
                         presenter.updateProfile(passCode.getText(), edtPhone.getString(), inputZaloPayName.getText());
                         ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_VALID);
-                        sweetAlertDialog.dismiss();
                     }
-                },
-                SweetAlertDialog.NORMAL_TYPE);
+
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+                });
     }
 
     @Override

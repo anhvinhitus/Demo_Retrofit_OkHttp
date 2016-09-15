@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.ui.widget.ZPTextInputLayout;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by AnhHieu on 8/12/16.
@@ -125,15 +125,20 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         }
 
         if (mInputAccountNameView.isValid()) {
-            showDialog(getString(R.string.notification), getString(R.string.confirm_update_account_name),
+            super.showConfirmDialog(getString(R.string.confirm_update_account_name),
+                    getString(R.string.accept),
                     getString(R.string.cancel),
-                    getString(R.string.accept), new SweetAlertDialog.OnSweetClickListener() {
+                    new ZPWOnEventConfirmDialogListener() {
                         @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        public void onOKevent() {
                             presenter.updateAccountName(accountName);
-                            sweetAlertDialog.dismiss();
                         }
-                    }, SweetAlertDialog.NORMAL_TYPE);
+
+                        @Override
+                        public void onCancelEvent() {
+
+                        }
+                    });
 
         } else if (mInputAccountNameView.isUnknown()) {
             presenter.existAccountName(accountName);
