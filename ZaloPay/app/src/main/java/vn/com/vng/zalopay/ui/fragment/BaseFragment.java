@@ -146,15 +146,8 @@ public abstract class BaseFragment extends Fragment {
         });
     }
 
-    public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener,
-                                String retryBtnText, final SweetAlertDialog.OnSweetClickListener retryListener) {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE, R.style.alert_dialog)
-                .setContentText(retryMessage)
-                .setCancelText(cancelBtnText)
-                .setCancelClickListener(cancelListener)
-                .setConfirmText(retryBtnText)
-                .setConfirmClickListener(retryListener)
-                .show();
+    public void showRetryDialog(String retryMessage, final ZPWOnEventConfirmDialogListener retryListener) {
+        DialogManager.showSweetDialogRetry(getActivity(), retryMessage, retryListener);
     }
 
     public void showConfirmDialog(String pMessage, String pOKButton, String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {

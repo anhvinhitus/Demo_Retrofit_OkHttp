@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -241,21 +242,18 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         hideLoading();
         hideRefreshView();
         if (!NetworkHelper.isNetworkAvailable(getContext())) {
-            SweetAlertDialog.OnSweetClickListener cancelListener = new SweetAlertDialog.OnSweetClickListener() {
+            ZPWOnEventConfirmDialogListener retryListener = new ZPWOnEventConfirmDialogListener() {
                 @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    sweetAlertDialog.cancel();
-                }
-            };
-            SweetAlertDialog.OnSweetClickListener retryListener = new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                public void onOKevent() {
                     showRefreshView();
                     presenter.retrieveZaloFriendsAsNeeded();
-                    sweetAlertDialog.cancel();
+                }
+
+                @Override
+                public void onCancelEvent() {
                 }
             };
-            showRetryDialog(getString(R.string.exception_no_connection_try_again), getString(R.string.txt_close), cancelListener, getString(R.string.txt_retry), retryListener);
+            super.showRetryDialog(getString(R.string.exception_no_connection_try_again), retryListener);
         } else {
             showErrorDialog(getString(R.string.get_zalo_contact_error), getString(R.string.txt_close), null);
         }
