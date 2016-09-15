@@ -255,14 +255,14 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void startGamePayWebActivity(AppResource appResource) {
+    public void startWebViewActivity(AppResource appResource) {
         if (appResource == null) {
             return;
         }
         mZaloPayIAPRepository.getMerchantUserInfo(appResource.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GamePaySubscribe(appResource));
+                .subscribe(new MerchantUserInfoSubscribe(appResource));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -303,10 +303,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     }
 
-    private class GamePaySubscribe extends DefaultSubscriber<MerchantUserInfo> {
+    private class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInfo> {
         private AppResource mAppResource;
 
-        public GamePaySubscribe(AppResource appResource) {
+        public MerchantUserInfoSubscribe(AppResource appResource) {
             this.mAppResource = appResource;
         }
 
