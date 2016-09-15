@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.webview.ui.fragment;
+package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,9 +18,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
-import vn.com.vng.zalopay.webview.ui.activity.WebViewActivity;
-import vn.com.vng.zalopay.webview.ui.presenter.WebViewPresenter;
-import vn.com.vng.zalopay.webview.ui.view.IWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor.IWebViewListener;

@@ -35,7 +35,8 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.webview.ui.activity.WebViewActivity;
+import vn.com.vng.zalopay.webview.WebViewConstants;
+import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -406,8 +407,8 @@ public class Navigator implements INavigator {
 
     public void startWebViewActivity(Context context, WebViewPayInfo appGamePayInfo, String host) {
         Intent intent = new Intent(context, WebViewActivity.class);
-        intent.putExtra("appGamePayInfo", Parcels.wrap(appGamePayInfo));
-        intent.putExtra("webUrl", host);
+        intent.putExtra(WebViewConstants.APPGAMEPAYINFO, Parcels.wrap(appGamePayInfo));
+        intent.putExtra(WebViewConstants.WEBURL, host);
         context.startActivity(intent);
     }
 

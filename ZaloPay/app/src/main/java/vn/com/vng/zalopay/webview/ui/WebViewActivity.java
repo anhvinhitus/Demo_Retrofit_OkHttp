@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.webview.ui.activity;
+package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.webview.ui.fragment.WebViewFragment;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 

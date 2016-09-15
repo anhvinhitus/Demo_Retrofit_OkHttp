@@ -1,10 +1,9 @@
-package vn.com.vng.zalopay.webview.ui.presenter;
+package vn.com.vng.zalopay.webview.ui;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import org.parceler.Parcels;
 
@@ -21,29 +20,28 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
-import vn.com.vng.zalopay.webview.ui.view.IWebView;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
+import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-
-import android.text.TextUtils;
 
 /**
  * Created by longlv on 14/09/2016.
  *
  */
-public class WebViewPresenter implements IPresenter<IWebView> {
+public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IWebView> {
 
     private IWebView mView;
 
     private String mHost;
     private WebViewPayInfo mAppGamePayInfo;
-    private BalanceStore.Repository balanceRepository;
-    private ZaloPayRepository zaloPayRepository;
-    private TransactionStore.Repository transactionRepository;
+    private BalanceStore.Repository mBalanceRepository;
+    private ZaloPayRepository mZaloPayRepository;
+    private TransactionStore.Repository mTransactionRepository;
     private Navigator mNavigator;
 
     @Inject
@@ -51,10 +49,10 @@ public class WebViewPresenter implements IPresenter<IWebView> {
                      ZaloPayRepository zaloPayRepository,
                      TransactionStore.Repository transactionRepository,
                      Navigator navigator) {
-        this.balanceRepository = balanceRepository;
-        this.zaloPayRepository = zaloPayRepository;
-        this.transactionRepository = transactionRepository;
-        mNavigator = navigator;
+        this.mBalanceRepository = balanceRepository;
+        this.mZaloPayRepository = zaloPayRepository;
+        this.mTransactionRepository = transactionRepository;
+        this.mNavigator = navigator;
     }
 
     public void initData(Bundle arguments) {
@@ -62,8 +60,8 @@ public class WebViewPresenter implements IPresenter<IWebView> {
             return;
         }
 
-        mHost = arguments.getString("webUrl");
-        mAppGamePayInfo = Parcels.unwrap(arguments.getParcelable("appGamePayInfo"));
+        mHost = arguments.getString(WebViewConstants.WEBURL);
+        mAppGamePayInfo = Parcels.unwrap(arguments.getParcelable(WebViewConstants.APPGAMEPAYINFO));
     }
 
 
@@ -103,7 +101,7 @@ public class WebViewPresenter implements IPresenter<IWebView> {
                 TextUtils.isEmpty(appuser) ||
                 TextUtils.isEmpty(amount) ||
                 TextUtils.isEmpty(mac)) {
-            mView.showInputErrorDialog();
+            showInputErrorDialog();
             return;
         }
 
@@ -121,8 +119,11 @@ public class WebViewPresenter implements IPresenter<IWebView> {
     }
 
     public void pay(Order order) {
-        Timber.d("pay order [%s]", order.toString());
-        PaymentWrapper paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
+        Timber.d("pay order [%s] view [%s]", order.toString(), mView);
+        if (mView == null || mView.getActivity() == null) {
+            return;
+        }
+        PaymentWrapper paymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -150,14 +151,14 @@ public class WebViewPresenter implements IPresenter<IWebView> {
             public void onResponseError(PaymentError paymentError) {
                 Timber.d("onResponseError");
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showError(mView.getActivity().getString(R.string.exception_no_connection_try_again));
+                    showError(R.string.exception_no_connection_try_again);
                 }
             }
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 Timber.d("onResponseSuccess zpPaymentResult [%s]", zpPaymentResult);
-                if (zpPaymentResult == null) {
+                if (zpPaymentResult == null || mView == null || mAppGamePayInfo == null) {
                     return;
                 }
                 mAppGamePayInfo.setApptransid(zpPaymentResult.paymentInfo.appTransID);
@@ -184,29 +185,46 @@ public class WebViewPresenter implements IPresenter<IWebView> {
             @Override
             public void onAppError(String msg) {
                 Timber.d("onAppError msg [%s]", msg);
-                showError(mView.getActivity().getString(R.string.exception_generic));
+                showError(R.string.exception_generic);
             }
 
             @Override
             public void onNotEnoughMoney() {
+                if (mNavigator == null || mView == null || mView.getActivity() == null) {
+                    return;
+                }
                 Timber.d("onNotEnoughMoney activity [%s]", mView.getActivity());
                 mNavigator.startDepositActivity(mView.getActivity());
             }
 
             private void showError(String text) {
-                if (TextUtils.isEmpty(text)) {
+                if (TextUtils.isEmpty(text) || mView == null) {
                     return;
                 }
-                Toast.makeText(mView.getActivity(), text, Toast.LENGTH_SHORT).show();
+                mView.showError(text);
+            }
+
+            private void showError(int stringResourceId) {
+                if (mView == null || mView.getActivity() == null) {
+                    return;
+                }
+                showError(mView.getActivity().getString(stringResourceId));
             }
 
             private void onSessionExpired() {
-                showError(mView.getActivity().getString(R.string.exception_token_expired_message));
+                showError(R.string.exception_token_expired_message);
                 AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
             }
         });
 
         paymentWrapper.payWithOrder(order);
+    }
+
+    private void showInputErrorDialog() {
+        if (mView == null) {
+            return;
+        }
+        mView.showInputErrorDialog();
     }
 
     @Override

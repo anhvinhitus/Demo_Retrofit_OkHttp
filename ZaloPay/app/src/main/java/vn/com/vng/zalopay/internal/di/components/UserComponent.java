@@ -25,7 +25,7 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.webview.ui.fragment.WebViewFragment;
+import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
