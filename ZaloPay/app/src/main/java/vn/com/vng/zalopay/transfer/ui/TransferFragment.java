@@ -216,9 +216,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 }
                 edtTransferMsg.setText(s.subSequence(0, 36));
                 edtTransferMsg.setSelection(edtTransferMsg.getText().length());
-                showDialog(null, getString(R.string.transfer_message_maxlength),
-                        getString(R.string.txt_close),
-                        null, null, SweetAlertDialog.WARNING_TYPE);
+                showWarningDialog(getString(R.string.transfer_message_maxlength), getString(R.string.txt_close), null);
             }
 
             @Override
