@@ -43,7 +43,8 @@
                     android:maxLength="@integer/max_length_edittext_money"
                     android:maxLines="1"
                     android:minHeight="44dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColorHint="@color/hint" />
             </android.support.design.widget.TextInputLayout>
 
             <View
@@ -73,7 +74,8 @@
                     android:maxLength="36"
                     android:maxLines="2"
                     android:minHeight="44dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColorHint="@color/hint" />
 
             </android.support.design.widget.TextInputLayout>
 

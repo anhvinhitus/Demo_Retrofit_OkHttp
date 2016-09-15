@@ -137,6 +137,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
         } else if (itemId == R.id.action_amount_clear) {
 
             setAmount(0);
+            setNote("");
             getActivity().invalidateOptionsMenu();
             return true;
         }
