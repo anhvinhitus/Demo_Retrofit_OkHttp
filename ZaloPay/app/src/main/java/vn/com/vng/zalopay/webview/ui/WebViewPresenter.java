@@ -131,7 +131,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
         }, new PaymentWrapper.IResponseListener() {
             @Override
             public void onParameterError(String param) {
-                Timber.d("onParameterError");
+                Timber.d("onParameterError param [%s]", param);
                 if ("order".equalsIgnoreCase(param)) {
                     showError(mView.getActivity().getString(R.string.order_invalid));
                 } else if ("uid".equalsIgnoreCase(param)) {
@@ -149,7 +149,7 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
 
             @Override
             public void onResponseError(PaymentError paymentError) {
-                Timber.d("onResponseError");
+                Timber.d("onResponseError paymentError [%s]", paymentError.value());
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     showError(R.string.exception_no_connection_try_again);
                 }
@@ -190,10 +190,10 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
 
             @Override
             public void onNotEnoughMoney() {
+                Timber.d("onNotEnoughMoney");
                 if (mNavigator == null || mView == null || mView.getActivity() == null) {
                     return;
                 }
-                Timber.d("onNotEnoughMoney activity [%s]", mView.getActivity());
                 mNavigator.startDepositActivity(mView.getActivity());
             }
 
