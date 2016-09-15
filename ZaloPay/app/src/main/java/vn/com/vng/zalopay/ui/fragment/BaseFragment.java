@@ -125,25 +125,11 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showErrorDialog(String message, String cancelText, final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, cancelText, SweetAlertDialog.WARNING_TYPE, new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                if (cancelListener != null) {
-                    cancelListener.onOKevent();
-                }
-            }
-        });
+        DialogManager.showSweetDialogCustom(getActivity(), message, cancelText, SweetAlertDialog.ERROR_TYPE, cancelListener);
     }
 
     public void showWarningDialog(String message, String cancelBtnText, final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, SweetAlertDialog.WARNING_TYPE, new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                if (cancelListener != null) {
-                    cancelListener.onOKevent();
-                }
-            }
-        });
+        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, SweetAlertDialog.WARNING_TYPE, cancelListener);
     }
 
     public void showRetryDialog(String retryMessage, final ZPWOnEventConfirmDialogListener retryListener) {
