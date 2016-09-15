@@ -165,7 +165,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     @Override
     public void onReceiverEvent(Event event) {
         if (event instanceof AuthenticationData) {
-            AuthenticationData authenticationData = (AuthenticationData)event;
+            AuthenticationData authenticationData = (AuthenticationData) event;
             if (authenticationData.code != NetworkError.SUCCESSFUL) {
                 if (authenticationData.code == NetworkError.UM_TOKEN_NOT_FOUND ||
                         authenticationData.code == NetworkError.UM_TOKEN_EXPIRE ||
@@ -213,8 +213,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
-        Timber.d("on Notification updated %s", event.read);
-        if (!event.read) {
+        Timber.d("on Notification updated %s", event.isRead());
+        if (!event.isRead()) {
             notificationHelper.showNotificationSystem();
         }
     }

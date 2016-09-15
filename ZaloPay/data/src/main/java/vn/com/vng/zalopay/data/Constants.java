@@ -13,8 +13,6 @@ public class Constants {
     public static final String MANIFEST_RESOURCE_INTERNAL_VERSION = "manifest_resource_internal_version";
     public static final String MANIFEST_RESOURCE_EXTERNAL_VERSION = "manifest_resource_internal_version";
 
-    public static final String MANIFEST_TOTAL_NOTIFICATION = "manifest_total_notify";
-
     public static final String ZPTRANSTOKEN = "zptranstoken";
     public static final String APPID = "appid";
 

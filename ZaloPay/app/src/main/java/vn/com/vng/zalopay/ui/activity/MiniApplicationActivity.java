@@ -260,7 +260,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     private void shouldMarkAllNotify() {
         if (ModuleName.NOTIFICATIONS.equals(getMainComponentName())) {
-            notificationRepository.markReadAllNotify()
+            notificationRepository.markViewAllNotify()
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());
         }

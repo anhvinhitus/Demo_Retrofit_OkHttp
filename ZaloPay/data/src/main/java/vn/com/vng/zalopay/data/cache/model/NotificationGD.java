@@ -13,7 +13,7 @@ public class NotificationGD {
     private String message;
     private String userid;
     private String destuserid;
-    private Boolean read;
+    private Integer notificationstate;
     private Integer notificationtype;
     private Long mtaid;
     private Long mtuid;
@@ -26,7 +26,7 @@ public class NotificationGD {
         this.id = id;
     }
 
-    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Boolean read, Integer notificationtype, Long mtaid, Long mtuid, String embeddata) {
+    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Integer notificationstate, Integer notificationtype, Long mtaid, Long mtuid, String embeddata) {
         this.id = id;
         this.transid = transid;
         this.appid = appid;
@@ -34,7 +34,7 @@ public class NotificationGD {
         this.message = message;
         this.userid = userid;
         this.destuserid = destuserid;
-        this.read = read;
+        this.notificationstate = notificationstate;
         this.notificationtype = notificationtype;
         this.mtaid = mtaid;
         this.mtuid = mtuid;
@@ -97,12 +97,12 @@ public class NotificationGD {
         this.destuserid = destuserid;
     }
 
-    public Boolean getRead() {
-        return read;
+    public Integer getNotificationstate() {
+        return notificationstate;
     }
 
-    public void setRead(Boolean read) {
-        this.read = read;
+    public void setNotificationstate(Integer notificationstate) {
+        this.notificationstate = notificationstate;
     }
 
     public Integer getNotificationtype() {

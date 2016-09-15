@@ -19,4 +19,20 @@ public class Enums {
             return mId;
         }
     }
+
+    public enum NotificationState {
+        UNREAD(1),
+        VIEW(2),
+        READ(3);
+
+        private int mId;
+
+        NotificationState(int id) {
+            this.mId = id;
+        }
+
+        public int getId() {
+            return mId;
+        }
+    }
 }

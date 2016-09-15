@@ -23,7 +23,7 @@ import vn.com.vng.zalopay.domain.model.User;
 public class NotificationRepository implements NotificationStore.Repository {
 
     private final NotificationStore.LocalStorage localStorage;
-    private final EventBus eventBus;
+    private final EventBus mEventBus;
     private final RxBus mRxBus;
     private final NotificationStore.RequestService mRequestService;
     private final User mCurrentUser;
@@ -34,7 +34,7 @@ public class NotificationRepository implements NotificationStore.Repository {
                                   NotificationStore.RequestService requestService,
                                   User currentUser) {
         this.localStorage = localStorage;
-        this.eventBus = eventBus;
+        this.mEventBus = eventBus;
         this.mRxBus = rxBus;
         mRequestService = requestService;
         mCurrentUser = currentUser;
@@ -53,7 +53,6 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public void markAsRead(long nId) {
         localStorage.markAsRead(nId);
-        // eventBus.post(new ReadNotifyEvent());
     }
 
 
@@ -66,17 +65,13 @@ public class NotificationRepository implements NotificationStore.Repository {
 
             long rowId = localStorage.putSync(notify);
 
-            Timber.d("put notification rowId [%s] read [%s]", rowId, notify.read);
+            Timber.d("put notification rowId [%s] read [%s]", rowId, notify.notificationstate);
 
             if (rowId >= 0) {
-                if (!notify.read) {
-                    localStorage.increaseTotalNotify();
-                }
-
-                eventBus.post(new NotificationChangeEvent(notify.read));
+                mEventBus.post(new NotificationChangeEvent(notify.notificationstate));
 
                 if (mRxBus.hasObservers()) {
-                    mRxBus.send(new NotificationChangeEvent(notify.read));
+                    mRxBus.send(new NotificationChangeEvent(notify.notificationstate));
                 }
             }
 
@@ -90,18 +85,10 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> markReadAllNotify() {
+    public Observable<Boolean> markViewAllNotify() {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.markReadAllNotify();
-            eventBus.post(new ReadNotifyEvent());
-            return Boolean.TRUE;
-        });
-    }
-
-    @Override
-    public Observable<Boolean> increaseTotalNotify() {
-        return ObservableHelper.makeObservable(() -> {
-            localStorage.increaseTotalNotify();
+            localStorage.markViewAllNotify();
+            mEventBus.post(new ReadNotifyEvent());
             return Boolean.TRUE;
         });
     }

@@ -29,9 +29,7 @@ public interface NotificationStore {
 
         int totalNotificationUnRead();
 
-        void markReadAllNotify();
-
-        void increaseTotalNotify();
+        void markViewAllNotify();
 
         NotificationData get(long notifyId);
 
@@ -43,9 +41,10 @@ public interface NotificationStore {
     interface RequestService {
         /**
          * Send notification message to another zalopay user
-         * @param uid zalopayid of current user
+         *
+         * @param uid         zalopayid of current user
          * @param accesstoken access token of current user
-         * @param receiverid zalopayid of received user
+         * @param receiverid  zalopayid of received user
          * @param embededdata stringify of json data sent to another user
          * @return basic response
          */
@@ -67,9 +66,7 @@ public interface NotificationStore {
 
         Observable<NotificationData> getNotify(long id);
 
-        Observable<Boolean> markReadAllNotify();
-
-        Observable<Boolean> increaseTotalNotify();
+        Observable<Boolean> markViewAllNotify();
 
         Observable<Boolean> removeNotification(long id);
 

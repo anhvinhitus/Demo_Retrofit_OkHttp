@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.DonateMoneyEvent;
@@ -170,13 +171,16 @@ public class NotificationHelper {
     }
 
     private void shouldMarkRead(NotificationData notify) {
+
+        notify.setNotificationState(Enums.NotificationState.UNREAD.getId());
+
         if (NotificationType.shouldMarkRead(notify.notificationtype)) {
-            notify.setRead(true);
+            notify.setNotificationState(Enums.NotificationState.READ.getId());
         }
 
         if (notify.notificationtype == NotificationType.MONEY_TRANSFER
                 && mUser.zaloPayId.equals(notify.userid)) {
-            notify.setRead(true);
+            notify.setNotificationState(Enums.NotificationState.READ.getId());
         }
     }
 
@@ -244,6 +248,9 @@ public class NotificationHelper {
     }
 
     private void showNotificationSystem(int numberUnread) {
+
+        Timber.d("showNotificationSystem numberUnread %s", numberUnread);
+
         if (numberUnread == 0) {
             return;
         }

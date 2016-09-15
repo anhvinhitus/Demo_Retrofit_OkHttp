@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.domain.Enums;
 
 /**
  * Created by AnhHieu on 6/20/16.
@@ -39,7 +40,7 @@ public class NotificationData extends Event {
     public String destuserid;
 
     @Expose(deserialize = false, serialize = false)
-    public boolean read;
+    public int notificationstate;
 
     @Expose(deserialize = false, serialize = false)
     public long notificationId;
@@ -94,11 +95,11 @@ public class NotificationData extends Event {
     }
 
     public boolean isRead() {
-        return read;
+        return notificationstate == Enums.NotificationState.READ.getId();
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setNotificationState(int state) {
+        this.notificationstate = state;
     }
 
     public JsonObject getEmbeddata() {
@@ -168,4 +169,6 @@ public class NotificationData extends Event {
         }
         return value;
     }
+
+
 }

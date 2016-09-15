@@ -26,6 +26,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
@@ -138,7 +139,8 @@ public class ReactNotificationNativeModule extends ReactContextBaseJavaModule im
         }
 
         WritableMap item = Arguments.createMap();
-        item.putBoolean("unread", !entity.read);
+        item.putBoolean("unread", !entity.isRead());
+        item.putInt("notificationstate", entity.notificationstate);
 
         item.putString("message", entity.message);
         item.putDouble("timestamp", entity.timestamp);
