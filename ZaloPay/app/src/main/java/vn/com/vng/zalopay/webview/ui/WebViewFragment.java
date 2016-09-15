@@ -192,12 +192,7 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
 
     @Override
     public void showError(String message) {
-        showErrorDialog(message, getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.dismiss();
-            }
-        });
+        showErrorDialog(message, getString(R.string.txt_close), null);
     }
 
     public void hideError() {

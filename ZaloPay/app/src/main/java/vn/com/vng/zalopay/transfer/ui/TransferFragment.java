@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -100,15 +101,18 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     @Override
-    public void showErrorDialogThenClose(String content, String title) {
-        showErrorDialog(content, title, new SweetAlertDialog.OnSweetClickListener() {
-
+    public void showDialogThenClose(String message, String cancelText, int dialogType) {
+        ZPWOnEventDialogListener onClickCancel = new ZPWOnEventDialogListener() {
             @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.cancel();
+            public void onOKevent() {
                 getActivity().finish();
             }
-        });
+        };
+        if (dialogType == SweetAlertDialog.ERROR_TYPE) {
+            super.showErrorDialog(message, cancelText, onClickCancel);
+        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
+            super.showWarningDialog(message, cancelText, onClickCancel);
+        }
     }
 
     @Override
@@ -281,7 +285,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void onTokenInvalid() {
     }
-
 
     @Override
     public void showLoading() {

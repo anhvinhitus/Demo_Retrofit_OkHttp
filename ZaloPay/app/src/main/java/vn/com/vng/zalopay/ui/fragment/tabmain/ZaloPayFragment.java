@@ -237,7 +237,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 navigator.startPaymentApplicationActivity(getActivity(), appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
-            presenter.startGamePayWebActivity(app);
+            presenter.startWebViewActivity(app);
         } else {
             showToast(getString(R.string.need_update_to_use));
         }
@@ -338,13 +338,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         if (TextUtils.isEmpty(error)) {
             return;
         }
-        showErrorDialog(error, getString(R.string.txt_close), new SweetAlertDialog.OnSweetClickListener() {
-
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.cancel();
-            }
-        });
+        showErrorDialog(error, getString(R.string.txt_close), null);
     }
 
     @Override

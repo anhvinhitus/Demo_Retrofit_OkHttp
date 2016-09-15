@@ -102,11 +102,12 @@ public class NetworkError {
     public static final int APPTRANSID_INVALID = -92;
     public static final int TRANSTYPE_AMOUNT_INVALID = -94;
     public static final int CARD_ALREADY_MAP = -95;
+    public static final int USER_NOT_EXIST = -116;
+    public static final int RECEIVER_IS_LOCKED = -131;
     public static final int SERVER_MAINTAIN = -999;
     public static final int INVITATION_CODE_ERROR = 24;
     public static final int INVITATION_CODE_INVALID = -142;
     public static final int USER_EXISTED = -150;
-    public static final int USER_NOT_EXISTED = -149;
     public static final int OLD_PIN_NOT_MATCH = -157;
     public static final int WAITING_APPROVE_PROFILE_LEVEL_3 = -169;
     public static final int INCORRECT_PIN = -117;
@@ -316,9 +317,6 @@ public class NetworkError {
                 return context.getString(R.string.exception_invitation_code_error);
             case INVITATION_CODE_INVALID:
                 return context.getString(R.string.exception_invitation_code_invalid);
-            case USER_NOT_EXISTED:
-                return context.getString(R.string.exception_user_not_existed);
-
         }
         return null;
     }

@@ -24,9 +24,11 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -44,6 +46,7 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -97,15 +100,15 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     return;
                 }
                 if ("order".equalsIgnoreCase(param)) {
-                    mView.showError(mView.getContext().getString(R.string.order_invalid));
+                    showError(mView.getContext().getString(R.string.order_invalid));
                 } else if ("uid".equalsIgnoreCase(param)) {
-                    mView.showError(mView.getContext().getString(R.string.user_invalid));
+                    showError(mView.getContext().getString(R.string.user_invalid));
                 } else if ("token".equalsIgnoreCase(param)) {
-                    mView.showError(mView.getContext().getString(R.string.order_invalid));
+                    showError(mView.getContext().getString(R.string.order_invalid));
                 } else if (!TextUtils.isEmpty(param)) {
-                    mView.showError(param);
+                    showError(param);
                 }
-                mView.hideLoading();
+                hideLoading();
             }
 
             @Override
@@ -113,7 +116,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 if (mView == null) {
                     return;
                 }
-                mView.hideLoading();
+                hideLoading();
             }
 
             @Override
@@ -160,9 +163,9 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     return;
                 }
                 if (mView.getContext() != null) {
-                    mView.showError(mView.getContext().getString(R.string.exception_generic));
+                    showError(mView.getContext().getString(R.string.exception_generic));
                 }
-                mView.hideLoading();
+                hideLoading();
             }
 
             @Override
@@ -186,51 +189,51 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         @Override
         public void onCompleted() {
+            hideLoading();
         }
 
         @Override
         public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
             TransferPresenter.this.onGetMappingUserError(e);
         }
     }
 
+    private void onGetMappingUserSuccess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
+        if (userMapZaloAndZaloPay == null || mView == null) {
+            return;
+        }
+
+        mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
+        mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
+        mView.updateReceiverInfo(mTransaction.phoneNumber);
+
+        checkShowBtnContinue();
+    }
+
     private void onGetMappingUserError(Throwable e) {
+        if (ResponseHelper.shouldIgnoreError(e)) {
+            // simply ignore the error because it is handled from event subscribers
+            return;
+        }
 
         if (mView == null) {
             return;
         }
-
-        mView.showErrorDialogThenClose(mView.getContext().getString(R.string.get_mapping_zalo_zalopay_error),
-                mView.getContext().getString(R.string.txt_close));
-    }
-
-    private void onGetUserProfileError(Throwable e) {
-        if (e != null && e instanceof BodyException) {
-            if (((BodyException) e).errorCode == NetworkError.TOKEN_INVALID) {
-                clearAndLogout();
+        String message = ErrorMessageFactory.create(applicationContext, e);
+        if (e instanceof NetworkConnectionException) {
+            if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
+                showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.WARNING_TYPE);
                 return;
             }
         }
-
-        if (mView == null) {
-            return;
-        }
-
-        mView.showErrorDialogThenClose(mView.getContext().getString(R.string.get_userinfo_zalopayid_error),
-                mView.getContext().getString(R.string.txt_close));
+        showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.ERROR_TYPE);
     }
 
     private void getUserMapping(long zaloId) {
-        if (zaloId <= 0) {
+        if (zaloId <= 0 || mView == null) {
             return;
         }
-
+        showLoading();
         Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -246,7 +249,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 return;
             }
 
-            mView.showLoading();
+            showLoading();
 
             Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
                     mTransaction.amount,
@@ -290,16 +293,16 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        mView.hideLoading();
+        hideLoading();
         String message = ErrorMessageFactory.create(mView.getContext(), e);
-        mView.showError(message);
+        showError(message);
         mView.setEnableBtnContinue(true);
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.d("money transfer order: " + order.getItem());
         paymentWrapper.transfer(order, mTransaction.getDisplayName(), mTransaction.getAvatar(), mTransaction.getZaloPayName(), mTransaction.getZaloPayName());
-        mView.hideLoading();
+        hideLoading();
         mView.setEnableBtnContinue(true);
     }
 
@@ -388,7 +391,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         if (user.zaloPayId.equals(mTransaction.zaloPayId)) {
             if (mView != null) {
-                mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
+                showError(applicationContext.getString(R.string.exception_transfer_for_self));
             }
             return;
         }
@@ -454,10 +457,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 mTransaction.getPhoneNumber());
 
         if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
-
-
             Timber.d("begin get user info");
-
+            showLoading();
             Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new UserInfoSubscriber());
@@ -493,18 +494,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             return;
         }
         mView.setInitialValue(mTransaction.amount, mTransaction.message);
-    }
-
-    private void onGetMappingUserSuccess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
-        if (userMapZaloAndZaloPay == null || mView == null) {
-            return;
-        }
-
-        mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
-        mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
-        mView.updateReceiverInfo(mTransaction.phoneNumber);
-
-        checkShowBtnContinue();
     }
 
     @Override
@@ -599,7 +588,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
         @Override
         public void onNext(Person person) {
-
             Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
             mTransaction.avatar = person.avatar;
             mTransaction.displayName = person.displayName;
@@ -613,9 +601,59 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-
+            if (mView == null) {
+                return;
+            }
             String message = ErrorMessageFactory.create(applicationContext, e);
-            mView.showError(message);
+            //If USER_NOT_EXIST then finish
+            if (e instanceof BodyException) {
+                int errorCode = ((BodyException) e).errorCode;
+                if (errorCode == NetworkError.USER_NOT_EXIST ||
+                        errorCode == NetworkError.RECEIVER_IS_LOCKED) {
+                    showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.ERROR_TYPE);
+                    return;
+                }
+            }
+            if (e instanceof NetworkConnectionException) {
+                if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
+                    showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.WARNING_TYPE);
+                    return;
+                }
+            }
+            showError(message);
         }
+
+        @Override
+        public void onCompleted() {
+            hideLoading();
+        }
+    }
+
+    private void showLoading() {
+        if (mView == null) {
+            return;
+        }
+        mView.showLoading();
+    }
+
+    private void hideLoading() {
+        if (mView == null) {
+            return;
+        }
+        mView.hideLoading();
+    }
+
+    private void showError(String message) {
+        if (mView == null) {
+            return;
+        }
+        mView.showError(message);
+    }
+
+    private void showDialogThenClose(String error, String cancelText, int dialogType) {
+        if (mView == null) {
+            return;
+        }
+        mView.showDialogThenClose(error, cancelText, dialogType);
     }
 }

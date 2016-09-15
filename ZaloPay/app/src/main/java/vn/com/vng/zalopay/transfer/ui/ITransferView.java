@@ -7,6 +7,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
  * Created by longlv on 13/06/2016.
+ *
  */
 public interface ITransferView extends ILoadDataView {
     Activity getActivity();
@@ -18,5 +19,5 @@ public interface ITransferView extends ILoadDataView {
 
     void setInitialValue(long currentAmount, String currentMessage);
 
-    void showErrorDialogThenClose(String content, String title);
+    void showDialogThenClose(String content, String title, int dialogType);
 }

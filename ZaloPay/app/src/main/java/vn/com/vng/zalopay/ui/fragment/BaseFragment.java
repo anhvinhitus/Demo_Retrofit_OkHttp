@@ -24,6 +24,8 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -121,23 +123,26 @@ public abstract class BaseFragment extends Fragment {
         mProgressDialog.dismiss();
     }
 
-    public void showErrorDialog(String message, String cancelText, final SweetAlertDialog.OnSweetClickListener cancelListener) {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE, R.style.alert_dialog)
-                .setContentText(message)
-                .setConfirmText(cancelText)
-                .setConfirmClickListener(cancelListener)
-                .show();
+    public void showErrorDialog(String message, String cancelText, final ZPWOnEventDialogListener cancelListener) {
+        DialogManager.showSweetDialogCustom(getActivity(), message, cancelText, SweetAlertDialog.WARNING_TYPE, new ZPWOnEventDialogListener() {
+            @Override
+            public void onOKevent() {
+                if (cancelListener != null) {
+                    cancelListener.onOKevent();
+                }
+            }
+        });
     }
 
-    public void showRetryDialog(String title, String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retryListener) {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE, R.style.alert_dialog)
-                .setTitleText(title)
-                .setContentText(retryMessage)
-                .setCancelText(cancelBtnText)
-                .setCancelClickListener(cancelListener)
-                .setConfirmText(retryBtnText)
-                .setConfirmClickListener(retryListener)
-                .show();
+    public void showWarningDialog(String message, String cancelBtnText, final ZPWOnEventDialogListener cancelListener) {
+        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, SweetAlertDialog.WARNING_TYPE, new ZPWOnEventDialogListener() {
+            @Override
+            public void onOKevent() {
+                if (cancelListener != null) {
+                    cancelListener.onOKevent();
+                }
+            }
+        });
     }
 
     public void showRetryDialog(String retryMessage, String cancelBtnText, final SweetAlertDialog.OnSweetClickListener cancelListener, String retryBtnText, final SweetAlertDialog.OnSweetClickListener retryListener) {
