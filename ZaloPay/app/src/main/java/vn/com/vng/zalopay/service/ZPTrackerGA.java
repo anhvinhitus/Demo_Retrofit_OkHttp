@@ -31,9 +31,9 @@ public class ZPTrackerGA implements ZPTracker {
                 .setAction(ZPEvents.actionFromEventId(eventId))
                 .setLabel("");
 
-        if (eventValue != null) {
-            eventBuilder.setValue(eventValue);
-        }
+//        if (eventValue != null) {
+//            eventBuilder.setValue(eventValue);
+//        }
 
         mTracker.send(eventBuilder.build());
     }
