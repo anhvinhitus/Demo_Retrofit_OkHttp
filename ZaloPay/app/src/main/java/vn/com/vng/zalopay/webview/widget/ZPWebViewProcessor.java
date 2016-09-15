@@ -43,7 +43,7 @@ public class ZPWebViewProcessor extends WebViewClient {
     }
 
     public void start(final String pUrl, final Activity pActivity) {
-        if (pActivity == null || TextUtils.isEmpty(pUrl)) {
+        if (pActivity == null || TextUtils.isEmpty(pUrl) || mWebView == null) {
             return;
         }
         DialogManager.showProcessDialog(pActivity, new ZPWOnProgressDialogTimeoutListener() {
@@ -64,7 +64,7 @@ public class ZPWebViewProcessor extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         Timber.d("onPageFinished url [%s]", url);
-        if (hasError) {
+        if (hasError || mWebView == null) {
             return;
         }
 
