@@ -109,7 +109,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:layout_marginTop">@dimen/spacing.large</item>
+        <item name="android:layout_marginTop">@dimen/spacing.medium</item>
         <item name="android:textStyle">bold</item>
     </style>
 

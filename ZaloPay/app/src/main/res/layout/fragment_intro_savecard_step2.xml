@@ -10,21 +10,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.34">
+        android:layout_weight="@dimen/intro.app.top.weight">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/loremipsum"
-            android:scaleType="center"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_intro_savecard_step2" />
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.66"
+        android:layout_weight="@dimen/intro.app.bottom.weight"
         android:background="@color/colorPrimary"
         android:gravity="center_horizontal"
         android:orientation="vertical">
