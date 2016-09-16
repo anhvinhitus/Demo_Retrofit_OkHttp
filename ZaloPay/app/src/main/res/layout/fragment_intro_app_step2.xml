@@ -1,15 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:weightSum="1.0"
-              tools:context=".ui.fragment.IntroSaveCardFragment">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1.0">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.34" >
+        android:layout_weight="0.34">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -17,7 +15,7 @@
             android:layout_gravity="center"
             android:contentDescription="@string/loremipsum"
             android:scaleType="center"
-            android:src="@drawable/ic_intro_app_step2"/>
+            android:src="@drawable/ic_intro_app_step2" />
     </FrameLayout>
 
     <LinearLayout
@@ -30,10 +28,10 @@
 
         <TextView
             style="@style/Intro.TextView.Title"
-            android:text="@string/intro.app.title.step2"/>
+            android:text="@string/intro.app.title.step2" />
 
         <TextView
             style="@style/Intro.TextView.Content"
-            android:text="@string/intro.app.content.step2"/>
+            android:text="@string/intro.app.content.step2" />
     </LinearLayout>
 </LinearLayout>
