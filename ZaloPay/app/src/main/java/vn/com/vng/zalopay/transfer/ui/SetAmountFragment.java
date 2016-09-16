@@ -11,11 +11,13 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 8/29/16.
@@ -31,6 +33,12 @@ public class SetAmountFragment extends BaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    public long mAmount;
+    private long mMinAmount;
+    private long mMaxAmount;
+    private String mValidMinAmount;
+    private String mValidMaxAmount;
 
     @Override
     protected void setupFragmentComponent() {
@@ -50,23 +58,24 @@ public class SetAmountFragment extends BaseFragment {
     @BindView(R.id.btnUpdate)
     View mBtnContinueView;
 
-    public long mAmount;
+    @OnTextChanged(R.id.edtAmount)
+    public void onAmountChanged() {
+
+    }
+
+    @OnTextChanged(R.id.edtAmount)
+    public void onTextChanged(CharSequence s) {
+        mBtnContinueView.setEnabled(s.length() > 0);
+    }
 
     @OnClick(R.id.btnUpdate)
     public void onClickUpdate() {
-
-        if (mAmount < Constants.MIN_TRANSFER_MONEY) {
+        if (!isValidAmount()) {
             textInputAmountView.requestFocus();
-            textInputAmountView.setError(String.format(getString(R.string.min_money), CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY)));
             return;
+        } else {
+            hideAmountError();
         }
-
-        if (mAmount > Constants.MAX_TRANSFER_MONEY) {
-            textInputAmountView.requestFocus();
-            textInputAmountView.setError(String.format(getString(R.string.max_money), CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY)));
-            return;
-        }
-
 
         Intent data = new Intent();
         Bundle bundle = new Bundle();
@@ -95,15 +104,69 @@ public class SetAmountFragment extends BaseFragment {
             editText.addTextChangedListener(new VNDCurrencyTextWatcher(editText) {
                 @Override
                 public void onValueUpdate(long value) {
+                    Timber.d("onValueUpdate value [%s]", value);
                     mAmount = value;
+                    if (isValidMaxAmount()) {
+                        hideAmountError();
+                    }
+
                 }
             });
         }
         mBtnContinueView.setEnabled(false);
+        initLimitAmount();
     }
 
-    @OnTextChanged(R.id.edtAmount)
-    public void onTextChanged(CharSequence s) {
-        mBtnContinueView.setEnabled(s.length() > 0);
+    private void initLimitAmount() {
+        try {
+            mMinAmount = CShareData.getInstance(getActivity()).getMinTranferValue();
+            mMaxAmount = CShareData.getInstance(getActivity()).getMaxTranferValue();
+        } catch (Exception e) {
+            Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
+        }
+        if (mMinAmount <= 0) {
+            mMinAmount = Constants.MIN_TRANSFER_MONEY;
+        }
+        if (mMaxAmount <= 0) {
+            mMaxAmount = Constants.MAX_TRANSFER_MONEY;
+        }
+        mValidMinAmount = String.format(getContext().getString(R.string.min_money),
+                CurrencyUtil.formatCurrency(mMinAmount, true));
+        mValidMaxAmount = String.format(getContext().getString(R.string.max_money),
+                CurrencyUtil.formatCurrency(mMaxAmount, true));
     }
+
+    private boolean isValidMinAmount() {
+        if (mAmount < mMinAmount) {
+            showAmountError(mValidMinAmount);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidMaxAmount() {
+        if (mAmount > mMaxAmount) {
+            showAmountError(mValidMaxAmount);
+            return false;
+        }
+        return true;
+    }
+
+    private void showAmountError(String error) {
+        if (textInputAmountView != null) {
+            textInputAmountView.requestFocus();
+            textInputAmountView.setError(error);
+        }
+    }
+
+    private void hideAmountError() {
+        if (textInputAmountView != null) {
+            textInputAmountView.setError(null);
+        }
+    }
+
+    private boolean isValidAmount() {
+        return isValidMinAmount() && isValidMaxAmount();
+    }
+
 }

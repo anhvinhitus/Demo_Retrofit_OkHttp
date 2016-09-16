@@ -60,8 +60,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private PaymentWrapper paymentWrapper;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private long minAmount;
-    private long maxAmount;
+    private long mMinAmount;
+    private long mMaxAmount;
     private String mValidMinAmount;
     private String mValidMaxAmount;
     private RecentTransaction mTransaction;
@@ -415,7 +415,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
 
     private boolean isValidMinAmount() {
-        if (mTransaction.amount < minAmount) {
+        if (mTransaction.amount < mMinAmount) {
             if (mView != null) {
                 mView.toggleAmountError(mValidMinAmount);
             }
@@ -425,7 +425,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     private boolean isValidMaxAmount() {
-        if (mTransaction.amount > maxAmount) {
+        if (mTransaction.amount > mMaxAmount) {
             if (mView != null) {
                 mView.toggleAmountError(mValidMaxAmount);
             }
@@ -472,21 +472,21 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private void initLimitAmount() {
         try {
-            minAmount = CShareData.getInstance(mView.getActivity()).getMinTranferValue();
-            maxAmount = CShareData.getInstance(mView.getActivity()).getMaxTranferValue();
+            mMinAmount = CShareData.getInstance(mView.getActivity()).getMinTranferValue();
+            mMaxAmount = CShareData.getInstance(mView.getActivity()).getMaxTranferValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }
-        if (minAmount <= 0) {
-            minAmount = Constants.MIN_TRANSFER_MONEY;
+        if (mMinAmount <= 0) {
+            mMinAmount = Constants.MIN_TRANSFER_MONEY;
         }
-        if (maxAmount <= 0) {
-            maxAmount = Constants.MAX_TRANSFER_MONEY;
+        if (mMaxAmount <= 0) {
+            mMaxAmount = Constants.MAX_TRANSFER_MONEY;
         }
         mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(minAmount, true));
+                CurrencyUtil.formatCurrency(mMinAmount, true));
         mValidMaxAmount = String.format(mView.getContext().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(maxAmount, true));
+                CurrencyUtil.formatCurrency(mMaxAmount, true));
     }
 
     private void checkShowBtnContinue() {
