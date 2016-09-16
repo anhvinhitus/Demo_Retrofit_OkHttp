@@ -453,7 +453,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         initLimitAmount();
 
-        mView.updateReceiverInfo(mTransaction.getDisplayName(),
+        mView.setReceiverInfo(mTransaction.getDisplayName(),
                 mTransaction.getAvatar(),
                 mTransaction.getZaloPayName());
 

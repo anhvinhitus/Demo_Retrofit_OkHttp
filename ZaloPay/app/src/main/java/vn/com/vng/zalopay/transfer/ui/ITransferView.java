@@ -7,13 +7,33 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
  * Created by longlv on 13/06/2016.
- *
+ * Interface of TransferPresenter
  */
 public interface ITransferView extends ILoadDataView {
     Activity getActivity();
+
     void onTokenInvalid();
+
     void setEnableBtnContinue(boolean isEnable);
+
+    /**
+     * Set Receiver info when view had created
+     *
+     * @param displayName displayName
+     * @param avatar avatar
+     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
+     */
+    void setReceiverInfo(String displayName, String avatar, String zalopayName);
+
+    /**
+     * Set Receiver info when server return user info
+     *
+     * @param displayName displayName
+     * @param avatar avatar
+     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
+     */
     void updateReceiverInfo(String displayName, String avatar, String zalopayName);
+
     void toggleAmountError(String error);
 
     void setInitialValue(long currentAmount, String currentMessage);

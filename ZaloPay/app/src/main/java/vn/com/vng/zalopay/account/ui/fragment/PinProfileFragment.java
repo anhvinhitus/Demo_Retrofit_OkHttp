@@ -240,7 +240,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @Override
     public void onClickContinue() {
         if (TextUtils.isEmpty(inputZaloPayName.getText())) {
-            presenter.updateProfile(passCode.getText(), edtPhone.getString(), null);
+            presenter.updateProfile(passCode.getText(), edtPhone.getString().toLowerCase(), null);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_EMPTY);
         } else {
             showConfirmUpdateZaloPayName();

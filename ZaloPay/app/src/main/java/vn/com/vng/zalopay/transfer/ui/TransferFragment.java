@@ -119,27 +119,71 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         btnContinue.setEnabled(isEnable);
     }
 
+    /**
+     * Set Receiver info when view had created
+     *
+     * @param displayName displayName
+     * @param avatar avatar
+     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
+     */
+    @Override
+    public void setReceiverInfo(String displayName, String avatar, String zalopayName) {
+        Timber.d("setReceiverInfo displayName %s avatar %s", displayName, avatar);
+        setDisplayName(displayName);
+        setAvatar(avatar);
+        setZaloPayName(zalopayName);
+    }
+
+    /**
+     * Set Receiver info when server return user info
+     *
+     * @param displayName displayName
+     * @param avatar avatar
+     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
+     */
     @Override
     public void updateReceiverInfo(String displayName, String avatar, String zalopayName) {
         Timber.d("updateReceiverInfo displayName %s avatar %s", displayName, avatar);
+        setDisplayName(displayName);
+        setAvatar(avatar);
+        udpateZaloPayName(zalopayName);
 
-        if (!TextUtils.isEmpty(displayName)) {
-            tvDisplayName.setText(displayName);
+    }
+
+    private void setZaloPayName(String zalopayName) {
+        if (TextUtils.isEmpty(zalopayName)) {
+            mTextViewZaloPayName.setVisibility(View.INVISIBLE);
+        } else if (!TextUtils.isEmpty(zalopayName)) {
+            mTextViewZaloPayName.setText(zalopayName);
+            mTextViewZaloPayName.setVisibility(View.VISIBLE);
         }
+    }
 
-        if (!TextUtils.isEmpty(avatar)) {
-            Glide.with(this).load(avatar)
-                    .placeholder(R.color.silver)
-                    .error(R.drawable.ic_avatar_default)
-                    .centerCrop()
-                    .into(imgAvatar);
-        }
-
+    private void udpateZaloPayName(String zalopayName) {
         if (TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setText(getString(R.string.not_update_zalopayname));
         } else if (!TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setText(zalopayName);
         }
+        mTextViewZaloPayName.setVisibility(View.VISIBLE);
+    }
+
+    private void setAvatar(String avatar) {
+        if (TextUtils.isEmpty(avatar)) {
+            return;
+        }
+        Glide.with(this).load(avatar)
+                .placeholder(R.color.silver)
+                .error(R.drawable.ic_avatar_default)
+                .centerCrop()
+                .into(imgAvatar);
+    }
+
+    private void setDisplayName(String displayName) {
+        if (TextUtils.isEmpty(displayName)) {
+            return;
+        }
+        tvDisplayName.setText(displayName);
     }
 
     public TransferFragment() {
