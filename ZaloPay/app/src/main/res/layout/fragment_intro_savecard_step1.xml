@@ -1,22 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/background_intro"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_intro"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.34"
-        android:background="@drawable/ic_bg_intro_savecard">
+        android:layout_weight="0.34">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="center"
             android:contentDescription="@string/loremipsum"
             android:scaleType="center"
-            android:src="@drawable/ic_intro_savecard_step1"/>
+            android:src="@drawable/ic_intro_savecard_step1" />
     </FrameLayout>
 
     <LinearLayout
@@ -29,10 +28,10 @@
 
         <TextView
             style="@style/Intro.TextView.Title"
-            android:text="@string/intro.title.step1"/>
+            android:text="@string/intro.title.step1" />
 
         <TextView
             style="@style/Intro.TextView.Content"
-            android:text="@string/intro.content.step1"/>
+            android:text="@string/intro.content.step1" />
     </LinearLayout>
 </LinearLayout>
