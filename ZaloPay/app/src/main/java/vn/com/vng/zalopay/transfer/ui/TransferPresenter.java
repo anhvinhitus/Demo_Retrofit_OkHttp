@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -59,6 +60,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private PaymentWrapper paymentWrapper;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private long minAmount;
+    private long maxAmount;
     private String mValidMinAmount;
     private String mValidMaxAmount;
     private RecentTransaction mTransaction;
@@ -412,7 +415,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
 
     private boolean isValidMinAmount() {
-        if (mTransaction.amount < Constants.MIN_TRANSFER_MONEY) {
+        if (mTransaction.amount < minAmount) {
             if (mView != null) {
                 mView.toggleAmountError(mValidMinAmount);
             }
@@ -422,7 +425,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     private boolean isValidMaxAmount() {
-        if (mTransaction.amount > Constants.MAX_TRANSFER_MONEY) {
+        if (mTransaction.amount > maxAmount) {
             if (mView != null) {
                 mView.toggleAmountError(mValidMaxAmount);
             }
@@ -448,10 +451,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             getUserMapping(mTransaction.getZaloId());
         }
 
-        mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(Constants.MIN_TRANSFER_MONEY, true));
-        mValidMaxAmount = String.format(mView.getContext().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(Constants.MAX_TRANSFER_MONEY, true));
+        initLimitAmount();
 
         mView.updateReceiverInfo(mTransaction.getDisplayName(),
                 mTransaction.getAvatar(),
@@ -470,6 +470,24 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         checkShowBtnContinue();
     }
 
+    private void initLimitAmount() {
+        try {
+            minAmount = CShareData.getInstance(mView.getActivity()).getMinTranferValue();
+            maxAmount = CShareData.getInstance(mView.getActivity()).getMaxTranferValue();
+        } catch (Exception e) {
+            Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
+        }
+        if (minAmount <= 0) {
+            minAmount = Constants.MIN_TRANSFER_MONEY;
+        }
+        if (maxAmount <= 0) {
+            maxAmount = Constants.MAX_TRANSFER_MONEY;
+        }
+        mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
+                CurrencyUtil.formatCurrency(minAmount, true));
+        mValidMaxAmount = String.format(mView.getContext().getString(R.string.max_money),
+                CurrencyUtil.formatCurrency(maxAmount, true));
+    }
 
     private void checkShowBtnContinue() {
         if (mView == null) {
