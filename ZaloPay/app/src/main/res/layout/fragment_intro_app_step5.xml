@@ -10,12 +10,7 @@
         android:layout_weight="@dimen/intro.app.top.weight">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/spacing.medium"
-            android:contentDescription="@string/loremipsum"
-            android:scaleType="center"
+            style="@style/IntroImage"
             android:src="@drawable/ic_intro_app_step5" />
     </FrameLayout>
 
