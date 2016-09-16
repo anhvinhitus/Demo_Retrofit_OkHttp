@@ -38,6 +38,16 @@ public class Helpers {
         promise.resolve(item);
     }
 
+    public static void promiseResolveDialog(Promise promise, int btnIndex) {
+        Timber.d("promiseResolveDialog promise [%s] btnIndex [%s]", promise, btnIndex);
+        if (promise == null) {
+            return;
+        }
+        WritableMap item = Arguments.createMap();
+        item.putInt("code", btnIndex);
+        promise.resolve(item);
+    }
+
     public static void promiseResolveSuccess(Promise promise, Object object) {
         Timber.d("promiseResolveSuccess promise [%s]", promise);
         if (promise == null) {

@@ -9,6 +9,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.Locale;
@@ -22,6 +23,11 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -115,6 +121,98 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getUserInfo(Promise promise) {
         mPaymentService.getUserInfo(promise, mAppId);
+    }
+
+    @ReactMethod
+    public void showLoading() {
+        DialogManager.showProcessDialog(getCurrentActivity(), null);
+    }
+
+    @ReactMethod
+    public void hideLoading() {
+        DialogManager.closeProcessDialog();
+    }
+
+    @ReactMethod
+    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+        if (dialogType == SweetAlertDialog.NORMAL_TYPE) {
+            if (btnNames == null || btnNames.size() <= 1) {
+                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                        message,
+                        getCurrentActivity().getString(R.string.txt_close),
+                        SweetAlertDialog.NORMAL_TYPE,
+                        new ZPWOnEventDialogListener() {
+                            @Override
+                            public void onOKevent() {
+                                Helpers.promiseResolveDialog(promise, 1);
+                            }
+                        });
+            } else {
+                DialogManager.showSweetDialogConfirm(getCurrentActivity(),
+                        message,
+                        btnNames.getString(0),
+                        btnNames.getString(1),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+                                Helpers.promiseResolveDialog(promise, 1);
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                Helpers.promiseResolveDialog(promise, 0);
+                            }
+                        }
+                );
+            }
+        } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
+            DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                    message,
+                    getCurrentActivity().getString(R.string.txt_close),
+                    SweetAlertDialog.ERROR_TYPE,
+                    new ZPWOnEventDialogListener() {
+                        @Override
+                        public void onOKevent() {
+                            Helpers.promiseResolveDialog(promise, 1);
+                        }
+                    });
+        } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
+            DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                    message,
+                    getCurrentActivity().getString(R.string.txt_close),
+                    SweetAlertDialog.SUCCESS_TYPE,
+                    new ZPWOnEventDialogListener() {
+                        @Override
+                        public void onOKevent() {
+                            Helpers.promiseResolveDialog(promise, 1);
+                        }
+                    });
+        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
+            DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                    message,
+                    getCurrentActivity().getString(R.string.txt_close),
+                    SweetAlertDialog.WARNING_TYPE,
+                    new ZPWOnEventDialogListener() {
+                        @Override
+                        public void onOKevent() {
+                            Helpers.promiseResolveDialog(promise, 1);
+                        }
+                    });
+        } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
+            if (btnNames == null || btnNames.size() <= 0) {
+                return;
+            }
+            DialogManager.showSweetDialogUpdate(getCurrentActivity(),
+                    message,
+                    null,
+                    btnNames.getString(0),
+                    new ZPWOnEventUpdateListener() {
+                        @Override
+                        public void onUpdateListenner() {
+                            Helpers.promiseResolveDialog(promise, 1);
+                        }
+                    });
+        }
     }
 
     @ReactMethod
