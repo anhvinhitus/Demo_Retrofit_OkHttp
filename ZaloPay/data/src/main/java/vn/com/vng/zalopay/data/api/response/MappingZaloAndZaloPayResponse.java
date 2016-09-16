@@ -12,4 +12,7 @@ public class MappingZaloAndZaloPayResponse extends BaseResponse {
 
     @SerializedName("phonenumber")
     public long phonenumber;
+
+    @SerializedName("zalopayname")
+    public String zalopayname;
 }

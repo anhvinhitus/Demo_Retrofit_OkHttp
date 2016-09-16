@@ -204,8 +204,11 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         }
 
         mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
+        mTransaction.zaloPayName = userMapZaloAndZaloPay.getZaloPayName();
         mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
-        mView.updateReceiverInfo(mTransaction.phoneNumber);
+        mView.updateReceiverInfo(mTransaction.getDisplayName(),
+                mTransaction.getAvatar(),
+                mTransaction.getZaloPayName());
 
         checkShowBtnContinue();
     }
@@ -440,8 +443,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         }
 
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
-                || (TextUtils.isEmpty(mTransaction.zaloPayName)
-                && TextUtils.isEmpty(mTransaction.phoneNumber))) {
+                || TextUtils.isEmpty(mTransaction.zaloPayName)) {
             Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
             getUserMapping(mTransaction.getZaloId());
         }
@@ -453,8 +455,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         mView.updateReceiverInfo(mTransaction.getDisplayName(),
                 mTransaction.getAvatar(),
-                mTransaction.getZaloPayName(),
-                mTransaction.getPhoneNumber());
+                mTransaction.getZaloPayName());
 
         if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
             Timber.d("begin get user info");
@@ -593,7 +594,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             mTransaction.displayName = person.displayName;
             mTransaction.zaloPayName = person.zalopayname;
 
-            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname, mTransaction.phoneNumber);
+            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
         }
 
         @Override

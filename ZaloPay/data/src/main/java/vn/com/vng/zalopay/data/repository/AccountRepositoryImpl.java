@@ -134,12 +134,14 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                     person.zaloId = zaloId;
                     person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
                     person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
+                    person.zalopayname = mappingZaloAndZaloPayResponse.zalopayname;
                     localStorage.put(person);
 
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
                     mappingZaloAndZaloPay.setZaloId(zaloId);
                     mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
                     mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
+                    mappingZaloAndZaloPay.setZaloPayName(mappingZaloAndZaloPayResponse.zalopayname);
                     return mappingZaloAndZaloPay;
                 });
     }
