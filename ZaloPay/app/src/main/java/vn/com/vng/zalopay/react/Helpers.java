@@ -38,8 +38,8 @@ public class Helpers {
         promise.resolve(item);
     }
 
-    public static void promiseResolveDialog(Promise promise, int btnIndex) {
-        Timber.d("promiseResolveDialog promise [%s] btnIndex [%s]", promise, btnIndex);
+    public static void promiseResolve(Promise promise, int btnIndex) {
+        Timber.d("promiseResolve promise [%s] btnIndex [%s]", promise, btnIndex);
         if (promise == null) {
             return;
         }

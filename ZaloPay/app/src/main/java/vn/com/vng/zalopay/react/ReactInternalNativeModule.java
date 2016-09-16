@@ -7,9 +7,7 @@ import android.widget.Toast;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
@@ -20,14 +18,11 @@ import javax.annotation.Nullable;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -35,7 +30,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by huuhoa on 4/25/16.
  * Internal API
  */
-public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
+public class ReactInternalNativeModule extends BaseReactContextModule {
 
     INavigator navigator;
 
@@ -45,11 +40,8 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         this.navigator = navigator;
     }
 
-    /// The purpose of this method is to return the string name of the NativeModule
-    /// which represents this class in JavaScript. So here we will call this ZaloPayInternal
-    /// so that we can access it through React.NativeModules.ZaloPayInternal in JavaScript.
     @Override
-    public String getName() {
+    public String getReactNativeName() {
         return "ZaloPayApi";
     }
 
@@ -195,96 +187,5 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @ReactMethod
-    public void showLoading() {
-        DialogManager.showProcessDialog(getCurrentActivity(), null);
-    }
-
-    @ReactMethod
-    public void hideLoading() {
-        DialogManager.closeProcessDialog();
-    }
-
-    @ReactMethod
-    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
-        if (dialogType == SweetAlertDialog.NORMAL_TYPE) {
-            if (btnNames == null || btnNames.size() <= 1) {
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                        message,
-                        getCurrentActivity().getString(R.string.txt_close),
-                        SweetAlertDialog.NORMAL_TYPE,
-                        new ZPWOnEventDialogListener() {
-                            @Override
-                            public void onOKevent() {
-                                Helpers.promiseResolveDialog(promise, 1);
-                            }
-                        });
-            } else {
-                DialogManager.showSweetDialogConfirm(getCurrentActivity(),
-                        message,
-                        btnNames.getString(0),
-                        btnNames.getString(1),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-                                Helpers.promiseResolveDialog(promise, 1);
-                            }
-
-                            @Override
-                            public void onOKevent() {
-                                Helpers.promiseResolveDialog(promise, 0);
-                            }
-                        }
-                );
-            }
-        } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
-            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                    message,
-                    getCurrentActivity().getString(R.string.txt_close),
-                    SweetAlertDialog.ERROR_TYPE,
-                    new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
-        } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
-            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                    message,
-                    getCurrentActivity().getString(R.string.txt_close),
-                    SweetAlertDialog.SUCCESS_TYPE,
-                    new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
-        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
-            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                    message,
-                    getCurrentActivity().getString(R.string.txt_close),
-                    SweetAlertDialog.WARNING_TYPE,
-                    new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
-        } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
-            if (btnNames == null || btnNames.size() <= 0) {
-                return;
-            }
-            DialogManager.showSweetDialogUpdate(getCurrentActivity(),
-                    message,
-                    null,
-                    btnNames.getString(0),
-                    new ZPWOnEventUpdateListener() {
-                        @Override
-                        public void onUpdateListenner() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
-        }
-    }
 }
 

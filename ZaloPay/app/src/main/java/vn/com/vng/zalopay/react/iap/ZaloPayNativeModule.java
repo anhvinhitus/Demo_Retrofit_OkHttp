@@ -7,7 +7,6 @@ import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -17,14 +16,15 @@ import java.util.Locale;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.react.BaseReactContextModule;
 import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.listener.OnEventClickListener;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -33,7 +33,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by huuhoa on 5/16/16.
  * API for PaymentApp integration
  */
-public class ZaloPayNativeModule extends ReactContextBaseJavaModule
+public class ZaloPayNativeModule extends BaseReactContextModule
         implements ActivityEventListener, LifecycleEventListener {
     final IPaymentService mPaymentService;
     final long mAppId; // AppId này là appid js cắm vào
@@ -50,7 +50,7 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @Override
-    public String getName() {
+    public String getReactNativeName() {
         return "ZaloPay";
     }
 
@@ -135,19 +135,11 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+        if (btnNames == null || btnNames.size() <= 0) {
+            return;
+        }
         if (dialogType == SweetAlertDialog.NORMAL_TYPE) {
-            if (btnNames == null || btnNames.size() <= 1) {
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                        message,
-                        getCurrentActivity().getString(R.string.txt_close),
-                        SweetAlertDialog.NORMAL_TYPE,
-                        new ZPWOnEventDialogListener() {
-                            @Override
-                            public void onOKevent() {
-                                Helpers.promiseResolveDialog(promise, 1);
-                            }
-                        });
-            } else {
+            if (btnNames.size() > 1) {
                 DialogManager.showSweetDialogConfirm(getCurrentActivity(),
                         message,
                         btnNames.getString(0),
@@ -155,53 +147,41 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
                         new ZPWOnEventConfirmDialogListener() {
                             @Override
                             public void onCancelEvent() {
-                                Helpers.promiseResolveDialog(promise, 1);
+                                Helpers.promiseResolve(promise, 1);
                             }
 
                             @Override
                             public void onOKevent() {
-                                Helpers.promiseResolveDialog(promise, 0);
+                                Helpers.promiseResolve(promise, 0);
                             }
                         }
                 );
+            } else {
+                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                        message,
+                        btnNames.getString(0),
+                        SweetAlertDialog.NORMAL_TYPE,
+                        new OnEventClickListener(promise, 1));
             }
         } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
             DialogManager.showSweetDialogCustom(getCurrentActivity(),
                     message,
-                    getCurrentActivity().getString(R.string.txt_close),
+                    btnNames.getString(0),
                     SweetAlertDialog.ERROR_TYPE,
-                    new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
+                    new OnEventClickListener(promise, 1));
         } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
             DialogManager.showSweetDialogCustom(getCurrentActivity(),
                     message,
-                    getCurrentActivity().getString(R.string.txt_close),
+                    btnNames.getString(0),
                     SweetAlertDialog.SUCCESS_TYPE,
-                    new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
+                    new OnEventClickListener(promise, 1));
         } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
             DialogManager.showSweetDialogCustom(getCurrentActivity(),
                     message,
-                    getCurrentActivity().getString(R.string.txt_close),
+                    btnNames.getString(0),
                     SweetAlertDialog.WARNING_TYPE,
-                    new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            Helpers.promiseResolveDialog(promise, 1);
-                        }
-                    });
+                    new OnEventClickListener(promise, 1));
         } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
-            if (btnNames == null || btnNames.size() <= 0) {
-                return;
-            }
             DialogManager.showSweetDialogUpdate(getCurrentActivity(),
                     message,
                     null,
@@ -209,7 +189,7 @@ public class ZaloPayNativeModule extends ReactContextBaseJavaModule
                     new ZPWOnEventUpdateListener() {
                         @Override
                         public void onUpdateListenner() {
-                            Helpers.promiseResolveDialog(promise, 1);
+                            Helpers.promiseResolve(promise, 1);
                         }
                     });
         }
