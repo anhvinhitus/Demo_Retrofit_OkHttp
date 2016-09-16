@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -212,8 +213,9 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
             }
 
             private void onSessionExpired() {
-                showError(R.string.exception_token_expired_message);
-                AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+                ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
+                applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
+                applicationSession.clearUserSession();
             }
         });
 

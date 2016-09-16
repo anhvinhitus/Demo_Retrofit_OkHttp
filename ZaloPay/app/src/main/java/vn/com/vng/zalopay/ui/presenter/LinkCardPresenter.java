@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -254,8 +255,9 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
                     showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
-                showErrorView(mLinkCardView.getContext().getString(R.string.exception_token_expired_message));
-                AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+                ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
+                applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
+                applicationSession.clearUserSession();
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);

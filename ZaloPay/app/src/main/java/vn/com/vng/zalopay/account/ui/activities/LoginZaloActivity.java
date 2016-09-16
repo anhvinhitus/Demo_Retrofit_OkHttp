@@ -146,7 +146,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         Timber.d("showError message %s", message);
         if (mErrorDialog == null) {
             mErrorDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE, R.style.alert_dialog)
-                    .setConfirmText(getContext().getString(R.string.txt_close))
+                    .setConfirmText(getContext().getString(R.string.accept))
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {

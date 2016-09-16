@@ -343,7 +343,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onSessionExpired() {
-        showError(getString(R.string.exception_token_expired_message));
+        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_token_expired_message));
         getAppComponent().applicationSession().clearUserSession();
     }
 

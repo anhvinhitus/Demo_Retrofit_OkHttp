@@ -226,7 +226,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onTokenExpired(TokenExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         if (!TAG.equals(LoginZaloActivity.class.getSimpleName())) {
-            showToast(R.string.exception_token_expired_message);
+            //showToast(R.string.exception_token_expired_message);
+            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
             getAppComponent().applicationSession().clearUserSession();
         }
     }
