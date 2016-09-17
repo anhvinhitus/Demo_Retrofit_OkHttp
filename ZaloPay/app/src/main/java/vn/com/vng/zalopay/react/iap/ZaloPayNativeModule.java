@@ -146,26 +146,26 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 //                        message,
 //                        btnNames.getString(0),
 //                        SweetAlertDialog.NORMAL_TYPE,
-//                        new OnEventClickListener(promise, 1));
+//                        new DialogSimpleEventListener(promise, 1));
 //            }
 //        } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
 //            DialogManager.showSweetDialogCustom(getCurrentActivity(),
 //                    message,
 //                    btnNames.getString(0),
 //                    SweetAlertDialog.ERROR_TYPE,
-//                    new OnEventClickListener(promise, 1));
+//                    new DialogSimpleEventListener(promise, 1));
 //        } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
 //            DialogManager.showSweetDialogCustom(getCurrentActivity(),
 //                    message,
 //                    btnNames.getString(0),
 //                    SweetAlertDialog.SUCCESS_TYPE,
-//                    new OnEventClickListener(promise, 1));
+//                    new DialogSimpleEventListener(promise, 1));
 //        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
 //            DialogManager.showSweetDialogCustom(getCurrentActivity(),
 //                    message,
 //                    btnNames.getString(0),
 //                    SweetAlertDialog.WARNING_TYPE,
-//                    new OnEventClickListener(promise, 1));
+//                    new DialogSimpleEventListener(promise, 1));
 //        } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
 //            DialogManager.showSweetDialogUpdate(getCurrentActivity(),
 //                    message,

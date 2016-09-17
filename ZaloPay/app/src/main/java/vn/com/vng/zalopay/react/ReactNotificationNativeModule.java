@@ -34,16 +34,16 @@ import vn.com.vng.zalopay.react.error.PaymentError;
  * Created by huuhoa on 6/10/16.
  * Notification for react native
  */
-public class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private NotificationStore.Repository repository;
     private final EventBus mEventBus;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public ReactNotificationNativeModule(ReactApplicationContext reactContext,
-                                         NotificationStore.Repository repository,
-                                         EventBus eventBus) {
+    ReactNotificationNativeModule(ReactApplicationContext reactContext,
+                                  NotificationStore.Repository repository,
+                                  EventBus eventBus) {
         super(reactContext);
         this.repository = repository;
         this.mEventBus = eventBus;

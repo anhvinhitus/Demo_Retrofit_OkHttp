@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
  * Created by huuhoa on 5/8/16.
+ * Native module for providing transaction logs to react native module
  */
 class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 

@@ -13,7 +13,6 @@ import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.react.listener.OnEventClickListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -187,7 +186,7 @@ public class Helpers {
                             message,
                             btnNames.getString(0),
                             SweetAlertDialog.NORMAL_TYPE,
-                            new OnEventClickListener(promise, 1));
+                            new DialogSimpleEventListener(promise, 1));
                 }
                 break;
 
@@ -196,7 +195,7 @@ public class Helpers {
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.ERROR_TYPE,
-                        new OnEventClickListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 1));
                 break;
 
             case SweetAlertDialog.SUCCESS_TYPE:
@@ -204,7 +203,7 @@ public class Helpers {
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.SUCCESS_TYPE,
-                        new OnEventClickListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 1));
                 break;
 
             case SweetAlertDialog.WARNING_TYPE:
@@ -212,7 +211,7 @@ public class Helpers {
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.WARNING_TYPE,
-                        new OnEventClickListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 1));
                 break;
 
             default:
@@ -220,7 +219,7 @@ public class Helpers {
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.NORMAL_TYPE,
-                        new OnEventClickListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 1));
                 break;
         }
     }
