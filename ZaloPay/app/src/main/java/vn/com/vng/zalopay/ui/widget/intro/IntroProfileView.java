@@ -21,7 +21,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Adapter;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -61,8 +60,11 @@ public class IntroProfileView extends RelativeLayout {
 
     private List<ShapeEraser> mErasers;
 
-    public IntroProfileView(Context context) {
+    private IIntroListener mListener;
+
+    public IntroProfileView(Context context, IIntroListener listener) {
         super(context);
+        this.mListener = listener;
         init(context);
     }
 
@@ -257,8 +259,9 @@ public class IntroProfileView extends RelativeLayout {
     }
 
 
-    public void show(Activity activity) {
-        if (!isDisplayed(mIntroId)) {
+    public boolean show(Activity activity) {
+        boolean isDisplayed = !isDisplayed(mIntroId);
+        if (isDisplayed) {
             ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
 
             addContent();
@@ -282,6 +285,7 @@ public class IntroProfileView extends RelativeLayout {
                 }
             }, this.delayMillis);
         }
+        return isDisplayed;
     }
 
     void setReady(boolean ready) {
@@ -295,6 +299,9 @@ public class IntroProfileView extends RelativeLayout {
             public void onAnimationEnd(Animator animation) {
                 IntroProfileView.this.setVisibility(GONE);
                 IntroProfileView.this.removeMaterialView();
+                if (mListener != null) {
+                    mListener.hideIntroListener();
+                }
             }
         });
     }
@@ -359,4 +366,7 @@ public class IntroProfileView extends RelativeLayout {
     }
 
 
+    public interface IIntroListener {
+        void hideIntroListener();
+    }
 }

@@ -69,6 +69,9 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @BindView(R.id.inputZaloPayName)
     InputZaloPayNameView inputZaloPayName;
 
+    @BindView(R.id.layoutZaloPayNameNote)
+    View layoutZaloPayNameNote;
+
     @BindView(R.id.tvTermsOfUser1)
     TextView tvTermsOfUser1;
     @BindView(R.id.tvTermsOfUser2)
@@ -326,7 +329,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             }
         });
 
-        showHideTermOfUser(true);
+        showHideTermOfUser(false);
 
         AndroidUtils.setSpannedMessageToView(tvTermsOfUser2, R.string.terms_of_use_2, R.string.phone_support,
                 false, false, R.color.colorPrimary,
@@ -461,14 +464,23 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         getActivity().getWindow().getDecorView().clearFocus();
 
-        IntroProfileView intro = new IntroProfileView(getActivity());
+        IntroProfileView intro = new IntroProfileView(getActivity(), new IntroProfileView.IIntroListener() {
+            @Override
+            public void hideIntroListener() {
+                layoutZaloPayNameNote.setVisibility(View.VISIBLE);
+            }
+        });
 
         intro.addShape(new RectangleEraser(new ViewTarget(passCode.getPassCodeView()), AndroidUtils.dp(4f)));
         intro.addShape(new CircleEraser(new ViewTarget(passCode.getButtonShow())));
         intro.addShape(new RectangleEraser(new ViewTarget(edtPhone), AndroidUtils.dp(4f)));
         intro.addShape(new RectangleEraser(new ViewTarget(inputZaloPayName.getEditText()), AndroidUtils.dp(4f)));
 
-        intro.show(getActivity());
+        if (intro.show(getActivity())) {
+            layoutZaloPayNameNote.setVisibility(View.GONE);
+        } else {
+            layoutZaloPayNameNote.setVisibility(View.VISIBLE);
+        }
     }
 
 

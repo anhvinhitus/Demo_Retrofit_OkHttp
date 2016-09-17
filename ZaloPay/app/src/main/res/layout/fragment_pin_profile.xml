@@ -98,15 +98,57 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:paddingRight="4dp" />
-
                 </FrameLayout>
-
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/separate" />
+
+            <LinearLayout
+                android:id="@+id/layoutZaloPayNameNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:visibility="visible">
+
+                <TextView
+                    style="@style/TextView.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.small"
+                    android:text="@string/hint.edit.account" />
+
+                <TextView
+                    style="@style/TextView.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing.small"
+                    android:drawableLeft="@drawable/ic_checkmark"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:text="@string/hint.edit.account1" />
+
+                <TextView
+                    style="@style/TextView.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_checkmark"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:text="@string/hint.edit.account2" />
+
+                <TextView
+                    style="@style/TextView.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:drawableLeft="@drawable/ic_checkmark"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:text="@string/hint.edit.account3" />
+            </LinearLayout>
         </LinearLayout>
 
         <FrameLayout
@@ -134,7 +176,7 @@
                     android:textColor="@color/deposit.title"
                     android:textColorLink="@color/colorPrimary"
                     android:textSize="13sp"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tvTermsOfUser2"
@@ -146,6 +188,7 @@
                     android:textColor="@color/deposit.title"
                     android:textColorLink="@color/colorPrimary"
                     android:textSize="13sp"
+                    android:visibility="gone"
                     tools:text="@string/terms_of_use_2" />
 
                 <TextView
@@ -159,6 +202,7 @@
                     android:textColor="@color/deposit.title"
                     android:textColorLink="@color/colorPrimary"
                     android:textSize="13sp"
+                    android:visibility="visible"
                     tools:text="@string/agree.term.of.use" />
             </LinearLayout>
         </FrameLayout>
