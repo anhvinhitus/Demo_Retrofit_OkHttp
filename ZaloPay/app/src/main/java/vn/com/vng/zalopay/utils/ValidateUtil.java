@@ -88,7 +88,7 @@ public class ValidateUtil {
     }
 
     public static String getPhoneRegex() {
-        return "(\\+84|0)(1\\d{9}|9\\d{8})";
+        return "(\\+84|0)(1\\d{9}|9\\d{8}|8\\d{8})";
     }
 
     public static String getPhoneWithSpaceRegex() {
