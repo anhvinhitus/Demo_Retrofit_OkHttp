@@ -1,5 +1,6 @@
 package com.zalopay.apploader.logging;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.common.logging.LoggingDelegate;
@@ -17,13 +18,8 @@ public class ReactNativeAppLoaderLogger implements LoggingDelegate {
 
     private String mApplicationTag = "unknown";
     private int mMinimumLoggingLevel = Log.WARN;
-    private boolean isDebug = false;
 
-    private ReactNativeAppLoaderLogger() {
-    }
-
-    public ReactNativeAppLoaderLogger(boolean debug) {
-        this.isDebug = debug;
+    public ReactNativeAppLoaderLogger() {
     }
 
     /**
@@ -35,11 +31,6 @@ public class ReactNativeAppLoaderLogger implements LoggingDelegate {
     public void setApplicationTag(String tag) {
         mApplicationTag = tag;
     }
-
-    public void setDebug(boolean isDebug) {
-        this.isDebug = isDebug;
-    }
-
 
     @Override
     public void setMinimumLoggingLevel(int level) {
@@ -130,36 +121,10 @@ public class ReactNativeAppLoaderLogger implements LoggingDelegate {
     }
 
     private void println(int priority, String tag, String msg) {
-        if (isDebug) {
-            Timber.tag(tag).log(priority, msg);
-        }
+        Timber.tag(tag).log(priority, msg);
     }
 
     private void println(int priority, String tag, String msg, Throwable tr) {
-        if (isDebug) {
-            Timber.tag(tag).log(priority, tr, msg);
-        }
-    }
-
-    private String prefixTag(String tag) {
-        if (mApplicationTag != null) {
-            return mApplicationTag + ":" + tag;
-        } else {
-            return tag;
-        }
-    }
-
-    private static String getMsg(String msg, Throwable tr) {
-        return msg + '\n' + getStackTraceString(tr);
-    }
-
-    private static String getStackTraceString(Throwable tr) {
-        if (tr == null) {
-            return "";
-        }
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        tr.printStackTrace(pw);
-        return sw.toString();
+        Timber.tag(tag).log(priority, tr, msg);
     }
 }

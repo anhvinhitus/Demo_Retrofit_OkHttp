@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.common.logging.FLog;
+import com.facebook.common.logging.LoggingDelegate;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
@@ -69,7 +70,9 @@ public class AndroidApplication extends Application {
 
         registerActivityLifecycleCallbacks(new AppLifeCycle());
 
+        FLog.setLoggingDelegate(new ReactNativeAppLoaderLogger());
         if (BuildConfig.DEBUG) {
+            FLog.setMinimumLoggingLevel(Log.VERBOSE);
             Timber.plant(new Timber.DebugTree());
             AndroidDevMetrics.initWith(this);
             StrictMode.enableDefaults();
@@ -82,10 +85,9 @@ public class AndroidApplication extends Application {
                 }
             });
         } else {
+            FLog.setMinimumLoggingLevel(Log.ERROR);
             Timber.plant(new CrashlyticsTree());
         }
-
-        FLog.setLoggingDelegate(new ReactNativeAppLoaderLogger(BuildConfig.DEBUG));
 
         Fabric.with(this, new Crashlytics());
         initializeFresco();
