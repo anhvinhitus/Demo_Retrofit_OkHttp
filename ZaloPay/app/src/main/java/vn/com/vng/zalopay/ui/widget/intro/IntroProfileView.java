@@ -258,7 +258,7 @@ public class IntroProfileView extends RelativeLayout {
 
 
     public void show(Activity activity) {
-        if (!isDisplayed(mIntroId) || true) {
+        if (!isDisplayed(mIntroId)) {
             ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
 
             addContent();

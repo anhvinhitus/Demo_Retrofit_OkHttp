@@ -361,7 +361,18 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         });
 
         passCode.requestFocusView();
+
+        AndroidUtils.runOnUIThread(mIntroRunnable, 300);
     }
+
+    private Runnable mIntroRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (getActivity() != null) {
+                showIntro();
+            }
+        }
+    };
 
     private View.OnClickListener mOnClickCheckZaloPayName = new View.OnClickListener() {
         @Override
@@ -381,6 +392,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
     @Override
     public void onDetach() {
+        AndroidUtils.cancelRunOnUIThread(mIntroRunnable);
         super.onDetach();
         mListener = null;
     }
@@ -449,7 +461,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         getActivity().getWindow().getDecorView().clearFocus();
 
-        IntroProfileView intro = new IntroProfileView(getContext());
+        IntroProfileView intro = new IntroProfileView(getActivity());
 
         intro.addShape(new RectangleEraser(new ViewTarget(passCode.getPassCodeView()), AndroidUtils.dp(4f)));
         intro.addShape(new CircleEraser(new ViewTarget(passCode.getButtonShow())));
