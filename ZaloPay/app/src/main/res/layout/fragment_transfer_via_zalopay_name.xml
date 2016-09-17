@@ -47,7 +47,7 @@
                         android:background="@color/transparent"
                         android:ellipsize="end"
                         android:gravity="bottom"
-                        android:hint="@string/account.zalo.pay"
+                        android:hint="@string/input.account.zalo.pay"
                         android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
                         android:maxLength="@integer/max_length_zalopay_name"
                         android:maxLines="1"
