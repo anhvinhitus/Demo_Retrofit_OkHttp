@@ -193,7 +193,7 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showLoading() {
-        Helpers.showLoading();
+        Helpers.showLoading(getCurrentActivity());
     }
 
     @ReactMethod
@@ -203,6 +203,6 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
-        Helpers.showDialog(dialogType, title, message, btnNames, promise);
+        Helpers.showDialog(getCurrentActivity(), dialogType, title, message, btnNames, promise);
     }
 }

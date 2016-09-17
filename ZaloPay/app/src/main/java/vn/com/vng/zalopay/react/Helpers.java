@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
@@ -16,8 +17,6 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
-import static vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity.getCurrentActivity;
 
 /**
  * Created by huuhoa on 7/14/16.
@@ -150,22 +149,22 @@ public class Helpers {
         return builder.toString();
     }
 
-    public static void showLoading() {
-        DialogManager.showProcessDialog(getCurrentActivity(), null);
+    public static void showLoading(Activity activity) {
+        DialogManager.showProcessDialog(activity, null);
     }
 
     public static void hideLoading() {
         DialogManager.closeProcessDialog();
     }
 
-    public static void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+    public static void showDialog(Activity activity, int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
         if (btnNames == null || btnNames.size() <= 0) {
             return;
         }
         switch (dialogType) {
             case SweetAlertDialog.NORMAL_TYPE:
                 if (btnNames.size() > 1) {
-                    DialogManager.showSweetDialogConfirm(getCurrentActivity(),
+                    DialogManager.showSweetDialogConfirm(activity,
                             message,
                             btnNames.getString(0),
                             btnNames.getString(1),
@@ -182,44 +181,44 @@ public class Helpers {
                             }
                     );
                 } else {
-                    DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                    DialogManager.showSweetDialogCustom(activity,
                             message,
                             btnNames.getString(0),
                             SweetAlertDialog.NORMAL_TYPE,
-                            new DialogSimpleEventListener(promise, 1));
+                            new DialogSimpleEventListener(promise, 0));
                 }
                 break;
 
             case SweetAlertDialog.ERROR_TYPE:
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.ERROR_TYPE,
-                        new DialogSimpleEventListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 0));
                 break;
 
             case SweetAlertDialog.SUCCESS_TYPE:
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.SUCCESS_TYPE,
-                        new DialogSimpleEventListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 0));
                 break;
 
             case SweetAlertDialog.WARNING_TYPE:
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.WARNING_TYPE,
-                        new DialogSimpleEventListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 0));
                 break;
 
             default:
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
                         SweetAlertDialog.NORMAL_TYPE,
-                        new DialogSimpleEventListener(promise, 1));
+                        new DialogSimpleEventListener(promise, 0));
                 break;
         }
     }
