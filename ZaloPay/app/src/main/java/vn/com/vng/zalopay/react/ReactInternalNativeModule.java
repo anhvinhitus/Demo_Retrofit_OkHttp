@@ -7,7 +7,9 @@ import android.widget.Toast;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
@@ -26,11 +28,13 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
+import static vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity.getCurrentActivity;
+
 /**
  * Created by huuhoa on 4/25/16.
  * Internal API
  */
-public class ReactInternalNativeModule extends BaseReactContextModule {
+public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     INavigator navigator;
 
@@ -41,7 +45,7 @@ public class ReactInternalNativeModule extends BaseReactContextModule {
     }
 
     @Override
-    public String getReactNativeName() {
+    public String getName() {
         return "ZaloPayApi";
     }
 
@@ -187,5 +191,18 @@ public class ReactInternalNativeModule extends BaseReactContextModule {
         });
     }
 
-}
+    @ReactMethod
+    public void showLoading() {
+        Helpers.showLoading();
+    }
 
+    @ReactMethod
+    public void hideLoading() {
+        Helpers.hideLoading();
+    }
+
+    @ReactMethod
+    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+        Helpers.showDialog(dialogType, title, message, btnNames, promise);
+    }
+}

@@ -13,6 +13,12 @@ import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.listener.OnEventClickListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
+import static vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity.getCurrentActivity;
 
 /**
  * Created by huuhoa on 7/14/16.
@@ -143,5 +149,79 @@ public class Helpers {
         }
         builder.append("]");
         return builder.toString();
+    }
+
+    public static void showLoading() {
+        DialogManager.showProcessDialog(getCurrentActivity(), null);
+    }
+
+    public static void hideLoading() {
+        DialogManager.closeProcessDialog();
+    }
+
+    public static void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+        if (btnNames == null || btnNames.size() <= 0) {
+            return;
+        }
+        switch (dialogType) {
+            case SweetAlertDialog.NORMAL_TYPE:
+                if (btnNames.size() > 1) {
+                    DialogManager.showSweetDialogConfirm(getCurrentActivity(),
+                            message,
+                            btnNames.getString(0),
+                            btnNames.getString(1),
+                            new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
+                                    Helpers.promiseResolve(promise, 1);
+                                }
+
+                                @Override
+                                public void onOKevent() {
+                                    Helpers.promiseResolve(promise, 0);
+                                }
+                            }
+                    );
+                } else {
+                    DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                            message,
+                            btnNames.getString(0),
+                            SweetAlertDialog.NORMAL_TYPE,
+                            new OnEventClickListener(promise, 1));
+                }
+                break;
+
+            case SweetAlertDialog.ERROR_TYPE:
+                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                        message,
+                        btnNames.getString(0),
+                        SweetAlertDialog.ERROR_TYPE,
+                        new OnEventClickListener(promise, 1));
+                break;
+
+            case SweetAlertDialog.SUCCESS_TYPE:
+                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                        message,
+                        btnNames.getString(0),
+                        SweetAlertDialog.SUCCESS_TYPE,
+                        new OnEventClickListener(promise, 1));
+                break;
+
+            case SweetAlertDialog.WARNING_TYPE:
+                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                        message,
+                        btnNames.getString(0),
+                        SweetAlertDialog.WARNING_TYPE,
+                        new OnEventClickListener(promise, 1));
+                break;
+
+            default:
+                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+                        message,
+                        btnNames.getString(0),
+                        SweetAlertDialog.NORMAL_TYPE,
+                        new OnEventClickListener(promise, 1));
+                break;
+        }
     }
 }

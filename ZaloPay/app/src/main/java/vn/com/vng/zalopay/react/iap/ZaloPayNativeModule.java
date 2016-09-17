@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -19,28 +20,22 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
-import vn.com.vng.zalopay.react.BaseReactContextModule;
 import vn.com.vng.zalopay.react.Helpers;
-import vn.com.vng.zalopay.react.listener.OnEventClickListener;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.
  * API for PaymentApp integration
  */
-public class ZaloPayNativeModule extends BaseReactContextModule
+class ZaloPayNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
-    final IPaymentService mPaymentService;
-    final long mAppId; // AppId này là appid js cắm vào
+    private final IPaymentService mPaymentService;
+    private final long mAppId; // AppId này là appid js cắm vào
 
-    public ZaloPayNativeModule(ReactApplicationContext reactContext,
-                               IPaymentService paymentService,
-                               long appId) {
+    ZaloPayNativeModule(ReactApplicationContext reactContext,
+                        IPaymentService paymentService,
+                        long appId) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
@@ -50,7 +45,7 @@ public class ZaloPayNativeModule extends BaseReactContextModule
     }
 
     @Override
-    public String getReactNativeName() {
+    public String getName() {
         return "ZaloPay";
     }
 
@@ -123,77 +118,67 @@ public class ZaloPayNativeModule extends BaseReactContextModule
         mPaymentService.getUserInfo(promise, mAppId);
     }
 
-    @ReactMethod
-    public void showLoading() {
-        DialogManager.showProcessDialog(getCurrentActivity(), null);
-    }
-
-    @ReactMethod
-    public void hideLoading() {
-        DialogManager.closeProcessDialog();
-    }
-
-    @ReactMethod
-    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
-        if (btnNames == null || btnNames.size() <= 0) {
-            return;
-        }
-        if (dialogType == SweetAlertDialog.NORMAL_TYPE) {
-            if (btnNames.size() > 1) {
-                DialogManager.showSweetDialogConfirm(getCurrentActivity(),
-                        message,
-                        btnNames.getString(0),
-                        btnNames.getString(1),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-                                Helpers.promiseResolve(promise, 1);
-                            }
-
-                            @Override
-                            public void onOKevent() {
-                                Helpers.promiseResolve(promise, 0);
-                            }
-                        }
-                );
-            } else {
-                DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                        message,
-                        btnNames.getString(0),
-                        SweetAlertDialog.NORMAL_TYPE,
-                        new OnEventClickListener(promise, 1));
-            }
-        } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
-            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                    message,
-                    btnNames.getString(0),
-                    SweetAlertDialog.ERROR_TYPE,
-                    new OnEventClickListener(promise, 1));
-        } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
-            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                    message,
-                    btnNames.getString(0),
-                    SweetAlertDialog.SUCCESS_TYPE,
-                    new OnEventClickListener(promise, 1));
-        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
-            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-                    message,
-                    btnNames.getString(0),
-                    SweetAlertDialog.WARNING_TYPE,
-                    new OnEventClickListener(promise, 1));
-        } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
-            DialogManager.showSweetDialogUpdate(getCurrentActivity(),
-                    message,
-                    null,
-                    btnNames.getString(0),
-                    new ZPWOnEventUpdateListener() {
-                        @Override
-                        public void onUpdateListenner() {
-                            Helpers.promiseResolve(promise, 1);
-                        }
-                    });
-        }
-    }
+//    @ReactMethod
+//    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+//        if (btnNames == null || btnNames.size() <= 0) {
+//            return;
+//        }
+//        if (dialogType == SweetAlertDialog.NORMAL_TYPE) {
+//            if (btnNames.size() > 1) {
+//                DialogManager.showSweetDialogConfirm(getCurrentActivity(),
+//                        message,
+//                        btnNames.getString(0),
+//                        btnNames.getString(1),
+//                        new ZPWOnEventConfirmDialogListener() {
+//                            @Override
+//                            public void onCancelEvent() {
+//                                Helpers.promiseResolve(promise, 1);
+//                            }
+//
+//                            @Override
+//                            public void onOKevent() {
+//                                Helpers.promiseResolve(promise, 0);
+//                            }
+//                        }
+//                );
+//            } else {
+//                DialogManager.showSweetDialogCustom(getCurrentActivity(),
+//                        message,
+//                        btnNames.getString(0),
+//                        SweetAlertDialog.NORMAL_TYPE,
+//                        new OnEventClickListener(promise, 1));
+//            }
+//        } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
+//            DialogManager.showSweetDialogCustom(getCurrentActivity(),
+//                    message,
+//                    btnNames.getString(0),
+//                    SweetAlertDialog.ERROR_TYPE,
+//                    new OnEventClickListener(promise, 1));
+//        } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
+//            DialogManager.showSweetDialogCustom(getCurrentActivity(),
+//                    message,
+//                    btnNames.getString(0),
+//                    SweetAlertDialog.SUCCESS_TYPE,
+//                    new OnEventClickListener(promise, 1));
+//        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
+//            DialogManager.showSweetDialogCustom(getCurrentActivity(),
+//                    message,
+//                    btnNames.getString(0),
+//                    SweetAlertDialog.WARNING_TYPE,
+//                    new OnEventClickListener(promise, 1));
+//        } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
+//            DialogManager.showSweetDialogUpdate(getCurrentActivity(),
+//                    message,
+//                    null,
+//                    btnNames.getString(0),
+//                    new ZPWOnEventUpdateListener() {
+//                        @Override
+//                        public void onUpdateListenner() {
+//                            Helpers.promiseResolve(promise, 1);
+//                        }
+//                    });
+//        }
+//    }
 
     @ReactMethod
     public void closeModule(String moduleId) {
@@ -266,5 +251,21 @@ public class ZaloPayNativeModule extends BaseReactContextModule
         String message = String.format(Locale.getDefault(), "invalid %s", parameterName);
         Timber.d("Invalid parameter [%s]", parameterName);
         Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), message);
+    }
+
+
+    @ReactMethod
+    public void showLoading() {
+        Helpers.showLoading();
+    }
+
+    @ReactMethod
+    public void hideLoading() {
+        Helpers.hideLoading();
+    }
+
+    @ReactMethod
+    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+        Helpers.showDialog(dialogType, title, message, btnNames, promise);
     }
 }
