@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -51,7 +52,7 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     RecyclerView mRecyclerView;
 
     @BindView(R.id.edtSearch)
-    EditText edtSearch;
+    ClearableEditText edtSearch;
 
     @BindView(R.id.viewSeparate)
     View viewSeparate;

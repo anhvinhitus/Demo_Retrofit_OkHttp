@@ -20,7 +20,7 @@
             android:layout_marginLeft="@dimen/spacing.medium.t"
             android:src="@drawable/ic_seach" />
 
-        <com.zalopay.ui.widget.edittext.ClearableEditText
+        <vn.com.vng.zalopay.ui.widget.ClearableEditText
             android:id="@+id/edtSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
