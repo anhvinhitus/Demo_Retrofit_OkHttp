@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
+import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -63,16 +65,19 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @BindView(android.R.id.list)
     ListView listView;
 
-    public ImageView imageAvatar;
+    SimpleDraweeView mImageAvatarView;
 
-    public TextView tvName;
+    TextView mDisplayNameView;
 
-    public TextView tvZaloPayName;
+    TextView mZaloPayNameView;
 
     private MenuClickListener mMenuListener;
 
     @Inject
     LeftMenuPresenter presenter;
+
+    @Inject
+    ImageLoader mImageLoader;
 
     @Override
     public void onAttach(Context context) {
@@ -146,9 +151,9 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     private void addHeader(ListView listView) {
         View header = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
-        imageAvatar = (ImageView) header.findViewById(R.id.im_avatar);
-        tvName = (TextView) header.findViewById(R.id.tv_name);
-        tvZaloPayName = (TextView) header.findViewById(R.id.tvZaloPayName);
+        mImageAvatarView = (SimpleDraweeView) header.findViewById(R.id.im_avatar);
+        mDisplayNameView = (TextView) header.findViewById(R.id.tv_name);
+        mZaloPayNameView = (TextView) header.findViewById(R.id.tvZaloPayName);
         header.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {
@@ -202,30 +207,30 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         setZaloPayName(user.zalopayname);
     }
 
-    private void loadImage(final ImageView imageView, String url) {
+/*    private void loadImage(final ImageView imageView, String url) {
         Glide.with(this).load(url)
                 .placeholder(R.color.silver)
                 .error(R.drawable.ic_avatar_default)
                 .centerCrop()
                 .into(imageView);
-    }
+    }*/
 
     @Override
     public void setAvatar(String avatar) {
-        loadImage(imageAvatar, avatar);
+        mImageLoader.loadImage(mImageAvatarView, avatar, R.drawable.ic_avatar_default, R.drawable.ic_avatar_default, ImageLoader.ScaleType.CENTER);
     }
 
     @Override
     public void setDisplayName(String displayName) {
-        tvName.setText(displayName);
+        mDisplayNameView.setText(displayName);
     }
 
     @Override
     public void setZaloPayName(String zaloPayName) {
         if (TextUtils.isEmpty(zaloPayName)) {
-            tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
+            mZaloPayNameView.setText(getString(R.string.zalopay_name_not_update));
         } else {
-            tvZaloPayName.setText(zaloPayName);
+            mZaloPayNameView.setText(zaloPayName);
         }
     }
 }

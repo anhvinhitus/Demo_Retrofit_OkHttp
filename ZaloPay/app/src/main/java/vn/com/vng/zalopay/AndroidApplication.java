@@ -9,6 +9,8 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -84,6 +86,7 @@ public class AndroidApplication extends Application {
         }
 
         Fabric.with(this, new Crashlytics());
+        initializeFresco();
 
         // Initialize ZPAnalytics
         initializeZaloPayAnalytics();
@@ -116,6 +119,13 @@ public class AndroidApplication extends Application {
         ZPAnalytics.addDefaultTracker();
         ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
+    }
+
+    void initializeFresco() {
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
+                .setDownsampleEnabled(true)
+                .build();
+        Fresco.initialize(this, config);
     }
 
 

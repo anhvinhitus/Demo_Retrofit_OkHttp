@@ -38,6 +38,8 @@ import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingServiceImpl;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.FrescoImageLoader;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
 
 @Module
@@ -161,5 +163,11 @@ public class ApplicationModule {
         // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
         return analytics.newTracker(R.xml.global_tracker);
 
+    }
+
+    @Provides
+    @Singleton
+    ImageLoader providesImageLoader() {
+        return new FrescoImageLoader(application);
     }
 }
