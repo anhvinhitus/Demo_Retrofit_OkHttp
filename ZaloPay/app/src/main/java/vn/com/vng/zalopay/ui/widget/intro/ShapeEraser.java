@@ -9,7 +9,7 @@ import android.graphics.Paint;
  */
 class ShapeEraser {
 
-    private Target target;
+    protected Target target;
     private int padding;
 
     public ShapeEraser(Target target) {
@@ -32,4 +32,6 @@ class ShapeEraser {
     public int getPadding() {
         return padding;
     }
+
+
 }

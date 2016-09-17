@@ -9,6 +9,9 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,6 +30,10 @@ import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameView;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
+import vn.com.vng.zalopay.ui.widget.intro.CircleEraser;
+import vn.com.vng.zalopay.ui.widget.intro.IntroProfileView;
+import vn.com.vng.zalopay.ui.widget.intro.RectangleEraser;
+import vn.com.vng.zalopay.ui.widget.intro.ViewTarget;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -152,6 +159,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     IPassCodeMaxLength passCodeMaxLength = new IPassCodeMaxLength() {
         @Override
         public void hasMaxLength() {
+            Timber.d("hasMaxLength");
             if (edtPhone != null) {
                 edtPhone.requestFocus();
             }
@@ -287,6 +295,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       // setHasOptionsMenu(true);
     }
 
     @Override
@@ -304,6 +313,7 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                Timber.d("onFocusChange focus %s", hasFocus);
                 if (hasFocus) {
                     edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
                     return;
@@ -350,7 +360,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
             }
         });
 
-        passCode.requestFocus();
         passCode.requestFocusView();
     }
 
@@ -395,6 +404,21 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.upd_profile2, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_intro) {
+            showIntro();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void showLoading() {
         super.showProgressDialog();
     }
@@ -413,6 +437,28 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     public void hideRetry() {
 
     }
+
+    private void showIntro() {
+
+        AndroidUtils.hideKeyboard(getActivity());
+        inputZaloPayName.hideZPNameError();
+
+        passCode.hideError();
+        hidePhoneError();
+
+
+        getActivity().getWindow().getDecorView().clearFocus();
+
+        IntroProfileView intro = new IntroProfileView(getContext());
+
+        intro.addShape(new RectangleEraser(new ViewTarget(passCode.getPassCodeView()), AndroidUtils.dp(4f)));
+        intro.addShape(new CircleEraser(new ViewTarget(passCode.getButtonShow())));
+        intro.addShape(new RectangleEraser(new ViewTarget(edtPhone), AndroidUtils.dp(4f)));
+        intro.addShape(new RectangleEraser(new ViewTarget(inputZaloPayName.getEditText()), AndroidUtils.dp(4f)));
+
+        intro.show(getActivity());
+    }
+
 
     @Override
     public void showError(String message) {

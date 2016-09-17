@@ -11,17 +11,25 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewCompat;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Adapter;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 8/30/16.
@@ -64,6 +72,8 @@ public class IntroProfileView extends RelativeLayout {
         this.handler = new Handler();
         this.setWillNotDraw(false);
         this.setVisibility(INVISIBLE);
+        this.setFocusable(true);
+        this.setFocusableInTouchMode(true);
         this.maskColor = DEFAULT_MASK_COLOR;
         this.delayMillis = DEFAULT_DELAY_MILLIS;
         this.fadeAnimationDuration = DEFAULT_FADE_DURATION;
@@ -92,7 +102,11 @@ public class IntroProfileView extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Timber.d("onTouchEvent Action %s", event.getAction());
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                return true;
             case MotionEvent.ACTION_UP:
                 dismiss();
                 return true;
@@ -109,9 +123,149 @@ public class IntroProfileView extends RelativeLayout {
         mErasers.add(shapeEraser);
     }
 
+    private void addContent() {
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.intro_content_1, null);
+        ViewTreeObserver treeObserver = view.getViewTreeObserver();
+        treeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                try {
+                    if (view.getViewTreeObserver().isAlive()) {
+                        view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    }
+
+                    Timber.d("addContent height %s", view.getHeight());
+
+                    ShapeEraser eraser = mErasers.get(0);
+
+                    int padding = eraser.getPadding();
+                    Rect rect = eraser.getTarget().getRect();
+
+                    ViewCompat.setTranslationX(view, rect.left + AndroidUtils.dp(4));
+                    ViewCompat.setTranslationY(view, rect.top - view.getHeight() - padding + AndroidUtils.dp(4));
+
+                } catch (Exception e) {
+                    Timber.d(e, "onPreDraw");
+                }
+                return true;
+            }
+        });
+
+        addView(view);
+    }
+
+
+    private void addContent2() {
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.intro_content_2, null);
+        ViewTreeObserver treeObserver = view.getViewTreeObserver();
+        treeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                try {
+                    if (view.getViewTreeObserver().isAlive()) {
+                        view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    }
+
+                    Timber.d("addContent height %s", view.getHeight());
+
+
+                    CircleEraser eraser = (CircleEraser) mErasers.get(1);
+
+                    int padding = eraser.getPadding();
+                    Rect rect = eraser.getTarget().getRect();
+
+                    ViewCompat.setTranslationX(view, eraser.getPoint().x - view.getWidth() + AndroidUtils.dp(8));
+                    ViewCompat.setTranslationY(view, rect.top - view.getHeight() + AndroidUtils.dp(6));
+
+                } catch (Exception e) {
+                    Timber.e(e, "exception");
+                }
+
+                return true;
+            }
+        });
+
+        addView(view);
+    }
+
+    private void addContent3() {
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.intro_content_3, null);
+        ViewTreeObserver treeObserver = view.getViewTreeObserver();
+        treeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                try {
+                    if (view.getViewTreeObserver().isAlive()) {
+                        view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    }
+
+                    Timber.d("addContent height %s", view.getHeight());
+
+
+                    ShapeEraser eraser = mErasers.get(2);
+
+                    int padding = eraser.getPadding();
+                    Rect rect = eraser.getTarget().getRect();
+
+                    ViewCompat.setTranslationX(view, rect.right - view.getWidth() + AndroidUtils.dp(8));
+                    ViewCompat.setTranslationY(view, rect.bottom + AndroidUtils.dp(10));
+
+                } catch (Exception e) {
+                    Timber.e(e, "exception");
+                }
+
+
+                return true;
+            }
+        });
+
+        addView(view);
+    }
+
+    private void addContent4() {
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.intro_content_4, null);
+        ViewTreeObserver treeObserver = view.getViewTreeObserver();
+        treeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                try {
+                    if (view.getViewTreeObserver().isAlive()) {
+                        view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    }
+
+                    Timber.d("addContent height %s", view.getHeight());
+
+
+                    ShapeEraser eraser = mErasers.get(3);
+
+                    int padding = eraser.getPadding();
+                    Rect rect = eraser.getTarget().getRect();
+
+                    ViewCompat.setTranslationX(view, rect.left - AndroidUtils.dp(12));
+                    ViewCompat.setTranslationY(view, rect.bottom - AndroidUtils.dp(8));
+
+                } catch (Exception e) {
+                    Timber.e(e, "exception");
+                }
+
+
+                return true;
+            }
+        });
+
+        addView(view);
+    }
+
+
     public void show(Activity activity) {
-        if (!isDisplayed(mIntroId)) {
+        if (!isDisplayed(mIntroId) || true) {
             ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
+
+            addContent();
+            addContent2();
+            addContent3();
+            addContent4();
+
             this.setReady(true);
             this.handler.postDelayed(new Runnable() {
                 public void run() {

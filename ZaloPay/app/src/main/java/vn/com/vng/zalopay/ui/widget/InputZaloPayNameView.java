@@ -127,16 +127,6 @@ public class InputZaloPayNameView extends FrameLayout {
         mTvCheck.setOnClickListener(mOnClickBtnCheck);
     }
 
-    private void showImgInfo() {
-        mTextInputZaloPayName.setHint(getContext().getString(R.string.hint_zalopay_name));
-        hideZPNameError();
-
-        mCurrentState = ZPNameStateEnum.UNKNOWN;
-        mImgInfo.setVisibility(VISIBLE);
-        mTvCheck.setVisibility(GONE);
-        showIconState(mCurrentState);
-    }
-
     private void enableBtnCheck() {
         mImgInfo.setVisibility(GONE);
         mTvCheck.setTextColor(AndroidUtils.getColor(getContext(), R.color.txt_check_enable));
@@ -153,7 +143,6 @@ public class InputZaloPayNameView extends FrameLayout {
 
     public void showCheckFail() {
         showZPNameError(getContext().getString(R.string.account_existed));
-
         mCurrentState = ZPNameStateEnum.INVALID;
         mImgInfo.setVisibility(VISIBLE);
         mTvCheck.setVisibility(GONE);
@@ -201,7 +190,7 @@ public class InputZaloPayNameView extends FrameLayout {
         }
     }
 
-    private void hideZPNameError() {
+    public void hideZPNameError() {
         mTextInputZaloPayName.setErrorEnabled(false);
         mTextInputZaloPayName.setError(null);
     }
@@ -244,4 +233,9 @@ public class InputZaloPayNameView extends FrameLayout {
             mImgInfo.setImageResource(R.drawable.ic_checked_mark);
         }
     }
+
+    public EditText getEditText() {
+        return mEdtZaloPayName;
+    }
+
 }

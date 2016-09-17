@@ -260,9 +260,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         }
         if (userConfig.getCurrentUser().profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(getContext());
-        } else {
-            navigator.startEditAccountActivity(getContext());
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
         }
     }
 

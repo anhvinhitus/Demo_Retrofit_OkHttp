@@ -237,4 +237,12 @@ public class PassCodeView extends FrameLayout {
     public boolean isValid() {
         return getText().length() == getMaxLength();
     }
+
+    public View getPassCodeView() {
+        return mRootView;
+    }
+
+    public View getButtonShow(){
+        return mTvShowHide;
+    }
 }

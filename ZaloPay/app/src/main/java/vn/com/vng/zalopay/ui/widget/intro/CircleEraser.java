@@ -14,7 +14,13 @@ public class CircleEraser extends ShapeEraser {
     private Point circlePoint;
 
     public CircleEraser(Target target) {
-        super(target);
+        this(target, 0);
+    }
+
+    public CircleEraser(Target target, int padding) {
+        super(target, padding);
+        this.calRadius(padding);
+        circlePoint = target.getPoint();
     }
 
     public int getRadius() {
@@ -27,6 +33,11 @@ public class CircleEraser extends ShapeEraser {
 
     @Override
     public void draw(Canvas canvas, Paint eraser) {
+        canvas.drawCircle((float) this.circlePoint.x, (float) this.circlePoint.y, (float) this.radius, eraser);
+    }
 
+    private void calRadius(int padding) {
+        int side = Math.max(this.target.getRect().width() / 2, this.target.getRect().height() / 2);
+        this.radius = side + padding;
     }
 }
