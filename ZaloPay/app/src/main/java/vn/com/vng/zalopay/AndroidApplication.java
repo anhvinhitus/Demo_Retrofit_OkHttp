@@ -5,16 +5,17 @@ import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
+import com.zalopay.apploader.logging.ReactNativeAppLoaderLogger;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
@@ -81,9 +82,10 @@ public class AndroidApplication extends Application {
                 }
             });
         } else {
-//            Timber.plant(new Timber.DebugTree());
             Timber.plant(new CrashlyticsTree());
         }
+
+        FLog.setLoggingDelegate(ReactNativeAppLoaderLogger.getInstance());
 
         Fabric.with(this, new Crashlytics());
         initializeFresco();
