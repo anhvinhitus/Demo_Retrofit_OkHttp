@@ -128,7 +128,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             subscribeTopics(token);
             // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
-            Timber.w(ex, "exception in working with GCM");
+            Timber.d(ex, "exception in working with GCM");
             //  sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
         }
 

@@ -72,7 +72,7 @@ public class AndroidApplication extends Application {
 
         FLog.setLoggingDelegate(new ReactNativeAppLoaderLogger());
         if (BuildConfig.DEBUG) {
-            FLog.setMinimumLoggingLevel(Log.VERBOSE);
+            FLog.setMinimumLoggingLevel(Log.INFO);
             Timber.plant(new Timber.DebugTree());
             AndroidDevMetrics.initWith(this);
             StrictMode.enableDefaults();
