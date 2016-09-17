@@ -85,7 +85,7 @@ public class AndroidApplication extends Application {
             Timber.plant(new CrashlyticsTree());
         }
 
-        FLog.setLoggingDelegate(ReactNativeAppLoaderLogger.getInstance());
+        FLog.setLoggingDelegate(new ReactNativeAppLoaderLogger(BuildConfig.DEBUG));
 
         Fabric.with(this, new Crashlytics());
         initializeFresco();

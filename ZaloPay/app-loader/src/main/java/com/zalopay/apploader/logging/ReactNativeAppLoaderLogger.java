@@ -15,16 +15,15 @@ import timber.log.Timber;
  */
 public class ReactNativeAppLoaderLogger implements LoggingDelegate {
 
-    public static final ReactNativeAppLoaderLogger sInstance = new ReactNativeAppLoaderLogger();
-
     private String mApplicationTag = "unknown";
     private int mMinimumLoggingLevel = Log.WARN;
-
-    public static ReactNativeAppLoaderLogger getInstance() {
-        return sInstance;
-    }
+    private boolean isDebug = false;
 
     private ReactNativeAppLoaderLogger() {
+    }
+
+    public ReactNativeAppLoaderLogger(boolean debug) {
+        this.isDebug = debug;
     }
 
     /**
@@ -35,6 +34,10 @@ public class ReactNativeAppLoaderLogger implements LoggingDelegate {
      */
     public void setApplicationTag(String tag) {
         mApplicationTag = tag;
+    }
+
+    public void setDebug(boolean isDebug) {
+        this.isDebug = isDebug;
     }
 
 
@@ -127,11 +130,15 @@ public class ReactNativeAppLoaderLogger implements LoggingDelegate {
     }
 
     private void println(int priority, String tag, String msg) {
-        Timber.tag(tag).log(priority, msg);
+        if (isDebug) {
+            Timber.tag(tag).log(priority, msg);
+        }
     }
 
     private void println(int priority, String tag, String msg, Throwable tr) {
-        Timber.tag(tag).log(priority, tr, msg);
+        if (isDebug) {
+            Timber.tag(tag).log(priority, tr, msg);
+        }
     }
 
     private String prefixTag(String tag) {
