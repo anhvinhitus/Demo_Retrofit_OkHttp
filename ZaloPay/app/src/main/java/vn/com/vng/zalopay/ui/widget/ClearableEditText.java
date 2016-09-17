@@ -25,7 +25,6 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 /**
  * Created by longlv on 23/05/2016.
- *
  */
 public class ClearableEditText extends EditText {
     private static final String TAG = ClearableEditText.class.getName();

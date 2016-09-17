@@ -52,16 +52,16 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     @BindView(R.id.tvZaloPayName)
     TextView tvZaloPayName;
 
+    @Inject
+    User user;
+
     @OnClick(R.id.layoutProfileInfo)
     public void onClickHeaderProfile() {
-        if (!TextUtils.isEmpty(getUserComponent().currentUser().zalopayname)) {
+        if (!TextUtils.isEmpty(user.zalopayname)) {
             return;
         }
         if (getUserComponent().currentUser().profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(this);
-        } else {
-            navigator.startEditAccountActivity(this);
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
         }
     }
 

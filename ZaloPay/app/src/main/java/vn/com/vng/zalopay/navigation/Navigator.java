@@ -25,7 +25,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
-import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -35,8 +34,6 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.webview.WebViewConstants;
-import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -55,9 +52,11 @@ import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
+import vn.com.vng.zalopay.webview.WebViewConstants;
+import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
-import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -341,11 +340,6 @@ public class Navigator implements INavigator {
 
     public void startWithdrawActivity(Context context) {
         Intent intent = new Intent(context, WithdrawActivity.class);
-        context.startActivity(intent);
-    }
-
-    public void startEditAccountActivity(Context context) {
-        Intent intent = new Intent(context, EditAccountNameActivity.class);
         context.startActivity(intent);
     }
 

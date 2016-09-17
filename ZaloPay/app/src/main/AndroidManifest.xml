@@ -190,17 +190,11 @@
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:label="@string/title.activity.profile"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan|stateAlwaysVisible" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".account.ui.activities.EditAccountNameActivity"
-            android:label="@string/title.activity.update.account.name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
 
         <activity
             android:name=".ui.activity.NotificationActivity"

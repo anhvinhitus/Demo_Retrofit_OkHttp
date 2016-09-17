@@ -1,3 +1,4 @@
+/*
 package com.zalopay.ui.widget.edittext;
 
 
@@ -14,10 +15,12 @@ import android.widget.EditText;
 
 import com.zalopay.ui.widget.R;
 
+*/
 /**
  * <p/>
  * Created by JAY on 2015/4/18.
- */
+ *//*
+
 public class ClearableEditText extends EditText implements View.OnTouchListener,
         View.OnFocusChangeListener, TextWatcher {
 
@@ -143,3 +146,4 @@ public class ClearableEditText extends EditText implements View.OnTouchListener,
     }
 
 }
+*/

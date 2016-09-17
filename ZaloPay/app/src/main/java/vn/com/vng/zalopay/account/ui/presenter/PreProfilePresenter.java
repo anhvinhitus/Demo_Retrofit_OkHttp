@@ -38,7 +38,6 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     @Override
     public void pause() {
-
     }
 
     @Override

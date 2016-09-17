@@ -140,7 +140,6 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
 
         WritableMap item = Arguments.createMap();
         item.putBoolean("unread", !entity.isRead());
-        item.putInt("notificationstate", entity.notificationstate);
 
         item.putString("message", entity.message);
         item.putDouble("timestamp", entity.timestamp);
