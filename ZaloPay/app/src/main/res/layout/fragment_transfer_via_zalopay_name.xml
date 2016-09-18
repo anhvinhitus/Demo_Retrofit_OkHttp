@@ -64,12 +64,5 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/btnContinue"
-        style="@style/Button.Default"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bg_btn_blue"
-        android:text="@string/btn_continue" />
+    <include layout="@layout/btn_continue_bottom_layout" />
 </RelativeLayout>
