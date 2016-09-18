@@ -47,6 +47,13 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
                 return;
             }
 
+            // Add tracing for knowing which request results error
+            try {
+                Timber.w("Error on request: %s", call.request());
+            } catch (Throwable tt) {
+                // empty
+            }
+
             try {
                 if (NetworkHelper.isNetworkAvailable(mContext)) {
                     subscriber.onError(t);
