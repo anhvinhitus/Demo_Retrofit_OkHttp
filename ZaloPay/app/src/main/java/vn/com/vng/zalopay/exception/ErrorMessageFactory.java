@@ -44,9 +44,9 @@ public class ErrorMessageFactory {
         if (exception instanceof NetworkConnectionException) {
             message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof BodyException) {
-            message = NetworkError.create(context, ((BodyException) exception).errorCode);
+            message = exception.getMessage();
             if (TextUtils.isEmpty(message)) {
-                message = exception.getMessage();
+                message = NetworkError.create(context, ((BodyException) exception).errorCode);
             }
         } else if (exception instanceof TokenException) {
             //message = context.getString(R.string.exception_token_expired_message);

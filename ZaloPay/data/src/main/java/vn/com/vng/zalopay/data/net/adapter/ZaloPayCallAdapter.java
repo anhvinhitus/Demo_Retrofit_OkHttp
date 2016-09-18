@@ -30,10 +30,10 @@ final class ZaloPayCallAdapter extends BaseCallAdapter {
 
     @NonNull
     @Override
-    protected  <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
+    protected <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
         if (baseResponse.isSessionExpired()) {
             EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
-            return Observable.error(new TokenException());
+            return Observable.error(new TokenException(baseResponse.message));
         } else if (baseResponse.isServerMaintain()) {
             EventBus.getDefault().post(new ServerMaintainEvent(baseResponse.message));
             return Observable.error(new ServerMaintainException());

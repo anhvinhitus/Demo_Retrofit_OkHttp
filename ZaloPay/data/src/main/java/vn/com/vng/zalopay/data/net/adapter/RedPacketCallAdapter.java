@@ -30,7 +30,7 @@ final class RedPacketCallAdapter extends BaseCallAdapter {
     protected <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
         if (baseResponse.err == RedPacketNetworkErrorEnum.INVALID_ACCESS_TOKEN.getValue()) {
             EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
-            return Observable.error(new TokenException());
+            return Observable.error(new TokenException(baseResponse.message));
         } else {
             return Observable.error(new BodyException(body.err, body.message));
         }
