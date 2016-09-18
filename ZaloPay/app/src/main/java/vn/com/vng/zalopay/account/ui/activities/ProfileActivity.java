@@ -5,10 +5,9 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import javax.inject.Inject;
 
@@ -23,8 +22,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
 public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView {
 
@@ -44,7 +42,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     View layoutUser;
 
     @BindView(R.id.imgAvatar)
-    ImageView imgAvatar;
+    SimpleDraweeView imgAvatar;
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -54,6 +52,9 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @Inject
     User user;
+
+    @Inject
+    ImageLoader mImageLoader;
 
     @OnClick(R.id.layoutProfileInfo)
     public void onClickHeaderProfile() {
@@ -70,10 +71,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             return;
         }
         tvName.setText(user.displayName);
-        Glide.with(this).load(user.avatar)
-                .placeholder(R.color.silver)
-                .centerCrop()
-                .into(imgAvatar);
+        mImageLoader.loadImage(imgAvatar, user.avatar);
         setZaloPayName(user.zalopayname);
     }
 
@@ -93,7 +91,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.activity_profile_info2;
+        return R.layout.activity_profile;
     }
 
     @Override

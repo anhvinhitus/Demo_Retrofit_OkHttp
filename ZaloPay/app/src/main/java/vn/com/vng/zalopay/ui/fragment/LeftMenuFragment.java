@@ -10,14 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.facebook.drawee.view.SimpleDraweeView;
-
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
@@ -35,6 +30,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.
+ *
  */
 public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItemClickListener, ILeftMenuView {
 

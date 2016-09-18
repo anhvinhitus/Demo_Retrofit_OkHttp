@@ -3,16 +3,13 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-
 import org.greenrobot.eventbus.EventBus;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 import java.lang.ref.WeakReference;
@@ -36,8 +33,7 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
-import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -56,11 +52,14 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     @Inject
     PreProfilePresenter presenter;
 
+    @Inject
+    ImageLoader mImageLoader;
+
     @BindView(R.id.headerView)
     View headerView;
 
     @BindView(R.id.imgAvatar)
-    ImageView imgAvatar;
+    SimpleDraweeView imgAvatar;
 
     @BindView(R.id.tvSex)
     TextView tvSex;
@@ -104,7 +103,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_profile;
+        return R.layout.activity_update_profile_level2;
     }
 
     @Override
@@ -178,10 +177,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
         tvName.setText(user.displayName);
         tvSex.setText(user.getGender());
-        Glide.with(this).load(user.avatar)
-                .placeholder(R.color.silver)
-                .centerCrop()
-                .into(imgAvatar);
+        mImageLoader.loadImage(imgAvatar, user.avatar);
     }
 
     @Override

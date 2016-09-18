@@ -1,8 +1,11 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,9 +18,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,6 +40,7 @@ import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -72,7 +79,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     TextInputLayout mIdentityNumberView;
 
     @BindView(R.id.imgAvatar)
-    ImageView imgAvatar;
+    SimpleDraweeView mAvatarInfoView;
 
     @BindView(R.id.tvSex)
     TextView tvSex;
@@ -128,6 +135,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @BindView(R.id.btnRemoveAvatar)
     ImageView btnRemoveAvatar;
+
+    @Inject
+    ImageLoader mImageLoader;
 
     @Override
     protected void setupFragmentComponent() {
@@ -351,11 +361,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         tvName.setText(user.displayName);
         tvSex.setText(user.getGender());
 
-        Glide.with(this).load(user.avatar)
-                .placeholder(R.color.silver)
-                .error(R.drawable.ic_avatar_default)
-                .centerCrop()
-                .into(imgAvatar);
+        mImageLoader.loadImage(mAvatarInfoView, user.avatar);
     }
 
     @OnClick(R.id.layoutFgCmnd)
@@ -437,9 +443,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         loadImage(mFgCmndView, uri);
         mTvFgCmndView.setVisibility(View.GONE);
         btnRemoveFrontImage.setClickable(true);
-        Glide.with(getContext())
-                .load(R.drawable.ic_remove_circle)
-                .into(btnRemoveFrontImage);
+        btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
     }
 
     void clearFrontImage() {
@@ -447,9 +451,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mFgCmndView.setVisibility(View.GONE);
         mTvFgCmndView.setVisibility(View.VISIBLE);
         btnRemoveFrontImage.setClickable(false);
-        Glide.with(getContext())
-                .load(R.drawable.ic_camera)
-                .into(btnRemoveFrontImage);
+        btnRemoveFrontImage.setImageResource(R.drawable.ic_camera);
         mUriFgCmnd = null;
     }
 
@@ -457,10 +459,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         loadImage(mAvatarView, uri);
         mTvAvatarView.setVisibility(View.GONE);
         btnRemoveAvatar.setClickable(true);
-
-        Glide.with(getContext())
-                .load(R.drawable.ic_remove_circle)
-                .into(btnRemoveAvatar);
+        btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
     }
 
     void clearAvatar() {
@@ -468,10 +467,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mAvatarView.setVisibility(View.GONE);
         mTvAvatarView.setVisibility(View.VISIBLE);
 
-        Glide.with(getContext())
-                .load(R.drawable.ic_camera)
-                .into(btnRemoveAvatar);
         btnRemoveAvatar.setClickable(false);
+        btnRemoveAvatar.setImageResource(R.drawable.ic_camera);
         mUriAvatar = null;
     }
 
@@ -479,9 +476,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         loadImage(mBgCmndView, uri);
         mTvBgCmndView.setVisibility(View.GONE);
         btnRemoveBackImage.setClickable(true);
-        Glide.with(getContext())
-                .load(R.drawable.ic_remove_circle)
-                .into(btnRemoveBackImage);
+        btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
     }
 
     void clearBackgroundImage() {
@@ -489,11 +484,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBgCmndView.setVisibility(View.GONE);
         mTvBgCmndView.setVisibility(View.VISIBLE);
         btnRemoveBackImage.setClickable(false);
-
-        btnRemoveBackImage.destroyDrawingCache();
-        Glide.with(getContext())
-                .load(R.drawable.ic_camera)
-                .into(btnRemoveBackImage);
+        btnRemoveBackImage.setImageResource(R.drawable.ic_camera);
         mUriBgCmnd = null;
     }
 
@@ -501,10 +492,52 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         if (uri == null) {
             return;
         }
-
+        
         image.setImageURI(uri);
         image.setVisibility(View.VISIBLE);
+
+       /* try {
+            Bitmap bitmap = getThumbnail(getContext(), uri);
+            image.setImageBitmap(bitmap);
+            image.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            Timber.d(e, "get thumbnail ");
+        }*/
     }
+
+    final int THUMBNAIL_SIZE = 256;
+
+   /* private Bitmap getThumbnail(Context context, Uri uri) throws Exception {
+        InputStream input = context.getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inDither = true;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
+            return null;
+
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+
+        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inDither = true;//optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        input = context.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+        return bitmap;
+    }
+
+    private int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
+    }*/
 
     @Override
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
