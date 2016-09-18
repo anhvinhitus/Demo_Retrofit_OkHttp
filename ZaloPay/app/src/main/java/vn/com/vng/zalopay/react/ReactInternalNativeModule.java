@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -16,8 +17,6 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -27,8 +26,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
-import static vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity.getCurrentActivity;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -185,6 +182,9 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
+                if (getCurrentActivity() == null) {
+                    return;
+                }
                 boolean pinSuccess = navigator.promptPIN(getCurrentActivity(), channel, promise);
                 Timber.d("pinSuccess %s", pinSuccess);
             }
