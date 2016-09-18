@@ -3,7 +3,9 @@ package vn.com.vng.zalopay.data.net.adapter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
@@ -48,8 +50,14 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             }
 
             // Add tracing for knowing which request results error
+            // Remove access token for protecting users
             try {
-                Timber.w("Error on request: %s", call.request());
+                String string = call.request().toString();
+                String accesstoken = call.request().url().queryParameter("accesstoken");
+                if (!TextUtils.isEmpty(accesstoken)) {
+                    string = string.replace(accesstoken, "[*]");
+                }
+                Timber.w("Error [%s] on request: %s", t.getMessage(), string);
             } catch (Throwable tt) {
                 // empty
             }
