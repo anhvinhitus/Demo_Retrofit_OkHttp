@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.fragment.IntroAppFragment;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, NetworkModule.class, AppApiModule.class, AppControllerModule.class,
@@ -54,6 +55,8 @@ public interface ApplicationComponent {
     PostExecutionThread postExecutionThread();
 
     UserComponent plus(UserModule userModule);
+
+    ImageLoader imageLoader();
 
     EventBus eventBus();
 

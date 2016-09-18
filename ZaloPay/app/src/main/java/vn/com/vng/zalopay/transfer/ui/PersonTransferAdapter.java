@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import java.util.HashSet;
@@ -22,11 +23,13 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by AnhHieu on 8/31/16.
@@ -38,7 +41,6 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
     private static final int VIEWTYPE_INPROGRESS = 1;
     private static final int VIEWTYPE_DONE = 2;
     private User mOwner;
-
 
     public PersonTransferAdapter(Context context, User user) {
         super(context);
@@ -69,8 +71,6 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Timber.d("onBindViewHolder position %s", position);
-
         if (holder instanceof ViewHolder) {
             PersonTransfer person = getItem(position);
             if (person != null) {
@@ -130,7 +130,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imgAvatar)
-        ImageView imgAvatar;
+        SimpleDraweeView imgAvatar;
 
         @BindView(R.id.tvDisplayName)
         TextView displayNameView;
@@ -138,8 +138,11 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         @BindView(R.id.tvAmount)
         TextView tvAmountView;
 
+        ImageLoader mImageLoader;
+
         public ViewHolder(View itemView) {
             super(itemView);
+            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
             ButterKnife.bind(this, itemView);
         }
 
@@ -160,13 +163,8 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
             }
         }
 
-        private void loadImage(ImageView imageView, String url) {
-            Glide.with(imageView.getContext()).load(url)
-                    .placeholder(R.color.silver)
-                    .error(R.drawable.ic_avatar_default)
-                    .centerCrop()
-                    .dontAnimate()
-                    .into(imageView);
+        private void loadImage(SimpleDraweeView imageView, String url) {
+            mImageLoader.loadImage(imageView, url);
         }
 
     }
@@ -177,7 +175,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         ImageView mMyQrCodeView;
 
         @BindView(R.id.imageAvatar)
-        ImageView mImageAvatarView;
+        SimpleDraweeView mImageAvatarView;
 
         @BindView(R.id.layoutSuccess)
         View layoutSuccess;
@@ -186,7 +184,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         TextView mNameView;
 
         @BindView(R.id.imageAvatarLarge)
-        ImageView imageAvatarLarge;
+        SimpleDraweeView imageAvatarLarge;
 
         @BindView(R.id.tvAmount)
         TextView tvAmountView;
@@ -205,9 +203,11 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
         private long mTotal;
 
+        ImageLoader mImageLoader;
+
         public HeaderViewHolder(View itemView) {
             super(itemView);
-
+            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
             ButterKnife.bind(this, itemView);
         }
 
@@ -255,17 +255,10 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
         public void setUserInfo(String displayName, String avatar) {
             Timber.d("setUserInfo: displayName %s avatar %s", displayName, avatar);
             loadImage(mImageAvatarView, avatar);
-//            loadImage(imageAvatarLarge, avatar);
-//            mNameView.setText(displayName);
         }
 
-        private void loadImage(ImageView imageView, String url) {
-            Glide.with(imageView.getContext()).load(url)
-                    .placeholder(R.color.silver)
-                    .error(R.drawable.ic_avatar_default)
-                    .centerCrop()
-                    .dontAnimate()
-                    .into(imageView);
+        private void loadImage(SimpleDraweeView imageView, String url) {
+            mImageLoader.loadImage(imageView, url);
         }
 
         private Runnable mRunnable = new Runnable() {

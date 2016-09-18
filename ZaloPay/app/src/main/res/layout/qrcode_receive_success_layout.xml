@@ -8,14 +8,13 @@
     android:orientation="vertical"
     android:visibility="gone">
 
-    <com.zalopay.ui.widget.image.BezelImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imageAvatarLarge"
+        style="@style/AvatarDraweeView"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
-        app:maskDrawable="@drawable/circle_mask" />
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/tvName"

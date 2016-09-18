@@ -207,7 +207,7 @@
     <string name="hint_fullname">Họ tên</string>
 
     <string name="show_passcode">Hiện mã PIN?</string>
-    <string name="title_activity_scan_to_pay">Trả Tiền</string>
+    <string name="title_activity_scan_to_pay">Trả tiền</string>
     <string name="btn_emulate_nfc">Giả lập Nfc</string>
 
     <string name="show">Hiện</string>

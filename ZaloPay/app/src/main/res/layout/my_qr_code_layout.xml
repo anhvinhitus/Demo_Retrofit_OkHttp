@@ -56,14 +56,13 @@
             android:adjustViewBounds="true"
             android:background="@color/silver" />
 
-        <com.zalopay.ui.widget.image.BezelImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imageAvatar"
+            style="@style/AvatarDraweeView.Border"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            app:borderDrawable="@drawable/circle_border_white"
-            app:maskDrawable="@drawable/circle_mask" />
+            app:roundedCornerRadius="22dp" />
 
     </FrameLayout>
 

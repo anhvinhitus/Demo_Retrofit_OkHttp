@@ -15,17 +15,13 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.zalopay.ui.widget.image.BezelImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatar"
+            style="@style/AvatarDraweeView"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_avatar_default"
-            app:borderDrawable="@color/transparent"
-            app:maskDrawable="@drawable/circle_mask" />
+            android:layout_marginRight="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

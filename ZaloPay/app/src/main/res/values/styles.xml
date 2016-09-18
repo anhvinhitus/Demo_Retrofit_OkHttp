@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <style name="CardViewStyle" parent="android:Widget.TextView">
         <item name="cardCornerRadius">@dimen/cardview_corner_radius</item>
@@ -151,6 +151,21 @@
     <style name="TextLabelHintDefault" parent="TextAppearance.AppCompat">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="AvatarDraweeView">
+        <item name="actualImageScaleType">centerCrop</item>
+        <item name="failureImageScaleType">centerCrop</item>
+        <item name="placeholderImageScaleType">centerCrop</item>
+        <item name="roundAsCircle">true</item>
+        <item name="failureImage">@drawable/ic_avatar_default</item>
+        <item name="placeholderImage">@color/silver</item>
+        <item name="fadeDuration">0</item>
+    </style>
+
+    <style name="AvatarDraweeView.Border">
+        <item name="roundingBorderWidth">3dp</item>
+        <item name="roundingBorderColor">@color/white</item>
     </style>
 
 </resources>
