@@ -46,4 +46,15 @@ public class Person {
     public boolean equals(Object o) {
         return o instanceof Person && zaloPayId.equals(((Person) o).zaloPayId) && !TextUtils.isEmpty(zaloPayId);
     }
+
+    @Override
+    public String toString() {
+        return "Person {" +
+                "zaloPayId='" + zaloPayId + '\'' +
+                ", zalopayname='" + zalopayname + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", phonenumber=" + phonenumber +
+                '}';
+    }
 }

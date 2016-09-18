@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.presenter;
+package vn.com.vng.zalopay.transfer.ui;
 
 import android.content.Context;
 
@@ -14,13 +14,15 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
+import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
 
 /**
  * Created by AnhHieu on 9/11/16.
  * *
  */
-public class TransferMoneyViaAccountNamePresenter extends BaseUserPresenter implements IPresenter<ITransferMoneyView> {
+public class TransferViaZaloPayNamePresenter extends BaseUserPresenter implements IPresenter<ITransferMoneyView> {
 
     private ITransferMoneyView mView;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -28,8 +30,8 @@ public class TransferMoneyViaAccountNamePresenter extends BaseUserPresenter impl
     private Context mApplicationContext;
 
     @Inject
-    TransferMoneyViaAccountNamePresenter(AccountStore.Repository accountRepository,
-                                         Context applicationContext) {
+    TransferViaZaloPayNamePresenter(AccountStore.Repository accountRepository,
+                                    Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
     }

@@ -28,7 +28,7 @@ import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.presenter.TransferMoneyViaAccountNamePresenter;
+import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNamePresenter;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -66,7 +66,7 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
     User user;
 
     @Inject
-    TransferMoneyViaAccountNamePresenter presenter;
+    TransferViaZaloPayNamePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

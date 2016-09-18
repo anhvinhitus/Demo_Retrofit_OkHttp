@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.presenter.TransferMoneyViaAccountNamePresenter;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -56,7 +55,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     TextInputLayout textInputAccountName;
 
     @Inject
-    TransferMoneyViaAccountNamePresenter presenter;
+    TransferViaZaloPayNamePresenter presenter;
 
     @Inject
     User user;
@@ -112,6 +111,9 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
     @Override
     public void onGetProfileSuccess(Person person, String zaloPayName) {
+        showError(null);
+
+        Timber.d("Got profile for %s: %s", zaloPayName, person);
         RecentTransaction item = new RecentTransaction();
         item.avatar = person.avatar;
         item.zaloPayId = person.zaloPayId;
@@ -134,25 +136,34 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        String s = textInputAccountName.getEditText().getText().toString().trim();
-        Timber.d("name %s", s);
+        String zaloPayName;
+        try {
+            zaloPayName = textInputAccountName.getEditText().getText().toString().trim();
+            Timber.d("name %s", zaloPayName);
+        } catch (Throwable t) {
+            Timber.i("Exception while getting ZaloPayName");
+            zaloPayName = "";
+        }
 
-        boolean isValidExt = isValidExt(s);
+        boolean isValidExt = isValidExt(zaloPayName);
         if (!isValidExt) {
             return;
         }
-        boolean isValid = isValidChanged(s);
+        boolean isValid = isValidChanged(zaloPayName);
         if (!isValid) {
             return;
         }
 
-        presenter.getUserInfo(s);
+        presenter.getUserInfo(zaloPayName);
     }
 
     @OnTextChanged(R.id.edtAccountName)
     public void onTextChanged(CharSequence s) {
-
-
+        if (s == null) {
+            showError(getContext().getString(R.string.exception_empty_account));
+            btnContinue.setEnabled(false);
+            return;
+        }
         boolean isValid = isValidChanged(s.toString());
 
         Timber.d("onTextChanged: s %s isValid %s", s, isValid);
@@ -165,7 +176,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     }
 
     private boolean isValidExt(String s) {
-        if (s.length() == 0) {
+        if (TextUtils.isEmpty(s)) {
             showError(getContext().getString(R.string.exception_empty_account));
             return false;
         } else if (!ValidateUtil.isValidLengthZPName(s)) {
