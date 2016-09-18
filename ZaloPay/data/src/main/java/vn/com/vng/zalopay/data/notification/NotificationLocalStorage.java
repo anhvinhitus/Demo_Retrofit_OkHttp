@@ -264,8 +264,6 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         for (NotificationGD notify : list) {
             notify.setNotificationstate(Enums.NotificationState.VIEW.getId());
         }
-
-        getAsyncSession().updateInTx(NotificationGD.class, list);
-
+        getDaoSession().getNotificationGDDao().updateInTx(list);
     }
 }
