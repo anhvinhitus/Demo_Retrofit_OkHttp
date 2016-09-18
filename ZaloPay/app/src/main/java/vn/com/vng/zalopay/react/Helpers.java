@@ -214,11 +214,30 @@ public class Helpers {
                 break;
 
             default:
-                DialogManager.showSweetDialogCustom(activity,
-                        message,
-                        btnNames.getString(0),
-                        SweetAlertDialog.NORMAL_TYPE,
-                        new DialogSimpleEventListener(promise, 0));
+                if (btnNames.size() > 1) {
+                    DialogManager.showSweetDialogConfirm(activity,
+                            message,
+                            btnNames.getString(0),
+                            btnNames.getString(1),
+                            new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
+                                    Helpers.promiseResolve(promise, 1);
+                                }
+
+                                @Override
+                                public void onOKevent() {
+                                    Helpers.promiseResolve(promise, 0);
+                                }
+                            }
+                    );
+                } else {
+                    DialogManager.showSweetDialogCustom(activity,
+                            message,
+                            btnNames.getString(0),
+                            SweetAlertDialog.NORMAL_TYPE,
+                            new DialogSimpleEventListener(promise, 0));
+                }
                 break;
         }
     }
