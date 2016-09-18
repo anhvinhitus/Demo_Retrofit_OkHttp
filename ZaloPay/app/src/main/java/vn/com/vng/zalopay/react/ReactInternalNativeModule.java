@@ -129,7 +129,6 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @Nullable
     @Override
     public Map<String, Object> getConstants() {
         Map<String, Object> map = new HashMap<>();
