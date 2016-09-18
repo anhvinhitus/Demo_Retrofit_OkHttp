@@ -21,7 +21,6 @@
          app:maskDrawable="@drawable/circle_mask"/>
  -->
 
-
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/im_avatar"
         android:layout_width="@dimen/leftmenu.avatar"
@@ -30,7 +29,8 @@
         app:failureImageScaleType="centerCrop"
         app:placeholderImageScaleType="centerCrop"
         app:roundAsCircle="true"
-        app:roundingBorderColor="@color/colorPrimary"
+        app:roundedCornerRadius="36dp"
+        app:roundingBorderColor="@color/leftmenu.avatar.bg"
         app:roundingBorderWidth="3dp" />
 
     <LinearLayout

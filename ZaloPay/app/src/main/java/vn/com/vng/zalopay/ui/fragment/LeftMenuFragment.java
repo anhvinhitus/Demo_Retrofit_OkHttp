@@ -207,14 +207,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         setZaloPayName(user.zalopayname);
     }
 
-/*    private void loadImage(final ImageView imageView, String url) {
-        Glide.with(this).load(url)
-                .placeholder(R.color.silver)
-                .error(R.drawable.ic_avatar_default)
-                .centerCrop()
-                .into(imageView);
-    }*/
-
     @Override
     public void setAvatar(String avatar) {
         mImageLoader.loadImage(mImageAvatarView, avatar, R.drawable.ic_avatar_default, R.drawable.ic_avatar_default, ImageLoader.ScaleType.CENTER);
