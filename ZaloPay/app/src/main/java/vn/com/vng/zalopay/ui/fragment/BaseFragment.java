@@ -32,6 +32,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public abstract class BaseFragment extends Fragment {
 
@@ -78,19 +79,19 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        Glide.with(getActivity()).onStop();
+        Glide.with(AndroidApplication.instance()).onStop();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Glide.with(getActivity()).onStart();
+        Glide.with(AndroidApplication.instance()).onStart();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        Glide.with(getActivity()).onLowMemory();
+        Glide.with(AndroidApplication.instance()).onLowMemory();
     }
 
 

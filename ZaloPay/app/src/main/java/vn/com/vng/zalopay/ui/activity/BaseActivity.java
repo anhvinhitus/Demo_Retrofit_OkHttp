@@ -47,6 +47,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ *
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
