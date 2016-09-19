@@ -45,6 +45,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Inject
     TransferPresenter mPresenter;
 
+    @BindView(R.id.rootView)
+    KeyboardFrameLayout rootView;
+
     @BindView(R.id.ScrollView)
     ScrollView mScrollView;
 
@@ -65,9 +68,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @BindView(R.id.edtTransferMsg)
     EditText edtTransferMsg;
-
-    @BindView(R.id.rootView)
-    KeyboardFrameLayout rootView;
 
     @BindView(R.id.btnContinue)
     View btnContinue;
