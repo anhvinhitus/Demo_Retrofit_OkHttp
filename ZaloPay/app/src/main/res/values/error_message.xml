@@ -20,9 +20,9 @@
     <string name="invitation.code.invalid">Mã kích hoạt không hợp lệ!</string>
     <string name="email.invalid">Email không hợp lệ!</string>
     <string name="cmnd.invalid">CMND không hợp lệ!</string>
-    <string name="exception.uri.bg.cmnd">Bạn chưa chọn ảnh CMND!</string>
-    <string name="exception.uri.fg.cmnd">Bạn chưa chọn ảnh CMND!</string>
-    <string name="exception.uri.avatar">Bạn chưa chọn ảnh của bạn!</string>
+    <string name="exception.uri.bg.cmnd">Bạn chưa chọn mặt sau CMND/Hộ chiếu</string>
+    <string name="exception.uri.fg.cmnd">Bạn chưa chọn mặt trước CMND/Hộ chiếu</string>
+    <string name="exception.uri.avatar">Bạn chưa chọn ảnh đại diện</string>
     <string name="exception.login.zalo.error">Không đăng nhập được zalo, Vui lòng thử lại sau!</string>
     <string name="exception.server.maintain">Hệ thống đang bảo trì. Vui lòng thử lại sau.</string>
     <string name="exception.code.invalid">Mã không phù hợp</string>

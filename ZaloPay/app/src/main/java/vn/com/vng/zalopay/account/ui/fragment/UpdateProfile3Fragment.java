@@ -11,16 +11,8 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.zalopay.ui.widget.KeyboardLinearLayout;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -34,7 +26,6 @@ import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.vng.zalopay.utils.PhotoUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -42,13 +33,12 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/30/16.
+ *
  */
 public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View {
 
     public static UpdateProfile3Fragment newInstance() {
-
         Bundle args = new Bundle();
-
         UpdateProfile3Fragment fragment = new UpdateProfile3Fragment();
         fragment.setArguments(args);
         return fragment;
@@ -74,18 +64,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.textInputIdentity)
     TextInputLayout mIdentityNumberView;
 
-    @BindView(R.id.imgAvatar)
-    SimpleDraweeView mAvatarInfoView;
-
-    @BindView(R.id.tvSex)
-    TextView tvSex;
-
-    @BindView(R.id.tvBirthday)
-    TextView tvBirthday;
-
-    @BindView(R.id.tv_name)
-    TextView tvName;
-
     @BindView(R.id.avatar)
     ImageView mAvatarView;
 
@@ -104,24 +82,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.tvFgCmnd)
     TextView mTvFgCmndView;
 
-    @BindView(R.id.rootView)
-    KeyboardLinearLayout rootView;
-
-    @BindView(R.id.headerView)
-    View headerView;
-
     private Uri mUriBgCmnd;
     private Uri mUriFgCmnd;
     private Uri mUriAvatar;
 
     @BindView(R.id.tvTerm)
     TextView tvTerm;
-
-    @BindView(R.id.scroll1)
-    ScrollView mScrollView;
-
-    @BindView(R.id.container1)
-    View mContainerView;
 
     @BindView(R.id.btnRemoveFrontCmnd)
     ImageView btnRemoveFrontImage;
@@ -131,9 +97,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @BindView(R.id.btnRemoveAvatar)
     ImageView btnRemoveAvatar;
-
-    @Inject
-    ImageLoader mImageLoader;
 
     @BindView(R.id.tvContinue)
     TextView mTvContinue;
@@ -160,26 +123,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        setProfile(user);
-        rootView.setOnKeyboardStateListener(new KeyboardLinearLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
-            @Override
-            public void onKeyBoardShow(int height) {
-              /*  int childHeight = mContainerView.getHeight();
-                boolean isScrollable = mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
-
-                Timber.d("onKeyBoardShow: childHeight %s isScrollable %s mScrollView %s", childHeight, isScrollable, mScrollView.getHeight());
-
-                headerView.setVisibility(isScrollable ? View.GONE : View.VISIBLE);*/
-                headerView.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onKeyBoardHide() {
-                Timber.d("onKeyBoardHide");
-                headerView.setVisibility(View.VISIBLE);
-            }
-        });
-
         AndroidUtils.setSpannedMessageToView(tvTerm,
                 R.string.agree_term_of_use, R.string.term_of_use,
                 false, false, R.color.colorPrimary,
@@ -196,18 +139,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBtnContinue.setEnabled(false);
     }
 
-    @OnTextChanged(R.id.edtEmail)
-    public void onTextChangedEmail(CharSequence s) {
-        mEmailView.setError(null);
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
-    }
-
-    @OnTextChanged(R.id.edtIdentity)
-    public void onTextChangeIdentity(CharSequence s) {
-        mIdentityNumberView.setError(null);
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -219,6 +150,28 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        String email = getEmail();
+        String cmnd = getIdentity();
+
+        presenter.saveProfileInfo3(email, cmnd, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
+
+        return super.onBackPressed();
+    }
+
+    @OnTextChanged(R.id.edtEmail)
+    public void onTextChangedEmail(CharSequence s) {
+        mEmailView.setError(null);
+        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
+    }
+
+    @OnTextChanged(R.id.edtIdentity)
+    public void onTextChangeIdentity(CharSequence s) {
+        mIdentityNumberView.setError(null);
+        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
     }
 
     public int getCurrentPage() {
@@ -288,19 +241,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
-    @Override
-    public boolean onBackPressed() {
-        String email = getEmail();
-        String cmnd = getIdentity();
-
-        presenter.saveProfileInfo3(email, cmnd, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
-
-        return super.onBackPressed();
-    }
 
     private void updateProfile() {
         String cmnd = getIdentity();
         String email = getEmail();
+
         if (isValidatePageTwo()) {
             presenter.updateProfile3(cmnd, email, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
         }
@@ -321,13 +266,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private boolean isValidatePageTwo() {
-        if (mUriBgCmnd == null || TextUtils.isEmpty(mUriBgCmnd.getPath())) {
-            showMessageDialog(R.string.exception_uri_bg_cmnd);
+        if (mUriFgCmnd == null || TextUtils.isEmpty(mUriFgCmnd.getPath())) {
+            showMessageDialog(R.string.exception_uri_fg_cmnd);
             return false;
         }
 
-        if (mUriFgCmnd == null || TextUtils.isEmpty(mUriFgCmnd.getPath())) {
-            showMessageDialog(R.string.exception_uri_fg_cmnd);
+        if (mUriBgCmnd == null || TextUtils.isEmpty(mUriBgCmnd.getPath())) {
+            showMessageDialog(R.string.exception_uri_bg_cmnd);
             return false;
         }
 
@@ -340,16 +285,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void showMessageDialog(int message) {
-        SweetAlertDialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
-        dialog.setContentText(getString(message));
-        dialog.setConfirmText(getString(R.string.ok));
-        dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.dismiss();
-            }
-        });
-        dialog.show();
+        DialogManager.showSweetDialogCustom(getActivity(), getString(message),
+                getString(R.string.txt_close), SweetAlertDialog.NORMAL_TYPE, null);
     }
 
     @Override
@@ -371,7 +308,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     private void showDialogSuccess() {
         SweetAlertDialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.INFO_TYPE, R.style.alert_dialog);
         dialog.setContentText(getString(R.string.update_profile_success));
-        dialog.setConfirmText(getString(R.string.ok));
+        dialog.setConfirmText(getString(R.string.txt_close));
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -398,16 +335,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void waitingApproveProfileLevel3() {
         hideLoading();
         getActivity().finish();
-    }
-
-    @Override
-    public void setProfile(User user) {
-        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                .format(new Date(user.birthDate * 1000)));
-        tvName.setText(user.displayName);
-        tvSex.setText(user.getGender());
-
-        mImageLoader.loadImage(mAvatarInfoView, user.avatar);
     }
 
     @OnClick(R.id.layoutFgCmnd)

@@ -201,6 +201,7 @@
 
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
+            android:label="@string/title.activity.profile"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
