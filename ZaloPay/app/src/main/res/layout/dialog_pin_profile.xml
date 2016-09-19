@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="20dp"
-            android:hint="Mã số PIN"
+            android:hint="Mã PIN"
             android:textColor="@color/red"
             android:textColorHint="@color/colorPrimary"
             android:textSize="@dimen/textsize.tiny" />
