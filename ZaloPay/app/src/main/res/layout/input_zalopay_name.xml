@@ -26,6 +26,7 @@
             android:maxLines="1"
             android:paddingTop="@dimen/spacing.small"
             android:singleLine="true"
+            android:textAllCaps="false"
             android:textColorHint="@color/hint" />
 
     </android.support.design.widget.TextInputLayout>

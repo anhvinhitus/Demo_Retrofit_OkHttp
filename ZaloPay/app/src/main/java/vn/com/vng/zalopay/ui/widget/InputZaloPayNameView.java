@@ -64,6 +64,9 @@ public class InputZaloPayNameView extends FrameLayout {
         mEdtZaloPayName.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validZPName();
+                }
                 if (mListener != null) {
                     mListener.onFocusChange(hasFocus);
                 }
@@ -94,11 +97,7 @@ public class InputZaloPayNameView extends FrameLayout {
     @OnTextChanged(R.id.edtZaloPayName)
     public void onTextChangeAccountName(CharSequence s) {
         mCurrentState = ZPNameStateEnum.UNKNOWN;
-        if (TextUtils.isEmpty(s)) {
-            //showImgInfo();
-            hideZPNameError();
-            disableBtnCheck();
-        } else if (validZPName()) {
+        if (validZPName()) {
             enableBtnCheck();
         }
         if (mListener != null) {
@@ -115,7 +114,10 @@ public class InputZaloPayNameView extends FrameLayout {
     }
 
     public String getText() {
-        return mEdtZaloPayName.getText().toString();
+        if (mEdtZaloPayName == null || mEdtZaloPayName.getText() == null) {
+            return "";
+        }
+        return mEdtZaloPayName.getText().toString().toLowerCase();
     }
 
     public int length() {
@@ -163,9 +165,9 @@ public class InputZaloPayNameView extends FrameLayout {
     public boolean validZPName() {
         String zaloPayName = mEdtZaloPayName.getText().toString();
         if (TextUtils.isEmpty(zaloPayName)) {
-            hideZPNameError();
-            enableBtnCheck();
-            return true;
+            showZPNameError(getContext().getString(R.string.exception_account_name_empty));
+            disableBtnCheck();
+            return false;
         } else if (!ValidateUtil.isValidLengthZPName(zaloPayName)) {
             showZPNameError(getContext().getString(R.string.exception_account_name_length));
             disableBtnCheck();
