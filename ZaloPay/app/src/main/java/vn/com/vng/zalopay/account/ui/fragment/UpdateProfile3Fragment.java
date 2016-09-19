@@ -1,18 +1,14 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -21,9 +17,6 @@ import android.widget.ViewFlipper;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -46,6 +39,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/30/16.
+ *
  */
 public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View {
 

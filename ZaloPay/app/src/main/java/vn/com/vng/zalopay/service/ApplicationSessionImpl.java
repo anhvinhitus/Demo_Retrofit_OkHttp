@@ -59,12 +59,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
 
         applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
 
-
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-
-        OkHttpClient okHttpClient = applicationComponent.okHttpClient();
-        okHttpClient.dispatcher().cancelAll();
-        Timber.d("clearUserSession: call request");
 
         // move to login
         ZaloSDK.Instance.unauthenticate();
@@ -119,5 +114,12 @@ public class ApplicationSessionImpl implements ApplicationSession {
      */
     public void newUserSession() {
 
+    }
+
+    @Override
+    public void cancelAllRequest() {
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        OkHttpClient okHttpClient = applicationComponent.okHttpClient();
+        okHttpClient.dispatcher().cancelAll();
     }
 }

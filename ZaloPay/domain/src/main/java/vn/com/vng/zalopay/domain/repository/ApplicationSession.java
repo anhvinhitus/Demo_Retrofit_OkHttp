@@ -12,4 +12,6 @@ public interface ApplicationSession {
 
     void setMessageAtLogin(String message);
     void setMessageAtLogin(int message);
+
+    void cancelAllRequest();
 }

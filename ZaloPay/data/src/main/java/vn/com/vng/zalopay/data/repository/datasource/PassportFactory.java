@@ -18,7 +18,6 @@ import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 
 /**
  * Created by AnhHieu on 3/30/16.
- *
  */
 @Singleton
 public class PassportFactory {
@@ -58,10 +57,9 @@ public class PassportFactory {
 
     public Observable<LogoutResponse> logout() {
         return passportService.logout(payAppId, userConfig.getUserId(), userConfig.getSession())
-                ;
+                .doOnTerminate(() -> applicationSession.cancelAllRequest());
     }
 
-    //
     public Observable<VerifyInvitationCodeResponse> verifyInvitationCode(String code) {
         return passportService.verifyCode(userConfig.getUserIdInvitation(), userConfig.getSessionInvitation(), code)
                 .doOnNext(response -> checkIfOldAccount(response.userid))
@@ -78,7 +76,7 @@ public class PassportFactory {
                 clearAllUserDB();
             }
         }
-        
+
         userConfig.setLastUid(userId);
     }
 
