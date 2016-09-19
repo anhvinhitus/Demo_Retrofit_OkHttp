@@ -124,7 +124,7 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
         } else if (!ValidateUtil.isValidLengthZPName(s)) {
             showError(getContext().getString(R.string.exception_account_name_length));
             return false;
-        } else if (s.equals(user.zalopayname)) {
+        } else if (s.equalsIgnoreCase(user.zalopayname)) {
             showError(getContext().getString(R.string.exception_transfer_for_self));
             return false;
         }

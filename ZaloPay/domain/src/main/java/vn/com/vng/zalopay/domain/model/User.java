@@ -1,12 +1,5 @@
 package vn.com.vng.zalopay.domain.model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by AnhHieu on 3/25/16.
  *
