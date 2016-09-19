@@ -23,6 +23,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ImageLoader;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView {
 
@@ -63,6 +65,10 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         }
         if (getUserComponent().currentUser().profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(this);
+        }else{
+            navigator.startEditAccountActivity(getApplicationContext());
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
+
         }
     }
 

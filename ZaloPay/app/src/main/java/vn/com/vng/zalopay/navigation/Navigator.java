@@ -25,6 +25,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
+import vn.com.vng.zalopay.account.ui.activities.EditAccountNameActivity;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -471,4 +472,10 @@ public class Navigator implements INavigator {
     public void startTransferViaAccountName(Context context) {
         context.startActivity(new Intent(context, TransferViaZaloPayNameActivity.class));
     }
+
+    public void startEditAccountActivity(Context context) {
+        Intent intent = new Intent(context, EditAccountNameActivity.class);
+        context.startActivity(intent);
+    }
+
 }
