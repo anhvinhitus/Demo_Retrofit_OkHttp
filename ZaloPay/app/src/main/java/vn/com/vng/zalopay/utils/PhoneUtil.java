@@ -23,13 +23,13 @@ public class PhoneUtil {
             return "";
         }
         if (phoneNumber.startsWith("84")) {
-            return phoneNumber.replace("84", "0");
+            return phoneNumber.replaceFirst("84", "0");
         }
         if (phoneNumber.startsWith("9")) {
-            return phoneNumber.replace("9", "09");
+            return phoneNumber.replaceFirst("9", "09");
         }
         if (phoneNumber.startsWith("1")) {
-            return phoneNumber.replace("1", "01");
+            return phoneNumber.replaceFirst("1", "01");
         }
         return phoneNumber;
     }
