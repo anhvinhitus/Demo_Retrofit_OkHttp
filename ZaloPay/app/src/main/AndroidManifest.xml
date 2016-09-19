@@ -250,7 +250,7 @@
             android:label="@string/title.activity.zalopay.contact" />
         <activity
             android:name=".transfer.ui.TransferActivity"
-            android:label="@string/title.activity.transfer.to" />
+            android:label="@string/title.activity.transfer" />
         <activity
             android:name=".ui.activity.IntroSaveCardActivity"
             android:exported="false">

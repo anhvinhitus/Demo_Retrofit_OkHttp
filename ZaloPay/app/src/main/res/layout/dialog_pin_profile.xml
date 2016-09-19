@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="20dp"
-            android:hint="Mã PIN"
+            android:hint="Mã số PIN"
             android:textColor="@color/red"
             android:textColorHint="@color/colorPrimary"
             android:textSize="@dimen/textsize.tiny" />
@@ -84,8 +84,7 @@
         android:paddingBottom="@dimen/zpw_padding_5"
         android:paddingLeft="@dimen/zpw_padding_8"
         android:paddingRight="@dimen/zpw_padding_8"
-        android:paddingTop="@dimen/zpw_padding_5"
-        android:weightSum="2">
+        android:paddingTop="@dimen/zpw_padding_5">
 
         <TextView
             android:id="@+id/cancel_button"
@@ -97,7 +96,7 @@
             android:paddingLeft="@dimen/zpw_padding_15"
             android:paddingRight="@dimen/zpw_padding_15"
             android:paddingTop="@dimen/zpw_padding_6"
-            android:text="@string/cancel" />
+            android:text="@string/txt_close" />
 
     </LinearLayout>
 
