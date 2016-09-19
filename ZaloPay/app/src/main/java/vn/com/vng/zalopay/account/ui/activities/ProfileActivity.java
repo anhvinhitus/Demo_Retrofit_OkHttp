@@ -66,9 +66,8 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         if (getUserComponent().currentUser().profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(this);
         }else{
-            navigator.startEditAccountActivity(getApplicationContext());
+            navigator.startEditAccountActivity(this);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
-
         }
     }
 
