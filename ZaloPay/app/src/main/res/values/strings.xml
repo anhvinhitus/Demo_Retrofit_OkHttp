@@ -231,7 +231,7 @@
     <string name="transfer_acc_zalopay">Bạn bè Zalo</string>
     <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
-    <string name="hint_zalo_contact">Nhập tên, số điện thoại để tìm kiếm</string>
+    <string name="hint_zalo_contact">Nhập tên để tìm</string>
 
     <string name="deposit">Nạp tiền vào tài khoản</string>
 

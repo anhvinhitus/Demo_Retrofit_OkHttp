@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="exception.token.expired.message">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!</string>
+    <string name="exception.token.expired.message">Phiên làm việc đã  hết hạn. Vui lòng đăng nhập lại để tiếp tục.</string>
     <string name="exception.generic">Có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại!</string>
     <string name="exception.no.connection">Vui lòng kiểm tra kết nối mạng</string>
     <string name="exception.no.connection.try.again">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
