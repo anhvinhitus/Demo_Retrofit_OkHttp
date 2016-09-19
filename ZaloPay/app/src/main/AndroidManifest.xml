@@ -201,7 +201,9 @@
 
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.profile"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
