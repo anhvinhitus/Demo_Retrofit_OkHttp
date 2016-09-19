@@ -77,7 +77,7 @@
         android:layout_height="1dp"
         android:background="@color/line" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -89,15 +89,15 @@
         <TextView
             android:id="@+id/cancel_button"
             style="@style/dialog_blue_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="right"
             android:paddingBottom="@dimen/zpw_padding_6"
             android:paddingLeft="@dimen/zpw_padding_15"
             android:paddingRight="@dimen/zpw_padding_15"
             android:paddingTop="@dimen/zpw_padding_6"
             android:text="@string/txt_close" />
 
-    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>
