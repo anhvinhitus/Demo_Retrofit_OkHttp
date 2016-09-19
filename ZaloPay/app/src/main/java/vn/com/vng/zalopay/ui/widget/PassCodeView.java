@@ -222,6 +222,15 @@ public class PassCodeView extends FrameLayout {
         }
     }
 
+    @Override
+    public boolean isFocused() {
+        if (mEditText == null) {
+            return super.isFocused();
+        } else {
+            return mEditText.isFocused();
+        }
+    }
+
     public boolean requestFocusView() {
         return mEditText.requestFocus();
     }

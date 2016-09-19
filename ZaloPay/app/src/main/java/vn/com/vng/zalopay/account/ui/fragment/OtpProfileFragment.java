@@ -19,11 +19,13 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 
 /**
@@ -34,7 +36,7 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
  * Use the {@link OtpProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfileView {
+public class OtpProfileFragment extends BaseFragment implements IOTPProfileView {
 
     private OnOTPFragmentListener mListener;
 
@@ -49,6 +51,28 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
 
     @BindView(R.id.edtOTP)
     ClearableEditText edtOTP;
+
+    @BindView(R.id.btnContinue)
+    View btnContinue;
+
+    @OnTextChanged(R.id.edtOTP)
+    public void onEdtOTPChanged() {
+        if (edtOTP == null || TextUtils.isEmpty(edtOTP.getText().toString())) {
+            showHideBtnContinue(false);
+        } else {
+            showHideBtnContinue(true);
+        }
+    }
+
+    private void showHideBtnContinue(boolean show) {
+        if (show) {
+            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
+            btnContinue.setOnClickListener(mOnClickContinueListener);
+        } else {
+            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
+            btnContinue.setOnClickListener(null);
+        }
+    }
 
     private void showOTPError() {
         textInputOTP.setErrorEnabled(true);
@@ -79,7 +103,13 @@ public class OtpProfileFragment extends AbsProfileFragment implements IOTPProfil
         return new OtpProfileFragment();
     }
 
-    @Override
+    private View.OnClickListener mOnClickContinueListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onClickContinue();
+        }
+    };
+
     public void onClickContinue() {
         if (!isValidOTP()) {
             showOTPError();

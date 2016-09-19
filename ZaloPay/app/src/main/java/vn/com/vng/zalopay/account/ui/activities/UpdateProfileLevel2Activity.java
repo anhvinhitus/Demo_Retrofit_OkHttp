@@ -5,12 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import org.greenrobot.eventbus.EventBus;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -23,7 +23,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ProfileSlidePagerAdapter;
-import vn.com.vng.zalopay.account.ui.fragment.AbsProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
@@ -73,24 +72,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
 
-    @BindView(R.id.btnContinue)
-    View btnContinue;
-
-    View.OnClickListener onClickBtnContinue = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            onClickContinue();
-        }
-    };
-
-    public void onClickContinue() {
-        if (adapter == null) {
-            return;
-        }
-        AbsProfileFragment fragment = (AbsProfileFragment) adapter.getItem(viewPager.getCurrentItem());
-        fragment.onClickContinue();
-    }
-
     @Override
     protected void setupActivityComponent() {
         getUserComponent().inject(this);
@@ -114,7 +95,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         initContent();
         initPaymentWrapper();
         headerView.setVisibility(View.GONE);
-        onChangeBtnConfirmState(false);
     }
 
     private void initPaymentWrapper() {
@@ -221,22 +201,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         mCurrentPhone = phone;
         mCurrentZaloPayName = zaloPayName;
         nextPager();
-    }
-
-    @Override
-    public void onUpdatePinFail() {
-
-    }
-
-    @Override
-    public void onChangeBtnConfirmState(boolean isEnable) {
-        if (isEnable) {
-            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
-            btnContinue.setOnClickListener(onClickBtnContinue);
-        } else {
-            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
-            btnContinue.setOnClickListener(null);
-        }
     }
 
     @Override

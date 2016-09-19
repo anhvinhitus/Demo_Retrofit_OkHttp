@@ -1,14 +1,17 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zalopay.ui.widget.KeyboardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:zalopay="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:scrollbars="vertical">
+    android:background="@color/background">
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/blue_btn_bg_color"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/container"
@@ -17,7 +20,8 @@
             android:layout_alignParentTop="true"
             android:layout_weight="0.0"
             android:background="@color/background"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/button.height">
 
             <TextView
                 android:layout_width="match_parent"
@@ -111,15 +115,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:padding="16dp"
                 android:visibility="visible">
 
                 <TextView
                     style="@style/TextView.SubTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing.small"
                     android:text="@string/hint.edit.account" />
 
                 <TextView
@@ -150,61 +152,29 @@
                     android:text="@string/hint.edit.account3" />
             </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <FrameLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/btnContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/bg_btn_gray"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Button.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/button.height"
+            android:gravity="center"
+            android:text="@string/btn_confirm" />
+
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/container">
-
-            <LinearLayout
-                android:id="@+id/layoutAction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvTermsOfUser1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/spacing.small"
-                    android:paddingRight="@dimen/spacing.small"
-                    android:paddingTop="@dimen/spacing.medium"
-                    android:text="@string/terms_of_use_1"
-                    android:textColor="@color/deposit.title"
-                    android:textColorLink="@color/colorPrimary"
-                    android:textSize="13sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tvTermsOfUser2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/spacing.small"
-                    android:paddingRight="@dimen/spacing.small"
-                    android:paddingTop="@dimen/spacing.tiny"
-                    android:textColor="@color/deposit.title"
-                    android:textColorLink="@color/colorPrimary"
-                    android:textSize="13sp"
-                    android:visibility="gone"
-                    tools:text="@string/terms_of_use_2" />
-
-                <TextView
-                    android:id="@+id/tvTermsOfUser3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/spacing.medium"
-                    android:paddingLeft="@dimen/spacing.small"
-                    android:paddingRight="@dimen/spacing.small"
-                    android:paddingTop="@dimen/spacing.tiny"
-                    android:textColor="@color/deposit.title"
-                    android:textColorLink="@color/colorPrimary"
-                    android:textSize="13sp"
-                    android:visibility="visible"
-                    tools:text="@string/agree.term.of.use" />
-            </LinearLayout>
-        </FrameLayout>
-    </RelativeLayout>
-</ScrollView>
+            android:padding="@dimen/app_padding"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/white" />
+    </LinearLayout>
+</com.zalopay.ui.widget.KeyboardFrameLayout>

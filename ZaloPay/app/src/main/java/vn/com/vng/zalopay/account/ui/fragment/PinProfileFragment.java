@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ScrollView;
+
+import com.zalopay.ui.widget.KeyboardFrameLayout;
 
 import javax.inject.Inject;
 
@@ -23,8 +25,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
-import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
@@ -48,17 +50,20 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
  * Use the {@link PinProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PinProfileFragment extends AbsProfileFragment implements IPinProfileView {
+public class PinProfileFragment extends BaseFragment implements IPinProfileView {
     private OnPinProfileFragmentListener mListener;
 
     @Inject
     PinProfilePresenter presenter;
 
+    @BindView(R.id.rootView)
+    KeyboardFrameLayout rootView;
+
+    @BindView(R.id.ScrollView)
+    ScrollView mScrollView;
+
     @BindView(R.id.passcodeInput)
     PassCodeView passCode;
-
-    @BindView(R.id.layoutAction)
-    View layoutAction;
 
     @BindView(R.id.textInputPhone)
     TextInputLayout textInputPhone;
@@ -72,30 +77,14 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     @BindView(R.id.layoutZaloPayNameNote)
     View layoutZaloPayNameNote;
 
-    @BindView(R.id.tvTermsOfUser1)
-    TextView tvTermsOfUser1;
-    @BindView(R.id.tvTermsOfUser2)
-    TextView tvTermsOfUser2;
-    @BindView(R.id.tvTermsOfUser3)
-    TextView tvTermsOfUser3;
-
-    private void showHideTermOfUser(boolean isShow) {
-        if (isShow) {
-            tvTermsOfUser1.setVisibility(View.VISIBLE);
-            tvTermsOfUser2.setVisibility(View.VISIBLE);
-            tvTermsOfUser3.setVisibility(View.VISIBLE);
-        } else {
-            tvTermsOfUser1.setVisibility(View.GONE);
-            tvTermsOfUser2.setVisibility(View.GONE);
-            tvTermsOfUser3.setVisibility(View.GONE);
-        }
-    }
-
     @OnTextChanged(R.id.edtPhone)
     public void onTextChangedPhone() {
         hidePhoneError();
         checkShowHideBtnContinue();
     }
+
+    @BindView(R.id.btnContinue)
+    View btnContinue;
 
     private void showPhoneError() {
         if (textInputPhone == null) {
@@ -201,7 +190,14 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
 
         @Override
         public void onFocusChange(boolean isFocus) {
+            Timber.d("InputZaloPayName onFocusChange isFocus [%s]", isFocus);
             if (isFocus) {
+                int[] location = new int[2];
+                inputZaloPayName.getLocationInWindow(location);
+                if (mScrollView!= null) {
+                    Timber.d("InputZaloPayName onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
+                    mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+                }
                 return;
             }
             checkShowHideBtnContinue();
@@ -223,8 +219,12 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
     }
 
     private void checkShowHideBtnContinue() {
-        if (mListener != null) {
-            mListener.onChangeBtnConfirmState(isShowBtnContinue());
+        if (isShowBtnContinue()) {
+            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
+            btnContinue.setOnClickListener(mOnClickContinueListener);
+        } else {
+            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
+            btnContinue.setOnClickListener(null);
         }
     }
 
@@ -248,7 +248,13 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         return validZaloPayName();
     }
 
-    @Override
+    private View.OnClickListener mOnClickContinueListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onClickContinue();
+        }
+    };
+
     public void onClickContinue() {
         showConfirmUpdateZaloPayName();
     }
@@ -311,8 +317,14 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Timber.d("onFocusChange focus %s", hasFocus);
+                Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
                 if (hasFocus) {
+                    int[] location = new int[2];
+                    edtPhone.getLocationInWindow(location);
+                    if (mScrollView!= null) {
+                        Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
+                        mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+                    }
                     edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
                     return;
                 }
@@ -323,26 +335,6 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
                 }
             }
         });
-
-        showHideTermOfUser(false);
-
-        AndroidUtils.setSpannedMessageToView(tvTermsOfUser2, R.string.terms_of_use_2, R.string.phone_support,
-                false, false, R.color.colorPrimary,
-                new ClickableSpanNoUnderline() {
-                    @Override
-                    public void onClick(View widget) {
-                        navigator.startDialSupport(getContext());
-                    }
-                });
-
-        AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
-                false, false, R.color.colorPrimary,
-                new ClickableSpanNoUnderline() {
-                    @Override
-                    public void onClick(View widget) {
-                        navigator.startTermActivity(getContext());
-                    }
-                });
 
         inputZaloPayName.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -359,6 +351,36 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
         });
 
         passCode.requestFocusView();
+
+        rootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+            @Override
+            public void onKeyBoardShow(int height) {
+                if (mScrollView == null) {
+                    return;
+                }
+                Timber.d("onKeyBoardShow: passCode.isFocused() %s", passCode.isFocused());
+                Timber.d("onKeyBoardShow: edtPhone.isFocused() %s", edtPhone.isFocused());
+                Timber.d("onKeyBoardShow: inputZaloPayName.isFocused() %s", inputZaloPayName.isFocused());
+                int[] location = new int[2];
+                if (passCode.isFocused()) {
+                    Timber.d("onKeyBoardShow scroll to Top");
+                    mScrollView.smoothScrollBy(0, 0);
+                } else if (edtPhone.isFocused()) {
+                    edtPhone.getLocationInWindow(location);
+                    Timber.d("onKeyBoardShow: edtPhone.y %s", location[1]);
+                    mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+                } else if (inputZaloPayName.isFocused()) {
+                    inputZaloPayName.getLocationInWindow(location);
+                    Timber.d("onKeyBoardShow: inputZaloPayName.y %s", location[1]);
+                    mScrollView.smoothScrollBy(0, location[1]);
+                }
+            }
+
+            @Override
+            public void onKeyBoardHide() {
+                Timber.d("onKeyBoardHide");
+            }
+        });
 
         AndroidUtils.runOnUIThread(mIntroRunnable, 300);
     }
@@ -524,9 +546,5 @@ public class PinProfileFragment extends AbsProfileFragment implements IPinProfil
      */
     public interface OnPinProfileFragmentListener {
         void onUpdatePinSuccess(String phone, String zaloPayName);
-
-        void onUpdatePinFail();
-
-        void onChangeBtnConfirmState(boolean isEnable);
     }
 }

@@ -190,7 +190,7 @@
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:label="@string/title.activity.profile"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
 
         <activity

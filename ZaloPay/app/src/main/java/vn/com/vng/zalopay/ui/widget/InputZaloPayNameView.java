@@ -240,4 +240,12 @@ public class InputZaloPayNameView extends FrameLayout {
         return mEdtZaloPayName;
     }
 
+    @Override
+    public boolean isFocused() {
+        if (mEdtZaloPayName == null) {
+            return super.isFocused();
+        } else {
+            return mEdtZaloPayName.isFocused();
+        }
+    }
 }

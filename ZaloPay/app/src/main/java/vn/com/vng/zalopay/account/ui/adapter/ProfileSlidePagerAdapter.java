@@ -8,9 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import vn.com.vng.zalopay.account.ui.fragment.AbsProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple pager adapter that represents 2 ProfileSlidePagerAdapter objects, in
@@ -19,8 +19,8 @@ import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 public class ProfileSlidePagerAdapter extends FragmentStatePagerAdapter {
 
     private final int NUM_PAGES = 2;
-    private AbsProfileFragment pinProfileFragment;
-    private AbsProfileFragment otpProfileFragment;
+    private BaseFragment pinProfileFragment;
+    private BaseFragment otpProfileFragment;
 
     public ProfileSlidePagerAdapter(FragmentManager fm) {
         super(fm);
