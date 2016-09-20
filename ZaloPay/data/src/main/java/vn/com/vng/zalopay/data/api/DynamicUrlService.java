@@ -2,8 +2,8 @@ package vn.com.vng.zalopay.data.api;
 
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
@@ -22,6 +22,6 @@ public interface DynamicUrlService {
 
     @FormUrlEncoded
     @POST
-    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @Field("test") String body);
+    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @Body RequestBody body);
 
 }

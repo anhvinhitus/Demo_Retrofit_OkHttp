@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
@@ -41,7 +43,7 @@ public class NetworkServiceImpl implements NetworkService {
         return process(baseUrl, rawContentHttp.method, rawContentHttp.headers, rawContentHttp.query, rawContentHttp.body);
     }
 
-    private Observable<String> process(String baseUrl, String method, Map headers, Map query, String body) {
+    private Observable<String> process(String baseUrl, String method, Map<String, String> headers, Map<String, String> query, String body) {
         String url;
         if (query == null || query.isEmpty()) {
             url = baseUrl;
@@ -74,19 +76,21 @@ public class NetworkServiceImpl implements NetworkService {
                 sb.append("&");
             }
             sb.append(String.format("%s=%s",
-                    urlEncodeUTF8(entry.getKey().toString()),
-                    urlEncodeUTF8(entry.getValue().toString())
+                    urlEncodeUTF8(entry.getKey()),
+                    urlEncodeUTF8(entry.getValue())
             ));
         }
         return sb.toString();
     }
 
-    private Observable<String> get(String url, Map headers) {
+    private Observable<String> get(String url, Map<String, String> headers) {
         return mRequestService.get(url, headers);
     }
 
-    private Observable<String> post(String url, Map headers, String body) {
-        return mRequestService.post(url, headers, body);
+    private Observable<String> post(String url, Map<String, String> headers, String body) {
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse("text/plain"), body);
+        return mRequestService.post(url, headers, requestBody);
     }
 
     private boolean isValidFormat(String baseUrl, String content) throws JsonSyntaxException {
