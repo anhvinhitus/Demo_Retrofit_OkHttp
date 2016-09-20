@@ -20,7 +20,7 @@ public class RawContentHttp {
     public String body;
 
     @SerializedName("query")
-    public Map query;
+    public Map<String, String> query;
 
     public boolean hasMethod() {
         return "POST".equals(method) || "GET".equals(method);
