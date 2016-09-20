@@ -166,17 +166,17 @@ public class Helpers {
                 if (btnNames.size() > 1) {
                     DialogManager.showSweetDialogConfirm(activity,
                             message,
-                            btnNames.getString(0),
                             btnNames.getString(1),
+                            btnNames.getString(0),
                             new ZPWOnEventConfirmDialogListener() {
                                 @Override
                                 public void onCancelEvent() {
-                                    Helpers.promiseResolve(promise, 1);
+                                    Helpers.promiseResolve(promise, 0);
                                 }
 
                                 @Override
                                 public void onOKevent() {
-                                    Helpers.promiseResolve(promise, 0);
+                                    Helpers.promiseResolve(promise, 1);
                                 }
                             }
                     );
@@ -217,17 +217,17 @@ public class Helpers {
                 if (btnNames.size() > 1) {
                     DialogManager.showSweetDialogConfirm(activity,
                             message,
-                            btnNames.getString(0),
                             btnNames.getString(1),
+                            btnNames.getString(0),
                             new ZPWOnEventConfirmDialogListener() {
                                 @Override
                                 public void onCancelEvent() {
-                                    Helpers.promiseResolve(promise, 1);
+                                    Helpers.promiseResolve(promise, 0);
                                 }
 
                                 @Override
                                 public void onOKevent() {
-                                    Helpers.promiseResolve(promise, 0);
+                                    Helpers.promiseResolve(promise, 1);
                                 }
                             }
                     );
