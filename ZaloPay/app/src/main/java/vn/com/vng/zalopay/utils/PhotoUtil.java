@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 
@@ -14,6 +15,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import timber.log.Timber;
 
 /**
  * Created by AnhHieu on 9/19/16.
@@ -103,11 +106,11 @@ public class PhotoUtil {
                 bitmap.recycle();
                 return oriented;
             } catch (OutOfMemoryError e) {
-                e.printStackTrace();
+                Timber.d("out of memory");
                 return bitmap;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //empty
         }
 
         return bitmap;
@@ -115,26 +118,12 @@ public class PhotoUtil {
 
     private static int getExifOrientation(String src) throws IOException {
         int orientation = 1;
-
         try {
-            /**
-             * if your are targeting only api level >= 5
-             * ExifInterface exif = new ExifInterface(src);
-             * orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-             */
-            if (Build.VERSION.SDK_INT >= 5) {
-                Class<?> exifClass = Class.forName("android.media.ExifInterface");
-                Constructor<?> exifConstructor = exifClass.getConstructor(new Class[]{String.class});
-                Object exifInstance = exifConstructor.newInstance(new Object[]{src});
-                Method getAttributeInt = exifClass.getMethod("getAttributeInt", new Class[]{String.class, int.class});
-                Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
-                String tagOrientation = (String) tagOrientationField.get(null);
-                orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[]{tagOrientation, 1});
-            }
+            ExifInterface exif = new ExifInterface(src);
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
         } catch (Exception e) {
             //empty
         }
-
         return orientation;
     }
 
