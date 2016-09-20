@@ -9,6 +9,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
+import vn.com.vng.zalopay.data.util.Strings;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -40,7 +41,7 @@ public class FriendLocalStorage implements FriendStore.LocalStorage {
     public LazyList<ZaloFriendGD> listZaloFriend(String textSearch) {
         Timber.d("listZaloFriend textSearch: %s", textSearch);
         if (!TextUtils.isEmpty(textSearch)) {
-            return mDao.queryBuilder().orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch).where(ZaloFriendGDDao.Properties.Fulltextsearch.like("%" + textSearch.toLowerCase() + "%")).listLazy();
+            return mDao.queryBuilder().orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch).where(ZaloFriendGDDao.Properties.Fulltextsearch.like("%" + Strings.stripAccents(textSearch).toLowerCase() + "%")).listLazy();
         } else {
             return mDao.queryBuilder().orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch).listLazy();
         }
