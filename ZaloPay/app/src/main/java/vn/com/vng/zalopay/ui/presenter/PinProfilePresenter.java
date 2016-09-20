@@ -92,12 +92,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
             hideLoadingView();
             if (pinProfileView != null) {
                 pinProfileView.setError(ErrorMessageFactory.create(mApplicationContext, e));
-                if (e instanceof BodyException) {
-                    if (((BodyException) e).errorCode == NetworkError.INCORRECT_PIN
-                            || ((BodyException) e).errorCode == NetworkError.INCORRECT_PIN_LIMIT) {
-                        pinProfileView.clearPin();
-                    }
-                }
+                pinProfileView.clearPin();
             }
         }
 
