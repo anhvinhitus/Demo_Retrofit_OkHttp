@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.facebook.react</groupId>
   <artifactId>react-native</artifactId>
-  <version>0.31.0</version>
+  <version>0.33.0</version>
   <packaging>aar</packaging>
   <name>ReactNative</name>
   <description>A framework for building native apps with React</description>
@@ -29,6 +29,24 @@
   </scm>
   <dependencies>
     <dependency>
+      <groupId>com.facebook.fresco</groupId>
+      <artifactId>imagepipeline-okhttp3</artifactId>
+      <version>0.11.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio</artifactId>
+      <version>1.9.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.facebook.soloader</groupId>
+      <artifactId>soloader</artifactId>
+      <version>0.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>3.0.0</version>
@@ -47,12 +65,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.facebook.fresco</groupId>
-      <artifactId>imagepipeline-okhttp3</artifactId>
-      <version>0.11.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>2.2.3</version>
@@ -65,15 +77,15 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>3.4.1</version>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okio</groupId>
-      <artifactId>okio</artifactId>
-      <version>1.9.0</version>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.4.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -92,12 +104,6 @@
       <groupId>com.android.support</groupId>
       <artifactId>appcompat-v7</artifactId>
       <version>23.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.facebook.soloader</groupId>
-      <artifactId>soloader</artifactId>
-      <version>0.1.0</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
