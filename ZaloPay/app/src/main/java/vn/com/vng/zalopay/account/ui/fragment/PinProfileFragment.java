@@ -369,8 +369,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
             }
         });
 
-        passCode.requestFocusView();
-
         rootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
             @Override
             public void onKeyBoardShow(int height) {
