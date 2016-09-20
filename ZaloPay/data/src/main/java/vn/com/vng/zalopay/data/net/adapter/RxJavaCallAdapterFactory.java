@@ -29,7 +29,8 @@ import rx.Scheduler;
 public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     public enum AdapterType {
         ZaloPay,
-        RedPacket
+        RedPacket,
+        PaymentApp
     }
 
     /**
@@ -70,6 +71,8 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
                 return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
             case RedPacket:
                 return new RedPacketCallAdapter(mApplicationContext, observableType, scheduler);
+            case PaymentApp:
+                return new RNCallAdapter(mApplicationContext, observableType, scheduler);
             default:
                 return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
         }

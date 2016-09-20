@@ -161,4 +161,18 @@ public class NetworkModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    @Named("retrofitPaymentApp")
+    Retrofit providePaymentApp(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+        return new Retrofit.Builder()
+               // .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.PaymentApp))
+                .baseUrl(baseUrl)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
+
 }

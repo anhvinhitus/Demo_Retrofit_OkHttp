@@ -11,13 +11,18 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.zalopay.apploader.network.NetworkService;
 
 import java.util.Locale;
 
+import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.Helpers;
@@ -33,12 +38,17 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
 
+    final NetworkService mNetworkService;
+
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         IPaymentService paymentService,
-                        long appId) {
+                        long appId, NetworkService networkService) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
+        this.mNetworkService = networkService;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
@@ -118,68 +128,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         mPaymentService.getUserInfo(promise, mAppId);
     }
 
-//    @ReactMethod
-//    public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
-//        if (btnNames == null || btnNames.size() <= 0) {
-//            return;
-//        }
-//        if (dialogType == SweetAlertDialog.NORMAL_TYPE) {
-//            if (btnNames.size() > 1) {
-//                DialogManager.showSweetDialogConfirm(getCurrentActivity(),
-//                        message,
-//                        btnNames.getString(0),
-//                        btnNames.getString(1),
-//                        new ZPWOnEventConfirmDialogListener() {
-//                            @Override
-//                            public void onCancelEvent() {
-//                                Helpers.promiseResolve(promise, 1);
-//                            }
-//
-//                            @Override
-//                            public void onOKevent() {
-//                                Helpers.promiseResolve(promise, 0);
-//                            }
-//                        }
-//                );
-//            } else {
-//                DialogManager.showSweetDialogCustom(getCurrentActivity(),
-//                        message,
-//                        btnNames.getString(0),
-//                        SweetAlertDialog.NORMAL_TYPE,
-//                        new DialogSimpleEventListener(promise, 1));
-//            }
-//        } else if (dialogType == SweetAlertDialog.ERROR_TYPE) {
-//            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-//                    message,
-//                    btnNames.getString(0),
-//                    SweetAlertDialog.ERROR_TYPE,
-//                    new DialogSimpleEventListener(promise, 1));
-//        } else if (dialogType == SweetAlertDialog.SUCCESS_TYPE) {
-//            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-//                    message,
-//                    btnNames.getString(0),
-//                    SweetAlertDialog.SUCCESS_TYPE,
-//                    new DialogSimpleEventListener(promise, 1));
-//        } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
-//            DialogManager.showSweetDialogCustom(getCurrentActivity(),
-//                    message,
-//                    btnNames.getString(0),
-//                    SweetAlertDialog.WARNING_TYPE,
-//                    new DialogSimpleEventListener(promise, 1));
-//        } else if (dialogType == SweetAlertDialog.CUSTOM_IMAGE_TYPE) {
-//            DialogManager.showSweetDialogUpdate(getCurrentActivity(),
-//                    message,
-//                    null,
-//                    btnNames.getString(0),
-//                    new ZPWOnEventUpdateListener() {
-//                        @Override
-//                        public void onUpdateListenner() {
-//                            Helpers.promiseResolve(promise, 1);
-//                        }
-//                    });
-//        }
-//    }
-
     @ReactMethod
     public void closeModule(String moduleId) {
         Timber.d("close Module");
@@ -241,6 +189,10 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void onHostDestroy() {
         Timber.d("Activity `onDestroy");
         mPaymentService.destroyVariable();
+
+        if (compositeSubscription != null) {
+            compositeSubscription.clear();
+        }
     }
 
     private void reportInvalidParameter(Promise promise, String parameterName) {
@@ -267,5 +219,30 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
         Helpers.showDialog(getCurrentActivity(), dialogType, title, message, btnNames, promise);
+    }
+
+    @ReactMethod
+    public void request(String baseUrl, String content, final Promise promise) {
+        Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
+
+        Subscription subscription = mNetworkService.request(baseUrl, content)
+                .subscribe(new DefaultSubscriber<Object>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        if (promise != null) {
+                            promise.reject("-1", "request fail"); //Chưa xong
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        if (promise != null) {
+                            promise.resolve(o);
+                        }
+                    }
+                });
+
+
+        compositeSubscription.add(subscription);
     }
 }
