@@ -25,8 +25,9 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 /**
  * Created by longlv on 23/05/2016.
+ * EditText with clear button at the end.
  */
-public class ClearableEditText extends EditText {
+public class ClearableEditText extends TextInputEditText {
     private static final String TAG = ClearableEditText.class.getName();
     public static final char VERTICAL_SPACE = '-';
     public static final char SLASH_SPACE = '/';
