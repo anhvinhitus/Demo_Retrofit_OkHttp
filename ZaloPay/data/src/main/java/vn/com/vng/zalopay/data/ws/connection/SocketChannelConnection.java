@@ -290,6 +290,16 @@ class SocketChannelConnection {
         }
 
         try {
+            // cleanup write queue
+            synchronized (mWriteQueue) {
+                mWriteQueue.clear();
+            }
+
+            // cleanup change requests
+            synchronized (mChangeRequests) {
+                mChangeRequests.clear();
+            }
+
             mConnectionState = ConnectionState.DISCONNECTED;
             mSelector.close();
             mChannel.socket().close();
