@@ -34,5 +34,6 @@
     <string name="exception.account.name.with.space">Tên tài khoản không có dấu cách</string>
     <string name="exception.server.error">Hệ thống đang có lỗi. Vui lòng thử lại sau!</string>
     <string name="exception.empty.account">Bạn chưa nhập tên tài khoản.</string>
+    <string name="exception.file.not.found">Tập tin đã bị xoá. Vui lòng chọn ảnh khác.</string>
 
 </resources>

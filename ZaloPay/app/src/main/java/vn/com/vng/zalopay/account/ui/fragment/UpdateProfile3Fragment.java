@@ -14,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -33,7 +37,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/30/16.
- *
+ * *
  */
 public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View {
 
@@ -166,6 +170,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onTextChangedEmail(CharSequence s) {
         mEmailView.setError(null);
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
+    }
+
+
+    @OnFocusChange(R.id.edtEmail)
+    public void onFocusChange(boolean focus) {
+        if (!focus) {
+            if (TextUtils.isEmpty(getEmail())) {
+                mEmailView.setErrorEnabled(true);
+                mEmailView.setError(getString(R.string.invalid_email_empty));
+            } else if (!ValidateUtil.isEmailAddress(getEmail())) {
+                mEmailView.setErrorEnabled(true);
+                mEmailView.setError(getString(R.string.email_invalid));
+            }
+        } else {
+            mEmailView.setErrorEnabled(false);
+        }
     }
 
     @OnTextChanged(R.id.edtIdentity)
@@ -469,25 +489,25 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private boolean loadImage(ImageView image, Uri uri) {
-
         if (uri == null) {
             return false;
         }
 
         try {
             Bitmap bitmap = PhotoUtil.getThumbnail(getContext(), uri);
-            if (bitmap == null) {
-                return false;
+            if (bitmap != null) {
+                image.setImageBitmap(bitmap);
+                image.setVisibility(View.VISIBLE);
+                return true;
             }
-
-            image.setImageBitmap(bitmap);
-            image.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            showToast(R.string.exception_file_not_found);
             Timber.d(e, "get thumbnail ");
-            return false;
+        } catch (IOException e) {
+            Timber.d(e, "loadImage");
         }
 
-        return true;
+        return false;
     }
 
     @Override
