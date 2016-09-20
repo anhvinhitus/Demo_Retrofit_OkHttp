@@ -176,7 +176,7 @@
     <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
     <string name="invalid_otp">OTP không hợp lệ.</string>
 
-    <string name="pin_title">Tạo PIN để thanh toán qua số dư tài khoản và thẻ đã lưu</string>
+    <string name="pin_title">Tạo PIN để thanh toán bằng số dư tài khoản và thẻ đã lưu</string>
     <string name="hint_pin">Mã PIN</string>
     <string name="invalid_pin">Nhập vào mã PIN 6 số</string>
     <string name="pin.mismatch">Mã PIN không khớp</string>
@@ -216,7 +216,7 @@
     <string name="hint_otp">Mã OTP</string>
     <!--<string name="change_pin">Đổi mã PIN</string>-->
     <string name="reset_pin">Tạo lại mã PIN</string>
-    <string name="otp_note">Mã OTP được gửi qua tin nhắn đến số điện thoại của bạn</string>
+    <string name="otp_note">Mã OTP được gửi qua SMS đến điện thoại của bạn</string>
 
     <string name="receiver_start_record">Start record</string>
     <string name="receiver_end_record">End Record</string>

@@ -151,6 +151,26 @@
                     android:drawablePadding="@dimen/spacing.small"
                     android:text="@string/hint.edit.account3" />
             </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvTermsOfUser3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingBottom="@dimen/spacing.medium"
+                    android:paddingLeft="@dimen/spacing.small"
+                    android:paddingRight="@dimen/spacing.small"
+                    android:paddingTop="@dimen/spacing.tiny"
+                    android:textColor="@color/deposit.title"
+                    android:textColorLink="@color/colorPrimary"
+                    android:textSize="13sp"
+                    android:visibility="visible"
+                    tools:text="@string/agree.term.of.use" />
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -168,7 +188,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button.height"
             android:gravity="center"
-            android:text="@string/btn_confirm" />
+            android:text="@string/btn_continue" />
 
         <ImageView
             android:layout_width="wrap_content"

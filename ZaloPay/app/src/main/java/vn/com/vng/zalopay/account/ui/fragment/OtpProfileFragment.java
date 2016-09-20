@@ -27,6 +27,8 @@ import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -211,7 +213,14 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        super.showErrorDialog(message, getContext().getString(R.string.txt_close), new ZPWOnEventDialogListener() {
+            @Override
+            public void onOKevent() {
+                if (edtOTP != null && !edtOTP.isFocused()) {
+                    edtOTP.requestFocus();
+                }
+            }
+        });
     }
 
     public void showError(int messageResource) {

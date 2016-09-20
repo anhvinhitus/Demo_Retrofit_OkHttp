@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.zalopay.ui.widget.KeyboardFrameLayout;
 
@@ -27,6 +28,7 @@ import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
+import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.IPassCodeMaxLength;
 import vn.com.vng.zalopay.ui.widget.InputZaloPayNameListener;
@@ -76,6 +78,9 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
 
     @BindView(R.id.layoutZaloPayNameNote)
     View layoutZaloPayNameNote;
+
+    @BindView(R.id.tvTermsOfUser3)
+    TextView tvTermsOfUser3;
 
     @OnTextChanged(R.id.edtPhone)
     public void onTextChangedPhone() {
@@ -340,6 +345,15 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
                 }
             }
         });
+
+        AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
+                false, false, R.color.colorPrimary,
+                new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startTermActivity(getContext());
+                    }
+                });
 
         inputZaloPayName.setOnKeyListener(new View.OnKeyListener() {
             @Override
