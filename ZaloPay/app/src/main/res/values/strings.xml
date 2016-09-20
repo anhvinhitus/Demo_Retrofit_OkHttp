@@ -177,13 +177,13 @@
     <string name="invalid_otp">OTP không hợp lệ.</string>
 
     <string name="pin_title">Tạo PIN để thanh toán qua số dư tài khoản và thẻ đã lưu</string>
-    <string name="hint_pin">Mã số PIN</string>
+    <string name="hint_pin">Mã PIN</string>
     <string name="invalid_pin">Nhập vào mã PIN 6 số</string>
-    <string name="pin.mismatch">Mã số PIN không khớp</string>
+    <string name="pin.mismatch">Mã PIN không khớp</string>
     <string name="pin.not.change">PIN mới phải khác PIN cũ</string>
-    <string name="note_pin">Là mã số bí mật khi thực hiện thanh toán hoặc giao dịch</string>
-    <string name="hint_pin_compare">Nhập lại mã số PIN</string>
-    <string name="invalid_pin_compare">Mã số PIN không trùng nhau</string>
+    <string name="note_pin">Là mã bí mật khi thực hiện thanh toán hoặc giao dịch</string>
+    <string name="hint_pin_compare">Nhập lại mã PIN</string>
+    <string name="invalid_pin_compare">Mã PIN không trùng nhau</string>
 
     <string name="invalid_fullname_empty">Bạn chưa nhập họ tên</string>
     <string name="invalid_address_empty">Bạn chưa nhập địa chỉ</string>
