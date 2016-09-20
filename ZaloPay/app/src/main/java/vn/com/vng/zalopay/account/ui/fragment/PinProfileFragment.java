@@ -256,7 +256,12 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
     };
 
     public void onClickContinue() {
-        showConfirmUpdateZaloPayName();
+        if (TextUtils.isEmpty(inputZaloPayName.getText())) {
+            presenter.updateProfile(passCode.getText(), edtPhone.getString().toLowerCase(), null);
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_EMPTY);
+        } else {
+            showConfirmUpdateZaloPayName();
+        }
     }
 
     private boolean validZaloPayName() {
