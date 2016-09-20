@@ -14,6 +14,7 @@ import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.apploader.network.NetworkService;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +45,6 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -74,6 +74,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Inject
     ReactNativeHostable mReactNativeHostable;
+
+    @Inject
+    NetworkService mNetworkService;
 
     private AppResource appResource;
 
@@ -223,7 +226,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
                 new GoogleAnalyticsBridgePackage(),
-                new ReactIAPPackage(zaloPayIAPRepository, paymentService, mUser, appId)
+                new ReactIAPPackage(zaloPayIAPRepository, paymentService,
+                        mUser, appId, mNetworkService)
         );
     }
 
