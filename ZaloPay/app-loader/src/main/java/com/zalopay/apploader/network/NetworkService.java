@@ -7,5 +7,5 @@ import rx.Observable;
  * *
  */
 public interface NetworkService {
-    Observable<Object> request(String baseUrl, String rawContent);
+    Observable<String> request(String baseUrl, String rawContent);
 }

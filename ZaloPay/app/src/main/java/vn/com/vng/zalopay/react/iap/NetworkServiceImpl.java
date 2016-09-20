@@ -30,7 +30,7 @@ public class NetworkServiceImpl implements NetworkService {
         this.mGson = gson;
     }
 
-    public Observable<Object> request(String baseUrl, String content) {
+    public Observable<String> request(String baseUrl, String content) {
 
         if (isValidFormat(baseUrl, content)) {
             return Observable.error(new FormatException());
@@ -41,9 +41,13 @@ public class NetworkServiceImpl implements NetworkService {
         return process(baseUrl, rawContentHttp.method, rawContentHttp.headers, rawContentHttp.query, rawContentHttp.body);
     }
 
-    private Observable<Object> process(String baseUrl, String method, Map headers, Map query, String body) {
-
-        String url = baseUrl + buildQueryString(query);
+    private Observable<String> process(String baseUrl, String method, Map headers, Map query, String body) {
+        String url;
+        if (query == null || query.isEmpty()) {
+            url = baseUrl;
+        } else {
+            url = baseUrl + buildQueryString(query);
+        }
 
         Timber.d("process url %s", url);
 
@@ -65,7 +69,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     private String buildQueryString(Map<String, String> map) {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             if (sb.length() > 0) {
                 sb.append("&");
             }
@@ -77,11 +81,11 @@ public class NetworkServiceImpl implements NetworkService {
         return sb.toString();
     }
 
-    private Observable<Object> get(String url, Map headers) {
+    private Observable<String> get(String url, Map headers) {
         return mRequestService.get(url, headers);
     }
 
-    private Observable<Object> post(String url, Map headers, String body) {
+    private Observable<String> post(String url, Map headers, String body) {
         return mRequestService.post(url, headers, body);
     }
 

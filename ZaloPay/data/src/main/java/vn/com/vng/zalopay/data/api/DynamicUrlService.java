@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.api;
 import java.util.Map;
 
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
@@ -15,10 +16,12 @@ import rx.Observable;
  * *
  */
 public interface DynamicUrlService {
+
     @GET
-    Observable<Object> get(@Url String url, @HeaderMap Map header);
+    Observable<String> get(@Url String url, @HeaderMap Map<String, String> header);
 
     @FormUrlEncoded
     @POST
-    Observable<Object> post(@Url String url, @HeaderMap Map header, @Body String body);
+    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @Field("test") String body);
+
 }
