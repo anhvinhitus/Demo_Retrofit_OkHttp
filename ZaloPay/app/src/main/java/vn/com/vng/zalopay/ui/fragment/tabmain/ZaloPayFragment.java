@@ -395,12 +395,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
                 navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
             } else {
-                showToast(getString(R.string.update_to_use));
+                //showToast(getString(R.string.update_to_use));
             }
         } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
             navigator.startPaymentApplicationActivity(getActivity(), new AppResource(banner.appid));
         } else {
-            showToast(getString(R.string.update_to_use));
+            //showToast(getString(R.string.update_to_use));
         }
         trackBannerEvent(position);
     }
