@@ -34,10 +34,9 @@ public class NetworkServiceImpl implements NetworkService {
 
     public Observable<String> request(String baseUrl, String content) {
 
-        if (isValidFormat(baseUrl, content)) {
+        if (!isValidFormat(baseUrl, content)) {
             return Observable.error(new FormatException());
         }
-
 
         RawContentHttp rawContentHttp = mGson.fromJson(content, RawContentHttp.class);
         return process(baseUrl, rawContentHttp.method, rawContentHttp.headers, rawContentHttp.query, rawContentHttp.body);
@@ -88,9 +87,11 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     private Observable<String> post(String url, Map<String, String> headers, String body) {
-        RequestBody requestBody =
-                RequestBody.create(MediaType.parse("text/plain"), body);
-        return mRequestService.post(url, headers, requestBody);
+        if (TextUtils.isEmpty(body)) {
+            return mRequestService.post(url, headers);
+        } else {
+            return mRequestService.post(url, headers, body);
+        }
     }
 
     private boolean isValidFormat(String baseUrl, String content) throws JsonSyntaxException {
