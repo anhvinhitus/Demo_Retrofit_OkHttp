@@ -168,23 +168,25 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnTextChanged(R.id.edtEmail)
     public void onTextChangedEmail(CharSequence s) {
-        mEmailView.setError(null);
+        setEmailError(null);
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
     }
 
+    private void setEmailError(String s) {
+        mEmailView.setErrorEnabled(!TextUtils.isEmpty(s));
+        mEmailView.setError(s);
+    }
 
     @OnFocusChange(R.id.edtEmail)
     public void onFocusChange(boolean focus) {
         if (!focus) {
             if (TextUtils.isEmpty(getEmail())) {
-                mEmailView.setErrorEnabled(true);
-                mEmailView.setError(getString(R.string.invalid_email_empty));
+                setEmailError(getString(R.string.invalid_email_empty));
             } else if (!ValidateUtil.isEmailAddress(getEmail())) {
-                mEmailView.setErrorEnabled(true);
-                mEmailView.setError(getString(R.string.email_invalid));
+                setEmailError(getString(R.string.email_invalid));
             }
         } else {
-            mEmailView.setErrorEnabled(false);
+            setEmailError(null);
         }
     }
 
