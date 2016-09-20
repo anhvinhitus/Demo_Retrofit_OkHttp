@@ -1,13 +1,11 @@
 package vn.com.vng.zalopay.data.api.response;
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
-import vn.com.vng.zalopay.data.api.entity.PermissionEntity;
 
 /**
  * Created by AnhHieu on 7/19/16.
+ *
  */
 public class UserProfileLevelResponse extends BaseResponse {
     @SerializedName("email")
@@ -29,7 +27,7 @@ public class UserProfileLevelResponse extends BaseResponse {
     public int profilelevel;
 
     @SerializedName("profilelevelpermisssion")
-    public List<PermissionEntity> permisstion;
+    public JsonElement permisstion;
 
     @SerializedName("zalopayname")
     public String zalopayname;
