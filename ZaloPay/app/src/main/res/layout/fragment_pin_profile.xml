@@ -4,7 +4,9 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:id="@+id/ScrollView"
@@ -61,7 +63,6 @@
                         android:layout_marginTop="@dimen/spacing.small"
                         zalopay:hint="@string/hint_pin"
                         zalopay:length="@integer/pin_length" />
-
                 </FrameLayout>
 
                 <FrameLayout
@@ -89,7 +90,6 @@
                             android:singleLine="true"
                             android:textColorHint="@color/hint" />
                     </android.support.design.widget.TextInputLayout>
-
                 </FrameLayout>
 
                 <FrameLayout
