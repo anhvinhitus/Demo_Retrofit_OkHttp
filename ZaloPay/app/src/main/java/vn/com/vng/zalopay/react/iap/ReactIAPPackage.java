@@ -5,7 +5,6 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.zalopay.apploader.network.NetworkService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,22 +22,20 @@ public class ReactIAPPackage implements ReactPackage {
     final IPaymentService paymentService;
     final User user;
     private final long appId;
-    final NetworkService netwokService;
 
     public ReactIAPPackage(ZaloPayIAPRepository zaloPayIAPRepository,
                            IPaymentService paymentService,
-                           User user, long appId, NetworkService netwokService) {
+                           User user, long appId) {
         this.zaloPayIAPRepository = zaloPayIAPRepository;
         this.paymentService = paymentService;
         this.user = user;
         this.appId = appId;
-        this.netwokService = netwokService;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayNativeModule(reactContext, paymentService, appId, netwokService));
+        modules.add(new ZaloPayNativeModule(reactContext, paymentService, appId));
         return modules;
     }
 

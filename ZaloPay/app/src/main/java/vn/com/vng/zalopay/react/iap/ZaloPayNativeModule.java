@@ -11,20 +11,14 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.zalopay.apploader.network.NetworkService;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.Helpers;
@@ -40,17 +34,12 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
 
-    final NetworkService mNetworkService;
-
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         IPaymentService paymentService,
-                        long appId, NetworkService networkService) {
+                        long appId) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
-        this.mNetworkService = networkService;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
@@ -191,10 +180,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void onHostDestroy() {
         Timber.d("Activity `onDestroy");
         mPaymentService.destroyVariable();
-
-        if (compositeSubscription != null) {
-            compositeSubscription.clear();
-        }
     }
 
     private void reportInvalidParameter(Promise promise, String parameterName) {
@@ -222,34 +207,4 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
         Helpers.showDialog(getCurrentActivity(), dialogType, title, message, btnNames, promise);
     }
-
-    @ReactMethod
-    public void request(String baseUrl, String content, final Promise promise) {
-        Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
-
-        Subscription subscription = mNetworkService.request(baseUrl, content)
-                .subscribe(new DefaultSubscriber<String>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "onError");
-                        if (promise != null) {
-                            promise.reject("-1", "request fail"); //Chưa xong
-                        }
-                    }
-
-                    @Override
-                    public void onNext(String o) {
-                        Timber.d("onNext %s", o);
-                        if (promise != null) {
-                            promise.resolve(o);
-                        }
-                    }
-                });
-
-
-        compositeSubscription.add(subscription);
-    }
-
-
-
 }

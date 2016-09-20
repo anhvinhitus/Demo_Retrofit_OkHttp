@@ -24,8 +24,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
-import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -34,6 +32,7 @@ import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 @Module
 public class NetworkModule {
@@ -161,19 +160,4 @@ public class NetworkModule {
                 .client(okHttpClient)
                 .build();
     }
-
-    @Provides
-    @Singleton
-    @Named("retrofitPaymentApp")
-    Retrofit providePaymentApp(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
-        return new Retrofit.Builder()
-                .addConverterFactory(new ToStringConverterFactory())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.PaymentApp))
-                .baseUrl(baseUrl)
-                .validateEagerly(BuildConfig.DEBUG)
-                .client(okHttpClient)
-                .build();
-    }
-
-
 }

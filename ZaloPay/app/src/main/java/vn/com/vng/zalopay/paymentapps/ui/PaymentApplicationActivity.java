@@ -14,7 +14,6 @@ import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.apploader.network.NetworkService;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -74,9 +73,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     @Inject
     ReactNativeHostable mReactNativeHostable;
-
-    @Inject
-    NetworkService mNetworkService;
 
     private AppResource appResource;
 
@@ -227,7 +223,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNDeviceInfo(),
                 new GoogleAnalyticsBridgePackage(),
                 new ReactIAPPackage(zaloPayIAPRepository, paymentService,
-                        mUser, appId, mNetworkService)
+                        mUser, appId)
         );
     }
 
