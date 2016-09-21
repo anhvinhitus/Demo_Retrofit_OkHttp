@@ -251,12 +251,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
-    /*@OnClick(R.id.btn_deposit)
-    public void onBtnDepositClick() {
-        mNavigator.startDepositActivity(getActivity());
-        ZPAnalytics.trackEvent(ZPEvents.TAPADDCASH);
-    }*/
-
     @OnClick(R.id.btn_link_card)
     public void onBtnLinkCardClick() {
         navigator.startLinkCardActivity(getActivity());
