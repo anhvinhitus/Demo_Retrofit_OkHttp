@@ -1,10 +1,6 @@
 package vn.com.vng.zalopay.react.iap;
 
-import android.text.TextUtils;
-
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.WritableMap;
 
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
@@ -19,9 +15,9 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
  */
 final class RequestSubscriber extends DefaultSubscriber<String> {
 
-    WeakReference<Promise> wrPromise;
+    private WeakReference<Promise> wrPromise;
 
-    public RequestSubscriber(Promise promise) {
+    RequestSubscriber(Promise promise) {
         wrPromise = new WeakReference<>(promise);
     }
 
@@ -33,24 +29,19 @@ final class RequestSubscriber extends DefaultSubscriber<String> {
         }
 
         if (e instanceof FormatException) {
-            this.promiseResolveError(promise, -2000, "Format request error!");
+            this.promiseReject(promise, -2000, "Format request error!");
         } else if (e instanceof HttpException) {
-            this.promiseResolveError(promise, ((HttpException) e).code(), "Máy chủ đang bị lỗi. Vui lòng thử lại sau");
+            this.promiseReject(promise, ((HttpException) e).code(), "Máy chủ đang bị lỗi. Vui lòng thử lại sau");
         } else if (e instanceof SocketTimeoutException) {
-            this.promiseResolveError(promise, 0, "Quá thời gian kết nối");
+            this.promiseReject(promise, 0, "Quá thời gian kết nối");
         } else {
-            this.promiseResolveError(promise, -1009, "Mạng kết nối không ổn định. Vui lòng kiểm tra kết nối và thử lại");
+            this.promiseReject(promise, -1009, "Mạng kết nối không ổn định. Vui lòng kiểm tra kết nối và thử lại");
         }
 
     }
 
-    private void promiseResolveError(Promise promise, int errorCode, String message) {
-        WritableMap item = Arguments.createMap();
-        item.putInt("error_code", errorCode);
-        if (!TextUtils.isEmpty(message)) {
-            item.putString("error_message", message);
-        }
-        promise.resolve(item);
+    private void promiseReject(Promise promise, int errorCode, String message) {
+        promise.reject(String.valueOf(errorCode), message);
     }
 
     @Override
