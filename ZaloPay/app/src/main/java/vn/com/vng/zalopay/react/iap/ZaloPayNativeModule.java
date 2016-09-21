@@ -17,6 +17,7 @@ import com.zalopay.apploader.network.NetworkService;
 import java.util.Locale;
 
 import rx.Subscription;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -224,6 +225,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
         Subscription subscription = mNetworkService.request(baseUrl, content)
+                .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
     }

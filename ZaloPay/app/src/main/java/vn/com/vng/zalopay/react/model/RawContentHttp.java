@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,7 +17,19 @@ public class RawContentHttp {
 
     public Map<String, String> query;
 
-    public boolean hasMethod() {
-        return "POST".equals(method) || "GET".equals(method);
+    public String getMethod() {
+        return method;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers == null ? new HashMap<String, String>() : headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public Map<String, String> getQuery() {
+        return query == null ? new HashMap<String, String>() : query;
     }
 }

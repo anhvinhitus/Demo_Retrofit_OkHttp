@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
 
 /**
  * Created by AnhHieu on 5/12/16.
+ *
  */
 @Module
 public class AppReactNativeModule {
@@ -98,8 +99,8 @@ public class AppReactNativeModule {
 
     @Provides
     @Singleton
-    NetworkService providesNetworkService(@Named("retrofitPaymentApp") Retrofit retrofit, Gson gson) {
-        return new NetworkServiceImpl(retrofit.create(DynamicUrlService.class), gson);
+    NetworkService providesNetworkService(@Named("retrofitPaymentApp") Retrofit retrofit) {
+        return new NetworkServiceImpl(retrofit.create(DynamicUrlService.class));
     }
 
 }

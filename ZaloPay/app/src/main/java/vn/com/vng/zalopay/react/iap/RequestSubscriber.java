@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 
 import retrofit2.adapter.rxjava.HttpException;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.FormatException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
@@ -23,6 +24,8 @@ final class RequestSubscriber extends DefaultSubscriber<String> {
 
     @Override
     public void onError(Throwable e) {
+
+        Timber.d(e, "request error");
         Promise promise = wrPromise.get();
         if (promise == null) {
             return;
@@ -46,6 +49,7 @@ final class RequestSubscriber extends DefaultSubscriber<String> {
 
     @Override
     public void onNext(String s) {
+        Timber.d("onNext response %s", s);
         Promise promise = wrPromise.get();
         if (promise == null) {
             return;

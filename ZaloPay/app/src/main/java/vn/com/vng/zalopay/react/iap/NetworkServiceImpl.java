@@ -1,17 +1,14 @@
 package vn.com.vng.zalopay.react.iap;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.zalopay.apploader.network.NetworkService;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,79 +24,55 @@ import vn.com.vng.zalopay.react.model.RawContentHttp;
  */
 public class NetworkServiceImpl implements NetworkService {
 
-    final DynamicUrlService mRequestService;
-    final Gson mGson;
+    private final DynamicUrlService mRequestService;
 
-    public NetworkServiceImpl(DynamicUrlService retrofit, Gson gson) {
+    public NetworkServiceImpl(DynamicUrlService retrofit) {
         this.mRequestService = retrofit;
-        this.mGson = gson;
     }
 
     public Observable<String> request(String baseUrl, ReadableMap content) {
+        RawContentHttp rawContentHttp = null;
 
-        RawContentHttp rawContentHttp = convert(baseUrl, content);
+        try {
+            rawContentHttp = convert(baseUrl, content);
+        } catch (Exception e) {
+            Timber.d(e, "exception");
+        }
 
         if (rawContentHttp == null) {
             return Observable.error(new FormatException());
         }
 
-        return process(baseUrl, rawContentHttp.method, rawContentHttp.headers, rawContentHttp.query, rawContentHttp.body);
+        return process(baseUrl, rawContentHttp.getMethod(), rawContentHttp.getHeaders(), rawContentHttp.getQuery(), rawContentHttp.getBody());
     }
 
-    private Observable<String> process(String baseUrl, String method, Map<String, String> headers, @Nullable Map<String, String> query, @Nullable String body) {
-        StringBuilder url = new StringBuilder();
-        url.append(baseUrl);
-        if (query != null && !query.isEmpty()) {
-            url.append("?");
-            url.append(buildQueryString(query));
-        }
-
-        String real_url = url.toString();
-        Timber.d("real_url [%s]", real_url);
-
+    private Observable<String> process(String baseUrl, @NonNull String method, Map<String, String> headers, @NonNull Map<String, String> query, @Nullable String body) {
         if (method.equals("GET")) {
-            return get(real_url, headers);
+            return get(baseUrl, headers, query);
         } else {
-            return post(real_url, headers, body);
+            return post(baseUrl, headers, query, body);
         }
     }
 
-    private String urlEncodeUTF8(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException(e);
-        }
+    private Observable<String> get(String url, Map<String, String> headers, Map<String, String> query) {
+        return mRequestService.get(url, headers, query);
     }
 
-    private String buildQueryString(Map<String, String> map) {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (sb.length() > 0) {
-                sb.append("&");
-            }
-            sb.append(String.format("%s=%s",
-                    urlEncodeUTF8(entry.getKey()),
-                    urlEncodeUTF8(entry.getValue())
-            ));
-        }
-        return sb.toString();
-    }
-
-    private Observable<String> get(String url, Map<String, String> headers) {
-        return mRequestService.get(url, headers);
-    }
-
-    private Observable<String> post(String url, Map<String, String> headers, String body) {
+    private Observable<String> post(String url, Map<String, String> headers, Map<String, String> query, String body) {
         if (TextUtils.isEmpty(body)) {
-            return mRequestService.post(url, headers);
+            return mRequestService.post(url, headers, query);
         } else {
-            return mRequestService.post(url, headers, body);
+            return mRequestService.post(url, headers, query, body);
         }
     }
 
-    private RawContentHttp convert(String baseUrl, ReadableMap content) throws JsonSyntaxException {
+    private RawContentHttp convert(String baseUrl, ReadableMap content) throws Exception {
+
         if (TextUtils.isEmpty(baseUrl)) {
+            return null;
+        }
+
+        if (!content.hasKey("method") || !content.hasKey("headers")) {
             return null;
         }
 
@@ -109,7 +82,7 @@ public class NetworkServiceImpl implements NetworkService {
             return null;
         }
 
-        if (!method.equals("GET") && !method.equals("POST")) {
+        if (!method.equalsIgnoreCase("GET") && !method.equalsIgnoreCase("POST")) {
             return null;
         }
 
@@ -118,19 +91,24 @@ public class NetworkServiceImpl implements NetworkService {
             return null;
         }
 
-        Map<String, String> query = toMap(content.getMap("query"));
-        String body = content.getString("body");
-
         RawContentHttp rawContentHttp = new RawContentHttp();
-        rawContentHttp.body = body;
-        rawContentHttp.query = query;
         rawContentHttp.method = method;
         rawContentHttp.headers = headers;
+
+        //option
+
+        if (content.hasKey("query")) {
+            rawContentHttp.query = toMap(content.getMap("query"));
+        }
+
+        if (content.hasKey("body")) {
+            rawContentHttp.body = content.getString("body");
+        }
 
         return rawContentHttp;
     }
 
-    Map<String, String> toMap(@javax.annotation.Nullable ReadableMap readableMap) {
+    private Map<String, String> toMap(@Nullable ReadableMap readableMap) {
         if (readableMap == null) {
             return null;
         }
@@ -149,7 +127,7 @@ public class NetworkServiceImpl implements NetworkService {
         return result;
     }
 
-    String toString(@javax.annotation.Nullable ReadableMap readableMap, String key) {
+    private String toString(@Nullable ReadableMap readableMap, String key) {
         if (readableMap == null) {
             return null;
         }

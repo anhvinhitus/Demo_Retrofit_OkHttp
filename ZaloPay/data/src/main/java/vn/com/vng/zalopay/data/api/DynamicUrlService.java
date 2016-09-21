@@ -1,11 +1,14 @@
 package vn.com.vng.zalopay.data.api;
 
+import android.support.annotation.NonNull;
+
 import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -15,13 +18,15 @@ import rx.Observable;
  */
 public interface DynamicUrlService {
 
+    //maps don't allow null anywhere.
+
     @GET
-    Observable<String> get(@Url String url, @HeaderMap Map<String, String> header);
+    Observable<String> get(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query);
 
     @POST
-    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @Body String body);
+    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query, @Body String body);
 
     @POST
-    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header);
+    Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query);
 
 }
