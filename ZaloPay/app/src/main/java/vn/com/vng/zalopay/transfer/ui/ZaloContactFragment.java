@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
 import javax.inject.Inject;
 
@@ -26,7 +26,6 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A fragment representing a list of Items.
@@ -53,6 +52,9 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
 
     @BindView(R.id.edtSearch)
     ClearableEditText edtSearch;
+
+    @BindView(R.id.edtSeparate)
+    View edtSeparate;
 
     @BindView(R.id.viewSeparate)
     View viewSeparate;
@@ -107,7 +109,27 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         mRecyclerView.setAdapter(mAdapter);
         mSwipeRefresh.setOnRefreshListener(this);
         initSearchTimer();
-
+        edtSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                edtSeparate.setBackgroundResource(R.drawable.txt_bottom_default_focused);
+                edtSeparate.setEnabled(true);
+                return false;
+            }
+        });
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (edtSeparate.isEnabled()) {
+                        edtSeparate.setBackgroundResource(R.drawable.txt_bottom_default_normal);
+                        edtSeparate.setEnabled(false);
+                        hideKeyboard();
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     @Override
