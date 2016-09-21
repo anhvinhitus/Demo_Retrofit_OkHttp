@@ -36,7 +36,6 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -51,13 +50,9 @@ import vn.com.vng.zalopay.utils.ToastUtil;
  */
 public class PaymentApplicationActivity extends ReactBasedActivity {
 
-
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
 
     private String mComponentName;
-
-    @Inject
-    ZaloPayIAPRepository zaloPayIAPRepository;
 
     @Inject
     IPaymentService paymentService;
@@ -222,7 +217,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
                 new GoogleAnalyticsBridgePackage(),
-                new ReactIAPPackage(zaloPayIAPRepository, paymentService,
+
+                new ReactIAPPackage(paymentService,
                         mUser, appId)
         );
     }

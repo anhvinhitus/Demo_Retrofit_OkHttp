@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.repository;
 
 import rx.Observable;
@@ -6,9 +7,11 @@ import vn.com.vng.zalopay.data.repository.datasource.ZaloPayIAPFactory;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 
+*/
 /**
  * Created by AnhHieu on 5/24/16.
- */
+ *//*
+
 public class ZaloPayIAPRepositoryImpl implements ZaloPayIAPRepository {
 
     final ZaloPayIAPFactory zaloPayIAPFactory;
@@ -32,3 +35,4 @@ public class ZaloPayIAPRepositoryImpl implements ZaloPayIAPRepository {
         return ret;
     }
 }
+*/

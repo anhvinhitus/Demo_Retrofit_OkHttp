@@ -11,22 +11,19 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 
 /**
  * Created by AnhHieu on 5/16/16.
  * In-app-payment package
  */
 public class ReactIAPPackage implements ReactPackage {
-    final ZaloPayIAPRepository zaloPayIAPRepository;
     final IPaymentService paymentService;
     final User user;
     private final long appId;
 
-    public ReactIAPPackage(ZaloPayIAPRepository zaloPayIAPRepository,
-                           IPaymentService paymentService,
+
+    public ReactIAPPackage(IPaymentService paymentService,
                            User user, long appId) {
-        this.zaloPayIAPRepository = zaloPayIAPRepository;
         this.paymentService = paymentService;
         this.user = user;
         this.appId = appId;

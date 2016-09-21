@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  */
 @Module
 public class UserMerchantModule {
+
     @UserScope
     @Provides
     MerchantStore.Repository providesRepository(

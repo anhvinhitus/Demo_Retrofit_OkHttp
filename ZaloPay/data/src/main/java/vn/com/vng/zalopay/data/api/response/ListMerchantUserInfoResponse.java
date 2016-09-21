@@ -21,9 +21,9 @@ public class ListMerchantUserInfoResponse extends BaseResponse {
     public int usergender;
 
     @SerializedName("listmerchantuserinfo")
-    public List<Listmerchantuserinfo> listmerchantuserinfo;
+    public List<ListMerchantUserInfo> listmerchantuserinfo;
 
-    public class Listmerchantuserinfo {
+    public class ListMerchantUserInfo {
         @SerializedName("appid")
         public int appid;
         @SerializedName("muid")

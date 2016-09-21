@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.model.AppResource;
 
 /**
  * Created by huuhoa on 6/17/16.
@@ -62,12 +63,12 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public List<vn.com.vng.zalopay.domain.model.AppResource> listAppResourceFromDB() {
+    public List<AppResource> listAppResourceFromDB() {
         return mAppConfigEntityDataMapper.transformAppResourceEntity(mLocalStorage.get());
     }
 
     @Override
-    public Observable<List<vn.com.vng.zalopay.domain.model.AppResource>> listAppResource(List<Integer> appidlist) {
+    public Observable<List<AppResource>> listAppResource(List<Integer> appidlist) {
         return Observable.concat(
                 ObservableHelper.makeObservable(mLocalStorage::get),
                 fetchAppResource(appidlist).flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
