@@ -45,7 +45,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_otp;
+        return R.layout.fragment_change_pin_verify;
     }
 
     @Inject
