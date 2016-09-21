@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
@@ -76,7 +77,8 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserNotificationModule.class,
                 UserAccountModule.class,
                 UserFriendModule.class,
-                UserRedPacketModule.class
+                UserRedPacketModule.class,
+                UserMerchantModule.class
         }
 )
 public interface UserComponent {

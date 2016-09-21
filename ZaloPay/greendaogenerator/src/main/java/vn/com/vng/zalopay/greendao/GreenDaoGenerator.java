@@ -23,7 +23,8 @@ public class GreenDaoGenerator {
         addTransferRecent(appSchema);
         addNotification(appSchema);
         addRedPacket(appSchema);
-
+        addMerchantUser(appSchema);
+        
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
@@ -231,6 +232,17 @@ public class GreenDaoGenerator {
         uniqueIndex.makeUnique();
 
         notificationGD.addIndex(uniqueIndex);
+    }
+
+    private static void addMerchantUser(Schema schema) {
+        Entity notificationGD = schema.addEntity("MerchantUser");
+        notificationGD.addLongProperty("appid").primaryKey().notNull();
+        notificationGD.addStringProperty("mUid");
+        notificationGD.addStringProperty("mAccessToken");
+        notificationGD.addStringProperty("displayName");
+        notificationGD.addStringProperty("avatar");
+        notificationGD.addStringProperty("birthday");
+        notificationGD.addIntProperty("gender");
     }
 
 }
