@@ -160,9 +160,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         mZaloPayView.refreshInsideApps(resources);
     }
 
-    private final class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
-        public AppResourceSubscriber() {
-        }
+    private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 
         @Override
         public void onNext(List<AppResource> appResources) {
