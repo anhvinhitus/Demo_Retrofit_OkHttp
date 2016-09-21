@@ -273,11 +273,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Integer> getBundleStatus(long bundleID) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getBundleStatus(bundleID));
-    }
-
-    @Override
     public Observable<Void> setPacketStatus(long packageId, long amount, int status) {
         return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketStatus(packageId, amount, status));
     }

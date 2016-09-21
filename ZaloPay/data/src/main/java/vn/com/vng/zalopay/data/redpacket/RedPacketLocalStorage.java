@@ -26,7 +26,6 @@ import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
-import vn.com.vng.zalopay.domain.model.redpacket.BundleStatusEnum;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
@@ -188,22 +187,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Integer getBundleStatus(long bundleId) {
-        Timber.d("query status for bundle: %s", bundleId);
-        SentBundle sentBundle = querySentBundle(bundleId);
-        if (sentBundle == null) {
-            Timber.d("SentBundle not found");
-            return BundleStatusEnum.UNKNOWN.getValue();
-        }
-
-        Timber.d("query status for sentBundle: %s, status: %s", bundleId, sentBundle.status);
-        return sentBundle.status;
-    }
-
-    @Override
     public Void setBundleStatus(long bundleId, int status) {
         Timber.d("set status for SentBundle: %s", bundleId);
-        SentBundleGD sentBundleGD= querySentBundleGD(bundleId);
+        SentBundleGD sentBundleGD = querySentBundleGD(bundleId);
         if (sentBundleGD == null) {
             Timber.d("SentBundle not found");
             return null;
@@ -314,20 +300,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Long getLastOpenTimeForPacketsInBundle(long bundleId) {
-        List<PackageInBundleGD> packets = getDaoSession().getPackageInBundleGDDao().queryBuilder()
-                .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleId))
-                .orderDesc(PackageInBundleGDDao.Properties.OpenTime)
-                .limit(1)
-                .list();
-        if (packets == null || packets.isEmpty()) {
-            return null;
-        }
-
-        return packets.get(0).getOpenTime();
-    }
-
-    @Override
     public void putReceivePackages(List<ReceivePackageGD> receivePackageGDs) {
         if (Lists.isEmptyOrNull(receivePackageGDs)) {
             emptyList();
@@ -378,10 +350,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                             .limit(limit)
                             .list());
         }
-    }
-
-    private SentBundle querySentBundle(long bundleID) {
-        return mDataMapper.transform(querySentBundleGD(bundleID));
     }
 
     private SentBundleGD querySentBundleGD(long bundleID) {
