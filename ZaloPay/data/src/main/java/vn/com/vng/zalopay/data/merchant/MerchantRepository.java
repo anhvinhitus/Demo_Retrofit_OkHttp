@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
@@ -43,7 +44,15 @@ public class MerchantRepository implements MerchantStore.Repository {
     }
 
     private Observable<MerchantUserInfo> getMerchantUserInfoLocal(long appId) {
-        return makeObservable(() -> localStorage.get(appId)).map(this::transform);
+        return makeObservable(() -> localStorage.get(appId))
+                .flatMap(merchantUser -> {
+                    Timber.d("getMerchantUserInfoLocal %s", merchantUser);
+                    if (merchantUser == null) {
+                        return Observable.empty();
+                    } else {
+                        return Observable.just(transform(merchantUser));
+                    }
+                });
     }
 
     @Override
@@ -99,13 +108,17 @@ public class MerchantRepository implements MerchantStore.Repository {
         return ret;
     }
 
-    private MerchantUserInfo transform(MerchantUser response) {
-        MerchantUserInfo ret = new MerchantUserInfo(response.getAppid());
-        ret.birthdate = response.getBirthday();
-        ret.displayname = response.getDisplayName();
-        ret.muid = response.getMUid();
-        ret.usergender = response.getGender();
-        ret.maccesstoken = response.getMAccessToken();
+    private MerchantUserInfo transform(MerchantUser entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        MerchantUserInfo ret = new MerchantUserInfo(entity.getAppid());
+        ret.birthdate = entity.getBirthday();
+        ret.displayname = entity.getDisplayName();
+        ret.muid = entity.getMUid();
+        ret.usergender = entity.getGender();
+        ret.maccesstoken = entity.getMAccessToken();
         return ret;
     }
 

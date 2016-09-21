@@ -180,9 +180,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        public BalanceSubscriber() {
-        }
-
         @Override
         public void onNext(Long aLong) {
             ZaloPayPresenterImpl.this.onGetBalanceSuccess(aLong);
@@ -305,7 +302,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     private class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInfo> {
         private AppResource mAppResource;
 
-        public MerchantUserInfoSubscribe(AppResource appResource) {
+        private MerchantUserInfoSubscribe(AppResource appResource) {
             this.mAppResource = appResource;
         }
 
@@ -325,7 +322,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
-            Timber.d("onError exception [%s]", e);
+            Timber.d(e, "onError exception");
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
