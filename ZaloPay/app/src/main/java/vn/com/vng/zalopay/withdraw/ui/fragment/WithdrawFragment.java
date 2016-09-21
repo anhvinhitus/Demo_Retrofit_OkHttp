@@ -97,11 +97,8 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
             return false;
         }
 
-        if (!isValidMaxAmount()) {
-            return false;
-        }
+        return isValidMaxAmount();
 
-        return true;
     }
 
     public WithdrawFragment() {

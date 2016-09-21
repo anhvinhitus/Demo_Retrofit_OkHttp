@@ -352,14 +352,14 @@ public class IntroProfileView extends RelativeLayout {
     /************************************************************/
 
     private void animateFadeIn(View view, long duration, DefaultAnimatorListener listener) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "alpha", new float[]{0.0F, 1.0F});
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "alpha", 0.0F, 1.0F);
         objectAnimator.setDuration(duration);
         objectAnimator.addListener(listener);
         objectAnimator.start();
     }
 
     private void animateFadeOut(View view, long duration, DefaultAnimatorListener listener) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "alpha", new float[]{1.0F, 0.0F});
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "alpha", 1.0F, 0.0F);
         objectAnimator.setDuration(duration);
         objectAnimator.addListener(listener);
         objectAnimator.start();

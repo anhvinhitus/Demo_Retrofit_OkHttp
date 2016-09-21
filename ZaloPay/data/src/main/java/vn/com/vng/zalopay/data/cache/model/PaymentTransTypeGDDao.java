@@ -32,7 +32,7 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
         public final static Property Feerate = new Property(6, Float.class, "feerate", false, "FEERATE");
         public final static Property Minfee = new Property(7, Long.class, "minfee", false, "MINFEE");
         public final static Property Feecaltype = new Property(8, String.class, "feecaltype", false, "FEECALTYPE");
-    };
+    }
 
 
     public PaymentTransTypeGDDao(DaoConfig config) {

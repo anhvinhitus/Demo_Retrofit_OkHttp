@@ -27,7 +27,7 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
         public final static Property TotalOfSentAmount = new Property(1, Long.class, "totalOfSentAmount", false, "TOTAL_OF_SENT_AMOUNT");
         public final static Property TotalOfSentBundle = new Property(2, Integer.class, "totalOfSentBundle", false, "TOTAL_OF_SENT_BUNDLE");
         public final static Property TimeCreate = new Property(3, Long.class, "timeCreate", false, "TIME_CREATE");
-    };
+    }
 
 
     public SentBundleSummaryDBDao(DaoConfig config) {
