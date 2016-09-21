@@ -1,17 +1,20 @@
 package vn.com.vng.zalopay.react.iap;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.ReadableType;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zalopay.apploader.network.NetworkService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
@@ -32,32 +35,33 @@ public class NetworkServiceImpl implements NetworkService {
         this.mGson = gson;
     }
 
-    public Observable<String> request(String baseUrl, String content) {
+    public Observable<String> request(String baseUrl, ReadableMap content) {
 
-        if (!isValidFormat(baseUrl, content)) {
+        RawContentHttp rawContentHttp = convert(baseUrl, content);
+
+        if (rawContentHttp == null) {
             return Observable.error(new FormatException());
         }
 
-        RawContentHttp rawContentHttp = mGson.fromJson(content, RawContentHttp.class);
         return process(baseUrl, rawContentHttp.method, rawContentHttp.headers, rawContentHttp.query, rawContentHttp.body);
     }
 
-    private Observable<String> process(String baseUrl, String method, Map<String, String> headers, Map<String, String> query, String body) {
-        String url;
-        if (query == null || query.isEmpty()) {
-            url = baseUrl;
-        } else {
-            url = baseUrl + buildQueryString(query);
+    private Observable<String> process(String baseUrl, String method, Map<String, String> headers, @Nullable Map<String, String> query, @Nullable String body) {
+        StringBuilder url = new StringBuilder();
+        url.append(baseUrl);
+        if (query != null && !query.isEmpty()) {
+            url.append("?");
+            url.append(buildQueryString(query));
         }
 
-        Timber.d("process url %s", url);
+        String real_url = url.toString();
+        Timber.d("real_url [%s]", real_url);
 
         if (method.equals("GET")) {
-            return get(url, headers);
+            return get(real_url, headers);
         } else {
-            return post(url, headers, body);
+            return post(real_url, headers, body);
         }
-
     }
 
     private String urlEncodeUTF8(String s) {
@@ -94,16 +98,91 @@ public class NetworkServiceImpl implements NetworkService {
         }
     }
 
-    private boolean isValidFormat(String baseUrl, String content) throws JsonSyntaxException {
+    private RawContentHttp convert(String baseUrl, ReadableMap content) throws JsonSyntaxException {
         if (TextUtils.isEmpty(baseUrl)) {
-            return false;
+            return null;
         }
 
-        if (TextUtils.isEmpty(content)) {
-            return false;
+        String method = content.getString("method");
+
+        if (TextUtils.isEmpty(method)) {
+            return null;
         }
 
-        RawContentHttp contentData = mGson.fromJson(content, RawContentHttp.class);
-        return contentData.hasMethod();
+        if (!method.equals("GET") && !method.equals("POST")) {
+            return null;
+        }
+
+        Map<String, String> headers = toMap(content.getMap("headers"));
+        if (headers == null) {
+            return null;
+        }
+
+        Map<String, String> query = toMap(content.getMap("query"));
+        String body = content.getString("body");
+
+        RawContentHttp rawContentHttp = new RawContentHttp();
+        rawContentHttp.body = body;
+        rawContentHttp.query = query;
+        rawContentHttp.method = method;
+        rawContentHttp.headers = headers;
+
+        return rawContentHttp;
+    }
+
+    Map<String, String> toMap(@javax.annotation.Nullable ReadableMap readableMap) {
+        if (readableMap == null) {
+            return null;
+        }
+        Map<String, String> result = new HashMap<>();
+
+        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
+        if (!iterator.hasNextKey()) {
+            return result;
+        }
+
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            result.put(key, toString(readableMap, key));
+        }
+
+        return result;
+    }
+
+    String toString(@javax.annotation.Nullable ReadableMap readableMap, String key) {
+        if (readableMap == null) {
+            return null;
+        }
+
+        Object result = null;
+
+        ReadableType readableType = readableMap.getType(key);
+        switch (readableType) {
+            case Null:
+                result = key;
+                break;
+            case Boolean:
+                result = readableMap.getBoolean(key);
+                break;
+            case Number:
+                double tmp = readableMap.getDouble(key);
+                if (tmp == (int) tmp) {
+                    result = (int) tmp;
+                } else {
+                    result = tmp;
+                }
+                break;
+            case String:
+                result = readableMap.getString(key);
+                break;
+            case Map:
+                break;
+            case Array:
+                break;
+            default:
+                break;
+        }
+
+        return String.valueOf(result); //maybe `null`
     }
 }

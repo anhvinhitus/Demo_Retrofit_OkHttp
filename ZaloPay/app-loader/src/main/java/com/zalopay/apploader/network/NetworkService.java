@@ -1,5 +1,7 @@
 package com.zalopay.apploader.network;
 
+import com.facebook.react.bridge.ReadableMap;
+
 import rx.Observable;
 
 /**
@@ -7,5 +9,5 @@ import rx.Observable;
  * *
  */
 public interface NetworkService {
-    Observable<String> request(String baseUrl, String rawContent);
+    Observable<String> request(String baseUrl, ReadableMap rawContent);
 }

@@ -14,17 +14,13 @@ import com.facebook.react.bridge.ReadableMap;
 import com.zalopay.apploader.network.NetworkService;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.Helpers;
@@ -224,29 +220,10 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void request(String baseUrl, String content, final Promise promise) {
+    public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
-
         Subscription subscription = mNetworkService.request(baseUrl, content)
-                .subscribe(new DefaultSubscriber<String>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "onError");
-                        if (promise != null) {
-                            promise.reject("-1", "request fail"); //Chưa xong
-                        }
-                    }
-
-                    @Override
-                    public void onNext(String o) {
-                        Timber.d("onNext %s", o);
-                        if (promise != null) {
-                            promise.resolve(o);
-                        }
-                    }
-                });
-
-
+                .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
     }
 

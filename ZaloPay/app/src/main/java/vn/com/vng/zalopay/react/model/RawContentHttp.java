@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.react.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 
 /**
@@ -10,16 +8,12 @@ import java.util.Map;
  */
 public class RawContentHttp {
 
-    @SerializedName("method")
     public String method;
 
-    @SerializedName("headers")
     public Map<String, String> headers;
 
-    @SerializedName("body")
     public String body;
 
-    @SerializedName("query")
     public Map<String, String> query;
 
     public boolean hasMethod() {
