@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:ellipsize="end"
-                    android:hint="Số CMND"
+                    android:hint="@string/cmnd_passpost"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
                     android:minHeight="44dp"
