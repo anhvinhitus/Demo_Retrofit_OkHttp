@@ -46,8 +46,8 @@ public class NetworkServiceImpl implements NetworkService {
         return process(baseUrl, rawContentHttp.getMethod(), rawContentHttp.getHeaders(), rawContentHttp.getQuery(), rawContentHttp.getBody());
     }
 
-    private Observable<String> process(String baseUrl, @NonNull String method, Map<String, String> headers, @NonNull Map<String, String> query, @Nullable String body) {
-        if (method.equals("GET")) {
+    private Observable<String> process(String baseUrl, @NonNull String method,@NonNull Map<String, String> headers, @NonNull Map<String, String> query, @Nullable String body) {
+        if (method.equalsIgnoreCase("GET")) {
             return get(baseUrl, headers, query);
         } else {
             return post(baseUrl, headers, query, body);
@@ -72,7 +72,7 @@ public class NetworkServiceImpl implements NetworkService {
             return null;
         }
 
-        if (!content.hasKey("method") || !content.hasKey("headers")) {
+        if (!content.hasKey("method")) {
             return null;
         }
 
@@ -86,17 +86,15 @@ public class NetworkServiceImpl implements NetworkService {
             return null;
         }
 
-        Map<String, String> headers = toMap(content.getMap("headers"));
-        if (headers == null) {
-            return null;
-        }
 
         RawContentHttp rawContentHttp = new RawContentHttp();
         rawContentHttp.method = method;
-        rawContentHttp.headers = headers;
 
         //option
+        if (content.hasKey("headers")) {
+            rawContentHttp.headers = toMap(content.getMap("headers"));
 
+        }
         if (content.hasKey("query")) {
             rawContentHttp.query = toMap(content.getMap("query"));
         }
