@@ -49,12 +49,23 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public void setLastTimeGetPackageFromServer(long bundleId) {
-        getDaoSession().getBundleGDDao().insertOrReplaceInTx(new BundleGD(bundleId, System.currentTimeMillis()));
+    public void putBundle(List<BundleGD> bundleGDs) {
+        getDaoSession().getBundleGDDao().insertInTx(bundleGDs);
     }
 
     @Override
-    public Long getLastTimeGetPackageFromServer(long bundleId) {
+    public void updateLastTimeGetPackage(long bundleId) {
+        BundleGD bundleGD = getBundle(bundleId);
+        if (bundleGD == null) {
+            bundleGD = new BundleGD();
+        }
+        bundleGD.setId(bundleId);
+        bundleGD.setLastTimeGetPackage(System.currentTimeMillis());
+        getDaoSession().getBundleGDDao().insertOrReplaceInTx(bundleGD);
+    }
+
+    @Override
+    public BundleGD getBundle(long bundleId) {
         List<BundleGD> bundleGDs = getDaoSession().getBundleGDDao().
                 queryBuilder().
                 where(BundleGDDao.Properties.Id.eq(bundleId))
@@ -62,7 +73,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (bundleGDs == null || bundleGDs.isEmpty()) {
             return null;
         }
-        return bundleGDs.get(0).getLastTimeGetPackage();
+        return bundleGDs.get(0);
     }
 
     @Override

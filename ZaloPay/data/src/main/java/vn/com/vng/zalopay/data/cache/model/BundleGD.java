@@ -7,6 +7,7 @@ package vn.com.vng.zalopay.data.cache.model;
 public class BundleGD {
 
     private long id;
+    private Long createTime;
     private Long lastTimeGetPackage;
 
     public BundleGD() {
@@ -16,8 +17,9 @@ public class BundleGD {
         this.id = id;
     }
 
-    public BundleGD(long id, Long lastTimeGetPackage) {
+    public BundleGD(long id, Long createTime, Long lastTimeGetPackage) {
         this.id = id;
+        this.createTime = createTime;
         this.lastTimeGetPackage = lastTimeGetPackage;
     }
 
@@ -27,6 +29,14 @@ public class BundleGD {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
     public Long getLastTimeGetPackage() {

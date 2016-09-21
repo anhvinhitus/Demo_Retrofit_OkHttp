@@ -24,7 +24,8 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property LastTimeGetPackage = new Property(1, Long.class, "lastTimeGetPackage", false, "LAST_TIME_GET_PACKAGE");
+        public final static Property CreateTime = new Property(1, Long.class, "createTime", false, "CREATE_TIME");
+        public final static Property LastTimeGetPackage = new Property(2, Long.class, "lastTimeGetPackage", false, "LAST_TIME_GET_PACKAGE");
     };
 
 
@@ -41,7 +42,8 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BUNDLE_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY NOT NULL UNIQUE ," + // 0: id
-                "\"LAST_TIME_GET_PACKAGE\" INTEGER);"); // 1: lastTimeGetPackage
+                "\"CREATE_TIME\" INTEGER," + // 1: createTime
+                "\"LAST_TIME_GET_PACKAGE\" INTEGER);"); // 2: lastTimeGetPackage
     }
 
     /** Drops the underlying database table. */
@@ -56,9 +58,14 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
  
+        Long createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(2, createTime);
+        }
+ 
         Long lastTimeGetPackage = entity.getLastTimeGetPackage();
         if (lastTimeGetPackage != null) {
-            stmt.bindLong(2, lastTimeGetPackage);
+            stmt.bindLong(3, lastTimeGetPackage);
         }
     }
 
@@ -73,7 +80,8 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
     public BundleGD readEntity(Cursor cursor, int offset) {
         BundleGD entity = new BundleGD( //
             cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1) // lastTimeGetPackage
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // createTime
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2) // lastTimeGetPackage
         );
         return entity;
     }
@@ -82,7 +90,8 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
     @Override
     public void readEntity(Cursor cursor, BundleGD entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
-        entity.setLastTimeGetPackage(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setCreateTime(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setLastTimeGetPackage(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
      }
     
     /** @inheritdoc */

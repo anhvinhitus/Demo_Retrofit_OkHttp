@@ -39,8 +39,10 @@ import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 public interface RedPacketStore {
 
     interface LocalStorage {
-        void setLastTimeGetPackageFromServer(long bundleId);
-        Long getLastTimeGetPackageFromServer(long bundleId);
+        void putBundle(List<BundleGD> bundleGDs);
+        //update time that get PackageInBundle from server
+        void updateLastTimeGetPackage(long bundleId);
+        BundleGD getBundle(long bundleId);
 
         void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB);
         Observable<GetSentBundle> getSentBundleSummary();

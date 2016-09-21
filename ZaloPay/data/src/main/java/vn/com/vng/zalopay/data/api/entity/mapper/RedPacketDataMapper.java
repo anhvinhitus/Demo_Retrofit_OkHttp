@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
+import vn.com.vng.zalopay.data.cache.model.BundleGD;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -329,5 +330,37 @@ public class RedPacketDataMapper {
                 appConfigResponse.maxMessageLength, appConfigResponse.maxPackageQuantity,
                 appConfigResponse.maxTotalAmountPerBundle, appConfigResponse.minAmounTeach,
                 appConfigResponse.minDivideAmount);
+    }
+
+    public List<BundleGD> transformToBundleGD(GetSentBundle getSentBundle) {
+        List<BundleGD> bundleGDs = new ArrayList<>();
+        if (Lists.isEmptyOrNull(getSentBundle.sentbundlelist)) {
+            return bundleGDs;
+        }
+        for (int i = 0; i< getSentBundle.sentbundlelist.size(); i++) {
+            SentBundle sentBundle = getSentBundle.sentbundlelist.get(i);
+            if (sentBundle == null) {
+                continue;
+            }
+            BundleGD bundleGD = new BundleGD(sentBundle.bundleID, sentBundle.createTime, null);
+            bundleGDs.add(bundleGD);
+        }
+        return bundleGDs;
+    }
+
+    public List<BundleGD> transformToBundleGD(GetReceivePacket getReceivePacket) {
+        List<BundleGD> bundleGDs = new ArrayList<>();
+        if (Lists.isEmptyOrNull(getReceivePacket.revpackageList)) {
+            return bundleGDs;
+        }
+        for (int i = 0; i< getReceivePacket.revpackageList.size(); i++) {
+            ReceivePackage receivePackage = getReceivePacket.revpackageList.get(i);
+            if (receivePackage == null) {
+                continue;
+            }
+            BundleGD bundleGD = new BundleGD(receivePackage.bundleID, receivePackage.openedTime, null);
+            bundleGDs.add(bundleGD);
+        }
+        return bundleGDs;
     }
 }
