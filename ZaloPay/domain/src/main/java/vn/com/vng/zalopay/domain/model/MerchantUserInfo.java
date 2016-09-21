@@ -5,11 +5,19 @@ package vn.com.vng.zalopay.domain.model;
  */
 public class MerchantUserInfo {
 
+    public long appId;
     public String displayname;
     public String birthdate;
     public int usergender;
     public String muid;
-
     public String maccesstoken;
+
+    public MerchantUserInfo() {
+    }
+
+    public MerchantUserInfo(long appId) {
+        this.appId = appId;
+    }
+
 
 }

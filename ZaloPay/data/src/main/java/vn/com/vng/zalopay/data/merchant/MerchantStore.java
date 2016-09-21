@@ -7,6 +7,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
+import vn.com.vng.zalopay.data.cache.model.MerchantUser;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 
 /**
@@ -15,7 +16,11 @@ import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
  */
 public interface MerchantStore {
     interface LocalStorage {
+        void put(MerchantUser entity);
 
+        void put(List<MerchantUser> entities);
+
+        MerchantUser get(long appId);
     }
 
     interface RequestService {

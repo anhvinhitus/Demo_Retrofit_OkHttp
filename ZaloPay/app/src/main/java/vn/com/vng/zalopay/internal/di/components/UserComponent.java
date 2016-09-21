@@ -70,6 +70,7 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserModule.class,
                 UserApiModule.class,
                 UserControllerModule.class,
+                UserMerchantModule.class,
                 UserPresenterModule.class,
                 UserBalanceModule.class,
                 UserTransactionModule.class,
@@ -77,8 +78,8 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserNotificationModule.class,
                 UserAccountModule.class,
                 UserFriendModule.class,
-                UserRedPacketModule.class,
-                UserMerchantModule.class
+                UserRedPacketModule.class
+
         }
 )
 public interface UserComponent {

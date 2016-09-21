@@ -23,11 +23,11 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
-import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -37,6 +37,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/9/16.
+ * *
  */
 public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
     private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
@@ -46,7 +47,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     protected CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private final ZaloPayIAPRepository mZaloPayIAPRepository;
+    private final MerchantStore.Repository mMerchantRepository;
     private EventBus mEventBus;
     private BalanceStore.Repository mBalanceRepository;
     private AppResourceStore.Repository mAppResourceRepository;
@@ -64,13 +65,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     };
 
-    public ZaloPayPresenterImpl(ZaloPayIAPRepository zaloPayIAPRepository,
+    public ZaloPayPresenterImpl(MerchantStore.Repository mMerchantRepository,
                                 EventBus eventBus,
                                 BalanceStore.Repository balanceRepository,
                                 AppResourceStore.Repository appResourceRepository,
                                 NotificationStore.Repository notificationRepository,
                                 Navigator navigator) {
-        this.mZaloPayIAPRepository = zaloPayIAPRepository;
+        this.mMerchantRepository = mMerchantRepository;
         this.mEventBus = eventBus;
         this.mBalanceRepository = balanceRepository;
         this.mAppResourceRepository = appResourceRepository;
@@ -259,7 +260,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (appResource == null) {
             return;
         }
-        mZaloPayIAPRepository.getMerchantUserInfo(appResource.appid)
+        mMerchantRepository.getMerchantUserInfo(appResource.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MerchantUserInfoSubscribe(appResource));

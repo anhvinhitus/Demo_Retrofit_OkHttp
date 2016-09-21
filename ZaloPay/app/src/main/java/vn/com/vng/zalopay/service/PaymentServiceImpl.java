@@ -12,10 +12,10 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ZaloPayIAPRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -28,7 +28,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  */
 public class PaymentServiceImpl implements IPaymentService {
 
-    final ZaloPayIAPRepository zaloPayIAPRepository;
+    final MerchantStore.Repository mMerchantRepository;
     final BalanceStore.Repository mBalanceRepository;
     final User user;
     final TransactionStore.Repository mTransactionRepository;
@@ -37,8 +37,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public PaymentServiceImpl(ZaloPayIAPRepository zaloPayIAPRepository, BalanceStore.Repository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
-        this.zaloPayIAPRepository = zaloPayIAPRepository;
+    public PaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository, BalanceStore.Repository balanceRepository, User user, TransactionStore.Repository transactionRepository) {
+        this.mMerchantRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.user = user;
         mTransactionRepository = transactionRepository;
@@ -123,10 +123,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public void getUserInfo(Promise promise, long appId) {
-
         Timber.d("get user info appId %s", appId);
-
-        Subscription subscription = zaloPayIAPRepository.getMerchantUserInfo(appId)
+        Subscription subscription = mMerchantRepository.getMerchantUserInfo(appId)
                 .subscribe(new MerchantUserInfoSubscriber(promise));
         compositeSubscription.add(subscription);
     }

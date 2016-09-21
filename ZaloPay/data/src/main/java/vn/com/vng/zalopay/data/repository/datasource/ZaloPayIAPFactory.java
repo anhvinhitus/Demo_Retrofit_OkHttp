@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.util.LruCache;
@@ -8,9 +9,11 @@ import vn.com.vng.zalopay.data.api.ZaloPayIAPService;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.domain.model.User;
 
+*/
 /**
  * Created by AnhHieu on 5/24/16.
- */
+ *//*
+
 public class ZaloPayIAPFactory {
 
     final ZaloPayIAPService service;
@@ -34,3 +37,4 @@ public class ZaloPayIAPFactory {
         }
     }
 }
+*/
