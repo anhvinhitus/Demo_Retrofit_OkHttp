@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Pair;
 
@@ -163,7 +164,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 

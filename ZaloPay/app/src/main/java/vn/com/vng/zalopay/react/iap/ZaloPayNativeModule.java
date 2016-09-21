@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react.iap;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -159,7 +160,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 
@@ -226,7 +227,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
     }
-
 
 
 }

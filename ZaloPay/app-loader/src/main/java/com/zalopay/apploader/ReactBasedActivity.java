@@ -39,15 +39,18 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     }
 
     protected abstract void doInjection();
+
     protected void handleException(Throwable e) {
         finish();
     }
+
     protected abstract ReactNativeHostable nativeInstanceManager();
 
     private static final String REDBOX_PERMISSION_MESSAGE =
             "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
 
-    private @Nullable
+    private
+    @Nullable
     ReactInstanceManager mReactInstanceManager;
     ReactRootView mReactRootView;
     LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
@@ -59,7 +62,9 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * always try to load the JS bundle from the packager server.
      * e.g. "index.android.bundle"
      */
-    protected @Nullable String getBundleAssetName() {
+    protected
+    @Nullable
+    String getBundleAssetName() {
         return "index.android.bundle";
     }
 
@@ -69,7 +74,9 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * by getBundleAssetName.
      * e.g. "file://sdcard/myapp_cache/index.android.bundle"
      */
-    protected @Nullable String getJSBundleFile() {
+    protected
+    @Nullable
+    String getJSBundleFile() {
         return null;
     }
 
@@ -90,7 +97,8 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * If your React Native application requires props set outside of JS, override
      * this method to return the Android.os.Bundle of your desired initial props.
      */
-    protected @Nullable
+    protected
+    @Nullable
     Bundle getLaunchOptions() {
         return null;
     }
@@ -150,7 +158,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    protected void initArgs(Bundle savedInstanceState){
+    protected void initArgs(Bundle savedInstanceState) {
     }
 
     @Override
@@ -200,7 +208,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onActivityResult(requestCode, resultCode, data);
+            mReactInstanceManager.onActivityResult(this, requestCode, resultCode, data);
         }
     }
 
