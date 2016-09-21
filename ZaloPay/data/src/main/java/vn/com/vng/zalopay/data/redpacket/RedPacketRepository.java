@@ -190,6 +190,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                         long newTimeStamp = packageInBundles.get(packageInBundles.size() - 1).openTime;
                         getPackageInBundlesServer(bundleId, newTimeStamp, count, sortOrder, subscriber);
                     } else {
+                        mLocalStorage.setLastTimeGetPackageFromServer(bundleId);
                         subscriber.onCompleted();
                     }
                 })
@@ -217,16 +218,25 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
     }
 
+    /**
+     * Should Update Packets For Bundle?
+     * Note: Package can't open after 24 hours from the time user creates red package.
+     * If (LastTimeGetPackageFromServer - lastTimeOpenPackage) > 24h then shouldn't (lastTimeOpenPackage >= createTime)
+     * else should get package from server
+     * @param bundleId bundleId
+     * @return should or shouldn't get data from server.
+     */
     private boolean shouldUpdatePacketsForBundle(long bundleId) {
-        Long lastOpenTime = mLocalStorage.getLastOpenTimeForPacketsInBundle(bundleId);
+        Long lastTimeOpenPackage = mLocalStorage.getLastOpenTimeForPacketsInBundle(bundleId);
+        Long lastTimeGetData = mLocalStorage.getLastTimeGetPackageFromServer(bundleId);
 
-        if (lastOpenTime == null) {
+        if (lastTimeOpenPackage == null || lastTimeGetData == null) {
             Timber.d("Last open time is NULL");
             return true;
         }
 
-        Timber.d("Last open time: %s, %s, %s", lastOpenTime, System.currentTimeMillis(), System.currentTimeMillis() - lastOpenTime);
-        return lastOpenTime + 1000 * 60 * 60 * 24 > System.currentTimeMillis();
+        Timber.d("Last open time: %s, %s, %s", lastTimeOpenPackage, lastTimeGetData, lastTimeGetData - lastTimeOpenPackage);
+        return !((lastTimeGetData - lastTimeOpenPackage) > 1000 * 60 * 60 * 24);
 
     }
 

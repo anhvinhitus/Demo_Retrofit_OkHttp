@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
+import vn.com.vng.zalopay.data.cache.model.BundleGD;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -38,6 +39,9 @@ import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 public interface RedPacketStore {
 
     interface LocalStorage {
+        void setLastTimeGetPackageFromServer(long bundleId);
+        Long getLastTimeGetPackageFromServer(long bundleId);
+
         void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB);
         Observable<GetSentBundle> getSentBundleSummary();
 

@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 40;
+    private static final int APP_DB_VERSION = 41;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -40,6 +40,10 @@ public class GreenDaoGenerator {
         receivePacketSummary.addIntProperty("totalOfRevPackage");
         receivePacketSummary.addIntProperty("totalOfLuckiestDraw");
         receivePacketSummary.addLongProperty("timeCreate");
+
+        Entity bundleEntity = appSchema.addEntity("BundleGD");
+        bundleEntity.addIdProperty().unique().notNull();//bundleId
+        bundleEntity.addLongProperty("lastTimeGetPackage");
 
         Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
         packageEntity.addIdProperty(); //packageId

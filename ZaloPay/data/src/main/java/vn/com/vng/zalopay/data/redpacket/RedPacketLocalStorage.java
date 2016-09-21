@@ -6,6 +6,8 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
+import vn.com.vng.zalopay.data.cache.model.BundleGD;
+import vn.com.vng.zalopay.data.cache.model.BundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
@@ -44,6 +46,23 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     public RedPacketLocalStorage(DaoSession daoSession, RedPacketDataMapper dataMapper) {
         super(daoSession);
         this.mDataMapper = dataMapper;
+    }
+
+    @Override
+    public void setLastTimeGetPackageFromServer(long bundleId) {
+        getDaoSession().getBundleGDDao().insertOrReplaceInTx(new BundleGD(bundleId, System.currentTimeMillis()));
+    }
+
+    @Override
+    public Long getLastTimeGetPackageFromServer(long bundleId) {
+        List<BundleGD> bundleGDs = getDaoSession().getBundleGDDao().
+                queryBuilder().
+                where(BundleGDDao.Properties.Id.eq(bundleId))
+                .list();
+        if (bundleGDs == null || bundleGDs.isEmpty()) {
+            return null;
+        }
+        return bundleGDs.get(0).getLastTimeGetPackage();
     }
 
     @Override

@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.cache.model.TransferRecent;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
+import vn.com.vng.zalopay.data.cache.model.BundleGD;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -34,6 +35,7 @@ import vn.com.vng.zalopay.data.cache.model.TransferRecentDao;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDBDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDBDao;
+import vn.com.vng.zalopay.data.cache.model.BundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
@@ -58,6 +60,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig notificationGDDaoConfig;
     private final DaoConfig sentBundleSummaryDBDaoConfig;
     private final DaoConfig receivePacketSummaryDBDaoConfig;
+    private final DaoConfig bundleGDDaoConfig;
     private final DaoConfig packageInBundleGDDaoConfig;
     private final DaoConfig sentBundleGDDaoConfig;
     private final DaoConfig receivePackageGDDaoConfig;
@@ -73,6 +76,7 @@ public class DaoSession extends AbstractDaoSession {
     private final NotificationGDDao notificationGDDao;
     private final SentBundleSummaryDBDao sentBundleSummaryDBDao;
     private final ReceivePacketSummaryDBDao receivePacketSummaryDBDao;
+    private final BundleGDDao bundleGDDao;
     private final PackageInBundleGDDao packageInBundleGDDao;
     private final SentBundleGDDao sentBundleGDDao;
     private final ReceivePackageGDDao receivePackageGDDao;
@@ -112,6 +116,9 @@ public class DaoSession extends AbstractDaoSession {
         receivePacketSummaryDBDaoConfig = daoConfigMap.get(ReceivePacketSummaryDBDao.class).clone();
         receivePacketSummaryDBDaoConfig.initIdentityScope(type);
 
+        bundleGDDaoConfig = daoConfigMap.get(BundleGDDao.class).clone();
+        bundleGDDaoConfig.initIdentityScope(type);
+
         packageInBundleGDDaoConfig = daoConfigMap.get(PackageInBundleGDDao.class).clone();
         packageInBundleGDDaoConfig.initIdentityScope(type);
 
@@ -134,6 +141,7 @@ public class DaoSession extends AbstractDaoSession {
         notificationGDDao = new NotificationGDDao(notificationGDDaoConfig, this);
         sentBundleSummaryDBDao = new SentBundleSummaryDBDao(sentBundleSummaryDBDaoConfig, this);
         receivePacketSummaryDBDao = new ReceivePacketSummaryDBDao(receivePacketSummaryDBDaoConfig, this);
+        bundleGDDao = new BundleGDDao(bundleGDDaoConfig, this);
         packageInBundleGDDao = new PackageInBundleGDDao(packageInBundleGDDaoConfig, this);
         sentBundleGDDao = new SentBundleGDDao(sentBundleGDDaoConfig, this);
         receivePackageGDDao = new ReceivePackageGDDao(receivePackageGDDaoConfig, this);
@@ -149,6 +157,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(NotificationGD.class, notificationGDDao);
         registerDao(SentBundleSummaryDB.class, sentBundleSummaryDBDao);
         registerDao(ReceivePacketSummaryDB.class, receivePacketSummaryDBDao);
+        registerDao(BundleGD.class, bundleGDDao);
         registerDao(PackageInBundleGD.class, packageInBundleGDDao);
         registerDao(SentBundleGD.class, sentBundleGDDao);
         registerDao(ReceivePackageGD.class, receivePackageGDDao);
@@ -166,6 +175,7 @@ public class DaoSession extends AbstractDaoSession {
         notificationGDDaoConfig.getIdentityScope().clear();
         sentBundleSummaryDBDaoConfig.getIdentityScope().clear();
         receivePacketSummaryDBDaoConfig.getIdentityScope().clear();
+        bundleGDDaoConfig.getIdentityScope().clear();
         packageInBundleGDDaoConfig.getIdentityScope().clear();
         sentBundleGDDaoConfig.getIdentityScope().clear();
         receivePackageGDDaoConfig.getIdentityScope().clear();
@@ -210,6 +220,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public ReceivePacketSummaryDBDao getReceivePacketSummaryDBDao() {
         return receivePacketSummaryDBDao;
+    }
+
+    public BundleGDDao getBundleGDDao() {
+        return bundleGDDao;
     }
 
     public PackageInBundleGDDao getPackageInBundleGDDao() {
