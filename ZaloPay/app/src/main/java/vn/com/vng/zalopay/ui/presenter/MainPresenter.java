@@ -50,16 +50,18 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 5/24/16.
+ * *
  */
 public class MainPresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
 
-    IHomeView homeView;
+    private IHomeView homeView;
 
     private boolean isLoadedGateWayInfo;
 
-    PaymentWrapper paymentWrapper;
+    private PaymentWrapper paymentWrapper;
 
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
     private EventBus mEventBus;
     private AppResourceStore.Repository mAppResourceRepository;
     private UserConfig mUserConfig;

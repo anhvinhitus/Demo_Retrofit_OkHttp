@@ -5,22 +5,15 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
-import rx.Scheduler;
-import rx.Subscription;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
-import vn.com.vng.zalopay.data.merchant.MerchantStore;
-import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
 /**
@@ -28,6 +21,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  * Implementation for AppResource.Repository
  */
 public class AppResourceRepository implements AppResourceStore.Repository {
+
     private AppConfigEntityDataMapper mAppConfigEntityDataMapper;
     private HashMap<String, String> mRequestParameters;
     private DownloadAppResourceTaskQueue taskQueue;
@@ -40,8 +34,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private final AppResourceStore.LocalStorage mLocalStorage;
     private String appVersion;
 
-    private MerchantStore.Repository mMerchantRepository;
-
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
                                  AppResourceStore.LocalStorage localStorage,
@@ -50,8 +42,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  OkHttpClient okHttpClient,
                                  boolean download,
                                  String rootBundle,
-                                 String appVersion,
-                                 MerchantStore.Repository mMerchantRepository
+                                 String appVersion
+
     ) {
         this.mAppConfigEntityDataMapper = mapper;
         this.mRequestService = requestService;
@@ -62,7 +54,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mOkHttpClient = okHttpClient;
         this.mDownloadAppResource = download;
         this.appVersion = appVersion;
-        this.mMerchantRepository = mMerchantRepository;
     }
 
     @Override
@@ -99,17 +90,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
         return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, appVersion)
-                .doOnNext(this::getListMerchantUser)
                 .doOnNext(this::processAppResourceResponse)
                 ;
-    }
-
-    private void getListMerchantUser(AppResourceResponse response) {
-        String listId = ListStringUtil.toStringListInt(response.appidlist);
-        Timber.d("getListMerchantUser: listId %s", listId);
-        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(listId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
     }
 
     private void ensureAppResourceAvailable() {

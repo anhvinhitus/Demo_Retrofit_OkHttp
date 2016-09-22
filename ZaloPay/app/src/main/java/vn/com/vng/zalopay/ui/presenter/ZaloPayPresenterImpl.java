@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -25,6 +27,7 @@ import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
@@ -133,6 +136,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         try {
             List<Integer> insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
             Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
+                    .doOnNext(new Action1<List<AppResource>>() {
+                        @Override
+                        public void call(List<AppResource> appResourceList) {
+                            Timber.d("call: thread %s", Thread.currentThread().getName());
+                            getListMerchantUser(appResourceList);
+                        }
+                    })
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new AppResourceSubscriber());
 
@@ -154,6 +164,35 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
         compositeSubscription.add(subscription);
+    }
+
+
+    private void getListMerchantUser(List<AppResource> appResourceList) {
+        String appId = toStringAppId(appResourceList);
+        if (TextUtils.isEmpty(appId)) {
+            return;
+        }
+
+        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(appId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        compositeSubscription.add(subscription);
+    }
+
+    private String toStringAppId(List<AppResource> list) {
+        if (Lists.isEmptyOrNull(list)) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (AppResource appResource : list) {
+            if (builder.length() == 0) {
+                builder.append(appResource.appid);
+            } else {
+                builder.append(appResource.appid + ",");
+            }
+        }
+        return builder.toString();
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
