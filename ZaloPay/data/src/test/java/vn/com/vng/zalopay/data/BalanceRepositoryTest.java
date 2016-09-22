@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Observer;
 import vn.com.vng.zalopay.data.api.response.BalanceResponse;
-import vn.com.vng.zalopay.data.balance.BalanceRepositoryImpl;
+import vn.com.vng.zalopay.data.balance.BalanceRepository;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -78,7 +78,7 @@ public class BalanceRepositoryTest {
         final Long[] balanceValueExpected = {10L, returnBalance};
 
         mLocalStorage.putBalance(10);
-        mRepository = new BalanceRepositoryImpl(mLocalStorage, mRequestService, new User("1"), new EventBus());
+        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus());
         mRepository.balance().subscribe(new Observer<Long>() {
             @Override
             public void onCompleted() {
@@ -127,7 +127,7 @@ public class BalanceRepositoryTest {
         };
 
 
-        mRepository = new BalanceRepositoryImpl(mLocalStorage, mRequestService, new User("1"), new EventBus());
+        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus());
         mRepository.updateBalance().subscribe(new Observer<Long>() {
             @Override
             public void onCompleted() {
@@ -157,7 +157,7 @@ public class BalanceRepositoryTest {
     public void testCurrentBalance() throws Exception {
         CountDownLatch countDownLatch = new CountDownLatch(3);
 
-        mRepository = new BalanceRepositoryImpl(mLocalStorage, mRequestService, new User("1"), new EventBus());
+        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus());
         Assert.assertEquals(Long.valueOf(0), mRepository.currentBalance());
         mRepository.balance().subscribe(new Observer<Long>() {
             @Override

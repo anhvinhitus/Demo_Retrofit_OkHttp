@@ -10,7 +10,7 @@ import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.balance.BalanceLocalStorage;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.balance.BalanceRepositoryImpl;
+import vn.com.vng.zalopay.data.balance.BalanceRepository;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
@@ -27,7 +27,7 @@ public class UserBalanceModule {
             BalanceStore.RequestService requestService,
             User user,
             EventBus eventBus) {
-        return new BalanceRepositoryImpl(localStorage, requestService, user, eventBus);
+        return new BalanceRepository(localStorage, requestService, user, eventBus);
     }
 
     @UserScope

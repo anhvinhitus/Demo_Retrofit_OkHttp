@@ -11,17 +11,17 @@ import vn.com.vng.zalopay.domain.model.User;
  * Created by huuhoa on 6/15/16.
  * Implementation of @link{BalanceStore.Repository}
  */
-public class BalanceRepositoryImpl implements BalanceStore.Repository {
+public class BalanceRepository implements BalanceStore.Repository {
     private final BalanceStore.LocalStorage mLocalStorage;
     private final BalanceStore.RequestService mRequestService;
     private User mUser;
     private EventBus mEventBus;
     private Long mCurrentBalance;
 
-    public BalanceRepositoryImpl(BalanceStore.LocalStorage localStorage,
-                                 BalanceStore.RequestService requestService,
-                                 User user,
-                                 EventBus eventBus) {
+    public BalanceRepository(BalanceStore.LocalStorage localStorage,
+                             BalanceStore.RequestService requestService,
+                             User user,
+                             EventBus eventBus) {
         mUser = user;
         mLocalStorage = localStorage;
         mRequestService = requestService;
