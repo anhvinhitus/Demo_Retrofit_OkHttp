@@ -25,8 +25,6 @@ public interface MerchantStore {
 
         void removeAll();
 
-        boolean existIn(long[] appIds);
-
         boolean existIn(Collection<Long> appIds);
     }
 

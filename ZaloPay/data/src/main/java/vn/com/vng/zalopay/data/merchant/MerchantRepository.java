@@ -57,18 +57,14 @@ public class MerchantRepository implements MerchantStore.Repository {
 
     @Override
     public Observable<Boolean> getListMerchantUserInfo(String appIdList) {
-        Timber.d("getListMerchantUserInfo:  [%s] ", appIdList);
-
         return makeObservable(() -> {
-            Timber.d("getListMerchantUserInfo begin");
             List<Long> appIds = ListStringUtil.toListLong(appIdList);
             boolean existIn = localStorage.existIn(appIds);
             Timber.d("getListMerchantUserInfo: appIds [%s] existIn [%s] ", appIds, existIn);
             return existIn;
-        }).flatMap(existIn -> {
-            return existIn ? Observable.just(Boolean.TRUE) : fetchListMerchant(appIdList);
-        });
+        }).flatMap(existIn -> existIn ? Observable.just(Boolean.TRUE) : fetchListMerchant(appIdList));
     }
+
 
     private Observable<Boolean> fetchListMerchant(String appIdList) {
         return requestService.getlistmerchantuserinfo(appIdList, user.zaloPayId, user.accesstoken)
@@ -78,7 +74,7 @@ public class MerchantRepository implements MerchantStore.Repository {
                         localStorage.put(transform(response));
                     } else {
                         //clear
-                       // localStorage.removeAll();
+                        // localStorage.removeAll();
                     }
                 })
                 .map(response -> Boolean.TRUE)

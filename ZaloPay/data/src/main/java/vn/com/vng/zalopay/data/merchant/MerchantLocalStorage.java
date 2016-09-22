@@ -43,14 +43,6 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
         getMerchantUserDao().deleteAll();
     }
 
-    @Override
-    public boolean existIn(long[] appIds) {
-        long count = getMerchantUserDao().queryBuilder()
-                .where(MerchantUserDao.Properties.Appid.in(appIds))
-                .count();
-        return count >= appIds.length;
-    }
-
     public boolean existIn(Collection<Long> appIds) {
         long count = getMerchantUserDao().queryBuilder()
                 .where(MerchantUserDao.Properties.Appid.in(appIds))
