@@ -1,3 +1,4 @@
+/*
 package com.zalopay.ui.widget.util;
 
 import android.annotation.TargetApi;
@@ -7,9 +8,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 
+*/
 /**
  * Created by AnhHieu on 1/12/16.
- */
+ *//*
+
 public class PermissionChecker {
 
     public final static int REQUIRED_PERMISSION_REQUEST_CODE = 2121;
@@ -41,4 +44,4 @@ public class PermissionChecker {
     private boolean isMarshmallowOrHigher() {
         return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
-}
+}*/

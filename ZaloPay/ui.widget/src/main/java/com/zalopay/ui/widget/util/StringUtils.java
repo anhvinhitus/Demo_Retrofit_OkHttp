@@ -1,8 +1,11 @@
+/*
 package com.zalopay.ui.widget.util;
 
+*/
 /**
  * Created by AnhHieu on 10/4/15.
- */
+ *//*
+
 
 import android.text.TextUtils;
 
@@ -362,3 +365,4 @@ public class StringUtils {
         return newWord.toString();
     }
 }
+*/
