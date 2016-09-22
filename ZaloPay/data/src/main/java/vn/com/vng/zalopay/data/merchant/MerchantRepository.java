@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
+import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
 
+import static vn.com.vng.zalopay.data.util.ListStringUtil.toLongArr;
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 /**
@@ -53,6 +57,17 @@ public class MerchantRepository implements MerchantStore.Repository {
 
     @Override
     public Observable<Boolean> getListMerchantUserInfo(String appIdList) {
+        return makeObservable(() -> {
+            long[] appIds = ListStringUtil.toLongArr(appIdList);
+            boolean existIn = localStorage.existIn(appIds);
+            Timber.d("getListMerchantUserInfo: appIds [%s] existIn [%s] ", appIds, existIn);
+            return existIn;
+        }).flatMap(existIn -> {
+            return existIn ? Observable.just(Boolean.TRUE) : fetchListMerchant(appIdList);
+        });
+    }
+
+    private Observable<Boolean> fetchListMerchant(String appIdList) {
         return requestService.getlistmerchantuserinfo(appIdList, user.zaloPayId, user.accesstoken)
                 .doOnNext(response -> {
                     List<MerchantUser> entities = transform(response);
@@ -117,4 +132,11 @@ public class MerchantRepository implements MerchantStore.Repository {
         return ret;
     }
 
+    @Override
+    public Observable<Boolean> removeAll() {
+        return makeObservable(() -> {
+            localStorage.removeAll();
+            return Boolean.TRUE;
+        });
+    }
 }

@@ -36,4 +36,16 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
     public MerchantUser get(long appId) {
         return getMerchantUserDao().load(appId);
     }
+
+    @Override
+    public void removeAll() {
+        getMerchantUserDao().deleteAll();
+    }
+
+    public boolean existIn(long[] appIds) {
+        long count = getMerchantUserDao().queryBuilder()
+                .where(MerchantUserDao.Properties.Appid.in(appIds))
+                .count();
+        return count >= appIds.length;
+    }
 }

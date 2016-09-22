@@ -18,6 +18,8 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.merchant.MerchantRepository;
+import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
@@ -49,9 +51,9 @@ public class AppResourceModule {
                                                              @Named("params_request_default") HashMap<String, String> paramsReq,
                                                              DownloadAppResourceTaskQueue taskQueue,
                                                              OkHttpClient mOkHttpClient,
-                                                             @Named("rootbundle") String rootBundle) {
+                                                             @Named("rootbundle") String rootBundle, MerchantStore.Repository repository) {
         return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
-                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle, BuildConfig.VERSION_NAME);
+                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle, BuildConfig.VERSION_NAME, repository);
     }
 }

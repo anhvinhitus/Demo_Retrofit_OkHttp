@@ -29,10 +29,12 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Manage application session
  */
 public class ApplicationSessionImpl implements ApplicationSession {
-    Navigator navigator;
-    Context applicationContext;
+
+    private final Navigator navigator;
+    private final Context applicationContext;
+    private final DaoSession daoSession;
+
     private String mLoginMessage;
-    final DaoSession daoSession;
 
 
     public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession, Navigator navigator) {
@@ -54,6 +56,8 @@ public class ApplicationSessionImpl implements ApplicationSession {
         } catch (IOException e) {
             Timber.d("unsubscriber gcm exception %s", e);
         }
+
+        clearMerchant();
 
         navigator.setLastTimeCheckPin(0);
 
@@ -84,6 +88,9 @@ public class ApplicationSessionImpl implements ApplicationSession {
         }
     }
 
+    private void clearMerchant() {
+        daoSession.getMerchantUserDao().deleteAll();
+    }
 
     public void clearAllUserDB() {
         Timber.d("clearAllUserDB");

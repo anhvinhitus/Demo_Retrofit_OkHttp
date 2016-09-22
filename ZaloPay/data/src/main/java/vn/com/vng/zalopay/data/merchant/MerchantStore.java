@@ -21,6 +21,10 @@ public interface MerchantStore {
         void put(List<MerchantUser> entities);
 
         MerchantUser get(long appId);
+
+        void removeAll();
+
+        boolean existIn(long[] appIds);
     }
 
     interface RequestService {
@@ -40,5 +44,7 @@ public interface MerchantStore {
         Observable<MerchantUserInfo> getMerchantUserInfo(long appId);
 
         Observable<Boolean> getListMerchantUserInfo(String appIdList);
+
+        Observable<Boolean> removeAll();
     }
 }
