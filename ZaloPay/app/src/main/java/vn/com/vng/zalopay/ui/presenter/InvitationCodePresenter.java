@@ -22,6 +22,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 6/27/16.
@@ -95,12 +97,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
             Timber.d("login success " + user);
             // TODO: Use your own attributes to track content views in your app
             Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
-
-            InvitationCodePresenter.this.onLoginSuccess(user);
-        }
-
-        @Override
-        public void onCompleted() {
+            InvitationCodePresenter.this.onInvitationCodeSuccess(user);
         }
 
         @Override
@@ -110,7 +107,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
                 // because it is handled from event subscribers
                 return;
             }
-            InvitationCodePresenter.this.onLoginError(e);
+            InvitationCodePresenter.this.onInvitationCodeError(e);
         }
     }
 
@@ -118,9 +115,9 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         mView.gotoMainActivity();
     }
 
-    private void onLoginSuccess(User user) {
+    private void onInvitationCodeSuccess(User user) {
         this.hideLoadingView();
-
+        ZPAnalytics.trackEvent(ZPEvents.INVITATIONCODESUCCESS);
         if (AndroidApplication.instance().getUserComponent() == null) {
             AndroidApplication.instance().createUserComponent(user);
         }
@@ -128,7 +125,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         this.gotoHomeScreen();
     }
 
-    private void onLoginError(Throwable e) {
+    private void onInvitationCodeError(Throwable e) {
         if (mView == null) {
             return;
         }

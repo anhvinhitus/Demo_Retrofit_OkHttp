@@ -196,6 +196,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     public void onResume() {
         super.onResume();
 
+
         Timber.d("Resume invitation code fragment");
         try {
             detectInvitationCode();
