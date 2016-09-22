@@ -80,10 +80,11 @@
                     android:background="@null"
                     android:ellipsize="end"
                     android:hint="@string/cmnd_passpost"
-                    android:inputType="numberDecimal"
+                    android:inputType="textCapCharacters"
                     android:maxLines="1"
                     android:minHeight="44dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textAllCaps="true" />
 
             </android.support.design.widget.TextInputLayout>
 
