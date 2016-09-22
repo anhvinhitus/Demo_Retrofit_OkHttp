@@ -27,12 +27,14 @@ public class NotificationMessageDeserializer implements JsonDeserializer<Notific
         if (value.isJsonPrimitive()) {
             // try to decode base64 and convert to jsonobject
             String embedValue = value.getAsString();
-            embedValue = new String(Base64.decode(embedValue, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE));
             try {
+                embedValue = new String(Base64.decode(embedValue, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE));
                 JsonParser parser = new JsonParser();
                 return new NotificationEmbedData(parser.parse(embedValue).getAsJsonObject());
             } catch (JsonParseException e) {
                 Timber.d("Embed data is not JSON string [[%s]]", embedValue);
+            } catch (Exception e) {
+                Timber.d(e, "Embed data is bad");
             }
         } else {
             return new NotificationEmbedData(value.getAsJsonObject());
