@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import org.parceler.Parcels;
 
@@ -260,7 +261,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             }
         });
 
-        rootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+        rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
             @Override
             public void onKeyBoardShow(int height) {
                 if (edtTransferMsg == null || mScrollView == null) {
