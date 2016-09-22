@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
@@ -52,7 +53,6 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -415,7 +415,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 100) {
+        if (requestCode == Constants.Permission.REQUEST_CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 navigator.startQrCodeActivity(getActivity());
             } else {

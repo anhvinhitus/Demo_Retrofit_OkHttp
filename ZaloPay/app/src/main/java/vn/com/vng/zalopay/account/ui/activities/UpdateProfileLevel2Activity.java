@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -126,6 +127,25 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         } else if (profileType == Constants.PIN_PROFILE_TYPE) {
             viewPager.setCurrentItem(1);
         }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    checkAndRequestReadSMSPermission();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     public void nextPager() {

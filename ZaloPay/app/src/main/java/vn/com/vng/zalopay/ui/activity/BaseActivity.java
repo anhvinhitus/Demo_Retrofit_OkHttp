@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -24,6 +25,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -217,8 +220,26 @@ public abstract class BaseActivity extends AppCompatActivity {
         return hasPermission;
     }
 
+    public void checkAndRequestReadSMSPermission() {
+        checkAndRequestPermission(Manifest.permission.READ_SMS, Constants.Permission.REQUEST_READ_SMS);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Constants.Permission.REQUEST_READ_SMS: {
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (BuildConfig.DEBUG) {
+                        showToast("Read sms permission granted");
+                    }
+                } else {
+                    if (BuildConfig.DEBUG) {
+                        showToast("Read sms permission didn't grante");
+                    }
+                }
+                return;
+            }
+        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

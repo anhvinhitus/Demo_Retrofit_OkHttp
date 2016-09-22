@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -148,7 +149,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     }
 
     private void startAndCheckPermission() {
-        if (checkAndRequestPermission(Manifest.permission.CAMERA, PERMISSIONS_REQUEST_CAMERA)) {
+        if (checkAndRequestPermission(Manifest.permission.CAMERA, Constants.Permission.REQUEST_CAMERA)) {
             super.start();
         }
     }
@@ -189,12 +190,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         return hasPermission;
     }
 
-    private final int PERMISSIONS_REQUEST_CAMERA = 100;
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISSIONS_REQUEST_CAMERA: {
+            case Constants.Permission.REQUEST_CAMERA: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
