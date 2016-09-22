@@ -47,11 +47,7 @@ public class MerchantRepository implements MerchantStore.Repository {
         return makeObservable(() -> localStorage.get(appId))
                 .flatMap(merchantUser -> {
                     Timber.d("getMerchantUserInfoLocal %s", merchantUser);
-                    if (merchantUser == null) {
-                        return Observable.empty();
-                    } else {
-                        return Observable.just(transform(merchantUser));
-                    }
+                    return merchantUser == null ? Observable.empty() : Observable.just(transform(merchantUser));
                 });
     }
 
@@ -65,7 +61,6 @@ public class MerchantRepository implements MerchantStore.Repository {
                     } else {
                         //clear
                     }
-
                 })
                 .map(response -> Boolean.TRUE)
                 ;

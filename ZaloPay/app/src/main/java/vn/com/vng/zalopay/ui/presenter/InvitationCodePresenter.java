@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
 /**
  * Created by AnhHieu on 6/27/16.
+ * *
  */
 @Singleton
 public class InvitationCodePresenter extends BaseAppPresenter implements IPresenter<IInvitationCodeView> {
@@ -35,8 +36,8 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         this.mPassportRepository = passportRepository;
     }
 
-    IInvitationCodeView mView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private IInvitationCodeView mView;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private Context mApplicationContext;
     private PassportRepository mPassportRepository;
 
@@ -88,8 +89,6 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
-        public LoginPaymentSubscriber() {
-        }
 
         @Override
         public void onNext(User user) {
