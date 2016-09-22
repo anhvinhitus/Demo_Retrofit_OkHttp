@@ -57,8 +57,11 @@ public class MerchantRepository implements MerchantStore.Repository {
 
     @Override
     public Observable<Boolean> getListMerchantUserInfo(String appIdList) {
+        Timber.d("getListMerchantUserInfo:  [%s] ", appIdList);
+
         return makeObservable(() -> {
-            long[] appIds = ListStringUtil.toLongArr(appIdList);
+            Timber.d("getListMerchantUserInfo begin");
+            List<Long> appIds = ListStringUtil.toListLong(appIdList);
             boolean existIn = localStorage.existIn(appIds);
             Timber.d("getListMerchantUserInfo: appIds [%s] existIn [%s] ", appIds, existIn);
             return existIn;
@@ -75,6 +78,7 @@ public class MerchantRepository implements MerchantStore.Repository {
                         localStorage.put(transform(response));
                     } else {
                         //clear
+                       // localStorage.removeAll();
                     }
                 })
                 .map(response -> Boolean.TRUE)

@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
@@ -122,6 +123,20 @@ public class ListStringUtil {
                 longArr[i] = longV;
             } catch (NumberFormatException ex) {
                 //empty
+            }
+        }
+        return longArr;
+    }
+
+    public static List<Long> toListLong(String longStr) {
+        String[] strArr = longStr.split(",");
+        List<Long> longArr = new ArrayList<>();
+        for (int i = 0; i < strArr.length; i++) {
+            String str = strArr[i];
+            try {
+                long longV = Long.parseLong(str);
+                longArr.add(longV);
+            } catch (NumberFormatException ex) {
             }
         }
         return longArr;

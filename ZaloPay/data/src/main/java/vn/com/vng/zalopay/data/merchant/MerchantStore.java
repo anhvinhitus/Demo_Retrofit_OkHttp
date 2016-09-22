@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.merchant;
 
+import java.util.Collection;
 import java.util.List;
 
 import retrofit2.http.GET;
@@ -25,6 +26,8 @@ public interface MerchantStore {
         void removeAll();
 
         boolean existIn(long[] appIds);
+
+        boolean existIn(Collection<Long> appIds);
     }
 
     interface RequestService {
