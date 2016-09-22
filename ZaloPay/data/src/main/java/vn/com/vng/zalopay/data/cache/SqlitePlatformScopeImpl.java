@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.cache;
 
 import java.util.List;
@@ -10,9 +11,11 @@ import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.Lists;
 
+*/
 /**
  * Created by AnhHieu on 4/28/16.
- */
+ *//*
+
 public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqlitePlatformScope {
 
     private PlatformDaoMapper platformDaoMapper;
@@ -49,3 +52,4 @@ public class SqlitePlatformScopeImpl extends SqlBaseScopeImpl implements SqliteP
     }
 
 }
+*/

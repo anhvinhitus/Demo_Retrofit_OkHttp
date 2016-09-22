@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.repository.datasource;
 
 import android.content.Context;
@@ -12,10 +13,12 @@ import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
 import vn.com.vng.zalopay.domain.model.User;
 
+*/
 /**
  * Created by AnhHieu on 4/28/16.
  *
- */
+ *//*
+
 
 public class AppConfigFactory {
 
@@ -72,3 +75,4 @@ public class AppConfigFactory {
     }
 
 }
+*/
