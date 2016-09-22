@@ -10,12 +10,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -44,7 +45,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
     private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
-    private final int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
+    private int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
 
     private IZaloPayView mZaloPayView;
 
@@ -133,23 +134,24 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void listAppResource() {
+        List<Integer> insideApps = null;
         try {
-            List<Integer> insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
-            Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
-                    .doOnNext(new Action1<List<AppResource>>() {
-                        @Override
-                        public void call(List<AppResource> appResourceList) {
-                            Timber.d("call: thread %s", Thread.currentThread().getName());
-                            getListMerchantUser(appResourceList);
-                        }
-                    })
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new AppResourceSubscriber());
-
-            compositeSubscription.add(subscription);
+            insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
         } catch (Exception e) {
             Timber.w(e, "Get inside apps from PaymetSDK exception [%s]", e.getMessage());
         }
+
+        if (insideApps == null) {
+            insideApps = new ArrayList<>();
+        }
+
+        Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AppResourceSubscriber());
+        compositeSubscription.add(subscription);
+
+
+        this.getListMerchantUser(insideApps);
     }
 
     public List<AppResource> getListAppResourceFromDB() {
@@ -167,8 +169,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
 
-    private void getListMerchantUser(List<AppResource> appResourceList) {
-        String appId = toStringAppId(appResourceList);
+    private void getListMerchantUser(List<Integer> listId) {
+
+        String appId = ListStringUtil.toStringListInt(listId);
+
         if (TextUtils.isEmpty(appId)) {
             return;
         }
@@ -177,22 +181,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);
-    }
-
-    private String toStringAppId(List<AppResource> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        for (AppResource appResource : list) {
-            if (builder.length() == 0) {
-                builder.append(appResource.appid);
-            } else {
-                builder.append(appResource.appid + ",");
-            }
-        }
-        return builder.toString();
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
@@ -206,15 +194,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
 
             Timber.d(" AppResource %s", appResources.size());
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
         }
     }
 
@@ -276,7 +255,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     public void getBanners() {
         try {
-            List banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
+            List<DBanner> banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
             if (banners != null && banners.size() > 1) {
                 startBannerCountDownTimer();
             } else {
@@ -294,10 +273,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (appResource == null) {
             return;
         }
-        mMerchantRepository.getMerchantUserInfo(appResource.appid)
+        Subscription subscription = mMerchantRepository.getMerchantUserInfo(appResource.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MerchantUserInfoSubscribe(appResource));
+        compositeSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

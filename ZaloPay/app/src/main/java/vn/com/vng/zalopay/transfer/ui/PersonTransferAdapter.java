@@ -13,12 +13,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -169,7 +165,7 @@ public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Re
 
     }
 
-    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imageViewQrCode)
         ImageView mMyQrCodeView;
