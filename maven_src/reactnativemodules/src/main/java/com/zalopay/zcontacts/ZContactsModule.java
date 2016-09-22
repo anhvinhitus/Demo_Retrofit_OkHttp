@@ -1,11 +1,15 @@
 package com.zalopay.zcontacts;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -19,6 +23,9 @@ import com.facebook.react.bridge.ReactMethod;
 public class ZContactsModule extends ReactContextBaseJavaModule implements ActivityEventListener {
 
     static final int PICK_CONTACT_REQUEST = 1;
+    public static final int REQUEST_READ_CONTACT = 102;
+    private boolean hasPermission = true;
+
     private Callback contactSuccessCallback;
     private Callback contactCancelCallback;
 
@@ -114,4 +121,30 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
 
         resultCallback.invoke(bExistedContact);
     }
+
+    @ReactMethod
+    public void requestReadContact(Callback resultCallback) {
+        boolean  hasPermission = checkAndRequestPermission(getCurrentActivity());
+        if (resultCallback != null) {
+            resultCallback.invoke(hasPermission);
+        }
+    }
+
+    public boolean checkAndRequestPermission(Activity activity) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (activity == null) {
+                hasPermission = false;
+            } else {
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    hasPermission = false;
+                    activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACT);
+                } else {
+                    hasPermission = true;
+                }
+            }
+        }
+        return hasPermission;
+    }
+
 }

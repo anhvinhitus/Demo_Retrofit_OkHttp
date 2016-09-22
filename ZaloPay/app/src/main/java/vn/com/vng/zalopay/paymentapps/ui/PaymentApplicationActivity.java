@@ -1,8 +1,14 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -10,10 +16,12 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.zalopay.apploader.BuildConfig;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.zcontacts.ZContactsModule;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -290,5 +298,40 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
     public void showToast(int message) {
         ToastUtil.showToast(this, message);
+    }
+
+    public boolean checkAndRequestPermission(String permission, int requestCode) {
+        boolean hasPermission = true;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                hasPermission = false;
+                requestPermissions(new String[]{permission}, requestCode);
+            }
+        }
+        return hasPermission;
+    }
+
+    public void checkAndRequestReadContactPermission() {
+        checkAndRequestPermission(Manifest.permission.READ_CONTACTS, ZContactsModule.REQUEST_READ_CONTACT);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case ZContactsModule.REQUEST_READ_CONTACT: {
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (BuildConfig.DEBUG) {
+                        Toast.makeText(this, "Read contact permission granted", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (BuildConfig.DEBUG) {
+                        Toast.makeText(this, "Read contact permission didn't grante", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
