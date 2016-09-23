@@ -94,7 +94,7 @@
     <string name="title.activity.transfer">Chuyển tiền</string>
     <string name="title.activity.transfer.to">Chuyển tiền đến</string>
     <string name="title.activity.zalopay.contact">Danh bạ Zalo</string>
-    <string name="title.activity.change.pin">Tạo lại mã PIN</string>
+    <string name="title.activity.change.pin">Tạo lại mật khẩu thanh toán</string>
     <string name="title.activity.invitation.code">Invitation Code</string>
     <string name="title.activity.withdraw.home">Số dư</string>
     <string name="title.activity.withdraw">Rút tiền</string>
@@ -176,15 +176,12 @@
     <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
     <string name="invalid_otp">OTP không hợp lệ.</string>
 
-    <string name="pin_title">Tạo PIN để thanh toán bằng số dư tài khoản và thẻ đã lưu</string>
-    <string name="hint_pin">Mã PIN</string>
-    <string name="invalid_pin">Nhập vào mã PIN 6 số</string>
-    <string name="pin.mismatch">Mã PIN không khớp</string>
-    <string name="pin.not.change">PIN mới phải khác PIN cũ</string>
+    <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư tài khoản và thẻ đã lưu</string>
+    <string name="invalid_pin">Nhập vào mật khẩu thanh toán 6 số</string>
+    <string name="pin.mismatch">Mật khẩu thanh toán không khớp</string>
+    <string name="pin.not.change">Mật khẩu thanh toán cũ và mới không được trùng nhau.</string>
     <string name="note_pin">Là mã bí mật khi thực hiện thanh toán hoặc giao dịch</string>
-    <string name="hint_pin_compare">Nhập lại mã PIN</string>
-    <string name="invalid_pin_compare">Mã PIN không trùng nhau</string>
-
+    <string name="hint_pin_compare">Nhập lại mật khẩu thanh toán</string>
     <string name="invalid_fullname_empty">Bạn chưa nhập họ tên</string>
     <string name="invalid_address_empty">Bạn chưa nhập địa chỉ</string>
 
@@ -195,7 +192,7 @@
     <string name="user_info">Thông tin cá nhân</string>
     <string name="sigout_and_delete_db">Thoát và xóa dữ liệu</string>
     <string name="title_activity_edit_profile">Thông tin cá nhân</string>
-    <string name="reset_passcode">Thiết lập lại mã PIN.</string>
+    <string name="reset_passcode">Thiết lập lại mật khẩu thanh toán.</string>
 
     <string name="not_update">Chưa cập nhật</string>
     <string name="waiting_approve">Đang chờ duyệt</string>
@@ -206,7 +203,6 @@
 
     <string name="hint_fullname">Họ tên</string>
 
-    <string name="show_passcode">Hiện mã PIN?</string>
     <string name="title_activity_scan_to_pay">Trả tiền</string>
     <string name="btn_emulate_nfc">Giả lập Nfc</string>
 
@@ -214,8 +210,7 @@
     <string name="hide">Ẩn</string>
 
     <string name="hint_otp">Mã OTP</string>
-    <!--<string name="change_pin">Đổi mã PIN</string>-->
-    <string name="reset_pin">Tạo lại mã PIN</string>
+
     <string name="otp_note">Mã OTP được gửi qua SMS đến điện thoại của bạn</string>
 
     <string name="receiver_start_record">Start record</string>
@@ -245,8 +240,7 @@
     <string name="txt_input_userinfo">Cập nhật</string>
     <string name="txt_need_input_userinfo">Hãy cập nhật thông tin để sử dụng tính năng này</string>
 
-    <string name="reset_pin_error">Tạo lại mã PIN thất bại.</string>
-    <string name="reset_pin_success">Tạo lại mã PIN thành công.</string>
+
 
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
@@ -305,7 +299,7 @@
     <string name="zalopay_name_not_update">Tên tài khoản: Chưa cập nhật</string>
 
     <string name="account.zalo.pay">Tài khoản Zalo Pay</string>
-    <string name="lbl.note.forget.pin">Lưu ý: Quên mã PIN vui lòng liên hệ %s</string>
+    <string name="lbl.note.forget.pin">Lưu ý: Quên mật khẩu thanh toán vui lòng liên hệ %s</string>
 
     <string name="input.account.zalo.pay">Nhập tên tài khoản Zalo Pay</string>
 
@@ -313,7 +307,6 @@
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
     <string name="withdraw_condition_card_note">Cần phải lưu một trong các thẻ ngân hàng sau:</string>
-    <string name="withdraw_condition_pin">Mã PIN</string>
     <string name="withdraw_description">Rút tiền về thẻ đã lưu</string>
 
     <string name="account_existed">Tên tài khoản đã được sử dụng</string>
@@ -333,10 +326,15 @@
     <string name="withdraw.exceed.balance">Số tiền rút vượt quá số dư</string>
 
     <string name="transfer.message.maxlength">Lời nhắn không được vượt quá 36 ký tự.</string>
-    <string name="pin.old">Mã PIN cũ</string>
-    <string name="pin.new">Mã PIN mới</string>
-    <string name="input.pin.old">Nhập mã PIN cũ</string>
-    <string name="input.pin.new">Nhập mã PIN mới</string>
+    <string name="pin.old">Mật khẩu thanh toán cũ</string>
+    <string name="pin.new">Mật khẩu thanh toán mới</string>
+    <string name="input.pin.old">Nhập mật khẩu thanh toán cũ</string>
+    <string name="input.pin.new">Nhập mật khẩu thanh toán mới</string>
+    <string name="pin">Mật khẩu thanh toán</string>
+    <string name="input.pin.to.access">Nhập mật khẩu thanh toán để truy cập</string>
+    <string name="reset_pin">Tạo lại mật khẩu thanh toán</string>
+    <string name="reset_pin_error">Tạo lại mật khẩu thanh toán thất bại.</string>
+    <string name="reset_pin_success">Tạo lại mật khẩu thanh toán thành công.</string>
 
     <!--WebView Resource Start-->
     <string name="appgame_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>

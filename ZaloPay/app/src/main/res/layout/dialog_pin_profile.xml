@@ -40,7 +40,7 @@
             android:layout_marginTop="15dp"
             android:gravity="left"
             android:lineSpacingExtra="@dimen/pading_top_min"
-            android:text="Nhập mã PIN để truy cập"
+            android:text="@string/input.pin.to.access"
             android:textColor="@color/text_color_bold"
             android:textSize="14sp" />
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="20dp"
-            android:hint="Mã PIN"
+            android:hint="@string/pin"
             android:textColor="@color/red"
             android:textColorHint="@color/colorPrimary"
             android:textSize="@dimen/textsize.tiny" />

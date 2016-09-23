@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing.small"
                     android:lines="1"
-                    android:text="@string/withdraw_condition_pin" />
+                    android:text="@string/pin" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

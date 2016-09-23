@@ -61,7 +61,7 @@
                         android:layout_gravity="bottom"
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="@dimen/spacing.small"
-                        zalopay:hint="@string/hint_pin"
+                        zalopay:hint="@string/pin"
                         zalopay:length="@integer/pin_length" />
                 </FrameLayout>
 
