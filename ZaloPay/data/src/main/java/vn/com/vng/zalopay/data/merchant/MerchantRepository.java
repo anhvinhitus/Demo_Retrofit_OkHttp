@@ -12,6 +12,8 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
 
+import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
+
 /**
  * Created by AnhHieu on 9/21/16.
  * *
@@ -59,6 +61,14 @@ public class MerchantRepository implements MerchantStore.Repository {
                 .doOnNext(response -> localStorage.put(transform(response, appId)))
                 .map(this::transform);
     }
+
+//    private Observable<MerchantUserInfo> getMerchantUserInfoLocal(long appId) {
+//        return makeObservable(() -> localStorage.get(appId))
+//                .flatMap(merchantUser -> {
+//                    Timber.d("getMerchantUserInfoLocal %s", merchantUser);
+//                    return merchantUser == null ? Observable.empty() : Observable.just(transform(merchantUser));
+//                });
+//    }
 
     @Override
     public Observable<Boolean> getListMerchantUserInfo(String appIdList) {
@@ -113,14 +123,25 @@ public class MerchantRepository implements MerchantStore.Repository {
         return ret;
     }
 
-    private MerchantUserInfo transform(MerchantUser response) {
-        MerchantUserInfo ret = new MerchantUserInfo(response.getAppid());
-        ret.birthdate = response.getBirthday();
-        ret.displayname = response.getDisplayName();
-        ret.muid = response.getMUid();
-        ret.usergender = response.getGender();
-        ret.maccesstoken = response.getMAccessToken();
+    private MerchantUserInfo transform(MerchantUser entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        MerchantUserInfo ret = new MerchantUserInfo(entity.getAppid());
+        ret.birthdate = entity.getBirthday();
+        ret.displayname = entity.getDisplayName();
+        ret.muid = entity.getMUid();
+        ret.usergender = entity.getGender();
+        ret.maccesstoken = entity.getMAccessToken();
         return ret;
     }
 
+    @Override
+    public Observable<Boolean> removeAll() {
+        return makeObservable(() -> {
+            localStorage.removeAll();
+            return Boolean.TRUE;
+        });
+    }
 }

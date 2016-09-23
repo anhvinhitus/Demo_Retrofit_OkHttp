@@ -1,29 +1,19 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
-import android.content.Context;
-
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import vn.com.vng.zalopay.data.api.AppConfigService;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
-import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
-import vn.com.vng.zalopay.data.cache.SqlitePlatformScope;
-import vn.com.vng.zalopay.data.cache.SqlitePlatformScopeImpl;
-import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
-import vn.com.vng.zalopay.data.repository.AppConfigRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
-import vn.com.vng.zalopay.data.repository.datasource.AppConfigFactory;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.AppConfigRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
@@ -35,31 +25,6 @@ import vn.com.vng.zalopay.service.PaymentServiceImpl;
  */
 @Module
 public class UserControllerModule {
-
-    @UserScope
-    @Provides
-    SqlitePlatformScope provideSqlitePlatformScope(@Named("daosession") DaoSession session, PlatformDaoMapper mapper) {
-        return new SqlitePlatformScopeImpl(session, mapper);
-    }
-
-
-    @UserScope
-    @Provides
-    AppConfigFactory provideAppConfigFactory(Context context,
-                                             AppConfigService service,
-                                             User user,
-                                             SqlitePlatformScope sqlitePlatformScope) {
-
-        return new AppConfigFactory(context, service,
-                user,
-                sqlitePlatformScope);
-    }
-
-    @UserScope
-    @Provides
-    AppConfigRepository provideAppConfigRepository(AppConfigFactory appConfigFactory, AppConfigEntityDataMapper mapper) {
-        return new AppConfigRepositoryImpl(appConfigFactory, mapper);
-    }
 
     @UserScope
     @Provides

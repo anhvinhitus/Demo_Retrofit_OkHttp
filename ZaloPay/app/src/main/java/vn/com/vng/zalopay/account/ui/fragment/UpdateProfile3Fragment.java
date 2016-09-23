@@ -168,30 +168,32 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnTextChanged(R.id.edtEmail)
     public void onTextChangedEmail(CharSequence s) {
-        mEmailView.setError(null);
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
+        setEmailError(null);
+        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
     }
 
+    private void setEmailError(String s) {
+        mEmailView.setErrorEnabled(!TextUtils.isEmpty(s));
+        mEmailView.setError(s);
+    }
 
     @OnFocusChange(R.id.edtEmail)
     public void onFocusChange(boolean focus) {
         if (!focus) {
             if (TextUtils.isEmpty(getEmail())) {
-                mEmailView.setErrorEnabled(true);
-                mEmailView.setError(getString(R.string.invalid_email_empty));
+                setEmailError(getString(R.string.invalid_email_empty));
             } else if (!ValidateUtil.isEmailAddress(getEmail())) {
-                mEmailView.setErrorEnabled(true);
-                mEmailView.setError(getString(R.string.email_invalid));
+                setEmailError(getString(R.string.email_invalid));
             }
         } else {
-            mEmailView.setErrorEnabled(false);
+            setEmailError(null);
         }
     }
 
     @OnTextChanged(R.id.edtIdentity)
     public void onTextChangeIdentity(CharSequence s) {
         mIdentityNumberView.setError(null);
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
+        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
     }
 
     public int getCurrentPage() {
@@ -243,10 +245,15 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private String getIdentity() {
-        if (mIdentityNumberView.getEditText() != null) {
-            return mIdentityNumberView.getEditText().getText().toString();
+        if (mIdentityNumberView.getEditText() == null) {
+            return "";
+        } else if (mIdentityNumberView.getEditText().getText() == null) {
+            return "";
+        } else if (TextUtils.isEmpty(mIdentityNumberView.getEditText().getText().toString())) {
+            return "";
+        } else {
+            return mIdentityNumberView.getEditText().getText().toString().toUpperCase();
         }
-        return "";
     }
 
     private void setEmail(String text) {
@@ -277,8 +284,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             return false;
         }
 
-        if (!ValidateUtil.isCMND(getIdentity())) {
-            mIdentityNumberView.setError(getString(R.string.cmnd_invalid));
+        if (!ValidateUtil.isValidCMNDOrPassport(getIdentity())) {
+            mIdentityNumberView.setError(getString(R.string.cmnd_passport_invalid));
             return false;
         }
 
@@ -517,7 +524,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         setEmail(email);
         setIdentity(identity);
 
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isCMND(getIdentity()));
+        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
 
         if (!TextUtils.isEmpty(foregroundImg)) {
             mUriFgCmnd = Uri.parse(foregroundImg);

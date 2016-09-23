@@ -17,6 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import javax.inject.Inject;
 
@@ -369,7 +370,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
             }
         });
 
-        rootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+        rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
             @Override
             public void onKeyBoardShow(int height) {
                 if (mScrollView == null) {

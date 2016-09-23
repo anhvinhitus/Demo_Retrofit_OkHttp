@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay;
 
+import com.zalopay.zcontacts.ZContactsModule;
+
 /**
  * Created by AnhHieu on 3/25/16.
  *
@@ -67,6 +69,14 @@ public interface Constants {
     int REQUEST_CODE_INTRO = 125;
     int ZALOPAY_APP_ID = 1;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
+
+    //Contain request code that request permission in Android 6
+    interface Permission {
+        int REQUEST_COARSE_LOCATION = 1;
+        int REQUEST_CAMERA = 100;
+        int REQUEST_READ_SMS = 101;
+        int REQUEST_READ_CONTACT = ZContactsModule.REQUEST_READ_CONTACT;
+    }
 
     interface MoneyTransfer {
         int MODE_DEFAULT = 0;

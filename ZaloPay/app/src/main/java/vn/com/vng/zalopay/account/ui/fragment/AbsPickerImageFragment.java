@@ -24,6 +24,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -126,7 +127,7 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
                 hasPermission = false;
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, Constants.Permission.REQUEST_CAMERA);
             }
         }
         return hasPermission;
@@ -136,7 +137,7 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 100) {
+        if (requestCode == Constants.Permission.REQUEST_CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 onCapturePermissionAllowed();
             } else {

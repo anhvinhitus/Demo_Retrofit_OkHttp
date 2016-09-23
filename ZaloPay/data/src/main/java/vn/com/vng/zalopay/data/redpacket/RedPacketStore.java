@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
+import vn.com.vng.zalopay.data.cache.model.BundleGD;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -38,6 +39,11 @@ import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 public interface RedPacketStore {
 
     interface LocalStorage {
+        void putBundle(List<BundleGD> bundleGDs);
+        //update time that get PackageInBundle from server
+        void updateLastTimeGetPackage(long bundleId);
+        BundleGD getBundle(long bundleId);
+
         void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB);
         Observable<GetSentBundle> getSentBundleSummary();
 
@@ -47,7 +53,6 @@ public interface RedPacketStore {
         void putSentBundle(List<SentBundleGD> sentBundle);
         Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit);
         Boolean isHaveSentBundleInDb(long createTime, int count);
-        Integer getBundleStatus(long bundleId);
         Void setBundleStatus(long bundleId, int status);
 
         void putReceivePackages(List<ReceivePackageGD> receiveBundleGDs);
@@ -66,8 +71,6 @@ public interface RedPacketStore {
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
         ReceivePackage getReceivedPacket(long packetId);
-
-        Long getLastOpenTimeForPacketsInBundle(long bundleId);
     }
 
     interface RequestService {
@@ -110,8 +113,6 @@ public interface RedPacketStore {
         Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID);
 
         Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId);
-
-        Observable<Integer> getBundleStatus(long bundleID);
 
         Observable<Void> setBundleStatus(long bundleId, int status);
 

@@ -4,6 +4,12 @@ import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.zalopay.apploader.BundleReactConfig;
+import com.zalopay.apploader.BundleService;
+import com.zalopay.apploader.impl.BundleReactConfigExternalDev;
+import com.zalopay.apploader.impl.BundleReactConfigInternalDev;
+import com.zalopay.apploader.impl.BundleReactConfigRelease;
+import com.zalopay.apploader.impl.BundleServiceImpl;
 
 import java.io.File;
 
@@ -20,18 +26,9 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
-
-import com.zalopay.apploader.BundleReactConfig;
-import com.zalopay.apploader.BundleService;
-
-import vn.com.vng.zalopay.navigation.INavigator;
-
-import com.zalopay.apploader.impl.BundleReactConfigExternalDev;
-import com.zalopay.apploader.impl.BundleReactConfigInternalDev;
-import com.zalopay.apploader.impl.BundleReactConfigRelease;
-import com.zalopay.apploader.impl.BundleServiceImpl;
 import com.zalopay.apploader.network.NetworkService;
 
+import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
 

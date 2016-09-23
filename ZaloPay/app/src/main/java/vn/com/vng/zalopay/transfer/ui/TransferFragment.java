@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import org.parceler.Parcels;
 
@@ -247,18 +248,20 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 if (TextUtils.isEmpty(s) || s.length() <= 36) {
                     return;
                 }
-                edtTransferMsg.setText(s.subSequence(0, 36));
+                s = s.subSequence(0, 36);
+                mPresenter.updateMessage(s.toString());
+                edtTransferMsg.setText(s);
                 edtTransferMsg.setSelection(edtTransferMsg.getText().length());
                 showWarningDialog(getString(R.string.transfer_message_maxlength), getString(R.string.txt_close), null);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                mPresenter.updateMessage(s.toString());
+
             }
         });
 
-        rootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
+        rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
             @Override
             public void onKeyBoardShow(int height) {
                 if (edtTransferMsg == null || mScrollView == null) {

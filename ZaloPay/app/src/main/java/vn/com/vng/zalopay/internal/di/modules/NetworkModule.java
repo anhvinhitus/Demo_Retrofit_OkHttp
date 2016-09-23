@@ -34,6 +34,7 @@ import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 @Module
 public class NetworkModule {
@@ -174,6 +175,5 @@ public class NetworkModule {
                 .client(okHttpClient)
                 .build();
     }
-
 
 }

@@ -28,7 +28,7 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
         public final static Property TotalOfRevPackage = new Property(2, Integer.class, "totalOfRevPackage", false, "TOTAL_OF_REV_PACKAGE");
         public final static Property TotalOfLuckiestDraw = new Property(3, Integer.class, "totalOfLuckiestDraw", false, "TOTAL_OF_LUCKIEST_DRAW");
         public final static Property TimeCreate = new Property(4, Long.class, "timeCreate", false, "TIME_CREATE");
-    };
+    }
 
 
     public ReceivePacketSummaryDBDao(DaoConfig config) {

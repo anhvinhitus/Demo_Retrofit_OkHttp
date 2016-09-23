@@ -10,11 +10,13 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.cache.model.BundleGD;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -114,7 +116,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return mRequestService.getReceivedPackageList(timeCreate, count, order, user.zaloPayId, user.accesstoken)
                 .map(mDataMapper::transformToGetRevPacket)
                 .doOnNext(this::insertRevPacketSummary)
-                .doOnNext(this::insertReceivePackages);
+                .doOnNext(this::insertReceivePackages)
+                .doOnNext(this::insertBundles);
     }
 
     @Override
@@ -162,6 +165,22 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
     }
 
+    private void insertBundles(GetReceivePacket getReceivePacket) {
+        List<BundleGD> bundleGDs = mDataMapper.transformToBundleGD(getReceivePacket);
+        if (Lists.isEmptyOrNull(bundleGDs)) {
+            return;
+        }
+        mLocalStorage.putBundle(bundleGDs);
+    }
+
+    private void insertBundles(GetSentBundle getSentBundle) {
+        List<BundleGD> bundleGDs = mDataMapper.transformToBundleGD(getSentBundle);
+        if (Lists.isEmptyOrNull(bundleGDs)) {
+            return;
+        }
+        mLocalStorage.putBundle(bundleGDs);
+    }
+
     @Override
     public Observable<Boolean> getAllPacketInBundleServer(long bundleId) {
         Timber.d("getAllPacketInBundleServer bundleId [%s]", bundleId);
@@ -190,6 +209,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                         long newTimeStamp = packageInBundles.get(packageInBundles.size() - 1).openTime;
                         getPackageInBundlesServer(bundleId, newTimeStamp, count, sortOrder, subscriber);
                     } else {
+                        mLocalStorage.updateLastTimeGetPackage(bundleId);
                         subscriber.onCompleted();
                     }
                 })
@@ -217,17 +237,31 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
     }
 
+    /**
+     * Should Update Packets For Bundle?
+     * Note: Package can't open after 24 hours from the time user creates red package.
+     * If (LastTimeGetPackageFromServer - createTime) > 24h then shouldn't
+     * else should get package from server
+     * @param bundleId bundleId
+     * @return should or shouldn't get data from server.
+     */
     private boolean shouldUpdatePacketsForBundle(long bundleId) {
-        Long lastOpenTime = mLocalStorage.getLastOpenTimeForPacketsInBundle(bundleId);
+        BundleGD bundleGD = mLocalStorage.getBundle(bundleId);
+        if (bundleGD == null) {
+            return true;
+        }
+        Long lastTimeGetData = bundleGD.getLastTimeGetPackage();
+        Long createTime = bundleGD.getCreateTime();
 
-        if (lastOpenTime == null) {
-            Timber.d("Last open time is NULL");
+        if (lastTimeGetData == null || createTime == null || createTime <= 0) {
+            Timber.d("LastTime get data or createTime is NULL");
             return true;
         }
 
-        Timber.d("Last open time: %s, %s, %s", lastOpenTime, System.currentTimeMillis(), System.currentTimeMillis() - lastOpenTime);
-        return lastOpenTime + 1000 * 60 * 60 * 24 > System.currentTimeMillis();
-
+        Timber.d("Last open time: %s, %s, %s", lastTimeGetData, createTime, lastTimeGetData - createTime);
+        boolean shouldGetDataFromServer = !((lastTimeGetData - createTime) > 1000 * 60 * 60 * 24);
+        Timber.d("shouldGetDataFromServer [%s]", shouldGetDataFromServer);
+        return shouldGetDataFromServer;
     }
 
     @Override
@@ -236,11 +270,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
             long packetId = Long.parseLong(packetIdStr);
             return mLocalStorage.getPacketStatus(packetId);
         });
-    }
-
-    @Override
-    public Observable<Integer> getBundleStatus(long bundleID) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getBundleStatus(bundleID));
     }
 
     @Override
@@ -324,7 +353,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
                 .map(mDataMapper::transformToSentBundleSummary)
                 .doOnNext(this::insertSentBundleSummary)
 //                .map(mDataMapper::transformToSentBundles)
-                .doOnNext(this::insertSentBundles);
+                .doOnNext(this::insertSentBundles)
+                .doOnNext(this::insertBundles);
     }
 
     private void insertSentBundleSummary(GetSentBundle getSentBundle) {

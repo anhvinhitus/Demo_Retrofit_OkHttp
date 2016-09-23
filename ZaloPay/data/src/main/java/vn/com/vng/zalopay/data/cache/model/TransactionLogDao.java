@@ -39,7 +39,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         public final static Property Username = new Property(13, String.class, "username", false, "USERNAME");
         public final static Property Appusername = new Property(14, String.class, "appusername", false, "APPUSERNAME");
         public final static Property Statustype = new Property(15, Integer.class, "statustype", false, "STATUSTYPE");
-    };
+    }
 
 
     public TransactionLogDao(DaoConfig config) {

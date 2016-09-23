@@ -38,11 +38,13 @@ import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.button.GuardButton;
+import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 /**
  * Created by AnhHieu on 6/27/16.
+ * *
  */
-public class InvitationCodeFragment extends BaseFragment implements IInvitationCodeView {
+public class InvitationCodeFragment extends BaseFragment implements IInvitationCodeView, OnKeyboardStateChangeListener {
 
     public static InvitationCodeFragment newInstance() {
 
@@ -110,38 +112,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
             mILCodeView.setLetterSpacing(0.7f);
         }
 
-
-        mRootView.setOnKeyboardStateListener(new KeyboardFrameLayout.KeyboardHelper.OnKeyboardStateChangeListener() {
-            @Override
-            public void onKeyBoardShow(int height) {
-
-                int childHeight = mContainerView.getHeight();
-
-
-                boolean isScrollable = mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
-
-
-                Timber.d("onKeyBoardShow: height %s childHeight %s isScrollable %s", height, childHeight, isScrollable);
-
-                if (isScrollable) {
-                    ViewCompat.setPivotX(mLogoView, mLogoView.getWidth() / 2);
-                    ViewCompat.setScaleX(mLogoView, 0.89f);
-
-                    ViewCompat.setPivotY(mLogoView, mLogoView.getHeight());
-                    ViewCompat.setScaleY(mLogoView, 0.89f);
-                } else {
-                    ViewCompat.setScaleX(mLogoView, 1f);
-                    ViewCompat.setScaleY(mLogoView, 1f);
-                }
-            }
-
-            @Override
-            public void onKeyBoardHide() {
-                ViewCompat.setScaleX(mLogoView, 1f);
-                ViewCompat.setScaleY(mLogoView, 1f);
-                Timber.d("onKeyBoardHide");
-            }
-        });
+        mRootView.setOnKeyboardStateListener(this);
     }
 
     @OnTextChanged(R.id.passCodeInput)
@@ -165,6 +136,33 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         } else {
             presenter.sendCode(code);
         }
+    }
+
+    @Override
+    public void onKeyBoardShow(int height) {
+        int childHeight = mContainerView.getHeight();
+
+        boolean isScrollable = mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
+
+        Timber.d("onKeyBoardShow: height %s childHeight %s isScrollable %s", height, childHeight, isScrollable);
+
+        if (isScrollable) {
+            ViewCompat.setPivotX(mLogoView, mLogoView.getWidth() / 2);
+            ViewCompat.setScaleX(mLogoView, 0.89f);
+
+            ViewCompat.setPivotY(mLogoView, mLogoView.getHeight());
+            ViewCompat.setScaleY(mLogoView, 0.89f);
+        } else {
+            ViewCompat.setScaleX(mLogoView, 1f);
+            ViewCompat.setScaleY(mLogoView, 1f);
+        }
+    }
+
+    @Override
+    public void onKeyBoardHide() {
+        ViewCompat.setScaleX(mLogoView, 1f);
+        ViewCompat.setScaleY(mLogoView, 1f);
+        Timber.d("onKeyBoardHide");
     }
 
     @Override
@@ -197,6 +195,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @Override
     public void onResume() {
         super.onResume();
+
 
         Timber.d("Resume invitation code fragment");
         try {

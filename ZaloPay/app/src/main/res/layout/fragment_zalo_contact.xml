@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -24,23 +26,24 @@
             android:id="@+id/edtSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing.medium"
-            android:layout_marginLeft="@dimen/spacing.medium.t"
-            android:layout_marginRight="@dimen/spacing.medium"
-            android:layout_marginTop="@dimen/spacing.medium"
             android:background="@color/white"
             android:ellipsize="end"
             android:hint="@string/hint_zalo_contact"
             android:lines="1"
+            android:paddingBottom="@dimen/spacing.medium"
+            android:paddingLeft="@dimen/spacing.medium.t"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.medium"
             android:singleLine="true"
             android:textColorHint="@color/hint"
             android:textSize="@dimen/textsize.small" />
     </LinearLayout>
 
     <View
+        android:id="@+id/edtSeparate"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/separate" />
+        android:layout_height="1dp"
+        android:background="@drawable/txt_bottom_default_style" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"

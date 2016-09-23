@@ -1,7 +1,11 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
@@ -61,6 +65,24 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         viewPager.setAdapter(new ChangePinPagerAdapter(getFragmentManager()));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    checkAndRequestReadSMSPermission();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override

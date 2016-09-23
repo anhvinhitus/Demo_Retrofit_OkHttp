@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
@@ -22,6 +21,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  * Implementation for AppResource.Repository
  */
 public class AppResourceRepository implements AppResourceStore.Repository {
+
     private AppConfigEntityDataMapper mAppConfigEntityDataMapper;
     private HashMap<String, String> mRequestParameters;
     private DownloadAppResourceTaskQueue taskQueue;
@@ -42,7 +42,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  OkHttpClient okHttpClient,
                                  boolean download,
                                  String rootBundle,
-                                 String appVersion) {
+                                 String appVersion
+
+    ) {
         this.mAppConfigEntityDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
@@ -140,7 +142,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         if (!Lists.isEmptyOrNull(resourceResponse.resourcelist)) {
             List<AppResourceEntity> resourcelist = new ArrayList<>();
-            for (int i = 0; i< resourceResponse.resourcelist.size(); i++) {
+            for (int i = 0; i < resourceResponse.resourcelist.size(); i++) {
                 AppResourceEntity appResourceEntity = resourceResponse.resourcelist.get(i);
                 if (!TextUtils.isEmpty(appResourceEntity.iconurl)) {
                     appResourceEntity.iconurl = resourceResponse.baseurl + appResourceEntity.iconurl;
@@ -169,7 +171,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         if (Lists.isEmptyOrNull(appResourceEntities)) {
             return;
         }
-        for (int i = 0; i< appResourceEntities.size(); i++) {
+        for (int i = 0; i < appResourceEntities.size(); i++) {
             appResourceEntities.get(i).sortOrder = orderedInsideApps.indexOf(appResourceEntities.get(i).appid);
         }
         mLocalStorage.put(appResourceEntities);

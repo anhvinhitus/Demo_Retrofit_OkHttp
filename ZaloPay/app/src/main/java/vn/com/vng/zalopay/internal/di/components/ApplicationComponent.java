@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.zalopay.apploader.BundleService;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -27,16 +28,11 @@ import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
-
-import com.zalopay.apploader.BundleService;
-
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
-import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.fragment.IntroAppFragment;
 import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;

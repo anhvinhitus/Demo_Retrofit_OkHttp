@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -9,6 +10,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +27,7 @@ import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
@@ -33,6 +36,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -130,16 +134,24 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void listAppResource() {
+        List<Integer> insideApps = null;
         try {
-            List<Integer> insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
-            Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new AppResourceSubscriber());
-
-            compositeSubscription.add(subscription);
+            insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
         } catch (Exception e) {
             Timber.w(e, "Get inside apps from PaymetSDK exception [%s]", e.getMessage());
         }
+
+        if (insideApps == null) {
+            insideApps = new ArrayList<>();
+        }
+
+        Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AppResourceSubscriber());
+        compositeSubscription.add(subscription);
+
+
+        this.getListMerchantUser(insideApps);
     }
 
     public List<AppResource> getListAppResourceFromDB() {
@@ -156,6 +168,21 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
+
+    private void getListMerchantUser(List<Integer> listId) {
+
+        String appId = ListStringUtil.toStringListInt(listId);
+
+        if (TextUtils.isEmpty(appId)) {
+            return;
+        }
+
+        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(appId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        compositeSubscription.add(subscription);
+    }
+
     private void onGetAppResourceSuccess(List<AppResource> resources) {
         mZaloPayView.refreshInsideApps(resources);
     }
@@ -168,21 +195,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
             Timber.d(" AppResource %s", appResources.size());
         }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-        }
     }
 
     private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        public BalanceSubscriber() {
-        }
-
         @Override
         public void onNext(Long aLong) {
             ZaloPayPresenterImpl.this.onGetBalanceSuccess(aLong);
@@ -240,7 +255,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     public void getBanners() {
         try {
-            List banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
+            List<DBanner> banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
             if (banners != null && banners.size() > 1) {
                 startBannerCountDownTimer();
             } else {
@@ -258,10 +273,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (appResource == null) {
             return;
         }
-        mMerchantRepository.getMerchantUserInfo(appResource.appid)
+        Subscription subscription = mMerchantRepository.getMerchantUserInfo(appResource.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MerchantUserInfoSubscribe(appResource));
+        compositeSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -305,7 +321,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     private class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInfo> {
         private AppResource mAppResource;
 
-        public MerchantUserInfoSubscribe(AppResource appResource) {
+        private MerchantUserInfoSubscribe(AppResource appResource) {
             this.mAppResource = appResource;
         }
 
@@ -325,7 +341,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onError(Throwable e) {
-            Timber.d("onError exception [%s]", e);
+            Timber.d(e, "onError exception");
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }

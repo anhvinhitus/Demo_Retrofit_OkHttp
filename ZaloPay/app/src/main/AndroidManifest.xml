@@ -56,6 +56,7 @@
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission-sdk-23 android:name="android.permission.READ_SMS" />
 
     <permission
         android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE"

@@ -32,7 +32,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
         public final static Property Amount = new Property(6, Long.class, "amount", false, "AMOUNT");
         public final static Property Message = new Property(7, String.class, "message", false, "MESSAGE");
         public final static Property TimeCreate = new Property(8, Long.class, "timeCreate", false, "TIME_CREATE");
-    };
+    }
 
 
     public TransferRecentDao(DaoConfig config) {

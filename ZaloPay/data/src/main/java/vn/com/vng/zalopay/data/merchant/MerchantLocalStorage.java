@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.merchant;
 
+import java.util.Collection;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
@@ -35,5 +36,17 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
     @Override
     public MerchantUser get(long appId) {
         return getMerchantUserDao().load(appId);
+    }
+
+    @Override
+    public void removeAll() {
+        getMerchantUserDao().deleteAll();
+    }
+
+    public boolean existIn(Collection<Long> appIds) {
+        long count = getMerchantUserDao().queryBuilder()
+                .where(MerchantUserDao.Properties.Appid.in(appIds))
+                .count();
+        return count >= appIds.size();
     }
 }

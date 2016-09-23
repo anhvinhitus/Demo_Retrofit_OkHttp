@@ -14,6 +14,7 @@ import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -118,7 +119,7 @@ public class Helpers {
     public static String readableArrayToString(ReadableArray param) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        for (int index = 0; index < param.size(); index ++) {
+        for (int index = 0; index < param.size(); index++) {
             ReadableType type = param.getType(index);
             switch (type) {
                 case Boolean:
@@ -149,18 +150,41 @@ public class Helpers {
         return builder.toString();
     }
 
-    public static void showLoading(Activity activity) {
-        DialogManager.showProcessDialog(activity, null);
+    public static void showLoading(final Activity activity) {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                DialogManager.showProcessDialog(activity, null);
+            }
+        });
     }
 
     public static void hideLoading() {
-        DialogManager.closeProcessDialog();
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                DialogManager.closeProcessDialog();
+            }
+        });
     }
 
-    public static void showDialog(Activity activity, int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
+    public static void showDialog(final Activity activity, final int dialogType,
+                                  final String title, final String message, final ReadableArray btnNames,
+                                  final Promise promise) {
         if (btnNames == null || btnNames.size() <= 0) {
             return;
         }
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                showDialogInUIThread(activity, dialogType, title, message, btnNames, promise);
+            }
+        });
+    }
+
+    private static void showDialogInUIThread(Activity activity, int dialogType,
+                                             String title, String message, ReadableArray btnNames,
+                                             final Promise promise) {
         switch (dialogType) {
             case SweetAlertDialog.NORMAL_TYPE:
                 if (btnNames.size() > 1) {

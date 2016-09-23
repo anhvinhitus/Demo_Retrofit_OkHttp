@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.data.api;
 
 import java.util.HashMap;
@@ -13,11 +14,14 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.api.response.PlatformInfoResponse;
 
+*/
 /**
  * Created by AnhHieu on 4/28/16.
- */
+ *//*
+
 public interface AppConfigService {
-    /*userid
+    */
+/*userid
             accesstoken
     platformcode
             dscreentype
@@ -25,7 +29,8 @@ public interface AppConfigService {
             resourceversion
     appversion
             mno
-    devicemodel*/
+    devicemodel*//*
+
 
     @FormUrlEncoded
     @POST("tpe/getplatforminfo")
@@ -40,3 +45,4 @@ public interface AppConfigService {
                                                   @Field("devicemodel") String devicemodel
     );
 }
+*/

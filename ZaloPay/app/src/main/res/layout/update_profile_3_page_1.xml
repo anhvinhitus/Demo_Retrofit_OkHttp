@@ -79,11 +79,12 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:ellipsize="end"
-                    android:hint="Số CMND"
-                    android:inputType="numberDecimal"
+                    android:hint="@string/cmnd_passpost"
+                    android:inputType="textCapCharacters"
                     android:maxLines="1"
                     android:minHeight="44dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textAllCaps="true" />
 
             </android.support.design.widget.TextInputLayout>
 

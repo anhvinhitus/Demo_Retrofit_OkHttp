@@ -37,9 +37,26 @@ public class ValidateUtil {
         }
     }
 
-    public static boolean isCMND(String str) {
-        return isNumeric(str);
+    public static boolean isValidCMNDOrPassport(String input) {
+        if (isCMND(input)) {
+            return true;
+        }
+        if (isPassport(input)) {
+            return true;
+        }
+        return false;
+    }
 
+    private static boolean isCMND(String str) {
+        return isNumeric(str);
+    }
+
+    private static boolean isPassport(String passport) {
+        if (TextUtils.isEmpty(passport)) {
+            return false;
+        } else {
+            return passport.matches("^[a-zA-Z0-9]*");
+        }
     }
 
     public static String checkInputPhoneNumber(String str) {

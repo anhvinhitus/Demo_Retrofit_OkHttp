@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.scanners.ui;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -22,6 +20,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
@@ -47,8 +46,6 @@ public class ScanToPayActivity extends BaseToolBarActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private NFCReaderPresenter mNFCReader;
     private boolean mNFCTabActivated = false;
-
-    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
     private static final int TAB_TOTAL = 3;
     private static final int TAB_NFC = 1;
@@ -209,7 +206,8 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
                 @Override
                 public void onOKevent() {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            Constants.Permission.REQUEST_COARSE_LOCATION);
                 }
             });
         }
@@ -222,7 +220,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         Timber.d("onRequestPermissionsResult: requestCode %s grantResults %s permission %s", requestCode, grantResults.length, grantResults[0]);
 
         switch (requestCode) {
-            case PERMISSION_REQUEST_COARSE_LOCATION: {
+            case Constants.Permission.REQUEST_COARSE_LOCATION: {
                 if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("coarse location permission granted");
                 } else {

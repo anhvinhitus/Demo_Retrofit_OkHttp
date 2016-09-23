@@ -107,18 +107,23 @@ public class BeaconScanner {
             return;
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-                return;
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+                    return;
+                } else {
+                    mBluetoothAdapter.stopLeScan(getScanCallback18());
+                }
             } else {
-                mBluetoothAdapter.stopLeScan(getScanCallback18());
+                if (mLEScanner == null) {
+                    return;
+                } else {
+                    mLEScanner.stopScan(getScanCallback());
+                }
             }
-        } else {
-            if (mLEScanner == null) {
-                return;
-            } else {
-                mLEScanner.stopScan(getScanCallback());
-            }
+
+        } catch (Exception e) {
+            Timber.w(e, "Exception while shutting down BLE");
         }
 
         mListener.onScanningStopped();

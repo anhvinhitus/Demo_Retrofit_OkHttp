@@ -9,6 +9,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +53,16 @@ public class MerchantRepositoryTest {
             public MerchantUser get(long appId) {
                 countDownLatch.countDown();
                 return db.get(appId, null);
+            }
+
+            @Override
+            public void removeAll() {
+
+            }
+
+            @Override
+            public boolean existIn(Collection<Long> appIds) {
+                return false;
             }
         };
 
@@ -130,6 +141,16 @@ public class MerchantRepositoryTest {
                 System.out.println("Query for app in local result: " + user);
 
                 return user;
+            }
+
+            @Override
+            public void removeAll() {
+
+            }
+
+            @Override
+            public boolean existIn(Collection<Long> appIds) {
+                return false;
             }
         };
 
@@ -216,6 +237,16 @@ public class MerchantRepositoryTest {
                 System.out.println("Query for app in local: " + String.valueOf(appId));
                 countDownLatch.countDown();
                 return db.get(appId, null);
+            }
+
+            @Override
+            public void removeAll() {
+
+            }
+
+            @Override
+            public boolean existIn(Collection<Long> appIds) {
+                return false;
             }
         };
 

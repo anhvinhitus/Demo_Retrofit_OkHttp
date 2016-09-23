@@ -13,10 +13,6 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.BankCard;
 
-/**
- * Created by AnhHieu on 5/18/16.
- */
-
 @Singleton
 public class AppConfigEntityDataMapper {
 
@@ -62,6 +58,7 @@ public class AppConfigEntityDataMapper {
         }
         return appResource;
     }
+
     public List<AppResource> transformAppResourceEntity(List<AppResourceEntity> appResourceEntities) {
         if (Lists.isEmptyOrNull(appResourceEntities)) return Collections.emptyList();
         List<AppResource> list = new ArrayList<>();

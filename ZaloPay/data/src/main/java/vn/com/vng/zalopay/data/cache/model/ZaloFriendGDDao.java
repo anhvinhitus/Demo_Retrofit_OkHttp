@@ -31,7 +31,7 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
         public final static Property Birthday = new Property(5, String.class, "birthday", false, "BIRTHDAY");
         public final static Property UsingApp = new Property(6, Boolean.class, "usingApp", false, "USING_APP");
         public final static Property Fulltextsearch = new Property(7, String.class, "fulltextsearch", false, "FULLTEXTSEARCH");
-    };
+    }
 
 
     public ZaloFriendGDDao(DaoConfig config) {
