@@ -103,8 +103,6 @@ public class AndroidApplication extends Application {
         initPaymentSdk();
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
-        ZPAnalytics.trackEvent(ZPEvents.APP_LAUNCH);
-
     }
 
     private void initPaymentSdk() {
