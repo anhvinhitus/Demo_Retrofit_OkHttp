@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
-import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
+import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 
@@ -30,9 +30,9 @@ public interface MerchantStore {
                                                                     @Query("accesstoken") String accesstoken);
 
         @GET("ummerchant/getlistmerchantuserinfo")
-        Observable<ListMerchantUserInfoResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist,
-                                                                         @Query("userid") String userid,
-                                                                         @Query("accesstoken") String accesstoken);
+        Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist,
+                                                            @Query("userid") String userid,
+                                                            @Query("accesstoken") String accesstoken);
     }
 
 

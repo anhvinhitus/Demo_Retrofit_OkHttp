@@ -18,7 +18,7 @@ import rx.Observable;
 import rx.Subscriber;
 import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
-import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
+import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
@@ -65,14 +65,14 @@ public class MerchantRepositoryTest {
             }
 
             @Override
-            public Observable<ListMerchantUserInfoResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
+            public Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
                 String[] appids = appidlist.split(",");
-                ListMerchantUserInfoResponse response = new ListMerchantUserInfoResponse();
-                response.listmerchantuserinfo = new ArrayList<>();
+                ListMUIResponse response = new ListMUIResponse();
+                response.mUserSubInfoList = new ArrayList<>();
                 for (String a : appids) {
-                    ListMerchantUserInfoResponse.ListMerchantUserInfo u = new ListMerchantUserInfoResponse().new ListMerchantUserInfo();
+                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
-                    response.listmerchantuserinfo.add(u);
+                    response.mUserSubInfoList.add(u);
                 }
                 return Observable.just(response);
             }
@@ -141,14 +141,14 @@ public class MerchantRepositoryTest {
             }
 
             @Override
-            public Observable<ListMerchantUserInfoResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
+            public Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
                 String[] appids = appidlist.split(",");
-                ListMerchantUserInfoResponse response = new ListMerchantUserInfoResponse();
-                response.listmerchantuserinfo = new ArrayList<>();
+                ListMUIResponse response = new ListMUIResponse();
+                response.mUserSubInfoList = new ArrayList<>();
                 for (String a : appids) {
-                    ListMerchantUserInfoResponse.ListMerchantUserInfo u = new ListMerchantUserInfoResponse().new ListMerchantUserInfo();
+                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
-                    response.listmerchantuserinfo.add(u);
+                    response.mUserSubInfoList.add(u);
                 }
                 return Observable.just(response);
             }
@@ -231,14 +231,14 @@ public class MerchantRepositoryTest {
             }
 
             @Override
-            public Observable<ListMerchantUserInfoResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
+            public Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
                 String[] appids = appidlist.split(",");
-                ListMerchantUserInfoResponse response = new ListMerchantUserInfoResponse();
-                response.listmerchantuserinfo = new ArrayList<>();
+                ListMUIResponse response = new ListMUIResponse();
+                response.mUserSubInfoList = new ArrayList<>();
                 for (String a : appids) {
-                    ListMerchantUserInfoResponse.ListMerchantUserInfo u = new ListMerchantUserInfoResponse().new ListMerchantUserInfo();
+                    ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
-                    response.listmerchantuserinfo.add(u);
+                    response.mUserSubInfoList.add(u);
                 }
                 return Observable.just(response);
             }

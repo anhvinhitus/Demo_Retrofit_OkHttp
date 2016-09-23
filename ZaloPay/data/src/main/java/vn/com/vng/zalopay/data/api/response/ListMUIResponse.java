@@ -6,10 +6,9 @@ import java.util.List;
 
 /**
  * Created by AnhHieu on 9/21/16.
- * *
+ * Response data class for API listmerchantuserinfo
  */
-
-public class ListMerchantUserInfoResponse extends BaseResponse {
+public class ListMUIResponse extends BaseResponse {
 
     @SerializedName("displayname")
     public String displayname;
@@ -20,10 +19,10 @@ public class ListMerchantUserInfoResponse extends BaseResponse {
     @SerializedName("usergender")
     public int usergender;
 
-    @SerializedName("listmerchantuserinfo")
-    public List<ListMerchantUserInfo> listmerchantuserinfo;
+    @SerializedName("mUserSubInfoList")
+    public List<MerchantUserSubInfo> mUserSubInfoList;
 
-    public class ListMerchantUserInfo {
+    public class MerchantUserSubInfo {
         @SerializedName("appid")
         public int appid;
         @SerializedName("muid")

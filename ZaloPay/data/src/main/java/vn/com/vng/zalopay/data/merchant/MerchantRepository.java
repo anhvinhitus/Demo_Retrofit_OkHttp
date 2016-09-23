@@ -6,13 +6,11 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
-import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
+import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
-
-import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 /**
  * Created by AnhHieu on 9/21/16.
@@ -88,12 +86,12 @@ public class MerchantRepository implements MerchantStore.Repository {
         return ret;
     }
 
-    private List<MerchantUser> transform(ListMerchantUserInfoResponse response) {
-        if (Lists.isEmptyOrNull(response.listmerchantuserinfo)) {
+    private List<MerchantUser> transform(ListMUIResponse response) {
+        if (Lists.isEmptyOrNull(response.mUserSubInfoList)) {
             return null;
         }
         List<MerchantUser> entities = new ArrayList<>();
-        for (ListMerchantUserInfoResponse.ListMerchantUserInfo info : response.listmerchantuserinfo) {
+        for (ListMUIResponse.MerchantUserSubInfo info : response.mUserSubInfoList) {
             MerchantUser merchantUser = new MerchantUser(info.appid);
             merchantUser.setDisplayName(response.displayname);
             merchantUser.setBirthday(response.birthdate);
