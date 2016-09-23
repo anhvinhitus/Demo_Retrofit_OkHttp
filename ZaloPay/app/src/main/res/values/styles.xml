@@ -168,4 +168,15 @@
         <item name="roundingBorderColor">@color/white</item>
     </style>
 
+    <style name="RoundedCornerDraweeView" parent="AvatarDraweeView">
+        <item name="roundAsCircle">false</item>
+        <item name="roundedCornerRadius">6dp</item>
+    </style>
+    <!--  fresco:roundedCornerRadius="5dp"
+   fresco:roundBottomLeft="false"
+   fresco:roundBottomRight="false"
+   fresco:roundWithOverlayColor="@color/blue"
+   fresco:roundingBorderWidth="1dp"
+   fresco:roundingBorderColor="@color/red"-->
+
 </resources>

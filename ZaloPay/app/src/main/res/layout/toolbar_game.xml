@@ -20,14 +20,12 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.zalopay.ui.widget.image.BezelImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_logo"
+            style="@style/RoundedCornerDraweeView"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginRight="6dp"
-            android:adjustViewBounds="true"
-            app:borderDrawable="@color/transparent"
-            app:maskDrawable="@drawable/rounded_mask" />
+            android:layout_marginRight="6dp" />
 
         <TextView
             android:id="@+id/title"

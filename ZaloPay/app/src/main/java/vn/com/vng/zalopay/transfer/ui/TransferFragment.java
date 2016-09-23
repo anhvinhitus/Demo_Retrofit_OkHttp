@@ -9,11 +9,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
@@ -30,6 +29,7 @@ import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -46,6 +46,9 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Inject
     TransferPresenter mPresenter;
 
+    @Inject
+    ImageLoader mImageLoader;
+
     @BindView(R.id.rootView)
     KeyboardFrameLayout rootView;
 
@@ -53,7 +56,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     ScrollView mScrollView;
 
     @BindView(R.id.imgAvatar)
-    ImageView imgAvatar;
+    SimpleDraweeView imgAvatar;
 
     @BindView(R.id.tvDisplayName)
     TextView tvDisplayName;
@@ -124,7 +127,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
      * Set Receiver info when view had created
      *
      * @param displayName displayName
-     * @param avatar avatar
+     * @param avatar      avatar
      * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
      */
     @Override
@@ -139,7 +142,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
      * Set Receiver info when server return user info
      *
      * @param displayName displayName
-     * @param avatar avatar
+     * @param avatar      avatar
      * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
      */
     @Override
@@ -173,11 +176,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         if (TextUtils.isEmpty(avatar)) {
             return;
         }
-        Glide.with(this).load(avatar)
-                .placeholder(R.color.silver)
-                .error(R.drawable.ic_avatar_default)
-                .centerCrop()
-                .into(imgAvatar);
+
+        mImageLoader.loadImage(imgAvatar, avatar);
     }
 
     private void setDisplayName(String displayName) {

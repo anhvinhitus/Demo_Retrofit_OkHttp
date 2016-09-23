@@ -9,12 +9,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
 public class WebViewActivity extends BaseActivity {
     protected WebViewFragment mFragment;
@@ -94,18 +94,13 @@ public class WebViewActivity extends BaseActivity {
         if (!TextUtils.isEmpty(title)) {
             setTitle(title);
         }
-        if (getSupportActionBar() == null) {
-            return;
-        }
+
         if (TextUtils.isEmpty(url)) {
             mLogoView.setVisibility(View.GONE);
         } else {
             mLogoView.setVisibility(View.VISIBLE);
-            Glide.with(this).load(url)
-                    .centerCrop()
-                    .placeholder(R.color.silver)
-                    .error(R.color.silver)
-                    .into(mLogoView);
+            ImageLoader imageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
+            imageLoader.loadImage(mLogoView, url);
         }
     }
 

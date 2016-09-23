@@ -241,7 +241,6 @@
     <string name="txt_need_input_userinfo">Hãy cập nhật thông tin để sử dụng tính năng này</string>
 
 
-
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
     <string name="update.profile.success">Thông tin của bạn đã được gửi đi và đang chờ duyệt.</string>
@@ -344,4 +343,8 @@
     <string name="load_data_error">Không tải được nội dung</string>
     <string name="delete">Xoá</string>
     <!--WebView Resource End-->
+
+
+    <string name="account.format">Tên TK: %s</string>
+    <string name="phone.format">Số ĐT: %s</string>
 </resources>

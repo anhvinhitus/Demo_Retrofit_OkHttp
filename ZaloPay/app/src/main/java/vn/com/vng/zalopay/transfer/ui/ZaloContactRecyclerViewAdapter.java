@@ -8,91 +8,113 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.dao.query.LazyList;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ZaloFriend} and makes a call to the
  * specified {}.
  */
-public class ZaloContactRecyclerViewAdapter extends AbstractLazyListAdapter<ZaloFriendGD> {
-    private OnItemInteractionListener mListener;
+public class ZaloContactRecyclerViewAdapter extends AbstractLazyListAdapter<ZaloFriendGD, ZaloContactRecyclerViewAdapter.ViewHolder> {
 
     public interface OnItemInteractionListener {
         void onItemClick(ZaloFriendGD item);
     }
 
+    private OnItemInteractionListener mListener;
+
+    private LayoutInflater mLayoutInflater;
+
     public ZaloContactRecyclerViewAdapter(Context context, LazyList<ZaloFriendGD> items, OnItemInteractionListener listener) {
         super(context, items);
         this.mListener = listener;
+        mLayoutInflater = LayoutInflater.from(context);
     }
 
-    @Override
-    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ZaloContactViewHolder) {
-            final ZaloContactViewHolder viewHolder = (ZaloContactViewHolder) holder;
-            viewHolder.mItem = getItem(position);
-            viewHolder.mTvDisplayName.setText(viewHolder.mItem.getDisplayName());
-            loadImage(viewHolder.mImgAvatar, viewHolder.mItem.getAvatar());
-            if (position < getItemCount() - 1) {
-                viewHolder.mViewSeparate.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.mViewSeparate.setVisibility(View.GONE);
+
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onListItemClick(View anchor, int position) {
+            ZaloFriendGD item = getItem(position);
+            if (item != null && mListener != null) {
+                mListener.onItemClick(item);
             }
-            if (viewHolder.mItem.getUsingApp()) {
-                viewHolder.mImgZaloPay.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.mImgZaloPay.setVisibility(View.GONE);
-            }
-            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been selected.
-                        mListener.onItemClick(viewHolder.mItem);
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-        return new ZaloContactViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_zalo_contact_item, parent, false));
-    }
-
-    private void loadImage(ImageView image, String url) {
-        if (getContext() == null) {
-            return;
-        }
-        Glide.with(getContext()).load(url).centerCrop().placeholder(R.color.silver).into(image);
-    }
-
-    public class ZaloContactViewHolder extends RecyclerView.ViewHolder {
-        public View mView;
-        public TextView mTvDisplayName;
-        public ImageView mImgAvatar;
-        public ImageView mImgZaloPay;
-        public View mViewSeparate;
-        public ZaloFriendGD mItem;
-
-        public ZaloContactViewHolder(View view) {
-            super(view);
-            mView = view;
-            mImgAvatar = (ImageView) view.findViewById(R.id.imgAvatar);
-            mImgZaloPay = (ImageView) view.findViewById(R.id.imgZaloPay);
-            mTvDisplayName = (TextView) view.findViewById(R.id.tvDisplayName);
-            mViewSeparate = view.findViewById(R.id.viewSeparate);
         }
 
         @Override
-        public String toString() {
-            return super.toString() + " '" + mTvDisplayName.getText() + "'";
+        public boolean onListItemLongClick(View anchor, int position) {
+            return false;
+        }
+    };
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(mLayoutInflater.inflate(R.layout.fragment_zalo_contact_item, parent, false), mOnItemClickListener);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        ZaloFriendGD item = getItem(position);
+        if (item != null) {
+            holder.bindView(item, position, getItemCount());
+        }
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tvDisplayName)
+        TextView mTvDisplayName;
+
+        @BindView(R.id.imgAvatar)
+        SimpleDraweeView mImgAvatar;
+
+        @BindView(R.id.imgZaloPay)
+        ImageView mImgZaloPay;
+
+        @BindView(R.id.viewSeparate)
+        View mViewSeparate;
+
+        OnItemClickListener listener;
+
+        ImageLoader mImageLoader;
+
+        public ViewHolder(View view, OnItemClickListener listener) {
+            super(view);
+            this.listener = listener;
+            ButterKnife.bind(this, view);
+            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
+        }
+
+        void bindView(ZaloFriendGD mItem, int position, int itemCount) {
+            mTvDisplayName.setText(mItem.getDisplayName());
+            mImageLoader.loadImage(mImgAvatar, mItem.getAvatar());
+            if (position < itemCount - 1) {
+                mViewSeparate.setVisibility(View.VISIBLE);
+            } else {
+                mViewSeparate.setVisibility(View.GONE);
+            }
+            if (mItem.getUsingApp()) {
+                mImgZaloPay.setVisibility(View.VISIBLE);
+            } else {
+                mImgZaloPay.setVisibility(View.GONE);
+            }
+        }
+
+        @OnClick(R.id.itemLayout)
+        public void onItemClick(View v) {
+            if (listener != null) {
+                listener.onListItemClick(v, getAdapterPosition());
+            }
         }
     }
 }

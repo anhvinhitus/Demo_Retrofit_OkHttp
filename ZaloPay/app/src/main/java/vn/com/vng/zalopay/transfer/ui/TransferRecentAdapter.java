@@ -8,34 +8,36 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 
 /**
  * Created by AnhHieu on 8/17/16.
+ * *
  */
 public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction, TransferRecentAdapter.ViewHolder> {
 
-    public interface OnClickTransferRecentListener {
+    interface OnClickTransferRecentListener {
         void onItemRecentClick(RecentTransaction item);
     }
 
-    OnClickTransferRecentListener listener;
+    private OnClickTransferRecentListener listener;
 
     public TransferRecentAdapter(Context context, OnClickTransferRecentListener listener) {
         super(context);
         this.listener = listener;
     }
 
-    public OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onListItemClick(View anchor, int position) {
             if (listener != null) {
@@ -80,13 +82,19 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
         @BindView(R.id.imgTransferType)
         ImageView mImgTransferType;
 
+        ImageLoader mImageLoader;
+
+        Context context;
+
         public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.listener = listener;
+            context = AndroidApplication.instance();
+            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
         }
 
-        public void bindView(RecentTransaction item) {
+        private void bindView(RecentTransaction item) {
             loadImage(mImgAvatar, item.getAvatar());
             mTvDisplayName.setText(item.getDisplayName());
 
@@ -94,10 +102,10 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
             String zaloPayName = item.getZaloPayName();
 
             if (!TextUtils.isEmpty(zaloPayName)) {
-                mTvPhone.setText("Tên TK: " + zaloPayName);
+                mTvPhone.setText(String.format(context.getString(R.string.account_format), zaloPayName));
                 mImgTransferType.setImageResource(R.drawable.ic_transfer_acc_zp_small);
             } else if (!TextUtils.isEmpty(phone)) {
-                mTvPhone.setText("Số ĐT: " + phone);
+                mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
                 mImgTransferType.setImageResource(R.drawable.ic_transfer_fr_zalo_small);
             } else {
                 mTvPhone.setText(R.string.not_update);
@@ -106,12 +114,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
         }
 
         private void loadImage(ImageView image, String url) {
-            Glide.with(image.getContext())
-                    .load(url)
-                    .centerCrop()
-                    .placeholder(R.color.silver)
-                    .error(R.drawable.ic_avatar_default)
-                    .into(image);
+            mImageLoader.loadImage(image, url);
         }
 
         @OnClick(R.id.itemLayout)

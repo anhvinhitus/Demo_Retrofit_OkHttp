@@ -25,7 +25,7 @@ import de.greenrobot.dao.query.LazyList;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.IPersistentObject;
 
-public abstract class AbstractLazyListAdapter<T extends IPersistentObject> extends RecyclerView.Adapter {
+public abstract class AbstractLazyListAdapter<T extends IPersistentObject,VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
     private LazyList<T> _lazyList;
     private Context _context;
@@ -34,10 +34,6 @@ public abstract class AbstractLazyListAdapter<T extends IPersistentObject> exten
         this._lazyList = lazyList;
         this._context = context;
     }
-
-    public abstract void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position);
-
-    public abstract RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType);
 
     public LazyList<T> getLazyList() {
         return _lazyList;
@@ -83,15 +79,5 @@ public abstract class AbstractLazyListAdapter<T extends IPersistentObject> exten
                 return item.getId();
         }
         return 0;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return onCreateItemViewHolder(parent, viewType);
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        onBindItemViewHolder(holder, position);
     }
 }

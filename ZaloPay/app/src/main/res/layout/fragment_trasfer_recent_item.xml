@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemLayout"
     android:layout_width="match_parent"
@@ -15,17 +14,14 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.zalopay.ui.widget.image.BezelImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatar"
+            style="@style/AvatarDraweeView"
             android:layout_width="@dimen/transfer.avatar"
             android:layout_height="@dimen/transfer.avatar"
             android:layout_marginBottom="@dimen/spacing.medium.t"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="@dimen/spacing.medium.t"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            app:borderDrawable="@color/transparent"
-            app:maskDrawable="@drawable/circle_mask" />
+            android:layout_marginTop="@dimen/spacing.medium.t" />
 
         <LinearLayout
             android:layout_width="match_parent"
