@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
@@ -32,18 +33,33 @@ public class MerchantRepository implements MerchantStore.Repository {
 
     @Override
     public Observable<MerchantUserInfo> getMerchantUserInfo(long appId) {
-        return Observable.concat(getMerchantUserInfoLocal(appId), getMerchantUserInfoCloud(appId))
-                .first();
+        // first get merchant user info from local storage
+        // if local storage does not have it
+        // then request from server
+        return Observable.create(new Observable.OnSubscribe<MerchantUserInfo>() {
+            @Override
+            public void call(Subscriber<? super MerchantUserInfo> subscriber) {
+                MerchantUser merchantUser = localStorage.get(appId);
+                if (merchantUser == null) {
+                    // throw new NullPointerException("appId is not stored locally");
+                    getMerchantUserInfoCloud(appId).subscribe(subscriber);
+                    return;
+                }
+
+                if (subscriber.isUnsubscribed()) {
+                    return;
+                }
+
+                subscriber.onNext(transform(localStorage.get(appId)));
+                subscriber.onCompleted();
+            }
+        });
     }
 
     private Observable<MerchantUserInfo> getMerchantUserInfoCloud(long appId) {
         return requestService.getmerchantuserinfo(appId, user.zaloPayId, user.accesstoken)
                 .doOnNext(response -> localStorage.put(transform(response, appId)))
                 .map(this::transform);
-    }
-
-    private Observable<MerchantUserInfo> getMerchantUserInfoLocal(long appId) {
-        return makeObservable(() -> localStorage.get(appId)).map(this::transform);
     }
 
     @Override
