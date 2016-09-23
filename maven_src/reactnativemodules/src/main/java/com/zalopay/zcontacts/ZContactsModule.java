@@ -45,7 +45,7 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
     }
 
     @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    public void onActivityResult(Activity activity, final int requestCode, final int resultCode, final Intent intent) {
         //contactSuccessCallback.invoke("In onActivityResult");
         if (contactSuccessCallback != null) {
             if (requestCode == PICK_CONTACT_REQUEST) {
@@ -61,13 +61,19 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
                         ContentResolver cr = getReactApplicationContext().getContentResolver();
 
                         // Query contact information from Contact provider
-                        Cursor cur = cr.query(contactURI, null, null, null, null);
-
-                        // Read phone number
-                        if (cur.getCount() > 0) {
-                            if (cur.moveToFirst()) {
-                                phoneNumber = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                displayName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        Cursor cur = null;
+                        try {
+                            cur = cr.query(contactURI, null, null, null, null);
+                            // Read phone number
+                            if (cur != null && cur.getCount() > 0) {
+                                if (cur.moveToFirst()) {
+                                    phoneNumber = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                    displayName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                                }
+                            }
+                        } finally {
+                            if (cur != null) {
+                                cur.close();
                             }
                         }
                         try {
@@ -124,7 +130,7 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
 
     @ReactMethod
     public void requestReadContact(Callback resultCallback) {
-        boolean  hasPermission = checkAndRequestPermission(getCurrentActivity());
+        boolean hasPermission = checkAndRequestPermission(getCurrentActivity());
         if (resultCallback != null) {
             resultCallback.invoke(hasPermission);
         }
