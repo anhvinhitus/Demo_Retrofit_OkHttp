@@ -40,6 +40,8 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -135,6 +137,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.loadGatewayInfoPaymentSDK();
         this.initializeAppConfig();
         this.getZaloFriend();
+        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
     }
 
     private void initializeAppConfig() {

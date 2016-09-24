@@ -83,6 +83,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
 
     public void sendCode(String code) {
         showLoadingView();
+        ZPAnalytics.trackEvent(ZPEvents.INPUTINVITATIONCODE);
         Subscription subscription = mPassportRepository.verifyCode(code)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -112,6 +113,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
     }
 
     private void gotoHomeScreen() {
+        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMINVITATION);
         mView.gotoMainActivity();
     }
 
@@ -132,6 +134,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
 
         hideLoadingView();
         if (e instanceof BodyException) {
+            ZPAnalytics.trackEvent(ZPEvents.INVITATIONCODEWRONG);
             if (((BodyException) e).errorCode == NetworkError.INVITATION_CODE_INVALID) {
                 mView.showLabelError();
                 return;

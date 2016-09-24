@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.zalopay.ui.widget.KeyboardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                           android:id="@+id/rootView"
-                                           android:layout_width="match_parent"
-                                           android:layout_height="match_parent"
-                                           android:background="@color/white"
-                                           android:orientation="vertical">
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
 
     <ScrollView
@@ -60,13 +60,14 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.zalopay.ui.widget.button.GuardButton
+    <Button
         android:id="@+id/btnContinue"
         style="@style/Button.Default"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/button.height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@drawable/bg_btn_blue"
-        android:text="Xác Nhận" />
+        android:text="@string/confirm" />
+
 </com.zalopay.ui.widget.KeyboardFrameLayout>

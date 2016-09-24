@@ -296,17 +296,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == Constants.Permission.REQUEST_CAMERA) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                navigator.startQrCodeActivity(this);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
     private void startZaloPayService() {
         Intent intent = new Intent(this, ZPNotificationService.class);
         startService(intent);

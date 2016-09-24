@@ -23,6 +23,8 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -64,6 +66,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
         }
 
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
+        ZPAnalytics.trackEvent(ZPEvents.SCANQR_GETCODE);
         qrCodePresenter.pay(result);
     }
 
@@ -197,6 +200,8 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
+                }else{
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
                 }
             }
         }

@@ -83,6 +83,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 } else if ("token".equalsIgnoreCase(param)) {
                     hideLoadingView();
                     mView.showError(mView.getContext().getString(R.string.order_invalid));
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
                     mView.resumeScanner();
                 }
             }

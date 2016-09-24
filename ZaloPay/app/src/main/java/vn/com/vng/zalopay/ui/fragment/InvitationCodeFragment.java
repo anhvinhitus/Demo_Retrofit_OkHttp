@@ -34,6 +34,8 @@ import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
 
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 import com.zalopay.ui.widget.KeyboardFrameLayout;
@@ -68,7 +70,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     InvitationCodePresenter presenter;
 
     @BindView(R.id.btnContinue)
-    GuardButton mButtonContinueView;
+    View mButtonContinueView;
 
     @BindView(R.id.lb_invite)
     TextView mTvInviteView;
@@ -106,7 +108,6 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         invitationCodeLength = getResources().getInteger(R.integer.invitation_code_length);
 
         mButtonContinueView.setEnabled(mILCodeView.length() == invitationCodeLength);
-        mButtonContinueView.registerAvoidMultipleRapidClicks();
 
         if (Build.VERSION.SDK_INT >= 21) {
             mILCodeView.setLetterSpacing(0.7f);
