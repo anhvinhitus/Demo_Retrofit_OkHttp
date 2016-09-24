@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
 
@@ -44,14 +45,14 @@
                 android:text="Mặt trước CMND"
                 android:textSize="14dp" />
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/ivFgCmnd"
+                style="@style/NormalDraweeView"
                 android:layout_width="90dp"
                 android:layout_height="72dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
                 android:visibility="gone" />
 
             <ImageView
@@ -80,14 +81,14 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/ivBgCmnd"
+                style="@style/NormalDraweeView"
                 android:layout_width="90dp"
                 android:layout_height="72dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
                 android:visibility="gone" />
 
             <TextView
@@ -140,14 +141,14 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/avatar"
+                style="@style/NormalDraweeView"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
                 android:visibility="gone" />
 
             <TextView

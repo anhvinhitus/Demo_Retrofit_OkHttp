@@ -153,14 +153,9 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="AvatarDraweeView">
-        <item name="actualImageScaleType">centerCrop</item>
-        <item name="failureImageScaleType">centerCrop</item>
-        <item name="placeholderImageScaleType">centerCrop</item>
+    <style name="AvatarDraweeView" parent="NormalDraweeView">
         <item name="roundAsCircle">true</item>
         <item name="failureImage">@drawable/ic_avatar_default</item>
-        <item name="placeholderImage">@color/silver</item>
-        <item name="fadeDuration">0</item>
     </style>
 
     <style name="AvatarDraweeView.Border">
@@ -173,14 +168,9 @@
         <item name="roundedCornerRadius">6dp</item>
     </style>
 
-    <style name="BannerDraweeView">
-        <item name="actualImageScaleType">centerCrop</item>
-        <item name="failureImageScaleType">centerCrop</item>
-        <item name="placeholderImageScaleType">centerCrop</item>
-        <item name="roundAsCircle">false</item>
+    <style name="BannerDraweeView" parent="NormalDraweeView">
         <item name="failureImage">@drawable/banner_default</item>
         <item name="placeholderImage">@drawable/banner_default</item>
-        <item name="fadeDuration">0</item>
     </style>
 
     <style name="IconDraweeView" parent="BannerDraweeView">
@@ -188,6 +178,16 @@
         <item name="actualImageScaleType">centerInside</item>
         <item name="failureImageScaleType">centerInside</item>
         <item name="placeholderImageScaleType">centerInside</item>
+    </style>
+
+    <style name="NormalDraweeView">
+        <item name="actualImageScaleType">centerCrop</item>
+        <item name="failureImageScaleType">centerCrop</item>
+        <item name="placeholderImageScaleType">centerCrop</item>
+        <item name="failureImage">@color/silver</item>
+        <item name="placeholderImage">@color/silver</item>
+        <item name="fadeDuration">0</item>
+        <item name="roundAsCircle">false</item>
     </style>
 
     <!--  fresco:roundedCornerRadius="5dp"

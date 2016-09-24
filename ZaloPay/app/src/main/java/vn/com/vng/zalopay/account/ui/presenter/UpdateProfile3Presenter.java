@@ -4,8 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.common.ImageDecodeOptions;
+import com.facebook.imagepipeline.common.Priority;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.image.CloseableBitmap;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.memory.PooledByteBuffer;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import javax.inject.Inject;
 
@@ -27,14 +37,16 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
+import static vn.com.vng.zalopay.utils.PhotoUtil.resizeImageByteArray;
+
 /**
  * Created by AnhHieu on 7/1/16.
- *
+ * *
  */
 public class UpdateProfile3Presenter extends BaseUserPresenter implements IPresenter<IUpdateProfile3View> {
 
-    IUpdateProfile3View mView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private IUpdateProfile3View mView;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
     private Context mApplicationContext;
 
@@ -90,9 +102,9 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
                         Uri bimgPath,
                         Uri avatarPath) {
 
-        byte[] _fimgBytes = resizeImageByteArray(fimgPath);
-        byte[] _bimgBytes = resizeImageByteArray(bimgPath);
-        byte[] _avatarBytes = resizeImageByteArray(avatarPath);
+        byte[] _fimgBytes = resizeImageByteArray(mApplicationContext, fimgPath);
+        byte[] _bimgBytes = resizeImageByteArray(mApplicationContext, bimgPath);
+        byte[] _avatarBytes = resizeImageByteArray(mApplicationContext, avatarPath);
 
         if (_fimgBytes != null && _bimgBytes != null && _avatarBytes != null) {
             Timber.d(" _fimg %s _bimg %s avatar %s", _fimgBytes.length, _bimgBytes.length, _avatarBytes.length);
@@ -130,9 +142,6 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     }
 
     private final class UpdateSubscriber extends DefaultSubscriber<Boolean> {
-        public UpdateSubscriber() {
-        }
-
         @Override
         public void onNext(Boolean aBoolean) {
             if (aBoolean) {
@@ -152,110 +161,6 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
             UpdateProfile3Presenter.this.onUpdateError(e);
         }
     }
-
-/*
-
-    protected int byteSizeOf(Bitmap data) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return data.getRowBytes() * data.getHeight();
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return data.getByteCount();
-        } else {
-            return data.getAllocationByteCount();
-        }
-    }
-
-
-    protected byte[] bitmap2byteArray(Bitmap b) {
-        int bytes = byteSizeOf(b);
-        //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
-        //int bytes = b.getWidth()*b.getHeight()*4;
-
-        ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
-        b.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
-
-        //  Timber.d("bytes %s", bytes);
-
-        byte[] array = buffer.array();
-        return array;
-    }
-
-    private Bitmap resizeImage(Uri uri) throws Exception {
-
-        Bitmap bitmap = Glide.with(mApplicationContext).loadFromMediaStore(uri)
-                .asBitmap()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .fitCenter()
-                .override(480, 480)
-                .fitCenter()
-                .into(480, 480)
-                .get();
-
-        Timber.d("bitmap width %s height %s ", bitmap.getWidth(), bitmap.getHeight());
-        resizeImageByteArray(uri);
-        return bitmap;
-    }
-*/
-
-    private byte[] resizeImageByteArray(Uri uri) {
-        byte[] ret = null;
-        try {
-            ret = Glide.with(mApplicationContext).loadFromMediaStore(uri)
-                    .asBitmap()
-                    .toBytes(Bitmap.CompressFormat.JPEG, 100)
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .fitCenter()
-                    .override(480, 480)
-                    .fitCenter()
-                    .into(480, 480)
-                    .get();
-
-        } catch (Exception ex) {
-            Timber.w(ex, "exception resize");
-        }
-
-        return ret;
-    }
-
-/*    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
-        if (maxHeight > 0 && maxWidth > 0) {
-            int width = image.getWidth();
-            int height = image.getHeight();
-            float ratioBitmap = (float) width / (float) height;
-            float ratioMax = (float) maxWidth / (float) maxHeight;
-
-            int finalWidth = maxWidth;
-            int finalHeight = maxHeight;
-            if (ratioMax > 1) {
-                finalWidth = (int) ((float) maxHeight * ratioBitmap);
-            } else {
-                finalHeight = (int) ((float) maxWidth / ratioBitmap);
-            }
-            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
-            return image;
-        } else {
-            return image;
-        }
-    }
-
-    private byte[] getByteArrayFromUri(Uri uri) {
-        byte[] ret = null;
-        Bitmap bitmap = null;
-        try {
-            bitmap = resizeImage(uri);
-            ret = bitmap2byteArray(bitmap);
-        } catch (Exception ex) {
-            Timber.w(ex, "exception resize");
-        } finally {
-            if (bitmap != null) {
-                bitmap.recycle();
-                bitmap = null;
-            }
-        }
-        return ret;
-    }*/
 
     public void saveProfileInfo3(String email, String identity, Uri foregroundImg, Uri backgroundImg, Uri avatarImg) {
 

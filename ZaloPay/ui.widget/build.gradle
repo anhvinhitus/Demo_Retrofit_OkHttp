@@ -34,8 +34,4 @@ dependencies {
     compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
     compile 'com.ogaclejapan.smarttablayout:utils-v4:1.6.1@aar'
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.6'
-
-    compile libs.glide
-    compile libs.glideIntegration
-
 }

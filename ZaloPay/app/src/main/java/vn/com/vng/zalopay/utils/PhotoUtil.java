@@ -8,6 +8,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 
 import timber.log.Timber;
 
@@ -24,9 +26,11 @@ import timber.log.Timber;
  */
 public class PhotoUtil {
 
-    static final int THUMBNAIL_SIZE = 256;
-
     public static Bitmap getThumbnail(Context context, Uri uri) throws IOException {
+        return getThumbnail(context, uri, 256);
+    }
+
+    public static Bitmap getThumbnail(Context context, Uri uri, int thumbnailSize) throws IOException {
         InputStream input = context.getContentResolver().openInputStream(uri);
         if (input == null) {
             return null;
@@ -35,7 +39,7 @@ public class PhotoUtil {
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
         onlyBoundsOptions.inJustDecodeBounds = true;
         onlyBoundsOptions.inDither = true;//optional
-        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.RGB_565;//optional
         BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
         input.close();
         if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
@@ -43,12 +47,13 @@ public class PhotoUtil {
 
         int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
 
-        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
+        double ratio = (originalSize > thumbnailSize) ? (originalSize / thumbnailSize) : 1.0;
 
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        Timber.d("inSampleSize %s ratio[%s]", bitmapOptions.inSampleSize, ratio);
         bitmapOptions.inDither = true;//optional
-        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.RGB_565;//optional
         input = context.getContentResolver().openInputStream(uri);
         Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
         if (input != null) {
@@ -127,4 +132,50 @@ public class PhotoUtil {
         return orientation;
     }
 
+    private static void printBitmap(Bitmap bitmap) {
+        Timber.d("bitmap width [%s] height [%s]", bitmap.getWidth(), bitmap.getHeight());
+        int byteCount = 0;
+        if (Build.VERSION.SDK_INT >= 19) {
+            byteCount = bitmap.getAllocationByteCount();
+        } else {
+            byteCount = bitmap.getByteCount();
+        }
+        Timber.d("byteCount %s", byteCount);
+    }
+
+    public static byte[] resizeImageByteArray(Context context, Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = getThumbnail(context, uri, 384);
+            return bitmap2byteArray(bitmap);
+        } catch (Exception ex) {
+            Timber.w(ex, "reduce image error");
+        } finally {
+            if (bitmap != null) {
+                bitmap.recycle();
+                bitmap = null;
+            }
+        }
+        return null;
+    }
+
+    private static byte[] bitmap2byteArray(Bitmap b) {
+        int bytes = byteSizeOf(b);
+        //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
+        //int bytes = b.getWidth()*b.getHeight()*4;
+
+        ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
+        b.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
+        byte[] array = buffer.array();
+        Timber.d("bytes %s", array.length);
+        return array;
+    }
+
+    private static int byteSizeOf(Bitmap data) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return data.getByteCount();
+        } else {
+            return data.getAllocationByteCount();
+        }
+    }
 }

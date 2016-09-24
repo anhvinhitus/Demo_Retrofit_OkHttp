@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -69,13 +71,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     TextInputLayout mIdentityNumberView;
 
     @BindView(R.id.avatar)
-    ImageView mAvatarView;
+    SimpleDraweeView mAvatarView;
 
     @BindView(R.id.ivBgCmnd)
-    ImageView mBgCmndView;
+    SimpleDraweeView mBgCmndView;
 
     @BindView(R.id.ivFgCmnd)
-    ImageView mFgCmndView;
+    SimpleDraweeView mFgCmndView;
 
     @BindView(R.id.tvAvatar)
     TextView mTvAvatarView;
@@ -495,11 +497,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mUriBgCmnd = null;
     }
 
-    private boolean loadImage(ImageView image, Uri uri) {
+    private boolean loadImage(SimpleDraweeView image, Uri uri) {
         if (uri == null) {
             return false;
         }
-
+        
         try {
             Bitmap bitmap = PhotoUtil.getThumbnail(getContext(), uri);
             if (bitmap != null) {

@@ -141,10 +141,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
-        <meta-data
-            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
-            android:value="GlideModule" />
-
         <!-- ##########################Tich hop ZaloSDK START ########################## -->
         <activity
             android:name="com.zing.zalo.zalosdk.oauth.WebLoginActivity"
