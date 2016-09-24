@@ -23,13 +23,9 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/im_avatar"
+        style="@style/AvatarDraweeView"
         android:layout_width="@dimen/leftmenu.avatar"
         android:layout_height="@dimen/leftmenu.avatar"
-        app:actualImageScaleType="centerCrop"
-        app:failureImageScaleType="centerCrop"
-        app:placeholderImageScaleType="centerCrop"
-        app:roundAsCircle="true"
-        app:roundedCornerRadius="36dp"
         app:roundingBorderColor="@color/leftmenu.avatar.bg"
         app:roundingBorderWidth="3dp" />
 

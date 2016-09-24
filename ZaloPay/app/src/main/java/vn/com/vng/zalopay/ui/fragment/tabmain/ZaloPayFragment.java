@@ -180,6 +180,18 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void onResume() {
+        presenter.resume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        presenter.pause();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();

@@ -10,10 +10,15 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
 import butterknife.BindView;
+import butterknife.OnItemClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -30,9 +35,9 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.
- *
+ * *
  */
-public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItemClickListener, ILeftMenuView {
+public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     public static LeftMenuFragment newInstance() {
 
@@ -126,21 +131,10 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addHeader(listView);
         listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(this);
         presenter.setView(this);
     }
 
@@ -180,13 +174,16 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         mMenuListener = null;
     }
 
-    @Override
+    @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
             return; // Header
         }
+
         MenuItem item = mAdapter.getItem(position - 1);
-        if (item == null) return;
+        if (item == null) {
+            return;
+        }
 
         if (mMenuListener != null && item.getItemType() == MenuItemType.ITEM) {
             mMenuListener.onMenuItemClick(item.getId());
@@ -205,7 +202,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     @Override
     public void setAvatar(String avatar) {
-        mImageLoader.loadImage(mImageAvatarView, avatar, R.drawable.ic_avatar_default, R.drawable.ic_avatar_default, ImageLoader.ScaleType.CENTER);
+        mImageLoader.loadImage(mImageAvatarView, avatar);
     }
 
     @Override
