@@ -5,10 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,17 +14,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
+import vn.com.vng.zalopay.utils.ImageLoader;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 /**
  * Created by AnhHieu on 5/25/16.
- *
+ * *
  */
 public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, ListAppRecyclerAdapter.ViewHolder> {
 
@@ -97,16 +97,18 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         private OnItemClickListener listener;
 
         @BindView(R.id.iv_logo)
-        ImageView mLogoView;
+        SimpleDraweeView mLogoView;
 
         @BindView(R.id.tv_name)
         TextView mNameView;
 
+        ImageLoader mImageLoader;
 
         public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             this.listener = listener;
             ButterKnife.bind(this, itemView);
+            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
         }
 
         @OnClick(R.id.itemLayout)
@@ -119,15 +121,9 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         public void bindView(AppResource appResource) {
             mNameView.setText(appResource.appname);
             setImage(mLogoView, appResource);
-         /*   if (appResource.status == 0) {
-                itemView.setSelected(false);
-            } else {
-                itemView.setSelected(true);
-            }*/
-
         }
 
-        private void setImage(ImageView image, AppResource appResource) {
+        private void setImage(SimpleDraweeView image, AppResource appResource) {
             Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
             if (TextUtils.isEmpty(appResource.iconUrl) &&
                     appResource.appType == PaymentAppTypeEnum.NATIVE.getValue() &&
@@ -141,16 +137,16 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
                     loadImage(image, appResource.iconUrl);
                 }
             } else {
-                image.setImageResource(R.drawable.ic_imagedefault);
+                loadImage(image,R.drawable.ic_imagedefault);
             }
         }
 
-        private void loadImage(ImageView image, int resourceId) {
-            Glide.with(context).load(resourceId).centerCrop().placeholder(R.color.white).into(image);
+        private void loadImage(SimpleDraweeView image, int resourceId) {
+            mImageLoader.loadImage(image, resourceId);
         }
 
-        private void loadImage(ImageView image, String url) {
-            Glide.with(context).load(url).centerCrop().placeholder(R.drawable.ic_imagedefault).into(image);
+        private void loadImage(SimpleDraweeView image, String url) {
+            mImageLoader.loadImage(image, url);
         }
 
     }
