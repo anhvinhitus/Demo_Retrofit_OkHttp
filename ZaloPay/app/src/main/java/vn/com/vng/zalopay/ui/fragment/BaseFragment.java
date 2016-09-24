@@ -15,8 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.bumptech.glide.Glide;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -80,21 +78,8 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        Glide.with(AndroidApplication.instance()).onStop();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Glide.with(AndroidApplication.instance()).onStart();
-    }
-
-    @Override
     public void onLowMemory() {
         super.onLowMemory();
-        Glide.with(AndroidApplication.instance()).onLowMemory();
     }
 
 

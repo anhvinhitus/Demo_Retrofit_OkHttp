@@ -5,27 +5,31 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.internal.DebouncingOnClickListener;
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by longlv on 12/05/2016.
- *
  */
 public class BannerPagerAdapter extends PagerAdapter {
 
-    Context mContext;
-    LayoutInflater mLayoutInflater;
-    List<DBanner> mResources = new ArrayList<>();
+    private Context mContext;
+    private LayoutInflater mLayoutInflater;
+    private List<DBanner> mResources = new ArrayList<>();
     private IBannerClick mListener;
+
+    ImageLoader mImageLoader;
 
     public interface IBannerClick {
         void onBannerItemClick(DBanner banner, int position);
@@ -36,6 +40,7 @@ public class BannerPagerAdapter extends PagerAdapter {
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResources = resources;
         mListener = iBannerClick;
+        mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
     }
 
     @Override
@@ -50,36 +55,27 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        View itemView = mLayoutInflater.inflate(R.layout.row_banner_image, container, false);
+        SimpleDraweeView imageView = (SimpleDraweeView) mLayoutInflater.inflate(R.layout.row_banner_image, container, false);
         final DBanner banner = mResources.get(position);
         if (banner == null) {
-            return itemView;
+            return imageView;
         }
-        ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-        setImage(imageView, banner.logourl);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        mImageLoader.loadImage(imageView, banner.logourl);
+        imageView.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void doClick(View v) {
                 if (mListener != null) {
                     mListener.onBannerItemClick(banner, position);
                 }
             }
         });
-        container.addView(itemView);
-
-        return itemView;
-    }
-
-    private void setImage(ImageView imageView, String imageUrl) {
-        Glide.with(mContext).load(imageUrl)
-                .placeholder(R.drawable.banner_default)
-                .error(R.color.background)
-                .centerCrop()
-                .into(imageView);
+        container.addView(imageView);
+        return imageView;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((LinearLayout) object);
+        Timber.d("destroyView %s", position);
+        container.removeView((View) object);
     }
 }

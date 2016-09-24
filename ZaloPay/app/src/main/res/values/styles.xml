@@ -172,6 +172,17 @@
         <item name="roundAsCircle">false</item>
         <item name="roundedCornerRadius">6dp</item>
     </style>
+    
+    <style name="BannerDraweeView">
+        <item name="actualImageScaleType">centerCrop</item>
+        <item name="failureImageScaleType">centerCrop</item>
+        <item name="placeholderImageScaleType">centerCrop</item>
+        <item name="roundAsCircle">false</item>
+        <item name="failureImage">@drawable/banner_default</item>
+        <item name="placeholderImage">@drawable/banner_default</item>
+        <item name="fadeDuration">0</item>
+    </style>
+    
     <!--  fresco:roundedCornerRadius="5dp"
    fresco:roundBottomLeft="false"
    fresco:roundBottomRight="false"
