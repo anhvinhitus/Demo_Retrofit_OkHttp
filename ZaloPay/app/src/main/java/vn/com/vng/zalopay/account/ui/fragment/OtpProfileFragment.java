@@ -156,7 +156,9 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     public void onResume() {
         super.onResume();
         presenter.resume();
-        mEventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
     }
 
     @Override
@@ -206,10 +208,12 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     }
 
     @Override
-    public void showRetry() {}
+    public void showRetry() {
+    }
 
     @Override
-    public void hideRetry() {}
+    public void hideRetry() {
+    }
 
     @Override
     public void showError(String message) {

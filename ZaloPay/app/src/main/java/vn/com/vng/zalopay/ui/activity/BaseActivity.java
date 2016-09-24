@@ -50,7 +50,6 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 3/24/16.
- *
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -139,7 +138,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
     @Override
@@ -301,7 +302,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
         } else if (TAG.equals(TransferHomeActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
-        }  else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
+        } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_NAVIGATEBACK);
         }
     }

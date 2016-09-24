@@ -74,7 +74,9 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     @Override
     public void onResume() {
         super.onResume();
-        mEventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
     }
 
     @Override

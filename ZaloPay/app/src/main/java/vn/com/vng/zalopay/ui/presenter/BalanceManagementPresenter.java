@@ -25,7 +25,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /**
  * Created by longlv on 11/08/2016.
- *
  */
 public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
         implements IPresenter<IBalanceManagementView> {
@@ -69,7 +68,9 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
 
     @Override
     public void resume() {
-        mEventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
         mView.updateBalance(mBalanceRepository.currentBalance());
         updateBalance();
         updateUserInfo();

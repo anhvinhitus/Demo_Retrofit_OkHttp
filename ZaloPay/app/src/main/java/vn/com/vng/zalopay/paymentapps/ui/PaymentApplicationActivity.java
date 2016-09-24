@@ -128,7 +128,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     public void onResume() {
         super.onResume();
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
     }
 
 

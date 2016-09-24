@@ -181,7 +181,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     @Override
     public void onHostResume() {
         Timber.d("onResume");
-        mEventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
     }
 
     @Override

@@ -36,9 +36,9 @@ import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 3/26/16.
+ * *
  */
 
-@Singleton
 public final class LoginPresenter extends BaseAppPresenter implements IPresenter<ILoginView>, LoginListener.ILoginZaloListener {
 
     private ILoginView mView;
@@ -202,8 +202,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
-        public LoginPaymentSubscriber() {
-        }
 
         @Override
         public void onNext(User user) {
