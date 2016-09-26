@@ -37,7 +37,7 @@ import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
-public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements IPreProfileView,
+public class  UpdateProfileLevel2Activity extends BaseToolBarActivity implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
@@ -47,7 +47,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
     private String mCurrentPhone = null;
-    private String mCurrentZaloPayName = "";
 
     @Inject
     PreProfilePresenter presenter;
@@ -217,9 +216,8 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     }
 
     @Override
-    public void onUpdatePinSuccess(String phone, String zaloPayName) {
+    public void onUpdatePinSuccess(String phone) {
         mCurrentPhone = phone;
-        mCurrentZaloPayName = zaloPayName;
         nextPager();
     }
 
@@ -228,7 +226,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
         presenter.saveUserPhone(mCurrentPhone);
-        presenter.saveZaloPayName(mCurrentZaloPayName);
         //Reload PaymentSDK for load new payment permission
         EventBus.getDefault().post(new RefreshPaymentSdkEvent());
         if (!TextUtils.isEmpty(walletTransId)) {

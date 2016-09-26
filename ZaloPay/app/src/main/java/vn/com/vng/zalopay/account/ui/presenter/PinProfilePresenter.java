@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
-import android.text.TextUtils;
-
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -15,7 +13,6 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -27,16 +24,14 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
 
-    IPinProfileView mView;
+    private IPinProfileView mView;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
-    private User mUser;
 
     @Inject
-    public PinProfilePresenter(AccountStore.Repository accountRepository, User user) {
+    public PinProfilePresenter(AccountStore.Repository accountRepository) {
         this.mAccountRepository = accountRepository;
-        mUser = user;
     }
 
     @Override
@@ -56,9 +51,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void resume() {
-        if (mUser != null && !TextUtils.isEmpty(mUser.zalopayname)) {
-            mView.hideInputZaloPayName();
-        }
+
     }
 
     @Override
@@ -71,39 +64,26 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         this.unsubscribe();
     }
 
-    public void updateProfile(String pin, String phone, String zalopayName) {
+    public void updateProfile(String pin, String phone) {
         showLoading();
-        Subscription subscriptionLogin = mAccountRepository.updateUserProfileLevel2(pin, phone, zalopayName)
+        Subscription subscriptionLogin = mAccountRepository.updateUserProfileLevel2(pin, phone)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UpdateProfileSubscriber(phone, zalopayName));
+                .subscribe(new UpdateProfileSubscriber(phone));
         mCompositeSubscription.add(subscriptionLogin);
-    }
-
-    public void checkZaloPayName(String zaloPayName) {
-        if (TextUtils.isEmpty(zaloPayName)) {
-            return;
-        }
-        Subscription subscription = mAccountRepository.checkZaloPayNameExist(zaloPayName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserInfoByZPNameSubscriber());
-        mCompositeSubscription.add(subscription);
     }
 
     private final class UpdateProfileSubscriber extends DefaultSubscriber<Boolean> {
         private String phone;
-        private String zalopayName;
 
-        public UpdateProfileSubscriber(String phone, String zalopayName) {
+        UpdateProfileSubscriber(String phone) {
             this.phone = phone;
-            this.zalopayName = zalopayName;
         }
 
         @Override
         public void onNext(Boolean result) {
             Timber.d("updateProfile success " + result);
-            PinProfilePresenter.this.onUpdateProfileSuccess(phone, zalopayName);
+            PinProfilePresenter.this.onUpdateProfileSuccess(phone);
         }
 
         @Override
@@ -120,10 +100,8 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
             if (e instanceof BodyException) {
                 if (((BodyException)e).errorCode == NetworkError.USER_EXISTED) {
                     ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_INUSED);
-                    mView.onCheckFail();
-                } else {
-                    PinProfilePresenter.this.onUpdateProfileError(e.getMessage());
                 }
+                PinProfilePresenter.this.onUpdateProfileError(e.getMessage());
             } else {
                 PinProfilePresenter.this.onUpdateProfileError("Cập nhật thông tin người dùng thất bại.");
             }
@@ -135,9 +113,9 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         mView.showError(error);
     }
 
-    private void onUpdateProfileSuccess(String phone, String zalopayName) {
+    private void onUpdateProfileSuccess(String phone) {
         hideLoading();
-        mView.updateProfileSuccess(phone, zalopayName);
+        mView.updateProfileSuccess(phone);
     }
 
     public void showLoading() {
@@ -156,29 +134,4 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         mView.hideRetry();
     }
 
-    private class GetUserInfoByZPNameSubscriber extends DefaultSubscriber<Boolean> {
-
-        @Override
-        public void onError(Throwable e) {
-            super.onError(e);
-            if (e instanceof BodyException) {
-                if(((BodyException) e).errorCode == NetworkError.USER_EXISTED){
-                    ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_INUSED2);
-                }
-
-                mView.onCheckFail();
-            } else {
-                mView.showError("Lỗi xảy ra trong quá trình kiểm tra tên tài khoản Zalo Pay.\nVui lòng thử lại.");
-            }
-        }
-
-        @Override
-        public void onNext(Boolean isValid) {
-            if (isValid) {
-                mView.onCheckSuccess();
-            } else {
-                mView.onCheckFail();
-            }
-        }
-    }
 }

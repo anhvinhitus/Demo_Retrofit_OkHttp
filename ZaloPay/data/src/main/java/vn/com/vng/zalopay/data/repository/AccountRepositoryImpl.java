@@ -52,12 +52,9 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber, String zalopayName) {
-        if (!TextUtils.isEmpty(zalopayName)) {
-            zalopayName = zalopayName.toLowerCase();
-        }
+    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber) {
         pin = sha256Base(pin);
-        return mRequestService.updateProfile(mUser.zaloPayId, mUser.accesstoken, pin, phonenumber, zalopayName)
+        return mRequestService.updateProfile(mUser.zaloPayId, mUser.accesstoken, pin, phonenumber)
                 .map(baseResponse -> Boolean.TRUE);
     }
 

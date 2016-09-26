@@ -224,41 +224,6 @@ public class IntroProfileView extends RelativeLayout {
         addView(view);
     }
 
-    private void addContent4() {
-        final View view = LayoutInflater.from(getContext()).inflate(R.layout.intro_content_4, null);
-        ViewTreeObserver treeObserver = view.getViewTreeObserver();
-        treeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                try {
-                    if (view.getViewTreeObserver().isAlive()) {
-                        view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    }
-
-                    Timber.d("addContent height %s", view.getHeight());
-
-
-                    ShapeEraser eraser = mErasers.get(3);
-
-                    int padding = eraser.getPadding();
-                    Rect rect = eraser.getTarget().getRect();
-
-                    ViewCompat.setTranslationX(view, rect.left - AndroidUtils.dp(12));
-                    ViewCompat.setTranslationY(view, rect.bottom - AndroidUtils.dp(8));
-
-                } catch (Exception e) {
-                    Timber.e(e, "exception");
-                }
-
-
-                return true;
-            }
-        });
-
-        addView(view);
-    }
-
-
     public boolean show(Activity activity) {
         boolean isDisplayed = !isDisplayed(mIntroId);
         if (isDisplayed) {
@@ -267,7 +232,6 @@ public class IntroProfileView extends RelativeLayout {
             addContent();
             addContent2();
             addContent3();
-            addContent4();
 
             this.setReady(true);
             this.handler.postDelayed(new Runnable() {

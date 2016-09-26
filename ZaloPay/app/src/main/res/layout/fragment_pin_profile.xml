@@ -91,66 +91,12 @@
                             android:textColorHint="@color/hint" />
                     </android.support.design.widget.TextInputLayout>
                 </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="79dp">
-
-                    <vn.com.vng.zalopay.ui.widget.InputZaloPayNameView
-                        android:id="@+id/inputZaloPayName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:paddingRight="4dp" />
-                </FrameLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/separate" />
-
-            <LinearLayout
-                android:id="@+id/layoutZaloPayNameNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:visibility="visible">
-
-                <TextView
-                    style="@style/TextView.SubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/hint.edit.account" />
-
-                <TextView
-                    style="@style/TextView.SubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing.small"
-                    android:drawableLeft="@drawable/ic_checkmark"
-                    android:drawablePadding="@dimen/spacing.small"
-                    android:text="@string/hint.edit.account1" />
-
-                <TextView
-                    style="@style/TextView.SubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:drawableLeft="@drawable/ic_checkmark"
-                    android:drawablePadding="@dimen/spacing.small"
-                    android:text="@string/hint.edit.account2" />
-
-                <TextView
-                    style="@style/TextView.SubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:drawableLeft="@drawable/ic_checkmark"
-                    android:drawablePadding="@dimen/spacing.small"
-                    android:text="@string/hint.edit.account3" />
-            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
