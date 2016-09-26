@@ -75,9 +75,13 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     public void onCreate() {
         super.onCreate();
         Timber.d("onCreate");
-        doInject();
+        if (!doInject()) {
+            return;
+        }
 
-        eventBus.register(this);
+        if (eventBus != null) {
+            eventBus.register(this);
+        }
     }
 
     @Override
@@ -85,12 +89,14 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         Timber.d("onStartCommand: flags %s startId %s", flags, startId);
         ensureInitializeNetworkConnection();
 
-        mExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                connectToServer();
-            }
-        });
+        if (mExecutor != null) {
+            mExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    connectToServer();
+                }
+            });
+        }
 
         return START_NOT_STICKY;
     }
@@ -98,7 +104,10 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     @Override
     public void onDestroy() {
         Timber.d("onDestroy");
-        eventBus.unregister(this);
+        if (eventBus != null) {
+            eventBus.unregister(this);
+        }
+
         if (mWsConnection != null) {
             mWsConnection.disconnect();
             mWsConnection.clearReceiverListener();
@@ -208,12 +217,20 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadNotify(ReadNotifyEvent event) {
+        if (notificationHelper == null) {
+            return;
+        }
+
         notificationHelper.closeNotificationSystem();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("on Notification updated %s", event.isRead());
+        if (notificationHelper == null) {
+            return;
+        }
+
         if (!event.isRead()) {
             notificationHelper.showNotificationSystem();
         }
