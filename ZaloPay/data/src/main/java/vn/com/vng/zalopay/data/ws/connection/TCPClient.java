@@ -5,6 +5,8 @@ import android.os.HandlerThread;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.UnresolvedAddressException;
 
 import timber.log.Timber;
 
@@ -57,14 +59,27 @@ class TCPClient implements SocketClient {
             try {
                 mConnection.startConnect();
                 mConnection.run();
+            } catch (UnresolvedAddressException e) {
+                Timber.w(e, "Unresolved address exception");
+                postErrorEvent(e);
+            } catch (ClosedChannelException e) {
+                Timber.w(e, "Exception: Channel is closed");
+                postErrorEvent(e);
             } catch (SocketException e) {
                 Timber.e(e, "SocketException");
+                postErrorEvent(e);
+            } catch (AssertionError e) {
+                // Caught assertion error with message: EBADF (Bad file number)
+                Timber.w(e, "Assertion error");
                 postErrorEvent(e);
             } catch (IOException e) {
                 Timber.e(e, "IOException");
                 postErrorEvent(e);
             } catch (Exception e) {
                 Timber.e(e, "Exception");
+                postErrorEvent(e);
+            } catch (Throwable e) {
+                Timber.e(e, "Throwable exception!!!");
                 postErrorEvent(e);
             } finally {
                 Timber.d("Stopping the connection.");
@@ -135,7 +150,7 @@ class TCPClient implements SocketClient {
         mHandler.post(() -> mListener.onConnected());
     }
 
-    private void postErrorEvent(Exception e) {
+    private void postErrorEvent(Throwable e) {
         if (mHandler == null || mListener == null) {
             return;
         }
