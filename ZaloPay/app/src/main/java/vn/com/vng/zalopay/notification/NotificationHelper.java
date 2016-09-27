@@ -18,11 +18,11 @@ import com.google.gson.JsonObject;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -39,15 +39,11 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.DonateMoneyEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
-import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 
 /**
  * Created by AnhHieu on 6/15/16.
+ * *
  */
 
 public class NotificationHelper {
@@ -60,6 +56,8 @@ public class NotificationHelper {
     private final BalanceStore.Repository mBalanceRepository;
     private final User mUser;
     private final EventBus mEventBus;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Inject
     public NotificationHelper(Context applicationContext, User user,
@@ -118,7 +116,7 @@ public class NotificationHelper {
         manager.notify(id, n);
     }
 
-    public void processNotification(NotificationData notify) {
+    void processNotification(NotificationData notify) {
         if (notify == null) {
             return;
         }
@@ -168,6 +166,7 @@ public class NotificationHelper {
                         Timber.d("insert db error conflict MTAID, MTUID %s", e.getClass().getCanonicalName());
                     }
                 });
+        compositeSubscription.add(subscription);
     }
 
     private void shouldMarkRead(NotificationData notify) {
@@ -221,6 +220,7 @@ public class NotificationHelper {
         Subscription subscription = mTransactionRepository.updateTransactionStatusSuccess(notify.transid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscription);
     }
 
 
@@ -234,6 +234,7 @@ public class NotificationHelper {
                     Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
                             .subscribeOn(Schedulers.io())
                             .subscribe(new DefaultSubscriber<Boolean>());
+                    compositeSubscription.add(subscription);
                 }
             }
         } catch (Exception ex) {
@@ -241,10 +242,11 @@ public class NotificationHelper {
         }
     }
 
-    public void showNotificationSystem() {
+    void showNotificationSystem() {
         Subscription subscription = mNotifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private void showNotificationSystem(int numberUnread) {
@@ -279,30 +281,36 @@ public class NotificationHelper {
         }
     }
 
-
-    public void closeNotificationSystem() {
+    void closeNotificationSystem() {
         NotificationManagerCompat nm = NotificationManagerCompat.from(mContext);
         nm.cancelAll();
     }
 
-
     private void updateTransaction() {
-        Subscription subscription = mTransactionRepository.updateTransaction()
+
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscriptionSuccess);
+
+        Subscription subscriptionFail = mTransactionRepository.fetchTransactionHistoryFailLatest()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscriptionFail);
     }
 
     private void updateBalance() {
         Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
+        compositeSubscription.add(subscription);
     }
 
     protected UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
     }
 
-    public void refreshGatewayInfo() {
+    private void refreshGatewayInfo() {
         mEventBus.post(new RefreshPaymentSdkEvent());
     }
 

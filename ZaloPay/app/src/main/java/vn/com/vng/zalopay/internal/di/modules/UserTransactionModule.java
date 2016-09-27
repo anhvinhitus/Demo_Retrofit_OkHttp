@@ -27,12 +27,11 @@ public class UserTransactionModule {
     @Provides
     TransactionStore.Repository provideTransactionRepository(ZaloPayEntityDataMapper zaloPayEntityDataMapper,
                                                              User user,
-                                                             SqlZaloPayScope sqlZaloPayScope,
                                                              TransactionStore.LocalStorage transactionLocalStorage,
                                                              TransactionStore.RequestService transactionRequestService,
                                                              EventBus eventBus, RxBus rxBus) {
         return new TransactionRepository(zaloPayEntityDataMapper,
-                user, sqlZaloPayScope,
+                user,
                 transactionLocalStorage,
                 transactionRequestService, eventBus, rxBus);
     }

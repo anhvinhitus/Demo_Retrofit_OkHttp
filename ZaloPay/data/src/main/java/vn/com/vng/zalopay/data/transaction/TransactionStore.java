@@ -51,12 +51,6 @@ public interface TransactionStore {
 
         Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count);
 
-        /*Gọi khi một giao dịch thành công*/
-        Observable<Boolean> updateTransaction();
-
-        /* Gọi lần mới run app */
-        Observable<Boolean> initialize();
-
         Observable<TransHistory> getTransaction(long id);
 
         Observable<Boolean> updateTransactionFail();
@@ -68,6 +62,10 @@ public interface TransactionStore {
         Boolean isLoadedTransactionSuccess();
 
         Boolean isLoadedTransactionFail();
+
+        Observable<Boolean> fetchTransactionHistorySuccessLatest();
+
+        Observable<Boolean> fetchTransactionHistoryFailLatest();
 
     }
 }

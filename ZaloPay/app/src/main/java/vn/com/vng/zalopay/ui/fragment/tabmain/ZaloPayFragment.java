@@ -127,11 +127,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");

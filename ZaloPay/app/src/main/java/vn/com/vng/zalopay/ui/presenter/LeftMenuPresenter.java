@@ -30,7 +30,7 @@ import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 
 /**
  * Created by AnhHieu on 5/11/16.
- *
+ * *
  */
 public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<ILeftMenuView> {
     private ILeftMenuView menuView;
@@ -39,10 +39,10 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Inject
     User user;
-    private EventBus eventBus;
-    private TransactionStore.Repository transactionRepository;
-    private UserConfig userConfig;
-    private BalanceStore.Repository balanceRepository;
+    private EventBus mEventBus;
+    private TransactionStore.Repository mTransactionRepository;
+    private UserConfig nEserConfig;
+    private BalanceStore.Repository mBalanceRepository;
     private Context context;
 
     private boolean isInitiated;
@@ -53,36 +53,35 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
                              UserConfig userConfig,
                              BalanceStore.Repository balanceRepository,
                              Context context) {
-        this.eventBus = eventBus;
-        this.transactionRepository = transactionRepository;
-        this.userConfig = userConfig;
-        this.balanceRepository = balanceRepository;
+        this.mEventBus = eventBus;
+        this.mTransactionRepository = transactionRepository;
+        this.nEserConfig = userConfig;
+        this.mBalanceRepository = balanceRepository;
         this.context = context;
     }
 
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
         menuView = iLeftMenuView;
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
     @Override
     public void destroyView() {
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
         unsubscribeIfNotNull(compositeSubscription);
         menuView = null;
     }
 
     public void initialize() {
         menuView.setUserInfo(user);
-        this.initializeZaloPay();
+        this.getTransaction();
     }
 
-    private void initializeZaloPay() {
-        Timber.d("initializeZaloPay transactionRepository [%s]", transactionRepository);
-        Subscription subscription = transactionRepository.initialize()
+    private void getTransaction() {
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
@@ -90,7 +89,12 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
                         isInitiated = true;
                     }
                 });
-        compositeSubscription.add(subscription);
+        compositeSubscription.add(subscriptionSuccess);
+
+        Subscription subscriptionFail = mTransactionRepository.fetchTransactionHistoryFailLatest()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscriptionFail);
     }
 
     @Override
@@ -106,7 +110,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void getBalance() {
-        Subscription subscription = balanceRepository.balance()
+        Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Long>());
@@ -125,7 +129,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
             menuView.setDisplayName(event.displayName);
         }
 
-        eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
+        mEventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -135,15 +139,15 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
         if (!isInitiated) {
             this.getBalance();
-            this.initializeZaloPay();
+            this.getTransaction();
         }
-        if (TextUtils.isEmpty(userConfig.getCurrentUser().displayName) ||
-                TextUtils.isEmpty(userConfig.getCurrentUser().avatar)) {
+        if (TextUtils.isEmpty(nEserConfig.getCurrentUser().displayName) ||
+                TextUtils.isEmpty(nEserConfig.getCurrentUser().avatar)) {
             ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
                 @Override
                 public void onResult(JSONObject profile) {
                     try {
-                        userConfig.saveZaloUserInfo(profile);
+                        nEserConfig.saveZaloUserInfo(profile);
                     } catch (Exception ex) {
                         Timber.w(ex, " Exception :");
                     }
