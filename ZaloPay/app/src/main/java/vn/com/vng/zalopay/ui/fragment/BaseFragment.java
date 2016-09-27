@@ -82,7 +82,6 @@ public abstract class BaseFragment extends Fragment {
         super.onLowMemory();
     }
 
-
     public void showSnackbar(int message, View.OnClickListener listener) {
         hideSnackbar();
         mSnackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);

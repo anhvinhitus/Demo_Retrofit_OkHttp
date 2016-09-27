@@ -114,7 +114,6 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
         if (mNfcAdapter == null) {
             return;
         }
-
         setupForegroundDispatch();
     }
 

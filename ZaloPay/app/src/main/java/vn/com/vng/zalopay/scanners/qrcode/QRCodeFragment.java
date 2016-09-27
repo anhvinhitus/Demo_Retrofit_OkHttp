@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -30,7 +32,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 /**
  * Created by AnhHieu on 6/7/16.
  */
-public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
+public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, FragmentLifecycle {
 
 
     public static QRCodeFragment newInstance() {
@@ -200,10 +202,20 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
-                }else{
+                } else {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
                 }
             }
         }
+    }
+
+    @Override
+    public void onStartFragment() {
+
+    }
+
+    @Override
+    public void onStopFragment() {
+
     }
 }

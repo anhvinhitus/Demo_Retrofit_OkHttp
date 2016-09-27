@@ -1,12 +1,17 @@
 package vn.com.vng.zalopay.scanners.beacons;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -29,11 +35,14 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
-public class CounterBeaconFragment extends BaseFragment {
+public class CounterBeaconFragment extends BaseFragment implements FragmentLifecycle {
 
     private BeaconScanner beaconScanner;
     private CounterBeaconRecyclerViewAdapter mViewAdapter;
@@ -50,7 +59,6 @@ public class CounterBeaconFragment extends BaseFragment {
 
     @Inject
     BalanceStore.Repository mBalanceRepository;
-
 
     @BindView(R.id.beaconList)
     RecyclerView mRecyclerView;
@@ -107,7 +115,7 @@ public class CounterBeaconFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onPreComplete(boolean isSuccessful,String pTransId, String pAppTransId) {
+                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
                     }
 
@@ -141,6 +149,10 @@ public class CounterBeaconFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewAdapter = new CounterBeaconRecyclerViewAdapter(getContext(), new SelectDeviceListener());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkBluetoothPermission();
+        }
     }
 
     @Override
@@ -175,24 +187,23 @@ public class CounterBeaconFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        startBeaconScanner();
+    }
+
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     private Timer timer;
 
     private void startBeaconScanner() {
-        if (timer == null) {
-            timer = new Timer();
-        } else {
-            timer.cancel();
-            timer = new Timer();
-        }
+        stopTimer();
+        
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new MyTimerTask(), 0, 1000);
 
-        try {
-            timer.scheduleAtFixedRate(new MyTimerTask(), 0, 1000);
-        } catch (Exception e) {
-            Timber.e(e, "Exception");
-        }
         getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -210,10 +221,8 @@ public class CounterBeaconFragment extends BaseFragment {
                 }
             }
         });
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
+
+        stopTimer();
     }
 
     private void resetDeviceList() {
@@ -332,11 +341,11 @@ public class CounterBeaconFragment extends BaseFragment {
         }
     }
 
-    private class OrderCache {
-        public static final int STATUS_ERROR = 48;
-        public static final int STATUS_CACHED = 49;
-        public static final int STATUS_FETCHING = 50;
-        public static final int STATUS_EMPTY = 51;
+    private static class OrderCache {
+        static final int STATUS_ERROR = 48;
+        static final int STATUS_CACHED = 49;
+        static final int STATUS_FETCHING = 50;
+        static final int STATUS_EMPTY = 51;
 
         public Order order;
         public int status;
@@ -345,7 +354,9 @@ public class CounterBeaconFragment extends BaseFragment {
     private class MyTimerTask extends TimerTask {
         @Override
         public void run() {
-            mMainLooperHandler.post(removeDeviceExpiredRunnable);
+            if (mMainLooperHandler != null) {
+                mMainLooperHandler.post(removeDeviceExpiredRunnable);
+            }
         }
     }
 
@@ -365,5 +376,49 @@ public class CounterBeaconFragment extends BaseFragment {
         }
     };
 
+    @Override
+    public void onStartFragment() {
+        startScanning();
+    }
 
+    @Override
+    public void onStopFragment() {
+        stopScanning();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void checkBluetoothPermission() {
+        // Android M Permission check 
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            DialogManager.showSweetDialogConfirm(getActivity(), "Xin hãy cho phép Zalo Pay sử dụng thông tin vị trí để hỗ trợ tốt thanh toán bằng Bluetooth", getString(R.string.ok), getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
+                @Override
+                public void onCancelEvent() {
+                }
+
+                @Override
+                public void onOKevent() {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            Constants.Permission.REQUEST_COARSE_LOCATION);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Timber.d("onRequestPermissionsResult: requestCode %s grantResults %s permission %s", requestCode, grantResults.length, grantResults[0]);
+        switch (requestCode) {
+            case Constants.Permission.REQUEST_COARSE_LOCATION: {
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Timber.d("coarse location permission granted");
+                } else {
+                    DialogManager.showSweetDialogCustom(getActivity(),
+                            "Do Zalo Pay chưa được cấp quyền lấy thông tin vị trí, Zalo Pay chưa thể hỗ trợ thanh toán bằng Bluetooth",
+                            getString(R.string.ok), DialogManager.NORMAL_TYPE, null);
+                }
+                break;
+            }
+        }
+    }
 }

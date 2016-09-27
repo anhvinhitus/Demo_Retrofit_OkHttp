@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.scanners.sound;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.sound.transcoder.DecoderListener;
 import vn.com.vng.zalopay.sound.transcoder.RecordService;
@@ -34,7 +36,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * Use the {@link ScanSoundFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScanSoundFragment extends BaseFragment {
+public class ScanSoundFragment extends BaseFragment implements FragmentLifecycle {
     private RecordService recordService;
     private final DecoderListener decoderListener;
     private PaymentWrapper paymentWrapper;
@@ -144,7 +146,7 @@ public class ScanSoundFragment extends BaseFragment {
         getUserComponent().inject(this);
 
         paymentWrapper = new PaymentWrapper(mBalanceRepository,
-                zaloPayRepository,mTransactionRepository,
+                zaloPayRepository, mTransactionRepository,
                 new PaymentWrapper.IViewListener() {
                     @Override
                     public Activity getActivity() {
@@ -181,7 +183,7 @@ public class ScanSoundFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onPreComplete(boolean isSuccessful,String pTransId, String pAppTransId) {
+                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
                     }
 
@@ -229,5 +231,15 @@ public class ScanSoundFragment extends BaseFragment {
     public void onDestroyView() {
         waveView.stopRippleAnimation();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onStartFragment() {
+        startRecording();
+    }
+
+    @Override
+    public void onStopFragment() {
+        stopRecording();
     }
 }

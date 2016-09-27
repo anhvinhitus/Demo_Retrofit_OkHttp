@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.scanners.nfc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
@@ -18,6 +19,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.WaveView;
@@ -29,7 +31,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Use the {@link ScanNFCFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScanNFCFragment extends BaseFragment implements NfcView {
+public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLifecycle {
     private PaymentWrapper paymentWrapper;
     private NFCReaderPresenter readerPresenter;
 
@@ -78,13 +80,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
      */
     public static ScanNFCFragment newInstance() {
         ScanNFCFragment fragment = new ScanNFCFragment();
-//        Bundle args = new Bundle();
-//        fragment.setArguments(args);
         return fragment;
-    }
-
-    public void setReaderPresenter(NFCReaderPresenter presenter) {
-        readerPresenter = presenter;
     }
 
     @Override
@@ -127,7 +123,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                     }
 
                     @Override
-                    public void onPreComplete(boolean isSuccessful,String pTransId, String pAppTransId) {
+                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
                     }
 
@@ -144,6 +140,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     @BindView(R.id.waveView)
     WaveView mWareWaveView;
 
+
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_scan_nfc;
@@ -152,6 +149,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        readerPresenter = new NFCReaderPresenter(getActivity());
+        handleIntent(getActivity().getIntent());
     }
 
     @Override
@@ -165,7 +164,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
         }
 
         starAnimation();
-
     }
 
     private void starAnimation() {
@@ -183,8 +181,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
                     }
                 })
                 .start();
-
-
     }
 
     private void stopAnimation() {
@@ -264,5 +260,29 @@ public class ScanNFCFragment extends BaseFragment implements NfcView {
 
         Timber.i("appId: %d, token: [%s]", paymentRecord.appId, paymentRecord.transactionToken);
         paymentWrapper.payWithToken(paymentRecord.appId, paymentRecord.transactionToken);
+    }
+
+    @Override
+    public void onStartFragment() {
+        if (readerPresenter != null) {
+            readerPresenter.setupForegroundDispatch();
+        }
+    }
+
+    @Override
+    public void onStopFragment() {
+        if (readerPresenter != null) {
+            readerPresenter.stopForegroundDispatch();
+        }
+    }
+
+    public void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (readerPresenter != null) {
+            readerPresenter.handleDispatch(intent);
+        }
     }
 }
