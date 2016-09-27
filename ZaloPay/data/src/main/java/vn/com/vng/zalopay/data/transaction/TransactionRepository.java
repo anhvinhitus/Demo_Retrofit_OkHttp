@@ -77,28 +77,27 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        Observable<List<TransHistoryEntity>> observable = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
+
+        Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
                 .filter(entities -> entities != null && entities.size() >= TRANSACTION_LENGTH);
 
-        observable.concatWith(fetchTransactionHistoryOldest(TRANSACTION_STATUS_SUCCESS)
-                .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS))
-        );
+        Observable<List<TransHistoryEntity>> _observableTransCloud = fetchTransactionHistoryOldest(TRANSACTION_STATUS_SUCCESS)
+                .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS));
 
-        return observable
+        return Observable.concat(_observableTransLocal, _observableTransCloud)
                 .first()
                 .map(entities -> zaloPayEntityDataMapper.transform(entities));
     }
 
     @Override
     public Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count) {
-        Observable<List<TransHistoryEntity>> observable = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
+        Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
                 .filter(entities -> entities != null && entities.size() >= TRANSACTION_LENGTH);
 
-        observable.concatWith(fetchTransactionHistoryOldest(TRANSACTION_STATUS_FAIL)
-                .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL))
-        );
+        Observable<List<TransHistoryEntity>> _observableTransCloud = fetchTransactionHistoryOldest(TRANSACTION_STATUS_FAIL)
+                .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL));
 
-        return observable
+        return Observable.concat(_observableTransLocal, _observableTransCloud)
                 .first()
                 .map(entities -> zaloPayEntityDataMapper.transform(entities));
     }
