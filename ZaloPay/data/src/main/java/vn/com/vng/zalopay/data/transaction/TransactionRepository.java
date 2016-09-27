@@ -195,7 +195,7 @@ public class TransactionRepository implements TransactionStore.Repository {
                 .map(response -> response.data)
                 .doOnNext(data -> {
 
-                    this.writeTransactionEntity(data, statusType, sortOrder, deep);
+                    this.writeTransactionEntity(data, sortOrder, statusType, deep);
                     int size = data.size();
 
                     if (size >= count && deep < 16) {
@@ -233,7 +233,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
     }
 
-    private void writeTransactionEntity(List<TransHistoryEntity> data, int statusType, int sortOder, int deep) {
+    private void writeTransactionEntity(List<TransHistoryEntity> data, int sortOder, int statusType, int deep) {
         int size = data.size();
         if (size > 0) {
 
