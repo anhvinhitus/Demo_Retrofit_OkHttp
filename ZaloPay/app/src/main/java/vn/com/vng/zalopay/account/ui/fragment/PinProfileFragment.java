@@ -92,7 +92,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         } else {
             textInputPhone.setError(getString(R.string.invalid_phone));
         }
-        edtPhone.setBackgroundResource(R.drawable.txt_bottom_error_style);
     }
 
     private void hidePhoneError() {
@@ -101,11 +100,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         }
         textInputPhone.setErrorEnabled(false);
         textInputPhone.setError(null);
-        if (edtPhone.isFocused()) {
-            edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
-        } else {
-            edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_normal);
-        }
     }
 
     public boolean isValidPhone() {
@@ -269,7 +263,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
                         Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
                         mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
                     }
-                    edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
                     return;
                 }
                 if (!isValidPhone()) {
