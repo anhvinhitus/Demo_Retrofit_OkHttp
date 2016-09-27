@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -43,7 +44,8 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
         User user = mUserConfig.getCurrentUser();
         boolean isMapped = false;
         try {
-            List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.zaloPayId);
+            List<DMappedCard> mapCardLis = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMappedCardList(user.zaloPayId);
             if (mapCardLis == null || mapCardLis.size() <= 0) {
                 return false;
             }

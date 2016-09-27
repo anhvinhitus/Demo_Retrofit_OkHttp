@@ -19,6 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -136,7 +137,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void listAppResource() {
         List<Integer> insideApps = null;
         try {
-            insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
+            insideApps = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getApproveInsideApps();
         } catch (Exception e) {
             Timber.w(e, "Get inside apps from PaymetSDK exception [%s]", e.getMessage());
         }
@@ -255,7 +257,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     public void getBanners() {
         try {
-            List<DBanner> banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
+            List<DBanner> banners = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getBannerList();
             if (banners != null && banners.size() > 1) {
                 startBannerCountDownTimer();
             } else {

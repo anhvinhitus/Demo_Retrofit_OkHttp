@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -134,8 +135,10 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     private void initLimitAmount() {
         try {
-            minWithdrawAmount = CShareData.getInstance(getActivity()).getMinWithDrawValue();
-            maxWithdrawAmount = CShareData.getInstance(getActivity()).getMaxWithDrawValue();
+            minWithdrawAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMinWithDrawValue();
+            maxWithdrawAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMaxWithDrawValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max withdraw from paymentSDK exception: [%s]", e.getMessage());
         }

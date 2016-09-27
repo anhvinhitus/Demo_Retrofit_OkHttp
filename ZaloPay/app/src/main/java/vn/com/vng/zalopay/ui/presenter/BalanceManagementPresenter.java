@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -83,6 +84,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
 
     @Override
     public void destroy() {
+        CShareData.dispose();
         GlobalData.initApplication(null);
     }
 

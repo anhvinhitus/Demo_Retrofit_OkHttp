@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -61,6 +62,7 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
 
     @Override
     public void destroy() {
+        CShareData.dispose();
         GlobalData.initApplication(null);
     }
     @Override

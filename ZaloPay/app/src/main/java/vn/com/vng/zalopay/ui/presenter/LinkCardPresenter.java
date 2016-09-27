@@ -51,7 +51,6 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
- *
  */
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
     public final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
@@ -120,7 +119,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful,String tId, String pAppTransId) {
+            public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
 
             }
 
@@ -147,7 +146,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance(mLinkCardView.getActivity()).getMappedCardList(user.zaloPayId);
+                List<DMappedCard> mapCardLis = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                        .getMappedCardList(user.zaloPayId);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -295,7 +295,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             long value = 10000;
             if (mLinkCardView.getActivity() != null) {
                 try {
-                    value = CShareData.getInstance(mLinkCardView.getActivity()).getLinkCardValue();
+                    value = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                            .getLinkCardValue();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -393,7 +394,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             return ECardType.UNDEFINE.toString();
         } else {
             try {
-                return CShareData.getInstance(mLinkCardView.getActivity()).detectCardType(first6cardno).toString();
+                return CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                        .detectCardType(first6cardno).toString();
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     e.printStackTrace();

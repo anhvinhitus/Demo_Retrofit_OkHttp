@@ -12,6 +12,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -119,8 +120,10 @@ public class SetAmountFragment extends BaseFragment {
 
     private void initLimitAmount() {
         try {
-            mMinAmount = CShareData.getInstance(getActivity()).getMinTranferValue();
-            mMaxAmount = CShareData.getInstance(getActivity()).getMaxTranferValue();
+            mMinAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMinTranferValue();
+            mMaxAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMaxTranferValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }
@@ -169,4 +172,9 @@ public class SetAmountFragment extends BaseFragment {
         return isValidMinAmount() && isValidMaxAmount();
     }
 
+    @Override
+    public void onDestroy() {
+        CShareData.dispose();
+        super.onDestroy();
+    }
 }

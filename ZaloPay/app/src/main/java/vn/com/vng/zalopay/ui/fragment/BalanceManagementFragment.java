@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -123,7 +124,8 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     private void checkShowHideDeposit() {
         try {
-            boolean isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
+            boolean isEnableDeposit = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .isEnableDeposite();
             if (isEnableDeposit) {
                 layoutDeposit.setVisibility(View.VISIBLE);
                 viewSeparate.setVisibility(View.VISIBLE);

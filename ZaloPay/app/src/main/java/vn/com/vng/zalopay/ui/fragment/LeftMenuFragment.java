@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
@@ -100,7 +101,8 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         boolean isEnableDeposit = false;
         List<MenuItem> listItem = MenuItemUtil.getMenuItems();
         try {
-            isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
+            isEnableDeposit = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .isEnableDeposite();
         } catch (Exception e) {
             Timber.d(e, "Get info deposit exception");
         }
@@ -126,6 +128,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     @Override
     public void onDestroy() {
+        CShareData.dispose();
         super.onDestroy();
         presenter.destroy();
     }

@@ -15,6 +15,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -472,8 +473,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private void initLimitAmount() {
         try {
-            mMinAmount = CShareData.getInstance(mView.getActivity()).getMinTranferValue();
-            mMaxAmount = CShareData.getInstance(mView.getActivity()).getMaxTranferValue();
+            mMinAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMinTranferValue();
+            mMaxAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
+                    .getMaxTranferValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }
