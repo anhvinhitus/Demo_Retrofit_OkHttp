@@ -199,5 +199,33 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     public boolean isLoadedTransactionFail() {
         return getDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_FAIL, 0) == 1;
     }
+
+    @Override
+    public long getLatestTimeTransaction(int statusType) {
+        long timeUpdate = 0;
+        List<TransactionLog> log = getTransactionLogDao().queryBuilder()
+                .where(TransactionLogDao.Properties.Reqdate.isNotNull(), TransactionLogDao.Properties.Statustype.eq(statusType))
+                .orderDesc(TransactionLogDao.Properties.Reqdate)
+                .limit(1).list();
+        if (!Lists.isEmptyOrNull(log)) {
+            timeUpdate = log.get(0).getReqdate();
+        }
+        Timber.d("getLatestTimeTransaction timeUpdate %s", timeUpdate);
+        return timeUpdate;
+    }
+
+    @Override
+    public long getOldestTimeTransaction(int statusType) {
+        long timeUpdate = 0;
+        List<TransactionLog> log = getTransactionLogDao().queryBuilder()
+                .where(TransactionLogDao.Properties.Reqdate.isNotNull(), TransactionLogDao.Properties.Statustype.eq(statusType))
+                .orderAsc(TransactionLogDao.Properties.Reqdate)
+                .limit(1).list();
+        if (!Lists.isEmptyOrNull(log)) {
+            timeUpdate = log.get(0).getReqdate();
+        }
+        Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
+        return timeUpdate;
+    }
 }
 

@@ -33,6 +33,11 @@ public interface TransactionStore {
         boolean isLoadedTransactionSuccess();
 
         boolean isLoadedTransactionFail();
+
+        long getLatestTimeTransaction(int statusType);
+
+        long getOldestTimeTransaction(int statusType);
+
     }
 
     interface RequestService {

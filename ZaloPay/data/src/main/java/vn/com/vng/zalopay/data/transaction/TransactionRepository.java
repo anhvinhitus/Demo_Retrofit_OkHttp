@@ -12,12 +12,17 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
+import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
+import vn.com.vng.zalopay.data.rxbus.RxBus;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
+
+import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 /**
  * Created by huuhoa on 6/15/16.
@@ -30,6 +35,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     private User mUser;
     private final SqlZaloPayScope mSqlZaloPayScope;
     private final EventBus mEventBus;
+    private final RxBus mRxBus;
 
     private static final int TRANSACTION_STATUS_SUCCESS = 1;
     private static final int TRANSACTION_STATUS_FAIL = 2;
@@ -45,7 +51,7 @@ public class TransactionRepository implements TransactionStore.Repository {
             SqlZaloPayScope sqlZaloPayScope,
             TransactionStore.LocalStorage transactionLocalStorage,
             TransactionStore.RequestService transactionRequestService,
-            EventBus eventBus) {
+            EventBus eventBus, RxBus rxBus) {
 
         this.zaloPayEntityDataMapper = zaloPayEntityDataMapper;
         mUser = user;
@@ -53,18 +59,100 @@ public class TransactionRepository implements TransactionStore.Repository {
         mTransactionLocalStorage = transactionLocalStorage;
         mTransactionRequestService = transactionRequestService;
         mEventBus = eventBus;
+        this.mRxBus = rxBus;
+        subscribeFetchTransactionLatest();
+    }
+
+    private void subscribeFetchTransactionLatest() {
+        mRxBus.toObserverable().subscribe(new DefaultSubscriber<Object>() {
+            @Override
+            public void onNext(Object o) {
+                if (o instanceof RecursiveData) {
+                    Timber.d("recursive fetch transaction %s", ((RecursiveData) o).statusType);
+                    fetchTransactionHistoryLatest(((RecursiveData) o).statusType);
+                }
+            }
+        });
     }
 
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
-        return ObservableHelper.makeObservable(() -> mTransactionLocalStorage.get(pageIndex, count, TRANSACTION_STATUS_SUCCESS))
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
+        Observable<List<TransHistoryEntity>> observable = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
+                .filter(entities -> entities != null && entities.size() >= TRANSACTION_LENGTH);
+
+        observable.concatWith(fetchTransactionHistoryOldest(TRANSACTION_STATUS_SUCCESS)
+                .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS))
+        );
+
+        return observable
+                .first()
+                .map(entities -> zaloPayEntityDataMapper.transform(entities));
     }
 
     @Override
     public Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count) {
-        return ObservableHelper.makeObservable(() -> mTransactionLocalStorage.get(pageIndex, count, TRANSACTION_STATUS_FAIL))
-                .map(transHistoryEntities -> zaloPayEntityDataMapper.transform(transHistoryEntities));
+        Observable<List<TransHistoryEntity>> observable = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
+                .filter(entities -> entities != null && entities.size() >= TRANSACTION_LENGTH);
+
+        observable.concatWith(fetchTransactionHistoryOldest(TRANSACTION_STATUS_FAIL)
+                .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL))
+        );
+
+        return observable
+                .first()
+                .map(entities -> zaloPayEntityDataMapper.transform(entities));
+    }
+
+    private Observable<TransactionHistoryResponse> fetchTransactionHistoryOldest(int statusType) {
+        return makeObservable(() -> mTransactionLocalStorage.getOldestTimeTransaction(statusType))
+                .flatMap(timeStamp -> fetchTransactionHistory(timeStamp, TRANSACTION_ORDER_OLDEST, statusType));
+    }
+
+    private Observable<TransactionHistoryResponse> fetchTransactionHistoryLatest(int statusType) {
+        return makeObservable(() -> mTransactionLocalStorage.getLatestTimeTransaction(statusType))
+                .flatMap(timeStamp -> fetchTransactionHistory(timeStamp, TRANSACTION_ORDER_LATEST, statusType));
+    }
+
+    private Observable<List<TransHistoryEntity>> getTransactionHistoryLocal(int pageIndex, int count, int statusType) {
+        return makeObservable(() -> mTransactionLocalStorage.get(pageIndex, count, statusType));
+    }
+
+    private Observable<TransactionHistoryResponse> fetchTransactionHistory(long timestamp, int sortOrder, int statusType) {
+        return mTransactionRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, TRANSACTION_LENGTH, sortOrder, statusType)
+                .doOnNext(response -> {
+                    //write data
+                    this.writeTransactionEntity(response.data, sortOrder, statusType, 0);
+                    int size = response.data.size();
+                    if (size < TRANSACTION_LENGTH) {
+                        boolean hasData = (size == 0 && timestamp == 0) // Update Ui cho lần đâu tiên.
+                                || size > 0;
+                        this.onLoadedTransactionComplete(statusType, hasData);
+                    }
+                })
+                .doOnNext(response -> shouldContinueFetchTransaction(response, timestamp, sortOrder, statusType))
+                ;
+    }
+
+    private void shouldContinueFetchTransaction(TransactionHistoryResponse response, long timestamp, int sortOrder, int statusType) {
+        if (timestamp == 0) { // lần đầu k req hết.
+            return;
+        }
+        if (sortOrder == TRANSACTION_ORDER_OLDEST) { // k đệ quy với type oldest
+            return;
+        }
+        if (Lists.isEmptyOrNull(response.data) || response.data.size() < TRANSACTION_LENGTH) { // hết data để lấy
+            return;
+        }
+
+        if (mRxBus.hasObservers()) {
+            mRxBus.send(new RecursiveData(statusType));
+        }
+    }
+
+    private Observable<Boolean> updateTransactionHistory() {
+        return Observable.merge(fetchTransactionHistoryLatest(TRANSACTION_STATUS_SUCCESS).onErrorResumeNext(throwable -> Observable.empty()),
+                fetchTransactionHistoryLatest(TRANSACTION_STATUS_FAIL).onErrorResumeNext(throwable -> Observable.empty()))
+                .map(response -> Boolean.TRUE);
     }
 
     @Override
@@ -214,5 +302,13 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Boolean isLoadedTransactionFail() {
         return mTransactionLocalStorage.isLoadedTransactionFail();
+    }
+
+    private static class RecursiveData {
+        public int statusType;
+
+        public RecursiveData(int statusType) {
+            this.statusType = statusType;
+        }
     }
 }
