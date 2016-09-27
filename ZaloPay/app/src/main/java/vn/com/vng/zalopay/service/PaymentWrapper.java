@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.vng.zalopay.utils.JsonUtil;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
@@ -120,14 +119,11 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onUpVersion(String latestVersion, String msg) {
+        public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
             Timber.d("onUpVersion latestVersion [%s]", latestVersion);
             Timber.d("onUpVersion msg [%s]", msg);
-            boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
-            if (!upgradeApp) {
-                return;
-            }
-            AppVersionUtils.showUpgradeAppDialog(viewListener.getActivity());
+            AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
+            AppVersionUtils.showDialogUpgradeAppIfNeed(viewListener.getActivity());
         }
 
         @Override

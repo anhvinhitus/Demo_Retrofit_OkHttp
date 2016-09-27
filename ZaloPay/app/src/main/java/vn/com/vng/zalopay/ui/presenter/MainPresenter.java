@@ -166,13 +166,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             }
 
             @Override
-            public void onUpVersion(String latestVersion, String msg) {
+            public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
                 Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
-                boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
-                if (!upgradeApp || homeView == null) {
-                    return;
-                }
-                AppVersionUtils.showUpgradeAppDialog(homeView.getActivity());
+                AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
+                AppVersionUtils.showDialogUpgradeAppIfNeed(homeView.getActivity());
             }
         });
     }
