@@ -53,10 +53,6 @@ public interface TransactionStore {
 
         Observable<TransHistory> getTransaction(long id);
 
-        Observable<Boolean> updateTransactionFail();
-
-        Observable<Boolean> updateTransactionSuccess();
-
         Observable<Boolean> updateTransactionStatusSuccess(long transId);
 
         Boolean isLoadedTransactionSuccess();

@@ -186,17 +186,6 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> updateTransactionFail() {
-        return fetchTransactionHistoryFailLatest();
-    }
-
-    @Override
-    public Observable<Boolean> updateTransactionSuccess() {
-        return fetchTransactionHistorySuccessLatest();
-    }
-
-
-    @Override
     public Observable<Boolean> updateTransactionStatusSuccess(final long transId) {
         return ObservableHelper.makeObservable(() -> {
             mTransactionLocalStorage.updateStatusType(transId, TRANSACTION_STATUS_SUCCESS);
