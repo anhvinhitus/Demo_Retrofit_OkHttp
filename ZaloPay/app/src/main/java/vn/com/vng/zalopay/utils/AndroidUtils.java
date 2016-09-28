@@ -3,18 +3,15 @@ package vn.com.vng.zalopay.utils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.net.Uri;
@@ -22,8 +19,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
@@ -913,21 +908,6 @@ public class AndroidUtils {
         return unzip2(new File(source), new File(destinationDirectory));
     }
 
-    public static String trim(String src) {
-        src = src.trim();
-        if (src.length() == 0) {
-            return src;
-        }
-        while (src.startsWith("\n")) {
-            src = src.substring(1);
-        }
-        while (src.endsWith("\n")) {
-            src = src.substring(0, src.length() - 1);
-        }
-        return src;
-    }
-
-
     public static String readFileFromAsset(Context context, String fileName) {
         StringBuilder returnString = new StringBuilder();
         InputStream fIn = null;
@@ -1099,5 +1079,11 @@ public class AndroidUtils {
         }
 
         return -1; // No front-facing camera found
+    }
+
+    public static void validateMainThread() {
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            throw new IllegalStateException("Must be called from the main thread.");
+        }
     }
 }

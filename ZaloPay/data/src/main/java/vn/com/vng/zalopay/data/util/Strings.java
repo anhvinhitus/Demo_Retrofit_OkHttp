@@ -79,4 +79,18 @@ public final class Strings {
         s = s.replaceAll("đ", "d");
         return s;
     }
+
+    public static String trim(String src) {
+        src = src.trim();
+        if (src.length() == 0) {
+            return src;
+        }
+        while (src.startsWith("\n")) {
+            src = src.substring(1);
+        }
+        while (src.endsWith("\n")) {
+            src = src.substring(0, src.length() - 1);
+        }
+        return src;
+    }
 }
