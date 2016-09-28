@@ -2,7 +2,8 @@ package vn.com.vng.zalopay.scanners.ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+
+import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
@@ -14,7 +15,7 @@ import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
  * *
  */
 
-final class ScanToPayPagerAdapter extends FragmentPagerAdapter {
+final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
 
     static final int TAB_NFC = 1;
     static final int TAB_BEACON = 2;
@@ -29,7 +30,6 @@ final class ScanToPayPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case TAB_QR:
                 return QRCodeFragment.newInstance();
@@ -39,7 +39,6 @@ final class ScanToPayPagerAdapter extends FragmentPagerAdapter {
                 return CounterBeaconFragment.newInstance();
             case TAB_SOUND:
                 return ScanSoundFragment.newInstance();
-
             default:
                 return null;
         }

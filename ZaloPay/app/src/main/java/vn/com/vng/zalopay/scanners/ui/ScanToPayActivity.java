@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +22,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 public class ScanToPayActivity extends BaseToolBarActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private ScanToPayPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     @BindView(R.id.container)
     ViewPager mViewPager;
 
@@ -162,7 +150,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
          * In our case this method gets called, when the user attaches a Tag to the device.
          */
 
-        Fragment fragment = mSectionsPagerAdapter.getItem(currentPosition);
+        Fragment fragment = mSectionsPagerAdapter.getPage(currentPosition);
         if (fragment instanceof ScanNFCFragment) {
             ((ScanNFCFragment) fragment).onNewIntent(intent);
         }
