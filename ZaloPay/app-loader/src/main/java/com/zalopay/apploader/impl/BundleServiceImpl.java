@@ -48,7 +48,6 @@ public class BundleServiceImpl implements BundleService {
 
     @Override
     public String getInternalBundleFolder() {
-        // return "assets:/";
         return getExternalBundleFolder(ZALOPAY_INTERNAL_APPLICATION_ID);
     }
 
