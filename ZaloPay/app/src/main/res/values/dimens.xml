@@ -5,8 +5,8 @@
 
     <dimen name="button.height">50dp</dimen>
 
-    <item name="intro.app.top.weight" type="dimen" format="float">0.30</item>
-    <item name="intro.app.bottom.weight" type="dimen" format="float">0.70</item>
+    <item name="intro.app.top.weight" format="float" type="dimen">0.30</item>
+    <item name="intro.app.bottom.weight" format="float" type="dimen">0.70</item>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

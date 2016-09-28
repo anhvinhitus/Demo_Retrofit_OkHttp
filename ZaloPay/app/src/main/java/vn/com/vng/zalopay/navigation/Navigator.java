@@ -52,6 +52,7 @@ import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
+import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
@@ -478,4 +479,8 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startTutorialConnectInternetActivity(Context context) {
+        Intent intent = new Intent(context, TutorialConnectInternetActivity.class);
+        context.startActivity(intent);
+    }
 }

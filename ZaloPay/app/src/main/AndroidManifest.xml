@@ -283,6 +283,9 @@
             android:label="@string/title.activity.withdraw.condition" />
 
         <activity android:name=".ui.activity.IntroAppActivity" />
+
+        <activity android:name=".ui.activity.TutorialConnectInternetActivity"
+            android:label="@string/title.activity.tutorial.network.connection" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

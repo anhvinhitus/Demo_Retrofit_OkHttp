@@ -35,4 +35,6 @@
     <string name="exception.empty.account">Bạn chưa nhập tên tài khoản.</string>
     <string name="exception.file.not.found">Tập tin đã bị xoá. Vui lòng chọn ảnh khác.</string>
 
+    <string name="exception.no.connection.tutorial">không có kết nối mạng! %s</string>
+    <string name="check.internet">Kiểm tra kết nối</string>
 </resources>
