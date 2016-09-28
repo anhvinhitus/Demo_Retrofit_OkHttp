@@ -7,18 +7,16 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.view.ViewCompat;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,17 +28,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.presenter.InvitationCodePresenter;
 import vn.com.vng.zalopay.ui.view.IInvitationCodeView;
-
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
-
-import com.zalopay.ui.widget.KeyboardFrameLayout;
-import com.zalopay.ui.widget.button.GuardButton;
-import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 /**
  * Created by AnhHieu on 6/27/16.
