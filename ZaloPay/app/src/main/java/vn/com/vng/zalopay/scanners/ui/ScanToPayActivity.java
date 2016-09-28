@@ -51,6 +51,8 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         mSectionsPagerAdapter = new ScanToPayPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        mViewPager.setOffscreenPageLimit(2);
+
         setupTabIcons();
     }
 
