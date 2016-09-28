@@ -8,22 +8,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
-import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/7/16.
@@ -45,8 +40,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Inject
     QRCodePresenter qrCodePresenter;
-
-    private SweetAlertDialog mProgressDialog;
 
     @Override
     public int getResLayoutId() {
@@ -178,9 +171,11 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void onStartFragment() {
+        startAndCheckPermission();
     }
 
     @Override
     public void onStopFragment() {
+        pause();
     }
 }

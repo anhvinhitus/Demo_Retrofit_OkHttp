@@ -14,6 +14,7 @@ import com.journeyapps.barcodescanner.CompoundBarcodeView;
 
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.qrcode.BuildConfig;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -62,7 +63,6 @@ abstract class AbsQrScanFragment extends BaseFragment {
 
         barcodeScannerView = (CompoundBarcodeView) view.findViewById(R.id.zxing_barcode_scanner);
         barcodeScannerView.decodeContinuous(callback);
-
     }
 
     @Override
@@ -95,6 +95,7 @@ abstract class AbsQrScanFragment extends BaseFragment {
 
 
     public void pause() {
+        Timber.d("pause");
         if (barcodeScannerView != null) {
             barcodeScannerView.pause();
         }

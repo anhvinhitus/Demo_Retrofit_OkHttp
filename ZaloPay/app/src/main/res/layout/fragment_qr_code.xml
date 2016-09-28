@@ -7,7 +7,6 @@
         android:id="@+id/zxing_barcode_scanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/height_tab_pay_with_margin"
         app:zxing_scanner_layout="@layout/zxing_scanner_layout"
         app:zxing_use_texture_view="true" />
