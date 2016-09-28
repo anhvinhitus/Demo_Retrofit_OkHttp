@@ -29,8 +29,12 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
  * + Download bundle updates
  */
 public class BundleServiceImpl implements BundleService {
+
+
+    public static final int ZALOPAY_INTERNAL_APPLICATION_ID = 1;
+
     private Application mApplication;
-//    private String mCurrentInternalBundleFolder;
+    //    private String mCurrentInternalBundleFolder;
     private final LocalResourceRepository mLocalResourceRepository;
     private final String mBundleRootFolder;
     private Gson mGson;
@@ -44,8 +48,8 @@ public class BundleServiceImpl implements BundleService {
 
     @Override
     public String getInternalBundleFolder() {
-        return "assets:/";
-        //return mCurrentInternalBundleFolder;
+        // return "assets:/";
+        return getExternalBundleFolder(ZALOPAY_INTERNAL_APPLICATION_ID);
     }
 
     @Override
@@ -57,36 +61,12 @@ public class BundleServiceImpl implements BundleService {
     public void ensureLocalResources() {
         try {
             PackageInfo packageInfo = mApplication.getPackageManager().getPackageInfo(mApplication.getPackageName(), 0);
-            Timber.i("Version name: %s", packageInfo.versionName);
-
-//            ensureInternalLocalResources(packageInfo);
+            Timber.i("Version name [%s] versionCode [%s] ", packageInfo.versionName, packageInfo.versionCode);
             ensurePaymentAppLocalResources(packageInfo);
         } catch (PackageManager.NameNotFoundException e) {
             Timber.w(e, "Error!!!");
         }
     }
-
-//    private String getInternalBundleRoot() {
-//        return mBundleRootFolder + File.separator + "modules/zalopay";
-//    }
-
-//    private void ensureInternalLocalResources(PackageInfo packageInfo) {
-//        String currentInternalVersion = mLocalResourceRepository.getInternalResourceVersion();
-//        if (currentInternalVersion == null) {
-//            currentInternalVersion = "";
-//        }
-//        Timber.i("Internal version: %s", currentInternalVersion);
-//        if (!currentInternalVersion.equalsIgnoreCase(packageInfo.versionName)) {
-//            Timber.i("Need to update internal resource");
-//            if (updateInternalResource()) {
-//                mLocalResourceRepository.setInternalResourceVersion(packageInfo.versionName);
-//            }
-//        } else {
-//            Timber.i("Internal resource is updated");
-//        }
-//
-//        mCurrentInternalBundleFolder = getInternalBundleRoot();
-//    }
 
     private void ensurePaymentAppLocalResources(PackageInfo packageInfo) {
 
@@ -102,21 +82,23 @@ public class BundleServiceImpl implements BundleService {
 
         ReactBundleAssetData reactBundleAssetData = mGson.fromJson(bundle, ReactBundleAssetData.class);
 
-        for (ReactBundleAssetData.ExternalBundle ebundle : reactBundleAssetData.external_bundle) {
-            String destination = getExternalBundleFolder(ebundle.appid);
+        for (ReactBundleAssetData.ExternalBundle eBundle : reactBundleAssetData.external_bundle) {
+            String destination = getExternalBundleFolder(eBundle.appid);
             ensurePaymentAppFolder(destination);
 
-            String appVersion = mLocalResourceRepository.getExternalResourceVersion(ebundle.appid);
-            if (appVersion != null && appVersion.equalsIgnoreCase(packageInfo.versionName)) {
+            String appVersion = mLocalResourceRepository.getExternalResourceVersion(eBundle.appid);
+            String keyVersion = packageInfo.versionName + packageInfo.versionCode;
+
+            if (appVersion != null && appVersion.equalsIgnoreCase(keyVersion)) {
                 continue;
             }
 
-            Timber.i("Application %s need to be updated", ebundle.appname);
-            if (!updatePaymentAppLocalResource(ebundle)) {
+            Timber.i("Application %s need to be updated", eBundle.appname);
+            if (!updatePaymentAppLocalResource(eBundle)) {
                 continue;
             }
 
-            mLocalResourceRepository.setExternalResourceVersion(ebundle.appid, packageInfo.versionName);
+            mLocalResourceRepository.setExternalResourceVersion(eBundle.appid, keyVersion);
         }
 
         Timber.i("Update PaymentApp done");
@@ -129,18 +111,6 @@ public class BundleServiceImpl implements BundleService {
 
         return unzipAssetToFolder(bundle.asset, destination);
     }
-
-    /**
-     * Extract zalopay_internal.zip from apk's assets and unzip to destination folder
-     *
-     * @return true if succeeded
-     */
-//    private boolean updateInternalResource() {
-//        Timber.d("updateInternalResource");
-//        String internalRoot = getInternalBundleRoot();
-//
-//        return unzipAssetToFolder("zalopay_internal.zip", internalRoot);
-//    }
 
     private boolean unzipAssetToFolder(String assetName, String dstPath) {
         try {
