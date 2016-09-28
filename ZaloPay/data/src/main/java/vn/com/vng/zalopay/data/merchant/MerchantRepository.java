@@ -28,32 +28,14 @@ public class MerchantRepository implements MerchantStore.Repository {
     public MerchantRepository(MerchantStore.LocalStorage localStorage, MerchantStore.RequestService requestService, User user) {
         this.localStorage = localStorage;
         this.requestService = requestService;
+
         this.user = user;
     }
 
     @Override
     public Observable<MerchantUserInfo> getMerchantUserInfo(long appId) {
-        // first get merchant user info from local storage
-        // if local storage does not have it
-        // then request from server
-        return Observable.create(new Observable.OnSubscribe<MerchantUserInfo>() {
-            @Override
-            public void call(Subscriber<? super MerchantUserInfo> subscriber) {
-                MerchantUser merchantUser = localStorage.get(appId);
-                if (merchantUser == null) {
-                    // throw new NullPointerException("appId is not stored locally");
-                    getMerchantUserInfoCloud(appId).subscribe(subscriber);
-                    return;
-                }
-
-                if (subscriber.isUnsubscribed()) {
-                    return;
-                }
-
-                subscriber.onNext(transform(localStorage.get(appId)));
-                subscriber.onCompleted();
-            }
-        });
+        return Observable.concat(getMerchantUserInfoLocal(appId), getMerchantUserInfoCloud(appId))
+                .first();
     }
 
     private Observable<MerchantUserInfo> getMerchantUserInfoCloud(long appId) {
@@ -62,13 +44,11 @@ public class MerchantRepository implements MerchantStore.Repository {
                 .map(this::transform);
     }
 
-//    private Observable<MerchantUserInfo> getMerchantUserInfoLocal(long appId) {
-//        return makeObservable(() -> localStorage.get(appId))
-//                .flatMap(merchantUser -> {
-//                    Timber.d("getMerchantUserInfoLocal %s", merchantUser);
-//                    return merchantUser == null ? Observable.empty() : Observable.just(transform(merchantUser));
-//                });
-//    }
+    private Observable<MerchantUserInfo> getMerchantUserInfoLocal(long appId) {
+        return makeObservable(() -> localStorage.get(appId))
+                .filter(merchantUser -> merchantUser != null)
+                .map(this::transform);
+    }
 
     @Override
     public Observable<Boolean> getListMerchantUserInfo(String appIdList) {
