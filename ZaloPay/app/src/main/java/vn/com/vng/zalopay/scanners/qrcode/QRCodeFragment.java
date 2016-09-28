@@ -1,16 +1,13 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -22,7 +19,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -31,23 +27,21 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/7/16.
+ * *
  */
 public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, FragmentLifecycle {
 
-
     public static QRCodeFragment newInstance() {
-
         Bundle args = new Bundle();
-
         QRCodeFragment fragment = new QRCodeFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
+    @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
     }
-
 
     @Inject
     QRCodePresenter qrCodePresenter;
@@ -72,35 +66,14 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         qrCodePresenter.pay(result);
     }
 
-    public UserComponent getUserComponent() {
-        return AndroidApplication.instance().getUserComponent();
-    }
-
-    public ApplicationComponent getAppComponent() {
-        return AndroidApplication.instance().getAppComponent();
-    }
-
     @Override
     public void onTokenInvalid() {
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setupFragmentComponent();
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qrCodePresenter.setView(this);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -111,18 +84,12 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void showLoading() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
-            mProgressDialog.setCancelable(false);
-        }
-        mProgressDialog.show();
+        super.showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
+        super.hideProgressDialog();
     }
 
     @Override
@@ -135,7 +102,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void showError(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        showToast(message);
         hideLoading();
     }
 
@@ -211,11 +178,9 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void onStartFragment() {
-
     }
 
     @Override
     public void onStopFragment() {
-
     }
 }
