@@ -2,12 +2,14 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
+import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -449,10 +451,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         }
     }
 
-    static Map<Integer, Integer> sActionMap;
+    static SparseIntArray sActionMap;
 
     static {
-        sActionMap = new HashMap<>();
+        sActionMap = new SparseIntArray(15);
         sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);
         sActionMap.put(1, ZPEvents.TAPAPPICON_1_2);
         sActionMap.put(2, ZPEvents.TAPAPPICON_1_3);
@@ -465,5 +467,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         sActionMap.put(9, ZPEvents.TAPAPPICON_4_1);
         sActionMap.put(10, ZPEvents.TAPAPPICON_4_2);
         sActionMap.put(11, ZPEvents.TAPAPPICON_4_3);
+        sActionMap.put(12, ZPEvents.TAPAPPICON_5_1);
+        sActionMap.put(13, ZPEvents.TAPAPPICON_5_2);
+        sActionMap.put(14, ZPEvents.TAPAPPICON_5_3);
     }
 }
