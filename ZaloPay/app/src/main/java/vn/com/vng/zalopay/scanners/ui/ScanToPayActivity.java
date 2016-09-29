@@ -61,12 +61,12 @@ public class ScanToPayActivity extends BaseToolBarActivity {
 
         radarAnimation(newPosition);
 
-        Fragment fragmentToShow = mSectionsPagerAdapter.getItem(newPosition);
+        Fragment fragmentToShow = mSectionsPagerAdapter.getPage(newPosition);
         if (fragmentToShow instanceof FragmentLifecycle) {
             ((FragmentLifecycle) fragmentToShow).onStartFragment();
         }
 
-        Fragment fragmentToHide = mSectionsPagerAdapter.getItem(currentPosition);
+        Fragment fragmentToHide = mSectionsPagerAdapter.getPage(currentPosition);
         if (fragmentToHide instanceof FragmentLifecycle) {
             ((FragmentLifecycle) fragmentToHide).onStopFragment();
         }

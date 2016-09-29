@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,7 @@ import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
-public class  UpdateProfileLevel2Activity extends BaseToolBarActivity implements IPreProfileView,
+public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
@@ -173,7 +174,7 @@ public class  UpdateProfileLevel2Activity extends BaseToolBarActivity implements
         }
         Timber.d("updateUserInfo, birthday: %s", user.birthDate);
         Date date = new Date(user.birthDate * 1000);
-        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
+        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date));
         tvName.setText(user.displayName);
         tvSex.setText(user.getGender());
         mImageLoader.loadImage(imgAvatar, user.avatar);

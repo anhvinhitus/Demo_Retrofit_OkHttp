@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.View;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -108,7 +109,13 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
 
         toggle = new ActionBarDrawerToggle(
-                this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                ZPAnalytics.trackEvent(ZPEvents.OPENLEFTMENU);
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -161,6 +168,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Override
     public void onClickProfile() {
         navigator.startProfileInfoActivity(this);
+        ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUUSERPROFILE);
     }
 
     public void replaceFragmentDelay(final int id) {
