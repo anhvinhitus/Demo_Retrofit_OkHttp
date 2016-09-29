@@ -284,7 +284,7 @@ public class PaymentWrapper {
         paymentInfo.walletTransID = walletTransId;
 
         Timber.d("saveCardMap, start paymentsdk");
-        WalletSDKApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
+        WalletSDKApplication.saveCardMap(paymentInfo, listener);
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {

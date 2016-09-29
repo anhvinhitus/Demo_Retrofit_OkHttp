@@ -146,8 +146,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
-                        .getMappedCardList(user.zaloPayId);
+                List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList(user.zaloPayId);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -230,7 +229,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         params.userID = String.valueOf(user.zaloPayId);
         params.mapCard = mapCard;
 
-        WalletSDKApplication.removeCardMap(mLinkCardView.getActivity(), params, new RemoveMapCardListener());
+        WalletSDKApplication.removeCardMap(params, new RemoveMapCardListener());
     }
 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
@@ -295,8 +294,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             long value = 10000;
             if (mLinkCardView.getActivity() != null) {
                 try {
-                    value = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
-                            .getLinkCardValue();
+                    value = CShareData.getInstance().getLinkCardValue();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -394,8 +392,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             return ECardType.UNDEFINE.toString();
         } else {
             try {
-                return CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
-                        .detectCardType(first6cardno).toString();
+                return CShareData.getInstance().detectCardType(first6cardno).toString();
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     e.printStackTrace();

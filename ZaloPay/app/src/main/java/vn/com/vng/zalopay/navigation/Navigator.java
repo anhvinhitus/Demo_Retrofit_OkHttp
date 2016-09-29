@@ -191,8 +191,8 @@ public class Navigator implements INavigator {
             long now = System.currentTimeMillis();
             int numberCard = 0;
             try {
-                CShareData shareData = CShareData.getInstance(context);
-                List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                List<DMappedCard> mapCardLis = CShareData.getInstance()
+                        .getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 numberCard = mapCardLis.size();
             } catch (Exception ex) {
                 Timber.d(ex, "startLinkCardActivity");
@@ -439,8 +439,8 @@ public class Navigator implements INavigator {
 
         if (channel == 2) {
             try {
-                CShareData shareData = CShareData.getInstance(context);
-                List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                List<DMappedCard> mapCardLis = CShareData.getInstance()
+                        .getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 if (mapCardLis == null || mapCardLis.size() == 0) {
                     Helpers.promiseResolveSuccess(promise, null);
                     return true;

@@ -101,8 +101,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         boolean isEnableDeposit = false;
         List<MenuItem> listItem = MenuItemUtil.getMenuItems();
         try {
-            isEnableDeposit = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
-                    .isEnableDeposite();
+            isEnableDeposit = CShareData.getInstance().isEnableDeposite();
         } catch (Exception e) {
             Timber.d(e, "Get info deposit exception");
         }

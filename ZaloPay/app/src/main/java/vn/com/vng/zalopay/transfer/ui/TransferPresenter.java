@@ -473,10 +473,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private void initLimitAmount() {
         try {
-            mMinAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
-                    .getMinTranferValue();
-            mMaxAmount = CShareData.getInstance(AndroidApplication.instance().getApplicationContext())
-                    .getMaxTranferValue();
+            mMinAmount = CShareData.getInstance().getMinTranferValue();
+            mMaxAmount = CShareData.getInstance().getMaxTranferValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }

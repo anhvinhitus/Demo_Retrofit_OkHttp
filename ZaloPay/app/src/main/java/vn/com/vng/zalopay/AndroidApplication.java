@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.common.logging.FLog;
-import com.facebook.common.logging.LoggingDelegate;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
@@ -37,9 +36,8 @@ import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 
 /**
  * Created by AnhHieu on 3/24/16.
