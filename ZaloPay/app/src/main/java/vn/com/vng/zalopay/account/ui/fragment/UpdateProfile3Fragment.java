@@ -29,7 +29,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.PhotoUtil;
@@ -50,16 +49,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         return fragment;
     }
 
-
     private static final int BACKGROUND_IMAGE_REQUEST_CODE = 100;
     private static final int FOREGROUND_IMAGE_REQUEST_CODE = 101;
     private static final int AVATAR_REQUEST_CODE = 102;
 
     @Inject
     UpdateProfile3Presenter presenter;
-
-    @Inject
-    User user;
 
     @BindView(R.id.viewFlipper)
     ViewFlipper viewFlipper;
@@ -74,22 +69,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     SimpleDraweeView mAvatarView;
 
     @BindView(R.id.ivBgCmnd)
-    SimpleDraweeView mBgCmndView;
+    SimpleDraweeView mBgIdentityView;
 
     @BindView(R.id.ivFgCmnd)
-    SimpleDraweeView mFgCmndView;
+    SimpleDraweeView mFgIdentityView;
 
     @BindView(R.id.tvAvatar)
     TextView mTvAvatarView;
 
     @BindView(R.id.tvBgCmnd)
-    TextView mTvBgCmndView;
+    TextView mTvBgIdentityView;
 
     @BindView(R.id.tvFgCmnd)
-    TextView mTvFgCmndView;
+    TextView mTvFgIdentityView;
 
-    private Uri mUriBgCmnd;
-    private Uri mUriFgCmnd;
+    private Uri mUriBgIdentity;
+    private Uri mUriFgIdentity;
     private Uri mUriAvatar;
 
     @BindView(R.id.tvTerm)
@@ -161,9 +156,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @Override
     public boolean onBackPressed() {
         String email = getEmail();
-        String cmnd = getIdentity();
+        String identity = getIdentity();
 
-        presenter.saveProfileInfo3(email, cmnd, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
+        presenter.saveProfileInfo3(email, identity, mUriFgIdentity, mUriBgIdentity, mUriAvatar);
 
         return super.onBackPressed();
     }
@@ -198,16 +193,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
     }
 
-    public int getCurrentPage() {
-        return viewFlipper.getDisplayedChild();
-    }
-
-    public void nextPage() {
-        viewFlipper.setInAnimation(getContext(), R.anim.in_from_left);
-        viewFlipper.setOutAnimation(getContext(), R.anim.out_to_right);
-        viewFlipper.showNext();
-    }
-
     @OnClick(R.id.btnRemoveAvatar)
     public void onClickRemoveAvatar() {
         clearAvatar();
@@ -238,6 +223,30 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
+    @OnClick(R.id.layoutFgCmnd)
+    public void onClickFgIdentity() {
+        showBottomSheetDialog(FOREGROUND_IMAGE_REQUEST_CODE);
+    }
+
+    @OnClick(R.id.layoutBgCmnd)
+    public void onClickBgIdentity() {
+        showBottomSheetDialog(BACKGROUND_IMAGE_REQUEST_CODE);
+    }
+
+    @OnClick(R.id.layoutAvatar)
+    public void onClickAvatar() {
+        showBottomSheetDialog(AVATAR_REQUEST_CODE);
+    }
+
+    public int getCurrentPage() {
+        return viewFlipper.getDisplayedChild();
+    }
+
+    public void nextPage() {
+        viewFlipper.setInAnimation(getContext(), R.anim.in_from_left);
+        viewFlipper.setOutAnimation(getContext(), R.anim.out_to_right);
+        viewFlipper.showNext();
+    }
 
     private String getEmail() {
         if (mEmailView.getEditText() != null) {
@@ -272,11 +281,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
 
     private void updateProfile() {
-        String cmnd = getIdentity();
+        String identity = getIdentity();
         String email = getEmail();
 
         if (isValidatePageTwo()) {
-            presenter.updateProfile3(cmnd, email, mUriFgCmnd, mUriBgCmnd, mUriAvatar);
+            presenter.updateProfile3(identity, email, mUriFgIdentity, mUriBgIdentity, mUriAvatar);
         }
     }
 
@@ -295,12 +304,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private boolean isValidatePageTwo() {
-        if (mUriFgCmnd == null || TextUtils.isEmpty(mUriFgCmnd.getPath())) {
+        if (mUriFgIdentity == null || TextUtils.isEmpty(mUriFgIdentity.getPath())) {
             showMessageDialog(R.string.exception_uri_fg_cmnd);
             return false;
         }
 
-        if (mUriBgCmnd == null || TextUtils.isEmpty(mUriBgCmnd.getPath())) {
+        if (mUriBgIdentity == null || TextUtils.isEmpty(mUriBgIdentity.getPath())) {
             showMessageDialog(R.string.exception_uri_bg_cmnd);
             return false;
         }
@@ -366,22 +375,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         getActivity().finish();
     }
 
-    @OnClick(R.id.layoutFgCmnd)
-    public void onClickFgIdentity() {
-        showBottomSheetDialog(FOREGROUND_IMAGE_REQUEST_CODE);
-    }
-
-    @OnClick(R.id.layoutBgCmnd)
-    public void onClickBgIdentity() {
-        showBottomSheetDialog(BACKGROUND_IMAGE_REQUEST_CODE);
-    }
-
-    @OnClick(R.id.layoutAvatar)
-    public void onClickAvatar() {
-        showBottomSheetDialog(AVATAR_REQUEST_CODE);
-    }
-
-
     private void showBottomSheetDialog(final int requestCode) {
         CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
         dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
@@ -425,12 +418,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
-                    mUriBgCmnd = uri;
-                    loadBackgroundImageCMND(mUriBgCmnd);
+                    mUriBgIdentity = uri;
+                    loadBackgroundImageCMND(mUriBgIdentity);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
-                    mUriFgCmnd = uri;
-                    loadForegroundImageCMND(mUriFgCmnd);
+                    mUriFgIdentity = uri;
+                    loadForegroundImageCMND(mUriFgIdentity);
                     break;
                 case AVATAR_REQUEST_CODE:
                     mUriAvatar = uri;
@@ -442,22 +435,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     void loadForegroundImageCMND(Uri uri) {
-        boolean isLoaded = loadImage(mFgCmndView, uri);
+        boolean isLoaded = loadImage(mFgIdentityView, uri);
 
         if (isLoaded) {
-            mTvFgCmndView.setVisibility(View.GONE);
+            mTvFgIdentityView.setVisibility(View.GONE);
             btnRemoveFrontImage.setClickable(true);
             btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
         }
     }
 
     void clearFrontImage() {
-        mFgCmndView.setImageDrawable(null);
-        mFgCmndView.setVisibility(View.GONE);
-        mTvFgCmndView.setVisibility(View.VISIBLE);
+        mFgIdentityView.setImageDrawable(null);
+        mFgIdentityView.setVisibility(View.GONE);
+        mTvFgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveFrontImage.setClickable(false);
         btnRemoveFrontImage.setImageResource(R.drawable.ic_camera);
-        mUriFgCmnd = null;
+        mUriFgIdentity = null;
     }
 
     void loadAvatar(Uri uri) {
@@ -480,28 +473,28 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     void loadBackgroundImageCMND(Uri uri) {
-        boolean isLoaded = loadImage(mBgCmndView, uri);
+        boolean isLoaded = loadImage(mBgIdentityView, uri);
         if (isLoaded) {
-            mTvBgCmndView.setVisibility(View.GONE);
+            mTvBgIdentityView.setVisibility(View.GONE);
             btnRemoveBackImage.setClickable(true);
             btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
         }
     }
 
     void clearBackgroundImage() {
-        mBgCmndView.setImageDrawable(null);
-        mBgCmndView.setVisibility(View.GONE);
-        mTvBgCmndView.setVisibility(View.VISIBLE);
+        mBgIdentityView.setImageDrawable(null);
+        mBgIdentityView.setVisibility(View.GONE);
+        mTvBgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveBackImage.setClickable(false);
         btnRemoveBackImage.setImageResource(R.drawable.ic_camera);
-        mUriBgCmnd = null;
+        mUriBgIdentity = null;
     }
 
     private boolean loadImage(SimpleDraweeView image, Uri uri) {
         if (uri == null) {
             return false;
         }
-        
+
         try {
             Bitmap bitmap = PhotoUtil.getThumbnail(getContext(), uri);
             if (bitmap != null) {
@@ -529,13 +522,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
 
         if (!TextUtils.isEmpty(foregroundImg)) {
-            mUriFgCmnd = Uri.parse(foregroundImg);
-            loadForegroundImageCMND(mUriFgCmnd);
+            mUriFgIdentity = Uri.parse(foregroundImg);
+            loadForegroundImageCMND(mUriFgIdentity);
         }
 
         if (!TextUtils.isEmpty(backgroundImg)) {
-            mUriBgCmnd = Uri.parse(backgroundImg);
-            loadBackgroundImageCMND(mUriBgCmnd);
+            mUriBgIdentity = Uri.parse(backgroundImg);
+            loadBackgroundImageCMND(mUriBgIdentity);
         }
 
         if (!TextUtils.isEmpty(avatarImg)) {

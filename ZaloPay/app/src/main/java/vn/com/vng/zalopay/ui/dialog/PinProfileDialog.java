@@ -51,11 +51,13 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Inject
     Navigator navigator;
 
-    Intent pendingIntent;
+    private SweetAlertDialog mProgressDialog;
 
-    PinProfileListener listener;
+    private Intent pendingIntent;
 
-    boolean pinSuccess = false;
+    private PinProfileListener listener;
+
+    private boolean pinSuccess = false;
 
     public PinProfileDialog(Context context, Intent pendingIntent) {
         super(context, R.style.alert_dialog);
@@ -113,7 +115,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         });
     }
 
-    public void setWidthDialog() {
+    private void setWidthDialog() {
         Display display = this.getWindow().getWindowManager().getDefaultDisplay();
         int densityDpi = display.getWidth();
         android.view.ViewGroup.LayoutParams params = this.mRootView.getLayoutParams();
@@ -125,6 +127,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     public void onDetachedFromWindow() {
         Timber.d("onDetachedFromWindow");
+        hideLoading();
         presenter.destroyView();
         listener = null;
         super.onDetachedFromWindow();
@@ -172,7 +175,6 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         }
     }
 
-    private SweetAlertDialog mProgressDialog;
 
     @OnClick(R.id.cancel_button)
     public void onClickCancel() {
@@ -182,8 +184,10 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     public void show() {
         super.show();
-        getWindow().clearFlags(
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        if (getWindow() != null) {
+            getWindow().clearFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                            | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        }
     }
 }

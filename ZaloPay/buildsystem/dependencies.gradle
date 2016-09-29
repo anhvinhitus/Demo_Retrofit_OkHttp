@@ -52,6 +52,7 @@ ext {
 
     reactNativeVersion = "0.33.0"
     animatedGifVersion = "0.10.0"
+    frescoVersion = "0.13.0"
 
     multidexVersion = "1.0.1"
 
@@ -98,6 +99,7 @@ ext {
 
             react_native           : "com.facebook.react:react-native:${reactNativeVersion}",
             animated_gif           : "com.facebook.fresco:animated-gif:${animatedGifVersion}",
+            fresco                 : "com.facebook.fresco:fresco:${frescoVersion}",
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
 

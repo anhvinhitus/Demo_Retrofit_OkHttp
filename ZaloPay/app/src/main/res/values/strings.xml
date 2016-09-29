@@ -329,6 +329,7 @@
     <string name="transfer.message.maxlength">Lời nhắn không được vượt quá 36 ký tự.</string>
     <string name="pin.old">Mật khẩu thanh toán cũ</string>
     <string name="pin.new">Mật khẩu thanh toán mới</string>
+    <string name="input.pin">Nhập mật khẩu thanh toán</string>
     <string name="input.pin.old">Nhập mật khẩu thanh toán cũ</string>
     <string name="input.pin.new">Nhập mật khẩu thanh toán mới</string>
     <string name="pin">Mật khẩu thanh toán</string>
@@ -357,4 +358,5 @@
     <string name="please_do_tutorial">Vui lòng làm theo hướng dẫn:</string>
     <string name="turn_on_wifi"><![CDATA[<b>Bật Wi-fi:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Wi-fi\"</b> và chọn mạng Wi-fi có sẵn.]]></string>
     <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Cellular\"</b> (di động) và bật  <b>\"Cellular Data\"</b> (dữ liệu di động).]]></string>
+    <string name="display.pin">Hiển thị mật khẩu thanh toán</string>
 </resources>

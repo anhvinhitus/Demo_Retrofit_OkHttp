@@ -374,6 +374,8 @@ dependencies {
     compile(project(':app-loader')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
+
+    compile libs.fresco
 }
 
 apply plugin: 'com.google.gms.google-services'
