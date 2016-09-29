@@ -123,7 +123,6 @@ public class AppVersionUtils {
                 new ZPWOnEventUpdateListener() {
                     @Override
                     public void onUpdateListenner() {
-                        clearSession();
                         AndroidUtils.openPlayStoreForUpdate(activity);
                     }
 
