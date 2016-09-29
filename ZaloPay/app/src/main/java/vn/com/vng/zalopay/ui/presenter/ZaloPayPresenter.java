@@ -22,8 +22,6 @@ public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView>
 
     void startWebViewActivity(AppResource appResource);
 
-    List<AppResource> getListAppResourceFromDB();
-
     void startBannerCountDownTimer();
 
     void stopBannerCountDownTimer();

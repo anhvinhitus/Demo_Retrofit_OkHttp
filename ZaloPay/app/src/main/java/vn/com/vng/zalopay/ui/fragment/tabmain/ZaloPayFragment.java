@@ -183,7 +183,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Timber.d("activity created");
-        mAdapter.setData(getListData());
         presenter.initialize();
     }
 
@@ -290,30 +289,13 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         navigator.startBalanceManagementActivity(getContext());
     }
 
-    List<AppResource> mListApps = null;
-
-    private List<AppResource> getListData() {
-        if (Lists.isEmptyOrNull(mListApps)) {
-            mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
-        }
-        List<AppResource> appResourceList = presenter.getListAppResourceFromDB();
-        if (!Lists.isEmptyOrNull(appResourceList)) {
-            mListApps.addAll(appResourceList);
-        }
-        return mListApps;
-    }
-
     @Override
     public void refreshInsideApps(List<AppResource> list) {
         Timber.d("refreshInsideApps list: [%s]", list.size());
-        if (!Lists.isEmptyOrNull(mListApps)) {
-            mListApps.clear();
+        if (mAdapter == null) {
+            return;
         }
-        mListApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
-        if (!Lists.isEmptyOrNull(list)) {
-            mListApps.addAll(list);
-        }
-        mAdapter.setData(mListApps);
+        mAdapter.setData(list);
     }
 
     @Override

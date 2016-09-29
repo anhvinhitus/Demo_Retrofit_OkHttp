@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -19,7 +20,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -29,18 +29,20 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.util.ListStringUtil;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.utils.NetworkUtil;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -123,9 +125,20 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void initialize() {
+        this.showListAppInDB();
         this.getTotalNotification(2000);
         this.getBanners();
         this.getBalance();
+    }
+
+    private void showListAppInDB() {
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<AppResource>>() {
+            @Override
+            public List<AppResource> call() throws Exception {
+                return mAppResourceRepository.listAppResourceFromDB();
+            }
+        }).subscribe(new AppResourceSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -160,10 +173,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         this.getListMerchantUser(insideApps);
     }
 
-    public List<AppResource> getListAppResourceFromDB() {
-        return mAppResourceRepository.listAppResourceFromDB();
-    }
-
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
     // when received notification
     private void getTotalNotification(long delay) {
@@ -190,7 +199,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
-        mZaloPayView.refreshInsideApps(resources);
+        List<AppResource> listApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
+        if (!Lists.isEmptyOrNull(resources)) {
+            listApps.addAll(resources);
+        }
+        mZaloPayView.refreshInsideApps(listApps);
     }
 
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
