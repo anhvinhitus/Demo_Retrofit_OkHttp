@@ -147,6 +147,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         compositeSubscription.add(subscription);
     }
 
+    private void refreshBannersAndInsideApp() {
+        isLoadedGateWayInfo = true;
+        if (homeView != null) {
+            homeView.refreshBannersAndInsideApp();
+        }
+    }
+
     private void loadGatewayInfoPaymentSDK() {
         User user = mUserConfig.getCurrentUser();
         final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
@@ -159,15 +166,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
-                isLoadedGateWayInfo = true;
-                if (homeView != null) {
-                    homeView.refreshBannersAndInsideApp();
-                }
+                refreshBannersAndInsideApp();
             }
 
             @Override
             public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
                 Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
+                refreshBannersAndInsideApp();
                 AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
                 AppVersionUtils.showDialogUpgradeAppIfNeed(homeView.getActivity());
             }
