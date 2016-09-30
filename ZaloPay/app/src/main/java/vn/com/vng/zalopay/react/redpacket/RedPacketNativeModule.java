@@ -342,7 +342,9 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                         Timber.w(e, "error on openPacket");
                         super.onError(e);
                         if (e instanceof BodyException) {
-                            mRedPackageRepository.setPacketStatus(packageID, 0, RedPacketStatus.Invalid.getValue()).subscribe(new DefaultSubscriber<Void>());
+                            int errorCode = ((BodyException)e).errorCode;
+                            mRedPackageRepository.setPacketStatus(packageID, 0, errorCode)
+                                    .subscribe(new DefaultSubscriber<Void>());
                         }
                     }
 
