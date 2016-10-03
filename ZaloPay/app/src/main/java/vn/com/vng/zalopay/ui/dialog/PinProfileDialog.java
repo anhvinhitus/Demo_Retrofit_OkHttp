@@ -128,6 +128,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     public void onDetachedFromWindow() {
         Timber.d("onDetachedFromWindow");
         hideLoading();
+        setOnShowListener(null);
         presenter.destroyView();
         listener = null;
         super.onDetachedFromWindow();
