@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -36,10 +37,12 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -67,7 +70,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     private CountDownTimer mBannerCountDownTimer;
     //avoid case: new & release CountDownTimer continuously
     private Handler mBannerHandle = new Handler();
-    private Runnable mBannerRunable = new Runnable() {
+    private Runnable mBannerRunnable = new Runnable() {
         @Override
         public void run() {
             startBannerCountDownTimer();
@@ -120,7 +123,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void destroy() {
         mBannerCountDownTimer = null;
         mBannerHandle = null;
-        mBannerRunable = null;
+        mBannerRunnable = null;
     }
 
     @Override
@@ -135,6 +138,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<AppResource>>() {
             @Override
             public List<AppResource> call() throws Exception {
+                AndroidUtils.validateMainThread();
                 return mAppResourceRepository.listAppResourceFromDB();
             }
         }).subscribe(new AppResourceSubscriber());
@@ -211,7 +215,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         @Override
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
-
             Timber.d(" AppResource %s", appResources.size());
         }
     }
@@ -266,9 +269,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void onTouchBanner(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             stopBannerCountDownTimer();
-            mBannerHandle.removeCallbacks(mBannerRunable);
+            mBannerHandle.removeCallbacks(mBannerRunnable);
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            mBannerHandle.postDelayed(mBannerRunable, BANNER_COUNT_DOWN_INTERVAL);
+            mBannerHandle.postDelayed(mBannerRunnable, BANNER_COUNT_DOWN_INTERVAL);
         }
     }
 
@@ -371,5 +374,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             }
             mZaloPayView.showErrorDialog(ErrorMessageFactory.create(mZaloPayView.getContext(), e));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
+        Timber.d("onRefreshPlatformInfoEvent");
+        this.listAppResource();
+        this.getBanners();
     }
 }

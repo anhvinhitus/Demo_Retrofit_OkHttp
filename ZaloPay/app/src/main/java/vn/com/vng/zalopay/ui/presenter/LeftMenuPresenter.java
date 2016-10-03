@@ -11,6 +11,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -24,9 +26,13 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.menu.model.MenuItem;
+import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
@@ -37,27 +43,28 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    @Inject
-    User user;
+    private User user;
+
     private EventBus mEventBus;
     private TransactionStore.Repository mTransactionRepository;
-    private UserConfig nEserConfig;
+    private UserConfig mUserConfig;
     private BalanceStore.Repository mBalanceRepository;
     private Context context;
 
     private boolean isInitiated;
 
     @Inject
-    public LeftMenuPresenter(EventBus eventBus,
-                             TransactionStore.Repository transactionRepository,
-                             UserConfig userConfig,
-                             BalanceStore.Repository balanceRepository,
-                             Context context) {
+    LeftMenuPresenter(User user, EventBus eventBus,
+                      TransactionStore.Repository transactionRepository,
+                      UserConfig userConfig,
+                      BalanceStore.Repository balanceRepository,
+                      Context context) {
         this.mEventBus = eventBus;
         this.mTransactionRepository = transactionRepository;
-        this.nEserConfig = userConfig;
+        this.mUserConfig = userConfig;
         this.mBalanceRepository = balanceRepository;
         this.context = context;
+        this.user = user;
     }
 
     @Override
@@ -76,6 +83,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initialize() {
+        getListAppInfo();
         menuView.setUserInfo(user);
         this.getTransaction();
     }
@@ -141,13 +149,13 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
             this.getBalance();
             this.getTransaction();
         }
-        if (TextUtils.isEmpty(nEserConfig.getCurrentUser().displayName) ||
-                TextUtils.isEmpty(nEserConfig.getCurrentUser().avatar)) {
+        if (TextUtils.isEmpty(mUserConfig.getCurrentUser().displayName) ||
+                TextUtils.isEmpty(mUserConfig.getCurrentUser().avatar)) {
             ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
                 @Override
                 public void onResult(JSONObject profile) {
                     try {
-                        nEserConfig.saveZaloUserInfo(profile);
+                        mUserConfig.saveZaloUserInfo(profile);
                     } catch (Exception ex) {
                         Timber.w(ex, " Exception :");
                     }
@@ -163,4 +171,25 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
+    private void getListAppInfo() {
+        List<MenuItem> listItem = MenuItemUtil.getMenuItems();
+        try {
+            boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();
+            if (!isEnableDeposit) {
+                listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
+            }
+        } catch (Exception e) {
+            //empty
+        }
+
+        if (menuView != null) {
+            menuView.setMenuItem(listItem);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent event) {
+        Timber.d("onRefreshPlatformInfoEvent");
+        getListAppInfo();
+    }
 }

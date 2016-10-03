@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -97,20 +98,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        boolean isEnableDeposit = false;
-        List<MenuItem> listItem = MenuItemUtil.getMenuItems();
-        try {
-            isEnableDeposit = CShareData.getInstance().isEnableDeposite();
-        } catch (Exception e) {
-            Timber.d(e, "Get info deposit exception");
-        }
-
-        if (!isEnableDeposit) {
-            listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
-        }
-
-        mAdapter = new MenuItemAdapter(getContext(), listItem);
+        mAdapter = new MenuItemAdapter(getContext(), new ArrayList<MenuItem>());
     }
 
     @Override
@@ -139,7 +127,6 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         listView.setAdapter(mAdapter);
         presenter.setView(this);
     }
-
 
     private void addHeader(ListView listView) {
         View header = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
@@ -193,10 +180,9 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     }
 
-
+    @Override
     public void setUserInfo(User user) {
         if (user == null) return;
-
         setAvatar(user.avatar);
         setDisplayName(user.displayName);
         setZaloPayName(user.zalopayname);
@@ -220,4 +206,15 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
             mZaloPayNameView.setText(zaloPayName);
         }
     }
+
+    @Override
+    public void setMenuItem(List<MenuItem> var) {
+        if (mAdapter != null) {
+            mAdapter.setNotifyOnChange(false);
+            mAdapter.clear();
+            mAdapter.setNotifyOnChange(true);
+            mAdapter.addAll(var);
+        }
+    }
+
 }

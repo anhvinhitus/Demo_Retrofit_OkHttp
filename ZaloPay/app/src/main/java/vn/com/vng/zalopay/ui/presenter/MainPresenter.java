@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.event.DonateMoneyEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
+import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -149,9 +150,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     private void refreshBannersAndInsideApp() {
         isLoadedGateWayInfo = true;
-        if (homeView != null) {
-            homeView.refreshBannersAndInsideApp();
-        }
+        mEventBus.post(new RefreshPlatformInfoEvent());
     }
 
     private void loadGatewayInfoPaymentSDK() {
@@ -329,9 +328,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     if (homeView == null) {
                         return;
                     }
-                    if (homeView.getContext() != null) {
-                        homeView.showError(homeView.getContext().getString(R.string.exception_generic));
-                    }
+                    homeView.showError(mApplicationContext.getString(R.string.exception_generic));
                     hideLoadingView();
                 }
 

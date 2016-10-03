@@ -10,12 +10,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 
 /**
  * Created by longlv on 04/05/2016.
+ * *
  */
 public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
@@ -39,16 +42,23 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int viewType = getItemViewType(position);
+
         if (viewType == MenuItemType.HEADER.getValue()) {
-            ViewHolder viewHolder;
+            ViewHeaderHolder viewHolder;
             if (convertView == null || convertView.getTag() instanceof ItemViewHolder) {
                 convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer_header, parent, false);
-                viewHolder = new ViewHolder(convertView);
+                viewHolder = new ViewHeaderHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+                viewHolder = (ViewHeaderHolder) convertView.getTag();
             }
-            bindHeaderView(viewHolder, getItem(position));
+
+            MenuItem item = getItem(position);
+
+            if (item != null) {
+                viewHolder.bindView(item);
+            }
+
         } else if (viewType == MenuItemType.ITEM.getValue()) {
             ItemViewHolder viewHolder;
             if (convertView == null || !(convertView.getTag() instanceof ItemViewHolder)) {
@@ -58,63 +68,61 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
             } else {
                 viewHolder = (ItemViewHolder) convertView.getTag();
             }
-            bindMenuItemView(viewHolder, getItem(position));
+
+            MenuItem item = getItem(position);
+
+            if (item != null) {
+                viewHolder.bindView(item);
+            }
         }
 
         return convertView;
     }
 
-    private void bindMenuItemView(ViewHolder holder, final MenuItem menuItem) {
-        ItemViewHolder viewHolder = (ItemViewHolder) holder;
-        viewHolder.mTvTitle.setText(menuItem.getTitle());
-        viewHolder.mImageView.setImageResource(menuItem.getIconResource());
-        if (menuItem.isShowDivider()) {
-            viewHolder.viewSeparate.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.viewSeparate.setVisibility(View.INVISIBLE);
+    static class ViewHeaderHolder {
+        @BindView(R.id.tvTitle)
+        TextView mTvTitle;
+
+        ViewHeaderHolder(View view) {
+            ButterKnife.bind(this, view);
         }
-        if (menuItem.getSubIconResource() != null) {
-            viewHolder.mImageSubIcon.setImageResource(menuItem.getSubIconResource());
-            viewHolder.mImageSubIcon.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.mImageSubIcon.setVisibility(View.GONE);
+
+        void bindView(MenuItem menuItem) {
+            mTvTitle.setText(menuItem.getTitle());
         }
     }
 
-    private void bindHeaderView(ViewHolder holder, final MenuItem menuItem) {
-        holder.mTvTitle.setText(menuItem.getTitle());
-    }
+    static class ItemViewHolder {
+        @BindView(R.id.imgIcon)
+        ImageView mImageView;
+        @BindView(R.id.imgArrowRight)
+        ImageView mImageSubIcon;
 
-    public class ViewHolder {
-        public final View mView;
-        public final TextView mTvTitle;
+        @BindView(R.id.viewSeparate)
+        View viewSeparate;
 
-        public ViewHolder(View view) {
-            mView = view;
-            mTvTitle = (TextView) view.findViewById(R.id.tvTitle);
+        @BindView(R.id.tvTitle)
+        TextView mTvTitle;
+
+
+        ItemViewHolder(View view) {
+            ButterKnife.bind(this, view);
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mTvTitle.getText() + "'";
-        }
-    }
-
-    public class ItemViewHolder extends ViewHolder {
-        public final ImageView mImageView;
-        public final ImageView mImageSubIcon;
-        public final View viewSeparate;
-
-        public ItemViewHolder(View view) {
-            super(view);
-            mImageView = (ImageView) view.findViewById(R.id.imgIcon);
-            mImageSubIcon = (ImageView) view.findViewById(R.id.imgArrowRight);
-            viewSeparate = view.findViewById(R.id.viewSeparate);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mTvTitle.getText() + "'";
+        void bindView(MenuItem menuItem) {
+            mTvTitle.setText(menuItem.getTitle());
+            mImageView.setImageResource(menuItem.getIconResource());
+            if (menuItem.isShowDivider()) {
+                viewSeparate.setVisibility(View.VISIBLE);
+            } else {
+                viewSeparate.setVisibility(View.INVISIBLE);
+            }
+            if (menuItem.getSubIconResource() != null) {
+                mImageSubIcon.setImageResource(menuItem.getSubIconResource());
+                mImageSubIcon.setVisibility(View.VISIBLE);
+            } else {
+                mImageSubIcon.setVisibility(View.GONE);
+            }
         }
     }
 }
