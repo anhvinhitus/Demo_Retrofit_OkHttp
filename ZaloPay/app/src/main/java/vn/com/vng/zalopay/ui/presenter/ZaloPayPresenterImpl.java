@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -42,7 +41,6 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
