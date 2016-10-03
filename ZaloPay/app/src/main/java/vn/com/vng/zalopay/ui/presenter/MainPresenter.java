@@ -94,14 +94,17 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
+        timerRefreshPlatform(5); // Thay bằng expiredTime cua payment sdk
     }
 
-    private void timerRefreshApp() {
-        Subscription subscription = Observable.interval(5, TimeUnit.MINUTES)
+    private void timerRefreshPlatform(int interval) {
+        int intervalTime = Math.max(interval, 5);
+        Subscription subscription = Observable.interval(intervalTime, TimeUnit.MINUTES)
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-
+                        Timber.d("call refresh platform info");
+                        mEventBus.post(new RefreshPlatformInfoEvent());
                     }
                 });
         compositeSubscription.add(subscription);
