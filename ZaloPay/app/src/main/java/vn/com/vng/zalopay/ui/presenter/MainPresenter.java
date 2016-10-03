@@ -12,7 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -92,6 +94,17 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
+    }
+
+    private void timerRefreshApp() {
+        Subscription subscription = Observable.interval(5, TimeUnit.MINUTES)
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     private void getZaloFriend() {
