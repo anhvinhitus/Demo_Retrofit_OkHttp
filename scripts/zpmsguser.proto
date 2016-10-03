@@ -18,6 +18,8 @@ enum MessageType {
 	AUTHEN_LOGIN = 1;
 	FEEDBACK = 2;
 	PING_SERVER = 3;
+	MSG_TO_USER_REQUEST = 4;
+	RECOVERY_REQUEST = 5;
 }
 
 enum ServerMessageType {
@@ -25,6 +27,13 @@ enum ServerMessageType {
 	PONG_CLIENT = 2;
 	KICK_OUT_USER = 51;
 	PUSH_NOTIFICATION = 101;
+	MSG_TO_USER_RESPONSE = 4;
+	RECOVERY_RESPONSE = 5;
+}
+
+enum RecoveryOrder {
+	ORDER_DESCEND = 0;
+	ORDER_ASCEND = 1;
 }
 
 message MessageSendUser{
@@ -35,6 +44,15 @@ message MessageSendUser{
 	optional string pushtitle = 5;
 	optional string pushembeddata = 6;
 	optional uint32 sourceid = 7;
+}
+
+message RecoveryMessage{
+	required bytes data = 1;
+	optional int32 status = 2;
+}
+
+message DataRecoveryResponse{
+	repeated RecoveryMessage messages = 1;
 }
 
 message MessageLogin{
@@ -48,6 +66,7 @@ message ResultAuth{
 	required uint64 usrid = 1;
 	required int32	result = 2;
 	optional int32	code = 3;
+	optional string	msg = 4;
 }
 
 message DataResponseUser{
@@ -82,4 +101,15 @@ message StatusMessageClient{
 message MessageConnectionInfo{
 	required uint64 userid = 1;
 	optional uint64 embeddata = 2;
+}
+
+message MessageUserToUser{
+	required uint64 receiverid = 1;
+	optional bytes data = 2;
+}
+
+message MessageRecoveryRequest {
+	required uint64 starttime = 1;
+	required uint32 count = 2;
+	optional int32 order = 3;
 }

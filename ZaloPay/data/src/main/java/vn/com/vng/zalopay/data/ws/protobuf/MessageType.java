@@ -11,7 +11,11 @@ public enum MessageType implements WireEnum {
 
   FEEDBACK(2),
 
-  PING_SERVER(3);
+  PING_SERVER(3),
+
+  MSG_TO_USER_REQUEST(4),
+
+  RECOVERY_REQUEST(5);
 
   public static final ProtoAdapter<MessageType> ADAPTER = ProtoAdapter.newEnumAdapter(MessageType.class);
 
@@ -29,6 +33,8 @@ public enum MessageType implements WireEnum {
       case 1: return AUTHEN_LOGIN;
       case 2: return FEEDBACK;
       case 3: return PING_SERVER;
+      case 4: return MSG_TO_USER_REQUEST;
+      case 5: return RECOVERY_REQUEST;
       default: return null;
     }
   }
