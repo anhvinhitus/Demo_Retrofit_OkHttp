@@ -73,6 +73,11 @@ public interface RedPacketStore {
         ReceivePackage getReceivedPacket(long packetId);
     }
 
+    interface RequestTPEService {
+        @GET("tpe/gettransstatus")
+        Observable<PackageStatusResponse> getPackageStatus(@Query("appid") int appId, @Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
+    }
+
     interface RequestService {
         @FormUrlEncoded
         @POST("redpackage/createbundleorder")
@@ -85,9 +90,6 @@ public interface RedPacketStore {
         @FormUrlEncoded
         @POST("redpackage/submitopenpackage")
         Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageid") long packageID, @Field("bundleid") long bundleID, @Field("revzalopayid") String revZaloPayID, @Field("accesstoken") String accessToken);
-
-        @GET("redpackage/getpackagestatus")
-        Observable<PackageStatusResponse> getPackageStatus(@Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
 
         @GET("redpackage/getsentbundlelist")
         Observable<SentBundleListResponse> getSentBundleList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);

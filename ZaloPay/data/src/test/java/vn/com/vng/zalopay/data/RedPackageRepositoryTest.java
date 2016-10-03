@@ -53,6 +53,7 @@ public class RedPackageRepositoryTest {
     RedPacketStore.LocalStorage mLocalStorage;
     RedPacketStore.Repository mRepository;
     RedPacketStore.RequestService mRequestService;
+    RedPacketStore.RequestTPEService mRequestTPEService;
 
     //declare Variable
     BundleOrderResponse bundleOrderResponse;
@@ -87,6 +88,7 @@ public class RedPackageRepositoryTest {
         setupRequestServiceVariable();
 
         mRequestService = new RequestServiceImpl();
+        mRequestTPEService = new RequestTPEServiceImpl();
 
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
         SQLiteDatabase db = openHelper.getWritableDatabase();
@@ -94,7 +96,15 @@ public class RedPackageRepositoryTest {
         RedPacketDataMapper dataMapper = new RedPacketDataMapper();
         mLocalStorage = new RedPacketLocalStorage(daoSession, dataMapper);
 
-        mRepository = new RedPacketRepository(mRequestService, mLocalStorage, dataMapper, new User("1"));
+        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1);
+    }
+
+    public class RequestTPEServiceImpl implements RedPacketStore.RequestTPEService {
+
+        @Override
+        public Observable<PackageStatusResponse> getPackageStatus(@Query("appid") int appId, @Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid) {
+            return null;
+        }
     }
 
     public class RequestServiceImpl implements RedPacketStore.RequestService {
@@ -112,11 +122,6 @@ public class RedPackageRepositoryTest {
         @Override
         public Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageID") long packageID, @Field("bundleID") long bundleID, @Field("revZaloPayID") String revZaloPayID, @Field("accessToken") String accessToken) {
             return Observable.just(submitOpenPackageResponse);
-        }
-
-        @Override
-        public Observable<PackageStatusResponse> getPackageStatus(@Field("packageid") long packageID, @Field("zptransid") long zpTransID, @Field("userid") String userid, @Field("accesstoken") String accessToken, @Field("deviceid") String deviceid) {
-            return null;
         }
 
         @Override

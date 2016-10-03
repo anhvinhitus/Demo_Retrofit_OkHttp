@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.service.SweetAlertDialogImpl;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -38,13 +39,20 @@ public class UserRedPacketModule {
         return retrofit.create(RedPacketStore.RequestService.class);
     }
 
+    @Provides
+    @UserScope
+    RedPacketStore.RequestTPEService providesRedPacketTPEService(@Named("retrofitApi") Retrofit retrofit) {
+        return retrofit.create(RedPacketStore.RequestTPEService.class);
+    }
+
     @UserScope
     @Provides
     RedPacketStore.Repository provideRedPacketRepository(RedPacketStore.RequestService requestService,
+                                                         RedPacketStore.RequestTPEService requestTPEService,
                                                          RedPacketStore.LocalStorage localStorage,
                                                          RedPacketDataMapper dataMapper,
                                                          User user) {
-        return new RedPacketRepository(requestService, localStorage, dataMapper, user);
+        return new RedPacketRepository(requestService, requestTPEService, localStorage, dataMapper, user, BuildConfig.PAYAPPID);
     }
 
     @UserScope
