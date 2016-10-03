@@ -265,7 +265,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Integer> getPacketStatus(String packetIdStr) {
+    public Observable<ReceivePackageGD> getPacketStatus(String packetIdStr) {
         return ObservableHelper.makeObservable(() -> {
             long packetId = Long.parseLong(packetIdStr);
             return mLocalStorage.getPacketStatus(packetId);
@@ -273,8 +273,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Void> setPacketStatus(long packageId, long amount, int status) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketStatus(packageId, amount, status));
+    public Observable<Void> setPacketStatus(long packageId, long amount, int status, String messageStatus) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketStatus(packageId, amount, status, messageStatus));
     }
 
     @Override

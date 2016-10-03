@@ -35,7 +35,7 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
         public final static Property Mtaid = new Property(9, Long.class, "mtaid", false, "MTAID");
         public final static Property Mtuid = new Property(10, Long.class, "mtuid", false, "MTUID");
         public final static Property Embeddata = new Property(11, String.class, "embeddata", false, "EMBEDDATA");
-    }
+    };
 
 
     public NotificationGDDao(DaoConfig config) {

@@ -246,20 +246,20 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     @Override
-    public Integer getPacketStatus(long packetId) {
+    public ReceivePackageGD getPacketStatus(long packetId) {
         Timber.d("query status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
             Timber.d("Packet not found");
-            return RedPacketStatus.Unknown.getValue();
+            return null;
         }
 
         Timber.d("query status for packet: %s, status: %s", packetId, packageGD.getStatus());
-        return packageGD.getStatus();
+        return packageGD;
     }
 
     @Override
-    public Void setPacketStatus(long packetId, long amount, int status) {
+    public Void setPacketStatus(long packetId, long amount, int status, String messageStatus) {
         Timber.d("set open status for packet: %s", packetId);
         ReceivePackageGD packageGD = getReceivePackageGD(packetId);
         if (packageGD == null) {
@@ -268,6 +268,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         }
 
         packageGD.setStatus(status);
+        packageGD.setMessageStatus(messageStatus);
         packageGD.setAmount(amount);
         packageGD.setOpenedTime(System.currentTimeMillis());
         getDaoSession().getReceivePackageGDDao().insertOrReplace(packageGD);

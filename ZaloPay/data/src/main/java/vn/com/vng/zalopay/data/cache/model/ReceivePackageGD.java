@@ -19,6 +19,7 @@ public class ReceivePackageGD {
     private Long amount;
     private Long openedTime;
     private Integer status;
+    private String messageStatus;
     private String message;
     private Integer isLuckiest;
     private Long createTime;
@@ -38,7 +39,7 @@ public class ReceivePackageGD {
         this.id = id;
     }
 
-    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Integer status, String message, Integer isLuckiest, Long createTime) {
+    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Integer status, String messageStatus, String message, Integer isLuckiest, Long createTime) {
         this.id = id;
         this.bundleID = bundleID;
         this.receiverZaloPayID = receiverZaloPayID;
@@ -48,6 +49,7 @@ public class ReceivePackageGD {
         this.amount = amount;
         this.openedTime = openedTime;
         this.status = status;
+        this.messageStatus = messageStatus;
         this.message = message;
         this.isLuckiest = isLuckiest;
         this.createTime = createTime;
@@ -129,6 +131,14 @@ public class ReceivePackageGD {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getMessageStatus() {
+        return messageStatus;
+    }
+
+    public void setMessageStatus(String messageStatus) {
+        this.messageStatus = messageStatus;
     }
 
     public String getMessage() {

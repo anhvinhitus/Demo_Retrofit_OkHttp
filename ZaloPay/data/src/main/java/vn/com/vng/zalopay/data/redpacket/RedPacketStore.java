@@ -65,8 +65,8 @@ public interface RedPacketStore {
         void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo);
         RedPacketAppInfo getRedPacketAppInfo();
 
-        Integer getPacketStatus(long packetId);
-        Void setPacketStatus(long packetId, long amount, int status);
+        ReceivePackageGD getPacketStatus(long packetId);
+        Void setPacketStatus(long packetId, long amount, int status, String messageStatus);
 
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
@@ -130,9 +130,9 @@ public interface RedPacketStore {
 
         Observable<List<PackageInBundle>> getPacketsInBundle(long bundleId);
 
-        Observable<Integer> getPacketStatus(String packetId);
+        Observable<ReceivePackageGD> getPacketStatus(String packetId);
 
-        Observable<Void> setPacketStatus(long packageId, long amount, int status);
+        Observable<Void> setPacketStatus(long packageId, long amount, int status, String messageStatus);
 
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
