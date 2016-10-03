@@ -138,7 +138,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<AppResource>>() {
             @Override
             public List<AppResource> call() throws Exception {
-                AndroidUtils.validateMainThread();
                 return mAppResourceRepository.listAppResourceFromDB();
             }
         }).subscribe(new AppResourceSubscriber());

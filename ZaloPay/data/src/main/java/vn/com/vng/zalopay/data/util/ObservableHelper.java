@@ -22,6 +22,7 @@ public class ObservableHelper {
                             try {
                                 subscriber.onError(ex);
                             } catch (Exception ex2) {
+                                //empty
                             }
                         }
                     }
