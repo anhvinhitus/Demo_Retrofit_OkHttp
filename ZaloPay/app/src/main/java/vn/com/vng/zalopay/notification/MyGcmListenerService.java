@@ -43,22 +43,15 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
 
+        if (data == null) {
+            return;
+        }
+
         String message = data.getString("msg");
         String badgeNumber = data.getString("badgenumber");
         String embeddata = data.getString("embeddata");
 
         Timber.d("onMessageReceived: from %s message %s embeddata %s badgeNumber %s ", from, message, embeddata, badgeNumber);
-
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
-
-       /* NotificationData event = parseMessage(message);
-        if (event != null) {
-            sendNotification(event);
-        }*/
 
         createUserComponent();
 
