@@ -34,11 +34,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
-
-    private Gson mGson = new Gson();
-
-    private UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
-    private Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+    
 
     @Override
     public void onMessageReceived(String from, Bundle data) {

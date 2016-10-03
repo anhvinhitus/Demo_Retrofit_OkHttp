@@ -7,21 +7,23 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.facebook.drawee.view.SimpleDraweeView;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.internal.DebouncingOnClickListener;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
-import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
@@ -91,20 +93,7 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        boolean isEnableDeposit = false;
-        List<MenuItem> listItem = MenuItemUtil.getMenuItems();
-        try {
-            isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
-        } catch (Exception e) {
-            Timber.d(e, "Get info deposit exception");
-        }
-
-        if (!isEnableDeposit) {
-            listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
-        }
-
-        mAdapter = new MenuItemAdapter(getContext(), listItem);
+        mAdapter = new MenuItemAdapter(getContext(), new ArrayList<MenuItem>());
     }
 
     @Override
@@ -143,7 +132,6 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
         listView.setOnItemClickListener(this);
         presenter.setView(this);
     }
-
 
     private void addHeader(ListView listView) {
         View header = LayoutInflater.from(getContext()).inflate(R.layout.nav_header_main, listView, false);
@@ -194,10 +182,9 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
 
     }
 
-
+    @Override
     public void setUserInfo(User user) {
         if (user == null) return;
-
         setAvatar(user.avatar);
         setDisplayName(user.displayName);
         setZaloPayName(user.zalopayname);
@@ -221,4 +208,15 @@ public class LeftMenuFragment extends BaseFragment implements AdapterView.OnItem
             mZaloPayNameView.setText(zaloPayName);
         }
     }
+
+    @Override
+    public void setMenuItem(List<MenuItem> var) {
+        if (mAdapter != null) {
+            mAdapter.setNotifyOnChange(false);
+            mAdapter.clear();
+            mAdapter.setNotifyOnChange(true);
+            mAdapter.addAll(var);
+        }
+    }
+
 }

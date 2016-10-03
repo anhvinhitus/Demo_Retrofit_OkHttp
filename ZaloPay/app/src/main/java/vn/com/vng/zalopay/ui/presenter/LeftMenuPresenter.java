@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -10,6 +11,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,65 +27,71 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.menu.model.MenuItem;
+import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
- *
  */
 public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<ILeftMenuView> {
     private ILeftMenuView menuView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    @Inject
-    User user;
-    private EventBus eventBus;
-    private TransactionStore.Repository transactionRepository;
-    private UserConfig userConfig;
+
+    private User user;
+
+    private EventBus mEventBus;
+    private TransactionStore.Repository mTransactionRepository;
+    private UserConfig mUserConfig;
     private BalanceStore.Repository balanceRepository;
     private Context context;
 
     private boolean isInitiated;
 
     @Inject
-    public LeftMenuPresenter(EventBus eventBus,
-                             TransactionStore.Repository transactionRepository,
-                             UserConfig userConfig,
-                             BalanceStore.Repository balanceRepository,
-                             Context context) {
-        this.eventBus = eventBus;
-        this.transactionRepository = transactionRepository;
-        this.userConfig = userConfig;
+    LeftMenuPresenter(User user, EventBus mEventBus,
+                      TransactionStore.Repository mTransactionRepository,
+                      UserConfig userConfig,
+                      BalanceStore.Repository balanceRepository,
+                      Context context) {
+        this.mEventBus = mEventBus;
+        this.mTransactionRepository = mTransactionRepository;
+        this.mUserConfig = userConfig;
         this.balanceRepository = balanceRepository;
         this.context = context;
+        this.user = user;
     }
 
     @Override
     public void setView(ILeftMenuView iLeftMenuView) {
         menuView = iLeftMenuView;
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
     @Override
     public void destroyView() {
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
         unsubscribeIfNotNull(compositeSubscription);
         menuView = null;
     }
 
     public void initialize() {
+        getListAppInfo();
         menuView.setUserInfo(user);
         this.initializeZaloPay();
     }
 
     private void initializeZaloPay() {
-        Timber.d("initializeZaloPay transactionRepository [%s]", transactionRepository);
-        Subscription subscription = transactionRepository.initialize()
+        Timber.d("initializeZaloPay mTransactionRepository [%s]", mTransactionRepository);
+        Subscription subscription = mTransactionRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
@@ -125,7 +134,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
             menuView.setDisplayName(event.displayName);
         }
 
-        eventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
+        mEventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -137,13 +146,15 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
             this.getBalance();
             this.initializeZaloPay();
         }
-        if (TextUtils.isEmpty(userConfig.getCurrentUser().displayName) ||
-                TextUtils.isEmpty(userConfig.getCurrentUser().avatar)) {
+
+        if (TextUtils.isEmpty(mUserConfig.getCurrentUser().displayName) ||
+                TextUtils.isEmpty(mUserConfig.getCurrentUser().avatar)) {
+
             ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
                 @Override
                 public void onResult(JSONObject profile) {
                     try {
-                        userConfig.saveZaloUserInfo(profile);
+                        mUserConfig.saveZaloUserInfo(profile);
                     } catch (Exception ex) {
                         Timber.w(ex, " Exception :");
                     }
@@ -159,4 +170,29 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
+    private void getListAppInfo() {
+        if (menuView == null) {
+            return;
+        }
+
+        List<MenuItem> listItem = MenuItemUtil.getMenuItems();
+        try {
+            boolean isEnableDeposit = CShareData.getInstance((Activity) menuView.getContext()).isEnableDeposite();
+            if (!isEnableDeposit) {
+                listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
+            }
+        } catch (Exception e) {
+            //empty
+        }
+
+        if (menuView != null) {
+            menuView.setMenuItem(listItem);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent event) {
+        Timber.d("onRefreshPlatformInfoEvent");
+        getListAppInfo();
+    }
 }
