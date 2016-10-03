@@ -39,4 +39,6 @@ public interface ITransferView extends ILoadDataView {
     void setInitialValue(long currentAmount, String currentMessage);
 
     void showDialogThenClose(String content, String title, int dialogType);
+
+    void confirmTransferUnRegistryZaloPay();
 }

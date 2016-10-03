@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -308,6 +309,26 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     public void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void confirmTransferUnRegistryZaloPay() {
+        showConfirmDialog("Người nhận chưa đăng ký sử dụng Zalo Pay. Bạn có muốn tiếp tục chuyển tiền không?",
+                getString(R.string.btn_confirm), getString(R.string.btn_cancel), new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        if (mPresenter == null) {
+                            return;
+                        }
+                        mPresenter.transferMoney();
+                        setEnableBtnContinue(false);
+                    }
+                });
     }
 
     @Override

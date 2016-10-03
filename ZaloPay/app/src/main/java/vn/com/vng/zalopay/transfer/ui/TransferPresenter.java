@@ -67,6 +67,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     private String mValidMaxAmount;
     private RecentTransaction mTransaction;
     private int mMoneyTransferMode;
+    private boolean mIsUserZaloPay = true;
 
     private User user;
     private NotificationStore.Repository mNotificationRepository;
@@ -248,7 +249,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         compositeSubscription.add(subscription);
     }
 
-    private void transferMoney() {
+    public void transferMoney() {
         if (user.profilelevel < 2) {
             mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
         } else {
@@ -407,10 +408,15 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             return;
         }
 
-
-        transferMoney();
-        if (mView != null) {
-            mView.setEnableBtnContinue(false);
+        if (mIsUserZaloPay) {
+            transferMoney();
+            if (mView != null) {
+                mView.setEnableBtnContinue(false);
+            }
+        } else {
+            if (mView != null) {
+                mView.confirmTransferUnRegistryZaloPay();
+            }
         }
     }
 
@@ -538,6 +544,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             mTransaction.avatar = zaloFriend.getAvatar();
             mTransaction.zaloId = zaloFriend.getUserId();
             mTransaction.displayName = zaloFriend.getDisplayName();
+            mIsUserZaloPay = zaloFriend.isUsingApp();
         }
     }
 
