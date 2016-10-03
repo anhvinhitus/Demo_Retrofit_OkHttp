@@ -442,7 +442,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                         WritableMap writableMap = Arguments.createMap();
                         if (receivePackageGD != null) {
                             writableMap.putInt("code", receivePackageGD.getStatus());
-                            writableMap.putString("errormessage", receivePackageGD.getMessageStatus());
+                            writableMap.putString("message", receivePackageGD.getMessageStatus());
                             Timber.d("open status [%s][%s] for packet: %s", receivePackageGD.getStatus(),
                                     receivePackageGD.getMessageStatus(), packetId);
                         }
