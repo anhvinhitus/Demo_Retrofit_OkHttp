@@ -14,8 +14,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView> {
     void initialize();
 
-    void listAppResource();
-
     void getBalance();
 
     void getBanners();

@@ -12,6 +12,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -70,22 +71,22 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<List<AppResource>> listAppResource(List<Integer> appidlist) {
+    public Observable<List<AppResource>> listAppResource() {
         return Observable.concat(
                 ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource),
-                fetchAppResource(appidlist).flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource)))
+                fetchAppResource().flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource)))
                 //.delaySubscription(200, TimeUnit.MILLISECONDS)
                 .map(o -> mAppConfigEntityDataMapper.transformAppResourceEntity(o));
     }
 
-    private Observable<AppResourceResponse> fetchAppResource(List<Integer> appidlist) {
-
+    private Observable<AppResourceResponse> fetchAppResource() {
+        List<AppResource> appResources = listAppResourceFromDB();
         List<String> checksumlist = new ArrayList<>();
-        if (!Lists.isEmptyOrNull(appidlist)) {
-            listAppIdAndChecksum(appidlist, checksumlist);
+        if (!Lists.isEmptyOrNull(appResources)) {
+            listAppIdAndChecksum(appResources, checksumlist);
         }
 
-        String appIds = appidlist.toString().replaceAll("\\s", "");
+        String appIds = ListStringUtil.toStringListAppId(appResources);
         String checkSum = checksumlist.toString();
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
@@ -122,13 +123,16 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         return false;
     }
 
-    private void listAppIdAndChecksum(List<Integer> appidlist, List<String> checksumlist) {
-        if (Lists.isEmptyOrNull(appidlist)) {
+    private void listAppIdAndChecksum(List<AppResource> appResources, List<String> checksumlist) {
+        if (Lists.isEmptyOrNull(appResources)) {
             return;
         }
 
-        for (Integer appid : appidlist) {
-            AppResourceEntity appResourceEntity = mLocalStorage.get(appid);
+        for (AppResource appResource: appResources) {
+            if (appResource == null) {
+                continue;
+            }
+            AppResourceEntity appResourceEntity = mLocalStorage.get(appResource.appid);
             if (appResourceEntity == null) {
                 checksumlist.add("");
             } else {

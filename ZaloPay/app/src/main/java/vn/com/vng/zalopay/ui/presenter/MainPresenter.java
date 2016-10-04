@@ -164,7 +164,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         compositeSubscription.add(subscription);
     }
 
-    private void refreshBannersAndInsideApp() {
+    private void refreshBanners() {
         isLoadedGateWayInfo = true;
         mEventBus.post(new RefreshPlatformInfoEvent());
     }
@@ -181,13 +181,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
-                refreshBannersAndInsideApp();
+                refreshBanners();
             }
 
             @Override
             public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
                 Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
-                refreshBannersAndInsideApp();
+                refreshBanners();
                 AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
                 AppVersionUtils.showDialogUpgradeAppIfNeed(homeView.getActivity());
             }

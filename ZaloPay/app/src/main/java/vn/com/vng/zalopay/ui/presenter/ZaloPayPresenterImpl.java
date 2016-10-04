@@ -19,10 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -133,6 +133,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         this.getTotalNotification(2000);
         this.getBanners();
         this.getBalance();
+        this.getListAppResource();
     }
 
     private void showListAppInDB() {
@@ -155,26 +156,17 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
-    @Override
-    public void listAppResource() {
-        List<Integer> insideApps = null;
-        try {
-            insideApps = CShareData.getInstance().getApproveInsideApps();
-        } catch (Exception e) {
-            Timber.w(e, "Get inside apps from PaymetSDK exception [%s]", e.getMessage());
-        }
-
-        if (insideApps == null) {
-            insideApps = new ArrayList<>();
-        }
-
-        Subscription subscription = mAppResourceRepository.listAppResource(insideApps)
+    private void getListAppResource() {
+        Subscription subscription = mAppResourceRepository.listAppResource()
+                .doOnNext(new Action1<List<AppResource>>() {
+                    @Override
+                    public void call(List<AppResource> appResources) {
+                        getListMerchantUser(appResources);
+                    }
+                })
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
         compositeSubscription.add(subscription);
-
-
-        this.getListMerchantUser(insideApps);
     }
 
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
@@ -188,15 +180,17 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
 
-    private void getListMerchantUser(List<Integer> listId) {
+    private void getListMerchantUser(List<AppResource> listAppResource) {
+        if (listAppResource == null) {
+            return;
+        }
+        String strAppIds = ListStringUtil.toStringListAppId(listAppResource);
 
-        String appId = ListStringUtil.toStringListInt(listId);
-
-        if (TextUtils.isEmpty(appId)) {
+        if (TextUtils.isEmpty(strAppIds)) {
             return;
         }
 
-        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(appId)
+        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(strAppIds)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);
@@ -381,7 +375,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
-        this.listAppResource();
+        this.getListAppResource();
         this.getBanners();
     }
 }

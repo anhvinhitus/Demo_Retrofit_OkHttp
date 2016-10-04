@@ -53,7 +53,7 @@ public interface AppResourceStore {
 
         List<AppResource> listAppResourceFromDB();
 
-        Observable<List<AppResource>> listAppResource(List<Integer> appidlist);
+        Observable<List<AppResource>> listAppResource();
     }
 
 }
