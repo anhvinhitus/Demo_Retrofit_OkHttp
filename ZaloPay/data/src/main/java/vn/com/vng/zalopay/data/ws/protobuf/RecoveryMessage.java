@@ -11,6 +11,7 @@ import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -26,6 +27,10 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
 
   public static final Integer DEFAULT_STATUS = 0;
 
+  public static final Long DEFAULT_MTAID = 0L;
+
+  public static final Long DEFAULT_MTUID = 0L;
+
   @WireField(
       tag = 1,
       adapter = "com.squareup.wire.ProtoAdapter#BYTES",
@@ -39,14 +44,28 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
   )
   public final Integer status;
 
-  public RecoveryMessage(ByteString data, Integer status) {
-    this(data, status, ByteString.EMPTY);
+  @WireField(
+      tag = 3,
+      adapter = "com.squareup.wire.ProtoAdapter#UINT64"
+  )
+  public final Long mtaid;
+
+  @WireField(
+      tag = 4,
+      adapter = "com.squareup.wire.ProtoAdapter#UINT64"
+  )
+  public final Long mtuid;
+
+  public RecoveryMessage(ByteString data, Integer status, Long mtaid, Long mtuid) {
+    this(data, status, mtaid, mtuid, ByteString.EMPTY);
   }
 
-  public RecoveryMessage(ByteString data, Integer status, ByteString unknownFields) {
+  public RecoveryMessage(ByteString data, Integer status, Long mtaid, Long mtuid, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.data = data;
     this.status = status;
+    this.mtaid = mtaid;
+    this.mtuid = mtuid;
   }
 
   @Override
@@ -54,6 +73,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     Builder builder = new Builder();
     builder.data = data;
     builder.status = status;
+    builder.mtaid = mtaid;
+    builder.mtuid = mtuid;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -65,7 +86,9 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     RecoveryMessage o = (RecoveryMessage) other;
     return unknownFields().equals(o.unknownFields())
         && data.equals(o.data)
-        && Internal.equals(status, o.status);
+        && Internal.equals(status, o.status)
+        && Internal.equals(mtaid, o.mtaid)
+        && Internal.equals(mtuid, o.mtuid);
   }
 
   @Override
@@ -75,6 +98,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
       result = unknownFields().hashCode();
       result = result * 37 + data.hashCode();
       result = result * 37 + (status != null ? status.hashCode() : 0);
+      result = result * 37 + (mtaid != null ? mtaid.hashCode() : 0);
+      result = result * 37 + (mtuid != null ? mtuid.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -85,6 +110,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     StringBuilder builder = new StringBuilder();
     builder.append(", data=").append(data);
     if (status != null) builder.append(", status=").append(status);
+    if (mtaid != null) builder.append(", mtaid=").append(mtaid);
+    if (mtuid != null) builder.append(", mtuid=").append(mtuid);
     return builder.replace(0, 2, "RecoveryMessage{").append('}').toString();
   }
 
@@ -92,6 +119,10 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     public ByteString data;
 
     public Integer status;
+
+    public Long mtaid;
+
+    public Long mtuid;
 
     public Builder() {
     }
@@ -106,12 +137,22 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
       return this;
     }
 
+    public Builder mtaid(Long mtaid) {
+      this.mtaid = mtaid;
+      return this;
+    }
+
+    public Builder mtuid(Long mtuid) {
+      this.mtuid = mtuid;
+      return this;
+    }
+
     @Override
     public RecoveryMessage build() {
       if (data == null) {
         throw Internal.missingRequiredFields(data, "data");
       }
-      return new RecoveryMessage(data, status, super.buildUnknownFields());
+      return new RecoveryMessage(data, status, mtaid, mtuid, super.buildUnknownFields());
     }
   }
 
@@ -124,6 +165,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     public int encodedSize(RecoveryMessage value) {
       return ProtoAdapter.BYTES.encodedSizeWithTag(1, value.data)
           + (value.status != null ? ProtoAdapter.INT32.encodedSizeWithTag(2, value.status) : 0)
+          + (value.mtaid != null ? ProtoAdapter.UINT64.encodedSizeWithTag(3, value.mtaid) : 0)
+          + (value.mtuid != null ? ProtoAdapter.UINT64.encodedSizeWithTag(4, value.mtuid) : 0)
           + value.unknownFields().size();
     }
 
@@ -131,6 +174,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     public void encode(ProtoWriter writer, RecoveryMessage value) throws IOException {
       ProtoAdapter.BYTES.encodeWithTag(writer, 1, value.data);
       if (value.status != null) ProtoAdapter.INT32.encodeWithTag(writer, 2, value.status);
+      if (value.mtaid != null) ProtoAdapter.UINT64.encodeWithTag(writer, 3, value.mtaid);
+      if (value.mtuid != null) ProtoAdapter.UINT64.encodeWithTag(writer, 4, value.mtuid);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -142,6 +187,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
         switch (tag) {
           case 1: builder.data(ProtoAdapter.BYTES.decode(reader)); break;
           case 2: builder.status(ProtoAdapter.INT32.decode(reader)); break;
+          case 3: builder.mtaid(ProtoAdapter.UINT64.decode(reader)); break;
+          case 4: builder.mtuid(ProtoAdapter.UINT64.decode(reader)); break;
           default: {
             FieldEncoding fieldEncoding = reader.peekFieldEncoding();
             Object value = fieldEncoding.rawProtoAdapter().decode(reader);

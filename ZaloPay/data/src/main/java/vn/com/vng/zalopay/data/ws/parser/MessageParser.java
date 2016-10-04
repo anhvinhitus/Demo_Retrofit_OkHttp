@@ -11,14 +11,21 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
+import vn.com.vng.zalopay.data.ws.protobuf.DataRecoveryResponse;
 import vn.com.vng.zalopay.data.ws.protobuf.DataResponseUser;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageSendUser;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageUserToUser;
+import vn.com.vng.zalopay.data.ws.protobuf.RecoveryMessage;
 import vn.com.vng.zalopay.data.ws.protobuf.ResultAuth;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.model.User;
 
 import java.io.IOException;
+
+import static vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType.RECOVERY_RESPONSE;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -50,16 +57,6 @@ public class MessageParser implements Parser {
     private Event processMessage(byte[] msg) throws Exception {
         DataResponseUser respMsg = DataResponseUser.ADAPTER.decode(msg);
 
-//        if (!respMsg.hasMtaid() && !respMsg.hasMtuid()) {
-//            Timber.e("Notification mtaid and mtuid not have with msgType: [%s]", respMsg.getMsgtype());
-//            return null;
-//        }
-//
-//        if (respMsg.hasMtaid() && respMsg.hasMtuid()) {
-//            Timber.e("Notification mtaid and mtuid both have");
-//            return null;
-//        }
-
         Event event = null;
 
         if (respMsg.data != null) {
@@ -74,6 +71,8 @@ public class MessageParser implements Parser {
                 event = processAuthenticationLoginSuccess(data);
             } else if (messageType == ServerMessageType.PONG_CLIENT) {
                 event = parsePongMessage(data);
+            } else if (messageType == RECOVERY_RESPONSE) {
+                event = parseRecoveryResponse(data);
             }
         }
 
@@ -115,6 +114,36 @@ public class MessageParser implements Parser {
         return null;
     }
 
+    private Event parseRecoveryResponse(ByteString data) {
+        try {
+            DataRecoveryResponse recoverMessage = DataRecoveryResponse.ADAPTER.decode(data);
+            Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
+            RecoveryMessageEvent recoveryMessageEvent = new RecoveryMessageEvent();
+            for (RecoveryMessage message : recoverMessage.messages) {
+                NotificationData event = processRecoveryMessage(message);
+                if (event != null) {
+                    recoveryMessageEvent.addRecoveryMessage(event);
+                }
+            }
+
+            return recoveryMessageEvent;
+        } catch (Exception e) {
+            Timber.e(e, "error parse recovery response");
+        }
+
+        return null;
+    }
+
+    private NotificationData processRecoveryMessage(RecoveryMessage recoveryMessage) throws Exception {
+        Event event = processPushMessage(recoveryMessage.data);
+        Timber.d("event %s", event);
+        if (event instanceof NotificationData) {
+            return (NotificationData) event;
+        }
+
+        return null;
+    }
+
     private Event parsePongMessage(ByteString data) {
         if (data == null) {
             return null;
@@ -131,13 +160,13 @@ public class MessageParser implements Parser {
         }
     }
 
-    public Event processKickOutUser(ByteString data) {
+    private Event processKickOutUser(ByteString data) {
         Timber.d("Connection was kicked out by server");
         return null;
     }
 
 
-    public Event processPushMessage(ByteString data) {
+    private Event processPushMessage(ByteString data) {
 
         try {
             NotificationData event;

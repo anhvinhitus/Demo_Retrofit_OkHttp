@@ -149,7 +149,10 @@ public class NotificationData extends Event {
     private String getStringValue(String propertyName) {
         String value = "";
         try {
-            if (embeddata.object.has(propertyName)) {
+            if (embeddata != null
+                    && embeddata.object != null
+                    && embeddata.object.has(propertyName)) {
+
                 value = embeddata.object.get(propertyName).getAsString();
             }
         } catch (Exception e) {

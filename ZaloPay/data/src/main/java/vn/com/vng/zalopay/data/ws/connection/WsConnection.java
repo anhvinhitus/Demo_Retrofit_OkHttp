@@ -24,12 +24,16 @@ import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageLogin;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageRecoveryRequest;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
+import vn.com.vng.zalopay.data.ws.protobuf.RecoveryOrder;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.data.ws.protobuf.StatusMessageClient;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
+
+import static vn.com.vng.zalopay.data.ws.protobuf.MessageRecoveryRequest.DEFAULT_ORDER;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -62,12 +66,12 @@ public class WsConnection extends Connection {
      * If network connection is lost due to error: set mNextConnectionState = RETRY_CONNECT
      */
     private NextState mNextConnectionState = NextState.DISCONNECT;
-    
+
     private enum NextState {
         RETRY_CONNECT(1),
         DISCONNECT(2),
         RETRY_AFTER_KICKEDOUT(3);
-        
+
         private final int value;
 
         NextState(int value) {
@@ -98,30 +102,30 @@ public class WsConnection extends Connection {
     private void subscribeRetryConnectionEvent(Context context) {
         Subscription subscription =
                 Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
-                .map((value) -> mCheckCountDown --)
-                .filter((value) ->
-                    !mSocketClient.isConnected() &&
-                    !mSocketClient.isConnecting() &&
-                            (mNextConnectionState == NextState.RETRY_CONNECT ||
-                             mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
-                    NetworkHelper.isNetworkAvailable(context) &&
-                    mCheckCountDown <= 0
-                )
-                .subscribe((value) -> {
-                    Timber.d("Check for reconnect");
-                    connect();
-                });
+                        .map((value) -> mCheckCountDown--)
+                        .filter((value) ->
+                                !mSocketClient.isConnected() &&
+                                        !mSocketClient.isConnecting() &&
+                                        (mNextConnectionState == NextState.RETRY_CONNECT ||
+                                                mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
+                                        NetworkHelper.isNetworkAvailable(context) &&
+                                        mCheckCountDown <= 0
+                        )
+                        .subscribe((value) -> {
+                            Timber.d("Check for reconnect");
+                            connect();
+                        });
         compositeSubscription.add(subscription);
     }
 
     private void subscribeKeepClientHeartBeatEvent() {
         Subscription subscription =
                 Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
-                .filter((value) -> mSocketClient.isConnected())
-                .subscribe((value) -> {
-            Timber.d("Begin send heart beat [%s]", value);
-            ping();
-        });
+                        .filter((value) -> mSocketClient.isConnected())
+                        .subscribe((value) -> {
+                            Timber.d("Begin send heart beat [%s]", value);
+                            ping();
+                        });
         compositeSubscription.add(subscription);
     }
 
@@ -129,14 +133,14 @@ public class WsConnection extends Connection {
         mServerPongBus = new RxBus();
         Subscription subscription =
                 mServerPongBus.toObserverable()
-                .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
-                .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
-                .filter((obj) -> this.isUserLoggedIn() &&
-                        (mNextConnectionState == NextState.RETRY_CONNECT))
-                .subscribe((obj) -> {
-                    Timber.d("Server is not responding ...");
-                    reconnect();
-                });
+                        .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
+                        .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
+                        .filter((obj) -> this.isUserLoggedIn() &&
+                                (mNextConnectionState == NextState.RETRY_CONNECT))
+                        .subscribe((obj) -> {
+                            Timber.d("Server is not responding ...");
+                            reconnect();
+                        });
         compositeSubscription.add(subscription);
     }
 
@@ -269,6 +273,16 @@ public class WsConnection extends Connection {
         return true;
     }
 
+    private boolean sendMessageRecovery() {
+        Timber.d("sendMessageRecovery");
+        MessageRecoveryRequest.Builder request = new MessageRecoveryRequest.Builder()
+                .count(30)
+                .order(RecoveryOrder.ORDER_ASCEND.getValue())
+                .starttime(0L);
+
+        return send(MessageType.RECOVERY_REQUEST.getValue(), MessageRecoveryRequest.ADAPTER.encode(request.build()));
+    }
+
     private boolean sendAuthentication(String token, long uid) {
 
         Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
@@ -346,7 +360,6 @@ public class WsConnection extends Connection {
             mNextConnectionState = NextState.RETRY_CONNECT;
             //    numRetry = 0;
             sendAuthentication();
-
             mServerPongBus.send(1L);
         }
 
@@ -364,6 +377,7 @@ public class WsConnection extends Connection {
 
             if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
+                sendMessageRecovery();
                 postResult(message);
                 mServerPongBus.send(0L);
             } else if (messageType == ServerMessageType.KICK_OUT_USER) {
@@ -378,9 +392,14 @@ public class WsConnection extends Connection {
             } else if (messageType == ServerMessageType.PONG_CLIENT) {
                 needFeedback = false;
                 long currentTime = System.currentTimeMillis();
-                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData)message).clientData);
-                mServerPongBus.send(currentTime - ((ServerPongData)message).clientData);
+                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
+                mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
             } else {
+
+                if (messageType == ServerMessageType.RECOVERY_RESPONSE) {
+                    needFeedback = false;
+                }
+
                 postResult(message);
                 mServerPongBus.send(2L);
             }

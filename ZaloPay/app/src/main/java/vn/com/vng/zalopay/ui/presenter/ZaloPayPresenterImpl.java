@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.zalopay.apploader.impl.BundleServiceImpl;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -212,6 +214,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onNext(List<AppResource> appResources) {
+
+            appResources.remove(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID));
+
             ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
             Timber.d(" AppResource %s", appResources.size());
         }
