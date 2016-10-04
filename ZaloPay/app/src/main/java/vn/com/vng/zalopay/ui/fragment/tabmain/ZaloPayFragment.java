@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -23,10 +22,7 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -38,7 +34,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
@@ -232,7 +227,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onClickAppListener(AppResource app, int position) {
-        Timber.d("onclick app %s %s ", app.appid, app.appname);
+        Timber.d("onclick app %s %s %s ", app.appType, app.appid, app.appname);
         if (app.appType == PaymentAppTypeEnum.NATIVE.getValue()) {
             if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
                 navigator.startTransferMoneyActivity(getActivity());
@@ -248,7 +243,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 navigator.startPaymentApplicationActivity(getActivity(), appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
-            presenter.startWebViewActivity(app);
+            presenter.startServiceWebViewActivity(app.appid, app.webUrl);
         } else {
             showToast(getString(R.string.need_update_to_use));
         }
@@ -387,6 +382,10 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             }
         } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
             navigator.startPaymentApplicationActivity(getActivity(), new AppResource(banner.appid));
+        } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
+            presenter.startServiceWebViewActivity(banner.appid, banner.webviewurl);
+        } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
+            navigator.startWebViewActivity(getContext(), banner.webviewurl);
         } else {
             //showToast(getString(R.string.update_to_use));
         }

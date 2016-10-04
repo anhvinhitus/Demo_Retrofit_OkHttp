@@ -140,6 +140,10 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".webview.ui.WebViewActivity"
+            android:configChanges="orientation|screenSize" />
+
         <!-- ##########################Tich hop ZaloSDK START ########################## -->
         <activity
             android:name="com.zing.zalo.zalosdk.oauth.WebLoginActivity"

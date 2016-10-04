@@ -27,7 +27,6 @@ public class ZPWebViewProcessor extends WebViewClient {
     private ZPWebView mWebView = null;
     private ITimeoutLoadingListener mTimeOutListener;
     private IWebViewListener mWebViewListener;
-//    private IDialog mDialog;
 
     public ZPWebViewProcessor(ZPWebView pWebView,
                               ITimeoutLoadingListener timeoutLoadingListener,
@@ -105,7 +104,6 @@ public class ZPWebViewProcessor extends WebViewClient {
         }
     }
 
-    @SuppressWarnings("unused")
     public boolean canBack() {
         boolean canBack = false;
 
@@ -116,7 +114,6 @@ public class ZPWebViewProcessor extends WebViewClient {
         return canBack;
     }
 
-    @SuppressWarnings("unused")
     public void goBack() {
         if (mWebView != null) {
             mWebView.goBack();

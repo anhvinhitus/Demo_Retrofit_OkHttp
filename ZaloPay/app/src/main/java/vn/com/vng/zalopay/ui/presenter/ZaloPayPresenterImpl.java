@@ -20,6 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -288,14 +289,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void startWebViewActivity(AppResource appResource) {
-        if (appResource == null) {
-            return;
-        }
-        Subscription subscription = mMerchantRepository.getMerchantUserInfo(appResource.appid)
+    public void startServiceWebViewActivity(int appId, String webViewUrl) {
+        Subscription subscription = mMerchantRepository.getMerchantUserInfo(appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MerchantUserInfoSubscribe(appResource));
+                .subscribe(new MerchantUserInfoSubscribe(appId, webViewUrl));
         compositeSubscription.add(subscription);
     }
 
@@ -343,10 +341,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInfo> {
-        private AppResource mAppResource;
+        private int mAppId;
+        private String mWebViewUrl;
 
-        private MerchantUserInfoSubscribe(AppResource appResource) {
-            this.mAppResource = appResource;
+        private MerchantUserInfoSubscribe(int appId, String webViewUrl) {
+            this.mAppId = appId;
+            this.mWebViewUrl = webViewUrl;
         }
 
         @Override
@@ -359,8 +359,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             WebViewPayInfo gamePayInfo = new WebViewPayInfo();
             gamePayInfo.setUid(merchantUserInfo.muid);
             gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
-            gamePayInfo.setAppId(mAppResource.appid);
-            mNavigator.startWebViewActivity(mZaloPayView.getContext(), gamePayInfo, mAppResource.webUrl);
+            gamePayInfo.setAppId(mAppId);
+            mNavigator.startServiceWebViewActivity(mZaloPayView.getContext(), gamePayInfo, mWebViewUrl);
         }
 
         @Override
