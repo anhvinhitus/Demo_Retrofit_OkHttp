@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.webview.ui;
+package vn.com.vng.zalopay.webview.ui.service;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -28,13 +28,14 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 14/09/2016.
  *
  */
-public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IWebView> {
+public class ServiceWebViewPresenter extends BaseUserPresenter implements IPresenter<IWebView> {
 
     private IWebView mView;
 
@@ -46,10 +47,10 @@ public class WebViewPresenter extends BaseUserPresenter implements IPresenter<IW
     private Navigator mNavigator;
 
     @Inject
-    WebViewPresenter(BalanceStore.Repository balanceRepository,
-                     ZaloPayRepository zaloPayRepository,
-                     TransactionStore.Repository transactionRepository,
-                     Navigator navigator) {
+    ServiceWebViewPresenter(BalanceStore.Repository balanceRepository,
+                            ZaloPayRepository zaloPayRepository,
+                            TransactionStore.Repository transactionRepository,
+                            Navigator navigator) {
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;

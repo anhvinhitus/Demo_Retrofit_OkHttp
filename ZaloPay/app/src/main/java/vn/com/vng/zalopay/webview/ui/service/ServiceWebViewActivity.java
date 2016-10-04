@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.webview.ui;
+package vn.com.vng.zalopay.webview.ui.service;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,8 +16,8 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
-public class WebViewActivity extends BaseActivity {
-    protected WebViewFragment mFragment;
+public class ServiceWebViewActivity extends BaseActivity {
+    protected ServiceWebViewFragment mFragment;
     protected Toolbar mToolbar;
 
     ImageView mLogoView;
@@ -25,7 +25,7 @@ public class WebViewActivity extends BaseActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return WebViewFragment.newInstance(getIntent().getExtras());
+        return ServiceWebViewFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class WebViewActivity extends BaseActivity {
      * start flow by app id.
      */
     protected Fragment getView() {
-        mFragment = WebViewFragment.newInstance(getIntent().getExtras());
+        mFragment = ServiceWebViewFragment.newInstance(getIntent().getExtras());
         Timber.d("getView fragment [%s]", mFragment);
         return mFragment;
     }

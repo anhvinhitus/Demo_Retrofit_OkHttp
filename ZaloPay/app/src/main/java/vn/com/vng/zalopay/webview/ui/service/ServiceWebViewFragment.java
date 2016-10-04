@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.webview.ui;
+package vn.com.vng.zalopay.webview.ui.service;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +18,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
+import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor.IWebViewListener;
@@ -31,7 +32,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public class WebViewFragment extends BaseFragment implements IWebViewListener, IWebView {
+public class ServiceWebViewFragment extends BaseFragment implements IWebViewListener, IWebView {
     private ZPWebViewProcessor mWebViewProcessor;
     private ITimeoutLoadingListener mTimeOutListener;
 
@@ -42,10 +43,10 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
     protected String mCurrentUrl = "";
 
     @Inject
-    WebViewPresenter mPresenter;
+    ServiceWebViewPresenter mPresenter;
 
-    public static WebViewFragment newInstance(Bundle bundle) {
-        WebViewFragment fragment = new WebViewFragment();
+    public static ServiceWebViewFragment newInstance(Bundle bundle) {
+        ServiceWebViewFragment fragment = new ServiceWebViewFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -319,8 +320,8 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
 
     @Override
     public void setTitleAndLogo(String title, String url) {
-        if (getActivity() instanceof WebViewActivity) {
-            ((WebViewActivity) getActivity()).setTitleAndLogo(title, url);
+        if (getActivity() instanceof ServiceWebViewActivity) {
+            ((ServiceWebViewActivity) getActivity()).setTitleAndLogo(title, url);
         }
     }
 

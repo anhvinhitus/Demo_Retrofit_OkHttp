@@ -135,7 +135,7 @@
         <activity android:name=".paymentapps.ui.PaymentApplicationActivity" />
 
         <activity
-            android:name=".webview.ui.WebViewActivity"
+            android:name=".webview.ui.service.ServiceWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
