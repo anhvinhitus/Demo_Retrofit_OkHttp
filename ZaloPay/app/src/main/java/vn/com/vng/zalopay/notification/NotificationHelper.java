@@ -324,8 +324,10 @@ public class NotificationHelper {
 
     void recoveryNotification(List<NotificationData> listMessage) {
         Timber.d("recoveryNotification %s", listMessage.size());
-
-
+        Subscription subscription = mNotifyRepository.putNotify(listMessage)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Void>());
+        compositeSubscription.add(subscription);
     }
 
 }

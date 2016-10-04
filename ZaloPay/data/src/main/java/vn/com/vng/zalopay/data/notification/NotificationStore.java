@@ -21,6 +21,8 @@ public interface NotificationStore {
 
         long putSync(NotificationData val);
 
+        void putSync(List<NotificationData> val);
+
         void markAsRead(long nId);
 
         void markAsReadAll();
@@ -65,6 +67,8 @@ public interface NotificationStore {
         void markAsRead(long nId);
 
         Observable<Long> putNotify(NotificationData notify);
+
+        Observable<Void> putNotify(List<NotificationData> notify);
 
         Observable<NotificationData> getNotify(long id);
 

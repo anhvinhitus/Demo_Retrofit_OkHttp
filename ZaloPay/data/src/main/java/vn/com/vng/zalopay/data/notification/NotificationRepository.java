@@ -80,6 +80,14 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
+    public Observable<Void> putNotify(List<NotificationData> notify) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.put(notify);
+            return null;
+        });
+    }
+
+    @Override
     public Observable<NotificationData> getNotify(long id) {
         return ObservableHelper.makeObservable(() -> localStorage.get(id));
     }

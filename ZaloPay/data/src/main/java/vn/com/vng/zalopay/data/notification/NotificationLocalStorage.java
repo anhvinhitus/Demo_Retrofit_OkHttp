@@ -66,6 +66,15 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     @Override
+    public void putSync(List<NotificationData> val) {
+        List<NotificationGD> list = transform(val);
+        if (Lists.isEmptyOrNull(list)) {
+            return;
+        }
+        getDaoSession().getNotificationGDDao().insertOrReplaceInTx(list);
+    }
+
+    @Override
     public List<NotificationData> get(int pageIndex, int limit) {
         return queryList(pageIndex, limit);
     }
