@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
@@ -18,16 +19,20 @@ import vn.com.vng.zalopay.data.util.Lists;
  */
 public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppResourceStore.LocalStorage {
     private PlatformDaoMapper platformDaoMapper;
+    private final int mAppId;
 
-    public AppResourceLocalStorage(DaoSession daoSession, PlatformDaoMapper mapper) {
+    public AppResourceLocalStorage(DaoSession daoSession, PlatformDaoMapper mapper, int appId) {
         super(daoSession);
         this.platformDaoMapper = mapper;
+        this.mAppId = appId;
     }
 
     @Override
     public List<AppResourceEntity> get() {
         try {
-            return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().orderAsc(AppResourceGDDao.Properties.SortOrder).list());
+            return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().
+                    where(AppResourceGDDao.Properties.Appid.notEq(mAppId)).
+                    orderAsc(AppResourceGDDao.Properties.SortOrder).list());
         } catch (android.database.sqlite.SQLiteException e) {
             Timber.e(e, "Exception");
             return new ArrayList<>();
