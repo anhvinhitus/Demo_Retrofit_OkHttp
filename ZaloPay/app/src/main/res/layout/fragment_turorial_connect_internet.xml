@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingBottom="@dimen/spacing.large"
+        android:paddingBottom="@dimen/spacing.large.t"
         android:paddingLeft="@dimen/spacing.medium"
         android:paddingRight="@dimen/spacing.medium"
         android:text="@string/device_not_internet_connection"
@@ -58,7 +58,7 @@
             android:paddingBottom="@dimen/spacing.medium.l"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="33dp"
+            android:paddingTop="@dimen/spacing.medium"
             android:textColor="@color/txt_content_check_internet"
             tools:text="@string/turn_on_wifi" />
     </LinearLayout>
