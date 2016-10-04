@@ -266,4 +266,9 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
         getDaoSession().getNotificationGDDao().updateInTx(list);
     }
+
+    @Override
+    public boolean needRecoverNotify() {
+        return getDaoSession().getNotificationGDDao().count() == 0;
+    }
 }

@@ -15,9 +15,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
@@ -26,14 +31,17 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -64,6 +72,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     @Inject
     ThreadExecutor mExecutor;
+
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Nullable
     @Override
@@ -188,6 +198,23 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                 }
             } else {
                 Timber.d("Socket authentication succeeded");
+                if (notificationHelper == null) {
+                    return;
+                }
+
+                Subscription subscription = notificationHelper.needRecoveryMessage()
+                        .observeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<Boolean>() {
+                            @Override
+                            public void onNext(Boolean result) {
+                                if (result) {
+                                    mWsConnection.sendMessageRecovery();
+                                }
+                            }
+                        });
+
+                mCompositeSubscription.add(subscription);
+
             }
         } else if (event instanceof NotificationData) {
             if (notificationHelper == null) {
@@ -195,6 +222,15 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             }
 
             notificationHelper.processNotification((NotificationData) event);
+        } else if (event instanceof RecoveryMessageEvent) {
+            List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
+            if (Lists.isEmptyOrNull(listMessage)) {
+                return;
+            }
+
+            if (notificationHelper != null) {
+                notificationHelper.recoveryNotification(listMessage);
+            }
         }
     }
 

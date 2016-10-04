@@ -121,4 +121,9 @@ public class NotificationRepository implements NotificationStore.Repository {
                 receiverid,
                 embededdata);
     }
+
+    @Override
+    public Observable<Boolean> needRecoveryMessage() {
+        return ObservableHelper.makeObservable(localStorage::needRecoverNotify);
+    }
 }

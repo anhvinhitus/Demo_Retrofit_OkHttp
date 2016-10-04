@@ -256,11 +256,6 @@ public class WsConnection extends Connection {
         return false;
     }
 
-//    @Override
-//    public boolean send(int msgType, AbstractMessage msgData) {
-//        return send(msgType, msgData.toByteArray());
-//    }
-
     @Override
     public boolean send(int msgType, byte[] data) {
         ByteBuffer bufTemp = ByteBuffer.allocate(HEADER_LENGTH + data.length);
@@ -273,7 +268,7 @@ public class WsConnection extends Connection {
         return true;
     }
 
-    private boolean sendMessageRecovery() {
+    public boolean sendMessageRecovery() {
         Timber.d("sendMessageRecovery");
         MessageRecoveryRequest.Builder request = new MessageRecoveryRequest.Builder()
                 .count(30)
@@ -377,7 +372,6 @@ public class WsConnection extends Connection {
 
             if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
                 numRetry = 0;
-                sendMessageRecovery();
                 postResult(message);
                 mServerPongBus.send(0L);
             } else if (messageType == ServerMessageType.KICK_OUT_USER) {

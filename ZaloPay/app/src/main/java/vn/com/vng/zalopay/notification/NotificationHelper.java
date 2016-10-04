@@ -17,8 +17,11 @@ import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -312,6 +315,17 @@ public class NotificationHelper {
 
     private void refreshGatewayInfo() {
         mEventBus.post(new RefreshPaymentSdkEvent());
+    }
+
+    Observable<Boolean> needRecoveryMessage() {
+        return mNotifyRepository.needRecoveryMessage();
+    }
+
+
+    void recoveryNotification(List<NotificationData> listMessage) {
+        Timber.d("recoveryNotification %s", listMessage.size());
+
+
     }
 
 }

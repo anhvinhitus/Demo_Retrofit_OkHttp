@@ -36,6 +36,8 @@ public interface NotificationStore {
         void delete(long id);
 
         void deleteAll();
+
+        boolean needRecoverNotify();
     }
 
     interface RequestService {
@@ -73,5 +75,7 @@ public interface NotificationStore {
         Observable<Boolean> removeAllNotification();
 
         Observable<BaseResponse> sendNotification(String receiverid, String embededdata);
+
+        Observable<Boolean> needRecoveryMessage();
     }
 }

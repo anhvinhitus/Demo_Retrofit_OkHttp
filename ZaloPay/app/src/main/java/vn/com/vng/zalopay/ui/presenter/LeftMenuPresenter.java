@@ -83,7 +83,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void initialize() {
-        getListAppInfo();
+        listMenuItem();
         menuView.setUserInfo(user);
         this.getTransaction();
     }
@@ -171,7 +171,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
-    private void getListAppInfo() {
+    private void listMenuItem() {
         List<MenuItem> listItem = MenuItemUtil.getMenuItems();
         try {
             boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();
@@ -190,6 +190,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent event) {
         Timber.d("onRefreshPlatformInfoEvent");
-        getListAppInfo();
+        listMenuItem();
     }
 }
