@@ -28,10 +28,21 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public List<AppResourceEntity> get() {
+    public List<AppResourceEntity> getInsideAppResource() {
         try {
             return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().
                     where(AppResourceGDDao.Properties.Appid.notEq(mAppId)).
+                    orderAsc(AppResourceGDDao.Properties.SortOrder).list());
+        } catch (android.database.sqlite.SQLiteException e) {
+            Timber.e(e, "Exception");
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<AppResourceEntity> getAllAppResource() {
+        try {
+            return platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder().
                     orderAsc(AppResourceGDDao.Properties.SortOrder).list());
         } catch (android.database.sqlite.SQLiteException e) {
             Timber.e(e, "Exception");

@@ -66,14 +66,14 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     @Override
     public List<AppResource> listAppResourceFromDB() {
-        return mAppConfigEntityDataMapper.transformAppResourceEntity(mLocalStorage.get());
+        return mAppConfigEntityDataMapper.transformAppResourceEntity(mLocalStorage.getInsideAppResource());
     }
 
     @Override
     public Observable<List<AppResource>> listAppResource(List<Integer> appidlist) {
         return Observable.concat(
-                ObservableHelper.makeObservable(mLocalStorage::get),
-                fetchAppResource(appidlist).flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::get)))
+                ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource),
+                fetchAppResource(appidlist).flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource)))
                 //.delaySubscription(200, TimeUnit.MILLISECONDS)
                 .map(o -> mAppConfigEntityDataMapper.transformAppResourceEntity(o));
     }
@@ -95,7 +95,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private void ensureAppResourceAvailable() {
-        List<AppResourceEntity> list = mLocalStorage.get();
+        List<AppResourceEntity> list = mLocalStorage.getInsideAppResource();
         List<AppResourceEntity> listAppDownload = new ArrayList<>();
         for (AppResourceEntity app : list) {
             if (shouldDownloadApp(app)) {
@@ -167,7 +167,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         if (Lists.isEmptyOrNull(orderedInsideApps)) {
             return;
         }
-        List<AppResourceEntity> appResourceEntities = mLocalStorage.get();
+        List<AppResourceEntity> appResourceEntities = mLocalStorage.getInsideAppResource();
         if (Lists.isEmptyOrNull(appResourceEntities)) {
             return;
         }

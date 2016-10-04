@@ -18,7 +18,9 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 public interface AppResourceStore {
 
     interface LocalStorage {
-        List<AppResourceEntity> get();
+        List<AppResourceEntity> getInsideAppResource();
+
+        List<AppResourceEntity> getAllAppResource();
 
         AppResourceEntity get(int appId);
 
