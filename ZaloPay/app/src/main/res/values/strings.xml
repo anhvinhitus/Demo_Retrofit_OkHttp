@@ -359,4 +359,6 @@
     <string name="turn_on_wifi"><![CDATA[<b>Bật Wi-fi:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Wi-fi\"</b> và chọn mạng Wi-fi có sẵn.]]></string>
     <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Cellular\"</b> (di động) và bật  <b>\"Cellular Data\"</b> (dữ liệu di động).]]></string>
     <string name="display.pin">Hiển thị mật khẩu thanh toán</string>
+    <string name="donate_money">Tặng tiền</string>
+    <string name="recovery_money">Thu hồi tiền</string>
 </resources>

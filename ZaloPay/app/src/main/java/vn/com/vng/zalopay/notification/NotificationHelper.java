@@ -39,7 +39,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.event.DonateMoneyEvent;
+import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
@@ -142,7 +142,7 @@ public class NotificationHelper {
         } else if (notificationType == NotificationType.RETRY_TRANSACTION) {
             updateTransactionStatus(notify);
         } else if (notificationType == NotificationType.DONATE_MONEY) {
-            showAlertDonateMoney(notify);
+            showAlertNotification(notify, mContext.getString(R.string.donate_money));
         } else if (notificationType == NotificationType.MONEY_TRANSFER) {
             if (!notify.isRead()) {
                 mEventBus.post(notify);
@@ -153,6 +153,8 @@ public class NotificationHelper {
             skipStorage = true;
         } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
             refreshGatewayInfo();
+        } else if (notificationType == NotificationType.RECOVERY_MONEY) {
+            showAlertNotification(notify, mContext.getString(R.string.recovery_money));
         }
 
         if (!skipStorage) {
@@ -193,10 +195,11 @@ public class NotificationHelper {
         }
     }
 
-    private void showAlertDonateMoney(final NotificationData notify) {
-        mEventBus.postSticky(new DonateMoneyEvent(notify));
+    private void showAlertNotification(final NotificationData notify, String title) {
+        AlertNotificationEvent event = new AlertNotificationEvent(notify);
+        event.mTitle = title;
+        mEventBus.post(event);
     }
-
 
     private void extractRedPacketFromNotification(NotificationData data) {
         try {
