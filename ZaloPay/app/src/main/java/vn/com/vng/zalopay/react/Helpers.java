@@ -208,6 +208,7 @@ public class Helpers {
                     DialogManager.showSweetDialogCustom(activity,
                             message,
                             btnNames.getString(0),
+                            title,
                             SweetAlertDialog.NORMAL_TYPE,
                             new DialogSimpleEventListener(promise, 0));
                 }
@@ -217,6 +218,7 @@ public class Helpers {
                 DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
+                        title,
                         SweetAlertDialog.ERROR_TYPE,
                         new DialogSimpleEventListener(promise, 0));
                 break;
@@ -225,6 +227,7 @@ public class Helpers {
                 DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
+                        title,
                         SweetAlertDialog.SUCCESS_TYPE,
                         new DialogSimpleEventListener(promise, 0));
                 break;
@@ -233,6 +236,7 @@ public class Helpers {
                 DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
+                        title,
                         SweetAlertDialog.WARNING_TYPE,
                         new DialogSimpleEventListener(promise, 0));
                 break;
@@ -259,6 +263,7 @@ public class Helpers {
                     DialogManager.showSweetDialogCustom(activity,
                             message,
                             btnNames.getString(0),
+                            title,
                             SweetAlertDialog.NORMAL_TYPE,
                             new DialogSimpleEventListener(promise, 0));
                 }
