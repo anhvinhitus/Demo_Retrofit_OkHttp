@@ -7,7 +7,7 @@ public class WebViewConfig {
     }
 
     public static final String getResultWebViewUrl(String host) {
-        return host + "/result?apptransid=%s&muid=%s&maccesstoken=%s";
+        return host + "/result/?apptransid=%s&muid=%s&maccesstoken=%s";
     }
 
     public static final String URL_TO_APP = "zalopay-1://backtoapp";
