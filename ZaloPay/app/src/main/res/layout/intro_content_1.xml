@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         style="@style/TextView.SubTitle"
         android:layout_marginLeft="4dp"
-        android:text="Nhập mã số PIN"
+        android:text="Nhập mật khẩu thanh toán"
         android:textColor="@color/white" />
 
 </LinearLayout>
