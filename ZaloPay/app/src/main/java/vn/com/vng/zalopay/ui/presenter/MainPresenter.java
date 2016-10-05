@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +32,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.event.DonateMoneyEvent;
+import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
@@ -225,10 +226,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onReceiverDonateMoney(DonateMoneyEvent event) {
-
-        mEventBus.removeStickyEvent(DonateMoneyEvent.class);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiverAlertNotification(AlertNotificationEvent event) {
 
         if (homeView == null) {
             return;
@@ -238,7 +237,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (notify.transid > 0) {
             SweetAlertDialog dialog = new SweetAlertDialog(homeView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
 
-            dialog.setTitleText("Tặng tiền");
+            dialog.setTitleText(TextUtils.isEmpty(event.mTitle) ? mApplicationContext.getString(R.string.notification) : event.mTitle);
             dialog.setCancelText(mApplicationContext.getString(R.string.txt_close));
             dialog.setContentText(notify.message);
             dialog.setConfirmText(mApplicationContext.getString(R.string.view_detail));
