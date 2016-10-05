@@ -65,12 +65,17 @@ public interface RedPacketStore {
         void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo);
         RedPacketAppInfo getRedPacketAppInfo();
 
-        Integer getPacketStatus(long packetId);
-        Void setPacketStatus(long packetId, long amount, int status);
+        ReceivePackageGD getPacketStatus(long packetId);
+        Void setPacketStatus(long packetId, long amount, int status, String messageStatus);
 
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
         ReceivePackage getReceivedPacket(long packetId);
+    }
+
+    interface RequestTPEService {
+        @GET("tpe/gettransstatus")
+        Observable<PackageStatusResponse> getPackageStatus(@Query("appid") int appId, @Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
     }
 
     interface RequestService {
@@ -85,9 +90,6 @@ public interface RedPacketStore {
         @FormUrlEncoded
         @POST("redpackage/submitopenpackage")
         Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageid") long packageID, @Field("bundleid") long bundleID, @Field("revzalopayid") String revZaloPayID, @Field("accesstoken") String accessToken);
-
-        @GET("redpackage/getpackagestatus")
-        Observable<PackageStatusResponse> getPackageStatus(@Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
 
         @GET("redpackage/getsentbundlelist")
         Observable<SentBundleListResponse> getSentBundleList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
@@ -130,9 +132,9 @@ public interface RedPacketStore {
 
         Observable<List<PackageInBundle>> getPacketsInBundle(long bundleId);
 
-        Observable<Integer> getPacketStatus(String packetId);
+        Observable<ReceivePackageGD> getPacketStatus(String packetId);
 
-        Observable<Void> setPacketStatus(long packageId, long amount, int status);
+        Observable<Void> setPacketStatus(long packageId, long amount, int status, String messageStatus);
 
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 

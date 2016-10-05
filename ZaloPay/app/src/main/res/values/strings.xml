@@ -178,11 +178,14 @@
     <string name="invalid_otp">OTP không hợp lệ.</string>
 
     <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư tài khoản và thẻ đã lưu</string>
+    <string name="hint_pin">Mật khẩu thanh toán</string>
     <string name="invalid_pin">Nhập vào mật khẩu thanh toán 6 số</string>
     <string name="pin.mismatch">Mật khẩu thanh toán không khớp</string>
-    <string name="pin.not.change">Mật khẩu thanh toán cũ và mới không được trùng nhau.</string>
+    <string name="pin.not.change">Mật khẩu thanh toán mới và cũ phải khác nhau</string>
     <string name="note_pin">Là mã bí mật khi thực hiện thanh toán hoặc giao dịch</string>
     <string name="hint_pin_compare">Nhập lại mật khẩu thanh toán</string>
+    <string name="invalid_pin_compare">Mật khẩu thanh toán không trùng nhau</string>
+
     <string name="invalid_fullname_empty">Bạn chưa nhập họ tên</string>
     <string name="invalid_address_empty">Bạn chưa nhập địa chỉ</string>
 
@@ -204,6 +207,7 @@
 
     <string name="hint_fullname">Họ tên</string>
 
+    <string name="show_passcode">Hiện mật khẩu thanh toán?</string>
     <string name="title_activity_scan_to_pay">Trả tiền</string>
     <string name="btn_emulate_nfc">Giả lập Nfc</string>
 
@@ -240,7 +244,6 @@
 
     <string name="txt_input_userinfo">Cập nhật</string>
     <string name="txt_need_input_userinfo">Hãy cập nhật thông tin để sử dụng tính năng này</string>
-
 
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
@@ -307,6 +310,7 @@
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
     <string name="withdraw_condition_card_note">Cần phải lưu một trong các thẻ ATM nội địa sau:</string>
+    <string name="withdraw_condition_pin">Mật khẩu thanh toán</string>
     <string name="withdraw_description">Rút tiền về thẻ đã lưu</string>
 
     <string name="account_existed">Tên tài khoản đã được sử dụng</string>
@@ -347,12 +351,8 @@
     <string name="delete">Xoá</string>
     <!--WebView Resource End-->
 
-
     <string name="account.format">Tên TK: %s</string>
     <string name="phone.format">Số ĐT: %s</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="device_not_internet_connection">Không có kết nối mạng.\nHãy bật Wi-Fi hoặc 3G.</string>
     <string name="please_do_tutorial">Vui lòng làm theo hướng dẫn:</string>

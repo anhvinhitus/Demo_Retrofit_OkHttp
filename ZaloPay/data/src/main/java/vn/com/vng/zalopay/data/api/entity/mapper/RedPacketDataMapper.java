@@ -260,6 +260,7 @@ public class RedPacketDataMapper {
                 receivePackage.amount,
                 receivePackage.openedTime,
                 receivePackage.status,
+                null,
                 receivePackage.message,
                 receivePackage.isLuckiest,
                 receivePackage.createTime

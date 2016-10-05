@@ -54,7 +54,6 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
         return count >= appIds.size();
     }
 
-
     public List<Long> notExistInDb(List<Long> appIds) {
 
         Timber.d("notExistInDb apppIds %s", appIds.size());
@@ -71,7 +70,7 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
 
             boolean ret = appIds.removeAll(listMerchant);
         }
-        
+
         Timber.d("notExistInDb apppIds %s", appIds.size());
         return appIds;
     }

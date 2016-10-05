@@ -17,8 +17,6 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
-import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
-
 /**
  * Created by huuhoa on 6/17/16.
  * Implementation for AppResource.Repository
@@ -88,28 +86,13 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             listAppIdAndChecksum(appResources, checksumlist);
         }
 
-        String appIds = toStringListAppId(appResources);
+        String appIds = ListStringUtil.toStringListAppId(appResources);
         String checkSum = checksumlist.toString();
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
         return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, appVersion)
                 .doOnNext(this::processAppResourceResponse)
                 ;
-    }
-
-    String toStringListAppId(List<AppResource> listAppResource) {
-        if (isEmptyOrNull(listAppResource)) return "";
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < listAppResource.size(); i++) {
-
-            AppResource appResource = listAppResource.get(i);
-            if (appResource == null) {
-                continue;
-            }
-            str.append(str.length() == 0 ? String.valueOf(appResource.appid) :
-                    "," + String.valueOf(appResource.appid));
-        }
-        return str.toString();
     }
 
     private void ensureAppResourceAvailable() {

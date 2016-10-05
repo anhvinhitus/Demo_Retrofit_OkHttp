@@ -30,6 +30,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;

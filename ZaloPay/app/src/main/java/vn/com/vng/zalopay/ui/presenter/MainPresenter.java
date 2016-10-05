@@ -182,6 +182,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
+                isLoadedGateWayInfo = true;
                 refreshBanners();
             }
 

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.view;
 
+import android.content.Context;
+
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
@@ -19,4 +21,6 @@ public interface ILeftMenuView {
     void setZaloPayName(String zaloPayName);
 
     void setMenuItem(List<MenuItem> var);
+
+    Context getContext();
 }

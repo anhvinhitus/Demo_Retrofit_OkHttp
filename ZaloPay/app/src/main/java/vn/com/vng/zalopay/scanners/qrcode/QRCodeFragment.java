@@ -2,46 +2,53 @@ package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.qrcode.QRCodeView;
-import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
+import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/7/16.
- * *
  */
-public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, FragmentLifecycle {
+public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
+
 
     public static QRCodeFragment newInstance() {
+
         Bundle args = new Bundle();
+
         QRCodeFragment fragment = new QRCodeFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
     }
 
+
     @Inject
     QRCodePresenter qrCodePresenter;
+
+    private SweetAlertDialog mProgressDialog;
 
     @Override
     public int getResLayoutId() {
@@ -57,18 +64,38 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         }
 
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
-        ZPAnalytics.trackEvent(ZPEvents.SCANQR_GETCODE);
         qrCodePresenter.pay(result);
+    }
+
+    public UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
+    }
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
     }
 
     @Override
     public void onTokenInvalid() {
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setupFragmentComponent();
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qrCodePresenter.setView(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
     }
 
     @Override
@@ -79,12 +106,18 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void showLoading() {
-        super.showProgressDialog();
+        if (mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        super.hideProgressDialog();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     @Override
@@ -97,7 +130,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         hideLoading();
     }
 
@@ -164,20 +197,8 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
-                } else {
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
                 }
             }
         }
-    }
-
-    @Override
-    public void onStartFragment() {
-        startAndCheckPermission();
-    }
-
-    @Override
-    public void onStopFragment() {
-        pause();
     }
 }

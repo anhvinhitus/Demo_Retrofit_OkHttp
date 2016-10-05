@@ -40,18 +40,23 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     private final int ORDER = -1;
 
     private final RedPacketStore.RequestService mRequestService;
+    private final RedPacketStore.RequestTPEService mRequestTPEService;
     private final RedPacketStore.LocalStorage mLocalStorage;
     private final RedPacketDataMapper mDataMapper;
     private final User user;
+    private final int mAppId;
 
     public RedPacketRepository(RedPacketStore.RequestService requestService,
+                               RedPacketStore.RequestTPEService requestTPEService,
                                RedPacketStore.LocalStorage localStorage,
                                RedPacketDataMapper dataMapper,
-                               User user) {
+                               User user, int appId) {
         this.mRequestService = requestService;
+        this.mRequestTPEService = requestTPEService;
         this.mLocalStorage = localStorage;
         this.mDataMapper = dataMapper;
         this.user = user;
+        this.mAppId = appId;
     }
 
     @Override
@@ -91,7 +96,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId) {
-        return mRequestService.getPackageStatus(packageID, zpTransID, user.zaloPayId, user.accesstoken, deviceId)
+        return mRequestTPEService.getPackageStatus(mAppId, packageID, zpTransID, user.zaloPayId, user.accesstoken, deviceId)
                 .map(packageStatusResponse ->
                         new PackageStatus(packageStatusResponse.isprocessing,
                                 packageStatusResponse.zptransid,
@@ -265,7 +270,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Integer> getPacketStatus(String packetIdStr) {
+    public Observable<ReceivePackageGD> getPacketStatus(String packetIdStr) {
         return ObservableHelper.makeObservable(() -> {
             long packetId = Long.parseLong(packetIdStr);
             return mLocalStorage.getPacketStatus(packetId);
@@ -273,8 +278,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Void> setPacketStatus(long packageId, long amount, int status) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketStatus(packageId, amount, status));
+    public Observable<Void> setPacketStatus(long packageId, long amount, int status, String messageStatus) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.setPacketStatus(packageId, amount, status, messageStatus));
     }
 
     @Override

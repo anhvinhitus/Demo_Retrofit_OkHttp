@@ -30,6 +30,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
+import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
@@ -309,7 +310,8 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                         stopTaskGetStatus();
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
-                        mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue()).subscribe(new DefaultSubscriber<Void>());
+                        mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount,
+                                RedPacketStatus.Opened.getValue(), null).subscribe(new DefaultSubscriber<Void>());
                         mBalanceRepository.updateBalance();
                     }
                 });
@@ -343,8 +345,9 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                         Timber.w(e, "error on openPacket");
                         super.onError(e);
                         if (e instanceof BodyException) {
-                            int errorCode = ((BodyException)e).errorCode;
-                            mRedPackageRepository.setPacketStatus(packageID, 0, errorCode)
+                            int errorCode = ((BodyException) e).errorCode;
+                            String errorMsg = ((BodyException) e).message;
+                            mRedPackageRepository.setPacketStatus(packageID, 0, errorCode, errorMsg)
                                     .subscribe(new DefaultSubscriber<Void>());
                         }
                     }
@@ -434,12 +437,16 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
     public void getPacketStatus(final String packetId, final Promise promise) {
         Timber.d("query open status for packet: %s", packetId);
         Subscription subscription = mRedPackageRepository.getPacketStatus(packetId)
-                .subscribe(new RedPacketSubscriber<Integer>(promise) {
+                .subscribe(new RedPacketSubscriber<ReceivePackageGD>(promise) {
                     @Override
-                    public void onNext(Integer status) {
+                    public void onNext(ReceivePackageGD receivePackageGD) {
                         WritableMap writableMap = Arguments.createMap();
-                        writableMap.putInt("code", status);
-                        Timber.d("open status [%s] for packet: %s", status, packetId);
+                        if (receivePackageGD != null) {
+                            writableMap.putInt("code", receivePackageGD.getStatus());
+                            writableMap.putString("message", receivePackageGD.getMessageStatus());
+                            Timber.d("open status [%s][%s] for packet: %s", receivePackageGD.getStatus(),
+                                    receivePackageGD.getMessageStatus(), packetId);
+                        }
                         promise.resolve(writableMap);
                     }
                 });

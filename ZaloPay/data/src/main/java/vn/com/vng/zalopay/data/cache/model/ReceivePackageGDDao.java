@@ -32,10 +32,11 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         public final static Property Amount = new Property(6, Long.class, "amount", false, "AMOUNT");
         public final static Property OpenedTime = new Property(7, Long.class, "openedTime", false, "OPENED_TIME");
         public final static Property Status = new Property(8, Integer.class, "status", false, "STATUS");
-        public final static Property Message = new Property(9, String.class, "message", false, "MESSAGE");
-        public final static Property IsLuckiest = new Property(10, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
-        public final static Property CreateTime = new Property(11, Long.class, "createTime", false, "CREATE_TIME");
-    }
+        public final static Property MessageStatus = new Property(9, String.class, "messageStatus", false, "MESSAGE_STATUS");
+        public final static Property Message = new Property(10, String.class, "message", false, "MESSAGE");
+        public final static Property IsLuckiest = new Property(11, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
+        public final static Property CreateTime = new Property(12, Long.class, "createTime", false, "CREATE_TIME");
+    };
 
     private DaoSession daoSession;
 
@@ -62,9 +63,10 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
                 "\"AMOUNT\" INTEGER," + // 6: amount
                 "\"OPENED_TIME\" INTEGER," + // 7: openedTime
                 "\"STATUS\" INTEGER," + // 8: status
-                "\"MESSAGE\" TEXT," + // 9: message
-                "\"IS_LUCKIEST\" INTEGER," + // 10: isLuckiest
-                "\"CREATE_TIME\" INTEGER);"); // 11: createTime
+                "\"MESSAGE_STATUS\" TEXT," + // 9: messageStatus
+                "\"MESSAGE\" TEXT," + // 10: message
+                "\"IS_LUCKIEST\" INTEGER," + // 11: isLuckiest
+                "\"CREATE_TIME\" INTEGER);"); // 12: createTime
     }
 
     /** Drops the underlying database table. */
@@ -119,19 +121,24 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             stmt.bindLong(9, status);
         }
  
+        String messageStatus = entity.getMessageStatus();
+        if (messageStatus != null) {
+            stmt.bindString(10, messageStatus);
+        }
+ 
         String message = entity.getMessage();
         if (message != null) {
-            stmt.bindString(10, message);
+            stmt.bindString(11, message);
         }
  
         Integer isLuckiest = entity.getIsLuckiest();
         if (isLuckiest != null) {
-            stmt.bindLong(11, isLuckiest);
+            stmt.bindLong(12, isLuckiest);
         }
  
         Long createTime = entity.getCreateTime();
         if (createTime != null) {
-            stmt.bindLong(12, createTime);
+            stmt.bindLong(13, createTime);
         }
     }
 
@@ -160,9 +167,10 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // amount
             cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // openedTime
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // status
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // message
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // isLuckiest
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // createTime
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // messageStatus
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // message
+            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // isLuckiest
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // createTime
         );
         return entity;
     }
@@ -179,9 +187,10 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         entity.setAmount(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
         entity.setOpenedTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
         entity.setStatus(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setMessage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setIsLuckiest(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setCreateTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setMessageStatus(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setMessage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setIsLuckiest(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+        entity.setCreateTime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
      }
     
     /** @inheritdoc */

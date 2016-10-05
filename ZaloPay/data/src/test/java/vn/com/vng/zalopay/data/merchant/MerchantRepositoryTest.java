@@ -64,6 +64,11 @@ public class MerchantRepositoryTest {
             public boolean existIn(Collection<Long> appIds) {
                 return false;
             }
+
+            @Override
+            public List<Long> notExistInDb(List<Long> appIds) {
+                return null;
+            }
         };
 
         MerchantStore.RequestService requestService = new MerchantStore.RequestService() {
@@ -151,6 +156,11 @@ public class MerchantRepositoryTest {
             @Override
             public boolean existIn(Collection<Long> appIds) {
                 return false;
+            }
+
+            @Override
+            public List<Long> notExistInDb(List<Long> appIds) {
+                return null;
             }
         };
 
@@ -247,6 +257,11 @@ public class MerchantRepositoryTest {
             @Override
             public boolean existIn(Collection<Long> appIds) {
                 return false;
+            }
+
+            @Override
+            public List<Long> notExistInDb(List<Long> appIds) {
+                return null;
             }
         };
 
