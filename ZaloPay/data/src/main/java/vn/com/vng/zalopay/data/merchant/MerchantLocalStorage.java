@@ -54,24 +54,25 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
         return count >= appIds.size();
     }
 
+    @Override
     public List<Long> notExistInDb(List<Long> appIds) {
-
-        Timber.d("notExistInDb apppIds %s", appIds.size());
         List<MerchantUser> listMerchant = getMerchantUserDao().queryBuilder()
                 .where(MerchantUserDao.Properties.Appid.in(appIds))
                 .list();
 
+        Timber.d("notExistInDb appIds %s listMerchant %s", appIds.size(), listMerchant.size());
+
         if (!Lists.isEmptyOrNull(listMerchant)) {
 
-            List<Long> listMerchantId = new ArrayList<>();
+            List<Long> listMCIds = new ArrayList<>();
             for (MerchantUser merchantUser : listMerchant) {
-                listMerchantId.add(merchantUser.getAppid());
+                listMCIds.add(merchantUser.getAppid());
             }
 
-            boolean ret = appIds.removeAll(listMerchant);
+            boolean ret = appIds.removeAll(listMCIds);
         }
 
-        Timber.d("notExistInDb apppIds %s", appIds.size());
+        Timber.d("notExistInDb appIds %s", appIds.size());
         return appIds;
     }
 }

@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.merchant;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -58,8 +59,9 @@ public class MerchantRepository implements MerchantStore.Repository {
         return requestService.getlistmerchantuserinfo(appIdList, user.zaloPayId, user.accesstoken)
                 .doOnNext(response -> {
                     List<MerchantUser> entities = transform(response);
+                    Timber.d("fetchListMerchantUserInfo  %s", entities.size());
                     if (!Lists.isEmptyOrNull(entities)) {
-                        localStorage.put(transform(response));
+                        localStorage.put(entities);
                     }
                 })
                 .map(response -> Boolean.TRUE);
@@ -85,16 +87,17 @@ public class MerchantRepository implements MerchantStore.Repository {
 
     private List<MerchantUser> transform(ListMUIResponse response) {
         if (Lists.isEmptyOrNull(response.mUserSubInfoList)) {
-            return null;
+            return Collections.emptyList();
         }
         List<MerchantUser> entities = new ArrayList<>();
         for (ListMUIResponse.MerchantUserSubInfo info : response.mUserSubInfoList) {
             MerchantUser merchantUser = new MerchantUser(info.appid);
+            merchantUser.setMUid(info.muid);
+            merchantUser.setMAccessToken(info.maccesstoken);
+
             merchantUser.setDisplayName(response.displayname);
             merchantUser.setBirthday(response.birthdate);
             merchantUser.setGender(response.usergender);
-            merchantUser.setMUid(info.muid);
-            merchantUser.setMAccessToken(info.maccesstoken);
             entities.add(merchantUser);
         }
         return entities;
