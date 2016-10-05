@@ -4,28 +4,24 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.NetworkError;
-import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.domain.model.User;
 
-import static vn.com.vng.zalopay.data.util.Utils.*;
+import static vn.com.vng.zalopay.data.util.Utils.sha256Base;
 
 /**
  * Created by longlv on 03/06/2016.

@@ -1,12 +1,15 @@
 package vn.com.vng.zalopay.data.merchant;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
 import vn.com.vng.zalopay.data.cache.model.MerchantUserDao;
+import vn.com.vng.zalopay.data.util.Lists;
 
 /**
  * Created by AnhHieu on 9/21/16.
@@ -43,10 +46,33 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
         getMerchantUserDao().deleteAll();
     }
 
+    @Override
     public boolean existIn(Collection<Long> appIds) {
         long count = getMerchantUserDao().queryBuilder()
                 .where(MerchantUserDao.Properties.Appid.in(appIds))
                 .count();
         return count >= appIds.size();
+    }
+
+
+    public List<Long> notExistInDb(List<Long> appIds) {
+
+        Timber.d("notExistInDb apppIds %s", appIds.size());
+        List<MerchantUser> listMerchant = getMerchantUserDao().queryBuilder()
+                .where(MerchantUserDao.Properties.Appid.in(appIds))
+                .list();
+
+        if (!Lists.isEmptyOrNull(listMerchant)) {
+
+            List<Long> listMerchantId = new ArrayList<>();
+            for (MerchantUser merchantUser : listMerchant) {
+                listMerchantId.add(merchantUser.getAppid());
+            }
+
+            boolean ret = appIds.removeAll(listMerchant);
+        }
+        
+        Timber.d("notExistInDb apppIds %s", appIds.size());
+        return appIds;
     }
 }

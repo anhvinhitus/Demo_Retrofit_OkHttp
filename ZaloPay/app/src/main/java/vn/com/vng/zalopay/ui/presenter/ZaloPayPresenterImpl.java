@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +48,8 @@ import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
+
+import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -181,19 +184,29 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
 
     private void getListMerchantUser(List<AppResource> listAppResource) {
-        if (listAppResource == null) {
-            return;
-        }
-        String strAppIds = ListStringUtil.toStringListAppId(listAppResource);
 
-        if (TextUtils.isEmpty(strAppIds)) {
+        if (isEmptyOrNull(listAppResource)) {
             return;
         }
 
-        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(strAppIds)
+        List<Long> listId = toStringListAppId(listAppResource);
+
+        Subscription subscription = mMerchantRepository.getListMerchantUserInfo(listId)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);
+    }
+
+
+    private List<Long> toStringListAppId(List<AppResource> listAppResource) {
+        List<Long> listId = new ArrayList<>();
+
+        for (AppResource appResource : listAppResource) {
+            if (appResource != null) {
+                listId.add((long) appResource.appid);
+            }
+        }
+        return listId;
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {

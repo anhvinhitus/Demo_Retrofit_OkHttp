@@ -144,16 +144,5 @@ public class ListStringUtil {
         return longArr;
     }
 
-    public static String toStringListAppId(List<AppResource> listAppResource) {
-        if (isEmptyOrNull(listAppResource)) return "";
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < listAppResource.size(); i++) {
-            if (listAppResource.get(i) == null) {
-                continue;
-            }
-            str.append(str.length() == 0 ? String.valueOf(listAppResource.get(i).appid) :
-                    "," + String.valueOf(listAppResource.get(i).appid));
-        }
-        return str.toString();
-    }
+
 }

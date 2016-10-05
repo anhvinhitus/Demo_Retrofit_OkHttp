@@ -1,13 +1,20 @@
 package vn.com.vng.zalopay.data.ws.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by AnhHieu on 6/16/16.
  */
 public class Event {
 
     private int msgType;
-    private long mtaid;
-    private long mtuid;
+
+    @SerializedName("mtaid")
+    public long mtaid;
+
+    @SerializedName("mtuid")
+    public long mtuid;
+
     private int sourceid;
     private boolean hasData;
 

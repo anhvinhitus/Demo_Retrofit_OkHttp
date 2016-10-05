@@ -26,6 +26,8 @@ public interface MerchantStore {
         void removeAll();
 
         boolean existIn(Collection<Long> appIds);
+
+        List<Long> notExistInDb(List<Long> appIds);
     }
 
     interface RequestService {
@@ -44,7 +46,7 @@ public interface MerchantStore {
     interface Repository {
         Observable<MerchantUserInfo> getMerchantUserInfo(long appId);
 
-        Observable<Boolean> getListMerchantUserInfo(String appIdList);
+        Observable<Boolean> getListMerchantUserInfo(List<Long> appIds);
 
         Observable<Boolean> removeAll();
     }
