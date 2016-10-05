@@ -137,7 +137,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void listAppResource() {
         List<Integer> insideApps = null;
         try {
-            insideApps = CShareData.getInstance(mZaloPayView.getActivity()).getApproveInsideApps();
+            insideApps = CShareData.getInstance().getApproveInsideApps();
         } catch (Exception e) {
             Timber.w(e, "Get inside apps from PaymetSDK exception [%s]", e.getMessage());
         }
@@ -255,7 +255,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     public void getBanners() {
         try {
-            List<DBanner> banners = CShareData.getInstance(mZaloPayView.getActivity()).getBannerList();
+            List<DBanner> banners = CShareData.getInstance().getBannerList();
             if (banners != null && banners.size() > 1) {
                 startBannerCountDownTimer();
             } else {

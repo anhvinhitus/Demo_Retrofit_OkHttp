@@ -120,7 +120,7 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onUpVersion(String latestVersion, String msg) {
+        public void onUpVersion(boolean forece, String latestVersion, String msg) {
             Timber.d("onUpVersion latestVersion [%s]", latestVersion);
             Timber.d("onUpVersion msg [%s]", msg);
             boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
@@ -288,7 +288,7 @@ public class PaymentWrapper {
         paymentInfo.walletTransID = walletTransId;
 
         Timber.d("saveCardMap, start paymentsdk");
-        WalletSDKApplication.saveCardMap(viewListener.getActivity(), paymentInfo, listener);
+        WalletSDKApplication.saveCardMap(paymentInfo, listener);
     }
 
     private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {

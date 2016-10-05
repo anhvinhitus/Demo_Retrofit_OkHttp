@@ -95,12 +95,19 @@ public class AppVersionUtils {
         if (TextUtils.isEmpty(contentText)) {
             contentText = activity.getString(R.string.need_update_to_use);
         }
-        DialogManager.showSweetDialogUpdate(activity, contentText, newVersion, activity.getString(R.string.btn_update),
+        DialogManager.showSweetDialogUpdate(activity, contentText, newVersion,
+                activity.getString(R.string.btn_update),
+                null,
                 new ZPWOnEventUpdateListener() {
                     @Override
                     public void onUpdateListenner() {
                         checkClearSession();
                         AndroidUtils.openPlayStoreForUpdate(activity);
+                    }
+
+                    @Override
+                    public void onCancelListenner() {
+
                     }
                 });
     }

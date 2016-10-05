@@ -123,7 +123,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     private void checkShowHideDeposit() {
         try {
-            boolean isEnableDeposit = CShareData.getInstance(getActivity()).isEnableDeposite();
+            boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();
             if (isEnableDeposit) {
                 layoutDeposit.setVisibility(View.VISIBLE);
                 viewSeparate.setVisibility(View.VISIBLE);

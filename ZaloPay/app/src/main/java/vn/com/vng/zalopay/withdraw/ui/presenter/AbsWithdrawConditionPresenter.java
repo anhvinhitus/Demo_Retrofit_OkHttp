@@ -43,7 +43,7 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
         User user = mUserConfig.getCurrentUser();
         boolean isMapped = false;
         try {
-            List<DMappedCard> mapCardLis = CShareData.getInstance(getActivity()).getMappedCardList(user.zaloPayId);
+            List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList(user.zaloPayId);
             if (mapCardLis == null || mapCardLis.size() <= 0) {
                 return false;
             }

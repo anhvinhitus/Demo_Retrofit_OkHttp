@@ -177,7 +177,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
         List<MenuItem> listItem = MenuItemUtil.getMenuItems();
         try {
-            boolean isEnableDeposit = CShareData.getInstance((Activity) menuView.getContext()).isEnableDeposite();
+            boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();
             if (!isEnableDeposit) {
                 listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
             }

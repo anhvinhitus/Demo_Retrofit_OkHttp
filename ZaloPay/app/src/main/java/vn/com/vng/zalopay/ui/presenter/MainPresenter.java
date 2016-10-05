@@ -176,7 +176,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         userInfo.zaloPayUserId = user.zaloPayId;
         userInfo.accessToken = user.accesstoken;
         paymentInfo.userInfo = userInfo;
-        WalletSDKApplication.loadGatewayInfo(homeView.getActivity(), paymentInfo, new DefaultZPGatewayInfoCallBack() {
+        WalletSDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
@@ -185,7 +185,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             }
 
             @Override
-            public void onUpVersion(String latestVersion, String msg) {
+            public void onUpVersion(boolean force, String latestVersion, String msg) {
                 Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
                 boolean upgradeApp = AppVersionUtils.needUpgradeApp(latestVersion, msg);
                 if (!upgradeApp || homeView == null) {
@@ -220,8 +220,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             paymentInfo.userInfo.zaloPayUserId = mUserConfig.getCurrentUser().zaloPayId;
             paymentInfo.userInfo.accessToken = mUserConfig.getCurrentUser().accesstoken;
 
-            WalletSDKApplication.refreshGatewayInfo(homeView.getActivity(), paymentInfo,
-                    new DefaultZPGatewayInfoCallBack());
+            WalletSDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
         }
 
     }

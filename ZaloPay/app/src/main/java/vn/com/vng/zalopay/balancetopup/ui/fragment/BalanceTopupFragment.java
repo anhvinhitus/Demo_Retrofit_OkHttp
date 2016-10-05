@@ -147,8 +147,8 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     private void initLimitAmount() {
         try {
-            minDepositAmount = CShareData.getInstance(getActivity()).getMinDepositValue();
-            maxDepositAmount = CShareData.getInstance(getActivity()).getMaxDepositValue();
+            minDepositAmount = CShareData.getInstance().getMinDepositValue();
+            maxDepositAmount = CShareData.getInstance().getMaxDepositValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }

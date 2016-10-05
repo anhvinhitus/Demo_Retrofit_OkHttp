@@ -190,7 +190,7 @@ public class Navigator implements INavigator {
             long now = System.currentTimeMillis();
             int numberCard = 0;
             try {
-                CShareData shareData = CShareData.getInstance((Activity) context);
+                CShareData shareData = CShareData.getInstance();
                 List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 numberCard = mapCardLis.size();
             } catch (Exception ex) {
@@ -438,7 +438,7 @@ public class Navigator implements INavigator {
 
         if (channel == 2) {
             try {
-                CShareData shareData = CShareData.getInstance((Activity) context);
+                CShareData shareData = CShareData.getInstance();
                 List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 if (mapCardLis == null || mapCardLis.size() == 0) {
                     Helpers.promiseResolveSuccess(promise, null);
