@@ -10,6 +10,7 @@ import com.squareup.wire.ProtoWriter;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -22,6 +23,8 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
 
   private static final long serialVersionUID = 0L;
 
+  public static final Long DEFAULT_STARTTIME = 0L;
+
   @WireField(
       tag = 1,
       adapter = "vn.com.vng.zalopay.data.ws.protobuf.RecoveryMessage#ADAPTER",
@@ -29,19 +32,28 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
   )
   public final List<RecoveryMessage> messages;
 
-  public DataRecoveryResponse(List<RecoveryMessage> messages) {
-    this(messages, ByteString.EMPTY);
+  @WireField(
+      tag = 2,
+      adapter = "com.squareup.wire.ProtoAdapter#UINT64",
+      label = WireField.Label.REQUIRED
+  )
+  public final Long starttime;
+
+  public DataRecoveryResponse(List<RecoveryMessage> messages, Long starttime) {
+    this(messages, starttime, ByteString.EMPTY);
   }
 
-  public DataRecoveryResponse(List<RecoveryMessage> messages, ByteString unknownFields) {
+  public DataRecoveryResponse(List<RecoveryMessage> messages, Long starttime, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.messages = Internal.immutableCopyOf("messages", messages);
+    this.starttime = starttime;
   }
 
   @Override
   public Builder newBuilder() {
     Builder builder = new Builder();
     builder.messages = Internal.copyOf("messages", messages);
+    builder.starttime = starttime;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -52,7 +64,8 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     if (!(other instanceof DataRecoveryResponse)) return false;
     DataRecoveryResponse o = (DataRecoveryResponse) other;
     return unknownFields().equals(o.unknownFields())
-        && messages.equals(o.messages);
+        && messages.equals(o.messages)
+        && starttime.equals(o.starttime);
   }
 
   @Override
@@ -61,6 +74,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     if (result == 0) {
       result = unknownFields().hashCode();
       result = result * 37 + messages.hashCode();
+      result = result * 37 + starttime.hashCode();
       super.hashCode = result;
     }
     return result;
@@ -70,11 +84,14 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
   public String toString() {
     StringBuilder builder = new StringBuilder();
     if (!messages.isEmpty()) builder.append(", messages=").append(messages);
+    builder.append(", starttime=").append(starttime);
     return builder.replace(0, 2, "DataRecoveryResponse{").append('}').toString();
   }
 
   public static final class Builder extends Message.Builder<DataRecoveryResponse, Builder> {
     public List<RecoveryMessage> messages;
+
+    public Long starttime;
 
     public Builder() {
       messages = Internal.newMutableList();
@@ -86,9 +103,17 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
       return this;
     }
 
+    public Builder starttime(Long starttime) {
+      this.starttime = starttime;
+      return this;
+    }
+
     @Override
     public DataRecoveryResponse build() {
-      return new DataRecoveryResponse(messages, super.buildUnknownFields());
+      if (starttime == null) {
+        throw Internal.missingRequiredFields(starttime, "starttime");
+      }
+      return new DataRecoveryResponse(messages, starttime, super.buildUnknownFields());
     }
   }
 
@@ -100,12 +125,14 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
     @Override
     public int encodedSize(DataRecoveryResponse value) {
       return RecoveryMessage.ADAPTER.asRepeated().encodedSizeWithTag(1, value.messages)
+          + ProtoAdapter.UINT64.encodedSizeWithTag(2, value.starttime)
           + value.unknownFields().size();
     }
 
     @Override
     public void encode(ProtoWriter writer, DataRecoveryResponse value) throws IOException {
       RecoveryMessage.ADAPTER.asRepeated().encodeWithTag(writer, 1, value.messages);
+      ProtoAdapter.UINT64.encodeWithTag(writer, 2, value.starttime);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -116,6 +143,7 @@ public final class DataRecoveryResponse extends Message<DataRecoveryResponse, Da
       for (int tag; (tag = reader.nextTag()) != -1;) {
         switch (tag) {
           case 1: builder.messages.add(RecoveryMessage.ADAPTER.decode(reader)); break;
+          case 2: builder.starttime(ProtoAdapter.UINT64.decode(reader)); break;
           default: {
             FieldEncoding fieldEncoding = reader.peekFieldEncoding();
             Object value = fieldEncoding.rawProtoAdapter().decode(reader);

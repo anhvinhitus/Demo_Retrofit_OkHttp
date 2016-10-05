@@ -17,10 +17,13 @@ import vn.com.vng.zalopay.data.ws.protobuf.DataRecoveryResponse;
 import vn.com.vng.zalopay.data.ws.protobuf.DataResponseUser;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageSendUser;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageUserToUser;
 import vn.com.vng.zalopay.data.ws.protobuf.RecoveryMessage;
 import vn.com.vng.zalopay.data.ws.protobuf.ResultAuth;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
 import java.io.IOException;
@@ -138,7 +141,14 @@ public class MessageParser implements Parser {
         Event event = processPushMessage(recoveryMessage.data);
         Timber.d("event %s", event);
         if (event instanceof NotificationData) {
-            return (NotificationData) event;
+            NotificationData notificationData = (NotificationData) event;
+            Integer status = recoveryMessage.status;
+            if (status != null && status == MessageStatus.READED.getValue()) {
+                notificationData.setNotificationState(Enums.NotificationState.READ.getId());
+            } else {
+                notificationData.setNotificationState(Enums.NotificationState.UNREAD.getId());
+            }
+            return notificationData;
         }
 
         return null;

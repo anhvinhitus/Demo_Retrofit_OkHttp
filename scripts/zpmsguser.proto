@@ -55,6 +55,7 @@ message RecoveryMessage{
 
 message DataRecoveryResponse{
 	repeated RecoveryMessage messages = 1;
+	required uint64 starttime = 2;
 }
 
 message MessageLogin{

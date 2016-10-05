@@ -43,7 +43,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public void put(List<NotificationData> val) {
         List<NotificationGD> list = transform(val);
         if (!Lists.isEmptyOrNull(list)) {
-            getAsyncSession().insertOrReplaceInTx(NotificationGD.class, list);
+            getAsyncSession().insertInTx(NotificationGD.class, list);
         }
     }
 
@@ -71,7 +71,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (Lists.isEmptyOrNull(list)) {
             return;
         }
-        getDaoSession().getNotificationGDDao().insertOrReplaceInTx(list);
+        getDaoSession().getNotificationGDDao().insertInTx(list);
     }
 
     @Override
