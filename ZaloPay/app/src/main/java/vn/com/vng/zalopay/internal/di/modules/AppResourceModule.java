@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
-import android.content.Context;
-
 import java.util.HashMap;
 
 import javax.inject.Named;
@@ -18,8 +16,6 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.merchant.MerchantRepository;
-import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
 /**
@@ -44,8 +40,7 @@ public class AppResourceModule {
 
     @Provides
     @UserScope
-    AppResourceStore.Repository provideAppResourceRepository(Context context,
-                                                             AppConfigEntityDataMapper mapper,
+    AppResourceStore.Repository provideAppResourceRepository(AppConfigEntityDataMapper mapper,
                                                              AppResourceStore.RequestService requestService,
                                                              AppResourceStore.LocalStorage localStorage,
                                                              @Named("params_request_default") HashMap<String, String> paramsReq,

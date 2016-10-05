@@ -12,6 +12,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.data.util.AppResourceUtil;
 import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -86,7 +87,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             listAppIdAndChecksum(appResources, checksumlist);
         }
 
-        String appIds = ListStringUtil.toStringListAppId(appResources);
+        String appIds = AppResourceUtil.toStringListAppId(appResources);
         String checkSum = checksumlist.toString();
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
