@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -139,43 +140,6 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showDialogWithMessage(String message, String lblCancel, String lblConfirm, final Promise promise) {
-        Timber.d("showDialogWithMessage %s", message);
-        DialogManager.showSweetDialogConfirm(getCurrentActivity(), message, lblConfirm, lblCancel, new ZPWOnEventConfirmDialogListener() {
-            @Override
-            public void onCancelEvent() {
-                if (promise != null) {
-                    promise.resolve(0);
-                }
-            }
-
-            @Override
-            public void onOKevent() {
-                if (promise != null) {
-                    promise.resolve(1);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void showDialogErrorWithMessage(String message, String lblCancel, final Promise promise) {
-        Timber.d("showDialogErrorWithMessage %s", message);
-        DialogManager.showSweetDialogCustom(getCurrentActivity(), message, lblCancel, SweetAlertDialog.ERROR_TYPE, new ZPWOnEventConfirmDialogListener() {
-            @Override
-            public void onCancelEvent() {
-            }
-
-            @Override
-            public void onOKevent() {
-                if (promise != null) {
-                    promise.resolve(0);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
     public void promptPIN(final int channel, final Promise promise) {
         Timber.d("promptPIN: channel %s", channel);
         AndroidUtils.runOnUIThread(new Runnable() {
@@ -203,5 +167,22 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void showDialog(int dialogType, String title, String message, ReadableArray btnNames, final Promise promise) {
         Helpers.showDialog(getCurrentActivity(), dialogType, title, message, btnNames, promise);
+    }
+
+    @ReactMethod
+    public void showDialogWithMessage(String message, String lblCancel, String lblConfirm, final Promise promise) {
+        Timber.d("showDialogWithMessage %s", message);
+        WritableNativeArray btnArray = new WritableNativeArray();
+        btnArray.pushString(lblCancel);
+        btnArray.pushString(lblConfirm);
+        showDialog(SweetAlertDialog.NORMAL_TYPE, null, message, btnArray, promise);
+    }
+
+    @ReactMethod
+    public void showDialogErrorWithMessage(String message, String lblCancel, final Promise promise) {
+        Timber.d("showDialogErrorWithMessage %s", message);
+        WritableNativeArray btnArray = new WritableNativeArray();
+        btnArray.pushString(lblCancel);
+        showDialog(SweetAlertDialog.ERROR_TYPE, null, message, btnArray, promise);
     }
 }
