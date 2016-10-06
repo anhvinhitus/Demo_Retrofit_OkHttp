@@ -131,7 +131,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> needRecoveryMessage() {
-        return ObservableHelper.makeObservable(localStorage::needRecoverNotify);
+    public Observable<Long> getOldestTimeNotification() {
+        return ObservableHelper.makeObservable(localStorage::getOldestTimeNotification);
     }
 }

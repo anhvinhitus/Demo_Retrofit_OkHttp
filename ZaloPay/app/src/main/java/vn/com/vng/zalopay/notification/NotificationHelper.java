@@ -320,8 +320,8 @@ public class NotificationHelper {
         mEventBus.post(new RefreshPaymentSdkEvent());
     }
 
-    Observable<Boolean> needRecoveryMessage() {
-        return mNotifyRepository.needRecoveryMessage();
+    Observable<Long> getOldestTimeNotification() {
+        return mNotifyRepository.getOldestTimeNotification();
     }
 
 

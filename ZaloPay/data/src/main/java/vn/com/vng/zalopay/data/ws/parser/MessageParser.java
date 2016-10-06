@@ -5,9 +5,10 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.IOException;
+
 import okio.ByteString;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -16,17 +17,11 @@ import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.protobuf.DataRecoveryResponse;
 import vn.com.vng.zalopay.data.ws.protobuf.DataResponseUser;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageSendUser;
 import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageUserToUser;
 import vn.com.vng.zalopay.data.ws.protobuf.RecoveryMessage;
 import vn.com.vng.zalopay.data.ws.protobuf.ResultAuth;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.Enums;
-import vn.com.vng.zalopay.domain.model.User;
-
-import java.io.IOException;
 
 import static vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType.RECOVERY_RESPONSE;
 

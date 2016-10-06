@@ -268,12 +268,12 @@ public class WsConnection extends Connection {
         return true;
     }
 
-    public boolean sendMessageRecovery() {
+    public boolean sendMessageRecovery(int count, long timeStamp) {
         Timber.d("sendMessageRecovery");
         MessageRecoveryRequest.Builder request = new MessageRecoveryRequest.Builder()
-                .count(30)
-                .order(RecoveryOrder.ORDER_ASCEND.getValue())
-                .starttime(0L);
+                .count(count)
+                .order(RecoveryOrder.ORDER_DESCEND.getValue())
+                .starttime(timeStamp);
 
         return send(MessageType.RECOVERY_REQUEST.getValue(), MessageRecoveryRequest.ADAPTER.encode(request.build()));
     }

@@ -75,6 +75,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
+    private final int NUMBER_NOTIFICATION = 30;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -185,7 +187,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     public void onReceiverEvent(Event event) {
         if (event instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) event;
-            if (authenticationData.code != NetworkError.SUCCESSFUL) {
+            if (authenticationData.result != NetworkError.SUCCESSFUL) {
                 if (authenticationData.code == NetworkError.UM_TOKEN_NOT_FOUND ||
                         authenticationData.code == NetworkError.UM_TOKEN_EXPIRE ||
                         authenticationData.code == NetworkError.TOKEN_INVALID) {
@@ -198,22 +200,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                 }
             } else {
                 Timber.d("Socket authentication succeeded");
-                if (notificationHelper == null) {
-                    return;
-                }
-
-                Subscription subscription = notificationHelper.needRecoveryMessage()
-                        .observeOn(Schedulers.io())
-                        .subscribe(new DefaultSubscriber<Boolean>() {
-                            @Override
-                            public void onNext(Boolean result) {
-                                if (result) {
-                                    mWsConnection.sendMessageRecovery();
-                                }
-                            }
-                        });
-
-                mCompositeSubscription.add(subscription);
+                this.recoveryNotification(true);
 
             }
         } else if (event instanceof NotificationData) {
@@ -224,6 +211,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             notificationHelper.processNotification((NotificationData) event);
         } else if (event instanceof RecoveryMessageEvent) {
             List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
+            Timber.d("RecoveryMessageEvent %s", listMessage);
+
             if (Lists.isEmptyOrNull(listMessage)) {
                 return;
             }
@@ -231,6 +220,40 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             if (notificationHelper != null) {
                 notificationHelper.recoveryNotification(listMessage);
             }
+            if (listMessage.size() >= NUMBER_NOTIFICATION) {
+                this.recoveryNotification(false);
+            }
+        }
+    }
+
+
+    private void recoveryNotification(final boolean isFirst) {
+        if (notificationHelper == null) {
+            return;
+        }
+
+        Subscription subscription = notificationHelper.getOldestTimeNotification()
+                .observeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long time) {
+                        if (isFirst) {
+                            if (time == 0) {
+                                sendMessageRecovery(0);
+                            }
+                        } else {
+                            sendMessageRecovery(time);
+                        }
+                    }
+                });
+
+        mCompositeSubscription.add(subscription);
+    }
+
+
+    private void sendMessageRecovery(long timeStamp) {
+        if (mWsConnection != null) {
+            mWsConnection.sendMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
         }
     }
 

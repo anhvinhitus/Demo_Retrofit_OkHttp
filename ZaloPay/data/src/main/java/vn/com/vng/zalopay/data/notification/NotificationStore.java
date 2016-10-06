@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 
 /**
  * Created by AnhHieu on 6/20/16.
+ * *
  */
 public interface NotificationStore {
 
@@ -39,7 +40,7 @@ public interface NotificationStore {
 
         void deleteAll();
 
-        boolean needRecoverNotify();
+        long getOldestTimeNotification();
     }
 
     interface RequestService {
@@ -80,6 +81,6 @@ public interface NotificationStore {
 
         Observable<BaseResponse> sendNotification(String receiverid, String embededdata);
 
-        Observable<Boolean> needRecoveryMessage();
+        Observable<Long> getOldestTimeNotification();
     }
 }

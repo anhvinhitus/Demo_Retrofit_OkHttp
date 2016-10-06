@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
@@ -277,7 +278,18 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     @Override
-    public boolean needRecoverNotify() {
-        return getDaoSession().getNotificationGDDao().count() == 0;
+    public long getOldestTimeNotification() {
+        long timeUpdate = 0;
+
+        List<NotificationGD> list = getDaoSession().getNotificationGDDao().queryBuilder()
+                .orderAsc(NotificationGDDao.Properties.Timestamp)
+                .limit(1).list();
+
+        if (!Lists.isEmptyOrNull(list)) {
+            timeUpdate = list.get(0).getTimestamp();
+        }
+
+        Timber.d("getOldestTimeNotification time stamp %s", timeUpdate);
+        return timeUpdate;
     }
 }
