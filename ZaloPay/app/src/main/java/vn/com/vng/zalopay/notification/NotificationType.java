@@ -54,7 +54,7 @@ public class NotificationType {
     }
 
     static boolean shouldMarkRead(int notificationType) {
-        return notificationType == ORDER_PAYMENT || notificationType == DONATE_MONEY;
+        return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION;
     }
 
 
