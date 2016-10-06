@@ -39,7 +39,8 @@ public class NotificationType {
                 notificationType == REFUND_TRANSACTION ||
                 notificationType == RETRY_TRANSACTION ||
                 notificationType == REFUND_TRANSACTION_BANK ||
-                notificationType == DONATE_MONEY
+                notificationType == DONATE_MONEY ||
+                notificationType == RECOVERY_MONEY
                 ;
     }
 
