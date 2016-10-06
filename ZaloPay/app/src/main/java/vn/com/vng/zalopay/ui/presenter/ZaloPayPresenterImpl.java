@@ -132,21 +132,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void initialize() {
-        this.showListAppInDB();
+        this.getListAppResource();
         this.getTotalNotification(2000);
         this.getBanners();
         this.getBalance();
-        this.getListAppResource();
-    }
-
-    private void showListAppInDB() {
-        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<AppResource>>() {
-            @Override
-            public List<AppResource> call() throws Exception {
-                return mAppResourceRepository.listAppResourceFromDB();
-            }
-        }).subscribe(new AppResourceSubscriber());
-        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -160,7 +149,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private void getListAppResource() {
-        Subscription subscription = mAppResourceRepository.listAppResource()
+        Subscription subscription = mAppResourceRepository.listInsideAppResource()
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
                     public void call(List<AppResource> appResources) {
@@ -184,7 +173,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
 
     private void getListMerchantUser(List<AppResource> listAppResource) {
-
+        Timber.d("getListMerchantUser: [%s]", listAppResource.size());
         if (isEmptyOrNull(listAppResource)) {
             return;
         }

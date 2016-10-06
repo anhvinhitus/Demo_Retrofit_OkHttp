@@ -18,10 +18,6 @@ public class PaymentAppConfig {
         public static final int TRANSFER_MONEY = 1;
         public static final int RECEIVE_MONEY = 3;
         public static final int RED_PACKET = 6;
-        public static final int RECHARGE_MONEY_PHONE = 11;
-        public static final int BUY_PHONE_CARD = 12;
-        public static final int SERVICE = 15;
-        public static final int ELECTRIC_BILL = 17;
     }
 
     static final HashMap<Integer, AppResource> APP_RESOURCE_MAP;

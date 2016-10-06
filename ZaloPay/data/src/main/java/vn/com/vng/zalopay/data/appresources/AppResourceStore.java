@@ -18,7 +18,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 public interface AppResourceStore {
 
     interface LocalStorage {
-        List<AppResourceEntity> getInsideAppResource();
 
         List<AppResourceEntity> getAllAppResource();
 
@@ -51,9 +50,7 @@ public interface AppResourceStore {
     interface Repository {
         Observable<Boolean> initialize();
 
-        List<AppResource> listAppResourceFromDB();
-
-        Observable<List<AppResource>> listAppResource();
+        Observable<List<AppResource>> listInsideAppResource();
     }
 
 }

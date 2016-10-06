@@ -12,11 +12,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
-import vn.com.vng.zalopay.data.util.AppResourceUtil;
-import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.AppResource;
+
+import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 /**
  * Created by huuhoa on 6/17/16.
@@ -60,35 +59,32 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     @Override
     public Observable<Boolean> initialize() {
-        return ObservableHelper.makeObservable(() -> {
+        return makeObservable(() -> {
             ensureAppResourceAvailable();
             return Boolean.TRUE;
         });
     }
 
     @Override
-    public List<AppResource> listAppResourceFromDB() {
-        return mAppConfigEntityDataMapper.transformAppResourceEntity(mLocalStorage.getInsideAppResource());
-    }
-
-    @Override
-    public Observable<List<AppResource>> listAppResource() {
+    public Observable<List<AppResource>> listInsideAppResource() {
         return Observable.concat(
-                ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource),
-                fetchAppResource().flatMap(appResourceResponse -> ObservableHelper.makeObservable(mLocalStorage::getInsideAppResource)))
-                //.delaySubscription(200, TimeUnit.MILLISECONDS)
-                .map(o -> mAppConfigEntityDataMapper.transformAppResourceEntity(o));
+                makeObservable(mLocalStorage::getAllAppResource),
+                fetchInsideAppResource()
+                        .map(response -> mLocalStorage.getAllAppResource())
+                        .onErrorResumeNext(throwable -> Observable.empty())
+        ).map(mAppConfigEntityDataMapper::transformAppResourceEntity);
     }
 
-    private Observable<AppResourceResponse> fetchAppResource() {
-        List<AppResource> appResources = listAppResourceFromDB();
-        List<String> checksumlist = new ArrayList<>();
-        if (!Lists.isEmptyOrNull(appResources)) {
-            listAppIdAndChecksum(appResources, checksumlist);
-        }
+    private Observable<AppResourceResponse> fetchInsideAppResource() {
 
-        String appIds = AppResourceUtil.toStringListAppId(appResources);
+        List<String> appidlist = new ArrayList<>();
+        List<String> checksumlist = new ArrayList<>();
+
+        listAppIdAndChecksum(appidlist, checksumlist);
+
+        String appIds = appidlist.toString().replaceAll("\\s", "");
         String checkSum = checksumlist.toString();
+
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
         return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, appVersion)
@@ -97,7 +93,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private void ensureAppResourceAvailable() {
-        List<AppResourceEntity> list = mLocalStorage.getInsideAppResource();
+        List<AppResourceEntity> list = mLocalStorage.getAllAppResource();
         List<AppResourceEntity> listAppDownload = new ArrayList<>();
         for (AppResourceEntity app : list) {
             if (shouldDownloadApp(app)) {
@@ -124,26 +120,22 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         return false;
     }
 
-    private void listAppIdAndChecksum(List<AppResource> appResources, List<String> checksumlist) {
+    private void listAppIdAndChecksum(List<String> listAppId, List<String> checksumlist) {
+        List<AppResourceEntity> appResources = mLocalStorage.getAllAppResource();
+
         if (Lists.isEmptyOrNull(appResources)) {
             return;
         }
 
-        for (AppResource appResource : appResources) {
-            if (appResource == null) {
-                continue;
-            }
-            AppResourceEntity appResourceEntity = mLocalStorage.get(appResource.appid);
-            if (appResourceEntity == null) {
-                checksumlist.add("");
-            } else {
-                checksumlist.add(appResourceEntity.checksum);
+        for (AppResourceEntity appResource : appResources) {
+            if (appResource != null) {
+                listAppId.add(String.valueOf(appResource.appid));
+                checksumlist.add(appResource.checksum);
             }
         }
     }
 
     private void processAppResourceResponse(AppResourceResponse resourceResponse) {
-        List<Integer> listAppId = resourceResponse.appidlist;
 
         if (!Lists.isEmptyOrNull(resourceResponse.resourcelist)) {
             List<AppResourceEntity> resourcelist = new ArrayList<>();
@@ -153,18 +145,19 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                     appResourceEntity.iconurl = resourceResponse.baseurl + appResourceEntity.iconurl;
                 }
                 int index = resourceResponse.orderedInsideApps.indexOf(appResourceEntity.appid);
-                Timber.d("processAppResourceResponse appid [%s] index [%s]", appResourceEntity.appid, index);
+                Timber.d("processAppResourceResponse appId [%s] index [%s]", appResourceEntity.appid, index);
                 appResourceEntity.sortOrder = index;
                 resourcelist.add(appResourceEntity);
             }
 
-            Timber.d("baseurl %s listAppId %s resourcelistSize %s", resourceResponse.baseurl, listAppId, resourcelist.size());
+            Timber.d("baseUrl [%s] resourceListSize [%s]", resourceResponse.baseurl, resourcelist.size());
             startDownloadService(resourcelist, resourceResponse.baseurl);
             mLocalStorage.put(resourcelist);
         } else if (!Lists.isEmptyOrNull(resourceResponse.orderedInsideApps)) {
             updateInsideAppIndex(resourceResponse.orderedInsideApps);
         }
 
+        List<Integer> listAppId = resourceResponse.appidlist;
         mLocalStorage.updateAppList(listAppId);
     }
 
@@ -172,13 +165,14 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         if (Lists.isEmptyOrNull(orderedInsideApps)) {
             return;
         }
-        List<AppResourceEntity> appResourceEntities = mLocalStorage.getInsideAppResource();
+        List<AppResourceEntity> appResourceEntities = mLocalStorage.getAllAppResource();
         if (Lists.isEmptyOrNull(appResourceEntities)) {
             return;
         }
-        for (int i = 0; i < appResourceEntities.size(); i++) {
-            appResourceEntities.get(i).sortOrder = orderedInsideApps.indexOf(appResourceEntities.get(i).appid);
+        for (AppResourceEntity entity : appResourceEntities) {
+            entity.sortOrder = orderedInsideApps.indexOf(entity.appid);
         }
+
         mLocalStorage.put(appResourceEntities);
     }
 
