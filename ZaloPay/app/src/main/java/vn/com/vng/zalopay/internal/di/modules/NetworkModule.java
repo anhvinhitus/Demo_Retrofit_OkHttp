@@ -87,6 +87,7 @@ public class NetworkModule {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
         }
+        builder.addInterceptor(new BaseNetworkInterceptor());
         builder.cache(cache);
         builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.CONNECTION_KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
         builder.connectTimeout(10, TimeUnit.SECONDS);
