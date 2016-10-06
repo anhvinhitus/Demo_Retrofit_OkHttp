@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -150,6 +151,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private void getListAppResource() {
         Subscription subscription = mAppResourceRepository.listInsideAppResource()
+                .map(new Func1<List<AppResource>, List<AppResource>>() {
+                    @Override
+                    public List<AppResource> call(List<AppResource> appResourceList) {
+                        appResourceList.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
+                        return appResourceList;
+                    }
+                })
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
                     public void call(List<AppResource> appResources) {
@@ -205,6 +213,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
         mZaloPayView.refreshInsideApps(listApps);
     }
+
 
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 

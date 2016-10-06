@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.paymentapps;
 
+import com.zalopay.apploader.impl.BundleServiceImpl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +20,13 @@ public class PaymentAppConfig {
         public static final int TRANSFER_MONEY = 1;
         public static final int RECEIVE_MONEY = 3;
         public static final int RED_PACKET = 6;
+        public static final int SHOW_SHOW = 22;
     }
 
     static final HashMap<Integer, AppResource> APP_RESOURCE_MAP;
     public static final List<AppResource> APP_RESOURCE_LIST;
+
+    public static final List<AppResource> EXCLUDE_APP_RESOURCE_LIST;
 
     static {
         APP_RESOURCE_MAP = new HashMap<>();
@@ -45,6 +50,10 @@ public class PaymentAppConfig {
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.TRANSFER_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RED_PACKET));
+
+        EXCLUDE_APP_RESOURCE_LIST = new ArrayList<>();
+        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID));
+        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(Constants.SHOW_SHOW));
 
     }
 
