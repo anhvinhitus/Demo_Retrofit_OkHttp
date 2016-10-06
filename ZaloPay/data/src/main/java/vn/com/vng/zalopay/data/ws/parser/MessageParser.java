@@ -116,7 +116,9 @@ public class MessageParser implements Parser {
         try {
             DataRecoveryResponse recoverMessage = DataRecoveryResponse.ADAPTER.decode(data);
             Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
+
             RecoveryMessageEvent recoveryMessageEvent = new RecoveryMessageEvent();
+
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {
@@ -132,16 +134,24 @@ public class MessageParser implements Parser {
         return null;
     }
 
-    private NotificationData processRecoveryMessage(RecoveryMessage recoveryMessage) throws Exception {
-        Event event = processPushMessage(recoveryMessage.data);
+    private NotificationData processRecoveryMessage(RecoveryMessage message) {
+        Event event = processPushMessage(message.data);
         Timber.d("event %s", event);
         if (event instanceof NotificationData) {
             NotificationData notificationData = (NotificationData) event;
-            Integer status = recoveryMessage.status;
-            if (status != null && status == MessageStatus.READED.getValue()) {
+
+            if (message.mtaid != null) {
+                event.setMtaid(message.mtaid);
+            }
+
+            if (message.mtuid != null) {
+                event.setMtuid(message.mtuid);
+            }
+
+            notificationData.setNotificationState(Enums.NotificationState.UNREAD.getId());
+
+            if (message.status == MessageStatus.READED.getValue()) {
                 notificationData.setNotificationState(Enums.NotificationState.READ.getId());
-            } else {
-                notificationData.setNotificationState(Enums.NotificationState.UNREAD.getId());
             }
             return notificationData;
         }
