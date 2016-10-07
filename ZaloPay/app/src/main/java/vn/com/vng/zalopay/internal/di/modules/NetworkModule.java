@@ -23,9 +23,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -38,7 +38,6 @@ import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
  */
 @Module
 public class NetworkModule {
-
     private static final HttpUrl API_HTTP_URL = HttpUrl.parse(BuildConfig.HOST);
     private static final HttpUrl RED_PACKET_API_HTTP_URL = HttpUrl.parse(BuildConfig.REDPACKET_HOST);
 
@@ -88,6 +87,7 @@ public class NetworkModule {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
         }
+        builder.addInterceptor(new BaseNetworkInterceptor());
         builder.cache(cache);
         builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_COUNT, Constants.CONNECTION_KEEP_ALIVE_DURATION, TimeUnit.MINUTES));
         builder.connectTimeout(10, TimeUnit.SECONDS);
@@ -110,6 +110,7 @@ public class NetworkModule {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
         }
+        builder.addInterceptor(new BaseNetworkInterceptor());
         builder.cache(cache);
         builder.connectionPool(new ConnectionPool(Constants.CONNECTION_POOL_DOWNLOAD_COUNT,
                 Constants.CONNECTION_KEEP_ALIVE_DOWNLOAD_DURATION, TimeUnit.MINUTES));

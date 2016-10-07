@@ -14,6 +14,8 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -99,7 +101,6 @@ public class AndroidUtils {
         statusBarHeight = AndroidUtils.getStatusBarHeight(AndroidApplication.instance());
     }
 
-
     public static String getScreenType() {
         if (density == 0.75) {
             return "ldpi";
@@ -118,13 +119,81 @@ public class AndroidUtils {
         }
     }
 
+    public static String getCarrierName() {
+        TelephonyManager manager = (TelephonyManager) AndroidApplication.instance().
+                getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return manager.getNetworkOperatorName();
+    }
+
+    public static String getNetworkClass() {
+        ConnectivityManager cm = (ConnectivityManager) AndroidApplication.instance()
+                .getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if (info == null || !info.isConnected())
+            return "Unknown"; //not connected
+        if (info.getType() == ConnectivityManager.TYPE_WIFI)
+            return "WIFI";
+        if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+            int networkType = info.getSubtype();
+            switch (networkType) {
+                case TelephonyManager.NETWORK_TYPE_GPRS:
+                    return "GPRS";
+                case TelephonyManager.NETWORK_TYPE_EDGE:
+                    return "EDGE";
+                case TelephonyManager.NETWORK_TYPE_CDMA:
+                    return "CDMA";
+                case TelephonyManager.NETWORK_TYPE_1xRTT:
+                    return "1xRTT";
+                case TelephonyManager.NETWORK_TYPE_IDEN: //api<8 : replace by 11
+                    return "2G";
+                case TelephonyManager.NETWORK_TYPE_UMTS:
+                    return "UMTS";
+                case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                    return "EVDO_0";
+                case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                    return "EVDO_A";
+                case TelephonyManager.NETWORK_TYPE_HSDPA:
+                    return "HSDPA";
+                case TelephonyManager.NETWORK_TYPE_HSUPA:
+                    return "HSUPA";
+                case TelephonyManager.NETWORK_TYPE_HSPA:
+                    return "HSPA";
+                case TelephonyManager.NETWORK_TYPE_EVDO_B: //api<9 : replace by 14
+                    return "EVDO_B";
+                case TelephonyManager.NETWORK_TYPE_EHRPD:  //api<11 : replace by 12
+                    return "EHRPD";
+                case TelephonyManager.NETWORK_TYPE_HSPAP:  //api<13 : replace by 15
+                    return "3G";
+                case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
+                    return "4G";
+                default:
+                    return "Unknown";
+            }
+        }
+        return "Unknown";
+    }
+
+    public static String getAndroidVersion() {
+        String release = Build.VERSION.RELEASE;
+        int sdkVersion = Build.VERSION.SDK_INT;
+        return "Android " + sdkVersion + " (" + release + ")";
+    }
+
+    public static String getDeviceManufacturer() {
+        String model = android.os.Build.MODEL;
+        String manufacturer = android.os.Build.MANUFACTURER;
+        return (manufacturer + "/" + model);
+    }
+
     public static String getDeviceId() {
-        final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance().getSystemService(Context.TELEPHONY_SERVICE);
+        final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance()
+                .getSystemService(Context.TELEPHONY_SERVICE);
 
         final String tmDevice, tmSerial, androidId;
         tmDevice = "" + tm.getDeviceId();
         tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(AndroidApplication.instance().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        androidId = "" + android.provider.Settings.Secure.getString(AndroidApplication.instance()
+                .getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
         UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
         String deviceId = deviceUuid.toString();

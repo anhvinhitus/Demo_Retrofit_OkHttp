@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -77,6 +78,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private BalanceStore.Repository mBalanceRepository;
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
+    private FriendStore.Repository mFriendRepository;
+
 
     @Inject
     public MainPresenter(EventBus eventBus,
@@ -87,16 +90,20 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                          PassportRepository passportRepository,
                          BalanceStore.Repository balanceRepository,
                          ZaloPayRepository zaloPayRepository,
-                         TransactionStore.Repository transactionRepository) {
+                         TransactionStore.Repository transactionRepository,
+                         FriendStore.Repository friendRepository
+
+    ) {
         this.mEventBus = eventBus;
-        mAppResourceRepository = appResourceRepository;
+        this.mAppResourceRepository = appResourceRepository;
         this.mUserConfig = userConfig;
         this.mApplicationContext = applicationContext;
-        mNavigator = navigator;
+        this.mNavigator = navigator;
         this.passportRepository = passportRepository;
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
+        this.mFriendRepository = friendRepository;
         timerRefreshPlatform(5); // Thay bằng expiredTime cua payment sdk
     }
 
@@ -114,8 +121,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void getZaloFriend() {
-        FriendStore.Repository friendRepository = AndroidApplication.instance().getUserComponent().friendRepository();
-        Subscription subscription = friendRepository.retrieveZaloFriendsAsNeeded()
+        Subscription subscription = mFriendRepository.retrieveZaloFriendsAsNeeded()
                 .delaySubscription(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<List<ZaloFriend>>());

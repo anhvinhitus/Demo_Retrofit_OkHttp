@@ -69,7 +69,7 @@ public class AppResourceLocalStorageTest {
         resourceEntityList.add(createAppResourceEntity(13));
         mLocalStorage.put(resourceEntityList);
 
-        List<AppResourceEntity> result = mLocalStorage.getInsideAppResource();
+        List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
 
         assertTrue(resourceEntityList.equals(result));
     }
@@ -88,7 +88,7 @@ public class AppResourceLocalStorageTest {
         mLocalStorage.increaseStateDownload(13);
         mLocalStorage.increaseStateDownload(12);
 
-        List<AppResourceEntity> result = mLocalStorage.getInsideAppResource();
+        List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         for (AppResourceEntity app : result) {
             switch (app.appid) {
                 case 11:
@@ -117,7 +117,7 @@ public class AppResourceLocalStorageTest {
         mLocalStorage.increaseRetryDownload(13);
         mLocalStorage.increaseRetryDownload(12);
 
-        List<AppResourceEntity> result = mLocalStorage.getInsideAppResource();
+        List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         for (AppResourceEntity app : result) {
             switch (app.appid) {
                 case 11:
@@ -149,7 +149,7 @@ public class AppResourceLocalStorageTest {
         mLocalStorage.put(resourceEntityList);
         mLocalStorage.updateAppList(Arrays.asList(12, 13, 14));
 
-        List<AppResourceEntity> result = mLocalStorage.getInsideAppResource();
+        List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         assertTrue(resourceEntityList.equals(result));
     }
 }
