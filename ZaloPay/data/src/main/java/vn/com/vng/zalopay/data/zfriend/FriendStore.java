@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.zfriend;
 
+import android.database.Cursor;
+
 import org.json.JSONObject;
 
 import java.util.List;
@@ -22,7 +24,10 @@ public interface FriendStore {
         void writeZaloFriend(ZaloFriendGD val);
 
         List<ZaloFriendGD> listZaloFriend();
+
         LazyList<ZaloFriendGD> listZaloFriend(String textSearch);
+
+        Cursor getZaloFriendCursor();
     }
 
     interface RequestService {
@@ -42,9 +47,14 @@ public interface FriendStore {
      */
     interface Repository {
         Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded();
+
         Observable<List<ZaloFriend>> fetchListFromServer();
+
         Observable<LazyList<ZaloFriendGD>> listZaloFriendFromDb(String textSearch);
+
         Observable<List<ZaloFriendGD>> listZaloFriendFromDb();
+
+        Observable<Cursor> getZaloFriendCursor();
 
         ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD);
     }

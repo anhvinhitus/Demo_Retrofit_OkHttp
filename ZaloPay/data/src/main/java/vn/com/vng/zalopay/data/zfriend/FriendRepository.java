@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.zfriend;
 
+import android.database.Cursor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +77,11 @@ public class FriendRepository implements FriendStore.Repository {
             return null;
         }
         String fullTextSearch = Strings.stripAccents(zaloFriend.getDisplayName());
-        return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(), zaloFriend.getDisplayName(), zaloFriend.getAvatar(), zaloFriend.getUserGender(), "", zaloFriend.isUsingApp(), fullTextSearch);
+        return new ZaloFriendGD(zaloFriend.getUserId(), zaloFriend.getUserName(),
+                zaloFriend.getDisplayName(), zaloFriend.getAvatar(),
+                zaloFriend.getUserGender(), "",
+                zaloFriend.isUsingApp(),
+                fullTextSearch);
     }
 
     private List<ZaloFriendGD> convertZaloFriends(List<ZaloFriend> zaloFriends) {
@@ -119,5 +125,10 @@ public class FriendRepository implements FriendStore.Repository {
     private void updateTimeStamp() {
         Timber.d("Request to update DB timestamp for ZaloFriendList");
         mSqlZaloPayScope.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, String.valueOf(System.currentTimeMillis() / 1000));
+    }
+
+    @Override
+    public Observable<Cursor> getZaloFriendCursor() {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.getZaloFriendCursor());
     }
 }

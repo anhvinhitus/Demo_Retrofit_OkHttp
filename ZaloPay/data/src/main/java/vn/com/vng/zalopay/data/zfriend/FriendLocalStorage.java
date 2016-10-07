@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.zfriend;
 
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -50,5 +51,15 @@ public class FriendLocalStorage implements FriendStore.LocalStorage {
     @Override
     public boolean isHaveZaloFriendDb() {
         return mDao.queryBuilder().count() > 0;
+    }
+
+    @Override
+    public Cursor getZaloFriendCursor() {
+        return mDao.queryBuilder()
+                .orderDesc(ZaloFriendGDDao.Properties.UsingApp)
+                .orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch)
+                .buildCursor()
+                .forCurrentThread()
+                .query();
     }
 }
