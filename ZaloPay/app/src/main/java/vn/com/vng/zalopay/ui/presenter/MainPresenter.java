@@ -104,21 +104,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
         this.mFriendRepository = friendRepository;
-        timerRefreshPlatform(5); // Thay bằng expiredTime cua payment sdk
     }
 
-    private void timerRefreshPlatform(int interval) {
-        int intervalTime = Math.max(interval, 5);
-        Subscription subscription = Observable.interval(intervalTime, TimeUnit.MINUTES)
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        Timber.d("call refresh platform info");
-                        mEventBus.post(new RefreshPlatformInfoEvent());
-                    }
-                });
-        compositeSubscription.add(subscription);
-    }
 
     private void getZaloFriend() {
         Subscription subscription = mFriendRepository.retrieveZaloFriendsAsNeeded()
@@ -172,7 +159,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void refreshBanners() {
-        isLoadedGateWayInfo = true;
         mEventBus.post(new RefreshPlatformInfoEvent());
     }
 
@@ -189,17 +175,44 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             public void onFinish() {
                 Timber.d("load payment sdk finish");
                 isLoadedGateWayInfo = true;
+
                 refreshBanners();
+                beginAutoRefreshPlatform();
             }
 
             @Override
             public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
                 Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
+                isLoadedGateWayInfo = true;
+
+                if (!forceUpdate) {
+                    beginAutoRefreshPlatform();
+                }
+
                 refreshBanners();
                 AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
                 AppVersionUtils.showDialogUpgradeAppIfNeed(homeView.getActivity());
             }
         });
+    }
+
+    private void beginAutoRefreshPlatform() {
+        long expiredTime = CShareData.getInstance().getPlatformInfoExpiredTime();
+        Timber.d("beginAutoRefreshPlatform:  %s", expiredTime);
+        timerRefreshPlatform(expiredTime);
+    }
+
+    private void timerRefreshPlatform(long var) {
+        long interval = Math.max(var, 300000); // 5 min
+        Subscription subscription = Observable.interval(interval, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        Timber.d("call refresh platform info");
+                        mEventBus.post(new RefreshPlatformInfoEvent());
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
