@@ -25,14 +25,12 @@ import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class ZPWebViewProcessor extends WebViewClient {
-//    private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
 
     private boolean hasError = false;
 
     private ZPWebView mWebView = null;
     private ITimeoutLoadingListener mTimeOutListener;
     private IWebViewListener mWebViewListener;
-//    private IDialog mDialog;
 
     public ZPWebViewProcessor(ZPWebView pWebView,
                               ITimeoutLoadingListener timeoutLoadingListener,
@@ -41,10 +39,6 @@ public class ZPWebViewProcessor extends WebViewClient {
         mWebViewListener = webViewListener;
         mTimeOutListener = timeoutLoadingListener;
         mWebView.setWebViewClient(this);
-//        //ensure the method is called only when running on Android 4.2 or later for secure
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            mWebView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-//        }
     }
 
     public void start(final String pUrl, final Activity pActivity) {
@@ -76,7 +70,6 @@ public class ZPWebViewProcessor extends WebViewClient {
         DialogManager.closeProcessDialog();
         injectScriptFile("webapp.js");
 
-//        mWebView.runScript("utils.getNav()", new GetNavigationCallback(mWebViewListener));
         mWebView.runScript("webapp_getNavigation()", new GetNavigationCallback(mWebViewListener));
 
         super.onPageFinished(view, url);
@@ -135,16 +128,8 @@ public class ZPWebViewProcessor extends WebViewClient {
         }
     }
 
-    @SuppressWarnings("unused")
     public boolean canBack() {
         return mWebViewListener.isPageValid();
-    }
-
-    @SuppressWarnings("unused")
-    public void goBack() {
-        if (mWebView != null) {
-            mWebView.goBack();
-        }
     }
 
     @Override
@@ -152,6 +137,7 @@ public class ZPWebViewProcessor extends WebViewClient {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return;
         }
+
         hasError = true;
         Timber.w("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
         onReceivedError(errorCode, description);
@@ -164,6 +150,7 @@ public class ZPWebViewProcessor extends WebViewClient {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
+
         hasError = true;
         int errorCode = error != null ? error.getErrorCode() : WebViewClient.ERROR_UNKNOWN;
         CharSequence description = error != null ? error.getDescription() : null;
@@ -172,19 +159,8 @@ public class ZPWebViewProcessor extends WebViewClient {
     }
 
     @Override
-    public WebResourceResponse shouldInterceptRequest(WebView view,
-                                                      String url) {
-        Timber.d("shouldInterceptRequest: %s", url);
-        return super.shouldInterceptRequest(view, url);
-    }
-
-    @Override
-    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-    }
-
-    @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Timber.d("===shouldOverrideUrlLoading===%s", url);
+        Timber.d("shouldOverrideUrlLoading: %s", url);
         //use case for url
         if (!TextUtils.isEmpty(url) && url.equalsIgnoreCase(WebViewConfig.URL_TO_APP)) {
             if (mWebViewListener != null) {
@@ -204,10 +180,6 @@ public class ZPWebViewProcessor extends WebViewClient {
 
         return true;
     }
-
-//    public void onLoadResource(WebView view, String url) {
-//        Log.d("onLoadResource ", url);
-//    }
 
     public void onDestroy() {
         mTimeOutListener = null;
