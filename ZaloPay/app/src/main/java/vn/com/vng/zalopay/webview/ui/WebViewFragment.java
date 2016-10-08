@@ -40,6 +40,7 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
     private TextView tvError;
 
     protected String mCurrentUrl = "";
+    private boolean mIsPageValid = false;
 
     @Inject
     WebViewPresenter mPresenter;
@@ -249,13 +250,18 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
         if (mWebViewProcessor.hasError()) {
             return false;
         }
-        mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                Timber.d("navigation back: %s", value);
-            }
-        });
-        return true;
+
+        boolean canBack = mWebViewProcessor.canBack();
+        Timber.d("Can WebApp navigate back: %s", canBack);
+        if (canBack) {
+            mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    Timber.d("navigation back: %s", value);
+                }
+            });
+        }
+        return canBack;
     }
 
     @Override
@@ -335,5 +341,14 @@ public class WebViewFragment extends BaseFragment implements IWebViewListener, I
                         getActivity().finish();
                     }
                 });
+    }
+
+    public boolean isPageValid() {
+        return mIsPageValid;
+    }
+
+    @Override
+    public void setPageValid(boolean valid) {
+        mIsPageValid = valid;
     }
 }
