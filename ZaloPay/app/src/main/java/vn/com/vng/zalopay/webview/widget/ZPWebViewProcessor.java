@@ -4,14 +4,19 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
@@ -20,7 +25,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class ZPWebViewProcessor extends WebViewClient {
-    private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
+//    private final String JAVA_SCRIPT_INTERFACE_NAME = "zalopay_appgame";
 
     private boolean hasError = false;
 
@@ -35,10 +40,10 @@ public class ZPWebViewProcessor extends WebViewClient {
         mWebViewListener = webViewListener;
         mTimeOutListener = timeoutLoadingListener;
         mWebView.setWebViewClient(this);
-        //ensure the method is called only when running on Android 4.2 or later for secure
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mWebView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-        }
+//        //ensure the method is called only when running on Android 4.2 or later for secure
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            mWebView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+//        }
     }
 
     public void start(final String pUrl, final Activity pActivity) {
@@ -68,15 +73,40 @@ public class ZPWebViewProcessor extends WebViewClient {
         }
 
         DialogManager.closeProcessDialog();
+        injectScriptFile("webapp.js");
 
-        mWebView.runScript("utils.getNav()", new GetNavigationCallback(mWebViewListener));
+//        mWebView.runScript("utils.getNav()", new GetNavigationCallback(mWebViewListener));
+        mWebView.runScript("webapp_getNavigation()", new GetNavigationCallback(mWebViewListener));
 
         super.onPageFinished(view, url);
 
         if (mWebViewListener != null) {
             mWebViewListener.onPageFinished(url);
         }
+    }
 
+    private void injectScriptFile(String scriptFile) {
+        InputStream input;
+        try {
+            input = mWebView.getContext().getAssets().open(scriptFile);
+            byte[] buffer = new byte[input.available()];
+            input.read(buffer);
+            input.close();
+
+            // Stringify the script byte-array using BASE64 encoding
+            String endcoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
+            mWebView.loadUrl("javascript:(function() {" +
+                    "var parent = document.getElementsByTagName('head').item(0);" +
+                    "var script = document.createElement('script');" +
+                    "script.type = 'text/javascript';" +
+                    // Tell the browser to BASE64-decode the string into your script
+                    "script.innerHTML = window.atob('" + endcoded + "');" +
+                    "parent.appendChild(script);" +
+                    "})()"
+            );
+        } catch (IOException e) {
+            Timber.w(e, "Exception");
+        }
     }
 
     private void onReceivedError(int errorCode, CharSequence description) {
@@ -105,13 +135,7 @@ public class ZPWebViewProcessor extends WebViewClient {
     }
 
     public boolean canBack() {
-        boolean canBack = false;
-
-        if (mWebView != null) {
-            canBack = mWebView.canGoBack();
-        }
-
-        return canBack;
+        return mWebViewListener.isPageValid();
     }
 
     public void goBack() {
@@ -145,6 +169,13 @@ public class ZPWebViewProcessor extends WebViewClient {
     }
 
     @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view,
+                                                      String url) {
+        Timber.d("shouldInterceptRequest: %s", url);
+        return super.shouldInterceptRequest(view, url);
+    }
+
+    @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
     }
 
@@ -171,14 +202,9 @@ public class ZPWebViewProcessor extends WebViewClient {
         return true;
     }
 
-    public void onLoadResource(WebView view, String url) {
-        Log.d("onLoadResource ", url);
-    }
-
-    @JavascriptInterface
-    public void onJsCallBackResult(String pResult) {
-        Timber.d("JsCallBackResult [%s]", pResult);
-    }
+//    public void onLoadResource(WebView view, String url) {
+//        Log.d("onLoadResource ", url);
+//    }
 
     public void onDestroy() {
         mTimeOutListener = null;
@@ -196,5 +222,9 @@ public class ZPWebViewProcessor extends WebViewClient {
         void finishActivity();
 
         void setTitleAndLogo(String title, String url);
+
+        boolean isPageValid();
+
+        void setPageValid(boolean valid);
     }
 }

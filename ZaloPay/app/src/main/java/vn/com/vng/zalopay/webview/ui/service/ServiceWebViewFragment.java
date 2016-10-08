@@ -95,19 +95,22 @@ public class ServiceWebViewFragment extends WebViewFragment {
         if (mWebViewProcessor == null) {
             return false;
         }
+
         if (mWebViewProcessor.hasError()) {
             return false;
         }
-        mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                Timber.d("navigation back: %s", value);
-            }
-        });
-        return true;
+
+        boolean canBack = mWebViewProcessor.canBack();
+        Timber.d("Can WebApp navigate back: %s", canBack);
+        if (canBack) {
+            mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    Timber.d("navigation back: %s", value);
+                }
+            });
+        }
+
+        return canBack;
     }
-
-
-
-
 }

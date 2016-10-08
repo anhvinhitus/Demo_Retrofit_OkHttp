@@ -23,11 +23,13 @@ class GetNavigationCallback implements ValueCallback<String> {
     @Override
     public void onReceiveValue(String value) {
         Timber.d("result of utils.getNav(): %s", value);
-        if (value == null) {
-            return;
-        }
 
+        boolean appState = false;
         try {
+            if (value == null) {
+                return;
+            }
+
             JsonParser parser = new JsonParser();
             JsonElement jsonObject = parser.parse(value);
             if (jsonObject == null || !jsonObject.isJsonObject()) {
@@ -35,16 +37,34 @@ class GetNavigationCallback implements ValueCallback<String> {
             }
 
             JsonObject data = jsonObject.getAsJsonObject();
-            String title = data.get("title").getAsString();
-            String thumb = data.get("thumb").getAsString();
+            int code = data.get("returnCode").getAsInt();
+            if (code >= 1) {
+                JsonObject nav = data.getAsJsonObject("nav");
+                String title = nav.get("title").getAsString();
+                String thumb = nav.get("thumb").getAsString();
 
-            if (mWebViewListener != null) {
-                mWebViewListener.setTitleAndLogo(title, thumb);
+                if (mWebViewListener != null) {
+                    mWebViewListener.setTitleAndLogo(title, thumb);
+
+                    if (code == 1) {
+                        appState = true;
+                    }
+                }
+            } else {
+                Timber.d("WebApp is not valid");
             }
-
-
         } catch (Throwable t) {
             Timber.w(t, "Caught error while parsing navigation information");
+        } finally {
+            setWebAppState(appState);
         }
     }
+
+    private void setWebAppState(boolean status) {
+        if (mWebViewListener != null) {
+            mWebViewListener.setPageValid(status);
+        }
+    }
+
+
 }

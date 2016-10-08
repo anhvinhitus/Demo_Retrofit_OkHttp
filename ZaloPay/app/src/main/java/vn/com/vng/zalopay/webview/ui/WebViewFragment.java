@@ -38,6 +38,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     private TextView tvError;
 
     protected String mCurrentUrl = "";
+    private boolean mIsPageValid = false;
 
     public static WebViewFragment newInstance(Bundle bundle) {
         WebViewFragment fragment = new WebViewFragment();
@@ -249,7 +250,9 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
         if (mWebViewProcessor.hasError()) {
             return false;
         }
+
         boolean canBack = mWebViewProcessor.canBack();
+        Timber.d("Can WebApp navigate back: %s", canBack);
         if (canBack) {
             mWebViewProcessor.goBack();
         }
@@ -329,5 +332,15 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
         if (getActivity() instanceof WebViewActivity) {
             ((WebViewActivity) getActivity()).setTitleAndLogo(title, url);
         }
+    }
+
+    @Override
+    public boolean isPageValid() {
+        return mIsPageValid;
+    }
+
+    @Override
+    public void setPageValid(boolean valid) {
+        mIsPageValid = valid;
     }
 }
