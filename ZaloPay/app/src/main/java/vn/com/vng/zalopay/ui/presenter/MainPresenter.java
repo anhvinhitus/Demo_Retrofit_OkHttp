@@ -112,7 +112,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         Subscription subscription = mFriendRepository.retrieveZaloFriendsAsNeeded()
                 .delaySubscription(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<List<ZaloFriend>>());
+                .subscribe(new DefaultSubscriber<>());
         compositeSubscription.add(subscription);
     }
 

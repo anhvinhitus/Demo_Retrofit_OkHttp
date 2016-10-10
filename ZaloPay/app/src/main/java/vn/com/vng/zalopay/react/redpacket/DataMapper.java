@@ -10,7 +10,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
@@ -94,18 +94,18 @@ class DataMapper {
         return friendList;
     }
 
-    static WritableMap transform(ZaloFriendGD zaloFriendGD) {
-        if (zaloFriendGD == null) {
+    static WritableMap transform(ZaloFriend friend) {
+        if (friend == null) {
             return null;
         }
 
         WritableMap friendItem = Arguments.createMap();
-        friendItem.putString("displayName", zaloFriendGD.getDisplayName());
-        friendItem.putString("ascciDisplayName", zaloFriendGD.getFulltextsearch());
-        friendItem.putString("userId", String.valueOf(zaloFriendGD.getId()));
-        friendItem.putInt("userGender", zaloFriendGD.getUserGender());
-        friendItem.putBoolean("usingApp", zaloFriendGD.getUsingApp());
-        friendItem.putString("avatar", zaloFriendGD.getAvatar());
+        friendItem.putString("displayName", friend.getDisplayName());
+        friendItem.putString("ascciDisplayName", friend.getNormalizeDisplayName());
+        friendItem.putString("userId", String.valueOf(friend.getUserId()));
+        friendItem.putInt("userGender", friend.getUserGender());
+        friendItem.putBoolean("usingApp", friend.isUsingApp());
+        friendItem.putString("avatar", friend.getAvatar());
         return friendItem;
     }
 
@@ -118,8 +118,8 @@ class DataMapper {
 
         for (T item : list) {
             WritableMap map;
-            if (item instanceof ZaloFriendGD) {
-                map = transform((ZaloFriendGD) item);
+            if (item instanceof ZaloFriend) {
+                map = transform((ZaloFriend) item);
             } else if (item instanceof PackageInBundle) {
                 map = transform((PackageInBundle) item);
             } else if (item instanceof SentBundle) {

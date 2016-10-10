@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.transfer.ui;
 
 import android.os.Handler;
@@ -26,9 +27,11 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
+*/
 /**
  * Created by longlv on 11/06/2016.
- */
+ *//*
+
 public class ZaloContactPresenter extends BaseUserPresenter implements IPresenter<IZaloContactView> {
     private final int TIMEOUT_GET_ZALO_FRIENDS = 10000; //10s
     private IZaloContactView mView;
@@ -222,3 +225,4 @@ public class ZaloContactPresenter extends BaseUserPresenter implements IPresente
         }
     }
 }
+*/

@@ -42,9 +42,8 @@ public class UserFriendModule {
     @UserScope
     @Provides
     FriendStore.Repository provideFriendRepository(FriendStore.LocalStorage localStorage,
-                                                  SqlZaloPayScope sqlZaloPayScope,
-                                                  FriendStore.RequestService requestService
-                                                  ) {
-        return new FriendRepository(requestService, localStorage, sqlZaloPayScope);
+                                                   FriendStore.RequestService requestService
+    ) {
+        return new FriendRepository(requestService, localStorage);
     }
 }

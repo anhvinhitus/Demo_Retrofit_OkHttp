@@ -88,6 +88,18 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         mListView.setAdapter(null);
         mPresenter.destroyView();
@@ -101,7 +113,7 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-
+        mPresenter.destroy();
         super.onDestroy();
     }
 

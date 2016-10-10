@@ -8,6 +8,8 @@ import java.util.List;
 
 import de.greenrobot.dao.query.LazyList;
 import rx.Observable;
+import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
+import vn.com.vng.zalopay.data.cache.SqlBaseScope;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
@@ -16,16 +18,15 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
  * Declaration for friend local storage, friend request service, friend repository
  */
 public interface FriendStore {
-    interface LocalStorage {
+    interface LocalStorage extends SqlBaseScope {
+
         boolean isHaveZaloFriendDb();
 
-        void put(List<ZaloFriendGD> val);
+        void put(List<ZaloFriendEntity> val);
 
-        void writeZaloFriend(ZaloFriendGD val);
+        void put(ZaloFriendEntity val);
 
-        List<ZaloFriendGD> listZaloFriend();
-
-        LazyList<ZaloFriendGD> listZaloFriend(String textSearch);
+        List<ZaloFriendEntity> get();
 
         Cursor zaloFriendList();
 
@@ -33,7 +34,7 @@ public interface FriendStore {
     }
 
     interface RequestService {
-        Observable<List<ZaloFriend>> fetchFriendList();
+        Observable<List<ZaloFriendEntity>> fetchFriendList();
     }
 
     interface APICallback {
@@ -48,18 +49,17 @@ public interface FriendStore {
      * Declaration for FriendStore.Repository
      */
     interface Repository {
-        Observable<List<ZaloFriend>> retrieveZaloFriendsAsNeeded();
 
-        Observable<List<ZaloFriend>> fetchListFromServer();
+        Observable<Boolean> retrieveZaloFriendsAsNeeded();
 
-        Observable<LazyList<ZaloFriendGD>> listZaloFriendFromDb(String textSearch);
-
-        Observable<List<ZaloFriendGD>> listZaloFriendFromDb();
-
-        ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD);
+        Observable<List<ZaloFriend>> fetchZaloFriends();
 
         Observable<Cursor> zaloFriendList();
 
-        Observable<Cursor> searchZaloFiend(String s);
+        Observable<Cursor> searchZaloFriend(String s);
+
+        ZaloFriend transform(Cursor cursor);
+
+        Observable<List<ZaloFriend>> getZaloFriendList();
     }
 }

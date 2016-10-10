@@ -31,13 +31,13 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
@@ -364,13 +364,14 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getAllFriend(Promise promise) {
         Timber.d("getAllFriend promise [%s]", promise);
-        Subscription subscription = mFriendRepository.listZaloFriendFromDb()
-                .map(new Func1<List<ZaloFriendGD>, WritableArray>() {
+        Subscription subscription = mFriendRepository.getZaloFriendList()
+                .map(new Func1<List<ZaloFriend>, WritableArray>() {
                     @Override
-                    public WritableArray call(List<ZaloFriendGD> zaloFriendGDs) {
-                        return DataMapper.transform(zaloFriendGDs);
+                    public WritableArray call(List<ZaloFriend> friends) {
+                        return DataMapper.transform(friends);
                     }
                 })
+
                 .subscribe(new GetAllFriendSubscriber(promise));
         compositeSubscription.add(subscription);
     }
@@ -503,7 +504,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     @Override
-    public void onActivityResult(Activity activity,int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 

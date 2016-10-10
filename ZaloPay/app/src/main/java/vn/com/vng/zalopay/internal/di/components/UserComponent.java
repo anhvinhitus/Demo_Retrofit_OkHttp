@@ -25,16 +25,13 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
-import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
-import vn.com.vng.zalopay.webview.ui.WebViewFragment;
-import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
 import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
+import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
@@ -52,7 +49,7 @@ import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
-import vn.com.vng.zalopay.transfer.ui.ZaloContactFragment;
+import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -63,6 +60,8 @@ import vn.com.vng.zalopay.ui.fragment.IntroSaveCardFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.webview.ui.WebViewFragment;
+import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
 
@@ -127,8 +126,6 @@ public interface UserComponent {
     void inject(ProfileFragment f);
 
     void inject(TransferHomeFragment f);
-
-    void inject(ZaloContactFragment f);
 
     void inject(TransferFragment f);
 

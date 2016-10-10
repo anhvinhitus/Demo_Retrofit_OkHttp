@@ -17,7 +17,7 @@ public class ZaloFriend extends AbstractData {
         public static final String USERNAME = "userName";
         public static final String DISPLAYNAME = "displayName";
         public static final String AVATAR = "avatar";
-        public static final String USERGENDER= "userGender";
+        public static final String USERGENDER = "userGender";
         public static final String BIRTHDAY = "birthday";
         public static final String YAHOOID = "yahooId";
         public static final String ZINGMEID = "zingMeId";
@@ -34,6 +34,8 @@ public class ZaloFriend extends AbstractData {
     private String avatar;
     private int userGender;
     private boolean usingApp;
+
+    private String normalizeDisplayName;
 
     public ZaloFriend() {
         this.userId = -1;
@@ -144,5 +146,13 @@ public class ZaloFriend extends AbstractData {
 
     public void setUsingApp(boolean usingApp) {
         this.usingApp = usingApp;
+    }
+
+    public String getNormalizeDisplayName() {
+        return normalizeDisplayName;
+    }
+
+    public void setNormalizeDisplayName(String normalizeDisplayName) {
+        this.normalizeDisplayName = normalizeDisplayName;
     }
 }

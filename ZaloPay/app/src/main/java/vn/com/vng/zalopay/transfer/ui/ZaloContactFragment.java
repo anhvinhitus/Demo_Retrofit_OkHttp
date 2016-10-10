@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.transfer.ui;
 
 import android.app.Activity;
@@ -27,12 +28,14 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
+*/
 /**
  * A fragment representing a list of Items.
  * <p>
  * Activities containing this fragment MUST implement the {}
  * interface.
- */
+ *//*
+
 public class ZaloContactFragment extends BaseFragment implements IZaloContactView,
         ZaloContactRecyclerViewAdapter.OnItemInteractionListener,
         SwipeRefreshLayout.OnRefreshListener {
@@ -67,10 +70,12 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
         }
     }
 
-    /**
+    */
+/**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
-     */
+     *//*
+
     public ZaloContactFragment() {
     }
 
@@ -329,3 +334,4 @@ public class ZaloContactFragment extends BaseFragment implements IZaloContactVie
     }
 
 }
+*/
