@@ -64,7 +64,15 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
     }
 
     void getFriendList() {
-        Subscription subscription = mFriendRepository.getZaloFriendCursor()
+        Subscription subscription = mFriendRepository.zaloFriendList()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new FriendListSubscriber());
+
+        mCompositeSubscription.add(subscription);
+    }
+
+    void doSearch(String s) {
+        Subscription subscription = mFriendRepository.searchZaloFiend(s)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
 

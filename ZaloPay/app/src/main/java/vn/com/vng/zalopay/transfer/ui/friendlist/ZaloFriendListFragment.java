@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
 import android.view.View;
 import android.widget.ListView;
 
@@ -12,7 +13,11 @@ import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnItemClick;
+import butterknife.OnTextChanged;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -39,7 +44,7 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_pull_listview;
+        return R.layout.fragment_zalo_friend_list;
     }
 
     @BindView(R.id.listview)
@@ -66,6 +71,9 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
+
+        mListView.setDivider(null);
+
         mListView.setAdapter(mAdapter);
         mSwipeRefreshView.setSwipeableChildren(R.id.listview);
         mSwipeRefreshView.setOnRefreshListener(this);
@@ -85,6 +93,41 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
         mPresenter.destroyView();
         super.onDestroyView();
     }
+
+    @Override
+    public void onDestroy() {
+        Cursor cursor = mAdapter.getCursor();
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        super.onDestroy();
+    }
+
+    @OnTextChanged(value = R.id.edtSearch, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void afterTextChanged(Editable editable) {
+        String keySearch = Strings.trim(editable.toString());
+        Timber.d("afterTextChanged keySearch %s", keySearch);
+
+        mPresenter.doSearch(keySearch);
+    }
+
+    @OnItemClick(R.id.listview)
+    public void onItemClick(android.widget.AdapterView<?> parent, View v, int position, long id) {
+        Timber.d("onItemClick: position %s", position);
+        Object item = mAdapter.getItem(position);
+        if (item instanceof Cursor) {
+            Cursor cursor = (Cursor) item;
+            try {
+                String displayName = cursor.getString(2);
+                Timber.d("onItemClick:  %s", displayName);
+            } catch (Exception e) {
+                //empty
+            }
+        }
+    }
+
 
     @Override
     public void swapCursor(Cursor cursor) {

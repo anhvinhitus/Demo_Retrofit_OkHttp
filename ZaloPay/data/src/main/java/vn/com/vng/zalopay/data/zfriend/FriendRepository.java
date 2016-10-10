@@ -128,7 +128,12 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<Cursor> getZaloFriendCursor() {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getZaloFriendCursor());
+    public Observable<Cursor> zaloFriendList() {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.zaloFriendList());
+    }
+
+    @Override
+    public Observable<Cursor> searchZaloFiend(String s) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.searchZaloFriendList(s));
     }
 }

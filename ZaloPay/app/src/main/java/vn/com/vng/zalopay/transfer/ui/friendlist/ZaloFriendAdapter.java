@@ -22,14 +22,12 @@ import vn.com.vng.zalopay.utils.ImageLoader;
  * *
  */
 
-public class ZaloFriendAdapter extends CursorSectionAdapter {
+final class ZaloFriendAdapter extends CursorSectionAdapter {
     private LayoutInflater mInflater;
-    private ImageLoader mImageLoader;
 
-    public ZaloFriendAdapter(Context context) {
+    ZaloFriendAdapter(Context context) {
         super(context);
         mInflater = LayoutInflater.from(context);
-        mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
     }
 
     @Override
@@ -75,7 +73,7 @@ public class ZaloFriendAdapter extends CursorSectionAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         ViewHolder holder = new ViewHolder();
-        View view = mInflater.inflate(R.layout.fragment_zalo_contact_item, parent, false);
+        View view = mInflater.inflate(R.layout.row_zalo_friend_list, parent, false);
         holder.mTvDisplayName = (TextView) view.findViewById(R.id.tvDisplayName);
         holder.mImgAvatar = (SimpleDraweeView) view.findViewById(R.id.imgAvatar);
         holder.mImgZaloPay = view.findViewById(R.id.imgZaloPay);
@@ -96,7 +94,8 @@ public class ZaloFriendAdapter extends CursorSectionAdapter {
         holder.mTvDisplayName.setText(displayName);
         holder.mImgAvatar.setImageURI(avatar);
         holder.mImgZaloPay.setVisibility(isUsingApp == 1 ? View.VISIBLE : View.INVISIBLE);
-        holder.mViewSeparate.setVisibility(isEndRow ? View.VISIBLE : View.INVISIBLE);
+        //   holder.mViewSeparate.setVisibility(isEndRow ? View.VISIBLE : View.INVISIBLE);
+
     }
 
 

@@ -27,7 +27,9 @@ public interface FriendStore {
 
         LazyList<ZaloFriendGD> listZaloFriend(String textSearch);
 
-        Cursor getZaloFriendCursor();
+        Cursor zaloFriendList();
+
+        Cursor searchZaloFriendList(String s);
     }
 
     interface RequestService {
@@ -54,8 +56,10 @@ public interface FriendStore {
 
         Observable<List<ZaloFriendGD>> listZaloFriendFromDb();
 
-        Observable<Cursor> getZaloFriendCursor();
-
         ZaloFriend convertZaloFriendGD(ZaloFriendGD zaloFriendGD);
+
+        Observable<Cursor> zaloFriendList();
+
+        Observable<Cursor> searchZaloFiend(String s);
     }
 }

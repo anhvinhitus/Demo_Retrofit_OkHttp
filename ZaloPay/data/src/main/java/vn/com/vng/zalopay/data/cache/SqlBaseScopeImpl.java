@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 
 /**
  * Created by AnhHieu on 5/5/16.
+ * *
  */
 public class SqlBaseScopeImpl {
 
@@ -64,18 +65,6 @@ public class SqlBaseScopeImpl {
 
     public TransactionLogDao getTransactionLogDao() {
         return daoSession.getTransactionLogDao();
-    }
-
-    public DataManifestDao getDataManifestDao() {
-        return daoSession.getDataManifestDao();
-    }
-
-    public BankCardGDDao getBankCardDao() {
-        return daoSession.getBankCardGDDao();
-    }
-
-    public PaymentTransTypeGDDao getPaymentTransDao() {
-        return daoSession.getPaymentTransTypeGDDao();
     }
 
 }
