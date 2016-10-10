@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
+import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
@@ -186,4 +187,6 @@ public interface UserComponent {
     void inject(ServiceWebViewFragment f);
 
     void inject(EditAccountNameFragment f);
+
+    void inject(ZaloFriendListFragment f);
 }

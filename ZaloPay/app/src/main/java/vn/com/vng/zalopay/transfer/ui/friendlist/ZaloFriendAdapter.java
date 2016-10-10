@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui;
+package vn.com.vng.zalopay.transfer.ui.friendlist;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -56,6 +56,7 @@ public class ZaloFriendAdapter extends CursorSectionAdapter {
             boolean isUseApp = c.getInt(6) == 1;
             Timber.d("initializeSections: isUseApp %s", isUseApp);
             if (isUseApp) {
+                i++;
                 continue;
             }
 

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.transfer.ui;
+package vn.com.vng.zalopay.transfer.ui.friendlist;
 
 import android.content.Context;
 import android.database.Cursor;
