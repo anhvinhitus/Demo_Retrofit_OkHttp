@@ -118,9 +118,9 @@ public class PaymentWrapper {
             }
         }
 
+        @Override
         public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
-            Timber.d("onUpVersion latestVersion [%s]", latestVersion);
-            Timber.d("onUpVersion msg [%s]", msg);
+            Timber.d("onUpVersion forceUpdate[%s] latestVersion [%s] msg [%s]", forceUpdate, latestVersion, msg);
             AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
             AppVersionUtils.showDialogUpgradeAppIfNeed(viewListener.getActivity());
         }
