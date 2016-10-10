@@ -52,7 +52,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
         while (c.moveToNext()) {
 
             boolean isUseApp = c.getInt(6) == 1;
-            Timber.d("initializeSections: isUseApp %s", isUseApp);
+         //   Timber.d("initializeSections: isUseApp %s", isUseApp);
             if (isUseApp) {
                 i++;
                 continue;

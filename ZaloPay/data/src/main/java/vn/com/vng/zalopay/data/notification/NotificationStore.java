@@ -7,6 +7,8 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.response.BalanceResponse;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.cache.SqlBaseScope;
+import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 
 /**
@@ -15,7 +17,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
  */
 public interface NotificationStore {
 
-    interface LocalStorage {
+    interface LocalStorage extends SqlBaseScope {
         void put(List<NotificationData> val);
 
         void put(NotificationData val);
@@ -71,6 +73,8 @@ public interface NotificationStore {
 
         Observable<Void> putNotify(List<NotificationData> notify);
 
+        Observable<Void> recoveryNotify(List<NotificationData> notify);
+
         Observable<NotificationData> getNotify(long id);
 
         Observable<Boolean> markViewAllNotify();
@@ -82,5 +86,6 @@ public interface NotificationStore {
         Observable<BaseResponse> sendNotification(String receiverid, String embededdata);
 
         Observable<Long> getOldestTimeNotification();
+
     }
 }

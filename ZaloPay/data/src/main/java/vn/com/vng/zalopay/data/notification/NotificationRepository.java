@@ -8,6 +8,7 @@ import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
@@ -132,6 +133,16 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<Long> getOldestTimeNotification() {
-        return ObservableHelper.makeObservable(localStorage::getOldestTimeNotification);
+        return Observable.just(localStorage.getDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, 0L))
+                .filter(lastTime -> lastTime > 0L)
+                .map(aLong -> localStorage.getOldestTimeNotification());
+    }
+
+    @Override
+    public Observable<Void> recoveryNotify(List<NotificationData> notify) {
+        return putNotify(notify)
+                .doOnNext(aVoid -> localStorage.insertDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION,
+                        String.valueOf(System.currentTimeMillis() / 1000)))
+                ;
     }
 }

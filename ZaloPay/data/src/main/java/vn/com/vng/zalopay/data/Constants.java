@@ -24,5 +24,6 @@ public class Constants {
     public static final String MANIF_LASTTIME_UPDATE_ZALO_FRIEND = "manif_lt_zalo_friend";
     public static final String MANIFEST_LOADED_TRANSACTION_SUCCESS = "manifest_loaded_transaction_success";
     public static final String MANIFEST_LOADED_TRANSACTION_FAIL = "manifest_loaded_transaction_fail";
+    public static final String MANIFEST_RECOVERY_NOTIFICATION = "manifest_recovery_notification";
 
 }
