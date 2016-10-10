@@ -26,12 +26,16 @@ public class AppVersionUtils {
     private static final String FORCE_UPDATE_APP = "force_update_app";
     private static final String SHOWED_DIALOG_UPDATE_APP = "showed_dialog_update_app";
 
-    private static void showedDialogUpdateApp(boolean showed) {
-        mPreferences.edit().putBoolean(SHOWED_DIALOG_UPDATE_APP, showed).apply();
+    private static void showedDialogUpdateApp(String appVersion) {
+        mPreferences.edit().putString(SHOWED_DIALOG_UPDATE_APP, appVersion).apply();
     }
 
-    private static boolean isShowedDialogUpdateApp() {
-        return mPreferences.getBoolean(SHOWED_DIALOG_UPDATE_APP, false);
+    private static boolean isShowedDialogUpdateApp(String version) {
+        String currentVersionShowed = mPreferences.getString(SHOWED_DIALOG_UPDATE_APP, "");
+        if (TextUtils.isEmpty(currentVersionShowed)) {
+            return false;
+        }
+        return currentVersionShowed.equals(version);
     }
 
     private static void setForceUpdateApp(boolean forceUpdateApp) {
@@ -108,15 +112,15 @@ public class AppVersionUtils {
 
     private static void showDialogRecommendUpgradeApp(final Activity activity) {
         Timber.d("Show update Dialog, context [%s]", activity);
-        if (activity == null || isShowedDialogUpdateApp()) {
-            return;
-        }
         String contentText = getUpdateMessageInServer();
         String newVersion = getLatestVersionInServer();
+        if (activity == null || isShowedDialogUpdateApp(newVersion)) {
+            return;
+        }
         if (TextUtils.isEmpty(contentText)) {
             contentText = activity.getString(R.string.recommend_update_to_use);
         }
-        showedDialogUpdateApp(true);
+        showedDialogUpdateApp(newVersion);
         DialogManager.showSweetDialogUpdate(activity, contentText, newVersion,
                 activity.getString(R.string.btn_update),
                 activity.getString(R.string.btn_cancel),
@@ -143,7 +147,7 @@ public class AppVersionUtils {
         if (TextUtils.isEmpty(contentText)) {
             contentText = activity.getString(R.string.need_update_to_use);
         }
-        showedDialogUpdateApp(true);
+        showedDialogUpdateApp(newVersion);
         DialogManager.showSweetDialogUpdate(activity, contentText, newVersion,
                 activity.getString(R.string.btn_update),
                 null,
@@ -174,7 +178,6 @@ public class AppVersionUtils {
     }
 
     public static void setVersionInfoInServer(boolean forceUpdate, String latestVersion, String msg) {
-        showedDialogUpdateApp(false);
         setForceUpdateApp(forceUpdate);
         setLatestVersionInServer(latestVersion);
         setUpdateMessageInServer(msg);
