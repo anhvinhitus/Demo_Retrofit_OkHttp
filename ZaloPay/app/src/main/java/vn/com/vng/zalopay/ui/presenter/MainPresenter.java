@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -126,6 +127,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Override
     public void destroyView() {
         mEventBus.unregister(this);
+        unsubscribeIfNotNull(mRefPlatformSubscription);
         unsubscribeIfNotNull(compositeSubscription);
         GlobalData.initApplication(null);
         this.homeView = null;
@@ -196,15 +198,21 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         });
     }
 
-    private void beginAutoRefreshPlatform() {
-        long expiredTime = CShareData.getInstance().getPlatformInfoExpiredTime();
-        Timber.d("beginAutoRefreshPlatform:  %s", expiredTime);
-        timerRefreshPlatform(expiredTime);
-    }
 
-    private void timerRefreshPlatform(long var) {
-        long interval = Math.max(var, 300000); // 5 min
-        Subscription subscription = Observable.interval(interval, TimeUnit.MILLISECONDS)
+    private Subscription mRefPlatformSubscription;
+
+    private void beginAutoRefreshPlatform() {
+        unsubscribeIfNotNull(mRefPlatformSubscription);
+
+        mRefPlatformSubscription = Observable.just(CShareData.getInstance().getPlatformInfoExpiredTime())
+                .flatMap(new Func1<Long, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(Long var) {
+                        long interval = Math.max(var, 300000); // 5 min
+                        return Observable.interval(interval, TimeUnit.MILLISECONDS);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
@@ -212,7 +220,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         mEventBus.post(new RefreshPlatformInfoEvent());
                     }
                 });
-        compositeSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
