@@ -326,6 +326,7 @@
     <string name="miss_playstore">Vui lòng kiểm tra lại google play store trên thiết bị của bạn!</string>
     <string name="new_version">Phiên bản mới</string>
     <string name="need_update_to_use">Cần nâng cấp phiên bản Zalo Pay mới nhất để tiếp tục sử dụng ứng dụng</string>
+    <string name="recommend_update_to_use">Ứng dụng Zalo Pay đã có phiên bản mới. Hãy cập nhật để trải nghiệm những tính năng mới nhất!</string>
     <string name="view.detail">Xem chi tiết</string>
 
     <string name="update_to_use">Nâng cấp phiên bản Zalo Pay mới nhất để sử dụng tính năng này.</string>

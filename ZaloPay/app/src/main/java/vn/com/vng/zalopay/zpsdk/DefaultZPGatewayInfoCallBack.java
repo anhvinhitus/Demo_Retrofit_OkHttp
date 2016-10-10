@@ -26,7 +26,7 @@ public class DefaultZPGatewayInfoCallBack implements ZPWGatewayInfoCallback {
     }
 
     @Override
-    public void onUpVersion(boolean b, String s, String s1) {
+    public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
 
     }
 

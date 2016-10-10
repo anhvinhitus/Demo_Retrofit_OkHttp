@@ -3,14 +3,12 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import javax.inject.Inject;
 
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -54,10 +52,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @OnClick(R.id.layoutLoginZalo)
     public void onClickLogin(View v) {
-        boolean needUpgradeApp = AppVersionUtils.needUpgradeApp();
-
-        if (needUpgradeApp) {
-            AppVersionUtils.showUpgradeAppDialog(this);
+        AppVersionUtils.showDialogUpgradeAppIfNeed(this);
+        if (AppVersionUtils.isForceUpdateApp()) {
             return;
         }
         loginPresenter.loginZalo(this);
