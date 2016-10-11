@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.transfer.ui.friendlist;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
 
@@ -10,9 +12,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -31,10 +36,13 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
 
     private Context mContext;
 
+    private Navigator mNavigator;
+
     @Inject
-    public ZaloFriendListPresenter(Context context, FriendStore.Repository friendRepository) {
+    ZaloFriendListPresenter(Context context, Navigator navigator, FriendStore.Repository friendRepository) {
         this.mFriendRepository = friendRepository;
         this.mContext = context;
+        this.mNavigator = navigator;
     }
 
     @Override
@@ -77,6 +85,21 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
                 .subscribe(new FriendListSubscriber());
 
         mCompositeSubscription.add(subscription);
+    }
+
+    void startTransfer(Fragment fragment, Cursor cursor) {
+        if (cursor.isClosed()) {
+            return;
+        }
+
+        ZaloFriend zaloFriend = mFriendRepository.transform(cursor);
+        if (zaloFriend == null) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
+        mNavigator.startTransferActivity(fragment, bundle);
     }
 
     private class FriendListSubscriber extends DefaultSubscriber<Cursor> {

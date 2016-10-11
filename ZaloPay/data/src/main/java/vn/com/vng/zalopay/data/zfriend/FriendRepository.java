@@ -51,7 +51,18 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public ZaloFriend transform(Cursor cursor) {
-        return null;
+
+        //todo: remove hardcode
+        ZaloFriend zaloFriend = new ZaloFriend();
+        zaloFriend.setUserId(cursor.getLong(0));
+        zaloFriend.setUserName(cursor.getString(1));
+        zaloFriend.setDisplayName(cursor.getString(2));
+        zaloFriend.setAvatar(cursor.getString(3));
+        //zaloFriend.setUserGender(cursor.getInt(4));
+        //5 birthday
+        zaloFriend.setUsingApp(cursor.getInt(6) == 1);
+        zaloFriend.setNormalizeDisplayName(cursor.getString(7));
+        return zaloFriend;
     }
 
     private Observable<Boolean> shouldUpdate() {

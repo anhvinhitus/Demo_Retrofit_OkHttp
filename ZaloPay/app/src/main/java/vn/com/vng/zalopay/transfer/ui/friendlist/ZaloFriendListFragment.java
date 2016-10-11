@@ -131,12 +131,7 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
         Object item = mAdapter.getItem(position);
         if (item instanceof Cursor) {
             Cursor cursor = (Cursor) item;
-            try {
-                String displayName = cursor.getString(2);
-                Timber.d("onItemClick:  %s", displayName);
-            } catch (Exception e) {
-                //empty
-            }
+            mPresenter.startTransfer(this, cursor);
         }
     }
 
