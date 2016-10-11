@@ -239,7 +239,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
                     if (getActivity() == null) {
                         return;
                     }
-                    showToastLonger("Lưu thẻ thành công.");
+                    showToastLonger(getString(R.string.txt_link_card_success));
                     getActivity().finish();
                 }
 
@@ -249,7 +249,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
                         return;
                     }
                     if (TextUtils.isEmpty(s)) {
-                        showToast("Lưu thẻ thất bại.");
+                        showToast(getString(R.string.txt_link_card_fail));
                     } else {
                         showToastLonger(s);
                     }

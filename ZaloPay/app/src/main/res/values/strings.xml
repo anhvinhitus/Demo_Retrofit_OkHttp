@@ -121,18 +121,20 @@
 
     <string name="txt_confirm_sigout">Bạn có muốn đăng xuất tài khoản này không?</string>
 
+    <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
+    <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
     <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
     <string name="txt_link_card_view_detail">Xem chi tiết</string>
     <string name="txt_link_card_remove_link">Xóa thẻ</string>
-    <string name="txt_link_card_empty">Chưa có thẻ nào được lưu</string>
-    <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã lưu này không?</string>
-    <string name="txt_home_link_card">Lưu Thẻ</string>
+    <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
+    <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã liên kết này không?</string>
+    <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_scantopay">Trả Tiền</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="save.card.description">Xác thực lưu thẻ</string>
+    <string name="save.card.description">Xác thực lêin kết thẻ</string>
 
     <string name="action_notifications">Thông báo</string>
 
@@ -144,7 +146,7 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_other">Thêm Thẻ</string>
-    <string name="add_card_now">Lưu Thẻ Ngay</string>
+    <string name="add_card_now">Liên Kết Thẻ Ngay</string>
 
     <string name="alert_processing">Đang xử lý</string>
 
@@ -176,7 +178,7 @@
     <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
     <string name="invalid_otp">OTP không hợp lệ.</string>
 
-    <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư tài khoản và thẻ đã lưu</string>
+    <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư tài khoản và thẻ đã liên kết</string>
     <string name="hint_pin">Mật khẩu thanh toán</string>
     <string name="invalid_pin">Nhập vào mật khẩu thanh toán 6 số</string>
     <string name="pin.mismatch">Mật khẩu thanh toán không khớp</string>
@@ -312,9 +314,9 @@
     <string name="withdraw_miss_condition">Bạn chưa đủ điều kiện để rút tiền.</string>
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
-    <string name="withdraw_condition_card_note">Cần phải lưu một trong các thẻ ngân hàng sau:</string>
+    <string name="withdraw_condition_card_note">Cần phải liên kết với một trong các thẻ ngân hàng sau:</string>
     <string name="withdraw_condition_pin">Mật khẩu thanh toán</string>
-    <string name="withdraw_description">Rút tiền về thẻ đã lưu</string>
+    <string name="withdraw_description">Rút tiền về thẻ đã liên kết</string>
 
     <string name="account_existed">Tên tài khoản đã được sử dụng</string>
 
