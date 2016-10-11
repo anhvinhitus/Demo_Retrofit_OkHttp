@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -185,6 +186,18 @@ public class AndroidUtils {
         return (manufacturer + "/" + model);
     }
 
+    private static final String PREF_NAME = "PREF_UTILS";
+    private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
+    public static String getUUID() {
+        SharedPreferences sharedPrefs = AndroidApplication.instance().getSharedPreferences(
+                PREF_NAME, Context.MODE_PRIVATE);
+        String uniqueID = sharedPrefs.getString(PREF_UNIQUE_ID, null);
+        if (TextUtils.isEmpty(uniqueID)) {
+            uniqueID = UUID.randomUUID().toString();
+            sharedPrefs.edit().putString(PREF_UNIQUE_ID, uniqueID).apply();
+        }
+        return uniqueID;
+    }
     public static String getDeviceId() {
         final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance()
                 .getSystemService(Context.TELEPHONY_SERVICE);

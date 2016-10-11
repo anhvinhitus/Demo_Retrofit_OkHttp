@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 public class BaseNetworkInterceptor implements Interceptor {
 
-    private final String DEVICE_ID = AndroidUtils.getDeviceId();
+    private final String DEVICE_ID = AndroidUtils.getUUID();
     private final String DEVICE_MODEL = AndroidUtils.getDeviceManufacturer();
     private final String DEVICE_VERSION = AndroidUtils.getAndroidVersion();
     public static String CONNECTION_TYPE = AndroidUtils.getNetworkClass();
