@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -37,6 +39,7 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
     private Context mContext;
 
     private Navigator mNavigator;
+
 
     @Inject
     ZaloFriendListPresenter(Context context, Navigator navigator, FriendStore.Repository friendRepository) {
@@ -71,12 +74,35 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
 
     }
 
-    void getFriendList() {
-        Subscription subscription = mFriendRepository.zaloFriendList()
+    void refreshFriendList() {
+        Subscription subscription = mFriendRepository.fetchZaloFriendList()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
 
         mCompositeSubscription.add(subscription);
+    }
+
+    void getFriendList() {
+        Subscription subscription = mFriendRepository.zaloFriendList()
+                .concatWith(retrieveZaloFriendsAsNeeded())
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new FriendListSubscriber());
+
+        mCompositeSubscription.add(subscription);
+    }
+
+    private Observable<Cursor> retrieveZaloFriendsAsNeeded() {
+        return mFriendRepository.shouldUpdateFriendList()
+                .flatMap(new Func1<Boolean, Observable<Cursor>>() {
+                    @Override
+                    public Observable<Cursor> call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            return mFriendRepository.fetchZaloFriendList();
+                        } else {
+                            return Observable.empty();
+                        }
+                    }
+                });
     }
 
     void doSearch(String s) {
@@ -104,13 +130,21 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
 
     private class FriendListSubscriber extends DefaultSubscriber<Cursor> {
 
+        int next;
+
+        @Override
+        public void onCompleted() {
+            Timber.d("onCompleted");
+        }
+
         @Override
         public void onNext(Cursor cursor) {
-
-            Timber.d("onNext cursor %s", cursor);
-            mZaloFriendListView.swapCursor(cursor);
-            mZaloFriendListView.hideLoading();
-            mZaloFriendListView.setRefreshing(false);
+            Timber.d("onNext:  %s %s", next++, cursor);
+            if (cursor != null) {
+                mZaloFriendListView.swapCursor(cursor);
+                mZaloFriendListView.hideLoading();
+                mZaloFriendListView.setRefreshing(false);
+            }
         }
 
         @Override

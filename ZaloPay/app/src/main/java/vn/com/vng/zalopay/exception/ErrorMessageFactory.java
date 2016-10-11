@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -51,7 +52,8 @@ public class ErrorMessageFactory {
         } else if (exception instanceof TokenException) {
             //message = context.getString(R.string.exception_token_expired_message);
             message = null;
-        } else if (exception instanceof SocketTimeoutException) {
+        } else if (exception instanceof SocketTimeoutException
+                || exception instanceof TimeoutException) {
             message = context.getString(R.string.exception_timeout_message);
         } else if (exception instanceof HttpException) {
             message = context.getString(R.string.exception_server_error);

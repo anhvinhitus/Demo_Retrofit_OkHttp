@@ -52,7 +52,11 @@ public interface FriendStore {
 
         Observable<Boolean> retrieveZaloFriendsAsNeeded();
 
-        Observable<List<ZaloFriend>> fetchZaloFriends();
+        Observable<Boolean> shouldUpdateFriendList();
+
+        Observable<Boolean> fetchZaloFriends();
+
+        Observable<Cursor> fetchZaloFriendList();
 
         Observable<Cursor> zaloFriendList();
 

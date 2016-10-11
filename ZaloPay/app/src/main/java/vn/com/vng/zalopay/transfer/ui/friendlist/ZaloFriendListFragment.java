@@ -168,7 +168,7 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
 
     @Override
     public void onRefresh() {
-        mPresenter.getFriendList();
+        mPresenter.refreshFriendList();
     }
 
     @Override

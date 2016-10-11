@@ -5,8 +5,10 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
@@ -21,6 +23,8 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
 public class FriendRepository implements FriendStore.Repository {
     private final int TIME_RELOAD = 5 * 60; //5'
 
+    private final int TIMEOUT_REQUEST_FRIEND = 10;
+
     private FriendStore.RequestService mRequestService;
     private FriendStore.LocalStorage mLocalStorage;
 
@@ -30,22 +34,33 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<ZaloFriend>> fetchZaloFriends() {
+    public Observable<Boolean> fetchZaloFriends() {
         Timber.d("fetchZaloFriends");
         return mRequestService.fetchFriendList()
                 .doOnNext(mLocalStorage::put)
-                .map(this::transform)
-                .doOnCompleted(this::updateTimeStamp);
+                .doOnCompleted(this::updateTimeStamp)
+                .map(entities -> Boolean.TRUE);
     }
 
+    @Override
+    public Observable<Cursor> fetchZaloFriendList() {
+        return fetchZaloFriends()
+                .map(new Func1<Boolean, Cursor>() { //convert to cursor
+                    @Override
+                    public Cursor call(Boolean aBoolean) {
+                        return null;
+                    }
+                })
+                .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS)
+                .concatWith(this.zaloFriendList());
+    }
 
     @Override
     public Observable<Boolean> retrieveZaloFriendsAsNeeded() {
         Timber.d("retrieveZaloFriendsAsNeeded");
-        return shouldUpdate()
+        return shouldUpdateFriendList()
                 .filter(Boolean::booleanValue)
-                .flatMap(aBoolean -> fetchZaloFriends()
-                        .map(friends -> Boolean.TRUE))
+                .flatMap(aBoolean -> fetchZaloFriends())
                 ;
     }
 
@@ -65,7 +80,7 @@ public class FriendRepository implements FriendStore.Repository {
         return zaloFriend;
     }
 
-    private Observable<Boolean> shouldUpdate() {
+    public Observable<Boolean> shouldUpdateFriendList() {
         return ObservableHelper.makeObservable(() -> {
             if (mLocalStorage.isHaveZaloFriendDb()) {
                 long lastUpdated = mLocalStorage.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);

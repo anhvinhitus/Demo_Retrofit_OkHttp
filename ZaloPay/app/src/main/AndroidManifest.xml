@@ -251,13 +251,18 @@
         </activity>
         <activity
             android:name=".transfer.ui.TransferHomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title.activity.transfer" />
         <activity
             android:name=".transfer.ui.ZaloContactActivity"
-            android:label="@string/title.activity.zalopay.contact" />
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/title.activity.zalopay.contact"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".transfer.ui.TransferActivity"
             android:label="@string/title.activity.transfer.to" />
+
         <activity
             android:name=".ui.activity.IntroSaveCardActivity"
             android:exported="false">
@@ -288,7 +293,8 @@
 
         <activity android:name=".ui.activity.IntroAppActivity" />
 
-        <activity android:name=".ui.activity.TutorialConnectInternetActivity"
+        <activity
+            android:name=".ui.activity.TutorialConnectInternetActivity"
             android:label="@string/title.activity.tutorial.network.connection" />
         <!-- [START gcm_receiver] -->
         <receiver
