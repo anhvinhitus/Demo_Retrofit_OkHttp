@@ -12,6 +12,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -34,21 +36,20 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
     @Override
     protected void bindSeparatorView(View v, Context context2, Object item) {
         SectionHolder holder = (SectionHolder) v.getTag();
-        holder.mSectionView.setText(String.valueOf(item));
+        holder.bindView(String.valueOf(item));
     }
 
     @Override
     protected View newSeparatorView(Context context2, Object item, ViewGroup parent) {
-        SectionHolder holder = new SectionHolder();
         View view = mInflater.inflate(R.layout.row_section_layout, parent, false);
-        holder.mSectionView = (TextView) view.findViewById(R.id.tv_section);
+        SectionHolder holder = new SectionHolder(view);
         view.setTag(holder);
         return view;
     }
 
     @Override
     protected SortedMap<Integer, Object> initializeSections(Cursor c) {
-        TreeMap<Integer, Object> sections = new TreeMap<Integer, Object>();
+        TreeMap<Integer, Object> sections = new TreeMap<>();
         int offset = 0, i = 0;
         while (c.moveToNext()) {
 
@@ -73,12 +74,8 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        ViewHolder holder = new ViewHolder();
         View view = mInflater.inflate(R.layout.row_zalo_friend_list, parent, false);
-        holder.mTvDisplayName = (TextView) view.findViewById(R.id.tvDisplayName);
-        holder.mImgAvatar = (SimpleDraweeView) view.findViewById(R.id.imgAvatar);
-        holder.mImgZaloPay = view.findViewById(R.id.imgZaloPay);
-        holder.mViewSeparate = view.findViewById(R.id.viewSeparate);
+        ViewHolder holder = new ViewHolder(view);
         view.setTag(holder);
         return view;
     }
@@ -86,17 +83,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = (ViewHolder) view.getTag();
-
-        String displayName = cursor.getString(ColumnIndex.DisplayName);
-        String avatar = cursor.getString(ColumnIndex.Avatar);
-        int isUsingApp = cursor.getInt(ColumnIndex.UsingApp);
-        boolean isEndRow = false;
-
-        holder.mTvDisplayName.setText(displayName);
-        holder.mImgAvatar.setImageURI(avatar);
-        holder.mImgZaloPay.setVisibility(isUsingApp == 1 ? View.VISIBLE : View.INVISIBLE);
-        //   holder.mViewSeparate.setVisibility(isEndRow ? View.VISIBLE : View.INVISIBLE);
-
+        holder.bindView(cursor);
     }
 
 
@@ -113,18 +100,47 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
             return 1;
     }
 
-    private static class ViewHolder {
+    static class ViewHolder {
 
-        TextView mTvDisplayName;
+        @BindView(R.id.tvDisplayName)
+        public TextView mTvDisplayName;
 
-        SimpleDraweeView mImgAvatar;
+        @BindView(R.id.imgAvatar)
+        public SimpleDraweeView mImgAvatar;
 
-        View mImgZaloPay;
+        @BindView(R.id.imgZaloPay)
+        public View mImgZaloPay;
 
-        View mViewSeparate;
+        @BindView(R.id.viewSeparate)
+        public View mViewSeparate;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+
+        void bindView(Cursor cursor) {
+
+            String displayName = cursor.getString(ColumnIndex.DisplayName);
+            String avatar = cursor.getString(ColumnIndex.Avatar);
+            int isUsingApp = cursor.getInt(ColumnIndex.UsingApp);
+
+            mTvDisplayName.setText(displayName);
+            mImgAvatar.setImageURI(avatar);
+            mImgZaloPay.setVisibility(isUsingApp == 1 ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
-    private static class SectionHolder {
-        TextView mSectionView;
+    static class SectionHolder {
+
+        @BindView(R.id.tv_section)
+        public TextView mSectionView;
+
+        public SectionHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+
+        void bindView(String section) {
+            mSectionView.setText(section);
+        }
     }
 }

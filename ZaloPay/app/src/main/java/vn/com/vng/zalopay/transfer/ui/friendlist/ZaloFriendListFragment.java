@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui.friendlist;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -85,6 +88,18 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.getFriendList();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case Constants.REQUEST_CODE_TRANSFER:
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                    break;
+            }
+        }
     }
 
     @Override
