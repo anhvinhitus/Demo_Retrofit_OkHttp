@@ -138,7 +138,7 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
 
     @Override
     public void swapCursor(Cursor cursor) {
-        mAdapter.swapCursor(cursor);
+        mAdapter.changeCursor(cursor);
     }
 
     @Override

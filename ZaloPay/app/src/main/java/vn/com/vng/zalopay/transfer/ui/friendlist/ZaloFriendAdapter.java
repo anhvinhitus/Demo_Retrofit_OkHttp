@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.zfriend.ColumnIndex;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
@@ -51,14 +52,14 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
         int offset = 0, i = 0;
         while (c.moveToNext()) {
 
-            boolean isUseApp = c.getInt(6) == 1;
-         //   Timber.d("initializeSections: isUseApp %s", isUseApp);
+            boolean isUseApp = c.getInt(ColumnIndex.UsingApp) == 1;
+            //   Timber.d("initializeSections: isUseApp %s", isUseApp);
             if (isUseApp) {
                 i++;
                 continue;
             }
 
-            String firstLetter = c.getString(7).substring(0, 1);
+            String firstLetter = c.getString(ColumnIndex.Fulltextsearch).substring(0, 1);
             if (!sections.containsValue(firstLetter)) {
                 sections.put(offset + i, firstLetter);
                 offset++;
@@ -86,9 +87,9 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = (ViewHolder) view.getTag();
 
-        String displayName = cursor.getString(2);
-        String avatar = cursor.getString(3);
-        int isUsingApp = cursor.getInt(6);
+        String displayName = cursor.getString(ColumnIndex.DisplayName);
+        String avatar = cursor.getString(ColumnIndex.Avatar);
+        int isUsingApp = cursor.getInt(ColumnIndex.UsingApp);
         boolean isEndRow = false;
 
         holder.mTvDisplayName.setText(displayName);

@@ -69,14 +69,14 @@ public class FriendRepository implements FriendStore.Repository {
 
         //todo: remove hardcode
         ZaloFriend zaloFriend = new ZaloFriend();
-        zaloFriend.setUserId(cursor.getLong(0));
-        zaloFriend.setUserName(cursor.getString(1));
-        zaloFriend.setDisplayName(cursor.getString(2));
-        zaloFriend.setAvatar(cursor.getString(3));
+        zaloFriend.setUserId(cursor.getLong(ColumnIndex.Id));
+        zaloFriend.setUserName(cursor.getString(ColumnIndex.UserName));
+        zaloFriend.setDisplayName(cursor.getString(ColumnIndex.DisplayName));
+        zaloFriend.setAvatar(cursor.getString(ColumnIndex.Avatar));
         //zaloFriend.setUserGender(cursor.getInt(4));
         //5 birthday
-        zaloFriend.setUsingApp(cursor.getInt(6) == 1);
-        zaloFriend.setNormalizeDisplayName(cursor.getString(7));
+        zaloFriend.setUsingApp(cursor.getInt(ColumnIndex.UsingApp) == 1);
+        zaloFriend.setNormalizeDisplayName(cursor.getString(ColumnIndex.Fulltextsearch));
         return zaloFriend;
     }
 
