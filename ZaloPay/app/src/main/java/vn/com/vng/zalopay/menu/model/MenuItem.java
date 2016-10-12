@@ -1,8 +1,5 @@
 package vn.com.vng.zalopay.menu.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import vn.com.vng.zalopay.domain.model.AbstractData;
 
 /**
@@ -57,37 +54,6 @@ public class MenuItem extends AbstractData {
         this.showDivider = true;
     }
 
-    public MenuItem(Parcel source) {
-        id = source.readInt();
-        itemType = (MenuItemType) source.readSerializable();
-        title = source.readString();
-        iconResource = source.readInt();
-        subIconResource = source.readInt();
-        showDivider = source.readInt() == 1 ? true : false;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeSerializable(itemType);
-        dest.writeString(title);
-        dest.writeInt(iconResource);
-        dest.writeInt(subIconResource);
-        dest.writeInt(showDivider ? 1 : 0);
-    }
-
-    public static final Parcelable.Creator<MenuItem> CREATOR = new Parcelable.Creator<MenuItem>() {
-        @Override
-        public MenuItem createFromParcel(Parcel source) {
-            return new MenuItem(source);
-        }
-
-        @Override
-        public MenuItem[] newArray(int size) {
-            return new MenuItem[size];
-        }
-    };
-
     @Override
     public boolean equals(Object o) {
         if (o instanceof MenuItem) {
@@ -124,23 +90,7 @@ public class MenuItem extends AbstractData {
         this.id = id;
     }
 
-    public void setItemType(MenuItemType itemType) {
-        this.itemType = itemType;
-    }
-
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setIconResource(Integer iconResource) {
-        this.iconResource = iconResource;
-    }
-
-    public void setSubIconResource(Integer subIconResource) {
-        this.subIconResource = subIconResource;
-    }
-
-    public void setShowDivider(boolean showDivider) {
-        this.showDivider = showDivider;
     }
 }

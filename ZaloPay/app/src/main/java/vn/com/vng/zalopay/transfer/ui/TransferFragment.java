@@ -224,7 +224,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
         mPresenter.setView(this);
 
-        mPresenter.initView((ZaloFriend) argument.getParcelable(Constants.ARG_ZALO_FRIEND),
+        mPresenter.initView((ZaloFriend) Parcels.unwrap(argument.getParcelable(Constants.ARG_ZALO_FRIEND)),
                 (RecentTransaction) Parcels.unwrap(argument.getParcelable(Constants.ARG_TRANSFERRECENT)),
                 argument.getLong(Constants.ARG_AMOUNT),
                 argument.getString(Constants.ARG_MESSAGE));

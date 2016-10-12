@@ -1,8 +1,5 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import vn.com.vng.zalopay.domain.model.Order;
 
 /**
@@ -12,24 +9,15 @@ public class BundleOrder extends Order {
 
     public long bundleId;
 
-    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac) {
-        super(appid, zptranstoken, apptransid, appuser, apptime, embeddata, item, amount, description, payoption, mac);
-    }
+    public BundleOrder(long appid, String zptranstoken,
+                       String apptransid, String appuser,
+                       long apptime, String embeddata,
+                       String item, long amount,
+                       String description, String payoption,
+                       String mac, long bundleId) {
 
-    public BundleOrder(long appid, String zptranstoken, String apptransid, String appuser, long apptime, String embeddata, String item, long amount, String description, String payoption, String mac, long bundleId) {
         super(appid, zptranstoken, apptransid, appuser, apptime, embeddata, item, amount, description, payoption, mac);
         this.bundleId = bundleId;
-    }
-
-    public BundleOrder(Parcel in) {
-        super(in);
-        bundleId = in.readLong();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeLong(bundleId);
     }
 
     @Override
@@ -38,18 +26,6 @@ public class BundleOrder extends Order {
         stringBuilder.append(bundleId);
         return stringBuilder.toString();
     }
-
-    public final Parcelable.Creator<BundleOrder> CREATOR = new Parcelable.Creator<BundleOrder>() {
-        @Override
-        public BundleOrder createFromParcel(Parcel source) {
-            return new BundleOrder(source);
-        }
-
-        @Override
-        public BundleOrder[] newArray(int size) {
-            return new BundleOrder[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
