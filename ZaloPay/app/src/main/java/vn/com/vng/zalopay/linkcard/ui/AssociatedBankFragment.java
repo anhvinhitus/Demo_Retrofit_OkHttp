@@ -10,7 +10,6 @@ import android.view.View;
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 
@@ -27,7 +26,7 @@ public class AssociatedBankFragment extends BaseFragment {
     @BindView(R.id.bankRecyclerView)
     RecyclerView mRecyclerView;
 
-    private ListAppRecyclerAdapter mAdapter;
+    private AssociatedBankAdapter mAdapter;
 
     public AssociatedBankFragment() {
         // Required empty public constructor
@@ -63,7 +62,7 @@ public class AssociatedBankFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new ListAppRecyclerAdapter(getContext(), null);
+        mAdapter = new AssociatedBankAdapter(getContext());
         mAdapter.setData(PaymentAppConfig.APP_RESOURCE_LIST);
 
         mRecyclerView.setHasFixedSize(true);
