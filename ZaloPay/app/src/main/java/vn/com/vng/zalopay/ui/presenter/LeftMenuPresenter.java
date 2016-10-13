@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 

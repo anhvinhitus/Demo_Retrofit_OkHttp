@@ -26,6 +26,7 @@ import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 /**
  * Created by AnhHieu on 5/10/16.
+ * *
  */
 public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
 
