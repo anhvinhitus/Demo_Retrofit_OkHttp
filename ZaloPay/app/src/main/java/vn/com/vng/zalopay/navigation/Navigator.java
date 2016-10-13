@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.linkcard.ui.AssociatedBankActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -478,4 +479,8 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startAssociatedBankActivityForResult(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), AssociatedBankActivity.class);
+        fragment.startActivity(intent);
+    }
 }

@@ -52,10 +52,10 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
- *
+ * *
  */
 public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<ILinkCardView> {
-    public final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
+    private final String FIRST_OPEN_SAVE_CARD_KEY = "1st_open_save_card";
 
     private ILinkCardView mLinkCardView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -70,10 +70,10 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     User user;
 
     @Inject
-    public LinkCardPresenter(ZaloPayRepository zaloPayRepository,
-                             Navigator navigator,
-                             BalanceStore.Repository balanceRepository,
-                             TransactionStore.Repository transactionRepository) {
+    LinkCardPresenter(ZaloPayRepository zaloPayRepository,
+                      Navigator navigator,
+                      BalanceStore.Repository balanceRepository,
+                      TransactionStore.Repository transactionRepository) {
         this.zaloPayRepository = zaloPayRepository;
         mNavigator = navigator;
         paymentWrapper = new PaymentWrapper(balanceRepository, this.zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
@@ -121,7 +121,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful,String tId, String pAppTransId) {
+            public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
 
             }
 
@@ -143,7 +143,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         unsubscribeIfNotNull(mCompositeSubscription);
     }
 
-    public void getListCard() {
+    void getListCard() {
         showLoadingView();
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override
@@ -208,12 +208,12 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         GlobalData.initApplication(null);
     }
 
-    protected final void onGetLinkCardSuccess(List<BankCard> list) {
+    private void onGetLinkCardSuccess(List<BankCard> list) {
         mLinkCardView.setData(list);
         hideLoadingView();
     }
 
-    public void removeLinkCard(BankCard bankCard) {
+    void removeLinkCard(BankCard bankCard) {
         showLoadingView();
 
         ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
@@ -267,7 +267,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
-        public LinkCardSubscriber() {
+        LinkCardSubscriber() {
         }
 
         @Override
@@ -283,13 +283,13 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onNext(List<BankCard> bankCards) {
-//            ArrayList<BankCard> tmp = new ArrayList<>();
-//            tmp.add(new BankCard("Nguyen Van A", "213134", "1231", "123VCB",234324234));
+            //ArrayList<BankCard> tmp = new ArrayList<>();
+            //tmp.add(new BankCard("Nguyen Van A", "213134", "1231", "123VCB",234324234));
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
     }
 
-    public void addLinkCard() {
+    void addLinkCard() {
         if (user.profilelevel < 2) {
             mNavigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext());
         } else if (!checkShowIntroSaveCard()) {
@@ -312,7 +312,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        public CreateWalletOrderSubscriber() {
+        CreateWalletOrderSubscriber() {
         }
 
         @Override
@@ -373,7 +373,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         mLinkCardView.showError(message);
     }
 
-    public String detectCardType(String bankcode, String first6cardno) {
+    String detectCardType(String bankcode, String first6cardno) {
         if (TextUtils.isEmpty(bankcode)) {
             return ECardType.UNDEFINE.toString();
         } else if (bankcode.equals(ECardType.PVTB.toString())) {
@@ -404,7 +404,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         return ECardType.UNDEFINE.toString();
     }
 
-    public boolean checkShowIntroSaveCard() {
+    private boolean checkShowIntroSaveCard() {
         if (!isOpenedIntroActivity()) {
             mLinkCardView.startIntroActivityForResult();
             return true;
@@ -412,7 +412,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
         return false;
     }
 
-    public void setOpenedIntroActivity() {
+    void setOpenedIntroActivity() {
         mSharedPreferences.edit().putBoolean(FIRST_OPEN_SAVE_CARD_KEY, true).apply();
     }
 

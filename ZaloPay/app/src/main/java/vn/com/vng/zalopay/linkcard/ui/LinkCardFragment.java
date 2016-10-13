@@ -1,9 +1,9 @@
 package vn.com.vng.zalopay.linkcard.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,7 +30,6 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -40,12 +39,42 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by AnhHieu on 5/10/16.
+ * *
  */
 public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
 
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
+    private LinkCardAdapter mAdapter;
+
+    @BindView(R.id.layoutLinkCardEmpty)
+    View mLayoutLinkCardEmpty;
+
+    @BindView(R.id.layoutContent)
+    View mLayoutContent;
+
+    @BindView(R.id.btn_add_more)
+    View mBtnAddMore;
+
+    @BindView(R.id.listView)
+    RecyclerView mRecyclerView;
+
+    @OnClick(R.id.btn_add_card)
+    public void onClickAddBankCard() {
+        mPresenter.addLinkCard();
+    }
+
+    @OnClick(R.id.btn_add_more)
+    public void onClickAddMoreBankCard() {
+        navigator.startAssociatedBankActivityForResult(this);
+    }
+
+    @Inject
+    LinkCardPresenter mPresenter;
+
+//    @BindView(R.id.progressContainer)
+//    View mLoadingView;
 
     public static LinkCardFragment newInstance() {
 
@@ -66,26 +95,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         return R.layout.fragment_link_card;
     }
 
-    @Inject
-    Navigator navigator;
-
-    @BindView(R.id.imgLinkCardEmpty)
-    ImageView imgLinkCardEmpty;
-
-    @BindView(R.id.tvEmpty)
-    TextView tvEmpty;
-
-    @BindView(R.id.listview)
-    RecyclerView recyclerView;
-
-    private LinkCardAdapter mAdapter;
-
-    @Inject
-    LinkCardPresenter presenter;
-
-//    @BindView(R.id.progressContainer)
-//    View mLoadingView;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,18 +105,18 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        mPresenter.setView(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setHasFixedSize(true);
+        RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
         if (animator != null) {
             if (animator instanceof SimpleItemAnimator) {
                 ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
             }
             //animator.setSupportsChangeAnimations(false);
         }
-//        recyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
-        recyclerView.setAdapter(mAdapter);
+//        mRecyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
+        mRecyclerView.setAdapter(mAdapter);
 
         initBottomSheet();
         showOrHidekLinkCardEmpty();
@@ -123,6 +132,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
             startIntroActivity();
+            //navigator.startAssociatedBankActivityForResult(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -134,9 +144,11 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
             mBottomSheetDialog.setContentView(R.layout.bottom_sheet_link_card_layout);
             mBottomSheetDialog.setTitle("");
             final Window window = mBottomSheetDialog.getWindow();
-            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            if (window != null) {
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
 
             View root = mBottomSheetDialog.findViewById(R.id.root);
             View layoutMoneySource = mBottomSheetDialog.findViewById(R.id.layoutMoneySource);
@@ -171,47 +183,43 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     private void showLinkCardEmpty() {
-        imgLinkCardEmpty.setVisibility(View.VISIBLE);
-        tvEmpty.setVisibility(View.VISIBLE);
-        //start animation
-        imgLinkCardEmpty.setBackgroundResource(R.drawable.link_card_empty_anim);
-        AnimationDrawable frameAnimation = (AnimationDrawable) imgLinkCardEmpty.getBackground();
-        frameAnimation.start();
+        mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
+        mLayoutContent.setVisibility(View.GONE);
     }
 
     private void hideLinkCardEmpty() {
-        imgLinkCardEmpty.setVisibility(View.GONE);
-        tvEmpty.setVisibility(View.GONE);
+        mLayoutLinkCardEmpty.setVisibility(View.GONE);
+        mLayoutContent.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.getListCard();
+        mPresenter.getListCard();
     }
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        mPresenter.destroyView();
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        presenter.destroy();
+        mPresenter.destroy();
         // break circular link between this and mAdapter
         mAdapter = null;
         super.onDestroy();
     }
 
     private void startIntroActivity() {
-        presenter.setOpenedIntroActivity();
+        mPresenter.setOpenedIntroActivity();
         navigator.startIntroActivity(getContext());
     }
 
     @Override
     public void startIntroActivityForResult() {
-        presenter.setOpenedIntroActivity();
+        mPresenter.setOpenedIntroActivity();
         navigator.startIntroActivityForResult(this);
     }
 
@@ -243,7 +251,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
                 card.last4cardno, card.bankcode, card.expiretime);
         try {
             Timber.d("onActivityResult first6CardNo: %s", card.first6cardno);
-            bankCard.type = presenter.detectCardType(card.bankcode, card.first6cardno);
+            bankCard.type = mPresenter.detectCardType(card.bankcode, card.first6cardno);
             Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
@@ -283,11 +291,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         showToast(message);
     }
 
-    @OnClick(R.id.btn_add_card)
-    public void onClickAddBankCard() {
-        presenter.addLinkCard();
-    }
-
     @Override
     public void onClickMenu(BankCard bankCard) {
         mCurrentBankCard = bankCard;
@@ -298,8 +301,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_INTRO) {
-            presenter.addLinkCard();
+            mPresenter.addLinkCard();
             return;
+        } else if (requestCode == Constants.REQUEST_CODE_BANK_ASSOCIATE) {
+            if (resultCode == Activity.RESULT_OK) {
+                mPresenter.addLinkCard();
+                return;
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -325,7 +333,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onOKevent() {
-                        presenter.removeLinkCard(mCurrentBankCard);
+                        mPresenter.removeLinkCard(mCurrentBankCard);
                         ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
                         mBottomSheetDialog.dismiss();
                     }

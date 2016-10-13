@@ -121,6 +121,11 @@
 
     <string name="txt_confirm_sigout">Bạn có muốn đăng xuất tài khoản này không?</string>
 
+    <string name="not_link_card">Bạn chưa liên kết thẻ.</string>
+    <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
+    <string name="secure_info">Bảo mật thông tin</string>
+    <string name="secure_info_detail">Được chứng nhận bởi tiêu chuẩn bảo mật PCI-DSS, không lưu thông tin thẻ của bạn.</string>
+    <string name="link_bank">Ngân hàng liên kết</string>
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
     <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
@@ -146,7 +151,7 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_other">Thêm Thẻ</string>
-    <string name="add_card_now">Liên Kết Thẻ Ngay</string>
+    <string name="add_card">Liên Kết Thẻ</string>
 
     <string name="alert_processing">Đang xử lý</string>
 
@@ -352,5 +357,8 @@
 
     <string name="donate_money">Tặng tiền</string>
     <string name="recovery_money">Thu hồi tiền</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

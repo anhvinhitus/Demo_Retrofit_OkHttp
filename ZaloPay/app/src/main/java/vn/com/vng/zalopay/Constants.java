@@ -67,6 +67,7 @@ public interface Constants {
 
     int REQUEST_CODE_TRANSFER = 124;
     int REQUEST_CODE_INTRO = 125;
+    int REQUEST_CODE_BANK_ASSOCIATE = 126;
     int ZALOPAY_APP_ID = 1;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
 
