@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.ui.fragment.SubIntroSaveCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.SubIntroSaveCardFragment;
 
 /**
  * Created by longlv on 9/11/2016.

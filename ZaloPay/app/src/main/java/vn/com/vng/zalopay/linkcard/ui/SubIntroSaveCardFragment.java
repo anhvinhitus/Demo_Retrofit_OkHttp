@@ -1,6 +1,8 @@
-package vn.com.vng.zalopay.ui.fragment;
+package vn.com.vng.zalopay.linkcard.ui;
 
 import android.os.Bundle;
+
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple {@link BaseFragment} subclass.

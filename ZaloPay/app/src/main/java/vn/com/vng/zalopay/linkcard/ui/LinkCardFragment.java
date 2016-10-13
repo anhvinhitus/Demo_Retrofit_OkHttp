@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.fragment;
+package vn.com.vng.zalopay.linkcard.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -31,9 +31,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.adapter.LinkCardAdapter;
-import vn.com.vng.zalopay.ui.presenter.LinkCardPresenter;
-import vn.com.vng.zalopay.ui.view.ILinkCardView;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;

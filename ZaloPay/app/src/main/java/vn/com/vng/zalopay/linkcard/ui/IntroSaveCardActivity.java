@@ -1,9 +1,10 @@
-package vn.com.vng.zalopay.ui.activity;
+package vn.com.vng.zalopay.linkcard.ui;
 
 import android.os.Bundle;
 
+import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.fragment.IntroSaveCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardFragment;
 
 public class IntroSaveCardActivity extends BaseActivity {
 

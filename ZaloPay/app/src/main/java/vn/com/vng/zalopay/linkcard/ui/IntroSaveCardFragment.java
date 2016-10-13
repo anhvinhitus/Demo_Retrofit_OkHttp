@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.fragment;
+package vn.com.vng.zalopay.linkcard.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.adapter.IntroSaveCardPagerAdapter;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple {@link Fragment} subclass.

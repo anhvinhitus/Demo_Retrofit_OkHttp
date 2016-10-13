@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
+import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;

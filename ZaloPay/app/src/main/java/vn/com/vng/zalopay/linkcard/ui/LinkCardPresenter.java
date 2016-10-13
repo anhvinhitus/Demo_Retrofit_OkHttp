@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.presenter;
+package vn.com.vng.zalopay.linkcard.ui;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -36,7 +36,8 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.ui.view.ILinkCardView;
+import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
+import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;

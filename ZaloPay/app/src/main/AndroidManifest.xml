@@ -188,7 +188,7 @@
             android:windowSoftInputMode="" />
 
         <activity
-            android:name=".ui.activity.LinkCardActivity"
+            android:name=".linkcard.ui.LinkCardActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -260,7 +260,7 @@
             android:name=".transfer.ui.TransferActivity"
             android:label="@string/title.activity.transfer.to" />
         <activity
-            android:name=".ui.activity.IntroSaveCardActivity"
+            android:name=".linkcard.ui.IntroSaveCardActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="zalopay.intro.intent.action.VIEW" />

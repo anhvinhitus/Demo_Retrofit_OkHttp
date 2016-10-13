@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.adapter;
+package vn.com.vng.zalopay.linkcard.ui;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
