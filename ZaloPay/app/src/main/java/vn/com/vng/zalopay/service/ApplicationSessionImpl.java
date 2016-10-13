@@ -55,6 +55,8 @@ public class ApplicationSessionImpl implements ApplicationSession {
             InstanceID.getInstance(applicationContext).deleteInstanceID();
         } catch (IOException e) {
             Timber.d("unsubscriber gcm exception %s", e);
+        } catch (Exception ex) {
+            Timber.d(ex, "clearUserSession");
         }
 
         clearMerchant();

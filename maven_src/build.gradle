@@ -8,7 +8,7 @@ ext {
     ]
 
     supportVersion = '23.2.1'
-    playServiceVersion = "9.0.0"
+    playServiceVersion = "9.6.1"
     //Libraries Version
     daggerVersion = '2.2'
     butterKnifeVersion = '8.0.1'
@@ -97,6 +97,7 @@ ext {
             animated_gif           : "com.facebook.fresco:animated-gif:${animatedGifVersion}",
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
+            play_services_map      : "com.google.android.gms:play-services-maps:${playServiceVersion}",
 
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
             protobuf               : "com.google.protobuf:protobuf-java:${protobufVersion}",

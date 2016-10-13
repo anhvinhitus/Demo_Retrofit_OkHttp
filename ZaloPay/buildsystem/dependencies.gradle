@@ -12,7 +12,7 @@ ext {
     androidCompileSdkVersion = 21
 
     supportVersion = '23.2.1'
-    playServiceVersion = "9.0.0"
+    playServiceVersion = "9.6.1"
     //Libraries Version
     daggerVersion = '2.6'
     butterKnifeVersion = '8.2.1'
@@ -102,6 +102,7 @@ ext {
             fresco                 : "com.facebook.fresco:fresco:${frescoVersion}",
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
+            play_services_map      : "com.google.android.gms:play-services-maps:${playServiceVersion}",
 
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
 
@@ -114,6 +115,8 @@ ext {
 
             cbor                   : "co.nstant.in:cbor:${cborVersion}",
             wire_runtime           : "com.squareup.wire:wire-runtime:${wireRuntimeVersion}"
+
+
     ]
 
     testingLibraries = [
