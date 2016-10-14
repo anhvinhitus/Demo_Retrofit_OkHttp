@@ -6,6 +6,8 @@ package vn.com.vng.zalopay.domain.repository;
 public interface ApplicationSession {
     void clearUserSession();
 
+    void clearMerchant();
+
     void clearAllUserDB();
 
     void newUserSession();

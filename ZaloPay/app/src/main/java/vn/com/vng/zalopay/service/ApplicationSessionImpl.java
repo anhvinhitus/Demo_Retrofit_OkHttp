@@ -46,6 +46,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
     /**
      * Clear current user session and move to login state
      */
+    @Override
     public void clearUserSession() {
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
@@ -88,10 +89,12 @@ public class ApplicationSessionImpl implements ApplicationSession {
         }
     }
 
-    private void clearMerchant() {
+    @Override
+    public void clearMerchant() {
         daoSession.getMerchantUserDao().deleteAll();
     }
 
+    @Override
     public void clearAllUserDB() {
         Timber.d("clearAllUserDB");
         try {
