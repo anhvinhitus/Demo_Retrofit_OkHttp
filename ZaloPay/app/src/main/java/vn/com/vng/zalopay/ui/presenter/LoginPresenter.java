@@ -36,6 +36,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 3/26/16.
+ * *
  */
 
 @Singleton
@@ -51,9 +52,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private PassportRepository mPassportRepository;
 
     @Inject
-    public LoginPresenter(Context applicationContext,
-                          UserConfig userConfig,
-                          PassportRepository passportRepository) {
+    LoginPresenter(Context applicationContext,
+                   UserConfig userConfig,
+                   PassportRepository passportRepository) {
         this.mApplicationContext = applicationContext;
         this.mUserConfig = userConfig;
         this.mPassportRepository = passportRepository;
@@ -174,35 +175,36 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void onLoginSuccess(User user) {
-        Timber.d("session %s zaloPayId %s need_invitation %s", user.accesstoken, user.zaloPayId, user.need_invitation);
+        Timber.d("session %s zaloPayId %s", user.accesstoken, user.zaloPayId);
         // Khởi tạo user component
         hideLoadingView();
-        if (user.need_invitation == 1) {
-            ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
-            ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
-        } else {
-            AndroidApplication.instance().createUserComponent(user);
-            this.gotoHomeScreen();
-            ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
-        }
+        AndroidApplication.instance().createUserComponent(user);
+        clearMerchant();
+        this.gotoHomeScreen();
+        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
     }
 
     private void onLoginError(Throwable e) {
         hideLoadingView();
         if (e instanceof InvitationCodeException) {
+            clearMerchant();
             mView.gotoInvitationCode();
+            ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
+            ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
         } else {
-
             Timber.w(e, "exception  ");
             String message = ErrorMessageFactory.create(mApplicationContext, e);
             showErrorView(message);
             ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }
+    }
 
+    private void clearMerchant() {
+        AndroidApplication.instance().getAppComponent().applicationSession().clearMerchant();
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
-        public LoginPaymentSubscriber() {
+        LoginPaymentSubscriber() {
         }
 
         @Override

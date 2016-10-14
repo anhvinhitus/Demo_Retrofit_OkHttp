@@ -17,8 +17,6 @@ public final class User extends Person {
 
     public int profilelevel;
 
-    public int need_invitation;
-
     public String profilePermissions;
 
     public User() {
