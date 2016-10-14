@@ -47,8 +47,10 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.ui.widget.SmoothViewPager;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -103,6 +105,9 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     @BindView(R.id.tv_balance)
     TextView mBalanceView;
 
+    @BindView(R.id.tvInternetConnection)
+    TextView mTvInternetConnection;
+
     /*
     * View của menu
     * */
@@ -143,6 +148,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
+
+        AndroidUtils.setSpannedMessageToView(mTvInternetConnection, R.string.exception_no_connection_tutorial, R.string.check_internet,
+                false, false, R.color.txt_check_internet,
+                new ClickableSpanNoUnderline() {
+                    @Override
+                    public void onClick(View widget) {
+                        navigator.startTutorialConnectInternetActivity(ZaloPayFragment.this.getContext());
+                    }
+                });
 
         hideTextAds();
     }
@@ -389,6 +403,24 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             //showToast(getString(R.string.update_to_use));
         }
         trackBannerEvent(position);
+    }
+
+    @Override
+    public void showNetworkError() {
+        if (mTvInternetConnection == null ||
+                mTvInternetConnection.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        mTvInternetConnection.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNetworkError() {
+        if (mTvInternetConnection == null ||
+                mTvInternetConnection.getVisibility() == View.GONE) {
+            return;
+        }
+        mTvInternetConnection.setVisibility(View.GONE);
     }
 
     private void trackBannerEvent(int position) {

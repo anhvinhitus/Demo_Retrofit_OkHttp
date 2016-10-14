@@ -26,6 +26,8 @@ public interface IZaloPayView {
 
     void showNetworkError();
 
+    void hideNetworkError();
+
     void setBalance(long balance);
 
     void showError(String error);

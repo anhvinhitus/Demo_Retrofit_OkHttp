@@ -102,6 +102,7 @@
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
     <string name="title.activity.my.qr">Nhận tiền</string>
+    <string name="title.activity.tutorial.network.connection">Hướng dẫn kết nối mạng</string>
     <string name="title.activity.card.support">Quản lý thẻ</string>
     <string name="title.activity.tutorial.link.card">Thông Báo</string>
     <!--Activity lable END-->
@@ -325,7 +326,7 @@
     <string name="withdraw_miss_condition">Bạn chưa đủ điều kiện để rút tiền.</string>
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn phải cập nhật các thông tin sau:</string>
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
-    <string name="withdraw_condition_card_note">Cần phải liên kết với một trong các thẻ ngân hàng sau:</string>
+    <string name="withdraw_condition_card_note">Cần phải lưu một trong các thẻ ATM nội địa sau:</string>
     <string name="withdraw_condition_pin">Mật khẩu thanh toán</string>
     <string name="withdraw_description">Rút tiền về thẻ đã liên kết</string>
 
@@ -364,7 +365,14 @@
     <string name="donate_money">Tặng tiền</string>
     <string name="recovery_money">Thu hồi tiền</string>
 
+    <string name="account.format">Tên TK: %s</string>
+    <string name="phone.format">Số ĐT: %s</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="device_not_internet_connection">Thiết bị của bạn không có kết nối mạng.</string>
+    <string name="please_do_tutorial">Vui lòng làm theo hướng dẫn:</string>
+    <string name="turn_on_wifi"><![CDATA[<b>Bật Wi-fi:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Wi-fi\"</b> và chọn mạng Wi-fi có sẵn.]]></string>
+    <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Cellular\"</b> (di động) và bật  <b>\"Cellular Data\"</b> (dữ liệu di động).]]></string>
 </resources>

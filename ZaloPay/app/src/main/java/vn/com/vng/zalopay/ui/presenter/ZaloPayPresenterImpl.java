@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.util.ListStringUtil;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
@@ -39,6 +40,7 @@ import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.utils.NetworkUtil;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -102,6 +104,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     @Override
     public void resume() {
         startBannerCountDownTimer();
+        if (NetworkHelper.isNetworkAvailable(mZaloPayView.getContext())) {
+            mZaloPayView.hideNetworkError();
+        }
     }
 
     @Override
@@ -282,8 +287,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChange(NetworkChangeEvent event) {
-        if (!event.isOnline && mZaloPayView != null) {
+        if (mZaloPayView == null) {
+            return;
+        }
+        if (!event.isOnline) {
             mZaloPayView.showNetworkError();
+        } else {
+            mZaloPayView.hideNetworkError();
         }
     }
 
