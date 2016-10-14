@@ -67,7 +67,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankCard() {
-        navigator.startAssociatedBankActivityForResult(this);
+        navigator.startCardSupportActivityForResult(this);
     }
 
     @Inject
@@ -132,7 +132,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
             startIntroActivity();
-            //navigator.startAssociatedBankActivityForResult(this);
+            //navigator.startCardSupportActivityForResult(this);
         }
         return super.onOptionsItemSelected(item);
     }

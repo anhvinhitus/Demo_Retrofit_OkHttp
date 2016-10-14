@@ -290,7 +290,7 @@
 
         <activity android:name=".ui.activity.IntroAppActivity" />
 
-        <activity android:name=".linkcard.ui.AssociatedBankActivity" />
+        <activity android:name=".linkcard.ui.CardSupportActivity" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

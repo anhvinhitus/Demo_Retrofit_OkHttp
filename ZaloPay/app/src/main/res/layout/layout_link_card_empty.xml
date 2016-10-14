@@ -98,8 +98,8 @@
         </LinearLayout>
 
         <fragment
-            android:id="@+id/associatedBankFragment"
-            android:name="vn.com.vng.zalopay.linkcard.ui.AssociatedBankFragment"
+            android:id="@+id/cardSupportFragment"
+            android:name="vn.com.vng.zalopay.linkcard.ui.CardSupportFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
