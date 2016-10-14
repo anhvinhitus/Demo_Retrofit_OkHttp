@@ -21,9 +21,9 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  * Created by longlv on 10/13/16.
  * *
  */
-class AssociatedBankAdapter extends AbsRecyclerAdapter<AppResource, AssociatedBankAdapter.ViewHolder> {
+class CardSupportAdapter extends AbsRecyclerAdapter<AppResource, CardSupportAdapter.ViewHolder> {
 
-    AssociatedBankAdapter(Context context) {
+    CardSupportAdapter(Context context) {
         super(context);
     }
 
@@ -34,7 +34,7 @@ class AssociatedBankAdapter extends AbsRecyclerAdapter<AppResource, AssociatedBa
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_associated_bank_layout, parent, false));
+        return new ViewHolder(mInflater.inflate(R.layout.row_card_support_layout, parent, false));
     }
 
     @Override

@@ -17,18 +17,18 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link AssociatedBankFragment#newInstance} factory method to
+ * Use the {@link CardSupportFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AssociatedBankFragment extends BaseFragment {
+public class CardSupportFragment extends BaseFragment {
     private final static int COLUMN_COUNT = 3;
 
     @BindView(R.id.bankRecyclerView)
     RecyclerView mRecyclerView;
 
-    private AssociatedBankAdapter mAdapter;
+    private CardSupportAdapter mAdapter;
 
-    public AssociatedBankFragment() {
+    public CardSupportFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class AssociatedBankFragment extends BaseFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment AssociatedBankFragment.
+     * @return A new instance of fragment CardSupportFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AssociatedBankFragment newInstance() {
-        return new AssociatedBankFragment();
+    public static CardSupportFragment newInstance() {
+        return new CardSupportFragment();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class AssociatedBankFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_associated_bank;
+        return R.layout.fragment_card_support;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AssociatedBankFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new AssociatedBankAdapter(getContext());
+        mAdapter = new CardSupportAdapter(getContext());
         mAdapter.setData(PaymentAppConfig.APP_RESOURCE_LIST);
 
         mRecyclerView.setHasFixedSize(true);
