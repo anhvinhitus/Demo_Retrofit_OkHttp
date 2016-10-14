@@ -7,11 +7,21 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.listener.IGetCardSupportListListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,9 +71,8 @@ public class CardSupportFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        showProgressDialog();
         mAdapter = new CardSupportAdapter(getContext());
-        mAdapter.setData(PaymentAppConfig.APP_RESOURCE_LIST);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
@@ -71,5 +80,62 @@ public class CardSupportFragment extends BaseFragment {
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setFocusable(false);
+
+        getCardSupport();
+    }
+
+    private void refreshCardSupportList(List<ZPCard> cardSupportList) {
+        if (mAdapter == null) {
+            return;
+        }
+        mAdapter.setData(cardSupportList);
+        hideProgressDialog();
+    }
+
+    private void getCardSupport() {
+        CShareData.getInstance().getCardSupportList(new IGetCardSupportListListener() {
+            @Override
+            public void onProcess() {
+                Timber.d("getCardSupportList onProcess");
+            }
+
+            @Override
+            public void onComplete(ArrayList<ZPCard> cardSupportList) {
+                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
+                refreshCardSupportList(cardSupportList);
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
+                hideProgressDialog();
+                showRetryDialog(getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        showProgressDialog();
+                        getCardSupport();
+                    }
+                });
+            }
+
+            @Override
+            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
+                Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
+                        forceUpdate, latestVersion, message);
+                AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
+                AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        CShareData.dispose();
+        super.onDestroy();
     }
 }

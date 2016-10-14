@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import java.util.Collection;
@@ -15,13 +14,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by longlv on 10/13/16.
  * *
  */
-class CardSupportAdapter extends AbsRecyclerAdapter<AppResource, CardSupportAdapter.ViewHolder> {
+class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.ViewHolder> {
 
     CardSupportAdapter(Context context) {
         super(context);
@@ -39,17 +39,15 @@ class CardSupportAdapter extends AbsRecyclerAdapter<AppResource, CardSupportAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        AppResource item = getItem(position);
-        if (item != null) {
-            holder.bindView(item);
-        }
+        ZPCard item = getItem(position);
+        holder.bindView(item);
     }
 
     @Override
-    public void insertItems(Collection<AppResource> items) {
+    public void insertItems(Collection<ZPCard> items) {
         if (items == null || items.isEmpty()) return;
         synchronized (_lock) {
-            for (AppResource item : items) {
+            for (ZPCard item : items) {
                 if (!exist(item)) {
                     insert(item);
                 }
@@ -58,8 +56,8 @@ class CardSupportAdapter extends AbsRecyclerAdapter<AppResource, CardSupportAdap
         notifyDataSetChanged();
     }
 
-    private boolean exist(AppResource item) {
-        List<AppResource> list = getItems();
+    private boolean exist(ZPCard item) {
+        List<ZPCard> list = getItems();
         return list.indexOf(item) >= 0;
     }
 
@@ -73,12 +71,11 @@ class CardSupportAdapter extends AbsRecyclerAdapter<AppResource, CardSupportAdap
             ButterKnife.bind(this, itemView);
         }
 
-        void bindView(AppResource appResource) {
-            loadImage(mLogoView, Integer.parseInt(appResource.iconUrl));
-        }
-
-        private void loadImage(ImageView image, int resourceId) {
-            Glide.with(context).load(resourceId).centerCrop().placeholder(R.color.white).into(image);
+        void bindView(ZPCard card) {
+            if (card == null) {
+                return;
+            }
+            mLogoView.setImageBitmap(ResourceManager.getImage(card.getCardLogoName()));
         }
     }
 }

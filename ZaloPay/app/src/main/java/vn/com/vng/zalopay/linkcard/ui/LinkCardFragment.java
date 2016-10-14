@@ -303,7 +303,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         if (requestCode == Constants.REQUEST_CODE_INTRO) {
             mPresenter.addLinkCard();
             return;
-        } else if (requestCode == Constants.REQUEST_CODE_BANK_ASSOCIATE) {
+        } else if (requestCode == Constants.REQUEST_CODE_CARD_SUPPORT) {
             if (resultCode == Activity.RESULT_OK) {
                 mPresenter.addLinkCard();
                 return;

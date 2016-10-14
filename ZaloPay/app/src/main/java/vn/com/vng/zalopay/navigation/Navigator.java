@@ -481,6 +481,6 @@ public class Navigator implements INavigator {
 
     public void startCardSupportActivityForResult(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), CardSupportActivity.class);
-        fragment.startActivity(intent);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_CARD_SUPPORT);
     }
 }

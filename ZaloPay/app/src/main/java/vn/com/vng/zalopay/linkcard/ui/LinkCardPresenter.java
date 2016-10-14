@@ -283,8 +283,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
         @Override
         public void onNext(List<BankCard> bankCards) {
-            //ArrayList<BankCard> tmp = new ArrayList<>();
-            //tmp.add(new BankCard("Nguyen Van A", "213134", "1231", "123VCB",234324234));
+//            ArrayList<BankCard> tmp = new ArrayList<>();
+//            tmp.add(new BankCard("Nguyen Van A", "213134", "1231", "123VCB",234324234));
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
     }
