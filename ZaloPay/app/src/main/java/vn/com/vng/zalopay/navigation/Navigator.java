@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
+import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -482,5 +483,14 @@ public class Navigator implements INavigator {
     public void startCardSupportActivityForResult(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), CardSupportActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_CARD_SUPPORT);
+    }
+
+    public void startTutorialLinkCardActivity(Context context, String imageFilePath, String lastNumber) {
+        Intent intent = new Intent(context, TutorialLinkCardActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.LAST4CARDNO, lastNumber);
+        bundle.putString(Constants.IMAGE_FILE_PATH, imageFilePath);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

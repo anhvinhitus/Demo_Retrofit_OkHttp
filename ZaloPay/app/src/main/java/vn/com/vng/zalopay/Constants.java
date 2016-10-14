@@ -52,6 +52,7 @@ public interface Constants {
     String LAST4CARDNO = "last4cardno";
     String BANKCODE = "bankcode";
     String EXPIRETIME = "expiretime";
+    String IMAGE_FILE_PATH = "image_file_path";
 
     String PROFILE_TYPE = "profile_type";
     int PRE_PROFILE_TYPE = 1;

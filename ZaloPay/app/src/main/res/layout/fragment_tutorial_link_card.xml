@@ -1,0 +1,80 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/spacing.medium"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/loremipsum"
+                android:src="@drawable/ic_tutorial_link_card" />
+
+            <ImageView
+                android:id="@+id/imgBankIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="64dp"
+                android:layout_marginTop="192dp"
+                android:contentDescription="@string/loremipsum"
+                tools:src="@drawable/ic_luuthe" />
+
+            <TextView
+                android:id="@+id/txtLastNumberOfCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="180dp"
+                android:layout_marginTop="158dp"
+                android:textColor="@color/txt_item_main"
+                android:textSize="30sp"
+                tools:text="****6789" />
+        </FrameLayout>
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/tutorial_link_card_note_1" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/tutorial_link_card_note_2" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/tutorial_link_card_note_3" />
+
+        <TextView
+            android:id="@+id/btnManagerCard"
+            style="@style/Button.Default"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_btn_blue_border_selector"
+            android:gravity="center"
+            android:text="@string/manager_card"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+</ScrollView>

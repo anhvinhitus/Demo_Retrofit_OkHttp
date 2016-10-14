@@ -102,6 +102,8 @@
     <string name="title.activity.update.account.name">Cập nhật tên tài khoản</string>
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
     <string name="title.activity.my.qr">Nhận tiền</string>
+    <string name="title.activity.card.support">Quản lý thẻ</string>
+    <string name="title.activity.tutorial.link.card">Thông Báo</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -133,6 +135,10 @@
     <string name="txt_link_card_remove_link">Xóa thẻ</string>
     <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
     <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã liên kết này không?</string>
+    <string name="tutorial_link_card_note_1">Thẻ vừa thanh toán đã được liên kết vào tài khoản Zalo Pay của bạn.</string>
+    <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập sai số thẻ.</string>
+    <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
+    
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_scantopay">Trả Tiền</string>
 
@@ -195,7 +201,7 @@
     <string name="invalid_fullname_empty">Bạn chưa nhập họ tên</string>
     <string name="invalid_address_empty">Bạn chưa nhập địa chỉ</string>
 
-    <string name="manager_card">Quản lí thẻ</string>
+    <string name="manager_card">Quản lý thẻ</string>
     <string name="my_qr_code">Mã QR của tôi</string>
 
     <string name="personal">Cá nhân</string>

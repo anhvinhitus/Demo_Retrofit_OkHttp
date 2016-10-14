@@ -290,7 +290,11 @@
 
         <activity android:name=".ui.activity.IntroAppActivity" />
 
-        <activity android:name=".linkcard.ui.CardSupportActivity" />
+        <activity android:name=".linkcard.ui.CardSupportActivity"
+            android:label="@string/title.activity.card.support"/>
+
+        <activity android:name=".linkcard.ui.TutorialLinkCardActivity"
+            android:label="@string/title.activity.tutorial.link.card"/>
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
