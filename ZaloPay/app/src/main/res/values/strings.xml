@@ -145,7 +145,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="save.card.description">Xác thực lêin kết thẻ</string>
+    <string name="save.card.description">Xác thực liên kết thẻ</string>
 
     <string name="action_notifications">Thông báo</string>
 
