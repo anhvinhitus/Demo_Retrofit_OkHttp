@@ -103,6 +103,7 @@ ext {
             play_services_analytics: "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             play_services_gcm      : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
             play_services_map      : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            play_services_base     : "com.google.android.gms:play-services-base:${playServiceVersion}",
 
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
 

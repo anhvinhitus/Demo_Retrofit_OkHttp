@@ -344,8 +344,10 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
+    compile libs.play_services_map
     compile libs.play_services_gcm
     compile libs.play_services_analytics
+
     compile(libs.crashlytics) {
         transitive = true;
     }
@@ -357,7 +359,7 @@ dependencies {
     releaseCompile libs.debugViewer_noops
     compile libs.zalopay_analytics
     compile('vn.com.vng.zalopay:qrcodecore:1.1')
-    compile('vn.com.vng.zalopay:rnmodules:1.5') {
+    compile('vn.com.vng.zalopay:rnmodules:1.6') {
         exclude module: 'bolts-android'
     }
     compile(libs.react_native) {
@@ -376,6 +378,7 @@ dependencies {
     }
 
     compile libs.fresco
+    compile(name: 'react-native-maps-debug', ext: 'aar')
 }
 
 apply plugin: 'com.google.gms.google-services'
