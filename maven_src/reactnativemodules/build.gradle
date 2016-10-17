@@ -39,4 +39,5 @@ dependencies {
     compile libs.react_native
     compile libs.play_services_analytics
     compile libs.play_services_map
+    compile libs.support_design
 }

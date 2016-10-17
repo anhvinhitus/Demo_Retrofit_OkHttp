@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.airbnb.android.react.maps.MapsPackage;
+import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -232,6 +233,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
                 new MapsPackage(),
+                new BottomSheetBehaviorPackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new ReactIAPPackage(paymentService,
                         mUser, appId, mNetworkService)
