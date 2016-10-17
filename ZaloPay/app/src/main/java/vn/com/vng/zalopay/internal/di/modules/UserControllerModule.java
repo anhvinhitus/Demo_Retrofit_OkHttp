@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import android.content.Context;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -40,10 +42,10 @@ public class UserControllerModule {
 
     @UserScope
     @Provides
-    IPaymentService providesIPaymentService(MerchantStore.Repository merchantRepository,
+    IPaymentService providesIPaymentService(Context context, MerchantStore.Repository merchantRepository,
                                             BalanceStore.Repository balanceRepository,
                                             User user,
                                             TransactionStore.Repository transactionRepository) {
-        return new PaymentServiceImpl(merchantRepository, balanceRepository, user, transactionRepository);
+        return new PaymentServiceImpl(context, merchantRepository, balanceRepository, user, transactionRepository);
     }
 }

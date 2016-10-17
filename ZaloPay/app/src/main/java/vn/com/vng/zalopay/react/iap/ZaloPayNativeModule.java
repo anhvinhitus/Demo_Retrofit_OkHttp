@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.zalopay.apploader.network.NetworkService;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import java.util.Locale;
 
@@ -35,12 +36,12 @@ import vn.com.zalopay.analytics.ZPAnalytics;
  */
 class ZaloPayNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
+
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
+    private final NetworkService mNetworkService;
 
-    final NetworkService mNetworkService;
-
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         IPaymentService paymentService,
@@ -163,6 +164,15 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
     }
 
+
+    @ReactMethod
+    public void shareMessageToOtherApp(String message, Promise promise) {
+        if (getCurrentActivity() != null) {
+            mPaymentService.shareMessageToOtherApp(getCurrentActivity(), message);
+        }
+    }
+
+
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
@@ -177,6 +187,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void onNewIntent(Intent intent) {
         Timber.d("onNewIntent called from based");
     }
+
 
     @Override
     public void onHostResume() {
