@@ -162,6 +162,18 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void onPause() {
+        presenter.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
@@ -176,7 +188,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         });
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -189,6 +200,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onDestroyView() {
         presenter.destroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
     }
 
     @Override
