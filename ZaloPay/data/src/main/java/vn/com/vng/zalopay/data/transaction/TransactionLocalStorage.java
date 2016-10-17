@@ -28,9 +28,9 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public void put(List<TransHistoryEntity> val) {
         try {
-            getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transform(val));
-
-            Timber.d("put list transaction %s", val.size());
+            List<TransactionLog> list = transform(val);
+            getDaoSession().getTransactionLogDao().insertOrReplaceInTx(list);
+            Timber.d("put list transaction %s", list.size());
         } catch (Exception e) {
             Timber.w("Exception while trying to put transaction histories to local storage: %s", e.getMessage());
         }
@@ -60,13 +60,15 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     private List<TransHistoryEntity> queryList(int pageIndex, int limit, int statusType) {
+        int offset = pageIndex * limit;
+        Timber.d("queryList: offset %s", offset);
         return transform2Entity(
                 getDaoSession()
                         .getTransactionLogDao()
                         .queryBuilder()
                         .where(TransactionLogDao.Properties.Statustype.eq(statusType))
                         .limit(limit)
-                        .offset(pageIndex * limit)
+                        .offset(offset)
                         .orderDesc(TransactionLogDao.Properties.Reqdate)
                         .list());
     }
@@ -198,6 +200,34 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public boolean isLoadedTransactionFail() {
         return getDataManifest(Constants.MANIFEST_LOADED_TRANSACTION_FAIL, 0) == 1;
+    }
+
+    @Override
+    public long getLatestTimeTransaction(int statusType) {
+        long timeUpdate = 0;
+        List<TransactionLog> log = getTransactionLogDao().queryBuilder()
+                .where(TransactionLogDao.Properties.Reqdate.isNotNull(), TransactionLogDao.Properties.Statustype.eq(statusType))
+                .orderDesc(TransactionLogDao.Properties.Reqdate)
+                .limit(1).list();
+        if (!Lists.isEmptyOrNull(log)) {
+            timeUpdate = log.get(0).getReqdate();
+        }
+        Timber.d("getLatestTimeTransaction timeUpdate %s", timeUpdate);
+        return timeUpdate;
+    }
+
+    @Override
+    public long getOldestTimeTransaction(int statusType) {
+        long timeUpdate = 0;
+        List<TransactionLog> log = getTransactionLogDao().queryBuilder()
+                .where(TransactionLogDao.Properties.Reqdate.isNotNull(), TransactionLogDao.Properties.Statustype.eq(statusType))
+                .orderAsc(TransactionLogDao.Properties.Reqdate)
+                .limit(1).list();
+        if (!Lists.isEmptyOrNull(log)) {
+            timeUpdate = log.get(0).getReqdate();
+        }
+        Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
+        return timeUpdate;
     }
 }
 

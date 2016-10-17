@@ -420,13 +420,13 @@ public class PaymentWrapper {
 
 
     private void updateTransactionSuccess() {
-        Subscription subscription = transactionRepository.updateTransactionSuccess()
+        Subscription subscription = transactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     private void updateTransactionFail() {
-        Subscription subscription = transactionRepository.updateTransactionFail()
+        Subscription subscription = transactionRepository.fetchTransactionHistoryFailLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }

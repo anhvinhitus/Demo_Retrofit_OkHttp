@@ -90,7 +90,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     private void initializeZaloPay() {
         Timber.d("initializeZaloPay mTransactionRepository [%s]", mTransactionRepository);
-        Subscription subscription = mTransactionRepository.initialize()
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
@@ -98,7 +98,12 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
                         isInitiated = true;
                     }
                 });
-        compositeSubscription.add(subscription);
+        compositeSubscription.add(subscriptionSuccess);
+
+        Subscription subscriptionFail = mTransactionRepository.fetchTransactionHistoryFailLatest()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscriptionFail);
     }
 
     @Override

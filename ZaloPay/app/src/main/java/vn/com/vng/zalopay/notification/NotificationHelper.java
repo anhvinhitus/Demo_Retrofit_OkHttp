@@ -284,7 +284,11 @@ public class NotificationHelper {
 
 
     private void updateTransaction() {
-        Subscription subscription = mTransactionRepository.updateTransaction()
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+
+        Subscription subscriptionFail = mTransactionRepository.fetchTransactionHistoryFailLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }

@@ -8,11 +8,11 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
-import vn.com.vng.zalopay.data.transaction.TransactionLocalStorage;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.rxbus.RxBus;
+import vn.com.vng.zalopay.data.transaction.TransactionLocalStorage;
 import vn.com.vng.zalopay.data.transaction.TransactionRepository;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
@@ -26,16 +26,14 @@ public class UserTransactionModule {
     @Provides
     TransactionStore.Repository provideTransactionRepository(ZaloPayEntityDataMapper zaloPayEntityDataMapper,
                                                              User user,
-                                                             SqlZaloPayScope sqlZaloPayScope,
                                                              TransactionStore.LocalStorage transactionLocalStorage,
                                                              TransactionStore.RequestService transactionRequestService,
-                                                             EventBus eventBus) {
+                                                             EventBus eventBus, RxBus rxBus) {
         return new TransactionRepository(zaloPayEntityDataMapper,
-                user, sqlZaloPayScope,
+                user,
                 transactionLocalStorage,
-                transactionRequestService, eventBus);
+                transactionRequestService, eventBus, rxBus);
     }
-
 
     @UserScope
     @Provides
