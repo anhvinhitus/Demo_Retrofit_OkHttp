@@ -38,6 +38,7 @@ public interface Constants {
     String PREF_INVITATION_SESSION = "pref_session_invitation";
     String PREF_USER_ZALOPAY_NAME = "pref_zalopay_name";
 
+    //Using to transfer arg between fragment/activity
     String ARG_AMOUNT = "AMOUNT";
     String ARG_PAYEE = "Payee";
     String ARG_ZALO_FRIEND = "zalofriend";
@@ -45,6 +46,7 @@ public interface Constants {
     String ARG_TRANSFERRECENT = "TransferRecent";
     String ARG_APPID = "appid";
     String ARG_ZPTRANSTOKEN = "zptranstoken";
+    String ARG_URL = "url";
 
     //DMappedCard: model of zalo payment sdk
     String CARDNAME = "cardname";
@@ -69,7 +71,7 @@ public interface Constants {
     int REQUEST_CODE_TRANSFER = 124;
     int REQUEST_CODE_INTRO = 125;
     int REQUEST_CODE_CARD_SUPPORT = 126;
-    int ZALOPAY_APP_ID = 1;
+    int ZALOPAY_APP_ID = BuildConfig.PAYAPPID;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
 
     //Contain request code that request permission in Android 6

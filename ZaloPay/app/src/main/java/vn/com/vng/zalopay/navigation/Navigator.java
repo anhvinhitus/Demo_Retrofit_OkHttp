@@ -58,6 +58,7 @@ import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
@@ -403,7 +404,13 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startWebViewActivity(Context context, WebViewPayInfo appGamePayInfo, String host) {
+    public void startWebViewActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebViewActivity.class);
+        intent.putExtra(Constants.ARG_URL, url);
+        context.startActivity(intent);
+    }
+
+    public void startServiceWebViewActivity(Context context, WebViewPayInfo appGamePayInfo, String host) {
         Intent intent = new Intent(context, ServiceWebViewActivity.class);
         intent.putExtra(WebViewConstants.APPGAMEPAYINFO, Parcels.wrap(appGamePayInfo));
         intent.putExtra(WebViewConstants.WEBURL, host);

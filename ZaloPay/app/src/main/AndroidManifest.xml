@@ -145,6 +145,10 @@
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule" />
 
+        <activity
+            android:name=".webview.ui.WebViewActivity"
+            android:configChanges="orientation|screenSize" />
+
         <!-- ##########################Tich hop ZaloSDK START ########################## -->
         <activity
             android:name="com.zing.zalo.zalosdk.oauth.WebLoginActivity"

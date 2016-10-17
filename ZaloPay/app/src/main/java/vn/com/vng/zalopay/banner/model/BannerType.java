@@ -5,7 +5,7 @@ package vn.com.vng.zalopay.banner.model;
  *
  */
 public enum  BannerType {
-    InternalFunction(1), PaymentApp(3);
+    InternalFunction(1), ServiceWebView(2), PaymentApp(3), WebPromotion(4);
     int value;
 
     BannerType(int value) {

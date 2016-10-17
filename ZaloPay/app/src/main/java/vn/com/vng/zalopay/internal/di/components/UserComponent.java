@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
 import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
+import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
@@ -181,6 +182,8 @@ public interface UserComponent {
     void inject(PinProfileDialog dialog);
 
     void inject(TransferViaZaloPayNameFragment f);
+
+    void inject(WebViewFragment f);
 
     void inject(ServiceWebViewFragment f);
 
