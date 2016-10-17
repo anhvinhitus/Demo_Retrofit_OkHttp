@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -99,8 +101,11 @@ public class WebViewActivity extends BaseActivity {
             mLogoView.setVisibility(View.GONE);
         } else {
             mLogoView.setVisibility(View.VISIBLE);
-            ImageLoader imageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
-            imageLoader.loadImage(mLogoView, url);
+            Glide.with(this).load(url)
+                    .centerCrop()
+                    .placeholder(R.color.silver)
+                    .error(R.color.silver)
+                    .into(mLogoView);
         }
     }
 

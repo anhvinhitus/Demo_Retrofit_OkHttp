@@ -23,7 +23,10 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -36,6 +39,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
