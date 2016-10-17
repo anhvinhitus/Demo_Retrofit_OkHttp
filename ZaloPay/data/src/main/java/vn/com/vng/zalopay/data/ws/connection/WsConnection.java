@@ -6,6 +6,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -17,6 +19,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -62,12 +65,12 @@ public class WsConnection extends Connection {
      * If network connection is lost due to error: set mNextConnectionState = RETRY_CONNECT
      */
     private NextState mNextConnectionState = NextState.DISCONNECT;
-    
+
     private enum NextState {
         RETRY_CONNECT(1),
         DISCONNECT(2),
         RETRY_AFTER_KICKEDOUT(3);
-        
+
         private final int value;
 
         NextState(int value) {
@@ -98,30 +101,30 @@ public class WsConnection extends Connection {
     private void subscribeRetryConnectionEvent(Context context) {
         Subscription subscription =
                 Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
-                .map((value) -> mCheckCountDown --)
-                .filter((value) ->
-                    !mSocketClient.isConnected() &&
-                    !mSocketClient.isConnecting() &&
-                            (mNextConnectionState == NextState.RETRY_CONNECT ||
-                             mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
-                    NetworkHelper.isNetworkAvailable(context) &&
-                    mCheckCountDown <= 0
-                )
-                .subscribe((value) -> {
-                    Timber.d("Check for reconnect");
-                    connect();
-                });
+                        .map((value) -> mCheckCountDown--)
+                        .filter((value) ->
+                                !mSocketClient.isConnected() &&
+                                        !mSocketClient.isConnecting() &&
+                                        (mNextConnectionState == NextState.RETRY_CONNECT ||
+                                                mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
+                                        NetworkHelper.isNetworkAvailable(context) &&
+                                        mCheckCountDown <= 0
+                        )
+                        .subscribe((value) -> {
+                            Timber.d("Check for reconnect");
+                            connect();
+                        });
         compositeSubscription.add(subscription);
     }
 
     private void subscribeKeepClientHeartBeatEvent() {
         Subscription subscription =
                 Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
-                .filter((value) -> mSocketClient.isConnected())
-                .subscribe((value) -> {
-            Timber.d("Begin send heart beat [%s]", value);
-            ping();
-        });
+                        .filter((value) -> mSocketClient.isConnected())
+                        .subscribe((value) -> {
+                            Timber.d("Begin send heart beat [%s]", value);
+                            ping();
+                        });
         compositeSubscription.add(subscription);
     }
 
@@ -129,14 +132,14 @@ public class WsConnection extends Connection {
         mServerPongBus = new RxBus();
         Subscription subscription =
                 mServerPongBus.toObserverable()
-                .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
-                .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
-                .filter((obj) -> this.isUserLoggedIn() &&
-                        (mNextConnectionState == NextState.RETRY_CONNECT))
-                .subscribe((obj) -> {
-                    Timber.d("Server is not responding ...");
-                    reconnect();
-                });
+                        .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
+                        .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
+                        .filter((obj) -> this.isUserLoggedIn() &&
+                                (mNextConnectionState == NextState.RETRY_CONNECT))
+                        .subscribe((obj) -> {
+                            Timber.d("Server is not responding ...");
+                            reconnect();
+                        });
         compositeSubscription.add(subscription);
     }
 
@@ -348,6 +351,8 @@ public class WsConnection extends Connection {
             sendAuthentication();
 
             mServerPongBus.send(1L);
+
+            EventBus.getDefault().post(new WsConnectionEvent(true));
         }
 
         @Override
@@ -378,8 +383,8 @@ public class WsConnection extends Connection {
             } else if (messageType == ServerMessageType.PONG_CLIENT) {
                 needFeedback = false;
                 long currentTime = System.currentTimeMillis();
-                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData)message).clientData);
-                mServerPongBus.send(currentTime - ((ServerPongData)message).clientData);
+                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
+                mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
             } else {
                 postResult(message);
                 mServerPongBus.send(2L);
@@ -403,6 +408,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
+            EventBus.getDefault().post(new WsConnectionEvent(false));
         }
 
         @Override
@@ -419,6 +425,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
+            EventBus.getDefault().post(new WsConnectionEvent(false));
         }
     }
 
