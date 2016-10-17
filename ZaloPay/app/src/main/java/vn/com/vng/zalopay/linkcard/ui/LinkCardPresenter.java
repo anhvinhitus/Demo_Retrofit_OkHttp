@@ -406,7 +406,8 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
 
     private boolean checkShowIntroSaveCard() {
         if (!isOpenedIntroActivity()) {
-            mLinkCardView.startIntroActivityForResult();
+//            mLinkCardView.startIntroActivityForResult();
+            addLinkCard();
             return true;
         }
         return false;
