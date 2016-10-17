@@ -6,6 +6,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -17,6 +19,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -356,6 +359,8 @@ public class WsConnection extends Connection {
             //    numRetry = 0;
             sendAuthentication();
             mServerPongBus.send(1L);
+
+            EventBus.getDefault().post(new WsConnectionEvent(true));
         }
 
         @Override
@@ -416,6 +421,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
+            EventBus.getDefault().post(new WsConnectionEvent(false));
         }
 
         @Override
@@ -432,6 +438,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
+            EventBus.getDefault().post(new WsConnectionEvent(false));
         }
     }
 

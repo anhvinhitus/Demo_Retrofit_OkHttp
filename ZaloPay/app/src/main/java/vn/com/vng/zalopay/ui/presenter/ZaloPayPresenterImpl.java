@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.util.ListStringUtil;
@@ -305,6 +306,15 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MerchantUserInfoSubscribe(appId, webViewUrl));
         compositeSubscription.add(subscription);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWsConnectionChanged(WsConnectionEvent event) {
+        if (event.isConnect) {
+            mZaloPayView.hideNetworkError();
+        } else {
+            mZaloPayView.showNetworkError();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
