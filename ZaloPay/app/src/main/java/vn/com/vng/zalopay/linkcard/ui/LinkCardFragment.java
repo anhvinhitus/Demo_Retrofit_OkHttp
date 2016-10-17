@@ -214,13 +214,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     private void startIntroActivity() {
         mPresenter.setOpenedIntroActivity();
-        navigator.startIntroActivity(getContext());
+        navigator.startIntroLinkCardActivity(getContext());
     }
 
     @Override
     public void startIntroActivityForResult() {
         mPresenter.setOpenedIntroActivity();
-        navigator.startIntroActivityForResult(this);
+        navigator.startIntroLinkCardForResult(this);
     }
 
     @Override

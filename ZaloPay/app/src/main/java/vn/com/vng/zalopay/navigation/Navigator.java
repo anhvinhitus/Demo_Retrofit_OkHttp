@@ -318,12 +318,12 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startIntroActivity(Context context) {
+    public void startIntroLinkCardActivity(Context context) {
         Intent intent = new Intent(context, IntroSaveCardActivity.class);
         context.startActivity(intent);
     }
 
-    public void startIntroActivityForResult(Fragment fragment) {
+    public void startIntroLinkCardForResult(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), IntroSaveCardActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }
