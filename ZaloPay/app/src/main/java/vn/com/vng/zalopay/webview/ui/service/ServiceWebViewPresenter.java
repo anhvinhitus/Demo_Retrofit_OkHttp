@@ -66,6 +66,19 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         mAppGamePayInfo = Parcels.unwrap(arguments.getParcelable(WebViewConstants.APPGAMEPAYINFO));
     }
 
+    public String getHistoryWebViewUrl() {
+        Timber.d("getHistoryWebViewUrl mAppGamePayInfo [%s]", mAppGamePayInfo);
+        if (mAppGamePayInfo == null) {
+            return "";
+        }
+
+        final String url = String.format(
+                WebViewConfig.getHistoryWebViewUrl(mHost),
+                mAppGamePayInfo.getUid(),
+                mAppGamePayInfo.getAccessToken());
+        Timber.d("getHistoryWebViewUrl url [%s]", url);
+        return url;
+    }
 
     public String getWebViewUrl() {
         Timber.d("getWebViewUrl mAppGamePayInfo [%s]", mAppGamePayInfo);

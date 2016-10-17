@@ -83,32 +83,25 @@ public class ServiceWebViewFragment extends WebViewFragment {
 
     @Override
     public void onDestroy() {
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onDestroy();
-        }
         mPresenter.destroy();
         super.onDestroy();
     }
 
     @Override
-    public boolean onBackPressed() {
-        if (mWebViewProcessor == null) {
-            return false;
-        }
-        if (mWebViewProcessor.hasError()) {
-            return false;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.servicewebapp_menu, menu);
+        //super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Timber.d("onOptionsItemSelected: %s", id);
+        if (id == R.id.webapp_action_history) {
+            loadUrl(mPresenter.getHistoryWebViewUrl());
+            return true;
         }
 
-        boolean canBack = mWebViewProcessor.canBack();
-        Timber.d("Can WebApp navigate back: %s", canBack);
-        if (canBack) {
-        mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                Timber.d("navigation back: %s", value);
-            }
-        });
-        }
-        return canBack;
+        return super.onOptionsItemSelected(item);
     }
 }

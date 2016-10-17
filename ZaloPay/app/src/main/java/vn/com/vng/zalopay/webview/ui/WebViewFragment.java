@@ -240,6 +240,9 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
 
     @Override
     public void onDestroy() {
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onDestroy();
+        }
         super.onDestroy();
     }
 

@@ -10,6 +10,10 @@ public class WebViewConfig {
         return host + "/result/?apptransid=%s&muid=%s&maccesstoken=%s";
     }
 
+    public static final String getHistoryWebViewUrl(String host) {
+        return host + "/history/?muid=%s&maccesstoken=%s";
+    }
+
     public static final String URL_TO_APP = "zalopay-1://backtoapp";
 
     public static final String URL_TO_LOGIN = "zalopay-1://backtologin";
