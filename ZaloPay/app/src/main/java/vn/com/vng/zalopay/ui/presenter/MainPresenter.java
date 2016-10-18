@@ -43,13 +43,16 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -153,6 +156,32 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.loadGatewayInfoPaymentSDK();
         this.initializeAppConfig();
         this.getZaloFriend();
+        this.warningRoot();
+    }
+
+    private void warningRoot() {
+        if (!RootUtils.isDeviceRooted()) {
+            return;
+        }
+        if (homeView.getActivity() == null) {
+            return;
+        }
+        DialogManager.showSweetDialogConfirm(homeView.getActivity(),
+                homeView.getContext().getString(R.string.warning_rooted),
+                homeView.getContext().getString(R.string.btn_continue),
+                homeView.getContext().getString(R.string.txt_close),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        homeView.getActivity().finish();
+                    }
+
+                    @Override
+                    public void onOKevent() {
+
+                    }
+                }
+        );
     }
 
     private void initializeAppConfig() {

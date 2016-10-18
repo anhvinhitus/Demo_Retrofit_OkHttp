@@ -375,4 +375,6 @@
     <string name="please_do_tutorial">Vui lòng làm theo hướng dẫn:</string>
     <string name="turn_on_wifi"><![CDATA[<b>Bật Wi-fi:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Wi-fi\"</b> và chọn mạng Wi-fi có sẵn.]]></string>
     <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Cellular\"</b> (di động) và bật  <b>\"Cellular Data\"</b> (dữ liệu di động).]]></string>
+
+    <string name="warning_rooted">Thiết bị đang sử dụng đã bị root. Sử dụng Zalo Pay trên thiết bị này sẽ không đảm bảo an toàn và rất có thể dẫn đến việc lộ thông tin tài khoản. Zalo Pay khuyến cáo bạn không nên tiếp tục sử dụng ứng dụng Zalo Pay trên thiết bị này.\nNhấn nút "Tiếp Tục" để tiếp tục sử dụng Zalo Pay.</string>
 </resources>
