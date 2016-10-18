@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
@@ -50,7 +51,7 @@ public class PaymentWrapper {
     private final ZaloPayRepository zaloPayRepository;
     private final BalanceStore.Repository balanceRepository;
     private final TransactionStore.Repository transactionRepository;
-
+    private final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
@@ -66,6 +67,10 @@ public class PaymentWrapper {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
                 Timber.d("pay onComplete resultStatus [%s]", resultStatus);
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                    /*DMapCardResult cardResult = new DMapCardResult();
+                    cardResult.setCardLogo("MASTER.png");
+                    cardResult.setLast4Number("8668");*/
+                    mNavigator.startTutorialLinkCardActivity(viewListener.getActivity(), pPaymentResult.mapCardResult);
                     responseListener.onResponseSuccess(pPaymentResult);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                     responseListener.onResponseTokenInvalid();
@@ -139,8 +144,9 @@ public class PaymentWrapper {
         }
     };
 
-    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, TransactionStore.Repository transactionRepository,
-                          IViewListener viewListener, IResponseListener responseListener) {
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
+                          IResponseListener responseListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;

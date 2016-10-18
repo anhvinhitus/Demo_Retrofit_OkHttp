@@ -25,9 +25,9 @@
 
             <ImageView
                 android:id="@+id/imgBankIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="64dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="54dp"
                 android:layout_marginTop="192dp"
                 android:contentDescription="@string/loremipsum"
                 tools:src="@drawable/ic_luuthe" />
@@ -36,8 +36,8 @@
                 android:id="@+id/txtLastNumberOfCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="180dp"
-                android:layout_marginTop="158dp"
+                android:layout_marginLeft="162dp"
+                android:layout_marginTop="148dp"
                 android:textColor="@color/txt_item_main"
                 android:textSize="30sp"
                 tools:text="****6789" />

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -30,6 +31,11 @@ public class TutorialLinkCardFragment extends BaseFragment {
 
     @BindView(R.id.imgBankIcon)
     ImageView mImgBankIcon;
+
+    @OnClick(R.id.btnManagerCard)
+    public void onCLickManagerCard() {
+        navigator.startLinkCardActivity(getContext());
+    }
 
     public TutorialLinkCardFragment() {
         // Required empty public constructor
@@ -79,7 +85,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
             return;
         }
         if (!TextUtils.isEmpty(lastCardNumber)) {
-            mTxtLastNumberOfCard.setText(lastCardNumber);
+            mTxtLastNumberOfCard.setText("****"+lastCardNumber);
         }
     }
 

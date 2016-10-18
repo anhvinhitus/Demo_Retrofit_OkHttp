@@ -62,6 +62,7 @@ import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -498,11 +499,16 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_CARD_SUPPORT);
     }
 
-    public void startTutorialLinkCardActivity(Context context, String imageFilePath, String lastNumber) {
+    public void startTutorialLinkCardActivity(Context context, DMapCardResult mapCardResult) {
+        Timber.d("startTutorialLinkCardActivity context [%s] card [%s]", context, mapCardResult);
+        if (context == null || mapCardResult == null) {
+            return;
+        }
         Intent intent = new Intent(context, TutorialLinkCardActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.LAST4CARDNO, lastNumber);
-        bundle.putString(Constants.IMAGE_FILE_PATH, imageFilePath);
+        bundle.putString(Constants.LAST4CARDNO, mapCardResult.getLast4Number());
+        bundle.putString(Constants.IMAGE_FILE_PATH, mapCardResult.getCardLogo());
         intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }
