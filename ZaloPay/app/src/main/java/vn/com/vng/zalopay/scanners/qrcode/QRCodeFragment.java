@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.journeyapps.barcodescanner.BarcodeView;
+import com.journeyapps.barcodescanner.CameraPreview;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -28,7 +31,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 /**
  * Created by AnhHieu on 6/7/16.
  */
-public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
+public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, CameraPreview.StateListener {
 
 
     public static QRCodeFragment newInstance() {
@@ -90,6 +93,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qrCodePresenter.setView(this);
+
+        if (getBarcodeView() != null) {
+            getBarcodeView().addStateListener(this);
+        }
     }
 
     @Override
@@ -130,8 +137,16 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
 
     @Override
     public void showError(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        showToast(message);
         hideLoading();
+    }
+
+    private void showToast(int message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -200,5 +215,37 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView {
                 }
             }
         }
+    }
+
+    public BarcodeView getBarcodeView() {
+        return (BarcodeView) getView().findViewById(com.google.zxing.client.android.R.id.zxing_barcode_surface);
+    }
+
+    @Override
+    public void previewSized() {
+
+    }
+
+    @Override
+    public void previewStarted() {
+
+    }
+
+    @Override
+    public void previewStopped() {
+
+    }
+
+    @Override
+    public void cameraError(Exception error) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                showToast(R.string.exception_open_camera_not_allow);
+                return;
+            }
+        }
+        showToast(R.string.exception_open_camera_fail);
     }
 }

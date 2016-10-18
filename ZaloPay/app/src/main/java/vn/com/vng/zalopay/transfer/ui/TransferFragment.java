@@ -125,7 +125,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
      * Set Receiver info when view had created
      *
      * @param displayName displayName
-     * @param avatar avatar
+     * @param avatar      avatar
      * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
      */
     @Override
@@ -140,7 +140,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
      * Set Receiver info when server return user info
      *
      * @param displayName displayName
-     * @param avatar avatar
+     * @param avatar      avatar
      * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
      */
     @Override
@@ -261,6 +261,12 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         });
 
         mPresenter.onViewCreated();
+    }
+
+
+    @OnTextChanged(R.id.edtTransferMsg)
+    public void onTextChanged(CharSequence s) {
+        mPresenter.updateMessage(TextUtils.isEmpty(s) ? "" : s.toString());
     }
 
     @Override

@@ -37,4 +37,8 @@
 
     <string name="exception.no.connection.tutorial">không có kết nối mạng! %s</string>
     <string name="check.internet">Kiểm tra kết nối</string>
+
+    <string name="exception.open.camera.fail">Xin lỗi, có vấn đề với camera của thiết bị.</string>
+    <string name="exception.open.camera.not.allow">Không có quyền sử dụng camera. Vui lòng cho phép ứng dụng sử dụng camera để tiếp tục</string>
+
 </resources>
