@@ -18,13 +18,29 @@ public class RootUtils {
         return buildTags != null && buildTags.contains("test-keys");
     }
 
-    private static boolean checkRootMethod2() {
-        String[] paths = {"/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su",
-                "/system/bin/failsafe/su", "/data/local/su", "/su/bin/su"};
+    private static boolean findBinary(String binaryName) {
+        boolean found = false;
+        String[] paths = {"/system/app/Superuser.apk",
+                "/sbin/",
+                "/system/bin/",
+                "/system/xbin/",
+                "/data/local/xbin/",
+                "/data/local/bin/",
+                "/system/sd/xbin/",
+                "/system/bin/failsafe/",
+                "/data/local/",
+                "/su/bin/"};
         for (String path : paths) {
-            if (new File(path).exists()) return true;
+            if (new File(path + binaryName).exists()) {
+                found = true;
+                break;
+            }
         }
-        return false;
+        return found;
+    }
+
+    private static boolean checkRootMethod2() {
+        return findBinary("su");
     }
 
     private static boolean checkRootMethod3() {

@@ -292,7 +292,9 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
     void addLinkCard() {
         if (user.profilelevel < 2) {
             mNavigator.startUpdateProfileLevel2Activity(mLinkCardView.getContext());
-        } else if (!checkShowIntroSaveCard()) {
+//        } else if (!isOpenedIntroActivity()) {
+//            mLinkCardView.startIntroActivityForResult();
+        } else {
             long value = 10000;
             if (mLinkCardView.getActivity() != null) {
                 try {
@@ -402,15 +404,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             }
         }
         return ECardType.UNDEFINE.toString();
-    }
-
-    private boolean checkShowIntroSaveCard() {
-        if (!isOpenedIntroActivity()) {
-//            mLinkCardView.startIntroActivityForResult();
-            addLinkCard();
-            return true;
-        }
-        return false;
     }
 
     void setOpenedIntroActivity() {
