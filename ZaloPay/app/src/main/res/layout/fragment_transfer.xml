@@ -116,7 +116,7 @@
                         android:gravity="bottom"
                         android:hint="@string/hint_message"
                         android:inputType="text"
-                        android:maxLength="37"
+                        android:maxLength="@integer/max_length_message"
                         android:maxLines="1"
                         android:paddingBottom="@dimen/spacing.tiny.s"
                         android:paddingTop="@dimen/spacing.tiny"

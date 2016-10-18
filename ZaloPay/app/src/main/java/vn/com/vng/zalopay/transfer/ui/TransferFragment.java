@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -234,31 +235,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             @Override
             public void onValueUpdate(long value) {
                 mPresenter.updateAmount(value);
-            }
-        });
-        edtTransferMsg.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Timber.d("beforeTextChanged s [%s] start [%s] count [%s] after [%s]", s, start, count, after);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Timber.d("onTextChanged s [%s] start [%s] before [%s] count [%s]", s, start, before, count);
-                if (TextUtils.isEmpty(s) || s.length() <= 36) {
-                    mPresenter.updateMessage(s.toString());
-                    return;
-                }
-                s = s.subSequence(0, 36);
-                mPresenter.updateMessage(s.toString());
-                edtTransferMsg.setText(s);
-                edtTransferMsg.setSelection(edtTransferMsg.getText().length());
-                showWarningDialog(getString(R.string.transfer_message_maxlength), getString(R.string.txt_close), null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
 
