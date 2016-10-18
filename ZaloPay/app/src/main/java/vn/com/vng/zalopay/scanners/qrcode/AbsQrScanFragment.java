@@ -1,15 +1,20 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.CameraPreview;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 
 import java.util.List;
@@ -24,7 +29,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
  * *
  */
 
-abstract class AbsQrScanFragment extends BaseFragment {
+abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.StateListener {
 
     protected abstract void handleResult(String result);
 
@@ -63,6 +68,7 @@ abstract class AbsQrScanFragment extends BaseFragment {
 
         barcodeScannerView = (CompoundBarcodeView) view.findViewById(R.id.zxing_barcode_scanner);
         barcodeScannerView.decodeContinuous(callback);
+        barcodeScannerView.getBarcodeView().addStateListener(this);
     }
 
     @Override
@@ -114,5 +120,34 @@ abstract class AbsQrScanFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         pause();
+    }
+
+    @Override
+    public void previewSized() {
+        Timber.d("previewSized");
+    }
+
+    @Override
+    public void previewStarted() {
+        Timber.d("previewStarted");
+    }
+
+    @Override
+    public void previewStopped() {
+        Timber.d("previewStopped");
+    }
+
+    @Override
+    public void cameraError(Exception error) {
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                showToast(R.string.exception_open_camera_not_allow);
+                return;
+            }
+        }
+
+        showToast(R.string.exception_open_camera_fail);
     }
 }

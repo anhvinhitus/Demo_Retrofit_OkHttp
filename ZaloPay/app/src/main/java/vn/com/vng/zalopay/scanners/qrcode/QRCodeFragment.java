@@ -145,18 +145,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         return mIsVisibleToUser;
     }
 
-    public boolean checkAndRequestPermission(String permission, int requestCode) {
-        boolean hasPermission = true;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getActivity(), permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                hasPermission = false;
-                requestPermissions(new String[]{permission}, requestCode);
-            }
-        }
-        return hasPermission;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {

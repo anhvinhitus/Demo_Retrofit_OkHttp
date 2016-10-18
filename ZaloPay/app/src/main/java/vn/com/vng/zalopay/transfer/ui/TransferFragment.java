@@ -264,6 +264,11 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         mPresenter.onViewCreated();
     }
 
+    @OnTextChanged(R.id.edtTransferMsg)
+    public void onTextChanged(CharSequence s) {
+        mPresenter.updateMessage(TextUtils.isEmpty(s) ? "" : s.toString());
+    }
+
     @Override
     public void onPause() {
         mPresenter.pause();
