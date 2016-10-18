@@ -324,9 +324,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     .subscribe(new DefaultSubscriber<Boolean>());
 
         } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.e(e, "saveTransferRecentToDB, cast TransactionType exception [%s]", e.getMessage());
         }
     }
 

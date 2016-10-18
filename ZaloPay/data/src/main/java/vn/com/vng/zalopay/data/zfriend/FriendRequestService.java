@@ -41,9 +41,7 @@ public class FriendRequestService implements FriendStore.RequestService {
                 }
             }
         } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.e(e, "zaloFriends exception [%s]", e.getMessage());
         }
 
         return zaloFriends;
@@ -77,9 +75,7 @@ public class FriendRequestService implements FriendStore.RequestService {
             data = arg0.getJSONArray("result");
             Timber.d("fetchFriendList, result: %s friends", data.length());
         } catch (JSONException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.e(e, "handleApiCallback exception [%s]", e.getMessage());
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onError(new GetZaloFriendException(pageIndex, e));
             }

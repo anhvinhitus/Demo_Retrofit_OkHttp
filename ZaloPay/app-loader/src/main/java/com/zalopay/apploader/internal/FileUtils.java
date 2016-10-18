@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import timber.log.Timber;
+
 /**
  * Created by huuhoa on 4/29/16.
  * Copy from react-native-code-push
@@ -221,7 +223,7 @@ public class FileUtils {
             is.close();
             json = new String(buffer, "UTF-8");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Timber.e(ex, "loadStringFromStream exception [%s]", ex.getMessage());
             return null;
         }
         return json;

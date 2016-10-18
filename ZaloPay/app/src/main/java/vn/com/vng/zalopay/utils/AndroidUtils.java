@@ -315,9 +315,7 @@ public class AndroidUtils {
                 ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_browser)");
             }
         } catch (Exception ex) {
-            if (BuildConfig.DEBUG) {
-                ex.printStackTrace();
-            }
+            Timber.e(ex, "openBrowser exception [%s]", ex.getMessage());
             ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_browser)");
         }
     }
@@ -972,9 +970,9 @@ public class AndroidUtils {
                 staticField.setAccessible(true);
                 staticField.set(null, newMap);
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
             }
         } else {
             try {
@@ -982,9 +980,9 @@ public class AndroidUtils {
                 staticField.setAccessible(true);
                 staticField.set(null, newTypeface);
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Timber.e(e, "replaceFont exception [%s]", e.getMessage());
             }
         }
     }

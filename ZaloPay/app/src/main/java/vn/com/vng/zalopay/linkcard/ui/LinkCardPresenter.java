@@ -101,6 +101,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
                 ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
                 if (paymentInfo == null) {
+                    Timber.d("onResponseSuccess paymentInfo null");
                     return;
                 }
                 mLinkCardView.onAddCardSuccess(paymentInfo.mappedCreditCard);
@@ -167,9 +168,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
                 bankCard.type = detectCardType(card.bankcode, card.first6cardno);
                 Timber.d("transform bankCard.type:%s", bankCard.type);
             } catch (Exception e) {
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace();
-                }
+                Timber.e(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
             }
         }
 
@@ -300,7 +299,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
                 try {
                     value = CShareData.getInstance().getLinkCardValue();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Timber.e(e, "getLinkCardValue exception [%s]", e.getMessage());
                 }
             }
             showLoadingView();
@@ -398,9 +397,7 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             try {
                 return CShareData.getInstance().detectCardType(first6cardno).toString();
             } catch (Exception e) {
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace();
-                }
+                Timber.e(e, "detectCardType exception [%s]", e.getMessage());
             }
         }
         return ECardType.UNDEFINE.toString();

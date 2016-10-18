@@ -10,6 +10,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 
 /**
@@ -51,9 +52,7 @@ public class CurrencyUtil {
         try {
             money = Double.valueOf(strCurrency);
         } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.e(e, "formatCurrency exception [%s]", e.getMessage());
             return strCurrency;
         }
         return formatCurrency(money, showCurrencySymbol);

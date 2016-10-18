@@ -244,6 +244,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onAddCardSuccess(DMappedCard card) {
+        Timber.d("onAddCardSuccess card: %s", card);
         if (card == null) {
             return;
         }
@@ -254,9 +255,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
             bankCard.type = mPresenter.detectCardType(card.bankcode, card.first6cardno);
             Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
         } catch (Exception e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.e(e, "detectCardType exception [%s]", e.getMessage());
         }
         updateData(bankCard);
     }
