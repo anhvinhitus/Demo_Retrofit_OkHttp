@@ -247,6 +247,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Timber.d("onTextChanged s [%s] start [%s] before [%s] count [%s]", s, start, before, count);
                 if (TextUtils.isEmpty(s) || s.length() <= 36) {
+                    mPresenter.updateMessage(s.toString());
                     return;
                 }
                 s = s.subSequence(0, 36);
