@@ -104,6 +104,8 @@
                     android:layout_marginBottom="@dimen/spacing.medium.t"
                     android:layout_marginRight="@dimen/spacing.medium.t"
                     android:layout_marginTop="@dimen/spacing.medium.s"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@integer/max_length_message"
                     app:errorEnabled="false">
 
                     <vn.com.vng.zalopay.ui.widget.ClearableEditText
