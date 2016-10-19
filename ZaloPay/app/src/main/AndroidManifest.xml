@@ -301,6 +301,9 @@
 
         <activity android:name=".ui.activity.TutorialConnectInternetActivity"
             android:label="@string/title.activity.tutorial.network.connection" />
+
+        <activity android:name=".warningrooted.WarningRootedActivity"
+            android:label="@string/title.activity.warning.root"/>
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

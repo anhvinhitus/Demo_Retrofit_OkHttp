@@ -105,6 +105,7 @@
     <string name="title.activity.tutorial.network.connection">Hướng dẫn kết nối mạng</string>
     <string name="title.activity.card.support">Quản lý thẻ</string>
     <string name="title.activity.tutorial.link.card">Thông Báo</string>
+    <string name="title.activity.warning.root">Cảnh báo</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
@@ -139,7 +140,7 @@
     <string name="tutorial_link_card_note_1">Thẻ vừa thanh toán đã được liên kết vào tài khoản Zalo Pay của bạn.</string>
     <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập sai số thẻ.</string>
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
-    
+
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_scantopay">Trả Tiền</string>
 
@@ -376,5 +377,8 @@
     <string name="turn_on_wifi"><![CDATA[<b>Bật Wi-fi:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Wi-fi\"</b> và chọn mạng Wi-fi có sẵn.]]></string>
     <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Cellular\"</b> (di động) và bật  <b>\"Cellular Data\"</b> (dữ liệu di động).]]></string>
 
-    <string name="warning_rooted">Thiết bị đang sử dụng đã bị root. Sử dụng Zalo Pay trên thiết bị này sẽ không đảm bảo an toàn và rất có thể dẫn đến việc lộ thông tin tài khoản. Zalo Pay khuyến cáo bạn không nên tiếp tục sử dụng ứng dụng Zalo Pay trên thiết bị này.\nNhấn nút "Tiếp Tục" để tiếp tục sử dụng Zalo Pay.</string>
+    <string name="warning.rooted.title">Thiết bị đang sử dụng đã bị root.</string>
+    <string name="warning.rooted.not.secure">Sử dụng Zalo Pay trên thiết bị này sẽ không đảm bảo an toàn và rất có thể dẫn đến việc lộ thông tin tài khoản.</string>
+    <string name="warning.rooted.recommend">Zalo Pay khuyến cáo bạn không nên tiếp tục sử dụng ứng dụng Zalo Pay trên thiết bị này. Nhấn nút \"Tiếp Tục\" để tiếp tục sử dụng Zalo Pay?</string>
+    <string name="not.repeat">Không hỏi lại cho những lần sau</string>
 </resources>

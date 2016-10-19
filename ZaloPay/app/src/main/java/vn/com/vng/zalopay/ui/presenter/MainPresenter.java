@@ -50,9 +50,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -160,28 +158,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void warningRoot() {
-        if (!RootUtils.isDeviceRooted()) {
+        if (!RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted()) {
             return;
         }
-        if (homeView.getActivity() == null) {
-            return;
-        }
-        DialogManager.showSweetDialogConfirm(homeView.getActivity(),
-                homeView.getContext().getString(R.string.warning_rooted),
-                homeView.getContext().getString(R.string.btn_continue),
-                homeView.getContext().getString(R.string.txt_close),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-                        homeView.getActivity().finish();
-                    }
-
-                    @Override
-                    public void onOKevent() {
-
-                    }
-                }
-        );
+        mNavigator.startWarningRootedActivity(homeView.getContext());
     }
 
     private void initializeAppConfig() {

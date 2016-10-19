@@ -56,6 +56,7 @@ import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
+import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.WebViewActivity;
@@ -509,6 +510,11 @@ public class Navigator implements INavigator {
         bundle.putString(Constants.LAST4CARDNO, mapCardResult.getLast4Number());
         bundle.putString(Constants.IMAGE_FILE_PATH, mapCardResult.getCardLogo());
         intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public void startWarningRootedActivity(Context context) {
+        Intent intent = new Intent(context, WarningRootedActivity.class);
         context.startActivity(intent);
     }
 }

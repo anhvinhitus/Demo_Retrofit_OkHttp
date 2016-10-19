@@ -1,13 +1,31 @@
 package vn.com.vng.zalopay.utils;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+
+import vn.com.vng.zalopay.AndroidApplication;
 
 /**
  * @author Kevin Kowalewski
  */
 public class RootUtils {
+
+    private static final SharedPreferences mPreferences =
+            PreferenceManager.getDefaultSharedPreferences(AndroidApplication.instance().getApplicationContext());
+
+    private static final String PREF_WARNING_ROOTED_REMIND = "pref_warning_rooted_remind";
+
+    public static boolean isHideWarningRooted() {
+        return mPreferences.getBoolean(PREF_WARNING_ROOTED_REMIND, false);
+    }
+
+    public static void setHideWarningRooted(boolean showedIntro) {
+        mPreferences.edit().putBoolean(PREF_WARNING_ROOTED_REMIND, showedIntro).apply();
+    }
 
     public static boolean isDeviceRooted() {
         return checkRootMethod1() || checkRootMethod2() || checkRootMethod3();

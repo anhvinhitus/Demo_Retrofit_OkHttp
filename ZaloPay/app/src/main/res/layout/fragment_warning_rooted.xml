@@ -1,0 +1,97 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    tools:context="vn.com.vng.zalopay.warningrooted.WarningRootedFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing.medium">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/loremipsum"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_warning_rooted" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/warning.rooted.title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/warning.rooted.not.secure" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_padding"
+            android:text="@string/warning.rooted.recommend" />
+
+        <LinearLayout
+            android:id="@+id/layoutRemind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="18dp"
+            android:paddingTop="@dimen/spacing.medium">
+
+            <CheckBox
+                android:id="@+id/chkRemind"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="left|center_vertical"
+                android:button="@drawable/checkbox"
+                android:checked="false"
+                android:clickable="false"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing.small"
+                android:text="@string/not.repeat" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnContinue"
+            style="@style/Button.Default"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/button_border_style_selector"
+            android:gravity="center"
+            android:text="@string/btn_continue"
+            android:textAllCaps="false"
+            android:textColor="@drawable/default_primary_selector" />
+
+        <TextView
+            android:id="@+id/btnClose"
+            style="@style/Button.Default"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/spacing.small"
+            android:background="@drawable/bg_btn_blue_border_selector"
+            android:gravity="center"
+            android:text="@string/txt_close"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+</ScrollView>
