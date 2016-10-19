@@ -40,6 +40,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import cl.json.RNSharePackage;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -237,6 +238,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new MapsPackage(),
                 new VectorIconsPackage(),
                 new SQLitePluginPackage(),
+                new RNSharePackage(),
                 new BottomSheetBehaviorPackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new ReactIAPPackage(paymentService,
