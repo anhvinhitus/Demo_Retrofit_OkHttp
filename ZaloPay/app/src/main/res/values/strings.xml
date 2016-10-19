@@ -128,7 +128,7 @@
     <string name="not_link_card">Bạn chưa liên kết thẻ.</string>
     <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="secure_info">Bảo mật thông tin</string>
-    <string name="secure_info_detail">Được chứng nhận bởi tiêu chuẩn bảo mật PCI-DSS, không lưu thông tin thẻ của bạn.</string>
+    <string name="secure_info_detail">Thực hiện theo tiêu chuẩn bảo mật PCI-DSS, không lưu thông tin thẻ của bạn.</string>
     <string name="link_bank">Ngân hàng liên kết</string>
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
