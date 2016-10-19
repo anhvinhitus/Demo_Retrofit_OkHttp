@@ -18,6 +18,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.zalopay.apploader.BuildConfig;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
@@ -31,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
+import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -233,6 +235,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new ZContactsPackage(),
                 new RNDeviceInfo(),
                 new MapsPackage(),
+                new VectorIconsPackage(),
+                new SQLitePluginPackage(),
                 new BottomSheetBehaviorPackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new ReactIAPPackage(paymentService,
