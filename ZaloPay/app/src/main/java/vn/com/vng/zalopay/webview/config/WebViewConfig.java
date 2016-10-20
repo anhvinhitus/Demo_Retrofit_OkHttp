@@ -20,5 +20,5 @@ public class WebViewConfig {
 
     public static final String URL_PAY = "zalopay-1://post";
 
-    public static final String LOGIN_PATH = "/dichvu/login";
+    public static final String URL_LOGIN_ZALO = "https://oauth.zaloapp.com/v2/auth";
 }

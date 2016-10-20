@@ -174,7 +174,7 @@ public class ZPWebViewProcessor extends WebViewClient {
                 mWebViewListener.payOrder(url);
             }
         } else {
-            if (url.contains(WebViewConfig.LOGIN_PATH)) {
+            if (url.contains(WebViewConfig.URL_LOGIN_ZALO)) {
                 clearCookieZalo();
             }
             view.loadUrl(url);
