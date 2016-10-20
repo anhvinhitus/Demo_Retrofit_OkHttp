@@ -48,8 +48,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="18dp"
-            android:paddingTop="@dimen/spacing.medium">
+            android:paddingBottom="@dimen/spacing.medium"
+            android:paddingTop="14dp">
 
             <CheckBox
                 android:id="@+id/chkRemind"
