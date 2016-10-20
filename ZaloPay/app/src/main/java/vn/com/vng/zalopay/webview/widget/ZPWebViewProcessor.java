@@ -1,17 +1,13 @@
 package vn.com.vng.zalopay.webview.widget;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -162,23 +158,36 @@ public class ZPWebViewProcessor extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Timber.d("shouldOverrideUrlLoading: %s", url);
         //use case for url
-        if (!TextUtils.isEmpty(url) && url.equalsIgnoreCase(WebViewConfig.URL_TO_APP)) {
+        if (TextUtils.isEmpty(url)) {
+            return true;
+        }
+        if (url.equalsIgnoreCase(WebViewConfig.URL_TO_APP)) {
             if (mWebViewListener != null) {
                 mWebViewListener.finishActivity();
             }
-        } else if (!TextUtils.isEmpty(url) && url.equalsIgnoreCase(WebViewConfig.URL_TO_LOGIN)) {
+        } else if (url.equalsIgnoreCase(WebViewConfig.URL_TO_LOGIN)) {
             if (mWebViewListener != null) {
                 mWebViewListener.logout();
             }
-        } else if (url.startsWith("zalopay-1://post")) {
+        } else if (url.startsWith(WebViewConfig.URL_PAY)) {
             if (mWebViewListener != null) {
                 mWebViewListener.payOrder(url);
             }
         } else {
+            if (url.contains(WebViewConfig.LOGIN_PATH)) {
+                clearCookieZalo();
+            }
             view.loadUrl(url);
         }
 
         return true;
+    }
+
+    private void clearCookieZalo() {
+        if (mWebView == null) {
+            return;
+        }
+        mWebView.clearCookies("oauth.zaloapp.com");
     }
 
     public void onDestroy() {
