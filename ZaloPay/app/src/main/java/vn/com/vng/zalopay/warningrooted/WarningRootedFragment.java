@@ -99,4 +99,8 @@ public class WarningRootedFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public boolean onBackPressed() {
+        return true;
+    }
 }
