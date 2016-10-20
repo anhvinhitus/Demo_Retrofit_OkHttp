@@ -57,7 +57,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="left|center_vertical"
                 android:button="@drawable/checkbox"
-                android:checked="false"
+                android:checked="true"
                 android:clickable="false"
                 android:gravity="center" />
 

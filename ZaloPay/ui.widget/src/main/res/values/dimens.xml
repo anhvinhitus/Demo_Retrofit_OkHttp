@@ -29,7 +29,7 @@
     <dimen name="textsize.huge">48sp</dimen>
     <dimen name="textsize.huge.l">56sp</dimen>
 
-    <dimen name="border_radius">6dp</dimen>
+    <dimen name="border_radius">4dp</dimen>
     <dimen name="stroke_width_button">1dp</dimen>
 
     <dimen name="subtitle_height">48dp</dimen>
