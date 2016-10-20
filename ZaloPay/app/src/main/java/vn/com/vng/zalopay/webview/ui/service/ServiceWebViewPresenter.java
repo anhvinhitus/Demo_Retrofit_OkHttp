@@ -57,7 +57,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         this.mNavigator = navigator;
     }
 
-    public void initData(Bundle arguments) {
+    void initData(Bundle arguments) {
         if (arguments == null) {
             return;
         }
@@ -66,7 +66,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         mAppGamePayInfo = Parcels.unwrap(arguments.getParcelable(WebViewConstants.APPGAMEPAYINFO));
     }
 
-    public String getHistoryWebViewUrl() {
+    String getHistoryWebViewUrl() {
         Timber.d("getHistoryWebViewUrl mAppGamePayInfo [%s]", mAppGamePayInfo);
         if (mAppGamePayInfo == null) {
             return "";
@@ -80,7 +80,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         return url;
     }
 
-    public String getWebViewUrl() {
+    String getWebViewUrl() {
         Timber.d("getWebViewUrl mAppGamePayInfo [%s]", mAppGamePayInfo);
         if (mAppGamePayInfo == null) {
             return "";
