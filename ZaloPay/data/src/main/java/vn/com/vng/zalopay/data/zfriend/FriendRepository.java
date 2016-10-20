@@ -5,9 +5,12 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
@@ -37,9 +40,24 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("fetchZaloFriends");
         return mRequestService.fetchFriendList()
-                .doOnNext(mLocalStorage::put)
-                .doOnCompleted(this::updateTimeStamp)
-                .map(entities -> Boolean.TRUE);
+                .doOnNext(new Action1<List<ZaloFriendEntity>>() {
+                    @Override
+                    public void call(List<ZaloFriendEntity> entities) {
+                        mLocalStorage.put(entities);
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        updateTimeStamp();
+                    }
+                })
+                .map(new Func1<List<ZaloFriendEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(List<ZaloFriendEntity> entities) {
+                        return Boolean.TRUE;
+                    }
+                });
     }
 
     @Override
@@ -59,8 +77,18 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> retrieveZaloFriendsAsNeeded() {
         Timber.d("retrieveZaloFriendsAsNeeded");
         return shouldUpdateFriendList()
-                .filter(Boolean::booleanValue)
-                .flatMap(aBoolean -> fetchZaloFriends())
+                .filter(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        return Boolean.TRUE;
+                    }
+                })
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        return fetchZaloFriends();
+                    }
+                })
                 ;
     }
 
@@ -113,8 +141,18 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<List<ZaloFriend>> getZaloFriendList() {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.get())
-                .map(this::transform);
+        return ObservableHelper.makeObservable(new Callable<List<ZaloFriendEntity>>() {
+            @Override
+            public List<ZaloFriendEntity> call() throws Exception {
+                return mLocalStorage.get();
+            }
+        })
+                .map(new Func1<List<ZaloFriendEntity>, List<ZaloFriend>>() {
+                    @Override
+                    public List<ZaloFriend> call(List<ZaloFriendEntity> entities) {
+                        return transform(entities);
+                    }
+                });
     }
 
     private ZaloFriend transform(ZaloFriendEntity entity) {
