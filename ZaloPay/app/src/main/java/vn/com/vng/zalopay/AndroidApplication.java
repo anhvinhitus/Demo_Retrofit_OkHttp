@@ -8,6 +8,7 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.facebook.common.logging.FLog;
 import com.facebook.common.logging.LoggingDelegate;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -126,10 +127,12 @@ public class AndroidApplication extends Application {
     }
 
     void initializeFresco() {
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
-                .setDownsampleEnabled(true)
-                .build();
-        Fresco.initialize(this, config);
+       // if (!Fresco.hasBeenInitialized()) {
+            ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
+                    .setDownsampleEnabled(true)
+                    .build();
+            Fresco.initialize(this, config);
+     //   }
     }
 
 

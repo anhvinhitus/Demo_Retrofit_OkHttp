@@ -16,12 +16,20 @@ public class ObservableHelper {
                     @Override
                     public void call(Subscriber<? super T> subscriber) {
                         try {
-                            subscriber.onNext(func.call());
-                            subscriber.onCompleted();
+                            T ret = func.call();
+
+                            if (!subscriber.isUnsubscribed()) {
+                                subscriber.onNext(ret);
+                                subscriber.onCompleted();
+                            }
+
                         } catch (Exception ex) {
                             try {
-                                subscriber.onError(ex);
+                                if (!subscriber.isUnsubscribed()) {
+                                    subscriber.onError(ex);
+                                }
                             } catch (Exception ex2) {
+                                //empty
                             }
                         }
                     }
