@@ -7,10 +7,20 @@
         android:id="@+id/zxing_barcode_scanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/height_tab_pay_with_margin"
         app:zxing_scanner_layout="@layout/zxing_scanner_layout"
         app:zxing_use_texture_view="true" />
+
+    <TextView
+        android:id="@+id/tvErrorMessage"
+        style="@style/TextView.Title"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:singleLine="false"
+        android:textColor="@color/white" />
 
     <TextView
         style="@style/TextView.Title"

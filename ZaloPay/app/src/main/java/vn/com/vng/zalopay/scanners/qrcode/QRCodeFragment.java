@@ -10,13 +10,16 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.journeyapps.barcodescanner.BarcodeView;
 import com.journeyapps.barcodescanner.CameraPreview;
+import com.journeyapps.barcodescanner.CompoundBarcodeView;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
@@ -24,6 +27,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.qrcode.CustomViewfinderView;
 import vn.com.vng.zalopay.qrcode.fragment.AbsQrScanFragment;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -52,6 +56,8 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
     QRCodePresenter qrCodePresenter;
 
     private SweetAlertDialog mProgressDialog;
+
+    TextView mErrorMessageCamera;
 
     @Override
     public int getResLayoutId() {
@@ -92,10 +98,12 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mErrorMessageCamera = (TextView) view.findViewById(R.id.tvErrorMessage);
         qrCodePresenter.setView(this);
 
         if (getBarcodeView() != null) {
             getBarcodeView().addStateListener(this);
+            getViewFinder().stopScanLine();
         }
     }
 
@@ -218,22 +226,32 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
     }
 
     public BarcodeView getBarcodeView() {
-        return (BarcodeView) getView().findViewById(com.google.zxing.client.android.R.id.zxing_barcode_surface);
+        return getBarcodeScannerView().getBarcodeView();
+    }
+
+    public CustomViewfinderView getViewFinder() {
+        return (CustomViewfinderView) getBarcodeScannerView().getViewFinder();
     }
 
     @Override
     public void previewSized() {
-
+        Timber.d("previewSized");
     }
 
     @Override
     public void previewStarted() {
-
+        getViewFinder().resumeScanLine();
     }
 
     @Override
     public void previewStopped() {
+        getViewFinder().stopScanLine();
+    }
 
+    private void setErrorMessageCamere(int error) {
+        if (mErrorMessageCamera != null) {
+            mErrorMessageCamera.setText(error);
+        }
     }
 
     @Override
@@ -241,11 +259,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
-
-                showToast(R.string.exception_open_camera_not_allow);
+                setErrorMessageCamere(R.string.exception_open_camera_not_allow);
                 return;
             }
         }
-        showToast(R.string.exception_open_camera_fail);
+        setErrorMessageCamere(R.string.exception_open_camera_fail);
     }
 }

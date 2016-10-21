@@ -5,10 +5,6 @@ package vn.com.vng.zalopay.data;
  */
 public class Constants {
     public static final String MANIF_BALANCE = "manif_balance";
-    public static final String MANIF_LASTTIME_UPDATE_TRANSACTION = "manif_lt_trans";
-    public static final String MANIF_LASTTIME_UPDATE_TRANSACTION_FAIL = "manif_lt_trans_fail";
-    public static final String MANIF_PLATFORM_INFO_CHECKSUM = "manif_pfinfochecksum";
-    public static final String MANIF_RESOURCE_VERSION = "manif_resource_version";
 
     public static final String MANIFEST_RESOURCE_INTERNAL_VERSION = "manifest_resource_internal_version";
     public static final String MANIFEST_RESOURCE_EXTERNAL_VERSION = "manifest_resource_internal_version";
