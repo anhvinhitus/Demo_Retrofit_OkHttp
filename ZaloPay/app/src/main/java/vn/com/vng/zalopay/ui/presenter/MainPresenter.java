@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -25,8 +28,11 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -65,7 +71,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     private PaymentWrapper paymentWrapper;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private EventBus mEventBus;
     private AppResourceStore.Repository mAppResourceRepository;
@@ -76,9 +82,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private BalanceStore.Repository mBalanceRepository;
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
+    private User mUser;
+    private ThreadExecutor mThreadExecutor;
+    private FriendRepository mmFriendRepository;
 
     @Inject
-    public MainPresenter(EventBus eventBus,
+    public MainPresenter(User user, EventBus eventBus,
                          AppResourceStore.Repository appResourceRepository,
                          UserConfig userConfig,
                          Context applicationContext,
@@ -86,16 +95,22 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                          PassportRepository passportRepository,
                          BalanceStore.Repository balanceRepository,
                          ZaloPayRepository zaloPayRepository,
-                         TransactionStore.Repository transactionRepository) {
+                         TransactionStore.Repository transactionRepository,
+                         FriendRepository friendRepository,
+                         ThreadExecutor threadExecutor) {
         this.mEventBus = eventBus;
-        mAppResourceRepository = appResourceRepository;
+        this.mAppResourceRepository = appResourceRepository;
         this.mUserConfig = userConfig;
         this.mApplicationContext = applicationContext;
-        mNavigator = navigator;
+        this.mNavigator = navigator;
         this.passportRepository = passportRepository;
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
+        this.mmFriendRepository =friendRepository;
+        this.mUser = user;
+        this.mThreadExecutor = threadExecutor;
+
         timerRefreshPlatform(5); // Thay bằng expiredTime cua payment sdk
     }
 
@@ -109,16 +124,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         mEventBus.post(new RefreshPlatformInfoEvent());
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private void getZaloFriend() {
-        FriendStore.Repository friendRepository = AndroidApplication.instance().getUserComponent().friendRepository();
-        Subscription subscription = friendRepository.retrieveZaloFriendsAsNeeded()
+        Subscription subscription = mmFriendRepository.retrieveZaloFriendsAsNeeded()
                 .delaySubscription(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<List<ZaloFriend>>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
@@ -129,10 +143,29 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
     }
 
+
+    private void sendCrashUserInformation(User user) {
+        if (user == null) {
+            return;
+        }
+
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier(user.zaloPayId);
+        if (!TextUtils.isEmpty(user.email)) {
+            Crashlytics.setUserEmail(user.email);
+        }
+        if (!TextUtils.isEmpty(user.zalopayname)) {
+            Crashlytics.setUserName(user.zalopayname);
+        }
+
+    }
+
+
     @Override
     public void destroyView() {
         mEventBus.unregister(this);
-        unsubscribeIfNotNull(compositeSubscription);
+        unsubscribeIfNotNull(mCompositeSubscription);
         GlobalData.initApplication(null);
         this.homeView = null;
     }
@@ -152,23 +185,41 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     public void initialize() {
         this.loadGatewayInfoPaymentSDK();
-        this.initializeAppConfig();
-        this.getZaloFriend();
-        this.warningRoot();
+
+        mThreadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                sendCrashUserInformation(mUser);
+                initializeAppConfig();
+                getZaloFriend();
+                warningRoot();
+            }
+        });
     }
 
     private void warningRoot() {
-        if (!RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted()) {
-            return;
-        }
-        mNavigator.startWarningRootedActivity(homeView.getContext());
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
+            }
+        }).subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                if (!aBoolean && homeView != null) {
+                    mNavigator.startWarningRootedActivity(homeView.getContext());
+                }
+            }
+        });
+
+        mCompositeSubscription.add(subscription);
     }
 
     private void initializeAppConfig() {
         Subscription subscription = mAppResourceRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
 
@@ -264,7 +315,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         Subscription subscription = passportRepository.logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
 
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         applicationComponent.applicationSession().clearUserSession();
