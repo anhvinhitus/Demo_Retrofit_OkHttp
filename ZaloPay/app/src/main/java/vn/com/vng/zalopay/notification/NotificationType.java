@@ -26,6 +26,7 @@ public class NotificationType {
     public static final int UPDATE_PLATFORMINFO = 110;
     public static final int NOTIFICATION_RECEIVE_RED_PACKET = 111;
     public static final int RECOVERY_MONEY = 10;
+    public static final int MERCHANT_TRANSFER = 11;
 
 
     static boolean isTransactionNotification(int notificationType) {
@@ -40,7 +41,8 @@ public class NotificationType {
                 notificationType == RETRY_TRANSACTION ||
                 notificationType == REFUND_TRANSACTION_BANK ||
                 notificationType == DONATE_MONEY ||
-                notificationType == RECOVERY_MONEY
+                notificationType == RECOVERY_MONEY ||
+                notificationType == MERCHANT_TRANSFER
                 ;
     }
 
