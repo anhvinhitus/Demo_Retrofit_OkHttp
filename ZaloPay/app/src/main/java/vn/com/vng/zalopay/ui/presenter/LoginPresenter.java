@@ -21,6 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
+import vn.com.vng.zalopay.account.network.listener.ZaloErrorCode;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -118,7 +119,10 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
                 showErrorView(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
-            } else if (errorCode == -1111) {
+            } else if (errorCode == ZaloErrorCode.RESULTCODE_USER_CANCEL ||
+                    errorCode == ZaloErrorCode.RESULTCODE_USER_BACK ||
+                    errorCode == ZaloErrorCode.RESULTCODE_USER_REJECT ||
+                    errorCode == ZaloErrorCode.RESULTCODE_USER_BACK_BUTTON) {
                 Timber.d("onAuthError User click backpress");
             } else {
                 if (TextUtils.isEmpty(message)) {
