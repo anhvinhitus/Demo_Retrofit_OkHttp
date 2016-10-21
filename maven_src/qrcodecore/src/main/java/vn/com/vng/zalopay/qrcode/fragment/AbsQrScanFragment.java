@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.qrcode.fragment;
 
 import android.app.Activity;
@@ -20,9 +21,11 @@ import java.util.List;
 import vn.com.vng.zalopay.qrcode.BuildConfig;
 import vn.com.vng.zalopay.qrcode.R;
 
+*/
 /**
  * Created by AnhHieu on 6/7/16.
- */
+ *//*
+
 public abstract class AbsQrScanFragment extends Fragment {
 
     protected abstract void handleResult(String result);
@@ -127,3 +130,4 @@ public abstract class AbsQrScanFragment extends Fragment {
         pause();
     }
 }
+*/

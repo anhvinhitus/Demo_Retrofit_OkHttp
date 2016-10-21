@@ -30,17 +30,19 @@ public class CustomViewfinderView extends ViewfinderView {
     private int mScanLineSize;
     private int mScanLineColor;
 
+    private boolean isEnableScanLine = true;
+
     public CustomViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
         mMaskColor = Color.parseColor("#33ffffff");
-        mCornerColor =  Color.parseColor("#018fe5");
+        mCornerColor = Color.parseColor("#018fe5");
         mCornerLength = DisplayUtils.dp2px(context, 20);
         mCornerSize = DisplayUtils.dp2px(context, 2);
         mScanLineSize = DisplayUtils.dp2px(context, 1);
-        mScanLineColor =  Color.parseColor("#018fe5");
+        mScanLineColor = Color.parseColor("#018fe5");
         mTopOffset = DisplayUtils.dp2px(context, 0);
         mRectWidth = context.getResources().getDimensionPixelOffset(R.dimen.rect_scan_size);
     }
@@ -74,12 +76,13 @@ public class CustomViewfinderView extends ViewfinderView {
         canvas.drawRect(mFramingRect.right - mCornerLength + mCornerSize - 2, mFramingRect.bottom - 2, mFramingRect.right + mCornerSize - 2, mFramingRect.bottom + mCornerSize - 2, mPaint);
         canvas.drawRect(mFramingRect.right - 2, mFramingRect.bottom - mCornerLength + mCornerSize - 2, mFramingRect.right + mCornerSize - 2, mFramingRect.bottom + mCornerSize - 2, mPaint);
 
-
-        mPaint.setColor(mScanLineColor);
-        canvas.drawRect(mFramingRect.left, mScanLineTop, mFramingRect.right, mScanLineTop + mScanLineSize, mPaint);
-        mScanLineTop += SPEEN_DISTANCE;
-        if (mScanLineTop >= mFramingRect.bottom || mScanLineTop <= mFramingRect.top) {
-            SPEEN_DISTANCE = -SPEEN_DISTANCE;
+        if (isEnableScanLine) {
+            mPaint.setColor(mScanLineColor);
+            canvas.drawRect(mFramingRect.left, mScanLineTop, mFramingRect.right, mScanLineTop + mScanLineSize, mPaint);
+            mScanLineTop += SPEEN_DISTANCE;
+            if (mScanLineTop >= mFramingRect.bottom || mScanLineTop <= mFramingRect.top) {
+                SPEEN_DISTANCE = -SPEEN_DISTANCE;
+            }
         }
 
         postInvalidateDelayed(ANIMATION_DELAY, mFramingRect.left, mFramingRect.top, mFramingRect.right, mFramingRect.bottom);
@@ -93,6 +96,15 @@ public class CustomViewfinderView extends ViewfinderView {
         mTopOffset = (h - mRectWidth) / 2;
         mFramingRect = new Rect(leftOffset, mTopOffset, leftOffset + mRectWidth, mTopOffset + mRectWidth);
         mScanLineTop = mTopOffset;
+    }
+
+
+    public void resumeScanLine() {
+        isEnableScanLine = true;
+    }
+
+    public void stopScanLine() {
+        isEnableScanLine = false;
     }
 
 }

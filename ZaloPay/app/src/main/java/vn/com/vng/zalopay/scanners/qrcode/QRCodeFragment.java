@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -42,6 +44,9 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Inject
     QRCodePresenter qrCodePresenter;
+
+    @BindView(R.id.tvErrorMessage)
+    TextView mErrorMessageCamera;
 
     @Override
     public int getResLayoutId() {
@@ -167,5 +172,15 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @Override
     public void onStopFragment() {
         pause();
+    }
+
+    @Override
+    protected void showCameraError(int message) {
+        mErrorMessageCamera.setText(message);
+    }
+
+    @Override
+    public void previewStarted() {
+        mErrorMessageCamera.setText(null);
     }
 }

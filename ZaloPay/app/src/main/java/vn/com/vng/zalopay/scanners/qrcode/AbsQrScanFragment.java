@@ -19,9 +19,11 @@ import com.journeyapps.barcodescanner.CompoundBarcodeView;
 
 import java.util.List;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.qrcode.BuildConfig;
+import vn.com.vng.zalopay.qrcode.CustomViewfinderView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -33,7 +35,6 @@ abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.S
 
     protected abstract void handleResult(String result);
 
-    private CompoundBarcodeView barcodeScannerView;
     private boolean canHandleResult = true;
 
     private BarcodeCallback callback = new BarcodeCallback() {
@@ -62,13 +63,24 @@ abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.S
         return R.layout.capture_appcompat;
     }
 
+    @BindView(R.id.zxing_barcode_scanner)
+    CompoundBarcodeView barcodeScannerView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        barcodeScannerView = (CompoundBarcodeView) view.findViewById(R.id.zxing_barcode_scanner);
         barcodeScannerView.decodeContinuous(callback);
         barcodeScannerView.getBarcodeView().addStateListener(this);
+        getViewfinder().stopScanLine();
+    }
+
+    protected CustomViewfinderView getViewfinder() {
+        return (CustomViewfinderView) barcodeScannerView.getViewFinder();
     }
 
     @Override
@@ -125,29 +137,42 @@ abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.S
     @Override
     public void previewSized() {
         Timber.d("previewSized");
+        if (getViewfinder() != null) {
+            getViewfinder().resumeScanLine();
+        }
     }
 
     @Override
     public void previewStarted() {
         Timber.d("previewStarted");
+        if (getViewfinder() != null) {
+            getViewfinder().resumeScanLine();
+        }
     }
 
     @Override
     public void previewStopped() {
         Timber.d("previewStopped");
+        if (getViewfinder() != null) {
+            getViewfinder().stopScanLine();
+        }
+    }
+
+    protected void showCameraError(int message) {
+        showToast(message);
     }
 
     @Override
     public void cameraError(Exception error) {
-
+        Timber.d(error, "cameraError");
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
-                showToast(R.string.exception_open_camera_not_allow);
+
+                showCameraError(R.string.exception_open_camera_not_allow);
                 return;
             }
         }
-
-        showToast(R.string.exception_open_camera_fail);
+        showCameraError(R.string.exception_open_camera_fail);
     }
 }

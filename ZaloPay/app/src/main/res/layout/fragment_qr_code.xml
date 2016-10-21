@@ -12,6 +12,18 @@
         app:zxing_use_texture_view="true" />
 
     <TextView
+        android:id="@+id/tvErrorMessage"
+        style="@style/TextView.Title"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:singleLine="false"
+        android:textColor="@color/white" />
+
+
+    <TextView
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
