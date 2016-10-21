@@ -236,16 +236,25 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
     @Override
     public void previewSized() {
         Timber.d("previewSized");
+        if (getViewFinder() != null) {
+            getViewFinder().resumeScanLine();
+        }
     }
 
     @Override
     public void previewStarted() {
-        getViewFinder().resumeScanLine();
+        Timber.d("previewStarted");
+        if (getViewFinder() != null) {
+            getViewFinder().resumeScanLine();
+        }
     }
 
     @Override
     public void previewStopped() {
-        getViewFinder().stopScanLine();
+        Timber.d("previewStopped");
+        if (getViewFinder() != null) {
+            getViewFinder().stopScanLine();
+        }
     }
 
     private void setErrorMessageCamere(int error) {
@@ -256,6 +265,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
 
     @Override
     public void cameraError(Exception error) {
+        Timber.d(error, "cameraError");
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
