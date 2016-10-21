@@ -181,7 +181,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private void onLoginSuccess(User user) {
         Timber.d("session %s zaloPayId %s", user.accesstoken, user.zaloPayId);
         // Khởi tạo user component
-        hideLoadingView();
         AndroidApplication.instance().createUserComponent(user);
         clearMerchant();
         this.gotoHomeScreen();
