@@ -257,7 +257,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
         }
     }
 
-    private void setErrorMessageCamere(int error) {
+    private void setErrorMessageCamera(int error) {
         if (mErrorMessageCamera != null) {
             mErrorMessageCamera.setText(error);
         }
@@ -269,10 +269,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Ca
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
-                setErrorMessageCamere(R.string.exception_open_camera_not_allow);
+                setErrorMessageCamera(R.string.exception_open_camera_not_allow);
                 return;
             }
         }
-        setErrorMessageCamere(R.string.exception_open_camera_fail);
+        setErrorMessageCamera(R.string.exception_open_camera_fail);
     }
 }
