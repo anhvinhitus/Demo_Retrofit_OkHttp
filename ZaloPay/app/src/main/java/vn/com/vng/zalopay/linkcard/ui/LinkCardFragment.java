@@ -26,9 +26,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -67,7 +69,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankCard() {
-        navigator.startCardSupportActivityForResult(this);
+        navigator.startCardSupportActivity(getContext());
     }
 
     @Inject
@@ -132,7 +134,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
             startIntroActivity();
-            //navigator.startCardSupportActivityForResult(this);
+            //navigator.startCardSupportActivity(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -265,7 +267,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onTokenInvalid() {
-
+        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_token_expired_message));
+        getAppComponent().applicationSession().clearUserSession();
     }
 
     @Override
@@ -305,11 +308,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         if (requestCode == Constants.REQUEST_CODE_INTRO) {
             mPresenter.addLinkCard();
             return;
-        } else if (requestCode == Constants.REQUEST_CODE_CARD_SUPPORT) {
-            if (resultCode == Activity.RESULT_OK) {
-                mPresenter.addLinkCard();
-                return;
-            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

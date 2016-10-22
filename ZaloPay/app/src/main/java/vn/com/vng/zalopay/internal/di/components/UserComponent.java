@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
+import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
 import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
@@ -195,4 +196,6 @@ public interface UserComponent {
     void inject(TutorialLinkCardFragment f);
 
     void inject(WarningRootedFragment f);
+
+    void inject(CardSupportActivity a);
 }

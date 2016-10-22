@@ -110,7 +110,6 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             @Override
             public void onResponseTokenInvalid() {
                 mLinkCardView.onTokenInvalid();
-                clearAndLogout();
             }
 
             @Override
