@@ -30,7 +30,6 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -84,7 +83,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private TransactionStore.Repository mTransactionRepository;
     private User mUser;
     private ThreadExecutor mThreadExecutor;
-    private FriendRepository mmFriendRepository;
+    private FriendStore.Repository mmFriendRepository;
 
     @Inject
     public MainPresenter(User user, EventBus eventBus,
@@ -96,7 +95,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                          BalanceStore.Repository balanceRepository,
                          ZaloPayRepository zaloPayRepository,
                          TransactionStore.Repository transactionRepository,
-                         FriendRepository friendRepository,
+                         FriendStore.Repository friendRepository,
                          ThreadExecutor threadExecutor) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
@@ -107,7 +106,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
-        this.mmFriendRepository =friendRepository;
+        this.mmFriendRepository = friendRepository;
         this.mUser = user;
         this.mThreadExecutor = threadExecutor;
 
