@@ -185,6 +185,10 @@ public class Navigator implements INavigator {
     }
 
     public void startLinkCardActivity(Context context) {
+        startLinkCardActivity(context, null);
+    }
+
+    public void startLinkCardActivity(Context context, Bundle bundle) {
         if (!userConfig.hasCurrentUser()) {
             return;
         }
@@ -203,10 +207,14 @@ public class Navigator implements INavigator {
                 Timber.d(ex, "startLinkCardActivity");
             }
 
+            Intent intent = intentLinkCard(context);
+            if (bundle != null) {
+                intent.putExtras(bundle);
+            }
             if (numberCard <= 0 || now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
-                context.startActivity(intentLinkCard(context));
+                context.startActivity(intent);
             } else {
-                new PinProfileDialog(context, intentLinkCard(context)).show();
+                new PinProfileDialog(context, intent).show();
             }
         }
     }

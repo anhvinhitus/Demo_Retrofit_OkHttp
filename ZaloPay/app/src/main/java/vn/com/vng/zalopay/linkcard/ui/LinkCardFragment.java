@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -47,6 +46,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
+    private boolean mGoToWithdrawCondition = false;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -76,12 +76,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 //    @BindView(R.id.progressContainer)
 //    View mLoadingView;
 
-    public static LinkCardFragment newInstance() {
-
-        Bundle args = new Bundle();
-
+    public static LinkCardFragment newInstance(Bundle bundle) {
         LinkCardFragment fragment = new LinkCardFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -99,6 +96,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if (getArguments() != null) {
+            mGoToWithdrawCondition = getArguments().getBoolean(Constants.Withdraw.GO_TO_WITHDRAW_CONDITION);
+        }
         mAdapter = new LinkCardAdapter(getContext(), this);
     }
 
@@ -258,6 +258,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
             Timber.e(e, "detectCardType exception [%s]", e.getMessage());
         }
         updateData(bankCard);
+        if (mGoToWithdrawCondition) {
+            getActivity().finish();
+        }
     }
 
     @Override
