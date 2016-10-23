@@ -342,7 +342,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     @Override
     public void resume() {
-
+        checkShowBtnContinue();
     }
 
     @Override
