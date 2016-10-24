@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="@dimen/spacing.medium">
+        android:paddingBottom="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.medium">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -27,6 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:text="@string/warning.rooted.title"
             android:textStyle="bold" />
 
@@ -34,29 +37,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:text="@string/warning.rooted.not.secure" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/app_padding"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:text="@string/warning.rooted.recommend" />
 
         <LinearLayout
             android:id="@+id/layoutRemind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing.medium.t"
+            android:layout_marginLeft="@dimen/spacing.medium.s"
+            android:layout_marginTop="@dimen/spacing.small"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing.medium"
-            android:paddingTop="14dp">
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/chkRemind"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
-                android:button="@drawable/checkbox"
                 android:checked="true"
                 android:clickable="false"
                 android:gravity="center" />
@@ -75,6 +82,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginRight="@dimen/spacing.medium"
             android:background="@drawable/button_border_style_selector"
             android:gravity="center"
             android:text="@string/btn_continue"
@@ -87,6 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginRight="@dimen/spacing.medium"
             android:layout_marginTop="@dimen/spacing.small"
             android:background="@drawable/bg_btn_blue_border_selector"
             android:gravity="center"
