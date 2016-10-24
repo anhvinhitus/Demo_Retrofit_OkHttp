@@ -41,7 +41,7 @@ public class TutorialConnectInternetFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_turorial_connect_internet;
+        return R.layout.fragment_tutorial_connect_internet;
     }
 
     @Override
