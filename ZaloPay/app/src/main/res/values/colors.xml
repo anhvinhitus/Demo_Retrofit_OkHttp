@@ -5,6 +5,7 @@
     <color name="colorAccent">#06a1ff</color>
 
     <color name="background">#f0f4f6</color>
+    <color name="background.note">#d5efff</color>
     <color name="statusBar">#17b5ad</color>
     <color name="background_snackbar">#ffffc1</color>
     <color name="txt_check_internet">#cd7a04</color>
