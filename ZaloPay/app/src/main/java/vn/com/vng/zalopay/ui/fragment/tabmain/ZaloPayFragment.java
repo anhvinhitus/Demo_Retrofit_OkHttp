@@ -1,9 +1,11 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -149,9 +151,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
 
-        AndroidUtils.setSpannedMessageToView(mTvInternetConnection, R.string.exception_no_connection_tutorial, R.string.check_internet,
+        AndroidUtils.setSpannedMessageToView(mTvInternetConnection,
+                R.string.exception_no_connection_tutorial,
+                R.string.check_internet,
                 false, false, R.color.txt_check_internet,
-                new ClickableSpanNoUnderline() {
+                new ClickableSpanNoUnderline(ContextCompat.getColor(getContext(), R.color.txt_check_internet)) {
                     @Override
                     public void onClick(View widget) {
                         navigator.startTutorialConnectInternetActivity(ZaloPayFragment.this.getContext());
