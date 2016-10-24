@@ -5,18 +5,6 @@
     android:orientation="vertical"
     tools:context="vn.com.vng.zalopay.ui.fragment.TutorialConnectInternetFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background_snackbar"
-        android:paddingBottom="@dimen/spacing.medium.l"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium.l"
-        android:text="@string/device_not_internet_connection"
-        android:textColor="@color/txt_title_check_internet"
-        android:textStyle="bold" />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +12,17 @@
         android:contentDescription="@string/loremipsum"
         android:paddingBottom="21dp"
         android:paddingTop="45dp"
-        android:src="@drawable/ic_nointernet" />
+        android:src="@drawable/ic_no_internet" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="@dimen/spacing.large"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium"
+        android:text="@string/device_not_internet_connection"
+        android:textColor="#ff7c00" />
 
     <TextView
         style="@style/TextView.Group.Title"
