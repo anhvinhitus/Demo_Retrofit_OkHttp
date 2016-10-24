@@ -11,7 +11,7 @@ ext {
     androidTargetSdkVersion = 21
     androidCompileSdkVersion = 21
 
-    supportVersion = '23.2.1'
+    supportVersion = '24.2.1'
     playServiceVersion = "9.6.1"
     //Libraries Version
     daggerVersion = '2.6'
