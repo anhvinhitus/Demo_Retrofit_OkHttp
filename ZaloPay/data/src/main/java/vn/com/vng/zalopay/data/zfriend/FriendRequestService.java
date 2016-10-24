@@ -75,7 +75,7 @@ public class FriendRequestService implements FriendStore.RequestService {
             data = arg0.getJSONArray("result");
             Timber.d("fetchFriendList, result: %s friends", data.length());
         } catch (JSONException e) {
-            Timber.e(e, "handleApiCallback exception [%s]", e.getMessage());
+            Timber.w(e, "handleApiCallback exception [%s]", e.getMessage());
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onError(new GetZaloFriendException(pageIndex, e));
             }
