@@ -157,9 +157,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (!TextUtils.isEmpty(user.zalopayname)) {
             Crashlytics.setUserName(user.zalopayname);
         }
-
     }
-
 
     @Override
     public void destroyView() {
@@ -316,6 +314,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .subscribe(new DefaultSubscriber<Boolean>());
         mCompositeSubscription.add(subscription);
 
+        mEventBus.unregister(this);
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         applicationComponent.applicationSession().clearUserSession();
     }
