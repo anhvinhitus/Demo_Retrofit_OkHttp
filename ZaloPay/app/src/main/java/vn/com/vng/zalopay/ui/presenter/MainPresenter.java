@@ -222,7 +222,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
 
-    private void refreshBannersAndInsideApp() {
+    private void refreshPlatformInfo() {
         isLoadedGateWayInfo = true;
         mEventBus.post(new RefreshPlatformInfoEvent());
     }
@@ -240,7 +240,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             public void onFinish() {
                 Timber.d("load payment sdk finish");
                 isLoadedGateWayInfo = true;
-                refreshBannersAndInsideApp();
+                refreshPlatformInfo();
             }
 
             @Override
