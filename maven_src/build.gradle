@@ -1,13 +1,13 @@
 ext {
     configuration = [
             applicationId    : "vn.com.vng.zalopay",
-            buildToolsVersion: "23.0.3",
-            compileVersion   : 23,
+            buildToolsVersion: "25.0.0",
+            compileVersion   : 25,
             minSdk           : 16,
             targetSdk        : 23
     ]
 
-    supportVersion = '23.2.1'
+    supportVersion = '24.2.1'
     playServiceVersion = "9.6.1"
     //Libraries Version
     daggerVersion = '2.2'
