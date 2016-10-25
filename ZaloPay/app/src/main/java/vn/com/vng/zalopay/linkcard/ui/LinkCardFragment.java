@@ -26,11 +26,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -69,7 +67,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankCard() {
-        navigator.startCardSupportActivity(getContext());
+        navigator.startCardSupportActivity(this);
     }
 
     @Inject
@@ -109,7 +107,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setHasFixedSize(true);
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
         if (animator != null) {
             if (animator instanceof SimpleItemAnimator) {
@@ -264,13 +262,14 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         BankCard bankCard = new BankCard(card.cardname, card.first6cardno,
                 card.last4cardno, card.bankcode, card.expiretime);
         try {
-            Timber.d("onActivityResult first6CardNo: %s", card.first6cardno);
+            Timber.d("onAddCardSuccess first6CardNo: %s", card.first6cardno);
             bankCard.type = mPresenter.detectCardType(card.bankcode, card.first6cardno);
-            Timber.d("onActivityResult bankCard.type: %s", bankCard.type);
+            Timber.d("onAddCardSuccess bankCard.type: %s", bankCard.type);
         } catch (Exception e) {
-            Timber.e(e, "detectCardType exception [%s]", e.getMessage());
+            Timber.w(e, "onAddCardSuccess detectCardType exception [%s]", e.getMessage());
         }
         updateData(bankCard);
+        Timber.d("onAddCardSuccess mGoToWithdrawCondition: %s", mGoToWithdrawCondition);
         if (mGoToWithdrawCondition) {
             getActivity().finish();
         }
@@ -319,6 +318,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         if (requestCode == Constants.REQUEST_CODE_INTRO) {
             mPresenter.addLinkCard();
             return;
+        } else if (requestCode == Constants.REQUEST_CODE_CARD_SUPPORT) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (mGoToWithdrawCondition) {
+                    getActivity().finish();
+                }
+                return;
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

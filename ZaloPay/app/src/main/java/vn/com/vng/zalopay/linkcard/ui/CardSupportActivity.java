@@ -51,6 +51,7 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
 
     @Override
     public void onPreComplete() {
+        setResult(RESULT_OK);
         finish();
     }
 
