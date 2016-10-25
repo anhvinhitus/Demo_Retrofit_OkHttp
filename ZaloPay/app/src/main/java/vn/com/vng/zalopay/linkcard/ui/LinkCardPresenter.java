@@ -46,6 +46,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -395,7 +396,11 @@ public class LinkCardPresenter extends BaseUserPresenter implements IPresenter<I
             return ECardType.UNDEFINE.toString();
         } else {
             try {
-                return CShareData.getInstance().detectCardType(first6cardno).toString();
+                UserInfo userInfo = new UserInfo();
+                userInfo.zaloPayUserId = user.zaloPayId;
+                userInfo.accessToken = user.accesstoken;
+                return CShareData.getInstance().setUserInfo(userInfo).
+                        detectCardType(first6cardno).toString();
             } catch (Exception e) {
                 Timber.e(e, "detectCardType exception [%s]", e.getMessage());
             }

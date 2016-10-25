@@ -10,12 +10,16 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -35,6 +39,9 @@ public class CardSupportFragment extends BaseFragment {
     RecyclerView mRecyclerView;
 
     private CardSupportAdapter mAdapter;
+
+    @Inject
+    User mUser;
 
     public CardSupportFragment() {
         // Required empty public constructor
@@ -91,44 +98,48 @@ public class CardSupportFragment extends BaseFragment {
     }
 
     private void getCardSupport() {
-        CShareData.getInstance().getCardSupportList(new IGetCardSupportListListener() {
-            @Override
-            public void onProcess() {
-                Timber.d("getCardSupportList onProcess");
-            }
-
-            @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
-                refreshCardSupportList(cardSupportList);
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
-                hideProgressDialog();
-                showRetryDialog(getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.zaloPayUserId = mUser.zaloPayId;
+        userInfo.accessToken = mUser.accesstoken;
+        CShareData.getInstance().setUserInfo(userInfo)
+                .getCardSupportList(new IGetCardSupportListListener() {
                     @Override
-                    public void onCancelEvent() {
-
+                    public void onProcess() {
+                        Timber.d("getCardSupportList onProcess");
                     }
 
                     @Override
-                    public void onOKevent() {
-                        showProgressDialog();
-                        getCardSupport();
+                    public void onComplete(ArrayList<ZPCard> cardSupportList) {
+                        Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
+                        refreshCardSupportList(cardSupportList);
+                    }
+
+                    @Override
+                    public void onError(String pErrorMess) {
+                        Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
+                        hideProgressDialog();
+                        showRetryDialog(getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                showProgressDialog();
+                                getCardSupport();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
+                        Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
+                                forceUpdate, latestVersion, message);
+                        AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
+                        AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
                     }
                 });
-            }
-
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
-                        forceUpdate, latestVersion, message);
-                AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
-                AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
-            }
-        });
     }
 
     @Override
