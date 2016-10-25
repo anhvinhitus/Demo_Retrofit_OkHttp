@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.webview.ui.service;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -97,4 +98,14 @@ public class ServiceWebViewFragment extends WebViewFragment {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onBackPressed() {
+        if (mPresenter != null && !mPresenter.isServiceWeb(mCurrentUrl)) {
+            loadWebView();
+            return true;
+        }
+        return super.onBackPressed();
+    }
+
 }
