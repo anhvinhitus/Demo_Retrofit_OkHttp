@@ -46,6 +46,10 @@ public class PaymentAppConfig {
                         AndroidApplication.instance().getString(R.string.red_envelope),
                         String.valueOf(R.drawable.ic_lixi)));
 
+        APP_RESOURCE_MAP.put(Constants.SHOW_SHOW,
+                new AppResource(Constants.SHOW_SHOW,
+                        PaymentAppTypeEnum.NATIVE.value, "Show Show"));
+
         APP_RESOURCE_LIST = new ArrayList<>();
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.TRANSFER_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
@@ -53,7 +57,7 @@ public class PaymentAppConfig {
 
         EXCLUDE_APP_RESOURCE_LIST = new ArrayList<>();
         EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID));
-        EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(Constants.SHOW_SHOW));
+        EXCLUDE_APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.SHOW_SHOW));
 
     }
 

@@ -34,11 +34,11 @@ public interface IZaloPayView {
 
     void showErrorDialog(String error);
 
-    void onSessionExpired();
-
     void showLoading();
 
     void hideLoading();
 
     void changeBanner();
+
+    void enableShowShow();
 }

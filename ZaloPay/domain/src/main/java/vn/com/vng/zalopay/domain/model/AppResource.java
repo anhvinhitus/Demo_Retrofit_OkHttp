@@ -28,6 +28,11 @@ public class AppResource {
         this.appid = appid;
     }
 
+    public AppResource(int appid, int appType, String appname) {
+        this(appid, appType, appname, "");
+    }
+
+
     public AppResource(int appid, int appType, String appname, String urlImage) {
         this.appid = appid;
         this.appType = appType;

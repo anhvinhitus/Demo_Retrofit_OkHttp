@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.os.CountDownTimer;
+import android.os.Debug;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -134,10 +135,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void initialize() {
+
         this.getListAppResource();
         this.getTotalNotification(2000);
         this.getBanners();
         this.getBalance();
+
     }
 
     @Override
@@ -152,13 +155,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private void getListAppResource() {
         Subscription subscription = mAppResourceRepository.listInsideAppResource()
-                .map(new Func1<List<AppResource>, List<AppResource>>() {
-                    @Override
-                    public List<AppResource> call(List<AppResource> appResourceList) {
-                        appResourceList.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
-                        return appResourceList;
-                    }
-                })
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
                     public void call(List<AppResource> appResources) {
@@ -180,7 +176,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
-
     private void getListMerchantUser(List<AppResource> listAppResource) {
         Timber.d("getListMerchantUser: [%s]", listAppResource.size());
         if (isEmptyOrNull(listAppResource)) {
@@ -195,7 +190,6 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
-
     private List<Long> toStringListAppId(List<AppResource> listAppResource) {
         List<Long> listId = new ArrayList<>();
 
@@ -208,23 +202,28 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
+
+        if (resources.contains(PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW))) {
+            mZaloPayView.enableShowShow();
+        }
+
+        resources.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
+
         List<AppResource> listApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
+
         if (!Lists.isEmptyOrNull(resources)) {
             listApps.addAll(resources);
         }
+
         mZaloPayView.refreshInsideApps(listApps);
     }
-
 
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 
         @Override
         public void onNext(List<AppResource> appResources) {
-
-            appResources.remove(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID));
-
-            ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
             Timber.d(" AppResource %s", appResources.size());
+            ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
         }
     }
 

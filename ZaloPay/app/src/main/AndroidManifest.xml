@@ -132,7 +132,10 @@
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".paymentapps.ui.PaymentApplicationActivity" />
+
+        <activity
+            android:name=".paymentapps.ui.PaymentApplicationActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".webview.ui.service.ServiceWebViewActivity"
@@ -252,8 +255,8 @@
         <activity
             android:name=".transfer.ui.TransferHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/title.activity.transfer" />
+            android:label="@string/title.activity.transfer"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".transfer.ui.ZaloContactActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"

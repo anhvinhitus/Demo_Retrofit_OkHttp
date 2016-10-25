@@ -151,9 +151,13 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         hideTextAds();
     }
 
+    private boolean isEnableShowShow;
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        int menuRes = isEnableShowShow ? R.menu.menu_main_2 : R.menu.menu_main;
+        inflater.inflate(menuRes, menu);
+
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
         View view = menuItem.getActionView();
         mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
@@ -166,6 +170,17 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_showshow) {
+            navigator.startPaymentApplicationActivity(getContext(),
+                    PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -302,6 +317,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void enableShowShow() {
+        isEnableShowShow = true;
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
     public void setBalance(long balance) {
         String _temp = CurrencyUtil.formatCurrency(balance, true);
 
@@ -323,12 +344,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             return;
         }
         showErrorDialog(error, getString(R.string.txt_close), null);
-    }
-
-    @Override
-    public void onSessionExpired() {
-        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_token_expired_message));
-        getAppComponent().applicationSession().clearUserSession();
     }
 
     @Override
