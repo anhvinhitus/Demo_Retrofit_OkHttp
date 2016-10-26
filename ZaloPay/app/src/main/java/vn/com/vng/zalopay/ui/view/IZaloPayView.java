@@ -24,6 +24,8 @@ public interface IZaloPayView {
 
     void setTotalNotify(int total);
 
+    void showWsConnectError();
+
     void showNetworkError();
 
     void hideNetworkError();

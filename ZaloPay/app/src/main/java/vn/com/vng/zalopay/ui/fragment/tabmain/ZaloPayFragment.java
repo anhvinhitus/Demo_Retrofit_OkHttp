@@ -151,9 +151,16 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
 
+        setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
+                getString(R.string.check_internet));
+
+        hideTextAds();
+    }
+
+    private void setInternetConnectionError(String message, String spannedMessage) {
         AndroidUtils.setSpannedMessageToView(mTvInternetConnection,
-                R.string.exception_no_connection_tutorial,
-                R.string.check_internet,
+                message,
+                spannedMessage,
                 false, false, R.color.txt_check_internet,
                 new ClickableSpanNoUnderline(ContextCompat.getColor(getContext(), R.color.txt_check_internet)) {
                     @Override
@@ -161,8 +168,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                         navigator.startTutorialConnectInternetActivity(ZaloPayFragment.this.getContext());
                     }
                 });
-
-        hideTextAds();
     }
 
     @Override
@@ -431,11 +436,23 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void showNetworkError() {
+    public void showWsConnectError() {
         if (mTvInternetConnection == null ||
                 mTvInternetConnection.getVisibility() == View.VISIBLE) {
             return;
         }
+        setInternetConnectionError(getString(R.string.exception_no_ws_connection),
+                getString(R.string.check_internet));
+        mTvInternetConnection.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showNetworkError() {
+        if (mTvInternetConnection == null) {
+            return;
+        }
+        setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
+                getString(R.string.check_internet));
         mTvInternetConnection.setVisibility(View.VISIBLE);
     }
 

@@ -36,6 +36,7 @@
     <string name="exception.file.not.found">Tập tin đã bị xoá. Vui lòng chọn ảnh khác.</string>
 
     <string name="exception.no.connection.tutorial">Không có kết nối mạng! %s</string>
+    <string name="exception.no.ws.connection">Kết nối mạng không ổn định! %s</string>
     <string name="check.internet">Kiểm tra kết nối</string>
 
     <string name="exception.open.camera.fail">Xin lỗi, có vấn đề với camera của thiết bị.</string>

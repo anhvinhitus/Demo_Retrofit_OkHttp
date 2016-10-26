@@ -287,7 +287,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (event.isConnect) {
             mZaloPayView.hideNetworkError();
         } else {
-            mZaloPayView.showNetworkError();
+            mZaloPayView.showWsConnectError();
         }
     }
 
