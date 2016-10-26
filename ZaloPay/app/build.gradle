@@ -350,8 +350,6 @@ dependencies {
         transitive = true;
     }
 
-    compile libs.circularreveal
-
     compile libs.parceler
     apt libs.parceler_apt
 
