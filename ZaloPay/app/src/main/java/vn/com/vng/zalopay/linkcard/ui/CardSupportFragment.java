@@ -13,15 +13,13 @@ import java.util.List;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * A simple {@link Fragment} subclass.
