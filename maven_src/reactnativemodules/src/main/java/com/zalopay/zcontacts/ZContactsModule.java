@@ -71,6 +71,8 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
                                     displayName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                                 }
                             }
+                        } catch (Exception ex) {
+                            //empty
                         } finally {
                             if (cur != null) {
                                 cur.close();
