@@ -200,7 +200,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
             if (isFocus) {
                 int[] location = new int[2];
                 inputZaloPayName.getLocationInWindow(location);
-                if (mScrollView!= null) {
+                if (mScrollView != null) {
                     Timber.d("InputZaloPayName onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
                     mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
                 }
@@ -310,7 +310,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setHasOptionsMenu(true);
+        // setHasOptionsMenu(true);
     }
 
     @Override
@@ -332,7 +332,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
                 if (hasFocus) {
                     int[] location = new int[2];
                     edtPhone.getLocationInWindow(location);
-                    if (mScrollView!= null) {
+                    if (mScrollView != null) {
                         Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
                         mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
                     }
@@ -466,6 +466,13 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        presenter.saveProfileInfo2Cache(edtPhone.getText().toString(),
+                inputZaloPayName.getText());
+        return super.onBackPressed();
     }
 
     @Override

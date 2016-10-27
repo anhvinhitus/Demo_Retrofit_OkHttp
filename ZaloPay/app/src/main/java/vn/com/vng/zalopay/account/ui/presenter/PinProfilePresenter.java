@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
@@ -23,18 +24,18 @@ import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by longlv on 25/05/2016.
- *
+ * *
  */
 public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
 
-    IPinProfileView mView;
+    private IPinProfileView mView;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
     private User mUser;
 
     @Inject
-    public PinProfilePresenter(AccountStore.Repository accountRepository, User user) {
+    PinProfilePresenter(AccountStore.Repository accountRepository, User user) {
         this.mAccountRepository = accountRepository;
         mUser = user;
     }
@@ -95,7 +96,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         private String phone;
         private String zalopayName;
 
-        public UpdateProfileSubscriber(String phone, String zalopayName) {
+        UpdateProfileSubscriber(String phone, String zalopayName) {
             this.phone = phone;
             this.zalopayName = zalopayName;
         }
@@ -118,7 +119,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
             Timber.e(e, "update Profile Subscriber onError [%s]", e.getMessage());
             if (e instanceof BodyException) {
-                if (((BodyException)e).errorCode == NetworkError.USER_EXISTED) {
+                if (((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
                     ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_INUSED);
                     mView.onCheckFail();
                 } else {
@@ -138,6 +139,46 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     private void onUpdateProfileSuccess(String phone, String zalopayName) {
         hideLoading();
         mView.updateProfileSuccess(phone, zalopayName);
+        saveProfileInfo2Cache(phone, zalopayName, true);
+    }
+
+    public void saveProfileInfo2Cache(final String phone, final String zalopayName) {
+        mAccountRepository.getProfileLevel2Cache()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<ProfileLevel2>() {
+                    @Override
+                    public void onNext(ProfileLevel2 profileLevel2) {
+                        ProfileLevel2 newProfile = new ProfileLevel2();
+                        newProfile.zaloPayName = zalopayName;
+                        newProfile.phoneNumber = phone;
+                        upgradeProfileInfo2Cache(profileLevel2, newProfile);
+                    }
+                });
+    }
+
+    private void upgradeProfileInfo2Cache(ProfileLevel2 profileLevel2, ProfileLevel2 newProfile) {
+        String phone = newProfile.phoneNumber;
+        String zalopayName = newProfile.zaloPayName;
+        //If db haven't profileLevel2 then save profileLevel2
+        if (profileLevel2 == null) {
+            saveProfileInfo2Cache(phone, zalopayName, false);
+        } else {
+            //If phone || zalopayName is null or empty then haven't otp
+            if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(zalopayName)) {
+                saveProfileInfo2Cache(phone, zalopayName, false);
+                return;
+            }
+            //update data if phone | phoneNumber don't equal data in db
+            if (!phone.equals(profileLevel2.phoneNumber) ||
+                    !zalopayName.equals(profileLevel2.zaloPayName)) {
+                saveProfileInfo2Cache(phone, zalopayName, false);
+            }
+        }
+    }
+
+    private void saveProfileInfo2Cache(String phone, String zalopayName, boolean receiveOtp) {
+        mAccountRepository.saveProfileInfo2(phone, zalopayName, receiveOtp);
     }
 
     public void showLoading() {
@@ -162,7 +203,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         public void onError(Throwable e) {
             super.onError(e);
             if (e instanceof BodyException) {
-                if(((BodyException) e).errorCode == NetworkError.USER_EXISTED){
+                if (((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
                     ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_INUSED2);
                 }
 

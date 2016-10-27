@@ -6,7 +6,10 @@ import android.text.TextUtils;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -19,10 +22,13 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
+import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static vn.com.vng.zalopay.data.util.Utils.*;
@@ -259,6 +265,39 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         return ObservableHelper.makeObservable(() -> {
             localStorage.saveProfileInfo3(email, identity, foregroundImg, backgroundImg, avatarImg);
             return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<ProfileLevel2> getProfileLevel2Cache() {
+        return ObservableHelper.makeObservable(() -> {
+            Map map = localStorage.getProfileLevel2();
+            Object phoneNumber = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
+            Object zaloPayName = map.get(Constants.ProfileLevel2.ZALOPAY_NAME);
+            ProfileLevel2 profileLevel2 = new ProfileLevel2();
+            if (phoneNumber != null) {
+                profileLevel2.phoneNumber = phoneNumber.toString();
+            }
+            if (zaloPayName != null) {
+                profileLevel2.zaloPayName = zaloPayName.toString();
+            }
+            return profileLevel2;
+        });
+    }
+
+    @Override
+    public Observable<Void> saveProfileInfo2(String phoneNumber, String zaloPayName, boolean receiveOtp) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.saveProfileInfo2(phoneNumber, zaloPayName, receiveOtp);
+            return null;
+        });
+    }
+
+    @Override
+    public Observable<Void> clearProfileInfo2() {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.saveProfileInfo2("", "", false);
+            return null;
         });
     }
 
