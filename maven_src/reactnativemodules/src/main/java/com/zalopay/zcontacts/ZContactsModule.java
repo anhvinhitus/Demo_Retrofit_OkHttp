@@ -122,9 +122,16 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
 
         // Query contact information from Contact provider
         Cursor cur = cr.query(contactURI, null, null, null, null);
-
-        if (cur.getCount() > 0) {
-            bExistedContact = true;
+        try {
+            if (cur != null && cur.getCount() > 0) {
+                bExistedContact = true;
+            }
+        } catch (Exception e) {
+            //empty
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
         }
 
         resultCallback.invoke(bExistedContact);
