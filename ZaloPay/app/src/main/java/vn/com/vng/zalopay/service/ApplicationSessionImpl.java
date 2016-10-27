@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import com.google.android.gms.iid.InstanceID;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.Collection;
 
@@ -19,6 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
@@ -33,14 +36,17 @@ public class ApplicationSessionImpl implements ApplicationSession {
     private final Navigator navigator;
     private final Context applicationContext;
     private final DaoSession daoSession;
+    private final EventBus eventBus;
 
     private String mLoginMessage;
 
 
-    public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession, Navigator navigator) {
+    public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession,
+                                  Navigator navigator, EventBus eventBus) {
         this.applicationContext = applicationContext;
         this.navigator = navigator;
         this.daoSession = daoSession;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -48,6 +54,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
      */
     @Override
     public void clearUserSession() {
+        eventBus.post(new SignOutEvent());
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
         nm.cancelAll();
