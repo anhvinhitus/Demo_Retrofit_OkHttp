@@ -7,7 +7,7 @@ ext {
             targetSdk        : 23
     ]
 
-    supportVersion = '24.2.1'
+    supportVersion = '25.0.0'
     playServiceVersion = "9.6.1"
     //Libraries Version
     daggerVersion = '2.2'
