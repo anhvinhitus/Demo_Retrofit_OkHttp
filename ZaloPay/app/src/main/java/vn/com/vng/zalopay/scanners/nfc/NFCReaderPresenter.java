@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.scanners.nfc;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -11,26 +12,55 @@ import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.MemoryUtils;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.vng.zalopay.data.util.MemoryUtils;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * Created by huuhoa on 6/1/16.
  * Read NFC
  */
-public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<NfcView> {
-    public static final String MIME_TEXT_PLAIN = "text/plain";
+final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<NfcView> {
+    private final String MIME_TEXT_PLAIN = "text/plain";
 
-    NfcAdapter mNfcAdapter;
-    Activity mActivity;
+    private NfcAdapter mNfcAdapter;
 
-    public NFCReaderPresenter(Activity activity) {
-        mActivity = activity;
+    private ZaloPayRepository zaloPayRepository;
+
+    private BalanceStore.Repository mBalanceRepository;
+
+    private TransactionStore.Repository mTransactionRepository;
+
+    private PaymentWrapper paymentWrapper;
+    private Navigator mNavigator;
+    private Context mApplicationContext;
+
+    @Inject
+    NFCReaderPresenter(Context context, Navigator navigator, ZaloPayRepository zaloPayRepository,
+                       BalanceStore.Repository mBalanceRepository,
+                       TransactionStore.Repository mTransactionRepository) {
+        this.zaloPayRepository = zaloPayRepository;
+        this.mBalanceRepository = mBalanceRepository;
+        this.mTransactionRepository = mTransactionRepository;
+        this.mNavigator = navigator;
+        this.mApplicationContext = context;
+        initPaymentWrapper();
     }
 
     public void initialize() {
@@ -38,7 +68,7 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
             return;
         }
 
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(mActivity);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(mNfcView.getContext());
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
             mNfcView.onInitDone(NfcView.STATUS_NOT_AVAILABLE);
@@ -53,32 +83,32 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
     }
 
     public void setupForegroundDispatch() {
-        final Intent intent = new Intent(mActivity.getApplicationContext(), mActivity.getClass());
+        Timber.d("setupForegroundDispatch");
+        final Intent intent = new Intent(mNfcView.getContext(), mNfcView.getActivity().getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        final PendingIntent pendingIntent = PendingIntent.getActivity(mActivity.getApplicationContext(), 0, intent, 0);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(mNfcView.getContext(), 0, intent, 0);
 
         if (mNfcAdapter != null) {
-            mNfcAdapter.enableForegroundDispatch(mActivity, pendingIntent, null, null);
+            mNfcAdapter.enableForegroundDispatch(mNfcView.getActivity(), pendingIntent, null, null);
         }
     }
 
     public void stopForegroundDispatch() {
+        Timber.d("stopForegroundDispatch");
         if (mNfcAdapter != null) {
-            mNfcAdapter.disableForegroundDispatch(mActivity);
+            mNfcAdapter.disableForegroundDispatch(mNfcView.getActivity());
         }
     }
 
-    public void handleDispatch(Intent intent) {
+    void handleDispatch(Intent intent) {
         String action = intent.getAction();
 
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             String type = intent.getType();
             if (MIME_TEXT_PLAIN.equals(type)) {
-
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                new NdefReaderTask().execute(tag);
-
+                this.executeReader(tag);
             } else {
                 Timber.d("Wrong mime type: " + type);
             }
@@ -90,11 +120,15 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
 
             for (String tech : techList) {
                 if (searchedTech.equals(tech)) {
-                    new NdefReaderTask().execute(tag);
+                    this.executeReader(tag);
                     break;
                 }
             }
         }
+    }
+
+    private void executeReader(Tag tag) {
+        new NdefReaderTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tag);
     }
 
     private NfcView mNfcView;
@@ -128,18 +162,93 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
 
     @Override
     public void destroy() {
-        mActivity = null;
         mNfcAdapter = null;
         mNfcView = null;
+    }
+
+    private void onReceivePaymentRecord(PaymentRecord record) {
+        if (record == null) {
+            Timber.e("No payment record");
+            return;
+        }
+
+        ((AndroidApplication) mApplicationContext).getAppComponent()
+                .monitorTiming().finishEvent(MonitorEvents.NFC_SCANNING);
+
+        if (paymentWrapper == null) {
+            //mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
+            return;
+        }
+
+        Timber.i("appId: %d, token: [%s]", record.appId, record.transactionToken);
+        paymentWrapper.payWithToken(record.appId, record.transactionToken);
+    }
+
+    private void initPaymentWrapper() {
+        paymentWrapper = new PaymentWrapper(mBalanceRepository, zaloPayRepository, mTransactionRepository,
+                new PaymentWrapper.IViewListener() {
+                    @Override
+                    public Activity getActivity() {
+                        if (mNfcView != null) {
+                            return mNfcView.getActivity();
+                        }
+                        return null;
+                    }
+                },
+                new PaymentWrapper.IResponseListener() {
+                    @Override
+                    public void onParameterError(String param) {
+                        //mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
+                    }
+
+                    @Override
+                    public void onResponseError(PaymentError paymentError) {
+                        //mNFCStatus.setText("");
+//                        //mNFCStatus.setText(String.format("Response error: %d", status));
+                    }
+
+                    @Override
+                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                        //mNFCStatus.setText("Thanh toán thành công");
+
+                    }
+
+                    @Override
+                    public void onResponseTokenInvalid() {
+
+                    }
+
+                    @Override
+                    public void onAppError(String msg) {
+
+                    }
+
+                    @Override
+                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+
+                    }
+
+                    @Override
+                    public void onNotEnoughMoney() {
+                        if (mNfcView != null) {
+                            mNavigator.startDepositActivity(mNfcView.getActivity());
+                        }
+                    }
+                });
     }
 
     /**
      * Background task for reading the data. Do not block the UI thread while reading.
      *
      * @author Ralf Wondratschek
-     *
      */
-    private class NdefReaderTask extends AsyncTask<Tag, Void, PaymentRecord> {
+    private static class NdefReaderTask extends AsyncTask<Tag, Void, PaymentRecord> {
+
+        private WeakReference<NFCReaderPresenter> mPresenter;
+
+        NdefReaderTask(NFCReaderPresenter listener) {
+            mPresenter = new WeakReference<>(listener);
+        }
 
         @Override
         protected PaymentRecord doInBackground(Tag... params) {
@@ -189,9 +298,8 @@ public class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<
 
         @Override
         protected void onPostExecute(PaymentRecord result) {
-            if (result != null && mNfcView != null) {
-                Timber.d("TAG: %s", result);
-                mNfcView.onReceivePaymentRecord(result);
+            if (mPresenter.get() != null) {
+                mPresenter.get().onReceivePaymentRecord(result);
             }
         }
     }

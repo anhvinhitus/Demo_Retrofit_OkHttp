@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.scanners.nfc;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,17 +12,12 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.WaveView;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -32,44 +26,10 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * create an instance of this fragment.
  */
 public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLifecycle {
-    private PaymentWrapper paymentWrapper;
-    private NFCReaderPresenter readerPresenter;
-
-    @Inject
-    ZaloPayRepository zaloPayRepository;
-
-    @Inject
-    BalanceStore.Repository mBalanceRepository;
-
-    @Inject
-    TransactionStore.Repository mTransactionRepository;
 
 
     public ScanNFCFragment() {
         // Required empty public constructor
-    }
-
-    private boolean processOrder(String orderToken) {
-        String[] contents = orderToken.split(":");
-        if (contents.length < 2) {
-            new SweetAlertDialog(getActivity(), 0, SweetAlertDialog.ERROR_TYPE)
-                    .setContentText(String.format("Nội dung thẻ Nfc không hợp lệ.\nNội dung: [%s]", orderToken))
-                    .show();
-            return false;
-        }
-
-        long appId = Long.valueOf(contents[0]);
-        String token = contents[1];
-
-        if (paymentWrapper == null) {
-            //mNFCStatus.setText("Có lỗi phát sinh");
-            Timber.w("PaymentWrapper is NULL");
-            return false;
-        }
-
-        Timber.i("appId: %d, token: %s", appId, token);
-        paymentWrapper.payWithToken(appId, token);
-        return true;
     }
 
     /**
@@ -86,52 +46,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
-
-        paymentWrapper = new PaymentWrapper(mBalanceRepository, zaloPayRepository, mTransactionRepository,
-                new PaymentWrapper.IViewListener() {
-                    @Override
-                    public Activity getActivity() {
-                        return ScanNFCFragment.this.getActivity();
-                    }
-                },
-                new PaymentWrapper.IResponseListener() {
-                    @Override
-                    public void onParameterError(String param) {
-                        //mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
-                    }
-
-                    @Override
-                    public void onResponseError(PaymentError paymentError) {
-                        //mNFCStatus.setText("");
-//                        //mNFCStatus.setText(String.format("Response error: %d", status));
-                    }
-
-                    @Override
-                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        //mNFCStatus.setText("Thanh toán thành công");
-
-                    }
-
-                    @Override
-                    public void onResponseTokenInvalid() {
-
-                    }
-
-                    @Override
-                    public void onAppError(String msg) {
-
-                    }
-
-                    @Override
-                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
-                    }
-
-                    @Override
-                    public void onNotEnoughMoney() {
-                        navigator.startDepositActivity(ScanNFCFragment.this.getContext());
-                    }
-                });
     }
 
     @BindView(R.id.imHand)
@@ -140,6 +54,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @BindView(R.id.waveView)
     WaveView mWareWaveView;
 
+    @Inject
+    NFCReaderPresenter readerPresenter;
 
     @Override
     protected int getResLayoutId() {
@@ -149,21 +65,22 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        readerPresenter = new NFCReaderPresenter(getActivity());
-        handleIntent(getActivity().getIntent());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         super.onViewCreated(view, savedInstanceState);
-
-        if (readerPresenter != null) {
-            readerPresenter.setView(this);
-            readerPresenter.initialize();
-        }
-
+        readerPresenter.setView(this);
         starAnimation();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        readerPresenter.initialize();
+
+        handleIntent(getActivity().getIntent());
     }
 
     private void starAnimation() {
@@ -242,24 +159,6 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
                 //mNFCStatus.setText("NFC ready");
                 break;
         }
-    }
-
-    @Override
-    public void onReceivePaymentRecord(PaymentRecord paymentRecord) {
-        if (paymentRecord == null) {
-            Timber.e("No payment record");
-            return;
-        }
-
-        getAppComponent().monitorTiming().finishEvent(MonitorEvents.NFC_SCANNING);
-
-        if (paymentWrapper == null) {
-            //mNFCStatus.setText("Something wrong. PaymentWrapper is still NULL");
-            return;
-        }
-
-        Timber.i("appId: %d, token: [%s]", paymentRecord.appId, paymentRecord.transactionToken);
-        paymentWrapper.payWithToken(paymentRecord.appId, paymentRecord.transactionToken);
     }
 
     @Override
