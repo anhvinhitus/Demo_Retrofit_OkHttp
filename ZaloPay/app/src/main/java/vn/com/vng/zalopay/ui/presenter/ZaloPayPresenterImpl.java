@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
@@ -322,6 +323,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (mZaloPayView != null) {
             mZaloPayView.setBalance(event.balance);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onSignOutEvent(SignOutEvent event) {
+        mEventBus.unregister(this);
     }
 
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {

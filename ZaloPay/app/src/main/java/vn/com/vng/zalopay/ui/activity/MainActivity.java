@@ -23,6 +23,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -237,6 +238,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
+                        eventBus.post(new SignOutEvent());
                         presenter.logout();
                         ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                     }
