@@ -9,7 +9,6 @@ import vn.com.vng.zalopay.data.util.MemoryUtils;
 
 /**
  * Created by huuhoa on 6/4/16.
- *
  */
 public class PaymentRecord {
     public final long manufacturerId;
@@ -32,7 +31,7 @@ public class PaymentRecord {
             return super.equals(o);
         }
 
-        PaymentRecord obj = (PaymentRecord)o;
+        PaymentRecord obj = (PaymentRecord) o;
         return obj.transactionToken.equalsIgnoreCase(transactionToken);
     }
 
@@ -42,6 +41,7 @@ public class PaymentRecord {
     }
 
     public final static PaymentRecord Invalid = new PaymentRecord(-1, -1, -1, "", -1);
+
     public static PaymentRecord from(byte[] data) {
         if (data == null) {
             Timber.d("Invalid scanRecord. Specific data not found.");
@@ -59,8 +59,14 @@ public class PaymentRecord {
 //        currentPos += 2;
 //        long amount = 0;
         long amount = MemoryUtils.extractLong(data, currentPos);
+        if (amount < 0) {
+            return null;
+        }
         currentPos += 4;
         long appid = MemoryUtils.extractShort(data, currentPos);
+        if (appid < 0) {
+            return null;
+        }
         currentPos += 2;
         byte[] transactionTokenBytes = MemoryUtils.extractBytes(data, currentPos, 16);
         String transactionToken = Base64.encodeToString(transactionTokenBytes, Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
