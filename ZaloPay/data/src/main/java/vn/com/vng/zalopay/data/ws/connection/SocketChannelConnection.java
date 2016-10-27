@@ -72,7 +72,7 @@ class SocketChannelConnection {
     }
 
 
-    boolean startConnect() throws IOException {
+    boolean startConnect() throws Exception {
         Timber.d("Start connecting");
         synchronized (this) {
             if (mConnectionState == ConnectionState.CONNECTED) {

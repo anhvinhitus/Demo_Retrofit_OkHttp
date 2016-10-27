@@ -21,6 +21,7 @@ import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -77,6 +78,25 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
     public void onTextChangedPhone() {
         hidePhoneError();
         checkShowHideBtnContinue();
+    }
+
+    @OnFocusChange(R.id.edtPhone)
+    public void onFocusChange(View view, boolean hasFocus) {
+        Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
+        if (hasFocus) {
+            int[] location = new int[2];
+            edtPhone.getLocationInWindow(location);
+            if (mScrollView != null) {
+                Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
+                mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+            }
+            return;
+        }
+        if (!isValidPhone()) {
+            showPhoneError();
+        } else {
+            hidePhoneError();
+        }
     }
 
     @BindView(R.id.btnContinue)
@@ -240,7 +260,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setHasOptionsMenu(true);
+        // setHasOptionsMenu(true);
     }
 
     @Override
@@ -251,27 +271,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         passCode.setPassCodeMaxLength(passCodeMaxLength);
         passCode.addTextChangedListener(passcodeChanged);
         passCode.setPassCodeFocusChanged(passcodeFocusChanged);
-
-        edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
-                if (hasFocus) {
-                    int[] location = new int[2];
-                    edtPhone.getLocationInWindow(location);
-                    if (mScrollView!= null) {
-                        Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
-                        mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
-                    }
-                    return;
-                }
-                if (!isValidPhone()) {
-                    showPhoneError();
-                } else {
-                    hidePhoneError();
-                }
-            }
-        });
 
         AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
                 false, false, R.color.colorPrimary,
@@ -342,6 +341,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
 
     @Override
     public void onDestroyView() {
+        passCode.setPassCodeFocusChanged(null);
         presenter.destroyView();
         super.onDestroyView();
     }

@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.ui.widget;
 
 import android.content.Context;
@@ -20,10 +21,12 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
+*/
 /**
  * Created by longlv on 12/08/2016.
  * Control support for input, valid and show state (success/fail) of Zalo Pay name.
- */
+ *//*
+
 public class InputZaloPayNameView extends FrameLayout {
 
     private InputZaloPayNameListener mListener;
@@ -250,3 +253,4 @@ public class InputZaloPayNameView extends FrameLayout {
         }
     }
 }
+*/
