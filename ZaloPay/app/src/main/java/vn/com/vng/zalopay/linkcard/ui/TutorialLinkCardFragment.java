@@ -91,7 +91,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
             return;
         }
         if (!TextUtils.isEmpty(lastCardNumber)) {
-            mTxtLastNumberOfCard.setText("****"+lastCardNumber);
+            mTxtLastNumberOfCard.setText("\u2022\u2022\u2022\u2022"+lastCardNumber);
         }
     }
 
