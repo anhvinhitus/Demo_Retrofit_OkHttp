@@ -69,7 +69,8 @@ public class PaymentWrapper {
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
                     /*DMapCardResult cardResult = new DMapCardResult();
                     cardResult.setCardLogo("MASTER.png");
-                    cardResult.setLast4Number("8668");*/
+                    cardResult.setLast4Number("8668");
+                    cardResult.setBankName("Master card");*/
                     mNavigator.startTutorialLinkCardActivity(viewListener.getActivity(), pPaymentResult.mapCardResult);
                     responseListener.onResponseSuccess(pPaymentResult);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {

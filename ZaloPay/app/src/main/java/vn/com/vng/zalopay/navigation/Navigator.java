@@ -519,6 +519,7 @@ public class Navigator implements INavigator {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.LAST4CARDNO, mapCardResult.getLast4Number());
         bundle.putString(Constants.IMAGE_FILE_PATH, mapCardResult.getCardLogo());
+        bundle.putString(Constants.BANKNAME, mapCardResult.getBankName());
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

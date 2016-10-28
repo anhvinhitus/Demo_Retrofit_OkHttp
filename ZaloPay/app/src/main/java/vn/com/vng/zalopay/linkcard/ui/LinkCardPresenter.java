@@ -168,7 +168,8 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
             Timber.tag("LinkCardPresenter").d("removed map card: %s", mapCard);
             hideLoadingView();
             if (mapCard != null) {
-                BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno, mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
+                BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno,
+                        mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
                 mLinkCardView.removeData(bankCard);
             }
         }

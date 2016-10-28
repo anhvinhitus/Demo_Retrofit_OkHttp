@@ -25,12 +25,16 @@ public class TutorialLinkCardFragment extends BaseFragment {
 
     private String mLastCardNumber;
     private String mImageFilePath;
+    private String mBankName;
 
     @BindView(R.id.txtLastNumberOfCard)
     TextView mTxtLastNumberOfCard;
 
     @BindView(R.id.imgBankIcon)
     ImageView mImgBankIcon;
+
+    @BindView(R.id.txtBankName)
+    TextView mTxtBankName;
 
     @OnClick(R.id.btnManagerCard)
     public void onCLickManagerCard() {
@@ -70,6 +74,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
         if (getArguments() != null) {
             mLastCardNumber = getArguments().getString(Constants.LAST4CARDNO, "");
             mImageFilePath = getArguments().getString(Constants.IMAGE_FILE_PATH, "");
+            mBankName = getArguments().getString(Constants.BANKNAME, "");
         }
     }
 
@@ -78,6 +83,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         setLastCardNumber(mLastCardNumber);
         setBankIcon(mImageFilePath);
+        setBankName(mBankName);
     }
 
     private void setLastCardNumber(String lastCardNumber) {
@@ -95,6 +101,15 @@ public class TutorialLinkCardFragment extends BaseFragment {
         }
         if (!TextUtils.isEmpty(imageFilePath)) {
             mImgBankIcon.setImageBitmap(ResourceManager.getImage(imageFilePath));
+        }
+    }
+
+    private void setBankName(String bankName) {
+        if (mTxtBankName == null) {
+            return;
+        }
+        if (!TextUtils.isEmpty(bankName)) {
+            mTxtBankName.setText(bankName);
         }
     }
 }

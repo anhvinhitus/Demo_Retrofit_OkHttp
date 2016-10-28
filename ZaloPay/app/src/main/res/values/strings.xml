@@ -125,6 +125,7 @@
 
     <string name="txt_confirm_sigout">Bạn có muốn đăng xuất tài khoản này không?</string>
 
+    <string name="free_fee">Miễn phí giao dịch</string>
     <string name="not_link_card">Bạn chưa liên kết thẻ.</string>
     <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="secure_info">Bảo mật thông tin</string>

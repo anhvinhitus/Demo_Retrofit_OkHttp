@@ -31,10 +31,29 @@
                 android:id="@+id/imgBankIcon"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:layout_marginLeft="32dp"
+                android:layout_marginLeft="28dp"
                 android:layout_marginTop="194dp"
                 android:contentDescription="@string/loremipsum"
                 tools:src="@drawable/ic_luuthe" />
+
+            <TextView
+                android:id="@+id/txtBankName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="194dp"
+                android:textColor="@color/txt_item_main"
+                android:textSize="9sp"
+                tools:text="Vietin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="206dp"
+                android:text="@string/free_fee"
+                android:textColor="@color/txt_item_sub"
+                android:textSize="6sp" />
 
             <TextView
                 android:id="@+id/txtLastNumberOfCard"
