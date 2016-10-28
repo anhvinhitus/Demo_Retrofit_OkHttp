@@ -223,7 +223,9 @@ public class Navigator implements INavigator {
         Map<String, String> options = new HashMap<>();
         options.put("view", "main");
         Intent intent = intentPaymentApp(context, appResource, options);
-        context.startActivity(intent);
+        if (intent != null) {
+            context.startActivity(intent);
+        }
     }
 
     public void startUpdateProfileLevel2Activity(Context context, String walletTransID) {

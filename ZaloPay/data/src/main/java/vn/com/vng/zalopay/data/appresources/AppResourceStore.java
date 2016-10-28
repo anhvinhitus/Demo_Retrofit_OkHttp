@@ -13,7 +13,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 
 /**
  * Created by AnhHieu on 8/10/16.
- *
  */
 public interface AppResourceStore {
 
@@ -52,6 +51,8 @@ public interface AppResourceStore {
         List<AppResource> listAppResourceFromDB();
 
         Observable<List<AppResource>> listAppResource(List<Integer> appidlist);
+
+        Observable<Boolean> existResource(int appId);
     }
 
 }

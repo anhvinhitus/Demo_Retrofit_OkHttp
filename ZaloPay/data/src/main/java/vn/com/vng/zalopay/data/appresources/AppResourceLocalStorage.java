@@ -71,7 +71,8 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     @Override
     public void increaseStateDownload(int appId) {
         Timber.d("increaseStateDownload appId %s", appId);
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
+                .where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
         if (Lists.isEmptyOrNull(appResourceGD)) {
             return;
         }
@@ -91,7 +92,10 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
     @Override
     public void increaseRetryDownload(long appId) {
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
+                .where(AppResourceGDDao.Properties.Appid.eq(appId))
+                .list();
+
         if (Lists.isEmptyOrNull(appResourceGD)) return;
 
         long currentTime = System.currentTimeMillis() / 1000;

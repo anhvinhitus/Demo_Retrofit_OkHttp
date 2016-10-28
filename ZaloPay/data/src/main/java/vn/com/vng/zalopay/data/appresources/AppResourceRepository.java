@@ -16,6 +16,8 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
+import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
+
 /**
  * Created by huuhoa on 6/17/16.
  * Implementation for AppResource.Repository
@@ -33,6 +35,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private final AppResourceStore.RequestService mRequestService;
     private final AppResourceStore.LocalStorage mLocalStorage;
     private String appVersion;
+    private final int RETRY_DOWNLOAD_NUMBER = 3;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -109,8 +112,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private boolean shouldDownloadApp(AppResourceEntity app) {
-        if (app.stateDownload < 2) {
-            if (app.numRetry < 3) {
+        if (app.stateDownload < DownloadState.STATE_SUCCESS) {
+            if (app.numRetry < RETRY_DOWNLOAD_NUMBER) {
                 return true;
             } else {
                 long currentTime = System.currentTimeMillis() / 1000;
@@ -219,5 +222,19 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 mOkHttpClient, mLocalStorage, mRootBundle);
 
         listTask.add(taskImgUrl);
+    }
+
+    @Override
+    public Observable<Boolean> existResource(int appId) {
+        return makeObservable(() -> {
+            AppResourceEntity entity = mLocalStorage.get(appId);
+            return entity.stateDownload >= DownloadState.STATE_SUCCESS;
+        });
+    }
+
+    interface DownloadState {
+        int STATE_FAIL = -1;
+        int STATE_DOWNLOADING = 1;
+        int STATE_SUCCESS = 2;
     }
 }

@@ -77,7 +77,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     protected void onScreenVisible() {
     }
 
-
     private final static int SPAN_COUNT_APPLICATION = 3;
 
     @Inject
@@ -266,7 +265,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 if (appResource == null) {
                     appResource = new AppResource(app.appid);
                 }
-                navigator.startPaymentApplicationActivity(getActivity(), appResource);
+                presenter.startPaymentApp(appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             presenter.startServiceWebViewActivity(app.appid, app.webUrl);
@@ -424,7 +423,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 //showToast(getString(R.string.update_to_use));
             }
         } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
-            navigator.startPaymentApplicationActivity(getActivity(), new AppResource(banner.appid));
+            presenter.startPaymentApp(new AppResource(banner.appid));
         } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
             presenter.startServiceWebViewActivity(banner.appid, banner.webviewurl);
         } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {

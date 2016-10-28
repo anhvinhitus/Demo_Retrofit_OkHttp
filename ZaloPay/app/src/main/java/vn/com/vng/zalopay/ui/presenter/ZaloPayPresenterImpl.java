@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -73,7 +77,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         }
     };
 
-    public ZaloPayPresenterImpl(MerchantStore.Repository mMerchantRepository,
+    private Context mApplicationContext;
+
+    public ZaloPayPresenterImpl(Context context, MerchantStore.Repository mMerchantRepository,
                                 EventBus eventBus,
                                 BalanceStore.Repository balanceRepository,
                                 AppResourceStore.Repository appResourceRepository,
@@ -85,6 +91,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         this.mAppResourceRepository = appResourceRepository;
         this.mNotificationRepository = notificationRepository;
         this.mNavigator = navigator;
+        this.mApplicationContext = context;
     }
 
     @Override
@@ -159,6 +166,27 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
 
         this.getListMerchantUser(insideApps);
+    }
+
+    @Override
+    public void startPaymentApp(final AppResource app) {
+        Subscription subscription = mAppResourceRepository.existResource(app.appid)
+                .observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            if (mZaloPayView != null) {
+                                mNavigator.startPaymentApplicationActivity(mZaloPayView.getContext(), app);
+                            }
+                        } else {
+                            if (mZaloPayView != null) {
+                                mZaloPayView.showError(mApplicationContext.getString(R.string.application_downloading));
+                            }
+                        }
+                    }
+                });
+        compositeSubscription.add(subscription);
     }
 
     public List<AppResource> getListAppResourceFromDB() {
