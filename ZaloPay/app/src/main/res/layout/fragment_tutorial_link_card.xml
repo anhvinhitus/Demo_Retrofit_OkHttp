@@ -42,9 +42,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="55dp"
                 android:layout_marginTop="194dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxWidth="84dp"
                 android:textColor="@color/txt_item_main"
                 android:textSize="9sp"
-                tools:text="Vietin" />
+                tools:text="@string/link_card_to_use_easily" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,8 +62,8 @@
                 android:id="@+id/txtLastNumberOfCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="138dp"
-                android:layout_marginTop="146dp"
+                android:layout_marginLeft="146dp"
+                android:layout_marginTop="148dp"
                 android:textColor="@color/txt_item_main"
                 android:textSize="30sp"
                 tools:text="****6789" />
