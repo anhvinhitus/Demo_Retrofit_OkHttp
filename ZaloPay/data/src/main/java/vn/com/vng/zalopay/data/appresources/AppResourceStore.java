@@ -28,6 +28,8 @@ public interface AppResourceStore {
         void increaseRetryDownload(long appId);
 
         void increaseStateDownload(int appId);
+
+        void sortApplication(List<Integer> list);
     }
 
     interface RequestService {

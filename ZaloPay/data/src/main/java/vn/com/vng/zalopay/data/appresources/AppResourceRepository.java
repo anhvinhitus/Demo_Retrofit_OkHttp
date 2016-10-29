@@ -170,14 +170,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         if (Lists.isEmptyOrNull(orderedInsideApps)) {
             return;
         }
-        List<AppResourceEntity> appResourceEntities = mLocalStorage.get();
-        if (Lists.isEmptyOrNull(appResourceEntities)) {
-            return;
-        }
-        for (int i = 0; i < appResourceEntities.size(); i++) {
-            appResourceEntities.get(i).sortOrder = orderedInsideApps.indexOf(appResourceEntities.get(i).appid);
-        }
-        mLocalStorage.put(appResourceEntities);
+        mLocalStorage.sortApplication(orderedInsideApps);
     }
 
 
@@ -228,6 +221,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> existResource(int appId) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
+            Timber.d("state download %s ", entity.stateDownload);
             return entity.stateDownload >= DownloadState.STATE_SUCCESS;
         });
     }

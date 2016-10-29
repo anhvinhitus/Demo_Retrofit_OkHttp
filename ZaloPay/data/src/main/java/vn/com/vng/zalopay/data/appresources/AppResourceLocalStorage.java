@@ -106,4 +106,19 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);
     }
+
+    @Override
+    public void sortApplication(List<Integer> list) {
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
+                .list();
+        if (Lists.isEmptyOrNull(appResourceGD)) {
+            return;
+        }
+
+        for (AppResourceGD resourceGD : appResourceGD) {
+            resourceGD.setSortOrder(list.indexOf(resourceGD.getAppid()));
+        }
+
+        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
+    }
 }
