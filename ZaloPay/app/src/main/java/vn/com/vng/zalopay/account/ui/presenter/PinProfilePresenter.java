@@ -242,7 +242,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
                 mView.onCheckFail();
             } else {
-                mView.showError("Lỗi xảy ra trong quá trình kiểm tra tên tài khoản Zalo Pay.\nVui lòng thử lại.");
+                mView.showError("Lỗi xảy ra trong quá trình kiểm tra Zalo Pay ID.\nVui lòng thử lại.");
             }
         }
 
