@@ -260,4 +260,17 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
             getActivity().finish();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (viewPager != null && adapter != null) {
+            if (viewPager.getCurrentItem() == 0) {
+                adapter.getItem(0).onBackPressed();
+            } else {
+                viewPager.setCurrentItem(0);
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
 }

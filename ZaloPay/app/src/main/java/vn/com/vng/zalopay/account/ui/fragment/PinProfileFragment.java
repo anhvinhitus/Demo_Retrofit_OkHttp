@@ -22,6 +22,7 @@ import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -91,6 +92,31 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
 
     @BindView(R.id.btnContinue)
     View btnContinue;
+
+    @OnFocusChange(R.id.edtPhone)
+    public void onEdtPhoneFocusChange() {
+        edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
+                if (hasFocus) {
+                    int[] location = new int[2];
+                    edtPhone.getLocationInWindow(location);
+                    if (mScrollView != null) {
+                        Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
+                        mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+                    }
+                    edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
+                    return;
+                }
+                if (!isValidPhone()) {
+                    showPhoneError();
+                } else {
+                    hidePhoneError();
+                }
+            }
+        });
+    }
 
     private void showPhoneError() {
         if (textInputPhone == null) {
@@ -210,6 +236,20 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         }
     };
 
+    public void setPhoneNumber(String phone) {
+        if (edtPhone == null) {
+            return;
+        }
+        edtPhone.setText(phone);
+    }
+
+    public void setZaloPayName(String zaloPayName) {
+        if (inputZaloPayName == null) {
+            return;
+        }
+        inputZaloPayName.setText(zaloPayName);
+    }
+
     public PinProfileFragment() {
         // Required empty public constructor
     }
@@ -225,6 +265,9 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
     }
 
     private void checkShowHideBtnContinue() {
+        if (btnContinue == null) {
+            return;
+        }
         if (isShowBtnContinue()) {
             btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
             btnContinue.setOnClickListener(mOnClickContinueListener);
@@ -324,28 +367,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
 
         inputZaloPayName.setOnClickBtnCheck(mOnClickCheckZaloPayName);
         inputZaloPayName.setOntextChangeListener(mInputZaloPayNameListener);
-
-        edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
-                if (hasFocus) {
-                    int[] location = new int[2];
-                    edtPhone.getLocationInWindow(location);
-                    if (mScrollView != null) {
-                        Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
-                        mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
-                    }
-                    edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
-                    return;
-                }
-                if (!isValidPhone()) {
-                    showPhoneError();
-                } else {
-                    hidePhoneError();
-                }
-            }
-        });
 
         AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
                 false, false, R.color.colorPrimary,

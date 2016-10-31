@@ -6,7 +6,7 @@ package vn.com.vng.zalopay.domain.model;
  */
 
 public class ProfileLevel2 {
-    public String pin;
+    public boolean isReceivedOtp;
     public String phoneNumber;
     public String zaloPayName;
 }

@@ -121,6 +121,13 @@ public class InputZaloPayNameView extends FrameLayout {
         return mEdtZaloPayName.getText().toString().toLowerCase();
     }
 
+    public void setText(String zaloPayName) {
+        if (mEdtZaloPayName == null) {
+            return;
+        }
+        mEdtZaloPayName.setText(zaloPayName);
+    }
+
     public int length() {
         return mEdtZaloPayName.length();
     }

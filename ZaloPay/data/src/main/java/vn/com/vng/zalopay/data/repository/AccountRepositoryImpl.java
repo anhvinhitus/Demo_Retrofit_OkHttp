@@ -274,6 +274,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
             Map map = localStorage.getProfileLevel2();
             Object phoneNumber = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
             Object zaloPayName = map.get(Constants.ProfileLevel2.ZALOPAY_NAME);
+            Object isReceivedOtp = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
             ProfileLevel2 profileLevel2 = new ProfileLevel2();
             if (phoneNumber != null) {
                 profileLevel2.phoneNumber = phoneNumber.toString();
@@ -281,12 +282,17 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
             if (zaloPayName != null) {
                 profileLevel2.zaloPayName = zaloPayName.toString();
             }
+            if (isReceivedOtp != null) {
+                profileLevel2.isReceivedOtp = Boolean.valueOf(isReceivedOtp.toString());
+            }
             return profileLevel2;
         });
     }
 
     @Override
     public Observable<Void> saveProfileInfo2(String phoneNumber, String zaloPayName, boolean receiveOtp) {
+        Timber.d("saveProfileInfo2 phone [%s] zalopayName [%s] receiveOtp [%s]",
+                phoneNumber, zaloPayName, receiveOtp);
         return ObservableHelper.makeObservable(() -> {
             localStorage.saveProfileInfo2(phoneNumber, zaloPayName, receiveOtp);
             return null;

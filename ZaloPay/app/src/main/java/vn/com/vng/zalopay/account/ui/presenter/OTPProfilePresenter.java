@@ -72,7 +72,7 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     private void onVerifyOTPSuccess() {
         hideLoading();
         mView.confirmOTPSuccess();
-        accountRepository.saveProfileInfo2("", "", false);
+        accountRepository.clearProfileInfo2();
     }
 
     public void verifyOtp(String otp) {

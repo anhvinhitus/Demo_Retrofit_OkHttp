@@ -43,6 +43,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     @Override
     public void setView(IPinProfileView iProfileView) {
         mView = iProfileView;
+        showProfileLevel2Cache();
     }
 
     @Override
@@ -142,6 +143,33 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         saveProfileInfo2Cache(phone, zalopayName, true);
     }
 
+    private void showProfileLevel2Cache() {
+        mAccountRepository.getProfileLevel2Cache()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<ProfileLevel2>() {
+                    @Override
+                    public void onNext(ProfileLevel2 profileLevel2) {
+                        if (profileLevel2 == null) {
+                            return;
+                        }
+                        Timber.d("showProfileLevel2Cache phone [%s]", profileLevel2.phoneNumber);
+                        Timber.d("showProfileLevel2Cache zaloPayName [%s]", profileLevel2.zaloPayName);
+                        Timber.d("showProfileLevel2Cache isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
+                        if (!TextUtils.isEmpty(profileLevel2.phoneNumber)) {
+                            mView.setPhoneNumber(profileLevel2.phoneNumber);
+                        }
+                        if (!TextUtils.isEmpty(profileLevel2.zaloPayName)) {
+                            mView.setZaloPayName(profileLevel2.zaloPayName);
+                        }
+                        if (profileLevel2.isReceivedOtp) {
+                            onUpdateProfileSuccess(profileLevel2.phoneNumber, profileLevel2.zaloPayName);
+                        }
+                    }
+                });
+
+    }
+
     public void saveProfileInfo2Cache(final String phone, final String zalopayName) {
         mAccountRepository.getProfileLevel2Cache()
                 .subscribeOn(Schedulers.io())
@@ -178,7 +206,12 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     }
 
     private void saveProfileInfo2Cache(String phone, String zalopayName, boolean receiveOtp) {
-        mAccountRepository.saveProfileInfo2(phone, zalopayName, receiveOtp);
+        Timber.d("saveProfileInfo2Cache phone [%s] zalopayName [%s] receiveOtp [%s]",
+                phone, zalopayName, receiveOtp);
+        mAccountRepository.saveProfileInfo2(phone, zalopayName, receiveOtp)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Void>());
     }
 
     public void showLoading() {

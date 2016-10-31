@@ -27,7 +27,7 @@ public class ProfileSlidePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public BaseFragment getItem(int position) {
         if (position == 1) {
             if (otpProfileFragment == null) {
                 otpProfileFragment = OtpProfileFragment.newInstance();
