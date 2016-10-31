@@ -385,15 +385,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void changeBanner() {
-        if (mBannerViewpager == null) {
+        if (mBannerViewpager == null || mBannerViewpager.getAdapter() == null) {
             return;
         }
-        int count = mBannerViewpager.getChildCount();
+        int count = mBannerViewpager.getAdapter().getCount();
         if (count <= 0) {
             return;
         }
         int currentItem = mBannerViewpager.getCurrentItem();
-        if (currentItem >= count) {
+        if (currentItem >= count -1) {
             currentItem = 0;
             mBannerViewpager.setCurrentItem(currentItem, false);
         } else {
