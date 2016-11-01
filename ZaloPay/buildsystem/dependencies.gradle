@@ -6,11 +6,6 @@ allprojects {
 
 ext {
     //Android
-    androidBuildToolsVersion = "23.0.1"
-    androidMinSdkVersion = 16
-    androidTargetSdkVersion = 21
-    androidCompileSdkVersion = 21
-
     supportVersion = '25.0.0'
     playServiceVersion = "9.6.1"
     //Libraries Version
