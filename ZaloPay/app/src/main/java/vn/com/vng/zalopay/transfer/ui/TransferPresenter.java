@@ -458,18 +458,26 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 mTransaction.getAvatar(),
                 mTransaction.getZaloPayName());
 
-        if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())
+        if (TextUtils.isEmpty(mTransaction.getDisplayName())
+                || TextUtils.isEmpty(mTransaction.getAvatar())
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            Timber.d("begin get user info");
             showLoading();
-            Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UserInfoSubscriber());
-            compositeSubscription.add(subscription);
+            getUserInfoByZaloPayId(mTransaction.zaloPayId);
         }
 
         initCurrentState();
         checkShowBtnContinue();
+    }
+
+    private void getUserInfoByZaloPayId(String zaloPayId) {
+        if (TextUtils.isEmpty(zaloPayId)) {
+            return;
+        }
+        Timber.d("getUserInfoByZaloPayId zaloPayId [%s]", zaloPayId);
+        Subscription subscription = accountRepository.getUserInfoByZaloPayId(zaloPayId)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UserInfoSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private void initLimitAmount() {
