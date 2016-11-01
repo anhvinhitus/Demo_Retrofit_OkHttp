@@ -7,10 +7,11 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
  * Created by longlv on 19/05/2016.
+ * *
  */
 public interface IPreProfileView extends ILoadDataView {
     Activity getActivity();
     void updateUserInfo(User user);
-    void onUpdatePinSuccess(String phone, String zaloPayName);
+    void initPagerContent(int pageIndex);
 }
 

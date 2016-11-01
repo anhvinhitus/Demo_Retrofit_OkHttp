@@ -188,14 +188,8 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         if (profileLevel2 == null) {
             saveProfileInfo2Cache(phone, zalopayName, false);
         } else {
-            //If phone || zalopayName is null or empty then haven't otp
-            if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(zalopayName)) {
-                saveProfileInfo2Cache(phone, zalopayName, false);
-                return;
-            }
             //update data if phone | phoneNumber don't equal data in db
-            if (!phone.equals(profileLevel2.phoneNumber) ||
-                    !zalopayName.equals(profileLevel2.zaloPayName)) {
+            if (!profileLevel2.equals(newProfile)) {
                 saveProfileInfo2Cache(phone, zalopayName, false);
             }
         }

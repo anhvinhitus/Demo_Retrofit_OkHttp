@@ -41,7 +41,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
-    private int profileType = 0;
     private ProfileSlidePagerAdapter adapter;
     private String walletTransId = null;
     private PaymentWrapper paymentWrapper;
@@ -93,7 +92,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         super.onCreate(savedInstanceState);
         presenter.setView(this);
         initData();
-        initContent();
         initPaymentWrapper();
         headerView.setVisibility(View.GONE);
     }
@@ -118,14 +116,13 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         Timber.d("initData, walletTransId %s", walletTransId);
     }
 
-    private void initContent() {
+    @Override
+    public void initPagerContent(int pageIndex) {
         adapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
-        if (profileType == Constants.PRE_PROFILE_TYPE) {
-            viewPager.setCurrentItem(0);
-        } else if (profileType == Constants.PIN_PROFILE_TYPE) {
-            viewPager.setCurrentItem(1);
+        if (pageIndex >= 0 && pageIndex < viewPager.getAdapter().getCount()) {
+            viewPager.setCurrentItem(pageIndex);
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

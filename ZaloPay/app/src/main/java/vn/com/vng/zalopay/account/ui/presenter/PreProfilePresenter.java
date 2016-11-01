@@ -38,10 +38,10 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
     @Override
     public void setView(IPreProfileView iPreProfileView) {
         mView = iPreProfileView;
-        showProfileLevel2Cache();
+        initPagerContent();
     }
 
-    private void showProfileLevel2Cache() {
+    private void initPagerContent() {
         mAccountRepository.getProfileLevel2Cache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,15 +49,17 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
                     @Override
                     public void onNext(ProfileLevel2 profileLevel2) {
                         if (profileLevel2 == null) {
+                            mView.initPagerContent(0);
                             return;
                         }
-                        Timber.d("showProfileLevel2Cache phone [%s]", profileLevel2.phoneNumber);
-                        Timber.d("showProfileLevel2Cache zaloPayName [%s]", profileLevel2.zaloPayName);
-                        Timber.d("showProfileLevel2Cache isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
+                        Timber.d("initPagerContent phone [%s]", profileLevel2.phoneNumber);
+                        Timber.d("initPagerContent zaloPayName [%s]", profileLevel2.zaloPayName);
+                        Timber.d("initPagerContent isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
                         if (!TextUtils.isEmpty(profileLevel2.phoneNumber)
-                                && !TextUtils.isEmpty(profileLevel2.zaloPayName)
                             && profileLevel2.isReceivedOtp) {
-                            mView.onUpdatePinSuccess(profileLevel2.phoneNumber, profileLevel2.zaloPayName);
+                            mView.initPagerContent(1);
+                        } else {
+                            mView.initPagerContent(0);
                         }
                     }
                 });
