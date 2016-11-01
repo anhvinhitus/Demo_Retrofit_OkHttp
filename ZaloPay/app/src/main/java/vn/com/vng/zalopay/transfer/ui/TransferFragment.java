@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -163,7 +161,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     private void udpateZaloPayName(String zalopayName) {
         if (TextUtils.isEmpty(zalopayName)) {
-            mTextViewZaloPayName.setText(getString(R.string.not_update_zalopayname));
+            mTextViewZaloPayName.setText(getString(R.string.not_update_zalopay_id));
         } else if (!TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setText(zalopayName);
         }
