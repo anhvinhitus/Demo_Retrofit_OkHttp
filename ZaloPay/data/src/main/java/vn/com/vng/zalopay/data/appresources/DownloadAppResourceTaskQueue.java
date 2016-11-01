@@ -37,8 +37,13 @@ public class DownloadAppResourceTaskQueue {
     }
 
     public void enqueue(Collection<DownloadAppResourceTask> tasks) {
-        Timber.d(" enqueue currentThread %s", Thread.currentThread().getName());
-        tasklist.addAll(tasks);
+        Timber.d("enqueue tasks size %s", tasklist.size());
+        for (DownloadAppResourceTask task : tasks) {
+            if (!tasklist.contains(task)) {
+                tasklist.add(task);
+            }
+        }
+        Timber.d("start tasks size %s", tasklist.size());
         startService();
     }
 

@@ -98,4 +98,20 @@ final class DownloadAppResourceTask {
     private String getExternalBundleFolder(int appId) {
         return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DownloadAppResourceTask that = (DownloadAppResourceTask) o;
+
+        return downloadInfo != null ? downloadInfo.equals(that.downloadInfo) : that.downloadInfo == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return downloadInfo != null ? downloadInfo.hashCode() : 0;
+    }
 }

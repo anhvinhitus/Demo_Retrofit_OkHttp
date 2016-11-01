@@ -3,8 +3,10 @@ package vn.com.vng.zalopay.data.appresources;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
@@ -221,7 +223,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> existResource(int appId) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
-            Timber.d("state download %s ", entity.stateDownload);
+            if (shouldDownloadApp(entity)) {
+                startDownloadService(Arrays.asList(entity), null);
+            }
             return entity.stateDownload >= DownloadState.STATE_SUCCESS;
         });
     }
