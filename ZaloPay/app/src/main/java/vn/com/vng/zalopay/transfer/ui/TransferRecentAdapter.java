@@ -94,7 +94,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
             String zaloPayName = item.getZaloPayName();
 
             if (!TextUtils.isEmpty(zaloPayName)) {
-                mTvPhone.setText("Tên TK: " + zaloPayName);
+                mTvPhone.setText("Zalo Pay ID: " + zaloPayName);
                 mImgTransferType.setImageResource(R.drawable.ic_transfer_acc_zp_small);
             } else if (!TextUtils.isEmpty(phone)) {
                 mTvPhone.setText("Số ĐT: " + phone);
