@@ -236,6 +236,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     private void getUserMapping(long zaloId) {
+        Timber.d("getUserMapping zaloId [%s]", zaloId);
         if (zaloId <= 0 || mView == null) {
             return;
         }
@@ -443,9 +444,11 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             return;
         }
 
+        Timber.d("onViewCreated zaloPayId [%s] zaloPayName [%s]",
+                mTransaction.zaloPayId, mTransaction.zaloPayName);
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
+            Timber.d("Empty ZaloPayID|zaloPayName, try to convert from zaloid -> zalopayId");
             getUserMapping(mTransaction.getZaloId());
         }
 
@@ -455,7 +458,8 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 mTransaction.getAvatar(),
                 mTransaction.getZaloPayName());
 
-        if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
+        if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())
+                || TextUtils.isEmpty(mTransaction.zaloPayName)) {
             Timber.d("begin get user info");
             showLoading();
             Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
