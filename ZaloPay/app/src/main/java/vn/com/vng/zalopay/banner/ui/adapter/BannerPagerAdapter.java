@@ -73,7 +73,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     private void setImage(ImageView imageView, String imageUrl) {
         Glide.with(mContext).load(imageUrl)
                 .placeholder(R.drawable.banner_default)
-                .error(R.color.background)
+                .error(R.drawable.banner_default)
                 .centerCrop()
                 .into(imageView);
     }
