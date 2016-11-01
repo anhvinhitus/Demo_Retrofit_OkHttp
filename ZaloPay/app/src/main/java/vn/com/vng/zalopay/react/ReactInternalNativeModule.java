@@ -17,8 +17,14 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Subscription;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -33,12 +39,15 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
-    INavigator navigator;
+    private INavigator navigator;
+    private AppResourceStore.Repository mResourceRepository;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public ReactInternalNativeModule(ReactApplicationContext reactContext,
-                                     INavigator navigator) {
+                                     INavigator navigator, AppResourceStore.Repository resourceRepository) {
         super(reactContext);
         this.navigator = navigator;
+        this.mResourceRepository = resourceRepository;
     }
 
     @Override
@@ -109,24 +118,33 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void showDetail(final int appid, final String transid) {
         Timber.d("show Detail appid %s transid %s", appid, transid);
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                Activity activity = getCurrentActivity();
-                if (activity == null) {
-                    return;
-                }
+        Subscription subscription = mResourceRepository.existResource(appid)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            startPaymentApp(appid, transid);
+                        }
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
 
-                Map<String, String> options = new HashMap<>();
-                options.put("view", "history");
-                options.put("transid", transid);
+    private void startPaymentApp(int appid, String transid) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
 
-                Intent intent = navigator.intentPaymentApp(activity, new AppResource(appid), options);
-                if (intent != null) {
-                    activity.startActivity(intent);
-                }
-            }
-        });
+        Map<String, String> options = new HashMap<>();
+        options.put("view", "history");
+        options.put("transid", transid);
+
+        Intent intent = navigator.intentPaymentApp(activity, new AppResource(appid), options);
+        if (intent != null) {
+            activity.startActivity(intent);
+        }
     }
 
     @Override

@@ -22,6 +22,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
@@ -87,6 +88,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     BalanceStore.Repository mBalanceRepository;
+
+    @Inject
+    AppResourceStore.Repository appRepository;
 
     @Inject
     INavigator navigator;
@@ -181,7 +185,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, mUserConfig);
+                mReactNativeHostable, mUserConfig, appRepository);
     }
 
     private void createUserComponent() {
