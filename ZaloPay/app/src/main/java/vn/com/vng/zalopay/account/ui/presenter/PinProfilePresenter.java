@@ -162,12 +162,8 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
                         if (!TextUtils.isEmpty(profileLevel2.zaloPayName)) {
                             mView.setZaloPayName(profileLevel2.zaloPayName);
                         }
-                        if (profileLevel2.isReceivedOtp) {
-                            onUpdateProfileSuccess(profileLevel2.phoneNumber, profileLevel2.zaloPayName);
-                        }
                     }
                 });
-
     }
 
     public void saveProfileInfo2Cache(final String phone, final String zalopayName) {
