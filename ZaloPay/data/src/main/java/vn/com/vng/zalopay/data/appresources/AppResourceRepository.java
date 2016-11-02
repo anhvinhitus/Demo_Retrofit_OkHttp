@@ -37,7 +37,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private final AppResourceStore.RequestService mRequestService;
     private final AppResourceStore.LocalStorage mLocalStorage;
     private String appVersion;
-    private final int RETRY_DOWNLOAD_NUMBER = 3;
+    //Retry 3 times, each time to download 2 file (js & image)
+    private final int RETRY_DOWNLOAD_NUMBER = 6;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -113,6 +114,17 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         }
     }
 
+    private void resetStateDownloadApp(AppResourceEntity app) {
+        if (app == null) {
+            return;
+        }
+        app.numRetry = 0;
+        app.timeDownload = 0L;
+        app.stateDownload = 0;
+
+        mLocalStorage.put(app);
+    }
+
     private boolean shouldDownloadApp(AppResourceEntity app) {
         Timber.d("shouldDownloadApp stateDownload [%s]", app.stateDownload);
         if (app.stateDownload < DownloadState.STATE_SUCCESS) {
@@ -120,7 +132,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 return true;
             } else {
                 long currentTime = System.currentTimeMillis() / 1000;
-                if (currentTime - app.timeDownload >= 4 * 60 * 60) {
+                if (currentTime - app.timeDownload >= 60) {
+                    resetStateDownloadApp(app);
                     return true;
                 }
             }

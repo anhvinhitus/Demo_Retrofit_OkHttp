@@ -21,6 +21,8 @@ public interface AppResourceStore {
 
         AppResourceEntity get(int appId);
 
+        void put(AppResourceEntity appResourceEntity);
+
         void put(List<AppResourceEntity> resourceEntities);
 
         void updateAppList(List<Integer> listAppId);
