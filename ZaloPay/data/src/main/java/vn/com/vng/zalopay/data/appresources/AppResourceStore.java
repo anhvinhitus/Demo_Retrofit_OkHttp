@@ -31,6 +31,8 @@ public interface AppResourceStore {
 
         void increaseStateDownload(int appId);
 
+        void resetStateDownload(int appId);
+
         void sortApplication(List<Integer> list);
     }
 

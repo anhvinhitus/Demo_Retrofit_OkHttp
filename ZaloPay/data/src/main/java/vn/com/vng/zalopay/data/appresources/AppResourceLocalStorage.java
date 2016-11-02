@@ -88,7 +88,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         for (AppResourceGD app : appResourceGD) {
 
-            int state = app.getStateDownload() + 1;
+            int state = app.getStateDownload() == null ? 0: app.getStateDownload() + 1;
             app.setStateDownload(state);
             if (state >= 2) {
                 app.setNumRetry(0);
@@ -97,6 +97,16 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);
+    }
+
+    @Override
+    public void resetStateDownload(int appId) {
+        AppResourceEntity appResourceEntity = get(appId);
+        if (appResourceEntity == null) {
+            return;
+        }
+        appResourceEntity.stateDownload = 0;
+        put(appResourceEntity);
     }
 
     @Override

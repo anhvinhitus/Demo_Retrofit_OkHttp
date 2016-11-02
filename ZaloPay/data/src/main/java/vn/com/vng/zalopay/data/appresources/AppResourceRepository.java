@@ -206,6 +206,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
             if (appResourceEntity.needdownloadrs == 1) {
                 createTask(appResourceEntity, needDownloadList);
+                mLocalStorage.resetStateDownload(appResourceEntity.appid);
             }
         }
 
