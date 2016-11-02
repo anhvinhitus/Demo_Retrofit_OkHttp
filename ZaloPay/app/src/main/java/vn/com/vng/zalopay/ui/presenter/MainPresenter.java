@@ -256,6 +256,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (event.isOnline && !isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
+        initializeAppConfig();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
