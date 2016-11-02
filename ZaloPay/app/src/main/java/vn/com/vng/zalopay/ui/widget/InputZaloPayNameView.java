@@ -106,7 +106,7 @@ public class InputZaloPayNameView extends FrameLayout {
         }
     }
 
-    public void setOntextChangeListener(InputZaloPayNameListener listener) {
+    public void setOnTextChangeListener(InputZaloPayNameListener listener) {
         mListener = listener;
     }
 

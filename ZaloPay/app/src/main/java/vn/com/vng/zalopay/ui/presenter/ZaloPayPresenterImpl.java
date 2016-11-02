@@ -3,8 +3,6 @@ package vn.com.vng.zalopay.ui.presenter;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
@@ -281,9 +279,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void onTouchBanner(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             stopBannerCountDownTimer();
-            mBannerHandle.removeCallbacks(mBannerRunnable);
+            if (mBannerHandle != null) {
+                mBannerHandle.removeCallbacks(mBannerRunnable);
+            }
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            mBannerHandle.postDelayed(mBannerRunnable, BANNER_COUNT_DOWN_INTERVAL);
+            if (mBannerHandle != null) {
+                mBannerHandle.postDelayed(mBannerRunnable, BANNER_COUNT_DOWN_INTERVAL);
+            }
         }
     }
 

@@ -366,7 +366,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         passCode.setPassCodeFocusChanged(passcodeFocusChanged);
 
         inputZaloPayName.setOnClickBtnCheck(mOnClickCheckZaloPayName);
-        inputZaloPayName.setOntextChangeListener(mInputZaloPayNameListener);
+        inputZaloPayName.setOnTextChangeListener(mInputZaloPayNameListener);
 
         AndroidUtils.setSpannedMessageToView(tvTermsOfUser3, R.string.agree_term_of_use, R.string.term_of_use,
                 false, false, R.color.colorPrimary,
@@ -464,6 +464,8 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
 
     @Override
     public void onDestroyView() {
+        passCode.setPassCodeFocusChanged(null);
+        inputZaloPayName.setOnTextChangeListener(null);
         presenter.destroyView();
         super.onDestroyView();
     }
