@@ -114,6 +114,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private boolean shouldDownloadApp(AppResourceEntity app) {
+        Timber.d("shouldDownloadApp stateDownload [%s]", app.stateDownload);
         if (app.stateDownload < DownloadState.STATE_SUCCESS) {
             if (app.numRetry < RETRY_DOWNLOAD_NUMBER) {
                 return true;
@@ -177,6 +178,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
 
     private void startDownloadService(List<AppResourceEntity> resource, String baseUrl) {
+        Timber.d("startDownloadService mDownloadAppResource [%s]", mDownloadAppResource);
         if (!mDownloadAppResource) {
             return;
         }
@@ -223,10 +225,13 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> existResource(int appId) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
-            if (shouldDownloadApp(entity)) {
+            Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
+            boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
+            if (!downloadSuccess) {
                 startDownloadService(Arrays.asList(entity), null);
+
             }
-            return entity.stateDownload >= DownloadState.STATE_SUCCESS;
+            return downloadSuccess;
         });
     }
 
