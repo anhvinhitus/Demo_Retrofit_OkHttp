@@ -37,8 +37,8 @@ android {
         applicationId "vn.com.vng.zalopay"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 60
-        versionName "2.0.25"
+        versionCode 61
+        versionName "2.2.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'PAYAPPID', '1'
