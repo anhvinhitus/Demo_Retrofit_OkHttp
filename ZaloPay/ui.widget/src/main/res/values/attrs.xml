@@ -355,4 +355,42 @@
         <attr name="android:background" />
     </declare-styleable>
 
+    <declare-styleable name="ZPEditText">
+        <attr name="zlp_baseColor" format="color" />
+        <attr name="zlp_primaryColor" format="color" />
+        <attr name="zlp_floatingLabel">
+            <enum name="none" value="0" />
+            <enum name="normal" value="1" />
+            <enum name="highlight" value="2" />
+        </attr>
+        <attr name="zlp_errorColor" format="color" />
+        <attr name="zlp_minCharacters" format="integer" />
+        <attr name="zlp_maxCharacters" format="integer" />
+        <attr name="zlp_singleLineEllipsis" format="boolean" />
+        <attr name="zlp_minBottomTextLines" format="integer" />
+        <attr name="zlp_helperText" format="string" />
+        <attr name="zlp_helperTextColor" format="color" />
+        <attr name="zlp_accentTypeface" format="string" />
+        <attr name="zlp_typeface" format="string" />
+        <attr name="zlp_floatingLabelText" format="string" />
+        <attr name="zlp_floatingLabelPadding" format="dimension" />
+        <attr name="zlp_hideUnderline" format="boolean" />
+        <attr name="zlp_underlineColor" format="color" />
+        <attr name="zlp_autoValidate" format="boolean" />
+        <attr name="zlp_iconLeft" format="reference" />
+        <attr name="zlp_iconRight" format="reference" />
+        <attr name="zlp_iconPadding" format="dimension" />
+        <attr name="zlp_clearButton" format="boolean" />
+        <attr name="zlp_floatingLabelTextSize" format="dimension" />
+        <attr name="zlp_floatingLabelTextColor" format="color" />
+        <attr name="zlp_bottomTextSize" format="dimension" />
+        <attr name="zlp_floatingLabelAlwaysShown" format="boolean" />
+        <attr name="zlp_helperTextAlwaysShown" format="boolean" />
+        <attr name="zlp_floatingLabelAnimating" format="boolean" />
+        <attr name="zlp_textColor" format="color" />
+        <attr name="zlp_textColorHint" format="color" />
+        <attr name="zlp_validateOnFocusLost" format="boolean" />
+        <attr name="zlp_checkCharactersCountAtBeginning" format="boolean" />
+    </declare-styleable>
+
 </resources>

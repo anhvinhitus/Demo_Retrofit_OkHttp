@@ -333,39 +333,6 @@ public class AndroidUtils {
         return app_installed;
     }
 
-    public static void startActionDial(Context context, String numberPhone) {
-        if (context == null) {
-//			context = AndroidApplication.instance();
-        }
-        if (context == null)
-            return;
-        if (TextUtils.isEmpty(numberPhone))
-            return;
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + numberPhone));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-//        ModuleCommon.instance().getGoogleAnalytics().sendGoogleAnalyticsHitEvents(AndroidUtils.class.getSimpleName(), "ContactSupport", "Dial", numberPhone);
-    }
-
-
-//    @Deprecated
-//    public static boolean checkNetwork(Context context) {
-//        if (context == null) {
-//            context = AndroidApplication.instance();
-//        }
-//        if (context == null) {
-//            return false;
-//        }
-//        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-//        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-
     public static void openAppInfo(Context context, String packageName) {
         String SCHEME = "package";
         Intent intent = new Intent();
