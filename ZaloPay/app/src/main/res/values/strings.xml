@@ -291,7 +291,7 @@
     <!-- Intro App Start-->
     <string name="intro.app.title.step1">ĐĂNG NHẬP VỚI ZALO</string>
     <string name="intro.app.content.step1">Không cần đăng ký mới.\n Đăng nhập dễ dàng với tài khoản Zalo.</string>
-    <string name="intro.app.title.step2">TỰ CHỌN ZALO PAY ID</string>
+    <string name="intro.app.title.step2">TỰ ĐẶT ZALO PAY ID</string>
     <string name="intro.app.content.step2">Zalo Pay ID dùng để chuyển khoản\n hay nhận tiền giống như tài khoản ngân hàng.</string>
     <string name="intro.app.title.step3">NHIỀU DỊCH VỤ TIỆN ÍCH</string>
     <string name="intro.app.content.step3">Hỗ trợ thanh toán nhiều dịch vụ thiết yếu\n như tiền điện, tiền nước, Internet,\n nạp tiền điện thoại&#8230;</string>
