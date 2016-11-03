@@ -66,6 +66,12 @@ public class ZPWebViewProcessor extends WebViewClient {
         DialogManager.closeProcessDialog();
         injectScriptFile("webapp.js");
 
+        mWebView.runScript("webapp_hideHeaderZalo()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String s) {
+                Timber.d("hideHeaderZalo [%s]", s);
+            }
+        });
         mWebView.runScript("webapp_getNavigation()", new GetNavigationCallback(mWebViewListener));
 
         super.onPageFinished(view, url);
