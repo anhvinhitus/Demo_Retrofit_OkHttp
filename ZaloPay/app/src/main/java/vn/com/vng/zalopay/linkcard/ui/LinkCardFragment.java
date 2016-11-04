@@ -131,8 +131,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_intro) {
-            startIntroActivity();
-            //navigator.startCardSupportActivity(this);
+            //startIntroActivity();
+            navigator.startCardSupportActivity(this);
         }
         return super.onOptionsItemSelected(item);
     }

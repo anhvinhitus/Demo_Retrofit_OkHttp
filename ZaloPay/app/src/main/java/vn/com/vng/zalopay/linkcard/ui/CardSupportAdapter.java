@@ -47,8 +47,8 @@ class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.V
     public int getItemCount() {
         int itemCount = super.getItemCount();
         int tmp = itemCount % 3;
-        if (tmp  != 0) {
-            itemCount+= 3- tmp;
+        if (tmp != 0) {
+            itemCount += 3 - tmp;
         }
         return itemCount;
     }
@@ -83,9 +83,11 @@ class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.V
 
         void bindView(ZPCard card) {
             if (card == null) {
+                mLogoView.setVisibility(View.GONE);
                 return;
             }
             mLogoView.setImageBitmap(ResourceManager.getImage(card.getCardLogoName()));
+            mLogoView.setVisibility(View.VISIBLE);
         }
     }
 }

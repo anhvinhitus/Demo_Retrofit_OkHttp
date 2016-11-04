@@ -1,22 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <TextView
         style="@style/TextView.Group.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing.small"
         android:paddingLeft="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.large.t"
+        android:paddingTop="@dimen/spacing.medium"
         android:text="@string/link_bank"
-        android:textAllCaps="true" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/separate" />
+        android:textAllCaps="true"
+        android:textColor="@color/txt_item_main" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bankRecyclerView"
@@ -24,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadingEdge="none"
-        android:overScrollMode="never" />
+        android:overScrollMode="never"
+        android:padding="@dimen/spacing.medium.s" />
 
     <View
         android:layout_width="match_parent"

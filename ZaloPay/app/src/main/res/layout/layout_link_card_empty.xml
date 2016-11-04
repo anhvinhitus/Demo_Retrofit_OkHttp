@@ -7,6 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -67,28 +68,25 @@
             style="@style/TextView.Group.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing.small"
             android:paddingLeft="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.large.t"
+            android:paddingTop="@dimen/spacing.medium"
             android:text="@string/secure_info"
-            android:textAllCaps="true" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/separate" />
+            android:textAllCaps="true"
+            android:textColor="@color/txt_item_main" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/loremipsum"
-                android:padding="@dimen/spacing.medium"
+                android:paddingBottom="@dimen/spacing.medium"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.medium.t"
                 android:scaleType="center"
                 android:src="@drawable/ic_chungchi" />
 
@@ -96,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingRight="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium.s"
                 android:text="@string/secure_info_detail"
                 android:textColor="@color/txt_item_main"
                 android:textSize="13sp" />
@@ -105,6 +103,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:layout_marginLeft="@dimen/spacing.medium"
             android:background="@color/separate" />
 
         <fragment
