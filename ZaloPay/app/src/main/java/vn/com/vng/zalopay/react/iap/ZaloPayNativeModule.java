@@ -13,9 +13,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.zalopay.apploader.network.NetworkService;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -28,6 +29,7 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
@@ -244,5 +246,12 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         compositeSubscription.add(subscription);
     }
 
+    @Override
+    public Map<String, Object> getConstants() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("dscreentype", AndroidUtils.getScreenType());
+        map.put("platform", "android");
+        return map;
+    }
 
 }
