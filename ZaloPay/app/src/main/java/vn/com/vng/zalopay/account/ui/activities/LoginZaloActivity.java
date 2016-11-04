@@ -18,6 +18,8 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -152,6 +154,15 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         }
         mErrorDialog.setContentText(message);
         mErrorDialog.show();
+    }
+
+    @Override
+    public void showNetworkError() {
+        DialogManager.showSweetDialogCustom(getActivity(),
+                getString(R.string.exception_no_connection_try_again),
+                getContext().getString(R.string.txt_close),
+                SweetAlertDialog.WARNING_TYPE,
+                null);
     }
 
     private void destroyErrorDialog() {

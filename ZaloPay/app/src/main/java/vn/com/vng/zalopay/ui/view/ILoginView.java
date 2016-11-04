@@ -4,6 +4,7 @@ import android.app.Activity;
 
 /**
  * Created by AnhHieu on 3/26/16.
+ * *
  */
 public interface ILoginView extends ILoadDataView {
     void gotoMainActivity();
@@ -11,4 +12,6 @@ public interface ILoginView extends ILoadDataView {
     Activity getActivity();
 
     void gotoInvitationCode();
+
+    void showNetworkError();
 }
