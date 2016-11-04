@@ -15,8 +15,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -30,7 +32,6 @@ import rx.internal.producers.QueuedProducer;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
@@ -46,38 +47,41 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
  * Controller for receiving money
  */
 
-public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
+final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
 
     private IReceiveMoneyView mView;
 
     private String mPreviousContent;
 
-    @Inject
-    EventBus eventBus;
-
-    @Inject
-    UserConfig userConfig;
+    private EventBus mEventBus;
 
     final List<PersonTransfer> mListTransfer;
+    private Set<Long> mMessageToUserId;
+
+    private User mUser;
 
     @Inject
-    ReceiveMoneyPresenter() {
+    ReceiveMoneyPresenter(User user, EventBus eventBus) {
         mListTransfer = new ArrayList<>();
+        mUser = user;
+        mEventBus = eventBus;
+        mMessageToUserId = new HashSet<>();
     }
 
     @Override
     public void setView(IReceiveMoneyView view) {
         mView = view;
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
     @Override
     public void destroyView() {
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
         mView = null;
         mListTransfer.clear();
+        mMessageToUserId.clear();
         cancelAllTimer();
     }
 
@@ -101,18 +105,13 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
 
     public String generateQrContent(long amount, String message) {
         try {
-            User user = userConfig.getCurrentUser();
-            if (user == null) {
-                return "";
-            }
-
             List<String> fields = new ArrayList<>();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", Constants.QRCode.RECEIVE_MONEY);
             fields.add(String.valueOf(Constants.QRCode.RECEIVE_MONEY));
 
-            jsonObject.put("uid", Long.parseLong(user.zaloPayId));
-            fields.add(user.zaloPayId);
+            jsonObject.put("uid", Long.parseLong(mUser.zaloPayId));
+            fields.add(mUser.zaloPayId);
 
             if (amount > 0) {
                 jsonObject.put("amount", amount);
@@ -183,11 +182,16 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
         // "receiverid":"160526000000502",
         // "embeddata":"eyJ0eXBlIjoxLCJkaXNwbGF5bmFtZSI6Ik5ndXnhu4VuIEjhu691IEhvw6AiLCJhdmF0YXIiOiJodHRwOi8vczI0MC5hdmF0YXIudGFsay56ZG4udm4vZS9kL2UvMi80LzI0MC9mMTg5OGEwYTBhM2YwNWJiYjExMDg4Y2IyMDJkMWMwMi5qcGciLCJtdF9wcm9ncmVzcyI6MX0"}
         if (notify.appid == 1 &&
-                notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION && isEqualCurrentUser(notify.destuserid)) {
+                notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION &&
+                isEqualCurrentUser(notify.destuserid) &&
+                !mMessageToUserId.contains(notify.getMtuid())) {
+
             JsonObject embedData = notify.getEmbeddata();
             if (embedData == null) {
                 return;
             }
+
+            mMessageToUserId.add(notify.getMtuid());
 
             Timber.d("Embed data: %s", embedData);
 //            jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
@@ -318,19 +322,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
     }
 
     private boolean isEqualCurrentUser(String zalopayId) {
-        if (userConfig.getCurrentUser() == null) {
-            return false;
-        }
-
-        if (TextUtils.isEmpty(zalopayId)) {
-            return false;
-        }
-
-        if (TextUtils.isEmpty(userConfig.getCurrentUser().zaloPayId)) {
-            return false;
-        }
-
-        return userConfig.getCurrentUser().zaloPayId.equals(zalopayId);
+        return !TextUtils.isEmpty(zalopayId) && mUser.zaloPayId.equals(zalopayId);
     }
 
     @Override
@@ -384,7 +376,7 @@ public class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresent
     }
 
 
-    PersonTransfer transform(String uid, String displayName, String avatar, int state, long amount, String transId) {
+    private PersonTransfer transform(String uid, String displayName, String avatar, int state, long amount, String transId) {
         PersonTransfer item = new PersonTransfer();
         item.avatar = avatar;
         item.zaloPayId = uid;
