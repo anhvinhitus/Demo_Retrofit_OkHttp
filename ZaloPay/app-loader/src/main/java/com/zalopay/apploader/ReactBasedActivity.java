@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -20,6 +21,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.modules.core.PermissionAwareActivity;
+import com.facebook.react.modules.core.PermissionListener;
 
 import java.util.List;
 
@@ -31,7 +34,7 @@ import timber.log.Timber;
  * Created by huuhoa on 5/16/16.
  * Based activity for hosting react native components
  */
-public abstract class ReactBasedActivity extends Activity implements DefaultHardwareBackBtnHandler {
+public abstract class ReactBasedActivity extends Activity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
     private boolean mReactInstanceError;
 
     public ReactBasedActivity() {
@@ -55,6 +58,10 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
     ReactRootView mReactRootView;
     LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
     private boolean mDoRefresh = false;
+
+    private
+    @Nullable
+    PermissionListener mPermissionListener;
 
     /**
      * Returns the name of the bundle in assets. If this is null, and no file path is specified for
@@ -263,6 +270,29 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
 
     protected void reactInstanceCaughtError() {
         mReactInstanceError = true;
+    }
+
+    @Override
+    public void requestPermissions(
+            String[] permissions,
+            int requestCode,
+            PermissionListener listener) {
+        mPermissionListener = listener;
+        ActivityCompat.requestPermissions(this, permissions, requestCode);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults) {
+        Timber.d("onRequestPermissionsResult: requestCode [%s] grantResults [%s]", requestCode, grantResults);
+        if (mPermissionListener != null &&
+                mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            mPermissionListener = null;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
 
