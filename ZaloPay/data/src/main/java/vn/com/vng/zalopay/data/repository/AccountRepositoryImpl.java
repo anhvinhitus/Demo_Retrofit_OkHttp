@@ -4,34 +4,26 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.NetworkError;
-import vn.com.vng.zalopay.data.api.entity.mapper.UserEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
-import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 import vn.com.vng.zalopay.domain.model.User;
 
-import static vn.com.vng.zalopay.data.util.Utils.*;
+import static vn.com.vng.zalopay.data.util.Utils.sha256Base;
 
 /**
  * Created by longlv on 03/06/2016.
@@ -133,15 +125,15 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
         return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
                 .map(mappingZaloAndZaloPayResponse -> {
-                    Person person = new Person();
-                    if (!TextUtils.isEmpty(person.zaloPayId)) {
-                        person = localStorage.getById(person.zaloPayId);
+                    //If person exist in cache then update cache
+                    Person person = localStorage.getById(mappingZaloAndZaloPayResponse.userid);
+                    if (person!= null) {
+                        person.zaloId = zaloId;
+                        person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
+                        person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
+                        person.zalopayname = mappingZaloAndZaloPayResponse.zalopayname;
+                        localStorage.put(person);
                     }
-                    person.zaloId = zaloId;
-                    person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
-                    person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
-                    person.zalopayname = mappingZaloAndZaloPayResponse.zalopayname;
-                    localStorage.put(person);
 
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
                     mappingZaloAndZaloPay.setZaloId(zaloId);
@@ -155,6 +147,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
         Person cachedItem = localStorage.getById(zaloPayId);
+        Timber.d("getUserInfoByZaloPayId, cachedItem [%s]", cachedItem);
         if (cachedItem != null) {
             return Observable.just(cachedItem);
         } else {
