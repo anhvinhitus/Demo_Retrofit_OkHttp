@@ -71,6 +71,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         return null;
     }
 
+    private boolean mIsSubscribeGcm = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -98,6 +100,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     @Override
     public void onDestroy() {
         Timber.d("onDestroy");
+        mIsSubscribeGcm = false;
         eventBus.unregister(this);
         if (mWsConnection != null) {
             mWsConnection.disconnect();
@@ -190,10 +193,15 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     }
 
     private void subscribeTopics(String token) throws IOException {
+        Timber.d("subscribeTopics mIsSubscribeGcm [%s] token [%s]", mIsSubscribeGcm, token);
+        if (mIsSubscribeGcm) {
+            return;
+        }
         GcmPubSub pubSub = GcmPubSub.getInstance(this);
         for (String topic : TOPICS) {
             pubSub.subscribe(token, "/topics/" + topic, null);
         }
+        mIsSubscribeGcm = true;
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
