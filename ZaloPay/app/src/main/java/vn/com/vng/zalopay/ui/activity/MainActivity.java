@@ -108,8 +108,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        startZaloPayService();
     }
 
     @Override
@@ -311,6 +309,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public void onResume() {
         Timber.i("MainActivity is resuming");
         super.onResume();
+        startZaloPayService();
         presenter.resume();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
         if (message == null) {
