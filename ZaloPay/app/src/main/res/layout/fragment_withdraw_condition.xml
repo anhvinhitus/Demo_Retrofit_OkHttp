@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/withdraw_miss_condition"
-            android:textColor="@color/txt_item_sub"
+            android:textColor="@color/txt_item_main"
             android:textSize="@dimen/textsize.text.main"
             android:textStyle="bold" />
 
@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing.tiny"
             android:text="@string/withdraw_condition_note"
-            android:textColor="@color/txt_item_sub"
+            android:textColor="@color/txt_item_main"
             android:textSize="13sp" />
     </LinearLayout>
 
