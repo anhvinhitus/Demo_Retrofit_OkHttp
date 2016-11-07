@@ -13,5 +13,7 @@ public interface IPreProfileView extends ILoadDataView {
     Activity getActivity();
     void updateUserInfo(User user);
     void initPagerContent(int pageIndex);
+    void updateCurrentPhone(String phone);
+    void updateCurrentZaloPayName(String zaloPayName);
 }
 

@@ -55,6 +55,8 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
                         Timber.d("initPagerContent phone [%s]", profileLevel2.phoneNumber);
                         Timber.d("initPagerContent zaloPayName [%s]", profileLevel2.zaloPayName);
                         Timber.d("initPagerContent isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
+                        mView.updateCurrentPhone(profileLevel2.phoneNumber);
+                        mView.updateCurrentZaloPayName(profileLevel2.zaloPayName);
                         if (!TextUtils.isEmpty(profileLevel2.phoneNumber)
                             && profileLevel2.isReceivedOtp) {
                             mView.initPagerContent(1);
