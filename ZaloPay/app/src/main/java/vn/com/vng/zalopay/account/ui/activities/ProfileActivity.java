@@ -65,7 +65,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         }
         if (getUserComponent().currentUser().profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(this);
-        }else{
+        } else {
             navigator.startEditAccountActivity(this);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
         }
@@ -76,7 +76,8 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             return;
         }
         tvName.setText(user.displayName);
-        mImageLoader.loadImage(imgAvatar, user.avatar);
+        mImageLoader.loadImage(imgAvatar, user.avatar, R.drawable.ic_avatar_default,
+                R.drawable.ic_avatar_default, ImageLoader.ScaleType.CENTER);
         setZaloPayName(user.zalopayname);
     }
 
