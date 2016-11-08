@@ -51,7 +51,6 @@ import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
-import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -71,11 +70,11 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class Navigator implements INavigator {
     private final int MIN_PROFILE_LEVEL = 2;
 
-    UserConfig userConfig;
+    private UserConfig userConfig;
 
     private long lastTimeCheckPassword = 0;
 
-    final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
+    private final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
     @Inject
     public Navigator(UserConfig userConfig) {
@@ -126,10 +125,10 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startQrCodeActivity(Context context) {
+    /*public void startQrCodeActivity(Context context) {
         Intent intent = new Intent(context, QRCodeScannerActivity.class);
         context.startActivity(intent);
-    }
+    }*/
 
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
@@ -188,8 +187,6 @@ public class Navigator implements INavigator {
         if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             showUpdateProfileInfoDialog(context);
         } else {
-
-            long now = System.currentTimeMillis();
             int numberCard = 0;
             try {
                 List<DMappedCard> mapCardLis = CShareData.getInstance()
@@ -199,10 +196,12 @@ public class Navigator implements INavigator {
                 Timber.d(ex, "startLinkCardActivity");
             }
 
-            if (numberCard <= 0 || now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
+            if (numberCard <= 0) {
                 context.startActivity(intentLinkCard(context));
+            } else if (shouldShowPinDialog()) {
+                showPinDialog(context, intentLinkCard(context));
             } else {
-                new PinProfileDialog(context, intentLinkCard(context)).show();
+                context.startActivity(intentLinkCard(context));
             }
         }
     }
@@ -234,7 +233,9 @@ public class Navigator implements INavigator {
             return;
         }
 
-        if (checkAndOpenPinDialog(context, intentProfile(context), userConfig.getCurrentUser().profilelevel)) {
+        if (shouldShowPinDialog()) {
+            showPinDialog(context, intentProfile(context));
+        } else {
             context.startActivity(intentProfile(context));
         }
     }
@@ -355,11 +356,14 @@ public class Navigator implements INavigator {
     }
 
     public void startTransactionHistoryList(Context context) {
-        if (userConfig.hasCurrentUser()) {
-            Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<String, String>());
-            if (checkAndOpenPinDialog(context, intent, userConfig.getCurrentUser().profilelevel)) {
-                context.startActivity(intent);
-            }
+        if (!userConfig.hasCurrentUser()) {
+            return;
+        }
+        Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<String, String>());
+        if (shouldShowPinDialog()) {
+            showPinDialog(context, intent);
+        } else {
+            context.startActivity(intent);
         }
     }
 
@@ -370,7 +374,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public Intent getIntentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
+    private Intent getIntentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
         Intent intent = new Intent(context, MiniApplicationActivity.class);
         intent.putExtra("moduleName", moduleName);
         Bundle options = new Bundle();
@@ -415,34 +419,44 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    boolean checkAndOpenPinDialog(Context context, Intent pendingIntent, int level) {
+    private boolean shouldShowPinDialog() {
+        int profileLevel = userConfig.getCurrentUser().profilelevel;
         long now = System.currentTimeMillis();
-        if (now - lastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD && level >= MIN_PROFILE_LEVEL) {
-            new PinProfileDialog(context, pendingIntent).show();
-            return false;
-        }
-        return true;
+        return (now - lastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD
+                && profileLevel >= MIN_PROFILE_LEVEL);
+    }
+
+    private void showPinDialog(Context context, Intent pendingIntent) {
+        new PinProfileDialog(context, pendingIntent).show();
+    }
+
+    private void showPinDialog(Context context, final Promise promise) {
+        PinProfileDialog pinProfileDialog = new PinProfileDialog(context);
+        pinProfileDialog.setListener(new PinProfileDialog.PinProfileListener() {
+            @Override
+            public void onPinSuccess() {
+                Timber.d("onPinSuccess resolve true");
+                Helpers.promiseResolveSuccess(promise, null);
+            }
+
+            @Override
+            public void onPinError() {
+                Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
+            }
+        });
+        pinProfileDialog.show();
     }
 
     public void setLastTimeCheckPin(long time) {
         lastTimeCheckPassword = time;
     }
 
-
     @Override
     public boolean promptPIN(Context context, int channel, final Promise promise) {
-        long now = System.currentTimeMillis();
-
-        if (now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
+        if (!shouldShowPinDialog()) {
             Helpers.promiseResolveSuccess(promise, null);
             return true;
         }
-
-        if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
-            Helpers.promiseResolveSuccess(promise, null);
-            return true;
-        }
-
 
         if (channel == 2) {
             try {
@@ -459,20 +473,7 @@ public class Navigator implements INavigator {
             }
         }
 
-        PinProfileDialog dialog = new PinProfileDialog(context);
-        dialog.setListener(new PinProfileDialog.PinProfileListener() {
-            @Override
-            public void onPinSuccess() {
-                Timber.d("onPinSuccess resolve true");
-                Helpers.promiseResolveSuccess(promise, null);
-            }
-
-            @Override
-            public void onPinError() {
-                Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
-            }
-        });
-        dialog.show();
+        showPinDialog(context, promise);
         return false;
     }
 
