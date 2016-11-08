@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 public abstract class ZPEditTextValidate {
     private String mErrorMessage;
 
-    public ZPEditTextValidate(String errorMessage) {
+    public ZPEditTextValidate(@NonNull String errorMessage) {
         this.mErrorMessage = errorMessage;
     }
 
