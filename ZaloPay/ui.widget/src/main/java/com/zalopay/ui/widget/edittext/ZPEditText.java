@@ -5,7 +5,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,6 +24,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -54,10 +54,6 @@ public class ZPEditText extends AppCompatEditText {
     private int extraPaddingTop;
 
     private int extraPaddingBottom;
-
-    private int extraPaddingLeft;
-
-    private int extraPaddingRight;
 
     private int floatingLabelTextSize;
 
@@ -179,7 +175,7 @@ public class ZPEditText extends AppCompatEditText {
         }
 
         iconSize = getPixel(32);
-        iconOuterWidth = getPixel(48);
+        iconOuterWidth = getPixel(40);
         iconOuterHeight = getPixel(32);
 
         bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
@@ -247,7 +243,7 @@ public class ZPEditText extends AppCompatEditText {
         autoValidate = typedArray.getBoolean(R.styleable.ZPEditText_zlp_autoValidate, false);
         showClearButton = typedArray.getBoolean(R.styleable.ZPEditText_zlp_clearButton, false);
         clearButtonBitmaps = generateIconBitmaps(getResources(), R.drawable.ic_remove_circle, iconSize, baseColor, primaryColor, errorColor);
-        iconPadding = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_iconPadding, getPixel(16));
+        iconPadding = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_iconPadding, getPixel(2));
         floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.ZPEditText_zlp_floatingLabelAlwaysShown, false);
         validateOnFocusLost = typedArray.getBoolean(R.styleable.ZPEditText_zlp_validateOnFocusLost, false);
         checkCharactersCountAtBeginning = typedArray.getBoolean(R.styleable.ZPEditText_zlp_checkCharactersCountAtBeginning, true);
@@ -467,14 +463,13 @@ public class ZPEditText extends AppCompatEditText {
     }
 
     private void correctPaddings() {
-        int buttonsWidthLeft = 0, buttonsWidthRight = 0;
+        int buttonsWidthLeft = 0;
+        int buttonsWidthRight = 0;
         int buttonsWidth = iconOuterWidth * getButtonsCount();
-        if (isRTL()) {
-            buttonsWidthLeft = buttonsWidth;
-        } else {
-            buttonsWidthRight = buttonsWidth;
-        }
-        super.setPadding(innerPaddingLeft + extraPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + extraPaddingRight + buttonsWidthRight, innerPaddingBottom + extraPaddingBottom);
+
+        buttonsWidthRight = buttonsWidth;
+
+        super.setPadding(innerPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + buttonsWidthRight, innerPaddingBottom + extraPaddingBottom);
     }
 
     private int getButtonsCount() {
@@ -504,8 +499,7 @@ public class ZPEditText extends AppCompatEditText {
         int destBottomLines;
         textPaint.setTextSize(bottomTextSize);
         if (tempErrorText != null) {
-            Layout.Alignment alignment = (getGravity() & Gravity.RIGHT) == Gravity.RIGHT || isRTL() ?
-                    Layout.Alignment.ALIGN_OPPOSITE : (getGravity() & Gravity.LEFT) == Gravity.LEFT ?
+            Layout.Alignment alignment = (getGravity() & Gravity.RIGHT) == Gravity.RIGHT || (getGravity() & Gravity.LEFT) == Gravity.LEFT ?
                     Layout.Alignment.ALIGN_NORMAL : Layout.Alignment.ALIGN_CENTER;
             textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), alignment, 1.0f, 0.0f, true);
             destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
@@ -852,18 +846,13 @@ public class ZPEditText extends AppCompatEditText {
 
         int startX = getScrollX() + getPaddingLeft();
         int endX = getScrollX() + getWidth() - getPaddingRight();
+        Log.d("ZPEditText", String.format("start %s end %s width %s scrollX %s paddingRight %s", startX, endX, getWidth(), getScrollX(), getPaddingRight()));
         int lineStartY = getScrollY() + getHeight() - getPaddingBottom();
 
         paint.setAlpha(255);
         // draw the clear button
         if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText()) && isEnabled()) {
-            paint.setAlpha(255);
-            int buttonLeft;
-            if (isRTL()) {
-                buttonLeft = startX;
-            } else {
-                buttonLeft = endX - iconOuterWidth;
-            }
+            int buttonLeft = endX;
             Bitmap clearButtonBitmap = clearButtonBitmaps[0];
             buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
             int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
@@ -873,9 +862,10 @@ public class ZPEditText extends AppCompatEditText {
         // draw the underline
         if (!hideUnderline) {
             lineStartY += bottomSpacing;
+            int lineEndX = endX + iconOuterWidth;
             if (!isInternalValid()) { // not valid
                 paint.setColor(errorColor);
-                canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
+                canvas.drawRect(startX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
             } else if (!isEnabled()) { // disabled
                 paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x44000000);
                 float interval = getPixel(1);
@@ -884,23 +874,22 @@ public class ZPEditText extends AppCompatEditText {
                 }
             } else if (hasFocus()) { // focused
                 paint.setColor(primaryColor);
-                canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
+                canvas.drawRect(startX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
             } else { // normal
                 paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x1E000000);
-                canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
+                canvas.drawRect(startX, lineStartY, lineEndX, lineStartY + getPixel(1), paint);
             }
         }
 
         textPaint.setTextSize(bottomTextSize);
         Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
         float relativeHeight = -textMetrics.ascent - textMetrics.descent;
-        float bottomTextPadding = bottomTextSize + textMetrics.ascent + textMetrics.descent;
 
         // draw the characters counter
         if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
             textPaint.setColor(isCharactersCountValid() ? (baseColor & 0x00ffffff | 0x44000000) : errorColor);
             String charactersCounterText = getCharactersCounterText();
-            canvas.drawText(charactersCounterText, isRTL() ? startX : endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
+            canvas.drawText(charactersCounterText, endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
         }
 
         // draw the floating label
@@ -916,7 +905,7 @@ public class ZPEditText extends AppCompatEditText {
             // calculate the horizontal position
             float floatingLabelWidth = textPaint.measureText(floatingLabelText.toString());
             int floatingLabelStartX;
-            if ((getGravity() & Gravity.RIGHT) == Gravity.RIGHT || isRTL()) {
+            if ((getGravity() & Gravity.RIGHT) == Gravity.RIGHT) {
                 floatingLabelStartX = (int) (endX - floatingLabelWidth);
             } else if ((getGravity() & Gravity.LEFT) == Gravity.LEFT) {
                 floatingLabelStartX = startX;
@@ -928,7 +917,7 @@ public class ZPEditText extends AppCompatEditText {
             int distance = floatingLabelPadding;
             int floatingLabelStartY = (int) (innerPaddingTop + floatingLabelTextSize + floatingLabelPadding - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction) + getScrollY());
 
-            // calculate the alpha
+//            // calculate the alpha
             int alpha = ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction * (isEnabled() ? 1 : 0) + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
             textPaint.setAlpha(alpha);
 
@@ -944,21 +933,12 @@ public class ZPEditText extends AppCompatEditText {
         super.onDraw(canvas);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private boolean isRTL() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return false;
-        }
-        Configuration config = getResources().getConfiguration();
-        return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-    }
-
     private int getBottomTextLeftOffset() {
-        return isRTL() ? getCharactersCounterWidth() : getBottomEllipsisWidth();
+        return getBottomEllipsisWidth();
     }
 
     private int getBottomTextRightOffset() {
-        return isRTL() ? getBottomEllipsisWidth() : getCharactersCounterWidth();
+        return getCharactersCounterWidth();
     }
 
     private int getCharactersCounterWidth() {
@@ -990,11 +970,11 @@ public class ZPEditText extends AppCompatEditText {
     private String getCharactersCounterText() {
         String text;
         if (minCharacters <= 0) {
-            text = isRTL() ? maxCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + maxCharacters;
+            text = checkLength(getText()) + " / " + maxCharacters;
         } else if (maxCharacters <= 0) {
-            text = isRTL() ? "+" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "+";
+            text = checkLength(getText()) + " / " + minCharacters + "+";
         } else {
-            text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "-" + maxCharacters;
+            text = checkLength(getText()) + " / " + minCharacters + "-" + maxCharacters;
         }
         return text;
     }
@@ -1046,14 +1026,11 @@ public class ZPEditText extends AppCompatEditText {
     private boolean insideClearButton(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-        int startX = getScrollX();
-        int endX = getScrollX() + getWidth();
-        int buttonLeft;
-        if (isRTL()) {
-            buttonLeft = startX;
-        } else {
-            buttonLeft = endX - iconOuterWidth;
-        }
+
+        int startX = getScrollX() + getPaddingLeft();
+        int endX = getScrollX() + getWidth() - getPaddingRight();
+
+        int buttonLeft = endX;
         int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
         return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
     }
