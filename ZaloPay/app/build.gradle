@@ -318,7 +318,7 @@ afterEvaluate {
     }
 }
 
-task installApp(type: Exec, dependsOn: 'installSandboxDebug') {
+task installApp(type: Exec, dependsOn: 'installIapSandboxDebug') {
     commandLine 'adb', 'shell', 'am', 'start', '-n', 'vn.com.vng.zalopay/.ui.activity.SplashScreenActivity'
 }
 
@@ -363,7 +363,7 @@ dependencies {
     releaseCompile libs.debugViewer_noops
     compile libs.zalopay_analytics
     compile('vn.com.vng.zalopay:qrcodecore:1.2')
-    compile('vn.com.vng.zalopay:rnmodules:1.12') {
+    compile('vn.com.vng.zalopay:rnmodules:1.13') {
         exclude module: 'bolts-android'
     }
     compile(libs.react_native) {
@@ -382,7 +382,6 @@ dependencies {
     }
 
     compile libs.fresco
-    compile(name: 'react-native-maps-debug', ext: 'aar')
 }
 
 apply plugin: 'com.google.gms.google-services'
