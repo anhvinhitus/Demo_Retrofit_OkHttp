@@ -151,7 +151,7 @@ public class NotificationHelper {
             // post notification and skip write to db
             mEventBus.post(notify);
             skipStorage = true;
-        } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
+        } else if (notificationType == NotificationType.UPDATE_PLATFORM_INFORMATION) {
             refreshGatewayInfo();
         } else if (notificationType == NotificationType.RECOVERY_MONEY) {
             showAlertNotification(notify, mContext.getString(R.string.recovery_money));
