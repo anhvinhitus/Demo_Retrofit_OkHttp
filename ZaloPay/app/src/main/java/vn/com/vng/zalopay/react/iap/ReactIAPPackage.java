@@ -18,23 +18,23 @@ import vn.com.vng.zalopay.domain.model.User;
  * In-app-payment package
  */
 public class ReactIAPPackage implements ReactPackage {
-    final IPaymentService paymentService;
-    final User user;
+    private final IPaymentService paymentService;
+    private final User mUser;
     private final long appId;
-    final NetworkService mNetworkService;
+    private final NetworkService mNetworkService;
 
     public ReactIAPPackage(IPaymentService paymentService,
-                           User user, long appId, NetworkService netwokService) {
+                           User user, long appId, NetworkService networkService) {
         this.paymentService = paymentService;
-        this.user = user;
+        this.mUser = user;
         this.appId = appId;
-        this.mNetworkService = netwokService;
+        this.mNetworkService = networkService;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayNativeModule(reactContext, paymentService, appId, mNetworkService));
+        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId, mNetworkService));
         return modules;
     }
 

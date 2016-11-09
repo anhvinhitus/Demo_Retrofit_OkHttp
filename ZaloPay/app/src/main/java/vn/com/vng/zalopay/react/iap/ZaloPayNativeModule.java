@@ -2,9 +2,11 @@ package vn.com.vng.zalopay.react.iap;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -12,6 +14,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.zalopay.apploader.network.NetworkService;
 
 import java.util.HashMap;
@@ -26,7 +29,9 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -44,14 +49,17 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     private final NetworkService mNetworkService;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private final User mUser;
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
+                        User user,
                         IPaymentService paymentService,
                         long appId, NetworkService networkService) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
         this.mNetworkService = networkService;
+        this.mUser = user;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);
@@ -190,7 +198,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         Timber.d("onNewIntent called from based");
     }
 
-
     @Override
     public void onHostResume() {
         Timber.d(" Activity `onResume`");
@@ -240,10 +247,36 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
-        Subscription subscription = mNetworkService.request(baseUrl, content)
+
+
+        ReadableMap readableMap = shouldPostAuthKey(content);
+
+        Subscription subscription = mNetworkService.request(baseUrl, readableMap)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
+    }
+
+    private ReadableMap shouldPostAuthKey(ReadableMap content) {
+
+        if (mAppId == PaymentAppConfig.Constants.SHOW_SHOW) {
+            WritableMap writableMap = Arguments.createMap();
+            if (content != null) {
+                writableMap.merge(content);
+            }
+            WritableMap queryMap = Arguments.createMap();
+            if (content.hasKey("query")) {
+                queryMap.merge(content.getMap("query"));
+            }
+
+            queryMap.putString("accesstoken", mUser.accesstoken);
+            queryMap.putString("userid", mUser.zaloPayId);
+
+            writableMap.putMap("query", queryMap);
+            return writableMap;
+        }
+
+        return content;
     }
 
     @Override

@@ -229,7 +229,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected List<ReactPackage> getPackages() {
 
         long appId = appResource == null ? 0 : appResource.appid;
-
+        Timber.d("getPackages: appId %s", appId);
         return Arrays.asList(
                 new MainReactPackage(),
                 new RNSendIntentPackage(),

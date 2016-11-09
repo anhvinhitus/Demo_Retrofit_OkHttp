@@ -24,7 +24,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -59,7 +58,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private int floatingLabelTextColor;
 
-    private int bottomTextSize;
+    private int bottomTextSize; // counter font size
 
     private int floatingLabelPadding;
 
@@ -544,8 +543,10 @@ public class ZPEditText extends AppCompatEditText {
                 if (floatingLabelEnabled) {
                     if (s.length() == 0) {
                         if (floatingLabelShown) {
-                            floatingLabelShown = false;
-                            getLabelAnimator().reverse();
+                            if (!validateOnFocusLost || tempErrorText == null) {
+                                floatingLabelShown = false;
+                                getLabelAnimator().reverse();
+                            }
                         }
                     } else if (!floatingLabelShown) {
                         floatingLabelShown = true;
@@ -846,7 +847,6 @@ public class ZPEditText extends AppCompatEditText {
 
         int startX = getScrollX() + getPaddingLeft();
         int endX = getScrollX() + getWidth() - getPaddingRight();
-        Log.d("ZPEditText", String.format("start %s end %s width %s scrollX %s paddingRight %s", startX, endX, getWidth(), getScrollX(), getPaddingRight()));
         int lineStartY = getScrollY() + getHeight() - getPaddingBottom();
 
         paint.setAlpha(255);
