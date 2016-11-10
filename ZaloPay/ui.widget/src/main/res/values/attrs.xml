@@ -363,6 +363,8 @@
             <enum name="normal" value="1" />
             <enum name="highlight" value="2" />
         </attr>
+        <attr name="zlp_paddingLeftLine" format="dimension" />
+        <attr name="zlp_paddingRightLine" format="dimension" />
         <attr name="zlp_errorColor" format="color" />
         <attr name="zlp_minCharacters" format="integer" />
         <attr name="zlp_maxCharacters" format="integer" />

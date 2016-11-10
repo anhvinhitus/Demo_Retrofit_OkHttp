@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zalopay.ui.widget.edittext.ZPEditText;
+import com.zalopay.ui.widget.edittext.ZPEditTextLengthChecker;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +32,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
+import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
+import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
+import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.PhotoUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
@@ -42,8 +47,9 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View {
 
-    public static UpdateProfile3Fragment newInstance() {
+    public static UpdateProfile3Fragment newInstance(boolean focusIdentity) {
         Bundle args = new Bundle();
+        args.putBoolean("focusIdentity", focusIdentity);
         UpdateProfile3Fragment fragment = new UpdateProfile3Fragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,11 +65,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.viewFlipper)
     ViewFlipper viewFlipper;
 
-    @BindView(R.id.textInputEmail)
-    TextInputLayout mEmailView;
+    @BindView(R.id.edtEmail)
+    ZPEditText mEdtEmailView;
 
-    @BindView(R.id.textInputIdentity)
-    TextInputLayout mIdentityNumberView;
+    @BindView(R.id.edtIdentity)
+    ZPEditText mEdtIdentityView;
 
     @BindView(R.id.avatar)
     SimpleDraweeView mAvatarView;
@@ -105,6 +111,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.btnContinue)
     View mBtnContinue;
 
+    boolean focusIdentity;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -118,6 +126,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        focusIdentity = getArguments().getBoolean("focusIdentity", false);
     }
 
     @Override
@@ -138,6 +147,23 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setClickable(false);
         btnRemoveAvatar.setClickable(false);
         mBtnContinue.setEnabled(false);
+
+        if (focusIdentity) {
+            mEdtIdentityView.requestFocus();
+        } else {
+            mEdtEmailView.requestFocus();
+        }
+
+        mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
+      /*  mEdtEmailView.setLengthChecker(new ZPEditTextLengthChecker() {
+            @Override
+            public int getLength(CharSequence text) {
+                return text.length();
+            }
+        });
+        mEdtEmailView.setMinCharacters(1);*/
+
+        mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
     }
 
     @Override
@@ -165,32 +191,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnTextChanged(R.id.edtEmail)
     public void onTextChangedEmail(CharSequence s) {
-        setEmailError(null);
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
-    }
-
-    private void setEmailError(String s) {
-        mEmailView.setErrorEnabled(!TextUtils.isEmpty(s));
-        mEmailView.setError(s);
-    }
-
-    @OnFocusChange(R.id.edtEmail)
-    public void onFocusChange(boolean focus) {
-        if (!focus) {
-            if (TextUtils.isEmpty(getEmail())) {
-                setEmailError(getString(R.string.invalid_email_empty));
-            } else if (!ValidateUtil.isEmailAddress(getEmail())) {
-                setEmailError(getString(R.string.email_invalid));
-            }
-        } else {
-            setEmailError(null);
-        }
+        mBtnContinue.setEnabled(mEdtEmailView.isValid() && mEdtIdentityView.isValid());
     }
 
     @OnTextChanged(R.id.edtIdentity)
     public void onTextChangeIdentity(CharSequence s) {
-        mIdentityNumberView.setError(null);
-        mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
+        mBtnContinue.setEnabled(mEdtEmailView.isValid() && mEdtIdentityView.isValid());
     }
 
     @OnClick(R.id.btnRemoveAvatar)
@@ -249,33 +255,29 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private String getEmail() {
-        if (mEmailView.getEditText() != null) {
-            return mEmailView.getEditText().getText().toString();
+        if (mEdtEmailView != null) {
+            return mEdtEmailView.getText().toString();
         }
         return "";
     }
 
     private String getIdentity() {
-        if (mIdentityNumberView.getEditText() == null) {
-            return "";
-        } else if (mIdentityNumberView.getEditText().getText() == null) {
-            return "";
-        } else if (TextUtils.isEmpty(mIdentityNumberView.getEditText().getText().toString())) {
-            return "";
-        } else {
-            return mIdentityNumberView.getEditText().getText().toString().toUpperCase();
+        if (mEdtIdentityView != null) {
+            return mEdtIdentityView.getText().toString().toLowerCase();
         }
+
+        return "";
     }
 
     private void setEmail(String text) {
-        if (mEmailView.getEditText() != null) {
-            mEmailView.getEditText().setText(text);
+        if (mEdtEmailView != null) {
+            mEdtEmailView.setText(text);
         }
     }
 
     private void setIdentity(String text) {
-        if (mIdentityNumberView.getEditText() != null) {
-            mIdentityNumberView.getEditText().setText(text);
+        if (mEdtIdentityView != null) {
+            mEdtIdentityView.setText(text);
         }
     }
 
@@ -290,16 +292,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private boolean isValidatePageOne() {
-        if (!ValidateUtil.isEmailAddress(getEmail())) {
-            mEmailView.setError(getString(R.string.email_invalid));
-            return false;
-        }
-
-        if (!ValidateUtil.isValidCMNDOrPassport(getIdentity())) {
-            mIdentityNumberView.setError(getString(R.string.cmnd_passport_invalid));
-            return false;
-        }
-
         return true;
     }
 

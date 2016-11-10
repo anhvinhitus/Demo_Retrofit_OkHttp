@@ -12,6 +12,7 @@ public class UpdateProfileLevel3Activity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return UpdateProfile3Fragment.newInstance();
+        boolean focusIdentity = getIntent().getBooleanExtra("focusIdentity", false);
+        return UpdateProfile3Fragment.newInstance(focusIdentity);
     }
 }

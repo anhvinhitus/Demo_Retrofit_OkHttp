@@ -26,6 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
 
             <View
@@ -33,65 +35,44 @@
                 android:layout_height="@dimen/separate"
                 android:background="@color/separate" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputEmail"
+            <com.zalopay.ui.widget.edittext.ZPEditText
+                android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:padding="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                app:hintAnimationEnabled="false">
+                android:paddingRight="8dp"
+                app:zlp_autoValidate="true"
+                app:zlp_checkCharactersCountAtBeginning="false"
+                app:zlp_clearButton="true"
+                app:zlp_floatingLabel="highlight"
+                app:zlp_paddingLeftLine="10dp"
+                app:zlp_validateOnFocusLost="true" />
 
-                <vn.com.vng.zalopay.ui.widget.ClearableEditText
-                    android:id="@+id/edtEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:minHeight="44dp"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:layout_marginLeft="16dp"
-                android:background="@color/separate" />
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputIdentity"
+            <com.zalopay.ui.widget.edittext.ZPEditText
+                android:id="@+id/edtIdentity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:hint="@string/cmnd_passpost"
+                android:inputType="textCapCharacters"
+                android:maxLines="1"
+                android:padding="10dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                app:hintAnimationEnabled="false">
+                android:paddingRight="8dp"
+                app:zlp_autoValidate="true"
+                app:zlp_clearButton="true"
+                app:zlp_floatingLabel="highlight"
+                app:zlp_validateOnFocusLost="true" />
 
-                <vn.com.vng.zalopay.ui.widget.ClearableEditText
-                    android:id="@+id/edtIdentity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:hint="@string/cmnd_passpost"
-                    android:inputType="textCapCharacters"
-                    android:maxLines="1"
-                    android:minHeight="44dp"
-                    android:singleLine="true"
-                    android:textAllCaps="true" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:background="@color/separate" />
         </LinearLayout>
 
         <TextView

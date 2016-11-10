@@ -151,6 +151,8 @@ public class ZPEditText extends AppCompatEditText {
     OnFocusChangeListener outerFocusChangeListener;
     private List<ZPEditTextValidate> validators;
     private ZPEditTextLengthChecker lengthChecker;
+    private int paddingLeftLine;
+    private int paddingRightLine;
 
     public ZPEditText(Context context) {
         super(context);
@@ -246,6 +248,10 @@ public class ZPEditText extends AppCompatEditText {
         floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.ZPEditText_zlp_floatingLabelAlwaysShown, false);
         validateOnFocusLost = typedArray.getBoolean(R.styleable.ZPEditText_zlp_validateOnFocusLost, false);
         checkCharactersCountAtBeginning = typedArray.getBoolean(R.styleable.ZPEditText_zlp_checkCharactersCountAtBeginning, true);
+
+        paddingLeftLine = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_paddingLeftLine, 0);
+        paddingRightLine = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_paddingRightLine, 0);
+
         typedArray.recycle();
 
         int[] paddings = new int[]{
@@ -742,6 +748,10 @@ public class ZPEditText extends AppCompatEditText {
         return tempErrorText;
     }
 
+    public boolean isValid() {
+        return isInternalValid();
+    }
+
     private boolean isInternalValid() {
         return tempErrorText == null && isCharactersCountValid();
     }
@@ -862,22 +872,23 @@ public class ZPEditText extends AppCompatEditText {
         // draw the underline
         if (!hideUnderline) {
             lineStartY += bottomSpacing;
-            int lineEndX = endX + iconOuterWidth;
+            int lineStartX = getScrollX() + paddingLeftLine;
+            int lineEndX = getScrollX() + getWidth() - paddingRightLine;
             if (!isInternalValid()) { // not valid
                 paint.setColor(errorColor);
-                canvas.drawRect(startX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
+                canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
             } else if (!isEnabled()) { // disabled
                 paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x44000000);
                 float interval = getPixel(1);
                 for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
-                    canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
+                    canvas.drawRect(lineStartX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
                 }
             } else if (hasFocus()) { // focused
                 paint.setColor(primaryColor);
-                canvas.drawRect(startX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
+                canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
             } else { // normal
                 paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x1E000000);
-                canvas.drawRect(startX, lineStartY, lineEndX, lineStartY + getPixel(1), paint);
+                canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(1), paint);
             }
         }
 

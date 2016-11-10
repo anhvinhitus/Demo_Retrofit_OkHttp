@@ -282,8 +282,13 @@ public class Navigator implements INavigator {
     }
 
     public void startUpdateProfile3Activity(Context context) {
+        startUpdateProfile3Activity(context, false);
+    }
+
+    public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
         if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
+            intent.putExtra("focusIdentity", focusIdentity);
             context.startActivity(intent);
         }
     }

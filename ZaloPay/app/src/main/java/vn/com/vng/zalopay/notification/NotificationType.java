@@ -27,7 +27,7 @@ public class NotificationType {
     public static final int NOTIFICATION_RECEIVE_RED_PACKET = 111;
     public static final int RECOVERY_MONEY = 10;
     public static final int MERCHANT_TRANSFER = 11;
-    public static final int EXPIRED_BANK = 112;
+    public static final int LINK_CARD_EXPIRED = 112;
 
     static boolean isTransactionNotification(int notificationType) {
         return notificationType == ORDER_PAYMENT ||

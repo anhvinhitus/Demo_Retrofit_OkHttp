@@ -143,16 +143,25 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     public void updateIdentity() {
+        if (mView == null) {
+            return;
+        }
+
         if (getProfileLevel() < 2) {
             mView.showDialogInfo(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
             mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
         } else {
-            mNavigator.startUpdateProfile3Activity(mView.getContext());
+            mNavigator.startUpdateProfile3Activity(mView.getContext(), true);
         }
     }
 
     public void updateEmail() {
+
+        if (mView == null) {
+            return;
+        }
+
         if (getProfileLevel() < 2) {
             mView.showDialogInfo(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
