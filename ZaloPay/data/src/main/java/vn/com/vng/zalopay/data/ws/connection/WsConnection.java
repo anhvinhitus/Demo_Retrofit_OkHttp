@@ -25,18 +25,8 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageLogin;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageRecoveryRequest;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
-import vn.com.vng.zalopay.data.ws.protobuf.RecoveryOrder;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
-import vn.com.vng.zalopay.data.ws.protobuf.StatusMessageClient;
-import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
-
-import static vn.com.vng.zalopay.data.ws.protobuf.MessageRecoveryRequest.DEFAULT_ORDER;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -206,12 +196,8 @@ public class WsConnection extends Connection {
             return;
         }
 
-        MessageConnectionInfo pingMessage = new MessageConnectionInfo.Builder()
-                .userid(getCurrentUserId())
-                .embeddata(System.currentTimeMillis())
-                .build();
-
-        send(MessageType.PING_SERVER.getValue(), MessageConnectionInfo.ADAPTER.encode(pingMessage));
+        NotificationApiMessage pingMessage = NotificationApiHelper.createPingMessage(getCurrentUserId());
+        send(pingMessage.messageCode, pingMessage.messageContent);
     }
 
     private void reconnect() {
@@ -271,30 +257,9 @@ public class WsConnection extends Connection {
         return true;
     }
 
-    public boolean sendMessageRecovery(int count, long timeStamp) {
-        Timber.d("sendMessageRecovery");
-        MessageRecoveryRequest.Builder request = new MessageRecoveryRequest.Builder()
-                .count(count)
-                .order(RecoveryOrder.ORDER_DESCEND.getValue())
-                .starttime(timeStamp);
-
-        return send(MessageType.RECOVERY_REQUEST.getValue(), MessageRecoveryRequest.ADAPTER.encode(request.build()));
-    }
-
     private boolean sendAuthentication(String token, long uid) {
-
-        Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
-
-        MessageLogin.Builder loginMsg = new MessageLogin.Builder()
-                .token(token)
-                .usrid(uid)
-                .ostype(Enums.Platform.ANDROID.getId());
-
-        if (!TextUtils.isEmpty(gcmToken)) {
-            loginMsg.devicetoken(gcmToken);
-        }
-
-        return send(MessageType.AUTHEN_LOGIN.getValue(), MessageLogin.ADAPTER.encode(loginMsg.build()));
+        NotificationApiMessage authenticationMessage = NotificationApiHelper.createAuthenticationMessage(token, uid, gcmToken);
+        return send(authenticationMessage.messageCode, authenticationMessage.messageContent);
     }
 
     private boolean sendAuthentication() {
@@ -328,21 +293,8 @@ public class WsConnection extends Connection {
             }
 
             Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
-
-            StatusMessageClient.Builder statusMsg = new StatusMessageClient.Builder()
-                    .status(MessageStatus.RECEIVED.getValue());
-
-            if (mtaid > 0) {
-                statusMsg.mtaid(mtaid);
-            }
-            if (mtuid > 0) {
-                statusMsg.mtuid(mtuid);
-            }
-            if (uid > 0) {
-                statusMsg.userid(uid);
-            }
-
-            return send(MessageType.FEEDBACK.getValue(), StatusMessageClient.ADAPTER.encode(statusMsg.build()));
+            NotificationApiMessage message = NotificationApiHelper.createFeedbackMessage(mtaid, mtuid, uid);
+            return send(message.messageCode, message.messageContent);
         } catch (Throwable e) {
             Timber.w(e, "Exception while sending feedback message");
             return false;
@@ -360,7 +312,7 @@ public class WsConnection extends Connection {
             sendAuthentication();
             mServerPongBus.send(1L);
 
-            EventBus.getDefault().post(new WsConnectionEvent(true));
+            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.CONNECTED));
         }
 
         @Override
@@ -421,7 +373,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
-            EventBus.getDefault().post(new WsConnectionEvent(false));
+            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
         }
 
         @Override
@@ -438,7 +390,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
-            EventBus.getDefault().post(new WsConnectionEvent(false));
+            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
         }
     }
 

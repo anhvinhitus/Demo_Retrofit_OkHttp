@@ -62,6 +62,10 @@ class TCPClient implements SocketClient {
             } catch (UnresolvedAddressException e) {
                 Timber.w(e, "Unresolved address exception");
                 postErrorEvent(e);
+            } catch (java.net.ConnectException e) {
+                // reduce fatal level
+                Timber.i(e, "ConnectException");
+                postErrorEvent(e);
             } catch (ClosedChannelException e) {
                 Timber.w(e, "Exception: Channel is closed");
                 postErrorEvent(e);

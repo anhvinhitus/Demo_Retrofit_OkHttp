@@ -34,6 +34,8 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
+import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
@@ -253,7 +255,8 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private void sendMessageRecovery(long timeStamp) {
         if (mWsConnection != null) {
-            mWsConnection.sendMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
+            NotificationApiMessage message = NotificationApiHelper.createMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
+            mWsConnection.send(message.messageCode, message.messageContent);
         }
     }
 
