@@ -329,7 +329,7 @@
     <string name="withdraw_miss_condition">Bạn chưa đủ điều kiện để rút tiền.</string>
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn cần phải cập nhật các thông tin sau:</string>
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
-    <string name="withdraw_condition_card_note">Cần phải liên kết một trong các thẻ ATM nội địa sau:</string>
+    <string name="withdraw_condition_card_note">Cần liên kết một trong các thẻ ATM nội địa:</string>
     <string name="withdraw_condition_pin">Mật khẩu thanh toán</string>
     <string name="withdraw_description">Rút tiền về thẻ đã liên kết</string>
 
