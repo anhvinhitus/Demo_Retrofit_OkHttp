@@ -20,6 +20,7 @@
     <string name="invitation.code.invalid">Mã kích hoạt không hợp lệ!</string>
     <string name="email.invalid">Email không hợp lệ!</string>
     <string name="cmnd.passport.invalid">CMND/Hộ chiếu không hợp lệ!</string>
+    <string name="exception.identity.empty">Bạn chưa nhập CMND/Hộ chiếu</string>
     <string name="exception.uri.bg.cmnd">Bạn chưa chọn mặt sau CMND/Hộ chiếu</string>
     <string name="exception.uri.fg.cmnd">Bạn chưa chọn mặt trước CMND/Hộ chiếu</string>
     <string name="exception.uri.avatar">Bạn chưa chọn ảnh đại diện</string>

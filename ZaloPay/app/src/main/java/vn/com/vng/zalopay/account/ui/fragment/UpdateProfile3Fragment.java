@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -148,22 +149,25 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setClickable(false);
         mBtnContinue.setEnabled(false);
 
-        if (focusIdentity) {
-            mEdtIdentityView.requestFocus();
-        } else {
-            mEdtEmailView.requestFocus();
-        }
+        focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
+        mEdtEmailView.addValidator(new MinCharactersValidate(getString(R.string.invalid_email_empty), 1));
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
-      /*  mEdtEmailView.setLengthChecker(new ZPEditTextLengthChecker() {
-            @Override
-            public int getLength(CharSequence text) {
-                return text.length();
-            }
-        });
-        mEdtEmailView.setMinCharacters(1);*/
-
+        mEdtIdentityView.addValidator(new MinCharactersValidate(getString(R.string.exception_identity_empty), 1));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
+    }
+
+    private void focusInputText(EditText input) {
+        input.requestFocus();
+        setSelection(input);
+    }
+
+    private void setSelection(EditText input) {
+        if (input != null && input.length() > 0) {
+            if (getActivity().getCurrentFocus() == input) {
+                input.setSelection(input.length());
+            }
+        }
     }
 
     @Override
@@ -510,6 +514,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         setEmail(email);
         setIdentity(identity);
+
+        setSelection(mEdtEmailView);
+        setSelection(mEdtIdentityView);
 
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
 

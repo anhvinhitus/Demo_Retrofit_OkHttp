@@ -24,16 +24,20 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zalopay.ui.widget.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
 import static com.zalopay.ui.widget.edittext.Utils.generateIconBitmaps;
 
 /**
@@ -154,6 +158,10 @@ public class ZPEditText extends AppCompatEditText {
     private int paddingLeftLine;
     private int paddingRightLine;
 
+    private boolean adjustBottomLines;
+
+    private boolean beginCheckValidate = false;
+
     public ZPEditText(Context context) {
         super(context);
         init(context, null);
@@ -178,8 +186,8 @@ public class ZPEditText extends AppCompatEditText {
         iconSize = getPixel(32);
         iconOuterWidth = getPixel(40);
         iconOuterHeight = getPixel(32);
+        bottomSpacing = getPixel(2);
 
-        bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
         bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
         // default baseColor is black
@@ -251,6 +259,8 @@ public class ZPEditText extends AppCompatEditText {
 
         paddingLeftLine = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_paddingLeftLine, 0);
         paddingRightLine = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_paddingRightLine, 0);
+        paddingLeftLine = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_paddingLeftLine, 0);
+        paddingRightLine = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_paddingRightLine, 0);
 
         typedArray.recycle();
 
@@ -278,8 +288,8 @@ public class ZPEditText extends AppCompatEditText {
         initMinBottomLines();
         initPadding();
         initText();
-        initFloatingLabel();
         initTextWatcher();
+        initFloatingLabel();
         checkCharactersCount();
     }
 
@@ -306,6 +316,9 @@ public class ZPEditText extends AppCompatEditText {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (hasFocus() && s.length() > 0) {
+                    beginCheckValidate = true;
+                }
             }
 
             @Override
@@ -314,12 +327,14 @@ public class ZPEditText extends AppCompatEditText {
                 if (autoValidate) {
                     validate();
                 } else {
+                    Log.d(TAG, "afterTextChanged: setError null");
                     setError(null);
                 }
                 postInvalidate();
             }
         });
     }
+
 
     private Typeface getCustomTypeface(@NonNull String fontPath) {
         return Typeface.createFromAsset(getContext().getAssets(), fontPath);
@@ -474,7 +489,7 @@ public class ZPEditText extends AppCompatEditText {
 
         buttonsWidthRight = buttonsWidth;
 
-        super.setPadding(innerPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + buttonsWidthRight, innerPaddingBottom + extraPaddingBottom);
+        super.setPadding(innerPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + buttonsWidthRight, getPaddingBottom());
     }
 
     private int getButtonsCount() {
@@ -497,7 +512,12 @@ public class ZPEditText extends AppCompatEditText {
         }
     }
 
+
     private boolean adjustBottomLines() {
+        if (!adjustBottomLines) {
+            return false;
+        }
+
         if (getWidth() == 0) {
             return false;
         }
@@ -551,6 +571,7 @@ public class ZPEditText extends AppCompatEditText {
                         if (floatingLabelShown) {
                             if (!validateOnFocusLost || tempErrorText == null) {
                                 floatingLabelShown = false;
+                                Log.d(TAG, "afterTextChanged: reverse tempErrorText" + tempErrorText + " validateOnFocusLost " + validateOnFocusLost);
                                 getLabelAnimator().reverse();
                             }
                         }
@@ -569,6 +590,7 @@ public class ZPEditText extends AppCompatEditText {
                     if (hasFocus) {
                         getLabelFocusAnimator().start();
                     } else {
+                        Log.d(TAG, "onFocusChange:onFocusChange ");
                         getLabelFocusAnimator().reverse();
                     }
                 }
@@ -737,6 +759,7 @@ public class ZPEditText extends AppCompatEditText {
 
     @Override
     public void setError(CharSequence errorText) {
+        Log.d(TAG, "setError: " + errorText);
         tempErrorText = errorText == null ? null : errorText.toString();
         if (adjustBottomLines()) {
             postInvalidate();
@@ -749,10 +772,15 @@ public class ZPEditText extends AppCompatEditText {
     }
 
     public boolean isValid() {
-        return isInternalValid();
+        return tempErrorText == null && isCharactersCountValid();
     }
 
     private boolean isInternalValid() {
+        Log.d(TAG, "isInternalValid: " + beginCheckValidate);
+        if (!beginCheckValidate) {
+            return true;
+        }
+
         return tempErrorText == null && isCharactersCountValid();
     }
 
@@ -779,6 +807,7 @@ public class ZPEditText extends AppCompatEditText {
             //noinspection ConstantConditions
             isValid = isValid && validator.isValid(text);
             if (!isValid) {
+                Log.d(TAG, "validate: " + validator.getErrorMessage());
                 setError(validator.getErrorMessage());
                 break;
             }
@@ -788,6 +817,7 @@ public class ZPEditText extends AppCompatEditText {
         }
 
         postInvalidate();
+        Log.d(TAG, "validate: " + isValid);
         return isValid;
     }
 
@@ -871,14 +901,14 @@ public class ZPEditText extends AppCompatEditText {
 
         // draw the underline
         if (!hideUnderline) {
-            lineStartY += bottomSpacing;
+            lineStartY += getPaddingBottom() - getPixel(2);
             int lineStartX = getScrollX() + paddingLeftLine;
             int lineEndX = getScrollX() + getWidth() - paddingRightLine;
             if (!isInternalValid()) { // not valid
                 paint.setColor(errorColor);
                 canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
             } else if (!isEnabled()) { // disabled
-                paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x44000000);
+                paint.setColor(underlineColor != -1 ? underlineColor : baseColor);
                 float interval = getPixel(1);
                 for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
                     canvas.drawRect(lineStartX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
@@ -887,7 +917,7 @@ public class ZPEditText extends AppCompatEditText {
                 paint.setColor(primaryColor);
                 canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);
             } else { // normal
-                paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x1E000000);
+                paint.setColor(underlineColor != -1 ? underlineColor : baseColor);
                 canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(1), paint);
             }
         }
@@ -897,18 +927,18 @@ public class ZPEditText extends AppCompatEditText {
         float relativeHeight = -textMetrics.ascent - textMetrics.descent;
 
         // draw the characters counter
-        if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
-            textPaint.setColor(isCharactersCountValid() ? (baseColor & 0x00ffffff | 0x44000000) : errorColor);
+       /* if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
+            textPaint.setColor(isCharactersCountValid() ? primaryColor : errorColor);
             String charactersCounterText = getCharactersCounterText();
             canvas.drawText(charactersCounterText, endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
-        }
+        }*/
 
         // draw the floating label
         if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
             textPaint.setTextSize(floatingLabelTextSize);
             // calculate the text color
-            if (tempErrorText != null) {
-                textPaint.setColor(tempErrorText != null ? errorColor : (baseColor & 0x00ffffff | 0x44000000));
+            if (!isInternalValid()) {
+                textPaint.setColor(errorColor);
             } else {
                 textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction * (isEnabled() ? 1 : 0), floatingLabelTextColor != -1 ? floatingLabelTextColor : (baseColor & 0x00ffffff | 0x44000000), primaryColor));
             }
@@ -933,7 +963,7 @@ public class ZPEditText extends AppCompatEditText {
             textPaint.setAlpha(alpha);
 
             // draw the floating label
-            if (tempErrorText != null) {
+            if (!isInternalValid() && tempErrorText != null) {
                 canvas.drawText(tempErrorText, floatingLabelStartX, floatingLabelStartY, textPaint);
             } else {
                 canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, floatingLabelStartY, textPaint);

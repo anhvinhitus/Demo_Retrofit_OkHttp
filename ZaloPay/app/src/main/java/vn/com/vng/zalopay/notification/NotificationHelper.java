@@ -153,8 +153,6 @@ public class NotificationHelper {
             skipStorage = true;
         } else if (notificationType == NotificationType.UPDATE_PLATFORM_INFORMATION) {
             refreshGatewayInfo();
-        } else if (notificationType == NotificationType.RECOVERY_MONEY) {
-            showAlertNotification(notify, mContext.getString(R.string.recovery_money));
         }
 
         if (!skipStorage) {

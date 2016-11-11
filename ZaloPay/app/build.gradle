@@ -318,7 +318,7 @@ afterEvaluate {
     }
 }
 
-task installApp(type: Exec, dependsOn: 'installIapSandboxDebug') {
+task installApp(type: Exec, dependsOn: 'installSandboxDebug') {
     commandLine 'adb', 'shell', 'am', 'start', '-n', 'vn.com.vng.zalopay/.ui.activity.SplashScreenActivity'
 }
 

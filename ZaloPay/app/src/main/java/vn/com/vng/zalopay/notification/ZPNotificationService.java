@@ -93,7 +93,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
             return;
         }
 
-        if (eventBus != null) {
+        if (eventBus != null && !eventBus.isRegistered(this)) {
             eventBus.register(this);
         }
     }
