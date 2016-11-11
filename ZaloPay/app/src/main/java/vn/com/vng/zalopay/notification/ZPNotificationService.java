@@ -80,6 +80,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         doInject();
 
         eventBus.register(this);
+        Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
     @Override

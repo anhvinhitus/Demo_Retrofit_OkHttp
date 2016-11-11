@@ -65,6 +65,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         this.balanceRepository = balanceRepository;
         this.context = context;
         this.user = user;
+        Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
     @Override

@@ -33,6 +33,7 @@ public class MerchantRepository implements MerchantStore.Repository {
         this.localStorage = localStorage;
         this.requestService = requestService;
         this.user = user;
+        Timber.d("accessToken[%s]", this.user.accesstoken);
     }
 
     @Override

@@ -38,6 +38,7 @@ public class NotificationRepository implements NotificationStore.Repository {
         this.mRxBus = rxBus;
         mRequestService = requestService;
         mCurrentUser = currentUser;
+        Timber.d("accessToken[%s]", mCurrentUser.accesstoken);
     }
 
     @Override

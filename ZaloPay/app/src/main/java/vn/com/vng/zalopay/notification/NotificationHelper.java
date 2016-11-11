@@ -73,6 +73,7 @@ public class NotificationHelper {
         this.mTransactionRepository = transactionRepository;
         this.mBalanceRepository = balanceRepository;
         this.mEventBus = eventBus;
+        Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
     @Override

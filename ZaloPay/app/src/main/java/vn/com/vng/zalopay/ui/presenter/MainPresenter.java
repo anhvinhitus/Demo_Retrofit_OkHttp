@@ -111,6 +111,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.mThreadExecutor = threadExecutor;
 
         timerRefreshPlatform(5); // Thay bằng expiredTime cua payment sdk
+        Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
     private void timerRefreshPlatform(int interval) {

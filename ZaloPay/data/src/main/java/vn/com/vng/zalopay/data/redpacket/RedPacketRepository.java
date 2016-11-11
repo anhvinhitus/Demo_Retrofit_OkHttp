@@ -57,6 +57,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         this.mDataMapper = dataMapper;
         this.user = user;
         this.mAppId = appId;
+        Timber.d("accessToken[%s]", this.user.accesstoken);
     }
 
     @Override

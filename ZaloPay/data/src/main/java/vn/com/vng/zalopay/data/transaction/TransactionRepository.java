@@ -53,6 +53,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         mEventBus = eventBus;
         this.mRxBus = rxBus;
         subscribeFetchTransactionLatest();
+        Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
     private void subscribeFetchTransactionLatest() {

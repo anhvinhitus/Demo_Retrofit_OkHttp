@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.repository;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -21,6 +22,7 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
         this.zaloPayEntityDataMapper = zaloPayEntityDataMapper;
         this.zaloPayService = zaloPayService;
         this.user = user;
+        Timber.d("accessToken[%s]", this.user.accesstoken);
     }
 
 

@@ -47,6 +47,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         this.mUploadPhotoService = photoService;
         this.mUser = user;
         this.mUserConfig = userConfig;
+        Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
     @Override
