@@ -199,12 +199,13 @@ public class PassCodeView extends FrameLayout {
     @OnFocusChange(R.id.editText)
     public void onFocusChange(View view, boolean hasFocus) {
         if (hasFocus) {
+            hideError();
             mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         } else {
-            mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.hint));
+            if (mTvHint.getCurrentTextColor() == ContextCompat.getColor(getContext(), R.color.colorPrimary)) {
+                mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.hint));
+            }
         }
-
-        hideError();
 
         if (mIPassCodeFocusChanged != null) {
             mIPassCodeFocusChanged.onFocusChangedPin(hasFocus);
