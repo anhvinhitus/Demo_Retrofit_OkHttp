@@ -182,7 +182,7 @@
     <string name="invalid_zalopay_name">Zalo Pay ID đã được sử dụng</string>
     <string name="note_zalopay_name">Zalo Pay ID là chuỗi ký tự bao gồm các ký tự từ a->z, các số 0&#8211;9, không phân biệt chữ hoa, chữ thường.</string>
     <string name="invalid__zalopay_name">Zalo Pay ID không hợp lệ</string>
-    <string name="phone_support">1900545436</string>
+    <string name="phone_support">1900 54 54 36</string>
     <string name="terms_of_use_1">Để bảo đảm quyền lợi tốt nhất cho khách hàng, Quý khách vui lòng cập nhật đầy đủ mục thông tin cá nhân.</string>
     <string name="terms_of_use_2">Nếu mất SIM, Quý khách gọi ngay %s đế khoá TK Zalo Pay</string>
     <string name="agree.term.of.use">Tôi đã đọc và đồng ý với %s của Zalo Pay</string>
