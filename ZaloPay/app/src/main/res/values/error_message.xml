@@ -23,7 +23,7 @@
     <string name="exception.uri.bg.cmnd">Bạn chưa chọn mặt sau CMND/Hộ chiếu</string>
     <string name="exception.uri.fg.cmnd">Bạn chưa chọn mặt trước CMND/Hộ chiếu</string>
     <string name="exception.uri.avatar">Bạn chưa chọn ảnh đại diện</string>
-    <string name="exception.login.zalo.error">Không đăng nhập được zalo, Vui lòng thử lại sau!</string>
+    <string name="exception.login.zalo.error">Có lỗi xảy ra trong quá trình đăng nhập qua Zalo.\nVui lòng quay lại sau.</string>
     <string name="exception.server.maintain">Hệ thống đang bảo trì. Vui lòng thử lại sau.</string>
     <string name="exception.code.invalid">Mã không phù hợp</string>
     <string name="exception.data.invalid">Dữ liệu không hợp lệ.</string>

@@ -125,9 +125,10 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
                     errorCode == ZaloErrorCode.RESULTCODE_USER_BACK_BUTTON) {
                 Timber.d("onAuthError User click backpress");
             } else {
-                if (TextUtils.isEmpty(message)) {
-                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
-                }
+//                if (TextUtils.isEmpty(message)) {
+//                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
+//                }
+                message = mApplicationContext.getString(R.string.exception_login_zalo_error);
                 showErrorView(message);
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
             }
