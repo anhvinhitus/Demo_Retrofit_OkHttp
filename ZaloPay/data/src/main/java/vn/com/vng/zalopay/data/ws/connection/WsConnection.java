@@ -46,6 +46,8 @@ public class WsConnection extends Connection {
 
     private final Context context;
 
+    private boolean mIsAuthenSuccess = false;
+
     private int numRetry;
 
     private final Parser parser;
@@ -124,6 +126,7 @@ public class WsConnection extends Connection {
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
+                            ensureAuthenSuccess();
                         });
         compositeSubscription.add(subscription);
     }
@@ -348,6 +351,7 @@ public class WsConnection extends Connection {
             mState = State.Connected;
             mNextConnectionState = NextState.RETRY_CONNECT;
             //    numRetry = 0;
+            mIsAuthenSuccess = false;
             sendAuthentication();
 
             mServerPongBus.send(1L);
@@ -371,6 +375,7 @@ public class WsConnection extends Connection {
                 numRetry = 0;
                 postResult(message);
                 mServerPongBus.send(0L);
+                mIsAuthenSuccess = true;
             } else if (messageType == ServerMessageType.KICK_OUT_USER) {
                 needFeedback = false;
                 if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
@@ -399,6 +404,7 @@ public class WsConnection extends Connection {
         public void onDisconnected(ConnectionErrorCode code, String reason) {
             Timber.d("onDisconnected %s", code);
             mState = Connection.State.Disconnected;
+            mIsAuthenSuccess = false;
 
             if (mSocketClient != null) {
                 mSocketClient.disconnect();
@@ -415,6 +421,7 @@ public class WsConnection extends Connection {
         public void onError(Throwable e) {
             Timber.d("onError %s", e);
             mState = Connection.State.Disconnected;
+            mIsAuthenSuccess = false;
 
             if (e instanceof SocketTimeoutException) {
 //            } else if (e instanceof ConnectTimeoutException) {
@@ -444,5 +451,16 @@ public class WsConnection extends Connection {
         numRetry++;
         mCheckCountDown = numRetry % 10L;
         Timber.d("Try to reconnect after %s (seconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK, numRetry);
+    }
+
+    private void ensureAuthenSuccess() {
+        Timber.w("ensureAuthenSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
+        if (mState != State.Connected) {
+            return;
+        }
+        Timber.w("ensureAuthenSuccess, state is connected but socket isn't authen");
+        if (!mIsAuthenSuccess) {
+            sendAuthentication();
+        }
     }
 }

@@ -108,9 +108,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     }
 
     private void connectToServer() {
-        if (mIsSubscribeGcm) {
-            return;
-        }
         String token = null;
 
         try {
@@ -185,6 +182,9 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     private void subscribeTopics(String token) throws IOException {
         Timber.d("subscribeTopics mIsSubscribeGcm [%s] token [%s]", mIsSubscribeGcm, token);
+        if (mIsSubscribeGcm) {
+            return;
+        }
         GcmPubSub pubSub = GcmPubSub.getInstance(mContext);
         for (String topic : TOPICS) {
             pubSub.subscribe(token, "/topics/" + topic, null);
@@ -233,8 +233,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, mContext,
                     new MessageParser(mGson), mUserConfig);
             mWsConnection.addReceiverListener(this);
-        } else {
-
         }
     }
 

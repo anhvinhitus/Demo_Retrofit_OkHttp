@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardFragment;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
 import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
@@ -103,6 +104,8 @@ public interface UserComponent {
     NotificationStore.Repository notificationRepository();
 
     NotificationHelper notificationHelper();
+
+    ZPNotificationService notiZpNotificationService();
 
     FriendStore.Repository friendRepository();
 
