@@ -34,8 +34,6 @@ public interface ITransferView extends ILoadDataView {
      */
     void updateReceiverInfo(String displayName, String avatar, String zalopayName);
 
-    void toggleAmountError(String error);
-
     void setInitialValue(long currentAmount, String currentMessage);
 
     void showDialogThenClose(String content, String title, int dialogType);

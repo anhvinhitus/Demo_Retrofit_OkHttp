@@ -2,18 +2,16 @@ package vn.com.vng.zalopay.transfer.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import org.parceler.Parcels;
@@ -29,9 +27,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ImageLoader;
-import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -66,31 +64,19 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @BindView(R.id.tvZaloPayName)
     TextView mTextViewZaloPayName;
 
-    @BindView(R.id.textInputAmount)
-    TextInputLayout textInputAmount;
-
     @BindView(R.id.edtAmount)
-    EditText edtAmount;
+    MoneyEditText edtAmount;
 
     @BindView(R.id.edtTransferMsg)
-    EditText edtTransferMsg;
+    ZPEditText edtTransferMsg;
 
     @BindView(R.id.btnContinue)
     View btnContinue;
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        mPresenter.doTransfer();
-    }
-
-    @Override
-    public void toggleAmountError(String error) {
-        if (!TextUtils.isEmpty(error)) {
-            textInputAmount.setErrorEnabled(true);
-            textInputAmount.setError(error);
-        } else {
-            textInputAmount.setErrorEnabled(false);
-            textInputAmount.setError(null);
+        if (edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId())) {
+            mPresenter.doTransfer(edtAmount.getAmount());
         }
     }
 
@@ -101,7 +87,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         }
         if (currentAmount > 0) {
             edtAmount.setText(String.valueOf(currentAmount));
-            edtAmount.setSelection(edtAmount.getText().toString().length());
+            edtAmount.setSelection(edtAmount.length());
         }
     }
 
@@ -118,11 +104,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
             super.showWarningDialog(message, cancelText, onClickCancel);
         }
-    }
-
-    @Override
-    public void setEnableBtnContinue(boolean isEnable) {
-        btnContinue.setEnabled(isEnable);
     }
 
     /**
@@ -156,6 +137,14 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     }
 
+
+    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = R.id.edtAmount)
+    public void OnAfterAmountChanged(Editable s) {
+        Timber.d("OnTextChangedAmount %s", edtAmount.isValid());
+        setEnableBtnContinue(edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId()));
+    }
+
+
     private void setZaloPayName(String zalopayName) {
         if (TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setVisibility(View.INVISIBLE);
@@ -187,10 +176,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             return;
         }
         tvDisplayName.setText(displayName);
-    }
-
-    public TransferFragment() {
-        // Required empty public constructor
     }
 
     public static TransferFragment newInstance(Bundle bundle) {
@@ -231,13 +216,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                 argument.getString(Constants.ARG_MESSAGE));
 
         mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
-
-        edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
-            @Override
-            public void onValueUpdate(long value) {
-                mPresenter.updateAmount(value);
-            }
-        });
 
         rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
             @Override
@@ -294,6 +272,13 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     @Override
+    public void setEnableBtnContinue(boolean isEnable) {
+        if (btnContinue != null) {
+            btnContinue.setEnabled(isEnable);
+        }
+    }
+
+    @Override
     public void confirmTransferUnRegistryZaloPay() {
         showConfirmDialog("Người nhận chưa đăng ký sử dụng Zalo Pay. Bạn có muốn tiếp tục chuyển tiền không?",
                 getString(R.string.btn_confirm), getString(R.string.btn_cancel), new ZPWOnEventConfirmDialogListener() {
@@ -308,7 +293,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                             return;
                         }
                         mPresenter.transferMoney();
-                        setEnableBtnContinue(false);
                     }
                 });
     }

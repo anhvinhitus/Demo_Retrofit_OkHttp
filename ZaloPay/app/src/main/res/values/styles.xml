@@ -190,6 +190,22 @@
         <item name="roundAsCircle">false</item>
     </style>
 
+    <style name="ZaloPayEditText">
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="zlp_autoValidate">true</item>
+        <item name="zlp_checkCharactersCountAtBeginning">false</item>
+        <item name="zlp_clearButton">true</item>
+        <item name="zlp_floatingLabel">highlight</item>
+        <item name="android:maxLength">1</item>
+        <item name="zlp_paddingLeftLine">0dp</item>
+        <item name="zlp_textColorHint">@color/hint</item>
+        <item name="zlp_underlineColor">@color/hint</item>
+        <item name="zlp_validateOnFocusLost">true</item>
+    </style>
+
     <!--  fresco:roundedCornerRadius="5dp"
    fresco:roundBottomLeft="false"
    fresco:roundBottomRight="false"

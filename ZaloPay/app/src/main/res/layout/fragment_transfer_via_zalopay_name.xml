@@ -25,36 +25,17 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:background="@color/white">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputAccountName"
+                <com.zalopay.ui.widget.edittext.ZPEditText
+                    android:id="@+id/edtAccountName"
+                    style="@style/ZaloPayEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/spacing.small"
                     android:layout_marginTop="@dimen/spacing.medium.t"
-                    android:orientation="vertical"
-                    app:errorEnabled="false">
-
-                    <vn.com.vng.zalopay.ui.widget.ClearableEditText
-                        android:id="@+id/edtAccountName"
-                        style="@style/TextView.Item.Main"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        android:ellipsize="end"
-                        android:gravity="bottom"
-                        android:hint="@string/input.account.zalo.pay"
-                        android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
-                        android:maxLength="@integer/max_length_zalopay_name"
-                        android:maxLines="1"
-                        android:paddingBottom="@dimen/spacing.tiny"
-                        android:paddingTop="@dimen/spacing.tiny"
-                        android:singleLine="true" />
-                </android.support.design.widget.TextInputLayout>
+                    android:hint="@string/input.account.zalo.pay"
+                    android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
+                    android:maxLength="@integer/max_length_zalopay_name" />
             </FrameLayout>
 
             <View

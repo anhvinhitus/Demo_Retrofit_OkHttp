@@ -29,18 +29,18 @@ public class TransferRepository implements TransferStore.Repository {
 
     @Override
     public Observable<Boolean> append(RecentTransaction item, int transactionType) {
-        TransferRecent transferRecent = new TransferRecent(
-                item.getZaloPayId(),
-                item.getZaloPayName(),
-                item.getDisplayName(),
-                item.getAvatar(),
-                item.getPhoneNumber(),
-                transactionType,
-                item.amount,
-                item.message,
-                System.currentTimeMillis());
-
         return ObservableHelper.makeObservable(() -> {
+            TransferRecent transferRecent = new TransferRecent(
+                    item.zaloPayId,
+                    item.zaloPayName,
+                    item.displayName,
+                    item.avatar,
+                    item.phoneNumber,
+                    transactionType,
+                    item.amount,
+                    item.message,
+                    System.currentTimeMillis());
+
             mLocalStorage.append(transferRecent);
             return Boolean.TRUE;
         });
@@ -55,7 +55,6 @@ public class TransferRepository implements TransferStore.Repository {
                     item.getDisplayName(),
                     item.getAvatar(),
                     item.getPhoneNumber(),
-                    item.getTransferType(),
                     item.getAmount(),
                     item.getMessage());
         }

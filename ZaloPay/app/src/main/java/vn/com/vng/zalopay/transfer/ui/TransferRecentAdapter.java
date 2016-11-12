@@ -95,11 +95,11 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
         }
 
         private void bindView(RecentTransaction item) {
-            loadImage(mImgAvatar, item.getAvatar());
-            mTvDisplayName.setText(item.getDisplayName());
+            loadImage(mImgAvatar, item.avatar);
+            mTvDisplayName.setText(item.displayName);
 
-            String phone = PhoneUtil.formatPhoneNumber(item.getPhoneNumber());
-            String zaloPayName = item.getZaloPayName();
+            String phone = PhoneUtil.formatPhoneNumber(item.phoneNumber);
+            String zaloPayName = item.zaloPayName;
 
             if (!TextUtils.isEmpty(zaloPayName)) {
                 mTvPhone.setText(String.format(context.getString(R.string.account_format), zaloPayName));

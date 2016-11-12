@@ -15,7 +15,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -43,6 +42,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
+import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -55,7 +55,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by longlv on 13/06/2016.
  * Controller for transfer money
  */
-public class TransferPresenter extends BaseUserPresenter implements TransferMoneyPresenter {
+public class TransferPresenter extends BaseUserPresenter implements IPresenter<ITransferView> {
 
     private ITransferView mView;
     private PaymentWrapper paymentWrapper;
@@ -211,9 +211,9 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
         mTransaction.zaloPayName = userMapZaloAndZaloPay.getZaloPayName();
         mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
-        mView.updateReceiverInfo(mTransaction.getDisplayName(),
-                mTransaction.getAvatar(),
-                mTransaction.getZaloPayName());
+        mView.updateReceiverInfo(mTransaction.displayName,
+                mTransaction.avatar,
+                mTransaction.zaloPayName);
 
         checkShowBtnContinue();
     }
@@ -262,7 +262,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
             Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
                     mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
-                    "1;" + mTransaction.getZaloPayId(),
+                    "1;" + mTransaction.zaloPayId,
                     mTransaction.message,
                     mTransaction.displayName)
                     .subscribeOn(Schedulers.io())
@@ -309,7 +309,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.d("money transfer order: " + order.getItem());
-        paymentWrapper.transfer(order, mTransaction.getDisplayName(), mTransaction.getAvatar(), mTransaction.getZaloPayName(), mTransaction.getZaloPayName());
+        paymentWrapper.transfer(order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName);
         hideLoading();
         mView.setEnableBtnContinue(true);
     }
@@ -326,9 +326,7 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                     .subscribe(new DefaultSubscriber<Boolean>());
 
         } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) {
-                e.printStackTrace();
-            }
+            Timber.d(e, "saveTransferRecentToDB");
         }
     }
 
@@ -359,28 +357,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
     }
 
     /**
-     * Update money amount as user input
-     *
-     * @param amount Money amount
-     */
-    @Override
-    public void updateAmount(long amount) {
-        mTransaction.amount = amount;
-        if (mView == null) {
-            return;
-        }
-
-        mView.toggleAmountError(null);
-        isValidMaxAmount();
-        checkShowBtnContinue();
-    }
-
-    /**
      * Update message as user input
      *
      * @param message message
      */
-    @Override
     public void updateMessage(String message) {
         mTransaction.message = message;
     }
@@ -391,20 +371,24 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
      * + Call api to create money transfer order
      * + Call SDK to initiate payment process
      */
-    @Override
-    public void doTransfer() {
+
+    public String getZaloPayId() {
+        if (mTransaction != null) {
+            return mTransaction.zaloPayId;
+        }
+        return null;
+    }
+
+    public void doTransfer(long amount) {
         if (mTransaction == null) {
             return;
         }
+        mTransaction.amount = amount;
 
         if (user.zaloPayId.equals(mTransaction.zaloPayId)) {
             if (mView != null) {
                 showError(applicationContext.getString(R.string.exception_transfer_for_self));
             }
-            return;
-        }
-
-        if (!isValidAmount()) {
             return;
         }
 
@@ -420,32 +404,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         }
     }
 
-
-    private boolean isValidMinAmount() {
-        if (mTransaction.amount < mMinAmount) {
-            if (mView != null) {
-                mView.toggleAmountError(mValidMinAmount);
-            }
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isValidMaxAmount() {
-        if (mTransaction.amount > mMaxAmount) {
-            if (mView != null) {
-                mView.toggleAmountError(mValidMaxAmount);
-            }
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isValidAmount() {
-        return isValidMinAmount() && isValidMaxAmount();
-    }
-
-    @Override
     public void onViewCreated() {
         if (mTransaction == null) {
             Timber.e("Transaction is still NULL");
@@ -454,17 +412,16 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
 
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            Timber.d("Empty ZaloPayID, try to convert from zaloid -> zalopayId");
-            getUserMapping(mTransaction.getZaloId());
+            getUserMapping(mTransaction.zaloId);
         }
 
         initLimitAmount();
 
-        mView.setReceiverInfo(mTransaction.getDisplayName(),
-                mTransaction.getAvatar(),
-                mTransaction.getZaloPayName());
+        mView.setReceiverInfo(mTransaction.displayName,
+                mTransaction.avatar,
+                mTransaction.zaloPayName);
 
-        if (TextUtils.isEmpty(mTransaction.getDisplayName()) || TextUtils.isEmpty(mTransaction.getAvatar())) {
+        if (TextUtils.isEmpty(mTransaction.displayName) || TextUtils.isEmpty(mTransaction.avatar)) {
             Timber.d("begin get user info");
             showLoading();
             Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
@@ -522,7 +479,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         mView.setInitialValue(mTransaction.amount, mTransaction.message);
     }
 
-    @Override
     public void initView(ZaloFriend zaloFriend, RecentTransaction transaction, Long amount, String message) {
         Timber.d("initView with zaloFriend: %s, transaction: %s, amount: %s, message: %s",
                 zaloFriend == null ? "null" : "NOT null",
@@ -548,7 +504,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         }
     }
 
-    @Override
     public void navigateBack() {
         if (mView == null) {
             return;
@@ -564,7 +519,6 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         }
     }
 
-    @Override
     public void setTransferMode(int mode) {
         mMoneyTransferMode = mode;
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {

@@ -3,10 +3,12 @@ package vn.com.vng.zalopay.transfer.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
 import android.view.View;
+
+import com.zalopay.ui.widget.edittext.ZPEditText;
+import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
 import org.parceler.Parcels;
 
@@ -23,6 +25,8 @@ import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
+import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
+import vn.com.vng.zalopay.ui.widget.validate.SpecialCharactersValidate;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -51,9 +55,6 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
         return R.layout.fragment_transfer_via_zalopay_name;
     }
 
-    @BindView(R.id.textInputAccountName)
-    TextInputLayout textInputAccountName;
-
     @Inject
     TransferViaZaloPayNamePresenter presenter;
 
@@ -62,6 +63,9 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
     @BindView(R.id.btnContinue)
     View btnContinue;
+
+    @BindView(R.id.edtAccountName)
+    ZPEditText mEdtAccountNameView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +76,14 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        mEdtAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
+        mEdtAccountNameView.addValidator(new ZPEditTextValidate(getString(R.string.exception_transfer_for_self)) {
+            @Override
+            public boolean isValid(@NonNull CharSequence s) {
+                return !s.toString().equals(user.zalopayname);
+            }
+        });
+        mEdtAccountNameView.addValidator(new SpecialCharactersValidate(getString(R.string.exception_account_name_special_char)));
         btnContinue.setEnabled(false);
     }
 
@@ -83,17 +95,11 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     }
 
     public void showLoading() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
-            mProgressDialog.setCancelable(false);
-        }
-        mProgressDialog.show();
+        showProgressDialog();
     }
 
     public void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
+        hideProgressDialog();
     }
 
 
@@ -128,78 +134,16 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
     @Override
     public void showError(String message) {
-        textInputAccountName.setErrorEnabled(!TextUtils.isEmpty(message));
-        textInputAccountName.setError(message);
+        mEdtAccountNameView.setError(message);
     }
-
-    private SweetAlertDialog mProgressDialog;
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        String zaloPayName;
-        try {
-            zaloPayName = textInputAccountName.getEditText().getText().toString().trim();
-            Timber.d("name %s", zaloPayName);
-        } catch (Throwable t) {
-            Timber.i("Exception while getting ZaloPayName");
-            zaloPayName = "";
-        }
-
-        boolean isValidExt = isValidExt(zaloPayName);
-        if (!isValidExt) {
-            return;
-        }
-        boolean isValid = isValidChanged(zaloPayName);
-        if (!isValid) {
-            return;
-        }
-
-        presenter.getUserInfo(zaloPayName);
+        presenter.getUserInfo(mEdtAccountNameView.getText().toString().trim());
     }
 
-    @OnTextChanged(R.id.edtAccountName)
+    @OnTextChanged(value = R.id.edtAccountName, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChanged(CharSequence s) {
-        if (s == null) {
-            showError(getContext().getString(R.string.exception_empty_account));
-            btnContinue.setEnabled(false);
-            return;
-        }
-        boolean isValid = isValidChanged(s.toString());
-
-        Timber.d("onTextChanged: s %s isValid %s", s, isValid);
-
-        if (isValid) {
-            showError(null);
-        }
-
-        btnContinue.setEnabled(isValid && ValidateUtil.isValidLengthZPName(s.toString()));
+        btnContinue.setEnabled(mEdtAccountNameView.isValid());
     }
-
-    private boolean isValidExt(String s) {
-        if (TextUtils.isEmpty(s)) {
-            showError(getContext().getString(R.string.exception_empty_account));
-            return false;
-        } else if (!ValidateUtil.isValidLengthZPName(s)) {
-            showError(getContext().getString(R.string.exception_account_name_length));
-            return false;
-        } else if (s.equalsIgnoreCase(user.zalopayname)) {
-            showError(getContext().getString(R.string.exception_transfer_for_self));
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean isValidChanged(String s) {
-        if (s.indexOf(" ") > 0) {
-            showError(getContext().getString(R.string.exception_account_name_with_space));
-            return false;
-        } else if (!ValidateUtil.isValidZaloPayName(s)) {
-            showError(getContext().getString(R.string.exception_account_name_special_char));
-            return false;
-        }
-
-        return true;
-    }
-
 }
