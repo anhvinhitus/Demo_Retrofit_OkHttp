@@ -27,8 +27,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
 import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
 import vn.com.vng.zalopay.ui.widget.validate.SpecialCharactersValidate;
-import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 9/14/16.

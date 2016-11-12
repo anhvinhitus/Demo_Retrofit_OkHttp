@@ -61,10 +61,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     private PaymentWrapper paymentWrapper;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private long mMinAmount;
-    private long mMaxAmount;
-    private String mValidMinAmount;
-    private String mValidMaxAmount;
+
     private RecentTransaction mTransaction;
     private int mMoneyTransferMode;
     private boolean mIsUserZaloPay = true;
@@ -435,6 +432,8 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void initLimitAmount() {
+        long mMinAmount = 0;
+        long mMaxAmount = 0;
         try {
             mMinAmount = CShareData.getInstance().getMinTranferValue();
             mMaxAmount = CShareData.getInstance().getMaxTranferValue();
@@ -447,10 +446,11 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         if (mMaxAmount <= 0) {
             mMaxAmount = Constants.MAX_TRANSFER_MONEY;
         }
-        mValidMinAmount = String.format(mView.getContext().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(mMinAmount, true));
-        mValidMaxAmount = String.format(mView.getContext().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(mMaxAmount, true));
+
+        if (mView != null) {
+            mView.setMinMaxMoney(mMinAmount, mMaxAmount);
+        }
+
     }
 
     private void checkShowBtnContinue() {

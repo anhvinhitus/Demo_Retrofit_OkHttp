@@ -9,18 +9,17 @@ import android.util.AttributeSet;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by hieuvm on 11/12/16.
  */
 
 public class MoneyEditText extends ZPEditText {
-
-    private final int MIN_AMOUNT = Constants.MIN_TRANSFER_MONEY;
-    private final int MAX_AMOUNT = Constants.MAX_TRANSFER_MONEY;
 
     private long mAmount;
 
@@ -45,20 +44,26 @@ public class MoneyEditText extends ZPEditText {
         }
 
         initAmountWatcher();
+    }
 
-        addValidator(new ZPEditTextValidate(String.format(context.getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(MIN_AMOUNT, true))) {
+    public void setMinMaxMoney(final long minMoney, final long maxMoney) {
+        clearValidators();
+        final long _minMoney = minMoney > 0 ? minMoney : Constants.MIN_TRANSFER_MONEY;
+        final long _maxMoney = maxMoney > 0 ? maxMoney : Constants.MAX_TRANSFER_MONEY;
+
+        addValidator(new ZPEditTextValidate(String.format(getContext().getString(R.string.min_money),
+                CurrencyUtil.formatCurrency(_minMoney, true))) {
             @Override
             public boolean isValid(@NonNull CharSequence s) {
-                return mAmount >= MIN_AMOUNT;
+                return mAmount >= _minMoney;
             }
         });
 
-        addValidator(new ZPEditTextValidate(String.format(context.getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(MAX_AMOUNT, true))) {
+        addValidator(new ZPEditTextValidate(String.format(getContext().getString(R.string.max_money),
+                CurrencyUtil.formatCurrency(_maxMoney, true))) {
             @Override
             public boolean isValid(@NonNull CharSequence s) {
-                return mAmount <= MAX_AMOUNT;
+                return mAmount <= _maxMoney;
             }
         });
     }

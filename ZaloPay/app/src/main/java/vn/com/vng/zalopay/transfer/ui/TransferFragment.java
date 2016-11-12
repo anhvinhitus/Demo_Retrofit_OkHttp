@@ -266,6 +266,13 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     @Override
+    public void setMinMaxMoney(long min, long max) {
+        if (edtAmount != null) {
+            edtAmount.setMinMaxMoney(min, max);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();

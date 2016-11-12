@@ -20,4 +20,9 @@
             <enum name="strokeRipple" value="1" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="MoneyEditText">
+        <attr name="min_money" format="integer" />
+        <attr name="max_money" format="integer" />
+    </declare-styleable>
+
 </resources>

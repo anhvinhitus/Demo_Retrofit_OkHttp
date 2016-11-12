@@ -20,7 +20,7 @@ public interface ITransferView extends ILoadDataView {
      * Set Receiver info when view had created
      *
      * @param displayName displayName
-     * @param avatar avatar
+     * @param avatar      avatar
      * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
      */
     void setReceiverInfo(String displayName, String avatar, String zalopayName);
@@ -29,7 +29,7 @@ public interface ITransferView extends ILoadDataView {
      * Set Receiver info when server return user info
      *
      * @param displayName displayName
-     * @param avatar avatar
+     * @param avatar      avatar
      * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
      */
     void updateReceiverInfo(String displayName, String avatar, String zalopayName);
@@ -39,4 +39,6 @@ public interface ITransferView extends ILoadDataView {
     void showDialogThenClose(String content, String title, int dialogType);
 
     void confirmTransferUnRegistryZaloPay();
+
+    void setMinMaxMoney(long min, long max);
 }
