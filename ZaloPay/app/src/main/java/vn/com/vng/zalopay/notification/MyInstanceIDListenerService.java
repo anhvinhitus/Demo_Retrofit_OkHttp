@@ -16,9 +16,10 @@
 
 package vn.com.vng.zalopay.notification;
 
-import android.content.Intent;
-
 import com.google.android.gms.iid.InstanceIDListenerService;
+import com.zing.zalo.zalosdk.core.eventbus.EventBus;
+
+import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 
 public class MyInstanceIDListenerService extends InstanceIDListenerService {
 
@@ -33,8 +34,9 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
     @Override
     public void onTokenRefresh() {
         // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-        Intent intent = new Intent(this, ZPNotificationService.class);
-        startService(intent);
+        EventBus.getDefault().postSticky(new TokenGCMRefreshEvent());
+//        Intent intent = new Intent(this, ZPNotificationService.class);
+//        startService(intent);
     }
     // [END refresh_token]
 }

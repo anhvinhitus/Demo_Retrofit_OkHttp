@@ -1,9 +1,6 @@
 package vn.com.vng.zalopay.notification;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
+import android.content.Context;
 
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -35,24 +32,27 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
-public class ZPNotificationService extends Service implements OnReceiverMessageListener {
+public class ZPNotificationService implements OnReceiverMessageListener {
 
     private static final String[] TOPICS = {"global"};
 
     /*Server API Key: AIzaSyCweupE81mBm3_m8VOoFTUbuhBF82r_GwI
     Sender ID: 386726389536*/
 
-    public ZPNotificationService() {
-    }
+    private boolean mIsSubscribeGcm = false;
 
     @Inject
-    EventBus eventBus;
+    Context mContext;
 
     @Inject
-    UserConfig userConfig;
+    EventBus mEventBus;
+
+    @Inject
+    UserConfig mUserConfig;
 
     @Inject
     Gson mGson;
@@ -65,27 +65,17 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     @Inject
     ThreadExecutor mExecutor;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    @Inject
+    public ZPNotificationService() {
+
     }
 
-    private boolean mIsSubscribeGcm = false;
+    public void startNotificationService() {
+        Timber.d("startNotificationService");
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Timber.d("onCreate");
-        doInject();
-
-        eventBus.register(this);
-        Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("onStartCommand: flags %s startId %s", flags, startId);
         ensureInitializeNetworkConnection();
 
         mExecutor.execute(new Runnable() {
@@ -94,24 +84,21 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
                 connectToServer();
             }
         });
-
-        return START_NOT_STICKY;
     }
 
-    @Override
-    public void onDestroy() {
-        Timber.d("onDestroy");
+    public void destroy() {
+        Timber.d("destroy");
         mIsSubscribeGcm = false;
-        eventBus.unregister(this);
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
         if (mWsConnection != null) {
             mWsConnection.disconnect();
             mWsConnection.clearReceiverListener();
             mWsConnection.cleanup();
             mWsConnection = null;
         }
-        super.onDestroy();
     }
-
 
     @Override
     protected void finalize() throws Throwable {
@@ -121,12 +108,15 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
     }
 
     private void connectToServer() {
+        if (mIsSubscribeGcm) {
+            return;
+        }
         String token = null;
 
         try {
-            InstanceID instanceID = InstanceID.getInstance(this);
+            InstanceID instanceID = InstanceID.getInstance(mContext);
 //            Timber.d("onHandleIntent: senderId %s", getString(R.string.gcm_defaultSenderId));
-            token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+            token = instanceID.getToken(mContext.getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
             subscribeTopics(token);
@@ -141,7 +131,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private void connect(String token) {
         Timber.d("connect with token %s", token);
-        if (!NetworkHelper.isNetworkAvailable(this)) {
+        if (!NetworkHelper.isNetworkAvailable(mContext)) {
             Timber.d("Skip create connection, since OS reports no network connection");
             return;
         }
@@ -195,10 +185,7 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
 
     private void subscribeTopics(String token) throws IOException {
         Timber.d("subscribeTopics mIsSubscribeGcm [%s] token [%s]", mIsSubscribeGcm, token);
-        if (mIsSubscribeGcm) {
-            return;
-        }
-        GcmPubSub pubSub = GcmPubSub.getInstance(this);
+        GcmPubSub pubSub = GcmPubSub.getInstance(mContext);
         for (String topic : TOPICS) {
             pubSub.subscribe(token, "/topics/" + topic, null);
         }
@@ -228,38 +215,26 @@ public class ZPNotificationService extends Service implements OnReceiverMessageL
         }
     }
 
-
-    private boolean doInject() {
-        createUserComponent();
-        if (getUserComponent() != null) {
-            getUserComponent().inject(this);
-        } else {
-            stopSelf();
-            return false;
-        }
-
-        return true;
-    }
-
-    private void createUserComponent() {
-        Timber.d(" user component %s", getUserComponent());
-        if (getUserComponent() != null) {
-            return;
-        }
-
-        UserConfig userConfig = getAppComponent().userConfig();
-        Timber.d(" mUserConfig %s", userConfig.isSignIn());
-        if (userConfig.isSignIn()) {
-            userConfig.loadConfig();
-            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
+    public void onTokenGcmRefresh(TokenGCMRefreshEvent event) {
+        Timber.d("on Token GCM Refresh event %s", event);
+        TokenGCMRefreshEvent stickyEvent = mEventBus.getStickyEvent(TokenGCMRefreshEvent.class);
+        // Better check that an event was actually posted before
+        if(stickyEvent != null) {
+            // "Consume" the sticky event
+            mEventBus.removeStickyEvent(stickyEvent);
+            mIsSubscribeGcm = false;
+            startNotificationService();
         }
     }
 
     private void ensureInitializeNetworkConnection() {
         if (mWsConnection == null) {
-            mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, this,
-                    new MessageParser(mGson), userConfig);
+            mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, mContext,
+                    new MessageParser(mGson), mUserConfig);
             mWsConnection.addReceiverListener(this);
+        } else {
+
         }
     }
 

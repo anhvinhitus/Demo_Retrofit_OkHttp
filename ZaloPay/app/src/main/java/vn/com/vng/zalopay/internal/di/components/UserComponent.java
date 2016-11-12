@@ -25,27 +25,25 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
-import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
-import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
-import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
-import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
-import vn.com.vng.zalopay.webview.ui.WebViewFragment;
-import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
 import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
+import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.internal.di.modules.UserNotificationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
 import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
+import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
+import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
@@ -62,10 +60,11 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
-import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
-import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
+import vn.com.vng.zalopay.webview.ui.WebViewFragment;
+import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
 
@@ -160,8 +159,6 @@ public interface UserComponent {
     void inject(ScanSoundFragment fragment);
 
     void inject(QRCodeFragment f);
-
-    void inject(ZPNotificationService service);
 
     void inject(UpdateProfile3Fragment f);
 

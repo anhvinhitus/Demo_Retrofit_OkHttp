@@ -337,11 +337,6 @@
         <!-- [END instanceId_listener] -->
 
         <service
-            android:name=".notification.ZPNotificationService"
-            android:exported="false"
-            android:label="@string/app_name" />
-
-        <service
             android:name=".service.DownloadService"
             android:exported="false"
             android:label="DownloadService" />

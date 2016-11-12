@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.service;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
@@ -24,7 +23,6 @@ import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -68,8 +66,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
         clearMerchant();
 
         navigator.setLastTimeCheckPin(0);
-
-        applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
 
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
 

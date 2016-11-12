@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
@@ -84,6 +85,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private User mUser;
     private ThreadExecutor mThreadExecutor;
     private FriendStore.Repository mmFriendRepository;
+
+    @Inject
+    ZPNotificationService notificationService;
 
     @Inject
     public MainPresenter(User user, EventBus eventBus,
@@ -143,7 +147,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
     }
 
-
     private void sendCrashUserInformation(User user) {
         if (user == null) {
             return;
@@ -170,6 +173,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void resume() {
+        notificationService.startNotificationService();
     }
 
     @Override
@@ -178,6 +182,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroy() {
+        notificationService.destroy();
         CShareData.dispose();
     }
 

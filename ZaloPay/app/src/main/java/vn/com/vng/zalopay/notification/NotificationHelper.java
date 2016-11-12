@@ -62,8 +62,7 @@ public class NotificationHelper {
                               RedPacketStore.Repository redPacketRepository,
                               TransactionStore.Repository transactionRepository,
                               BalanceStore.Repository balanceRepository,
-                              EventBus eventBus
-    ) {
+                              EventBus eventBus) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
         this.mContext = applicationContext;
@@ -182,7 +181,9 @@ public class NotificationHelper {
     }
 
     private void shouldUpdateTransAndBalance(NotificationData notify) {
+        Timber.d("should Update Trans And Balance");
         if (NotificationType.isTransactionNotification(notify.notificationtype)) {
+            Timber.d("start update Trans And Balance");
             this.updateTransaction();
             this.updateBalance();
         }

@@ -24,7 +24,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -293,11 +292,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-    private void startZaloPayService() {
-        Intent intent = new Intent(this, ZPNotificationService.class);
-        startService(intent);
-    }
-
     @Override
     public void onPause() {
         Timber.i("MainActivity is pausing");
@@ -309,7 +303,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     public void onResume() {
         Timber.i("MainActivity is resuming");
         super.onResume();
-        startZaloPayService();
         presenter.resume();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
         if (message == null) {
