@@ -132,8 +132,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
                 <View
@@ -147,7 +145,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_amount"
-                    android:inputType="number"
                     android:maxLength="@integer/max_length_edittext_money"
                     app:zlp_paddingLeftLine="16dp" />
 

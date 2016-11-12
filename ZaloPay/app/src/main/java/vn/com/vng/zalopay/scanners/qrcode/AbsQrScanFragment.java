@@ -165,13 +165,9 @@ abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.S
     @Override
     public void cameraError(Exception error) {
         Timber.d(error, "cameraError");
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                showCameraError(R.string.exception_open_camera_not_allow);
-                return;
-            }
+        if (!isPermissionGranted(Manifest.permission.CAMERA)) {
+            showCameraError(R.string.exception_open_camera_not_allow);
+            return;
         }
         showCameraError(R.string.exception_open_camera_fail);
     }

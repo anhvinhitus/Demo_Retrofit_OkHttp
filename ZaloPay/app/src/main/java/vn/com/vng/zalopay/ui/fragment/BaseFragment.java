@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
@@ -34,7 +35,6 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 3/24/16.
- *
  */
 public abstract class BaseFragment extends Fragment {
     protected abstract void setupFragmentComponent();
@@ -154,6 +154,11 @@ public abstract class BaseFragment extends Fragment {
             }
         }
         return hasPermission;
+    }
+
+    protected boolean isPermissionGranted(String permissions) {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                ContextCompat.checkSelfPermission(getContext(), permissions) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void checkAndRequestReadSMSPermission() {

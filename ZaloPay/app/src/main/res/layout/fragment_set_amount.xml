@@ -22,68 +22,36 @@
                 android:layout_height="@dimen/separate"
                 android:background="@color/separate" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputAmount"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:textColorHint="@color/hint"
-                app:hintAnimationEnabled="false">
+                android:background="@color/white"
+                android:orientation="vertical">
 
-                <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/separate"
+                    android:background="@color/separate" />
+
+                <vn.com.vng.zalopay.ui.widget.MoneyEditText
                     android:id="@+id/edtAmount"
+                    style="@style/ZaloPayEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:hint="@string/amount"
-                    android:inputType="numberDecimal"
+                    android:hint="@string/hint_amount"
                     android:maxLength="@integer/max_length_edittext_money"
-                    android:maxLines="1"
-                    android:minHeight="44dp"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
+                    app:zlp_paddingLeftLine="16dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:layout_marginLeft="16dp"
-                android:background="@color/separate" />
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:textColorHint="@color/hint"
-                app:errorEnabled="false"
-                app:hintAnimationEnabled="false">
-
-                <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                <com.zalopay.ui.widget.edittext.ZPEditText
+                    android:id="@+id/edtNote"
+                    style="@style/ZaloPayEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:hint="@string/note"
-                    android:inputType="text"
-                    android:maxLength="36"
-                    android:maxLines="2"
-                    android:minHeight="44dp"
-                    android:singleLine="true"
-                    android:textColorHint="@color/hint" />
+                    android:hint="@string/hint_message"
+                    android:inputType="text|textCapWords"
+                    android:maxLength="@integer/max_length_message" />
 
-            </android.support.design.widget.TextInputLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:background="@color/separate" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

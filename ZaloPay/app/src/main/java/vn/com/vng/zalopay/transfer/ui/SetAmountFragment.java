@@ -4,20 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
-import android.widget.EditText;
+
+import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
+import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -35,12 +33,6 @@ public class SetAmountFragment extends BaseFragment {
         return fragment;
     }
 
-    public long mAmount;
-    private long mMinAmount;
-    private long mMaxAmount;
-    private String mValidMinAmount;
-    private String mValidMaxAmount;
-
     @Override
     protected void setupFragmentComponent() {
     }
@@ -50,42 +42,25 @@ public class SetAmountFragment extends BaseFragment {
         return R.layout.fragment_set_amount;
     }
 
-    @BindView(R.id.textInputAmount)
-    TextInputLayout textInputAmountView;
+    @BindView(R.id.edtAmount)
+    MoneyEditText mAmountView;
 
-    @BindView(R.id.textInputMessage)
-    TextInputLayout textInputMessageView;
+    @BindView(R.id.edtNote)
+    ZPEditText mNoteView;
 
     @BindView(R.id.btnUpdate)
     View mBtnContinueView;
 
-    @OnTextChanged(R.id.edtAmount)
-    public void onAmountChanged() {
-
-    }
-
-    @OnTextChanged(R.id.edtAmount)
+    @OnTextChanged(value = R.id.edtAmount, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChanged(CharSequence s) {
-        mBtnContinueView.setEnabled(s.length() > 0);
+        mBtnContinueView.setEnabled(mAmountView.isValid());
     }
 
     @OnClick(R.id.btnUpdate)
     public void onClickUpdate() {
-        if (!isValidAmount()) {
-            textInputAmountView.requestFocus();
-            return;
-        } else {
-            hideAmountError();
-        }
-
         Intent data = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putLong("amount", mAmount);
-        EditText editText = textInputMessageView.getEditText();
-        if (editText != null) {
-            bundle.putString("message", editText.getText().toString());
-        }
-        data.putExtras(bundle);
+        data.putExtra("amount", mAmountView.getAmount());
+        data.putExtra("message", mNoteView.getText().toString());
         getActivity().setResult(Activity.RESULT_OK, data);
         getActivity().finish();
     }
@@ -99,26 +74,13 @@ public class SetAmountFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        EditText editText = textInputAmountView.getEditText();
-        if (editText != null) {
-            editText.addTextChangedListener(new VNDCurrencyTextWatcher(editText) {
-                @Override
-                public void onValueUpdate(long value) {
-                    Timber.d("onValueUpdate value [%s]", value);
-                    mAmount = value;
-                    if (isValidMaxAmount()) {
-                        hideAmountError();
-                    }
-
-                }
-            });
-        }
-        mBtnContinueView.setEnabled(false);
         initLimitAmount();
+        mBtnContinueView.setEnabled(mAmountView.isValid());
     }
 
     private void initLimitAmount() {
+        long mMinAmount = 0;
+        long mMaxAmount = 0;
         try {
             mMinAmount = CShareData.getInstance().getMinTranferValue();
             mMaxAmount = CShareData.getInstance().getMaxTranferValue();
@@ -131,48 +93,6 @@ public class SetAmountFragment extends BaseFragment {
         if (mMaxAmount <= 0) {
             mMaxAmount = Constants.MAX_TRANSFER_MONEY;
         }
-        mValidMinAmount = String.format(getContext().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(mMinAmount, true));
-        mValidMaxAmount = String.format(getContext().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(mMaxAmount, true));
-    }
-
-    private boolean isValidMinAmount() {
-        if (mAmount < mMinAmount) {
-            showAmountError(mValidMinAmount);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isValidMaxAmount() {
-        if (mAmount > mMaxAmount) {
-            showAmountError(mValidMaxAmount);
-            return false;
-        }
-        return true;
-    }
-
-    private void showAmountError(String error) {
-        if (textInputAmountView != null) {
-            textInputAmountView.requestFocus();
-            textInputAmountView.setError(error);
-        }
-    }
-
-    private void hideAmountError() {
-        if (textInputAmountView != null) {
-            textInputAmountView.setError(null);
-        }
-    }
-
-    private boolean isValidAmount() {
-        return isValidMinAmount() && isValidMaxAmount();
-    }
-
-    @Override
-    public void onDestroy() {
-        CShareData.dispose();
-        super.onDestroy();
+        mAmountView.setMinMaxMoney(mMinAmount, mMaxAmount);
     }
 }
