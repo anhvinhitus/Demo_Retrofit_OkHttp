@@ -48,6 +48,8 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @BindView(R.id.tvErrorMessage)
     TextView mErrorMessageCamera;
 
+    private boolean isExecutedOnce = false;
+
     @Override
     public int getResLayoutId() {
         return R.layout.fragment_qr_code;
@@ -116,13 +118,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         super.onResume();
         if (getUserVisibleHint()) {
             hideLoading();
-            super.start();
-        }
-    }
-
-    private void startAndCheckPermission() {
-        if (checkAndRequestPermission(Manifest.permission.CAMERA, Constants.Permission.REQUEST_CAMERA)) {
-            super.start();
+            startAndCheckPermissionOnce();
         }
     }
 
@@ -132,22 +128,26 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         pause();
     }
 
-    private boolean mIsVisibleToUser = false;
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        Timber.d("isVisibleToUser %s", isVisibleToUser);
-        if (isVisibleToUser) {
+    private void startAndCheckPermissionOnce() {
+        Timber.d("startAndCheckPermissionOnce: %s", isExecutedOnce);
+        if (!isExecutedOnce) {
+            isExecutedOnce = true;
             startAndCheckPermission();
         } else {
-            pause();
+            if (isPermissionGranted(Manifest.permission.CAMERA)) {
+                Timber.d("start without check permission");
+                start();
+            } else {
+                showCameraError(R.string.exception_open_camera_not_allow);
+            }
         }
-        mIsVisibleToUser = isVisibleToUser;
     }
 
-    public boolean isVisibleToUser() {
-        return mIsVisibleToUser;
+    private void startAndCheckPermission() {
+        Timber.d("start with check permission");
+        if (checkAndRequestPermission(Manifest.permission.CAMERA, Constants.Permission.REQUEST_CAMERA)) {
+            super.start();
+        }
     }
 
     @Override
@@ -158,6 +158,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
                 } else {
+                    showCameraError(R.string.exception_open_camera_not_allow);
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
                 }
             }
@@ -166,7 +167,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void onStartFragment() {
-        startAndCheckPermission();
+        resumeScanner();
     }
 
     @Override
@@ -176,11 +177,24 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     protected void showCameraError(int message) {
-        mErrorMessageCamera.setText(message);
+        if (mErrorMessageCamera != null) {
+            mErrorMessageCamera.setText(message);
+        }
     }
 
     @Override
     public void previewStarted() {
-        mErrorMessageCamera.setText(null);
+        super.previewStarted();
+        if (mErrorMessageCamera != null) {
+            mErrorMessageCamera.setText(null);
+        }
+    }
+
+    @Override
+    public void previewSized() {
+        super.previewSized();
+        if (mErrorMessageCamera != null) {
+            mErrorMessageCamera.setText(null);
+        }
     }
 }
