@@ -224,6 +224,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             // "Consume" the sticky event
             mEventBus.removeStickyEvent(stickyEvent);
             mIsSubscribeGcm = false;
+            mWsConnection.disconnect();
             startNotificationService();
         }
     }
