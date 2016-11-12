@@ -168,6 +168,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mCompositeSubscription);
         GlobalData.initApplication(null);
+        notificationService.destroy();
+        CShareData.dispose();
         this.homeView = null;
     }
 
@@ -182,8 +184,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroy() {
-        notificationService.destroy();
-        CShareData.dispose();
+
     }
 
     public void initialize() {
