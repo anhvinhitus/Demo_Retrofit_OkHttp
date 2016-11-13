@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.ref.WeakReference;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -82,7 +83,7 @@ public class WsConnection extends Connection {
         this.parser = parser;
         this.userConfig = config;
 //        mSocketClient = new NettyClient(host, port, new ConnectionListener());
-        mSocketClient = new TCPClient(host, port, new ConnectionListener());
+        mSocketClient = new TCPClient(host, port, new ConnectionListener(this));
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
@@ -301,100 +302,6 @@ public class WsConnection extends Connection {
         }
     }
 
-    private class ConnectionListener implements Listener {
-
-        @Override
-        public void onConnected() {
-            Timber.d("onConnected");
-            mState = State.Connected;
-            mNextConnectionState = NextState.RETRY_CONNECT;
-            //    numRetry = 0;
-            sendAuthentication();
-            mServerPongBus.send(1L);
-
-            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.CONNECTED));
-        }
-
-        @Override
-        public void onMessage(byte[] data) {
-            Timber.v("onReceived: %s bytes", data.length);
-            Event message = parser.parserMessage(data);
-            if (message == null) {
-                return;
-            }
-
-            ServerMessageType messageType = ServerMessageType.fromValue(message.getMsgType());
-            Timber.v("message.msgType %s", messageType);
-            boolean needFeedback = true;
-
-            if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
-                numRetry = 0;
-                postResult(message);
-                mServerPongBus.send(0L);
-            } else if (messageType == ServerMessageType.KICK_OUT_USER) {
-                needFeedback = false;
-                if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
-                    mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
-                } else {
-                    // kicked out 1 time, this time should disconnect
-                    mNextConnectionState = NextState.DISCONNECT;
-                }
-                doDisconnect();
-            } else if (messageType == ServerMessageType.PONG_CLIENT) {
-                needFeedback = false;
-                long currentTime = System.currentTimeMillis();
-                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
-                mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
-            } else {
-
-                if (messageType == ServerMessageType.RECOVERY_RESPONSE) {
-                    needFeedback = false;
-                }
-
-                postResult(message);
-                mServerPongBus.send(2L);
-            }
-
-            if (needFeedback) {
-                sendFeedbackStatus(message);
-            }
-        }
-
-        @Override
-        public void onDisconnected(ConnectionErrorCode code, String reason) {
-            Timber.d("onDisconnected %s", code);
-            mState = Connection.State.Disconnected;
-
-            if (mSocketClient != null) {
-                mSocketClient.disconnect();
-            }
-
-            Timber.d("Next expected network state: %s", mNextConnectionState);
-            if (mNextConnectionState == NextState.RETRY_CONNECT) {
-                scheduleReconnect();
-            }
-            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d("onError %s", e);
-            mState = Connection.State.Disconnected;
-
-            if (e instanceof SocketTimeoutException) {
-//            } else if (e instanceof ConnectTimeoutException) {
-            } else if (e instanceof ConnectException) {
-            } else if (e instanceof UnknownHostException) {
-            }
-
-            if (mNextConnectionState == NextState.RETRY_CONNECT) {
-                scheduleReconnect();
-            }
-            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
-        }
-    }
-
-
     private void scheduleReconnect() {
         if (!userConfig.hasCurrentUser()) {
             Timber.d("Don't have signed in user. Skip reconnect.");
@@ -409,5 +316,152 @@ public class WsConnection extends Connection {
         numRetry++;
         mCheckCountDown = numRetry % 10L;
         Timber.d("Try to reconnect after %s (seconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK, numRetry);
+    }
+
+    /**
+     * Handle socket connected event
+     */
+    private void handleOnConnected() {
+        Timber.d("onConnected");
+        mState = State.Connected;
+        mNextConnectionState = NextState.RETRY_CONNECT;
+        //    numRetry = 0;
+        sendAuthentication();
+        mServerPongBus.send(1L);
+
+        EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.CONNECTED));
+    }
+
+    /**
+     * Handle socket received message event
+     */
+    private void handleOnMessage(byte[] data) {
+        Timber.v("onReceived: %s bytes", data.length);
+
+        Event message = parser.parserMessage(data);
+        if (message == null) {
+            return;
+        }
+
+        ServerMessageType messageType = ServerMessageType.fromValue(message.getMsgType());
+        Timber.v("message.msgType %s", messageType);
+        boolean needFeedback = true;
+
+        if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
+            numRetry = 0;
+            postResult(message);
+            mServerPongBus.send(0L);
+        } else if (messageType == ServerMessageType.KICK_OUT_USER) {
+            needFeedback = false;
+            if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
+                mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
+            } else {
+                // kicked out 1 time, this time should disconnect
+                mNextConnectionState = NextState.DISCONNECT;
+            }
+            doDisconnect();
+        } else if (messageType == ServerMessageType.PONG_CLIENT) {
+            needFeedback = false;
+            long currentTime = System.currentTimeMillis();
+            Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
+            mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
+        } else {
+
+            if (messageType == ServerMessageType.RECOVERY_RESPONSE) {
+                needFeedback = false;
+            }
+
+            postResult(message);
+            mServerPongBus.send(2L);
+        }
+
+        if (needFeedback) {
+            sendFeedbackStatus(message);
+        }
+    }
+
+    /**
+     * Handle socket disconnected event
+     */
+    private void handleOnDisconnected(ConnectionErrorCode code, String reason) {
+        Timber.d("onDisconnected %s", code);
+        mState = Connection.State.Disconnected;
+
+        if (mSocketClient != null) {
+            mSocketClient.disconnect();
+        }
+
+        Timber.d("Next expected network state: %s", mNextConnectionState);
+        if (mNextConnectionState == NextState.RETRY_CONNECT) {
+            scheduleReconnect();
+        }
+        EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
+    }
+
+    /**
+     * Handle socket error event
+     */
+    private void handleOnError(Throwable e) {
+        Timber.d("onError %s", e);
+        mState = Connection.State.Disconnected;
+
+        if (e instanceof SocketTimeoutException) {
+//            } else if (e instanceof ConnectTimeoutException) {
+        } else if (e instanceof ConnectException) {
+        } else if (e instanceof UnknownHostException) {
+        }
+
+        if (mNextConnectionState == NextState.RETRY_CONNECT) {
+            scheduleReconnect();
+        }
+        EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
+    }
+
+    private static class ConnectionListener implements Listener {
+        private WeakReference<WsConnection> mConnection;
+
+        ConnectionListener(WsConnection connection) {
+            this.mConnection = new WeakReference<>(connection);
+        }
+
+        @Override
+        public void onConnected() {
+            if (mConnection.get() == null) {
+                Timber.i("WsConnection is NULL when receiving onConnected event");
+                return;
+            }
+
+            mConnection.get().handleOnConnected();
+        }
+
+        @Override
+        public void onMessage(byte[] data) {
+            if (mConnection.get() == null) {
+                Timber.i("WsConnection is NULL when receiving onMessage event");
+                return;
+            }
+
+            mConnection.get().handleOnMessage(data);
+        }
+
+        @Override
+        public void onDisconnected(ConnectionErrorCode code, String reason) {
+            if (mConnection.get() == null) {
+                Timber.i("WsConnection is NULL when receiving onDisconnected event");
+                return;
+            }
+
+            mConnection.get().handleOnDisconnected(code, reason);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (mConnection.get() == null) {
+                Timber.i("WsConnection is NULL when receiving onError event");
+                return;
+            }
+
+            mConnection.get().handleOnError(e);
+        }
     }
 }

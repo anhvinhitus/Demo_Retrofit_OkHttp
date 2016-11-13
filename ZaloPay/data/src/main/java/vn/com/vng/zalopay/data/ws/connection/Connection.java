@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,11 +118,22 @@ public abstract class Connection {
     }
 
 
-    private Handler messageHandler = new Handler(Looper.getMainLooper()) {
+    private Handler messageHandler = new MessageHandler(Looper.getMainLooper(), this);
+
+    private static class MessageHandler extends Handler {
+        private WeakReference<Connection> mConnection;
+
+        MessageHandler(Looper looper, Connection connection) {
+            super(looper);
+
+            this.mConnection = new WeakReference<>(connection);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            Connection.this.onPostExecute((Event) msg.obj);
+            if (mConnection.get() != null) {
+                mConnection.get().onPostExecute((Event) msg.obj);
+            }
         }
-    };
-
+    }
 }
