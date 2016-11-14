@@ -207,6 +207,10 @@
         <item name="android:inputType">numberDecimal</item>
     </style>
 
+    <style name="ZaloPayEditText.Money">
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
     <!--  fresco:roundedCornerRadius="5dp"
    fresco:roundBottomLeft="false"
    fresco:roundBottomRight="false"
