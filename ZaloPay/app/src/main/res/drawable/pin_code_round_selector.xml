@@ -5,6 +5,7 @@
             <item>
                 <shape android:shape="rectangle">
                     <stroke android:width="@dimen/separate" android:color="@color/hint" />
+                    <solid android:color="@color/white" />
                 </shape>
             </item>
 
@@ -20,7 +21,7 @@
         <shape android:shape="rectangle">
 
             <stroke android:width="@dimen/separate" android:color="@color/hint" />
-
+            <solid android:color="@color/white" />
         </shape>
     </item>
 </selector>
