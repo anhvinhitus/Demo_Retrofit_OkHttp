@@ -24,20 +24,16 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import com.zalopay.ui.widget.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
 import static com.zalopay.ui.widget.edittext.Utils.generateIconBitmaps;
 
 /**
@@ -327,7 +323,7 @@ public class ZPEditText extends AppCompatEditText {
                 if (autoValidate) {
                     validate();
                 } else {
-                    Log.d(TAG, "afterTextChanged: setError null");
+                    //Log.d(TAG, "afterTextChanged: setError null");
                     setError(null);
                 }
                 postInvalidate();
@@ -571,7 +567,7 @@ public class ZPEditText extends AppCompatEditText {
                         if (floatingLabelShown) {
                             if (!validateOnFocusLost || tempErrorText == null) {
                                 floatingLabelShown = false;
-                                Log.d(TAG, "afterTextChanged: reverse tempErrorText" + tempErrorText + " validateOnFocusLost " + validateOnFocusLost);
+                                //Log.d(TAG, "afterTextChanged: reverse tempErrorText" + tempErrorText + " validateOnFocusLost " + validateOnFocusLost);
                                 getLabelAnimator().reverse();
                             }
                         }
@@ -590,7 +586,7 @@ public class ZPEditText extends AppCompatEditText {
                     if (hasFocus) {
                         getLabelFocusAnimator().start();
                     } else {
-                        Log.d(TAG, "onFocusChange:onFocusChange ");
+                        //Log.d(TAG, "onFocusChange:onFocusChange ");
                         getLabelFocusAnimator().reverse();
                     }
                 }
@@ -759,7 +755,7 @@ public class ZPEditText extends AppCompatEditText {
 
     @Override
     public void setError(CharSequence errorText) {
-        Log.d(TAG, "setError: " + errorText);
+        //Log.d(TAG, "setError: " + errorText);
         tempErrorText = errorText == null ? null : errorText.toString();
         if (adjustBottomLines()) {
             postInvalidate();
@@ -776,12 +772,8 @@ public class ZPEditText extends AppCompatEditText {
     }
 
     private boolean isInternalValid() {
-        Log.d(TAG, "isInternalValid: " + beginCheckValidate);
-        if (!beginCheckValidate) {
-            return true;
-        }
-
-        return tempErrorText == null && isCharactersCountValid();
+        //Log.d(TAG, "isInternalValid: " + beginCheckValidate);
+        return !beginCheckValidate || tempErrorText == null && isCharactersCountValid();
     }
 
     public boolean validateWith(@NonNull ZPEditTextValidate validator) {
@@ -807,7 +799,7 @@ public class ZPEditText extends AppCompatEditText {
             //noinspection ConstantConditions
             isValid = isValid && validator.isValid(text);
             if (!isValid) {
-                Log.d(TAG, "validate: " + validator.getErrorMessage());
+                //Log.d(TAG, "validate: " + validator.getErrorMessage());
                 setError(validator.getErrorMessage());
                 break;
             }
@@ -817,7 +809,7 @@ public class ZPEditText extends AppCompatEditText {
         }
 
         postInvalidate();
-        Log.d(TAG, "validate: " + isValid);
+        //Log.d(TAG, "validate: " + isValid);
         return isValid;
     }
 
